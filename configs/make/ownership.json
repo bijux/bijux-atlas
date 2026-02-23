@@ -1,478 +1,544 @@
 {
-  "help": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "list": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "explain": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "graph": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "gates": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "quick": {
-    "owner": "build-and-release",
-    "area": "cargo"
-  },
-  "lane-cargo": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "lane-docs": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "lane-ops": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "lane-scripts": {
-    "owner": "repo-hygiene",
-    "area": "scripts"
-  },
-  "lane-configs-policies": {
-    "owner": "config-governance",
-    "area": "configs"
-  },
-  "cargo/all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "docs/all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "ops/all": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "scripts/all": {
-    "owner": "repo-hygiene",
-    "area": "scripts"
-  },
-  "configs/all": {
-    "owner": "config-governance",
-    "area": "configs"
-  },
-  "policies/all": {
-    "owner": "policy-governance",
-    "area": "policies"
-  },
-  "root": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "root-local": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "nightly": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "fmt": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "fmt-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "lint": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "lint-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "test": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "audit": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "audit-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "docs": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "ops": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "k8s": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "load": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "obs": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "root-local-summary": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "root-local-open": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "report/merge": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "report/print": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "report/md": {
-    "owner": "build-and-release",
-    "area": "docs"
-  },
-  "report/junit": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "doctor": {
-    "owner": "build-and-release",
-    "area": "ops"
-  },
-  "report": {
-    "owner": "build-and-release",
-    "area": "ops"
-  },
-  "prereqs": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "print-env": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "clean-safe": {
-    "owner": "repo-hygiene",
-    "area": "scripts"
-  },
-  "clean-all": {
-    "owner": "repo-hygiene",
-    "area": "scripts"
-  },
-  "local/all": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci/all": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "nightly/all": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "repro": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "cargo/fmt": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/lint": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/test-fast": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/test": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/test-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/test-contracts": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/audit": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/bench-smoke": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "cargo/coverage": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "docs/check": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs/build": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-req-lock-refresh": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-build": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-build-all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-serve": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-freeze": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-fmt": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-fmt-all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-lint": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-lint-all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-test": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-test-all": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "docs-clean": {
-    "owner": "docs-governance",
-    "area": "docs"
-  },
-  "ops/check": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "ops/smoke": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "ops/suite": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "scripts/check": {
-    "owner": "repo-hygiene",
-    "area": "scripts"
-  },
-  "configs/check": {
-    "owner": "config-governance",
-    "area": "configs"
-  },
-  "policies/check": {
-    "owner": "policy-governance",
-    "area": "policies"
-  },
-  "retry": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "artifacts-open": {
-    "owner": "ops-platform",
-    "area": "ops"
-  },
-  "check": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "check-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "test-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "test-contracts": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "coverage": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "coverage-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
   "all": {
-    "owner": "rust-platform",
-    "area": "cargo"
+    "area": "cargo",
+    "owner": "rust-platform"
   },
   "all-all": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "bench-smoke": {
-    "owner": "rust-platform",
-    "area": "cargo"
-  },
-  "openapi-drift": {
-    "owner": "contract-governance",
-    "area": "configs"
+    "area": "cargo",
+    "owner": "rust-platform"
   },
   "api-contract-check": {
-    "owner": "contract-governance",
-    "area": "configs"
+    "area": "configs",
+    "owner": "contract-governance"
   },
-  "compat-matrix-validate": {
-    "owner": "build-and-release",
-    "area": "policies"
+  "artifacts-open": {
+    "area": "ops",
+    "owner": "ops-platform"
   },
-  "query-plan-gate": {
-    "owner": "rust-platform",
-    "area": "cargo"
+  "audit": {
+    "area": "cargo",
+    "owner": "rust-platform"
   },
-  "critical-query-check": {
-    "owner": "rust-platform",
-    "area": "cargo"
+  "audit-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
   },
-  "ci-fast": {
-    "owner": "build-and-release",
-    "area": "policies"
+  "bench-smoke": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/audit": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/bench-smoke": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/coverage": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/fmt": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/lint": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/test": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/test-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/test-contracts": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "cargo/test-fast": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "check": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "check-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "ci": {
+    "area": "policies",
+    "owner": "build-and-release"
   },
   "ci-all": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-contracts": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-docs": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-ops": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-release": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-release-all": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-init": {
-    "owner": "build-and-release",
-    "area": "policies"
+    "area": "policies",
+    "owner": "build-and-release"
   },
   "ci-artifacts": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-help": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-init-iso-dirs": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-init-tmp": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-dependency-lock-refresh": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-release-compat-matrix-verify": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-release-build-artifacts": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-release-notes-render": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-release-publish-gh": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-cosign-sign": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "ci-cosign-verify": {
-    "owner": "build-and-release",
-    "area": "policies"
+    "area": "policies",
+    "owner": "build-and-release"
   },
   "ci-chart-package-release": {
-    "owner": "build-and-release",
-    "area": "policies"
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-contracts": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-cosign-sign": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-cosign-verify": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-dependency-lock-refresh": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-docs": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-fast": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-help": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-init": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-init-iso-dirs": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-init-tmp": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-ops": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-release": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-release-all": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-release-build-artifacts": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-release-compat-matrix-verify": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-release-notes-render": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "ci-release-publish-gh": {
+    "area": "policies",
+    "owner": "build-and-release"
   },
   "ci-reproducible-verify": {
-    "owner": "build-and-release",
-    "area": "policies"
+    "area": "policies",
+    "owner": "build-and-release"
   },
   "ci-security-advisory-render": {
-    "owner": "build-and-release",
-    "area": "policies"
-  },
-  "governance-check": {
-    "owner": "policy-governance",
-    "area": "policies"
+    "area": "policies",
+    "owner": "build-and-release"
   },
   "ci-workflows-make-only": {
-    "owner": "policy-governance",
-    "area": "policies"
+    "area": "policies",
+    "owner": "policy-governance"
+  },
+  "ci/all": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "clean-all": {
+    "area": "scripts",
+    "owner": "repo-hygiene"
+  },
+  "clean-safe": {
+    "area": "scripts",
+    "owner": "repo-hygiene"
+  },
+  "compat-matrix-validate": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "configs/all": {
+    "area": "configs",
+    "owner": "config-governance"
+  },
+  "configs/check": {
+    "area": "configs",
+    "owner": "config-governance"
+  },
+  "coverage": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "coverage-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "critical-query-check": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "docs": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-all": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-build": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-build-all": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-clean": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-fmt": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-fmt-all": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-freeze": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-lint": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-lint-all": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-req-lock-refresh": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-serve": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-test": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs-test-all": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs/all": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs/build": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "docs/check": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "doctor": {
+    "area": "ops",
+    "owner": "build-and-release"
+  },
+  "explain": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "fmt": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "fmt-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "gates": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "governance-check": {
+    "area": "policies",
+    "owner": "policy-governance"
+  },
+  "graph": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "help": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "k8s": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "lane-cargo": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "lane-configs-policies": {
+    "area": "configs",
+    "owner": "config-governance"
+  },
+  "lane-docs": {
+    "area": "docs",
+    "owner": "docs-governance"
+  },
+  "lane-ops": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "lane-scripts": {
+    "area": "scripts",
+    "owner": "repo-hygiene"
+  },
+  "lint": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "lint-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "list": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "load": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "local/all": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "nightly": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "nightly/all": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "obs": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "openapi-drift": {
+    "area": "configs",
+    "owner": "contract-governance"
+  },
+  "ops": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "ops/all": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "ops/check": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "ops/smoke": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "ops/suite": {
+    "area": "ops",
+    "owner": "ops-platform"
+  },
+  "policies/all": {
+    "area": "policies",
+    "owner": "policy-governance"
+  },
+  "policies/check": {
+    "area": "policies",
+    "owner": "policy-governance"
+  },
+  "prereqs": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "print-env": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "query-plan-gate": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "quick": {
+    "area": "cargo",
+    "owner": "build-and-release"
+  },
+  "report": {
+    "area": "ops",
+    "owner": "build-and-release"
+  },
+  "report/junit": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "report/md": {
+    "area": "docs",
+    "owner": "build-and-release"
+  },
+  "report/merge": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "report/print": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "repro": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "retry": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "root": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "root-local": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "root-local-open": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "root-local-summary": {
+    "area": "policies",
+    "owner": "build-and-release"
+  },
+  "scripts/all": {
+    "area": "scripts",
+    "owner": "repo-hygiene"
+  },
+  "scripts/check": {
+    "area": "scripts",
+    "owner": "repo-hygiene"
+  },
+  "targets": {
+    "bootstrap": {
+      "area": "product",
+      "owner": "product"
+    },
+    "chart-package": {
+      "area": "product",
+      "owner": "product"
+    },
+    "chart-validate": {
+      "area": "product",
+      "owner": "product"
+    },
+    "docker-build": {
+      "area": "product",
+      "owner": "product"
+    },
+    "docker-check": {
+      "area": "product",
+      "owner": "product"
+    },
+    "docker-push": {
+      "area": "product",
+      "owner": "product"
+    },
+    "docker-release": {
+      "area": "product",
+      "owner": "product"
+    },
+    "docs-lint-names": {
+      "area": "product",
+      "owner": "product"
+    },
+    "ops": {
+      "area": "ops",
+      "owner": "ops"
+    },
+    "ops-clean": {
+      "area": "ops",
+      "owner": "ops"
+    },
+    "ops-down": {
+      "area": "ops",
+      "owner": "ops"
+    },
+    "ops-pins-check": {
+      "area": "ops",
+      "owner": "ops"
+    },
+    "ops-pins-update": {
+      "area": "ops",
+      "owner": "ops"
+    },
+    "ops-up": {
+      "area": "ops",
+      "owner": "ops"
+    },
+    "product": {
+      "area": "product",
+      "owner": "product"
+    },
+    "rename-lint": {
+      "area": "product",
+      "owner": "product"
+    }
+  },
+  "test": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "test-all": {
+    "area": "cargo",
+    "owner": "rust-platform"
+  },
+  "test-contracts": {
+    "area": "cargo",
+    "owner": "rust-platform"
   }
 }
