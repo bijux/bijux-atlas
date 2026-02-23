@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 from . import ops_runtime_commands as impl
-from .actions_inventory import inventory_payload
+from .actions_inventory import action_argv, inventory_payload
 from atlasctl.core.process import shell_script_command
 
 def run_ops_command(ctx, ns: argparse.Namespace) -> int:
@@ -100,13 +100,39 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
         return 2
     if ns.ops_cmd == "explain":
         return impl._ops_explain_task(ctx, ns.report, getattr(ns, "task", ""))
+    if ns.ops_cmd == "actions":
+        sub = str(getattr(ns, "ops_actions_cmd", "") or "")
+        if sub == "list":
+            payload = inventory_payload()
+            ids = payload.get("action_ids", [])
+            if getattr(ns, "report", "text") == "json":
+                print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "kind": "ops-action-list", "items": ids}, sort_keys=True))
+                return 0
+            print("\n".join(str(x) for x in ids))
+            return 0
+        if sub == "run":
+            action_id = str(getattr(ns, "action_id", "")).strip()
+            argv = action_argv(action_id)
+            if not argv:
+                return impl._emit_ops_status(getattr(ns, "report", "text"), 2, f"unknown ops action id: {action_id}")
+            parser = argparse.ArgumentParser(prog="atlasctl")
+            top = parser.add_subparsers(dest="cmd", required=True)
+            from .ops_runtime_parser import configure_ops_parser
+
+            configure_ops_parser(top)
+            child = parser.parse_args(["ops", *argv])
+            # preserve shared output mode for the wrapper command if supported downstream
+            if hasattr(child, "report") and getattr(ns, "report", None):
+                setattr(child, "report", getattr(ns, "report"))
+            return run_ops_command(ctx, child)
+        return 2
 
     if ns.ops_cmd == "surface":
         surface = ctx.repo_root / "ops" / "_meta" / "surface.json"
         payload = json.loads(surface.read_text(encoding="utf-8"))
         entrypoints = payload.get("entrypoints", [])
         if ns.report == "json":
-            return impl._emit_ops_status(ns.report, 0, json.dumps({"schema_version": 1, "tool": "atlasctl", "entrypoints": entrypoints}, sort_keys=True))
+            return impl._emit_ops_status(ns.report, 0, json.dumps({"schema_version": 1, "tool": "atlasctl", "entrypoints": entrypoints, "commands": payload.get("atlasctl_commands", [])}, sort_keys=True))
         text = "\n".join(str(item) for item in entrypoints if isinstance(item, str))
         return impl._emit_ops_status(ns.report, 0, text)
     if ns.ops_cmd == "warm-dx":

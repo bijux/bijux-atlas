@@ -54,6 +54,13 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     explain_cmd.add_argument("task", help="registered ops task name")
     explain_cmd.add_argument("--report", choices=["text", "json"], default="text")
 
+    actions = ops_sub.add_parser("actions", help="ops action registry and dispatcher")
+    actions.add_argument("--report", choices=["text", "json"], default="text")
+    actions_sub = actions.add_subparsers(dest="ops_actions_cmd", required=True)
+    actions_sub.add_parser("list", help="list canonical ops action ids")
+    actions_run = actions_sub.add_parser("run", help="run a canonical ops action id")
+    actions_run.add_argument("action_id", help="canonical action id (e.g. ops.stack.up)")
+
     lint = ops_sub.add_parser("lint", help="run canonical ops lint checks")
     lint.add_argument("--report", choices=["text", "json"], default="text")
     lint.add_argument("--fail-fast", action="store_true")
