@@ -46,4 +46,7 @@ Generate and verify:
 
 ## Catalog Duplication Policy
 
-`checks_catalog.json` and `suites_catalog.json` are currently retained because they back existing consumers and are not redundant yet. The spine composes them through one loader and can replace them in a later cutover.
+`checks_catalog.json` and `suites_catalog.json` are currently retained because
+they back existing consumers and are not redundant yet.
+The spine composes them through one loader and can replace them in a later
+cutover.
