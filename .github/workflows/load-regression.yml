@@ -15,4 +15,4 @@ jobs:
           python-version: '3.11'
       - name: Run dedicated load regression gate
         run: |
-          python3 packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py
+          ./bin/atlasctl suite run ops.load.regression --only slow --report json

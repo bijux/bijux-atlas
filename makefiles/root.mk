@@ -130,6 +130,15 @@ report: ## Build unified report and print one-screen summary
 	./bin/atlasctl reporting unified --run-id "$$run_id" >/dev/null; \
 	./bin/atlasctl reporting print --run-id "$$run_id"
 
+k8s: ## Public alias for atlasctl k8s validation surface
+	@./bin/atlasctl ops k8s validate --report text
+
+load: ## Public alias for atlasctl load validation surface
+	@./bin/atlasctl ops load check --report text
+
+obs: ## Public alias for atlasctl observability validation surface
+	@./bin/atlasctl ops obs lint --report text
+
 evidence/open: ## Open evidence directory (supports AREA=<area> RUN_ID=<id>)
 	@./bin/atlasctl reporting artifact-index
 
