@@ -42,6 +42,14 @@
           "justification": {
             "type": "string",
             "minLength": 1
+          },
+          "replacement_mechanism": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "minLength": 1
           }
         }
       }

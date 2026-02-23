@@ -12,8 +12,8 @@
 
 ## Contracts
 - Every top-level `configs/<area>/` must contain `README.md`.
-- Ownership map: `configs/_meta/ownership.json`.
-- Schemas live under `configs/_schemas/`.
+- Ownership map: `configs/inventory/owners.json`.
+- Schemas live under `configs/schema/`.
 - Generated surfaces:
   - `docs/_generated/configs-surface.md`
   - `docs/_generated/tooling-versions.md`

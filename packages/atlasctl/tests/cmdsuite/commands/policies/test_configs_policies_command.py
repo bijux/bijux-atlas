@@ -86,7 +86,7 @@ def test_policies_bypass_scan_fixture_detects_missing_relaxation_id(tmp_path: Pa
 
 def test_policies_relaxations_fixture_expiry_enforced(tmp_path: Path) -> None:
     (tmp_path / "configs/policy").mkdir(parents=True)
-    (tmp_path / "configs/_schemas").mkdir(parents=True)
+    (tmp_path / "configs/schema").mkdir(parents=True)
 
     (tmp_path / "configs/policy/ops-lint-relaxations.json").write_text(
         json.dumps(
@@ -104,7 +104,7 @@ def test_policies_relaxations_fixture_expiry_enforced(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
-    (tmp_path / "configs/_schemas/ops-lint-relaxations.schema.json").write_text(
+    (tmp_path / "configs/schema/ops-lint-relaxations.schema.json").write_text(
         json.dumps(
             {
                 "$schema": "https://json-schema.org/draft/2020-12/schema",

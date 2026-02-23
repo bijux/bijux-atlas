@@ -21,16 +21,16 @@ from ...core.runtime.paths import write_text_file
 from ...core.runtime.tooling import read_pins, read_tool_versions
 
 CONFIG_SCHEMA_PAIRS: tuple[tuple[str, str], ...] = (
-    ("configs/_meta/ownership.json", "configs/_schemas/configs-ownership.schema.json"),
-    ("configs/ops/tool-versions.json", "configs/_schemas/tool-versions.schema.json"),
-    ("configs/ops/public-surface.json", "configs/_schemas/public-surface.schema.json"),
-    ("configs/policy/policy-relaxations.json", "configs/_schemas/policy-relaxations.schema.json"),
-    ("configs/policy/layer-relaxations.json", "configs/_schemas/layer-relaxations.schema.json"),
-    ("configs/policy/ops-lint-relaxations.json", "configs/_schemas/ops-lint-relaxations.schema.json"),
-    ("configs/policy/layer-live-diff-allowlist.json", "configs/_schemas/layer-live-diff-allowlist.schema.json"),
-    ("configs/ops/target-renames.json", "configs/_schemas/target-renames.schema.json"),
-    ("configs/ops/hpa-safety-caps.json", "configs/_schemas/hpa-safety-caps.schema.json"),
-    ("configs/meta/ownership.json", "configs/_schemas/meta-ownership.schema.json"),
+    ("configs/inventory/owners.json", "configs/schema/configs-ownership.schema.json"),
+    ("configs/ops/tool-versions.json", "configs/schema/tool-versions.schema.json"),
+    ("configs/ops/public-surface.json", "configs/schema/public-surface.schema.json"),
+    ("configs/policy/policy-relaxations.json", "configs/schema/policy-relaxations.schema.json"),
+    ("configs/policy/layer-relaxations.json", "configs/schema/layer-relaxations.schema.json"),
+    ("configs/policy/ops-lint-relaxations.json", "configs/schema/ops-lint-relaxations.schema.json"),
+    ("configs/policy/layer-live-diff-allowlist.json", "configs/schema/layer-live-diff-allowlist.schema.json"),
+    ("configs/ops/target-renames.json", "configs/schema/target-renames.schema.json"),
+    ("configs/ops/hpa-safety-caps.json", "configs/schema/hpa-safety-caps.schema.json"),
+    ("configs/meta/ownership.json", "configs/schema/meta-ownership.schema.json"),
 )
 CANONICAL_INVENTORY_ROOT = "ops/inventory"
 CONFIG_COMPILER_GENERATED_DIR = "configs/_generated"
@@ -117,7 +117,7 @@ def _validate_file_well_formed(repo_root: Path) -> list[str]:
 
 
 def _check_ownership(repo_root: Path) -> list[str]:
-    own = _load_json(repo_root / "configs/_meta/ownership.json")
+    own = _load_json(repo_root / "configs/inventory/owners.json")
     areas = {str(k) for k in own.get("areas", {}).keys()}
     errors: list[str] = []
     for d in sorted((repo_root / "configs").iterdir()):
@@ -205,11 +205,11 @@ def _parse_yaml_doc(path: Path) -> object:
 
 
 def _generate_outputs(repo_root: Path, write: bool) -> dict[str, str]:
-    own = _load_json(repo_root / "configs/_meta/ownership.json").get("areas", {})
+    own = _load_json(repo_root / "configs/inventory/owners.json").get("areas", {})
     lines_index = ["# Configs Index", "", "Canonical configuration surface for repository behavior.", "", "## Areas"]
     for area in sorted(own):
         lines_index.append(f"- `{area}` owner: `{own[area]}`")
-    lines_index += ["", "See also: `configs/_meta/ownership.json`.", ""]
+    lines_index += ["", "See also: `configs/inventory/owners.json`.", ""]
     configs_index = "\n".join(lines_index)
 
     lines_surface = ["# Configs Surface", "", "Generated from `configs/` structure and ownership map.", ""]

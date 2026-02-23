@@ -1,7 +1,7 @@
 {
   "kind": "owners",
   "sources": {
-    "configs/_meta/ownership.json": {
+    "configs/inventory/owners.json": {
       "areas": {
         "configs/coverage": "platform",
         "configs/docs": "docs-governance",
