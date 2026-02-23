@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import subprocess
 from pathlib import Path
 
 from ...core.context import RunContext
@@ -78,6 +79,12 @@ def _artifact_rows(ctx: RunContext) -> list[dict[str, object]]:
 
 def _build_manifest_payload(ctx: RunContext) -> dict[str, object]:
     version = str(os.environ.get("IMAGE_VERSION") or os.environ.get("VERSION") or "local").strip() or "local"
+    pins_path = ctx.repo_root / "configs" / "ops" / "pins.json"
+    pins_digest = hashlib.sha256(pins_path.read_bytes()).hexdigest() if pins_path.exists() else ""
+    git_sha = str(ctx.meta.get("git_sha", "") or "").strip()
+    if not git_sha:
+        proc = subprocess.run(["git", "rev-parse", "--short=12", "HEAD"], cwd=ctx.repo_root, text=True, capture_output=True, check=False)
+        git_sha = (proc.stdout or "").strip() if proc.returncode == 0 else "unknown"
     payload: dict[str, object] = {
         "schema_version": 1,
         "kind": "product-artifact-manifest",
@@ -87,6 +94,12 @@ def _build_manifest_payload(ctx: RunContext) -> dict[str, object]:
         "meta": {
             "allowed_roots": ["artifacts/chart", "artifacts/evidence/product"],
             "tool_versions_hint": "use atlasctl ops pins check for pinned tool validation",
+            "git_sha": git_sha,
+            "pins_digest": pins_digest,
+            "schema_versions": {
+                "product_artifact_manifest": 1,
+                "product_lane_report": 1,
+            },
         },
     }
     validate_json(payload, ctx.repo_root / PRODUCT_SCHEMA)
@@ -174,7 +187,9 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     release_sub.add_parser("plan", help="print release version/tag strategy")
     product_sub.add_parser("explain", help="print product lane plan and underlying commands")
     product_sub.add_parser("graph", help="print product lane dependency graph")
-    product_sub.add_parser("build", help="produce canonical product artifact set and manifest")
+    build = product_sub.add_parser("build", help="produce canonical product artifact set and manifest")
+    build.add_argument("--plan", action="store_true", help="print planned artifacts without building")
+    product_sub.add_parser("verify", help="alias of validate (manifest + hashes)")
     product_sub.add_parser("validate", help="validate product artifact manifest and artifact integrity")
     diff = product_sub.add_parser("diff", help="compare two product artifact manifests")
     diff.add_argument("left")
@@ -183,6 +198,8 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     inventory.add_argument("--manifest", help="path to artifact manifest (defaults to current run)")
     publish = product_sub.add_parser("publish", help="publish product artifacts (internal/optional)")
     publish.add_argument("--internal", action="store_true")
+    release_candidate = product_sub.add_parser("release-candidate", help="build -> verify -> sign -> publish dry flow")
+    release_candidate.add_argument("--internal", action="store_true")
 
     docker = product_sub.add_parser("docker", help="product docker lanes")
     docker_sub = docker.add_subparsers(dest="product_docker_cmd", required=True)
@@ -228,6 +245,12 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print("product.chart.verify -> product.chart.package")
         return 0
     if sub == "build":
+        if bool(getattr(ns, "dry_run", False)) or bool(getattr(ns, "plan", False)):
+            print("product build plan:")
+            print("- docker image tag artifact (from DOCKER_IMAGE)")
+            print("- chart packages under artifacts/chart/")
+            print(f"- artifact manifest at {_rel(ctx.repo_root, _product_manifest_path(ctx))}")
+            return 0
         code = run_product_lane(
             ctx,
             lane="build",
@@ -241,6 +264,8 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         out = _write_artifact_manifest(ctx)
         print(f"artifact-manifest: {_rel(ctx.repo_root, out)}")
         return 0
+    if sub == "verify":
+        return _validate_artifact_manifest(ctx)
     if sub == "validate":
         return _validate_artifact_manifest(ctx)
     if sub == "diff":
@@ -267,6 +292,28 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             return 2
         print("product publish plan: validate -> push image/chart -> publish manifest index (not yet wired)")
         return 0
+    if sub == "release-candidate":
+        if not bool(getattr(ns, "internal", False)):
+            print("product release-candidate is internal-only; pass --internal")
+            return 2
+        for cmd in (
+            ["./bin/atlasctl", "product", "build"],
+            ["./bin/atlasctl", "product", "verify"],
+        ):
+            proc = run_command(cmd, ctx.repo_root, ctx=ctx)
+            if proc.combined_output:
+                print(proc.combined_output.rstrip())
+            if proc.code != 0:
+                return proc.code
+        manifest = _product_manifest_path(ctx)
+        if not manifest.exists():
+            print("missing manifest after product build")
+            return 1
+        sig = manifest.with_suffix(".sha256")
+        sig.write_text(f"{_sha256(manifest)}  {manifest.name}\n", encoding="utf-8")
+        print(f"signed (checksum): {_rel(ctx.repo_root, sig)}")
+        print("release-candidate publish step: dry-run placeholder (not pushing)")
+        return 0
     if sub == "release" and getattr(ns, "product_release_cmd", "") == "plan":
         lines = [
             "product release plan",
@@ -275,6 +322,7 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "- compute immutable image tags (no `latest`)",
             "- publish chart package and verify app/chart version alignment",
             "- execute docker release in CI-only environment",
+            "- release-candidate flow: build -> verify -> checksum sign -> publish (dry/internal)",
         ]
         print("\n".join(lines))
         return 0
