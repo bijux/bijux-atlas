@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from ....core.base import CheckCategory, CheckDef
+from ....model import CheckCategory, CheckDef
 from .check_registry_change_gates import (
     check_registry_change_requires_docs_update,
     check_registry_change_requires_golden_update,

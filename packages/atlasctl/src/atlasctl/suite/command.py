@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-from ..checks.core.execution import run_function_checks
+from ..engine.execution import run_function_checks
 from ..checks.registry import check_tags, get_check, list_checks
 from ..cli.surface_registry import command_registry
 from ..contracts.catalog import schema_path_for

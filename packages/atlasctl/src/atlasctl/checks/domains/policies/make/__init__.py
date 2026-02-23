@@ -104,7 +104,7 @@ from ....repo.native import (
     check_make_wrapper_shell_is_sh,
     check_make_wrapper_target_budget,
 )
-from ....core.base import CheckDef
+from ....model import CheckDef
 
 _NETWORK_ALLOWLIST = Path("configs/policy/shell-network-fetch-allowlist.txt")
 _PROBES_ALLOWLIST = Path("configs/policy/shell-probes-allowlist.txt")

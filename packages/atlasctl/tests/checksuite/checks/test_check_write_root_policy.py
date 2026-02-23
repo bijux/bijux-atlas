@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 from types import SimpleNamespace
 
-from atlasctl.checks.core.base import CheckDef
+from atlasctl.checks.model import CheckDef
 from atlasctl.checks.effects import CheckEffect
 from atlasctl.checks.report import resolve_last_run_report
 from atlasctl.commands.check import command as check_command

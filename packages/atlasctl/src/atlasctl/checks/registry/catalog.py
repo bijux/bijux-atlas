@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-from ..core.base import CheckCategory, CheckDef as CheckFactory, Severity
+from ..model import CheckCategory, CheckDef as CheckFactory, Severity
 from .ssot import RegistryEntry, canonical_check_id, check_id_renames, legacy_checks
 
 _MARKER_VOCAB: tuple[str, ...] = ("slow", "network", "kube", "docker", "fs-write", "git")
