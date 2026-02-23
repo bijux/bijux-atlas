@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 from ...checks.registry import alias_expiry_violations, check_rename_aliases, check_tags, get_check, list_checks, marker_vocabulary, resolve_aliases
+from ...checks.runner import extract_failures, report_from_payload, top_n_slowest
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER
@@ -40,10 +41,10 @@ def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
         return ERR_USER
     payload = json.loads(report_path.read_text(encoding="utf-8"))
     group = str(getattr(ns, "group", "") or "").strip()
-    rows = payload.get("rows", [])
+    report = report_from_payload(payload)
+    failed_rows = extract_failures(report)
     if group:
-        rows = [row for row in rows if str(row.get("id", "")).startswith(f"checks_{group}_")]
-    failed = [row for row in rows if row.get("status") == "FAIL"]
+        failed_rows = [row for row in failed_rows if str(row.id).startswith(f"checks_{group}_")]
     out = {
         "schema_version": 1,
         "tool": "atlasctl",
@@ -51,24 +52,24 @@ def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
         "status": "ok",
         "source": report_path.as_posix(),
         "group": group or "all",
-        "failed_count": len(failed),
+        "failed_count": len(failed_rows),
         "failures": [
             {
-                "id": str(row.get("id", "")),
-                "domain": str(row.get("domain", "")),
-                "hint": str(row.get("hint", "")),
-                "detail": str(row.get("detail", "")),
+                "id": str(row.id),
+                "domain": str(row.domain),
+                "hint": str(row.fix_hint),
+                "detail": "; ".join(str(item.message) for item in row.violations) or "; ".join(row.errors),
             }
-            for row in failed
+            for row in failed_rows
         ],
     }
     if ctx.output_format == "json" or ns.json:
         print(json.dumps(out, sort_keys=True))
-        return 0 if not failed else ERR_USER
-    if not failed:
+        return 0 if not failed_rows else ERR_USER
+    if not failed_rows:
         print(f"failures: none ({group or 'all'})")
         return 0
-    print(f"failures ({group or 'all'}): {len(failed)}")
+    print(f"failures ({group or 'all'}): {len(failed_rows)}")
     for row in out["failures"]:
         print(f"- {row['id']}: {row['detail'] or row['hint']}")
     return ERR_USER
@@ -77,19 +78,15 @@ def _run_check_failures(ctx, ns: argparse.Namespace) -> int:
 def _run_check_triage_slow(ctx, ns: argparse.Namespace) -> int:
     report_path = _resolve_failures_report(str(ns.last_run))
     payload = json.loads(report_path.read_text(encoding="utf-8"))
-    rows = payload.get("rows", [])
-    ranked = sorted(
-        [row for row in rows if row.get("status") in {"PASS", "FAIL"}],
-        key=lambda row: int(row.get("duration_ms", 0)),
-        reverse=True,
-    )[: max(1, int(getattr(ns, "top", 10) or 10))]
+    report = report_from_payload(payload)
+    ranked = top_n_slowest(report, int(getattr(ns, "top", 10) or 10))
     out = {
         "schema_version": 1,
         "tool": "atlasctl",
         "kind": "check-triage-slow",
         "status": "ok",
         "source": report_path.as_posix(),
-        "rows": [{"id": row.get("id"), "domain": row.get("domain"), "duration_ms": int(row.get("duration_ms", 0))} for row in ranked],
+        "rows": [{"id": str(row.id), "domain": str(row.domain), "duration_ms": int(row.metrics.get("duration_ms", 0))} for row in ranked],
     }
     if ctx.output_format == "json" or ns.json:
         print(json.dumps(out, sort_keys=True))
@@ -102,11 +99,12 @@ def _run_check_triage_slow(ctx, ns: argparse.Namespace) -> int:
 def _run_check_triage_failures(ctx, ns: argparse.Namespace) -> int:
     report_path = _resolve_failures_report(str(ns.last_run))
     payload = json.loads(report_path.read_text(encoding="utf-8"))
-    rows = [row for row in payload.get("rows", []) if row.get("status") == "FAIL"]
+    report = report_from_payload(payload)
+    rows = extract_failures(report)
     grouped: dict[str, dict[str, int]] = {}
     for row in rows:
-        domain = str(row.get("domain", "unknown"))
-        rid = str(row.get("id", ""))
+        domain = str(row.domain or "unknown")
+        rid = str(row.id)
         area = rid.split("_")[2] if rid.startswith("checks_") and len(rid.split("_")) > 2 else "general"
         bucket = grouped.setdefault(domain, {})
         bucket[area] = int(bucket.get(area, 0)) + 1
