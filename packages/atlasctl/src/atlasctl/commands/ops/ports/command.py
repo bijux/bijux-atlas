@@ -9,19 +9,11 @@ from atlasctl.core.context import RunContext
 from atlasctl.core.fs import ensure_evidence_path
 from atlasctl.core.runtime.paths import write_text_file
 from atlasctl.core.schema.schema_utils import validate_json
+from atlasctl.commands.ops._shared.output import emit_ops_payload
 
 
 def _artifact_base(ctx: RunContext, area: str) -> Path:
     return ensure_evidence_path(ctx, ctx.evidence_root / area / ctx.run_id)
-
-
-def _emit(payload: dict[str, Any], report_format: str) -> None:
-    if report_format == "json":
-        print(json.dumps(payload, sort_keys=True))
-    else:
-        print(
-            f"{payload['area']}:{payload['action']} status={payload['status']} run_id={payload['run_id']}"
-        )
 
 
 def ports_show(ctx: RunContext, report_format: str) -> int:
@@ -35,7 +27,7 @@ def ports_show(ctx: RunContext, report_format: str) -> int:
         "action": "show",
         "details": ports_cfg,
     }
-    _emit(payload, report_format)
+    emit_ops_payload(payload, report_format)
     return 0
 
 
@@ -61,5 +53,5 @@ def ports_reserve(ctx: RunContext, report_format: str, name: str, port: int | No
     validate_json(reservation, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
     write_text_file(out_dir / "report.json", json.dumps(reservation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_text_file(out_dir / "run.log", f"reserved {name}={chosen}\n", encoding="utf-8")
-    _emit(reservation, report_format)
+    emit_ops_payload(reservation, report_format)
     return 0

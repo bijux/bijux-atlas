@@ -32,3 +32,10 @@ This document describes the package-level layering used by `packages/atlasctl`.
 
 Each public command group exposes one public entry module (`commands/<group>/command.py`).
 Business logic belongs in `runtime.py` or area/runtime modules.
+
+## Result + Output Rule
+
+- Command/runtime functions should return structured status/results where practical and
+  standardize result typing via `atlasctl.core.result` (not implementation-path imports).
+- Ops command entrypoints must not print directly; they should emit through a shared
+  output adapter (`commands/ops/_shared/output.py`) so output policy is enforceable.

@@ -8,15 +8,7 @@ from typing import Any
 from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.schema.schema_utils import validate_json
-
-
-def _emit(payload: dict[str, Any], report_format: str) -> None:
-    if report_format == "json":
-        print(json.dumps(payload, sort_keys=True))
-    else:
-        print(
-            f"{payload['area']}:{payload['action']} status={payload['status']} run_id={payload['run_id']}"
-        )
+from atlasctl.commands.ops._shared.output import emit_ops_payload
 
 
 def artifacts_open(ctx: RunContext, report_format: str) -> int:
@@ -36,7 +28,7 @@ def artifacts_open(ctx: RunContext, report_format: str) -> int:
             "action": "open",
             "details": "no artifacts found under artifacts/ops",
         }
-        _emit(payload, report_format)
+        emit_ops_payload(payload, report_format)
         return 2
     target = ctx.repo_root / latest
     for opener in (["open", str(target)], ["xdg-open", str(target)]):
@@ -54,7 +46,7 @@ def artifacts_open(ctx: RunContext, report_format: str) -> int:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "details": {"path": latest},
     }
-    _emit(payload, report_format)
+    emit_ops_payload(payload, report_format)
     return 0
 
 
@@ -85,5 +77,5 @@ def cleanup_gc(ctx: RunContext, report_format: str, older_than_days: int) -> int
         "details": {"older_than_days": older_than_days, "removed_dirs": sorted(removed)},
     }
     validate_json(payload, ctx.repo_root / "configs/contracts/scripts-tool-output.schema.json")
-    _emit(payload, report_format)
+    emit_ops_payload(payload, report_format)
     return 0
