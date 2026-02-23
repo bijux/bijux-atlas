@@ -125,6 +125,26 @@
         "inventory_root": {"type": "string", "minLength": 1},
         "files_present": {"type": "array", "items": {"type": "string"}}
       }
+    },
+    "bypass_debt": {
+      "type": "object",
+      "required": [
+        "status",
+        "entry_count",
+        "overdue_count",
+        "due_within_14d_count",
+        "missing_required_metadata_count",
+        "inventory_error_count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
+        "entry_count": {"type": "integer", "minimum": 0},
+        "overdue_count": {"type": "integer", "minimum": 0},
+        "due_within_14d_count": {"type": "integer", "minimum": 0},
+        "missing_required_metadata_count": {"type": "integer", "minimum": 0},
+        "inventory_error_count": {"type": "integer", "minimum": 0}
+      }
     }
   }
 }
