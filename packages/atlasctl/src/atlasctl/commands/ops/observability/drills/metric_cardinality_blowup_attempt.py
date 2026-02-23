@@ -1,9 +1,10 @@
 from __future__ import annotations
 import subprocess, sys
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     out = root / 'artifacts/observability/drills/metrics-cardinality.prom'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(

@@ -1,10 +1,11 @@
 from __future__ import annotations
 import json, os, subprocess
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     out = Path(__import__('sys').argv[1] if len(__import__('sys').argv) > 1 else os.environ.get('OPS_RUN_DIR', 'artifacts/ops/run'))
     out.mkdir(parents=True, exist_ok=True)
     payload = {

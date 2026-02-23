@@ -1,9 +1,11 @@
 from __future__ import annotations
 import hashlib, json, pathlib, shutil, subprocess, sys, tarfile
 
+from atlasctl.core.runtime.repo_root import find_repo_root
+
 
 def main() -> int:
-    root = pathlib.Path.cwd()
+    root = find_repo_root()
     manifest_path = root / 'datasets/real-datasets.json'
     out_root = pathlib.Path(__import__('os').environ.get('ATLAS_REALDATA_ROOT', str(root / 'artifacts/real-datasets')))
     tmp = out_root / '_downloads'

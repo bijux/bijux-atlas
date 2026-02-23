@@ -1,4 +1,5 @@
 from __future__ import annotations
+from atlasctl.core.runtime.repo_root import find_repo_root
 
 import os
 import subprocess
@@ -20,7 +21,7 @@ def _metric_value(path: Path) -> float | None:
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     release = os.environ.get('ATLAS_E2E_RELEASE_NAME', 'atlas-e2e')
     ns = os.environ.get('ATLAS_E2E_NAMESPACE', 'atlas-e2e')
     service_name = os.environ.get('ATLAS_E2E_SERVICE_NAME', f'{release}-bijux-atlas')

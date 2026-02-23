@@ -1,9 +1,10 @@
 from __future__ import annotations
 import re
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     text = (root/'ops/obs/alerts/atlas-alert-rules.yaml').read_text(encoding='utf-8')
     runbooks = re.findall(r'runbook:\s*"([^"]+)"', text)
     if not runbooks:

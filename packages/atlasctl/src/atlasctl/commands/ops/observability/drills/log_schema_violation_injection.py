@@ -1,10 +1,11 @@
 from __future__ import annotations
 import subprocess
+from atlasctl.core.runtime.repo_root import find_repo_root
 import sys
 from pathlib import Path
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     out = root / 'artifacts/observability/drills/log-schema-violation.jsonl'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text('{"event":"request_end","request_id":123,"dataset":null}\n', encoding='utf-8')

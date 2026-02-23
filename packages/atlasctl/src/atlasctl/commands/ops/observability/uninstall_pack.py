@@ -1,4 +1,5 @@
 from __future__ import annotations
+from atlasctl.core.runtime.repo_root import find_repo_root
 
 import os
 import subprocess
@@ -19,7 +20,7 @@ def main() -> int:
     if len(sys.argv) > 2 and sys.argv[1] == '--profile':
         profile = sys.argv[2]
     obs_ns = os.environ.get('ATLAS_OBS_NAMESPACE', 'atlas-observability')
-    root = Path.cwd()
+    root = find_repo_root()
     if profile == 'local-compose':
         cmd = _compose_cmd()
         if not cmd:

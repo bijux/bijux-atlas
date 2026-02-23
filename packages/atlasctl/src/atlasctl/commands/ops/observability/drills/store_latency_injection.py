@@ -1,9 +1,10 @@
 from __future__ import annotations
 import os, subprocess, sys, time
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 def main() -> int:
-    root = Path.cwd(); base = os.environ.get('ATLAS_BASE_URL', 'http://127.0.0.1:18080')
+    root = find_repo_root(); base = os.environ.get('ATLAS_BASE_URL', 'http://127.0.0.1:18080')
     subprocess.check_call([str(root/'stack/faults/inject.sh'),'toxiproxy-latency','1500','200'])
     time.sleep(3)
     subprocess.call(['curl','-fsS',f'{base}/healthz'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

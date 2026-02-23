@@ -1,9 +1,10 @@
 from __future__ import annotations
 import os, subprocess, sys
+from atlasctl.core.runtime.repo_root import find_repo_root
 from pathlib import Path
 
 def main() -> int:
-    root = Path.cwd(); out = root / 'artifacts/ops/obs'
+    root = find_repo_root(); out = root / 'artifacts/ops/obs'
     out.mkdir(parents=True, exist_ok=True)
     (out/'traces.snapshot.log').write_text('{"spans":[{"name":"request_root","request_id":"abc"}]}\n', encoding='utf-8')
     (out/'traces.exemplars.log').write_text('{"trace_id":"abc"}\n', encoding='utf-8')

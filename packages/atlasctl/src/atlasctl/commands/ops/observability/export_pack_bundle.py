@@ -1,4 +1,5 @@
 from __future__ import annotations
+from atlasctl.core.runtime.repo_root import find_repo_root
 
 import json
 import os
@@ -8,7 +9,7 @@ from pathlib import Path
 
 
 def main() -> int:
-    root = Path.cwd()
+    root = find_repo_root()
     out_dir = Path(os.environ.get('OUT_DIR') or (os.sys.argv[1] if len(os.sys.argv) > 1 else 'artifacts/observability/pack-bundle'))
     out_dir.mkdir(parents=True, exist_ok=True)
     copies = [
