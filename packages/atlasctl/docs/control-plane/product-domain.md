@@ -21,6 +21,7 @@
 - Build evidence: `artifacts/evidence/product/build/<run_id>/...`
 - Artifact manifest: `artifacts/evidence/product/build/<run_id>/artifact-manifest.json`
 - Chart packages: `artifacts/chart/*.tgz`
+- Manifest provenance metadata includes: `git_sha`, `pins_digest`, `schema_versions`
 
 ## Validation Expectations
 
@@ -28,4 +29,4 @@
 - Deterministic ordering of artifact rows
 - Checksums match on-disk artifacts
 - Product lanes emit reports under evidence roots only
-
+- Product artifact manifest is the SSOT for built artifact inventory, hashes, and versioned release shape
