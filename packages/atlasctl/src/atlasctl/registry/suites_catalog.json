@@ -64,6 +64,26 @@
     {
       "default_effects": [
         "read",
+        "process",
+        "write"
+      ],
+      "exclude_markers": [
+        "slow"
+      ],
+      "include_checks": [],
+      "internal": false,
+      "markers": [
+        "product"
+      ],
+      "name": "product.smoke",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
         "process"
       ],
       "exclude_markers": [],
