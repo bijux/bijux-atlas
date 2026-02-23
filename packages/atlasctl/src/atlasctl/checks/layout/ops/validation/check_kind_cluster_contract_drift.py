@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[8]
 def main() -> int:
     contract = ROOT / 'ops/CONTRACT.md'
     text = contract.read_text(encoding='utf-8', errors='ignore') if contract.exists() else ''
-    m = re.search(r'^kind-cluster-contract-hash: `([a-f0-9]+)`$', text, re.M)
+    m = re.search(r'^\s*(?:-\s*)?kind-cluster-contract-hash:\s*`([a-f0-9]+)`\s*$', text, re.M)
     if not m:
         print('missing kind-cluster-contract-hash marker in ops/CONTRACT.md', file=sys.stderr)
         return 1

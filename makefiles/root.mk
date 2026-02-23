@@ -78,6 +78,9 @@ list: ## Print public make target set from SSOT with one-line descriptions
 targets: ## Print generated target catalog from SSOT
 	@./bin/atlasctl make list
 
+emit: ## Regenerate generated make target catalog outputs
+	@./bin/atlasctl make emit
+
 surface: ## Print canonical make surfaces and atlasctl docs pointer
 	@./bin/atlasctl make list
 	@echo ""

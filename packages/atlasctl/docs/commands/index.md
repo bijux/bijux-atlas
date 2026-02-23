@@ -20,6 +20,7 @@ Generated from CLI registry (`src/atlasctl/cli/surface_registry.py`).
 - `dev`
 - `docs`
 - `doctor`
+- `fix`
 - `gate`
 - `gates`
 - `gen`

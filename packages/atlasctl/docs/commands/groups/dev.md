@@ -9,6 +9,7 @@ Commands mapped to `dev` effects policy.
 - `deps`
 - `dev`
 - `doctor`
+- `fix`
 - `gate`
 - `gates`
 - `gen`
@@ -35,6 +36,7 @@ Commands mapped to `dev` effects policy.
 - `atlasctl deps lock --json`
 - `atlasctl dev check -- domain repo`
 - `atlasctl doctor --json`
+- `atlasctl fix hygiene --apply`
 - `atlasctl gate run --preset root --all --report json`
 - `atlasctl gates --report json`
 - `atlasctl gen goldens`
