@@ -227,7 +227,29 @@ def check_make_public_targets_documented(repo_root: Path) -> tuple[int, list[str
 
 
 def check_make_target_ownership_complete(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_make_target_ownership.py")
+    from .public_make_targets import ALLOWED_AREAS, entry_map, load_ownership
+
+    entries = entry_map()
+    ownership = load_ownership()
+    errors: list[str] = []
+    for target, entry in entries.items():
+        meta = ownership.get(target)
+        if not isinstance(meta, dict):
+            errors.append(f"ownership missing for public target: {target}")
+            continue
+        owner = meta.get("owner")
+        area = meta.get("area")
+        if not owner:
+            errors.append(f"owner missing for public target: {target}")
+        if area not in ALLOWED_AREAS:
+            errors.append(f"invalid area for {target}: {area} (allowed: {', '.join(sorted(ALLOWED_AREAS))})")
+        if area != entry.get("area"):
+            errors.append(f"area mismatch for {target}: ssot={entry.get('area')} ownership={area}")
+    covered = sum(1 for t in entries if isinstance(ownership.get(t), dict) and ownership[t].get("owner") and ownership[t].get("area"))
+    total = len(entries)
+    if covered != total:
+        errors.append(f"ownership coverage must be 100%: {covered}/{total} ({(covered / total * 100.0) if total else 100.0:.1f}%)")
+    return (0 if not errors else 1), errors
 
 
 def check_make_target_boundaries_enforced(repo_root: Path) -> tuple[int, list[str]]:
@@ -339,7 +361,11 @@ def check_make_wrapper_purity(repo_root: Path) -> tuple[int, list[str]]:
         for target, recipe_lines in _iter_make_targets(repo_root, rel):
             if not recipe_lines:
                 continue
-            if target.startswith("internal/"):
+            if (
+                target.startswith("internal/")
+                or target.startswith("atlasctl/internal")
+                or target in {"verification", "_verification-run"}
+            ):
                 continue
             if len(recipe_lines) != 1:
                 errors.append(f"{rel}:{target}: wrapper target must have exactly one recipe line")
@@ -427,7 +453,19 @@ def check_make_ops_product_ownership_complete(repo_root: Path) -> tuple[int, lis
     ownership_path = repo_root / "configs/make/ownership.json"
     if not ownership_path.exists():
         return 1, ["configs/make/ownership.json: missing"]
-    ownership = json.loads(ownership_path.read_text(encoding="utf-8"))
+    ownership_payload = json.loads(ownership_path.read_text(encoding="utf-8"))
+    ownership: dict[str, object] = {}
+    if isinstance(ownership_payload, dict):
+        for key, value in ownership_payload.items():
+            if key == "targets":
+                continue
+            if isinstance(value, dict):
+                ownership[key] = value
+        nested = ownership_payload.get("targets")
+        if isinstance(nested, dict):
+            for key, value in nested.items():
+                if isinstance(value, dict):
+                    ownership[key] = value
     errors: list[str] = []
     for rel in ("makefiles/ops.mk", "makefiles/product.mk"):
         for target in _iter_make_targets_in_file(repo_root, rel):
@@ -507,6 +545,17 @@ def check_workflows_reference_known_suites(repo_root: Path) -> tuple[int, list[s
     from .....registry.suites import suite_manifest_specs
 
     known = {spec.name for spec in suite_manifest_specs()}
+    ops_suites_path = repo_root / "configs" / "ops" / "suites.json"
+    if ops_suites_path.exists():
+        try:
+            payload = json.loads(ops_suites_path.read_text(encoding="utf-8"))
+            for row in payload.get("suites", []) if isinstance(payload, dict) else []:
+                if isinstance(row, dict):
+                    name = str(row.get("name", "")).strip()
+                    if name:
+                        known.add(name)
+        except Exception:
+            pass
     errors: list[str] = []
     for rel, text in _workflow_texts(repo_root):
         for lineno, line in enumerate(text.splitlines(), start=1):

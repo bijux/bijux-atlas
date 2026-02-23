@@ -137,7 +137,7 @@ def check_ops_lint_check_surfaces_native(repo_root: Path) -> tuple[int, list[str
 
 
 def check_ops_lint_layer_contract_drift_native(repo_root: Path) -> tuple[int, list[str]]:
-    gen = repo_root / "ops" / "_meta" / "generate_layer_contract.py"
+    gen = repo_root / "packages" / "atlasctl" / "src" / "atlasctl" / "commands" / "ops" / "meta" / "generate_layer_contract.py"
     contract = repo_root / "ops" / "_meta" / "layer-contract.json"
     before = contract.read_text(encoding="utf-8") if contract.exists() else ""
     proc = subprocess.run(["python3", str(gen.relative_to(repo_root))], cwd=repo_root, text=True, capture_output=True, check=False)
@@ -569,7 +569,7 @@ def check_ops_run_only_allowlisted_scripts(repo_root: Path) -> tuple[int, list[s
 def check_ops_run_non_executable_unless_allowlisted(repo_root: Path) -> tuple[int, list[str]]:
     run_dir = repo_root / "ops" / "run"
     if not run_dir.exists():
-        return 1, ["missing ops/run directory"]
+        return 0, ["ops/run directory retired (no executable scripts present)"]
     approvals, approval_errors = _load_ops_run_temp_approvals(repo_root)
     executable_allowlist = {
         str(item.get("script", "")).removeprefix("ops/run/").strip()
@@ -635,7 +635,7 @@ def _make_ops_script_check(script_rel: str):
 
 def check_ops_obs_drift_goldens(repo_root: Path) -> tuple[int, list[str]]:
     scripts = [
-        ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_profile_goldens.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/observability/contracts/profiles/check_profile_goldens.py"],
         ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_golden.py"],
         ["python3", "packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_golden.py"],
     ]

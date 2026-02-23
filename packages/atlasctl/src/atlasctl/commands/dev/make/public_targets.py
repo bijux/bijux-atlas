@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[7]
 SSOT = ROOT / "configs" / "make" / "public-targets.json"
-OWNERSHIP = ROOT / "makefiles" / "ownership.json"
+OWNERSHIP = ROOT / "configs" / "make" / "ownership.json"
 ALLOWED_AREAS = {"cargo", "docs", "ops", "scripts", "configs", "policies"}
 
 
@@ -34,4 +34,13 @@ def entry_map() -> dict[str, dict]:
 
 
 def load_ownership() -> dict[str, dict]:
-    return json.loads(OWNERSHIP.read_text(encoding="utf-8"))
+    payload = json.loads(OWNERSHIP.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        return {}
+    merged: dict[str, dict] = {k: v for k, v in payload.items() if isinstance(v, dict) and k != "targets"}
+    nested = payload.get("targets")
+    if isinstance(nested, dict):
+        for k, v in nested.items():
+            if isinstance(v, dict):
+                merged[k] = v
+    return merged
