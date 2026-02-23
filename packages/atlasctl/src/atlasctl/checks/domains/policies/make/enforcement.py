@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+import os
 import re
 import runpy
 import datetime as dt
@@ -1162,6 +1163,70 @@ def check_ops_bypass_ledger_sorted(repo_root: Path) -> tuple[int, list[str]]:
     if ids != sorted(ids):
         return 1, [f"{_OPS_BYPASS_LEDGER.as_posix()}: entries must be sorted by id"]
     return 0, []
+
+
+def check_ops_bypass_ledger_domains(repo_root: Path) -> tuple[int, list[str]]:
+    allowed = {"stack", "k8s", "obs", "load", "e2e", "datasets", "ops", "shared"}
+    payload, ledger = _ops_bypass_ledger(repo_root)
+    if payload.get("errors"):
+        return 1, [str(x) for x in payload.get("errors", [])]
+    out: list[str] = []
+    for entry in ledger.values():
+        domain = str(entry.get("domain", "")).strip()
+        if not domain:
+            out.append(f"{_OPS_BYPASS_LEDGER.as_posix()}:{entry.get('id')}: domain is required")
+        elif domain not in allowed:
+            out.append(f"{_OPS_BYPASS_LEDGER.as_posix()}:{entry.get('id')}: invalid domain `{domain}`")
+    return (0 if not out else 1), out
+
+
+def check_policies_culprits_empty_on_release_tags(repo_root: Path) -> tuple[int, list[str]]:
+    ref_type = os.environ.get("GITHUB_REF_TYPE", "").strip().lower()
+    ref_name = os.environ.get("GITHUB_REF_NAME", "").strip()
+    ref = os.environ.get("GITHUB_REF", "").strip()
+    is_tag = ref_type == "tag" or ref.startswith("refs/tags/")
+    if not is_tag:
+        return 0, []
+    payload = collect_bypass_inventory(repo_root)
+    count = int(payload.get("entry_count", 0))
+    if count == 0:
+        return 0, []
+    label = ref_name or ref or "<tag>"
+    return 1, [f"release tag `{label}` requires zero policy culprits; found {count} bypass entries"]
+
+
+def check_policies_culprits_nonincrease_on_main(repo_root: Path) -> tuple[int, list[str]]:
+    ref_name = os.environ.get("GITHUB_REF_NAME", "").strip()
+    ref = os.environ.get("GITHUB_REF", "").strip()
+    event = os.environ.get("GITHUB_EVENT_NAME", "").strip()
+    is_main = ref_name == "main" or ref.endswith("/main")
+    if not is_main and event not in {"schedule", "workflow_dispatch"}:
+        return 0, []
+    return check_policies_bypass_count_trend(repo_root)
+
+
+def check_policies_bypass_tokens_linked(repo_root: Path) -> tuple[int, list[str]]:
+    token_re = re.compile(r"\b(?:ALLOWLIST|TEMP|HACK)\b")
+    id_re = re.compile(r"\b(?:OPS-BYPASS-\d{4}|ATLAS-(?:EXC|LAYER-EXC)-\d{4})\b")
+    errors: list[str] = []
+    roots = (repo_root / "ops/_meta", repo_root / "configs/policy")
+    for root in roots:
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*")):
+            if not path.is_file() or path.suffix not in {".json", ".txt", ".md"}:
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            for i, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), start=1):
+                if not token_re.search(line):
+                    continue
+                if id_re.search(line):
+                    continue
+                # Allow schema/property names and generated markdown headings.
+                if '"ALLOWLIST"' in line or "'ALLOWLIST'" in line:
+                    continue
+                errors.append(f"{rel}:{i}: token ALLOWLIST/TEMP/HACK must link to bypass ledger id")
+    return (0 if not errors else 1), errors
 
 
 def check_ops_allowlisted_literals_have_contract_tests(repo_root: Path) -> tuple[int, list[str]]:

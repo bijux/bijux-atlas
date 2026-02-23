@@ -8,6 +8,7 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ..core.context import RunContext
+from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
 from .artifact_actions import _cmd_artifact_gc, _cmd_artifact_index
 
 def _make_root(ctx: RunContext) -> Path:
@@ -222,6 +223,31 @@ def _cmd_scorecard(ctx: RunContext, run_id: str, out: str | None) -> int:
         print(proc.stdout.strip())
     if proc.returncode != 0 and proc.stderr:
         print(proc.stderr.strip())
+    if proc.returncode == 0 and out_path.exists():
+        try:
+            scorecard = json.loads(out_path.read_text(encoding="utf-8"))
+            bypass = collect_bypass_inventory(ctx.repo_root)
+            entries = bypass.get("entries", []) if isinstance(bypass.get("entries"), list) else []
+            oldest = None
+            for row in entries:
+                if not isinstance(row, dict):
+                    continue
+                created = str(row.get("created_at", "")).strip()
+                if not created:
+                    continue
+                try:
+                    age = (datetime.now(timezone.utc).date() - datetime.fromisoformat(created).date()).days
+                except ValueError:
+                    continue
+                oldest = age if oldest is None else max(oldest, age)
+            scorecard["bypass_inventory"] = {
+                "entry_count": int(bypass.get("entry_count", 0)),
+                "oldest_age_days": oldest,
+                "error_count": len(bypass.get("errors", [])) if isinstance(bypass.get("errors"), list) else 0,
+            }
+            out_path.write_text(json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        except Exception:
+            pass
     return proc.returncode
 
 
@@ -348,5 +374,3 @@ def _cmd_export(ctx: RunContext, run_id: str, out: str | None) -> int:
         tar.add(run_dir, arcname=run_dir.name)
     print(out_path)
     return 0
-
-
