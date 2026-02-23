@@ -9,6 +9,7 @@ _COMMAND_GROUPS: dict[str, CommandGroup] = {
     "docs": "docs",
     "configs": "configs",
     "policies": "policies",
+    "policy": "policies",
     "ops": "ops",
     "k8s": "ops",
     "stack": "ops",
@@ -44,6 +45,7 @@ _GROUP_ALLOWED_EFFECTS: dict[CommandGroup, tuple[EffectName, ...]] = {
     "dev": ("read", "write", "process"),
     "ops": ("read", "write", "process", "network"),
     "policies": ("read", "write", "process"),
+    "policy": ("read", "write", "process"),
     "internal": ("read", "write", "process"),
 }
 
