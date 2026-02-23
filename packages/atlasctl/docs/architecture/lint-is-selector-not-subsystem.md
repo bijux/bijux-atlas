@@ -18,4 +18,6 @@
 
 ## Practical Rule
 
-When adding lint coverage, add a selector/category/marker (for example `lint`, `fast`, `network`, `write`) and route it through the canonical runner. Do not create a new subsystem-specific runner.
+When adding lint coverage, add a selector/category/marker (for example `lint`,
+`fast`, `network`, `write`) and route it through the canonical runner.
+Do not create a new subsystem-specific runner.

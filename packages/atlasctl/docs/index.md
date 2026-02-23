@@ -45,6 +45,8 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [How To Split A Module](architecture/how-to-split-a-module.md)
 - [Budget Policies and Refactoring](architecture/budgets.md)
 - [Taxonomy Map](architecture/taxonomy-map.md)
+- [Lint Selector Contract](architecture/lint-is-selector-not-subsystem.md)
+- [Registry SSOT Spine](architecture/registry-spine-ssot.md)
 - [CLI Stability](cli-stability.md)
 - [Compatibility Promise](compatibility-promise.md)
 - [Support Policy](support-policy.md)
