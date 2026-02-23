@@ -116,6 +116,61 @@ def _write_out_file(repo_root: Path, out_file: str, content: str) -> None:
         return
     out_path = repo_root / out_file
     write_text_file(out_path, content + "\n", encoding="utf-8")
+
+
+def _bypass_burndown(repo_root: Path, *, update_trend: bool = False) -> dict[str, object]:
+    payload = collect_bypass_inventory(repo_root)
+    entries = payload.get("entries", []) if isinstance(payload.get("entries"), list) else []
+    today = dt.date.today()
+    grouped: dict[str, dict[str, object]] = {}
+    for row in entries:
+        if not isinstance(row, dict):
+            continue
+        source = str(row.get("source", "")).strip()
+        domain = source.split("/", 2)[1] if source.startswith("ops/") else source.split("/", 2)[1] if "/" in source else "repo"
+        slot = grouped.setdefault(domain, {"domain": domain, "count": 0, "ages": []})
+        slot["count"] = int(slot["count"]) + 1
+        created_at = str(row.get("created_at", "")).strip()
+        if created_at:
+            try:
+                age = (today - dt.date.fromisoformat(created_at)).days
+                ages = slot.get("ages")
+                if isinstance(ages, list):
+                    ages.append(age)
+            except ValueError:
+                pass
+    items: list[dict[str, object]] = []
+    for domain, slot in grouped.items():
+        ages = [int(x) for x in (slot.get("ages") or [])]
+        items.append(
+            {
+                "domain": domain,
+                "count": int(slot.get("count", 0)),
+                "avg_age_days": round(sum(ages) / len(ages), 1) if ages else None,
+                "max_age_days": max(ages) if ages else None,
+            }
+        )
+    items.sort(key=lambda r: (-int(r["count"]), str(r["domain"])))
+    result = {
+        "schema_version": 1,
+        "kind": "bypass-burn-down",
+        "entry_count": int(payload.get("entry_count", 0)),
+        "items": items,
+    }
+    if update_trend:
+        scorecard_path = repo_root / "ops/_generated_committed/scorecard.json"
+        scorecard: dict[str, object] = {}
+        if scorecard_path.exists():
+            try:
+                scorecard = json.loads(scorecard_path.read_text(encoding="utf-8"))
+            except Exception:
+                scorecard = {}
+        trend = scorecard.get("bypass_trend")
+        rows = trend if isinstance(trend, list) else []
+        rows.append({"date": str(today), "count": result["entry_count"]})
+        scorecard["bypass_trend"] = rows[-30:]
+        write_text_file(scorecard_path, json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return result
 def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
     rows = collect_dir_stats(repo_root)
     top_dirs = sorted(rows, key=lambda row: row.total_loc, reverse=True)[:20]
@@ -470,6 +525,13 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 for err in errors[:50]:
                     print(f"- {err}")
         return code
+    if ns.policies_cmd == "culprits" and getattr(ns, "culprits_metric", None) in {None, "bypass"}:
+        payload = collect_bypass_inventory(repo)
+        fmt = str(getattr(ns, "format", "") or ns.report)
+        output = json.dumps(payload, sort_keys=True) if fmt == "json" else render_text_report(payload)
+        _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
+        print(output)
+        return 0 if not payload.get("errors") else 1
     budget_code = handle_budget_command(ns, repo, _write_out_file)
     if budget_code is not None:
         return budget_code
@@ -498,6 +560,10 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 write_text_file(diff_path, json.dumps(diff_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
                 payload["diff_file"] = diff_path.relative_to(repo).as_posix()
                 payload["diff"] = diff_payload
+        print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "") == "burn-down":
+        payload = _bypass_burndown(repo, update_trend=bool(getattr(ns, "update_trend", False)))
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
         return 0
 
@@ -544,6 +610,9 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     tighten = bypass_sub.add_parser("tighten", help="print a staged bypass tightening plan")
     tighten.add_argument("--step", type=int, default=1)
     tighten.add_argument("--report", choices=["text", "json"], default="text")
+    burn = bypass_sub.add_parser("burn-down", help="group bypass entries by domain and age")
+    burn.add_argument("--report", choices=["text", "json"], default="text")
+    burn.add_argument("--update-trend", action="store_true")
 
     rep = ps.add_parser("report", help="print active relaxations summary")
     rep.add_argument("--report", choices=["text", "json"], default="json")
@@ -565,7 +634,9 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     culprits = ps.add_parser("culprits", help="report directory budget culprits")
     culprits.add_argument(
         "culprits_metric",
+        nargs="?",
         choices=[
+            "bypass",
             "files-per-dir",
             "modules-per-dir",
             "py-files-per-dir",
@@ -579,6 +650,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
         ],
     )
     culprits.add_argument("--report", choices=["text", "json"], default="text")
+    culprits.add_argument("--format", choices=["text", "json"], help="alias of --report")
     culprits.add_argument("--out-file", help="write report to file path", default="")
     files_per_dir = ps.add_parser("culprits-files-per-dir", help="report python files-per-dir budget culprits")
     files_per_dir.add_argument("--report", choices=["text", "json"], default="text")
