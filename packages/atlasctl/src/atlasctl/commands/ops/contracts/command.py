@@ -11,7 +11,7 @@ from atlasctl.commands.ops.orchestrate._wrappers import artifact_base as _artifa
 from atlasctl.commands.ops.tools import command_rendered, environment_summary, hash_inputs, invocation_report, preflight_tools, run_tool
 
 
-def contracts_snapshot(ctx: RunContext, report_format: str) -> int:
+def contracts_snapshot(ctx: RunContext, report_format: str, *, no_write: bool = False) -> int:
     checks = [
         ("generate-layer-contract", ["python3", "packages/atlasctl/src/atlasctl/commands/ops/meta/generate_layer_contract.py"]),
         ("check-layer-contract-drift", ["./bin/atlasctl", "check", "run", "--id", "checks_ops_script_ops_lint_check_layer_contract_drift_py", "--quiet"]),
@@ -24,9 +24,10 @@ def contracts_snapshot(ctx: RunContext, report_format: str) -> int:
         ("check-live-layer-contract", ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/tests/validate_live_snapshot.py"]),
     ]
     out_dir = _artifact_base(ctx, "contracts") / "contracts"
-    out_dir.mkdir(parents=True, exist_ok=True)
     logs_dir = out_dir / "checks"
-    logs_dir.mkdir(parents=True, exist_ok=True)
+    if not no_write:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        logs_dir.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, Any]] = []
     for name, cmd in checks:
         started = datetime.now(timezone.utc).isoformat()
@@ -50,7 +51,8 @@ def contracts_snapshot(ctx: RunContext, report_format: str) -> int:
             invocation_meta = invocation_report(inv)
         ended = datetime.now(timezone.utc).isoformat()
         log_path = logs_dir / f"{name}.log"
-        write_text_file(log_path, f"$ {' '.join(cmd)}\n\n{combined_output}", encoding="utf-8")
+        if not no_write:
+            write_text_file(log_path, f"$ {' '.join(cmd)}\n\n{combined_output}", encoding="utf-8")
         rows.append({
             "name": name,
             "status": "pass" if code == 0 else "fail",
@@ -62,7 +64,7 @@ def contracts_snapshot(ctx: RunContext, report_format: str) -> int:
             "environment_summary": environment_summary(ctx, [cmd[0]] if cmd else []),
             "timings": invocation_meta["timings"],
             "invocation": invocation_meta,
-            "log": str(log_path.relative_to(ctx.repo_root)),
+            "log": None if no_write else str(log_path.relative_to(ctx.repo_root)),
         })
     failed = [r for r in rows if r["status"] != "pass"]
     payload = {
@@ -73,8 +75,11 @@ def contracts_snapshot(ctx: RunContext, report_format: str) -> int:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "checks": rows,
     }
-    report_path = out_dir / "report.json"
-    write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if no_write:
+        payload["no_write"] = True
+    else:
+        report_path = out_dir / "report.json"
+        write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if report_format == "json":
         print(json.dumps(payload, sort_keys=True))
     else:
@@ -85,7 +90,7 @@ def contracts_snapshot(ctx: RunContext, report_format: str) -> int:
 def run_contracts_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     action = str(getattr(ns, "ops_contracts_cmd", "") or "snapshot").strip() or "snapshot"
     if action == "snapshot":
-        return contracts_snapshot(ctx, getattr(ns, "report", "text"))
+        return contracts_snapshot(ctx, getattr(ns, "report", "text"), no_write=bool(getattr(ns, "no_write", False)))
     return 2
 
 

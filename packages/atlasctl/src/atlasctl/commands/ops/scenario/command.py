@@ -10,7 +10,9 @@ from atlasctl.core.schema.schema_utils import validate_json
 from atlasctl.commands.ops.orchestrate._wrappers import OrchestrateSpec, emit_payload, run_wrapped
 
 
-def run_scenario_from_manifest(ctx: RunContext, report_format: str, manifest: str, scenario: str) -> int:
+def run_scenario_from_manifest(
+    ctx: RunContext, report_format: str, manifest: str, scenario: str, *, no_write: bool = False
+) -> int:
     manifest_path = (ctx.repo_root / manifest).resolve()
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     validate_json(payload, ctx.repo_root / "configs/ops/scenarios.schema.json")
@@ -41,4 +43,6 @@ def run_scenario_from_manifest(ctx: RunContext, report_format: str, manifest: st
         }
         emit_payload(fail, report_format)
         return 2
-    return run_wrapped(ctx, OrchestrateSpec("run", scenario, [str(x) for x in cmd]), report_format)
+    return run_wrapped(
+        ctx, OrchestrateSpec("run", scenario, [str(x) for x in cmd]), report_format, dry_run=bool(no_write)
+    )
