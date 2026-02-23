@@ -178,7 +178,7 @@ def check_ops_load_abuse_scenarios_required_native(repo_root: Path) -> tuple[int
 
 def check_ops_load_perf_baselines_native(repo_root: Path) -> tuple[int, list[str]]:
     baselines_dir = repo_root / "configs" / "ops" / "perf" / "baselines"
-    schema = json.loads((repo_root / "ops" / "_schemas" / "load" / "perf-baseline.schema.json").read_text(encoding="utf-8"))
+    schema = json.loads((repo_root / "ops" / "schema" / "load" / "perf-baseline.schema.json").read_text(encoding="utf-8"))
     budgets = json.loads((repo_root / "configs" / "ops" / "budgets.json").read_text(encoding="utf-8"))
     tools = json.loads((repo_root / "configs" / "ops" / "tool-versions.json").read_text(encoding="utf-8"))
     lock = repo_root / "ops" / "datasets" / "manifest.lock"
@@ -222,7 +222,7 @@ def check_ops_load_perf_baselines_native(repo_root: Path) -> tuple[int, list[str
 def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, list[str]]:
     src = repo_root / "ops" / "load" / "queries" / "pinned-v1.json"
     lock_path = repo_root / "ops" / "load" / "queries" / "pinned-v1.lock"
-    schema_path = repo_root / "ops" / "_schemas" / "load" / "pinned-queries-lock.schema.json"
+    schema_path = repo_root / "ops" / "schema" / "load" / "pinned-queries-lock.schema.json"
     suites_manifest_path = repo_root / "ops" / "load" / "suites" / "suites.json"
     queries = json.loads(src.read_text(encoding="utf-8"))
     lock = json.loads(lock_path.read_text(encoding="utf-8"))
