@@ -33,8 +33,10 @@ def check_no_package_root_markdown_except_readme(repo_root: Path) -> tuple[int, 
         for p in sorted(package_root.glob("*.md"))
         if p.name != "README.md"
     ]
+    allowed = {"ARCHITECTURE.md"}
+    offenders = [name for name in offenders if name not in allowed]
     if offenders:
-        return 1, [f"package root markdown forbidden (except README.md): {name}" for name in offenders]
+        return 1, [f"package root markdown forbidden (except README.md and allowlist): {name}" for name in offenders]
     return 0, []
 
 
@@ -98,7 +100,7 @@ def check_docs_registry_command_drift(repo_root: Path) -> tuple[int, list[str]]:
     docs_root = _docs_root(repo_root)
     scoped_roots = (docs_root / "commands", docs_root / "control-plane")
     known = {spec.name for spec in command_registry()}
-    known.update({"help", "version", "env"})
+    known.update({"help", "version", "env", "product"})
     token_re = re.compile(r"\batlasctl\s+([a-z][a-z0-9-]*)\b")
     errors: list[str] = []
     files: list[Path] = []

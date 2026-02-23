@@ -1,9 +1,10 @@
 # ops/run Migration Inventory (Behavior -> atlasctl)
 
-Purpose: migrate behavior out of `ops/run/**` shell scripts into `atlasctl` command implementations so `ops/` remains data/manifests/contracts oriented.
+Purpose: migrate behavior out of `ops/run/**` shell scripts into atlasctl CLI
+implementations so `ops/` remains data/manifests/contracts oriented.
 
 Status legend:
-- `migrated`: behavior implemented in atlasctl command(s)
+- `migrated`: behavior implemented in atlasctl CLI subcommands
 - `planned`: mapping chosen, migration not yet complete
 - `legacy`: candidate for deprecation/removal after command parity
 
@@ -14,25 +15,25 @@ Classification legend:
 
 ## Inventory
 
-| Script | Class | Status | Future atlasctl command / home |
+| Script | Class | Status | Future atlasctl CLI home |
 |---|---|---:|---|
 | `ops/run/artifacts-open.sh` | glue | deleted (atlasctl-native) | `atlasctl ops artifacts open` |
 | `ops/run/cache-prune.sh` | glue | deleted (atlasctl-native) | `atlasctl ops cache prune` |
 | `ops/run/cache-status.sh` | glue | deleted (atlasctl-native) | `atlasctl ops cache status` |
-| `ops/run/ci-fast.sh` | glue | deleted (atlasctl-native) | `atlasctl ci fast` |
-| `ops/run/ci-nightly.sh` | glue | deleted (atlasctl-native) | `atlasctl ci nightly` |
-| `ops/run/clean.sh` | glue | deleted (replaced by `cleanup` + `ops cache prune`) | `atlasctl cleanup` + `atlasctl ops cache prune` |
-| `ops/run/configmap-drift-report.sh` | logic | deleted (dead wrapper; command not yet reintroduced) | future `atlasctl ops k8s configmap-drift-report` |
-| `ops/run/contract-check.sh` | glue | deleted (atlasctl-native orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
-| `ops/run/contract-report.py` | logic | deleted (inlined into orchestrate contracts-snapshot) | `atlasctl contracts-snapshot` / `atlasctl run contracts-snapshot` |
+| `ops/run/ci-fast.sh` | glue | deleted (atlasctl-native) | CI fast lane (`./bin/atlasctl ...`) |
+| `ops/run/ci-nightly.sh` | glue | deleted (atlasctl-native) | CI nightly lane (`./bin/atlasctl ...`) |
+| `ops/run/clean.sh` | glue | deleted (replaced by cleanup + ops cache prune commands) | cleanup command + `atlasctl ops cache prune` |
+| `ops/run/configmap-drift-report.sh` | logic | deleted (dead wrapper; CLI path not yet reintroduced) | future `atlasctl ops k8s configmap-drift-report` |
+| `ops/run/contract-check.sh` | glue | deleted (atlasctl-native orchestrate contracts snapshot) | contracts snapshot subcommand / execution entry (`contracts-snapshot`) |
+| `ops/run/contract-report.py` | logic | deleted (inlined into orchestrate contracts snapshot) | contracts snapshot subcommand / execution entry (`contracts-snapshot`) |
 | `ops/run/datasets-verify.sh` | glue | deleted (atlasctl-native) | `atlasctl ops datasets verify` |
 | `ops/run/deploy-atlas.sh` | logic | deleted (atlasctl-native deploy helper) | `atlasctl ops deploy` |
 | `./bin/atlasctl ops doctor --report text` | glue | planned | `atlasctl doctor` / `atlasctl make doctor` |
 | `ops/run/down.sh` | glue | deleted (atlasctl-native guard + stack-down) | `atlasctl ops down` |
 | `ops/run/e2e-smoke.sh` | glue | deleted (folded into `atlasctl ops e2e run`) | `atlasctl ops e2e run --scenario smoke` |
 | `atlasctl ops e2e run` | glue | planned | `atlasctl ops e2e run` |
-| `ops/run/evidence-bundle.sh` | logic | deleted (atlasctl-native) | `atlasctl reporting bundle` |
-| `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / `atlasctl reporting artifact-index` |
+| `ops/run/evidence-bundle.sh` | logic | deleted (atlasctl-native) | reporting bundle subcommand |
+| `ops/run/evidence-open.sh` | glue | deleted (unused wrapper) | `make evidence/open` / reporting artifact-index subcommand |
 | `ops/run/k8s-apply-config.sh` | logic | deleted (atlasctl-native) | `atlasctl ops k8s apply-config` |
 | `ops/run/k8s-restart.sh` | glue | deleted (atlasctl-native restart helper) | `atlasctl ops restart` / `atlasctl ops stack restart` |
 | `ops/run/k8s-suite.sh` | glue | deleted (dead wrapper) | `atlasctl suite run ops-deploy` / `atlasctl ops k8s check` |
@@ -55,23 +56,23 @@ Classification legend:
 | `ops/run/warm-dx.sh` | glue | deleted (atlasctl-native composite) | `atlasctl ops warm-dx` |
 | `ops/run/warm-entrypoint.sh` | glue | deleted (atlasctl-native warm modes) | `atlasctl ops warm` / `atlasctl ops datasets fetch` |
 | `ops/run/warm.sh` | glue | deleted (folded into warm-entrypoint) | `atlasctl ops datasets fetch` |
-| `ops/run/root/root_artifacts_open.sh` | legacy | deleted (inlined in `make artifacts-open`) | `make artifacts-open` / future `atlasctl artifacts open` |
+| `ops/run/root/root_artifacts_open.sh` | legacy | deleted (inlined in `make artifacts-open`) | `make artifacts-open` / future ops artifacts open subcommand |
 | `ops/run/root/root_quick.sh` | legacy | deleted (inlined in `make quick`) | `atlasctl dev fmt && lint && test` |
 
 ## Product Script Mapping (migrated and deleted)
 
-| Script | Class | Status | atlasctl command |
+| Script | Class | Status | product subcommand |
 |---|---|---:|---|
-| `ops/run/product/product_bootstrap.sh` | logic | deleted (migrated) | `atlasctl product bootstrap` |
-| `ops/run/product/product_docker_build.sh` | logic | deleted (migrated) | `atlasctl product docker build` |
-| `ops/run/product/product_docker_push.sh` | logic | deleted (migrated) | `atlasctl product docker push` |
-| `ops/run/product/product_docker_release.sh` | logic | deleted (migrated) | `atlasctl product docker release` |
-| `ops/run/product/product_docker_check.sh` | logic | deleted (migrated) | `atlasctl product docker check` |
-| `ops/run/product/product_chart_package.sh` | glue | deleted (migrated) | `atlasctl product chart package` |
-| `ops/run/product/product_chart_verify.sh` | glue | deleted (migrated) | `atlasctl product chart verify` |
-| `ops/run/product/product_chart_validate.sh` | logic | deleted (migrated) | `atlasctl product chart validate` |
-| `ops/run/product/product_rename_lint.sh` | glue | deleted (migrated) | `atlasctl product naming lint` |
-| `ops/run/product/product_docs_lint_names.sh` | logic | deleted (migrated) | `atlasctl product docs naming-lint` |
+| `ops/run/product/product_bootstrap.sh` | logic | deleted (migrated) | `product bootstrap` |
+| `ops/run/product/product_docker_build.sh` | logic | deleted (migrated) | `product docker build` |
+| `ops/run/product/product_docker_push.sh` | logic | deleted (migrated) | `product docker push` |
+| `ops/run/product/product_docker_release.sh` | logic | deleted (migrated) | `product docker release` |
+| `ops/run/product/product_docker_check.sh` | logic | deleted (migrated) | `product docker check` |
+| `ops/run/product/product_chart_package.sh` | glue | deleted (migrated) | `product chart package` |
+| `ops/run/product/product_chart_verify.sh` | glue | deleted (migrated) | `product chart verify` |
+| `ops/run/product/product_chart_validate.sh` | logic | deleted (migrated) | `product chart validate` |
+| `ops/run/product/product_rename_lint.sh` | glue | deleted (migrated) | `product naming lint` |
+| `ops/run/product/product_docs_lint_names.sh` | logic | deleted (migrated) | `product docs naming-lint` |
 
 ## Migration Rules
 

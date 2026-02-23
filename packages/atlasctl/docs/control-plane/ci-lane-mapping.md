@@ -1,6 +1,6 @@
 # CI Lane Mapping
 
-Reference map for canonical GitHub Actions lanes and their atlasctl entrypoints.
+Reference map for canonical GitHub Actions lanes and their atlasctl CLI front doors.
 
 ## PR / Push Lanes
 

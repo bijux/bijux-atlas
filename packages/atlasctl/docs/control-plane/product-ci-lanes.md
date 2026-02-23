@@ -1,6 +1,6 @@
 # Product CI Lane Mapping
 
-Canonical product lanes and their atlasctl entrypoints:
+Canonical product lanes and their atlasctl CLI paths:
 
 - `product-smoke`: `./bin/atlasctl suite run product --only fast --report json`
 - `product-build`: `./bin/atlasctl product build`
@@ -9,5 +9,6 @@ Canonical product lanes and their atlasctl entrypoints:
 
 Notes:
 
-- `product-release-dry` runs release gates (bypass inventory, ops contracts drift, pins, docs inventory) and performs build/verify/checksum-sign without publishing.
+- `product-release-dry` runs release gates (bypass inventory, ops contracts drift,
+  pins, docs inventory) and performs build/verify/checksum-sign without publishing.
 - `product docker release` remains a CI-only lane and is separate from `product-release-dry`.

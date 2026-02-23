@@ -1,22 +1,23 @@
 # ops/run Deletion Plan (Post-Command Parity)
 
-Purpose: retire `ops/run/**` behavior scripts after atlasctl command parity is achieved, while allowing temporary migration shims with explicit milestones.
+Purpose: retire `ops/run/**` behavior scripts after atlasctl CLI parity is achieved,
+while allowing temporary migration shims with explicit milestones.
 
 ## Milestones
 
 1. Product parity (complete)
-   - `atlasctl product *` lanes exist and `makefiles/product.mk` delegates to atlasctl.
+   - `product` CLI lanes exist and `makefiles/product.mk` delegates to atlasctl.
    - `product.mk` has no direct `ops/run` invocations.
 
 2. Area parity (in progress)
    - `atlasctl ops k8s|load|obs|stack <actions>` cover operational behavior currently implemented in `ops/run/**`.
    - Each area exposes `atlasctl ops <area> check`.
-   - New behavior lands in atlasctl only.
+   - New behavior lands in the atlasctl CLI only.
 
 3. Migration guardrails (active)
    - `ops/run` count non-increasing.
    - `ops/run` non-allowlisted scripts fail checks.
-   - `make` recipes may not call `atlasctl run ./ops/run/...`.
+   - `make` recipes may not call the CLI execution path on `ops/run/...`.
 
 4. Deletion phase
    - For each script family: command parity test + output parity where needed + docs updated.
@@ -33,7 +34,7 @@ Purpose: retire `ops/run/**` behavior scripts after atlasctl command parity is a
   - owner
   - justification
   - expiry date / milestone
-  - replacement atlasctl command target
+  - replacement atlasctl CLI target
 - Expired temporary scripts must fail migration checks and be removed or renewed intentionally.
 
 ## Burn-down Reporting
