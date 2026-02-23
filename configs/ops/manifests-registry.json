@@ -3,7 +3,7 @@
   "entries": [
     {
       "id": "ops.smoke.manifest",
-      "path": "ops/manifests/smoke.json",
+      "path": "ops/e2e/manifests/smoke.manifest.json",
       "schema_ref": "atlasctl.ops.manifest.v1",
       "domain": "ops",
       "owner": "ops"
