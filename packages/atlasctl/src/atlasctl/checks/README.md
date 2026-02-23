@@ -1,22 +1,43 @@
 # Atlasctl Checks
 
-`atlasctl/checks` is the canonical and only home for check implementations.
+`atlasctl.checks` is the canonical checks subsystem.
 
-## Root Contract
+## Single Source of Truth
 
-- Root python files in `atlasctl/checks/` are restricted to `__init__.py` only.
-- Registry artifacts are allowed at root: `REGISTRY.toml` and `REGISTRY.generated.json`.
-- Root directory/module count cap is `10` (excluding `__pycache__`).
-- Grouped check-domain folders live under `atlasctl/checks/domains/`, capped at `10` top-level modules.
-- Root python module policy is stricter and requires exactly one (`__init__.py`).
+- Runtime check definitions are sourced from Python registry modules under `atlasctl/checks/registry/`.
+- `REGISTRY.toml` and `REGISTRY.generated.json` are generated artifacts, not the runtime source of truth.
+- Check execution is centralized in `atlasctl.checks.runner`.
 
-## Domain Split
+## Effect Policy
 
-- `repo_shape`: repository root shape and deterministic structure checks.
-- `makefiles`: makefile boundary and policy checks.
-- `ops`: operations/runtime contract checks.
-- `docs`: documentation integrity and surface checks.
-- `observability`: observability contract adapters and checks.
-- `artifacts`: generated artifact hygiene checks.
+- Checks are default-deny for side effects.
+- Default allowed effect is `fs_read`.
+- Additional effects (`fs_write`, `subprocess`, `git`, `network`) must be declared by each check and explicitly enabled by command capabilities.
+- Evidence writes must stay under `artifacts/evidence/<run-id>/...`.
 
-Legacy or transitional checks outside this tree are migration exceptions and must be removed.
+## Add a Check
+
+1. Implement check logic in a domain module.
+2. Return structured violations (or legacy tuple where still in migration).
+3. Register it in the domain `CHECKS` export with:
+   - canonical `checks_<domain>_<area>_<intent>` id
+   - `owner`
+   - `category`
+   - `result_code`
+   - `effects`
+4. Regenerate registry artifacts.
+5. Add or update tests and goldens.
+
+## Selectors
+
+- `atlasctl check run` supports filtering by:
+  - `--domain`
+  - `--category`
+  - `--id` / `--select` / `-k`
+  - `--tag` / `--exclude-tag`
+  - `--owner`
+  - `--slow` / `--fast`
+  - `--include-internal`
+  - `--changed-only`
+
+Selectors are resolved before execution and flow through the same runner/report path for `check` and `lint`.
