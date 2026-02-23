@@ -2,17 +2,19 @@ from __future__ import annotations
 
 import json
 
-from atlasctl.commands.ops._shared.json_emit import write_ops_json_report
+from atlasctl.core.runtime.paths import write_text_file
 from atlasctl.commands.ops.runtime_modules import ops_runtime_commands as legacy
 from atlasctl.ops.adapters import k6
 from atlasctl.ops.models import OpsTestReport
+from .paths import ops_run_area_dir
 
 from .guards import ensure_local_kind_context
 
 
 def _emit_test_report(ctx, area: str, report, report_format: str) -> int:  # noqa: ANN001
     payload = report.to_payload()
-    out = write_ops_json_report(ctx, area, "report.json", payload)
+    out = ops_run_area_dir(ctx, area) / "report.json"
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if report_format == "json":
         print(json.dumps({**payload, "report_path": out.relative_to(ctx.repo_root).as_posix()}, sort_keys=True))
     else:
