@@ -59,3 +59,23 @@ def test_ops_product_task_scripts_zero_check_passes() -> None:
 def test_no_core_models_duplicate_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_core_models_duplicate.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_commands_no_ops_tests_fixtures_imports_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_commands_no_ops_tests_fixtures_imports.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_commands_import_policy_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_commands_import_policy.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_command_group_entrypoints_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_command_group_entrypoints.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_registry_reads_centralized_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_registry_reads_centralized.py")
+    assert proc.returncode == 0, proc.stderr
