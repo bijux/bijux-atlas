@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from atlasctl.commands.ops.runtime_modules import ops_runtime_commands as legacy
+from atlasctl.ops.adapters import kind
 
 from .guards import ensure_local_kind_context, require_destructive_ops_allowed
 
 
 def platform_up(ctx, report_format: str) -> int:  # noqa: ANN001
+    _ = kind.run(ctx, "get", "clusters")
     ok, message = ensure_local_kind_context(ctx)
     if not ok:
         return legacy._emit_ops_status(report_format, 2, message)
