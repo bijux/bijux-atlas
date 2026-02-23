@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 import subprocess
 import ast
+import json
 
 
 _VENDORED_SHELL_DIR = "ops/vendor/layout-checks"
@@ -17,6 +18,23 @@ def _read_allowlist(repo_root: Path, rel_path: str) -> set[str]:
     path = repo_root / rel_path
     if not path.exists():
         return set()
+    if path.suffix == ".json":
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return set()
+        rows = payload.get("entries", []) if isinstance(payload, dict) else []
+        values: set[str] = set()
+        for row in rows:
+            if isinstance(row, str):
+                value = row.strip()
+            elif isinstance(row, dict):
+                value = str(row.get("path", "")).strip()
+            else:
+                value = ""
+            if value:
+                values.add(value)
+        return values
     return {
         line.strip()
         for line in path.read_text(encoding="utf-8", errors="ignore").splitlines()
@@ -72,7 +90,7 @@ def check_shell_no_python_direct_calls(repo_root: Path) -> tuple[int, list[str]]
 
 def check_shell_no_network_download_tools(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
-    allowed_paths = _read_allowlist(repo_root, "configs/policy/shell-network-fetch-allowlist.txt")
+    allowed_paths = _read_allowlist(repo_root, "configs/policy/shell-network-fetch-allowlist.json")
     forbidden_tokens = ("curl ", "wget ")
     for path in _iter_layout_shell_checks(repo_root):
         rel = path.relative_to(repo_root).as_posix()
@@ -130,7 +148,7 @@ def check_shell_invocation_via_core_exec(repo_root: Path) -> tuple[int, list[str
 
 
 def check_core_no_bash_subprocess(repo_root: Path) -> tuple[int, list[str]]:
-    allowlist = _read_allowlist(repo_root, "configs/policy/shell-probes-allowlist.txt")
+    allowlist = _read_allowlist(repo_root, "configs/policy/shell-probes-allowlist.json")
     core_root = repo_root / "packages/atlasctl/src/atlasctl/core"
     offenders: list[str] = []
     for path in sorted(core_root.rglob("*.py")):
