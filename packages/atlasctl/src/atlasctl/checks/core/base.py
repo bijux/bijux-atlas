@@ -15,11 +15,13 @@ class Severity(str, Enum):
 
 
 class CheckCategory(str, Enum):
-    POLICY = "policy"
-    HYGIENE = "hygiene"
-    CONTRACT = "contract"
-    DRIFT = "drift"
-    SECURITY = "security"
+    LINT = "lint"
+    CHECK = "check"
+    POLICY = "check"
+    HYGIENE = "check"
+    CONTRACT = "check"
+    DRIFT = "check"
+    SECURITY = "check"
 
 
 @dataclass(frozen=True)
@@ -32,7 +34,7 @@ class CheckDef:
     canonical_id: str | None = None
     legacy_check_id: str | None = None
     severity: Severity = Severity.ERROR
-    category: CheckCategory = CheckCategory.HYGIENE
+    category: CheckCategory = CheckCategory.CHECK
     fix_hint: str = "Review check output and apply the documented fix."
     slow: bool = False
     tags: tuple[str, ...] = ()
