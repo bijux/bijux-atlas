@@ -62,10 +62,54 @@ def check_effects_lint(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_naming_intent_lint(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
+    sep = r"[_\-.]"
+    temporal_task_tokens = re.compile(
+        rf"(?i)(?:^|{sep})(part(?:{sep}?\d+)?|phase(?:{sep}?\d+)?|task(?:{sep}?\d+)?)(?:$|{sep})"
+    )
+    scan_roots = ("crates", "packages", "ops", "configs", "makefiles")
+    ignored_dirs = {
+        ".git",
+        ".venv",
+        "venv",
+        "__pycache__",
+        "node_modules",
+        "target",
+        ".mypy_cache",
+        ".pytest_cache",
+        "tests",
+        "testdata",
+        "fixtures",
+        "goldens",
+    }
+    ignored_suffixes = {".png", ".jpg", ".jpeg", ".svg", ".gif", ".pdf", ".ico", ".lock"}
+    ignored_paths = {
+        "configs/ops/product-task-scripts-baseline.json",  # domain term, not a temporal split filename
+    }
+
     for path in sorted((repo_root / "crates").rglob("*")):
         if not path.is_file():
             continue
         name = path.name
         if name == "helpers.rs" or name.endswith("_helpers.rs"):
             errors.append(path.relative_to(repo_root).as_posix())
+    for root_name in scan_roots:
+        root = repo_root / root_name
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*")):
+            if not path.is_file():
+                continue
+            if any(part in ignored_dirs for part in path.parts):
+                continue
+            rel = path.relative_to(repo_root).as_posix()
+            if rel in ignored_paths:
+                continue
+            if path.suffix.lower() in ignored_suffixes:
+                continue
+            stem = path.stem
+            if temporal_task_tokens.search(stem):
+                errors.append(
+                    f"forbidden temporal/task filename token (rename to intent-revealing name): "
+                    f"{rel}"
+                )
     return (0 if not errors else 1), errors
