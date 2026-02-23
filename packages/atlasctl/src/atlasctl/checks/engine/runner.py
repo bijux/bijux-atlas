@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+# LEGACY check-engine facade (cutoff: 2026-04-01): keep dependencies narrow
+# and migrate execution behavior out of `checks/core`.
+
 from pathlib import Path
 
 from ..core.execution import run_function_checks

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+# LEGACY engine/execution runtime in checks/core (cutoff: 2026-04-01).
+# New execution/runtime behavior should migrate toward runtime+capability boundary.
+
 import time
 import signal
 from concurrent.futures import ThreadPoolExecutor

@@ -11,6 +11,7 @@ from ..cli.surface_registry import command_spec, render_payload
 from ..core.context import RunContext
 from ..core.runtime.script_runner import run_script
 from ..core.runtime.serialize import dumps_json
+from ..runtime.capabilities import validate_command_capabilities
 from ..contracts.ids import EXPLAIN, HELP
 from ..contracts.validate_self import validate_self
 from ..core.errors import ScriptError
@@ -30,6 +31,10 @@ def dispatch_command(
     domain_runners: dict[str, Callable[[RunContext], object]],
     version_string: Callable[[], str],
 ) -> int:
+    ok_caps, caps_msg = validate_command_capabilities(getattr(ns, "cmd", ""))
+    if not ok_caps and getattr(ns, "cmd", "") not in {"version"}:
+        raise ScriptError(f"capability-manifest: {caps_msg}", ERR_CONFIG)
+
     def _resolve_explain_name() -> str:
         first = getattr(ns, "subject_or_name", "")
         second = getattr(ns, "name", None)
