@@ -1,6 +1,10 @@
 from __future__ import annotations
 from .native import (
     check_command_scripts_registry,
+    check_config_generated_headers_and_checksums,
+    check_config_generated_no_human_refs,
+    check_config_lock_discipline,
+    check_config_migration_cutoff_legacy_locations,
     check_docs_no_ops_generated_run_paths,
     check_duplicate_script_names,
     check_generated_dirs_policy,
@@ -19,6 +23,7 @@ from .native import (
     check_no_ops_generated_placeholder,
     check_no_repo_root_path_literals,
     check_no_xtask_refs,
+    check_ops_inventory_schema_coverage,
     check_ops_examples_immutable,
     check_ops_helm_render_inventory_drift,
     check_ops_helm_versions_pinned,
@@ -36,6 +41,7 @@ from .native import (
     check_script_help,
     check_script_ownership,
     check_tracked_timestamp_paths,
+    check_makefiles_no_deep_config_paths,
 )
 import atlasctl.checks.repo.native.runtime as _native_runtime  # noqa: F401
 from ..core.base import CheckDef
@@ -600,6 +606,12 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.check_impl_no_cli_imports", "repo", "forbid direct CLI imports from check implementation files", 300, check_check_impl_no_cli_imports, fix_hint="Keep check implementations pure and route CLI wiring through commands/cli modules."),
     CheckDef("repo.effect_boundaries", "repo", "forbid direct subprocess/fs/env/network effects outside core boundaries", 300, check_forbidden_effect_calls, fix_hint="Route effects through core.exec/core.process/core.fs/core.runtime.env/core.network."),
     CheckDef("repo.managed_artifact_write_roots", "repo", "enforce managed write roots under artifacts and reject out-of-root writes", 300, check_managed_artifact_write_roots, fix_hint="Keep managed write roots under artifacts/ and route writes through core.fs."),
+    CheckDef("repo.config_generated_no_human_refs", "repo", "forbid human-facing docs/workflows/makefiles from referencing configs/_generated directly", 300, check_config_generated_no_human_refs, fix_hint="Reference `atlasctl config ...` commands instead of configs/_generated paths."),
+    CheckDef("repo.makefiles_no_deep_config_paths", "repo", "forbid deep hardcoded config paths in makefiles", 300, check_makefiles_no_deep_config_paths, fix_hint="Route config resolution through atlasctl config compiler commands."),
+    CheckDef("repo.config_generated_headers_and_checksums", "repo", "detect hand-edits/stale files under configs/_generated via headers and checksums", 300, check_config_generated_headers_and_checksums, fix_hint="Re-run `atlasctl config gen` and avoid manual edits under configs/_generated."),
+    CheckDef("repo.ops_inventory_schema_coverage", "repo", "require schema coverage/contracts-map entries for ops inventory files", 300, check_ops_inventory_schema_coverage, fix_hint="Add ops/inventory/contracts-map.json entries and schemas for new inventory files."),
+    CheckDef("repo.config_lock_discipline", "repo", "verify config compiler lock artifacts for toolchain/helm/pinned queries", 300, check_config_lock_discipline, fix_hint="Keep toolchain/helm/pinned query lock artifacts present and valid."),
+    CheckDef("repo.config_migration_cutoff_legacy_locations", "repo", "forbid legacy config inventory locations after migration cutoff", 300, check_config_migration_cutoff_legacy_locations, fix_hint="Delete legacy configs/inventory paths after new config pipeline is green."),
     CheckDef("repo.ops_workflow_evidence_path_policy", "repo", "enforce first-class ops workflow outputs under artifacts/runs/<run_id>/ops", 300, check_ops_workflow_evidence_path_policy, fix_hint="Use atlasctl.ops.workflows.paths ops_run_root/ops_run_area_dir helpers."),
     CheckDef("repo.ops_helm_render_inventory_drift", "repo", "enforce ops helm/chart metadata alignment with inventory + values schema presence", 300, check_ops_helm_render_inventory_drift, fix_hint="Align ops/inventory/layers.json release metadata with Chart.yaml and keep values.schema.json valid."),
     CheckDef("repo.ops_images_pinned_to_digests_policy", "repo", "enforce policy-driven image digest pinning for ops toolchain inventory", 300, check_ops_images_pinned_to_digests_policy, fix_hint="Pin toolchain image refs to digests or update configs/policy/ops-image-digest-policy.json intentionally."),
