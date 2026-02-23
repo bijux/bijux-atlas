@@ -171,6 +171,46 @@ def _bypass_burndown(repo_root: Path, *, update_trend: bool = False) -> dict[str
         scorecard["bypass_trend"] = rows[-30:]
         write_text_file(scorecard_path, json.dumps(scorecard, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return result
+
+
+def _with_bypass_blame(repo_root: Path, payload: dict[str, object]) -> dict[str, object]:
+    import fnmatch
+
+    entries = payload.get("entries", [])
+    if not isinstance(entries, list):
+        return payload
+    out_entries: list[dict[str, object]] = []
+    file_cache: dict[str, list[str]] = {}
+    for row in entries:
+        if not isinstance(row, dict):
+            continue
+        src_rel = str(row.get("source", "")).strip()
+        key = str(row.get("key", "")).strip()
+        blame: list[str] = []
+        src = repo_root / src_rel
+        if src.exists():
+            lines = file_cache.setdefault(src_rel, src.read_text(encoding="utf-8", errors="ignore").splitlines())
+            patterns = [key]
+            if "|" in key:
+                patterns = key.split("|", 1)
+            for i, line in enumerate(lines, start=1):
+                text = line.strip()
+                if not text or text.startswith("#"):
+                    continue
+                if any(p and p in line for p in patterns):
+                    blame.append(f"{src_rel}:{i}")
+                    break
+            if not blame and any(ch in key for ch in "*?[]"):
+                for i, line in enumerate(lines, start=1):
+                    if fnmatch.fnmatch(line.strip(), key):
+                        blame.append(f"{src_rel}:{i}")
+                        break
+        out = dict(row)
+        out["blame"] = blame
+        out_entries.append(out)
+    result = dict(payload)
+    result["entries"] = out_entries
+    return result
 def _repo_stats_payload(repo_root: Path) -> dict[str, object]:
     rows = collect_dir_stats(repo_root)
     top_dirs = sorted(rows, key=lambda row: row.total_loc, reverse=True)[:20]
@@ -371,6 +411,8 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
 
     if ns.policies_cmd in {"bypass-list", "bypass"} and getattr(ns, "bypass_cmd", "list") in {"list", "inventory"}:
         payload = collect_bypass_inventory(repo)
+        if bool(getattr(ns, "blame", False)):
+            payload = _with_bypass_blame(repo, payload)
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text_report(payload))
         return 0 if not payload.get("errors") else 1
 
@@ -527,6 +569,8 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return code
     if ns.policies_cmd == "culprits" and getattr(ns, "culprits_metric", None) in {None, "bypass"}:
         payload = collect_bypass_inventory(repo)
+        if bool(getattr(ns, "blame", False)):
+            payload = _with_bypass_blame(repo, payload)
         fmt = str(getattr(ns, "format", "") or ns.report)
         output = json.dumps(payload, sort_keys=True) if fmt == "json" else render_text_report(payload)
         _write_out_file(repo, str(getattr(ns, "out_file", "")), output)
@@ -594,13 +638,18 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
 
     bypass_list = ps.add_parser("bypass-list", help="list policy bypass/allowlist inventory")
     bypass_list.add_argument("--report", choices=["text", "json"], default="text")
+    bypass_list.add_argument("--blame", action="store_true")
     bypass_report = ps.add_parser("bypass-report", help="emit consolidated policy bypass report")
     bypass_report.add_argument("--report", choices=["text", "json"], default="text")
     bypass_report.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")
     bypass = ps.add_parser("bypass", help="bypass inventory helpers")
     bypass_sub = bypass.add_subparsers(dest="bypass_cmd", required=True)
-    bypass_sub.add_parser("list", help="list policy bypass/allowlist inventory").add_argument("--report", choices=["text", "json"], default="text")
-    bypass_sub.add_parser("inventory", help="alias of bypass list inventory").add_argument("--report", choices=["text", "json"], default="text")
+    bp_list = bypass_sub.add_parser("list", help="list policy bypass/allowlist inventory")
+    bp_list.add_argument("--report", choices=["text", "json"], default="text")
+    bp_list.add_argument("--blame", action="store_true")
+    bp_inv = bypass_sub.add_parser("inventory", help="alias of bypass list inventory")
+    bp_inv.add_argument("--report", choices=["text", "json"], default="text")
+    bp_inv.add_argument("--blame", action="store_true")
     rep2 = bypass_sub.add_parser("report", help="emit consolidated policy bypass report")
     rep2.add_argument("--report", choices=["text", "json"], default="text")
     rep2.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")
@@ -651,6 +700,7 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     )
     culprits.add_argument("--report", choices=["text", "json"], default="text")
     culprits.add_argument("--format", choices=["text", "json"], help="alias of --report")
+    culprits.add_argument("--blame", action="store_true", help="include file:line blame for bypass inventory mode")
     culprits.add_argument("--out-file", help="write report to file path", default="")
     files_per_dir = ps.add_parser("culprits-files-per-dir", help="report python files-per-dir budget culprits")
     files_per_dir.add_argument("--report", choices=["text", "json"], default="text")

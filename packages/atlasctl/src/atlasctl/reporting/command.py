@@ -198,6 +198,23 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             "by_file": [{"file": k, "count": v} for k, v in sorted(by_file.items(), key=lambda item: (-item[1], item[0]))],
             "by_type": [{"type": k, "count": v} for k, v in sorted(by_type.items(), key=lambda item: (-item[1], item[0]))],
         }
+        severity_counts: dict[str, int] = {}
+        oldest_days: int | None = None
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            sev = str(row.get("severity", "")).strip() or "unknown"
+            severity_counts[sev] = severity_counts.get(sev, 0) + 1
+            created = str(row.get("created_at", "")).strip()
+            if created:
+                try:
+                    import datetime as _dt
+                    age = (_dt.date.today() - _dt.date.fromisoformat(created)).days
+                    oldest_days = age if oldest_days is None else max(oldest_days, age)
+                except ValueError:
+                    pass
+        out["by_severity"] = [{"severity": k, "count": v} for k, v in sorted(severity_counts.items(), key=lambda i: (-i[1], i[0]))]
+        out["oldest_bypass_age_days"] = oldest_days
         if getattr(ns, "bypass_cmd", "") == "culprits":
             out["culprits"] = [
                 {

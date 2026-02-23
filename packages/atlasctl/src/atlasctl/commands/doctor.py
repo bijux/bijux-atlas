@@ -35,6 +35,19 @@ def build_report(ctx: RunContext) -> dict[str, object]:
         "warning_metrics": [r.get("metric") for r in budget.get("reports", []) if r.get("status") == "warn"],
     }
     bypass_inventory = collect_bypass_inventory(ctx.repo_root)
+    oldest_bypass_days = None
+    for row in bypass_inventory.get("entries", []) if isinstance(bypass_inventory.get("entries"), list) else []:
+        if not isinstance(row, dict):
+            continue
+        created = str(row.get("created_at", "")).strip()
+        if not created:
+            continue
+        try:
+            import datetime as _dt
+            age = (_dt.date.today() - _dt.date.fromisoformat(created)).days
+            oldest_bypass_days = age if oldest_bypass_days is None else max(oldest_bypass_days, age)
+        except ValueError:
+            continue
     return {
         "run_id": ctx.run_id,
         "profile": ctx.profile,
@@ -68,6 +81,7 @@ def build_report(ctx: RunContext) -> dict[str, object]:
         "bypass_inventory": {
             "file_count": len(bypass_inventory.get("files", [])) if isinstance(bypass_inventory.get("files"), list) else 0,
             "entry_count": int(bypass_inventory.get("entry_count", 0)),
+            "oldest_age_days": oldest_bypass_days,
         },
     }
 
