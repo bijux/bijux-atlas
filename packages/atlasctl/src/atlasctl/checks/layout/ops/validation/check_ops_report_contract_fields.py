@@ -29,6 +29,7 @@ def main() -> int:
         '"tool_versions"',
         '"command_rendered"',
         '"timings"',
+        '"artifact_index"',
     ]
     for token in required_detail_tokens:
         if token not in wrappers and token not in orch:
@@ -36,6 +37,10 @@ def main() -> int:
 
     if '"tool_versions"' not in tools:
         errs.append("ops.tools.environment_summary must include tool_versions")
+    if '"failure"' not in wrappers or '"kind"' not in wrappers or '"exit_code"' not in wrappers:
+        errs.append("ops wrapper reports must include failure taxonomy (kind + exit_code)")
+    if '"duration_ms"' not in wrappers and '"duration_ms"' not in orch:
+        errs.append("ops wrapper reports must include durations (duration_ms)")
 
     if errs:
         print("ops report contract fields check failed:", file=sys.stderr)
