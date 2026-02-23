@@ -14,6 +14,7 @@ from .model import (
     CheckId,
     CheckOutcome,
     CheckResult,
+    CheckRunReport,
     CheckSelector,
     CheckStatus,
     DomainId,
@@ -24,7 +25,7 @@ from .model import (
     Tag,
     Violation,
 )
-from .runner import run_checks
+from .runner import extract_failures, run_checks, top_n_slowest
 from .registry import check_tags, get_check, list_checks, list_domains
 
 
@@ -47,6 +48,7 @@ __all__ = [
     "CheckId",
     "CheckOutcome",
     "CheckResult",
+    "CheckRunReport",
     "CheckSelector",
     "CheckStatus",
     "DomainId",
@@ -63,4 +65,6 @@ __all__ = [
     "list_domains",
     "run_domain",
     "run_checks",
+    "extract_failures",
+    "top_n_slowest",
 ]
