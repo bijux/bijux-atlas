@@ -28,6 +28,7 @@ def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     prereqs_cmd.add_argument("--report", choices=["text", "json"], default="text")
     doctor_cmd = ops_sub.add_parser("doctor", help="run local ops doctor diagnostics")
     doctor_cmd.add_argument("--report", choices=["text", "json"], default="text")
+    doctor_cmd.add_argument("--capabilities-json", action="store_true", help="emit ops command capability manifest JSON and exit")
     root_lanes_cmd = ops_sub.add_parser("root-lanes", help="run root-local/root-lanes orchestrator lanes (migration shim)")
     root_lanes_cmd.add_argument("--report", choices=["text", "json"], default="text")
     root_local_cmd = ops_sub.add_parser("root-local", help="run legacy root-local orchestrator (migration shim)")

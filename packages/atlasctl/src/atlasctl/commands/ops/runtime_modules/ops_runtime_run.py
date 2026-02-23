@@ -130,7 +130,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
     if ns.ops_cmd == "prereqs":
         return impl._ops_prereqs_native(ctx, ns.report)
     if ns.ops_cmd == "doctor":
-        return impl._ops_doctor_native(ctx, ns.report)
+        return impl._ops_doctor_native(ctx, ns.report, capabilities_json=bool(getattr(ns, "capabilities_json", False)))
     if ns.ops_cmd == "root-lanes":
         return impl._ops_run_migrated_shell_asset(ctx, ns.report, "root-lanes.sh")
     if ns.ops_cmd == "root-local":

@@ -555,8 +555,15 @@ def _ops_prereqs_native(ctx: RunContext, report_format: str) -> int:
     return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
 
 
-def _ops_doctor_native(ctx: RunContext, report_format: str) -> int:
+def _ops_doctor_native(ctx: RunContext, report_format: str, *, capabilities_json: bool = False) -> int:
     repo = ctx.repo_root
+    if capabilities_json:
+        payload = json.loads((repo / "configs/ops/command-capabilities.json").read_text(encoding="utf-8"))
+        if report_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+            return 0
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
     outputs: list[str] = []
 
     prereqs = run_command([*SELF_CLI, "ops", "prereqs", "--report", "text"], repo, ctx=ctx)
