@@ -19,7 +19,7 @@ from .dead_modules import analyze_dead_modules
 from .scans.repo_scans import policy_drift_diff, scan_grep_relaxations, scan_rust_relaxations
 RELAXATION_FILES = ("configs/policy/pin-relaxations.json", "configs/policy/budget-relaxations.json", "configs/policy/layer-relaxations.json", "configs/policy/ops-smoke-budget-relaxations.json", "configs/policy/ops-lint-relaxations.json")
 SELF_CLI = ["python3", "-m", "atlasctl.cli"]
-_POLICIES_ITEMS: tuple[str, ...] = ("allow-env-lint", "bypass-scan", "bypass-list", "bypass-report", "check", "check-dir-entry-budgets", "check-py-files-per-dir", "culprits", "culprits-biggest-dirs", "culprits-biggest-files", "culprits-files-per-dir", "culprits-largest-files", "culprits-loc-per-dir", "culprits-modules-per-dir", "culprits-suite", "dead-modules", "drift-diff", "enforcement-status", "explain", "forbidden-adjectives", "ownership-check", "relaxations-check", "repo-stats", "report", "report-budgets", "scan-grep-relaxations", "scan-rust-relaxations", "schema-drift")
+_POLICIES_ITEMS: tuple[str, ...] = ("allow-env-lint", "bypass-scan", "bypass-list", "bypass-report", "check", "check-dir-entry-budgets", "check-py-files-per-dir", "culprits", "culprits-biggest-dirs", "culprits-biggest-files", "culprits-files-per-dir", "culprits-largest-files", "culprits-loc-per-dir", "culprits-modules-per-dir", "culprits-suite", "dead-modules", "drift-diff", "enforcement-status", "explain", "forbidden-adjectives", "ownership-check", "relaxations-check", "repo-stats", "report", "report-budgets", "scan-grep-relaxations", "scan-rust-relaxations", "schema-drift", "bypass-burn")
 def _run(cmd: list[str], repo_root: Path) -> tuple[int, str]:
     proc = run(cmd, cwd=repo_root, text=True, capture_output=True, check=False)
     return proc.returncode, ((proc.stdout or "") + (proc.stderr or "")).strip()
@@ -220,6 +220,51 @@ def _bypass_drill(repo_root: Path, *, strict: bool) -> dict[str, object]:
                 "./bin/atlasctl policies bypass tighten --step 1 --report json",
             ],
         },
+    }
+
+
+def _group_entries(payload: dict[str, object], *, key: str) -> list[dict[str, object]]:
+    rows = payload.get("entries", []) if isinstance(payload.get("entries"), list) else []
+    groups: dict[str, int] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        value = str(row.get(key, "")).strip() or "(unknown)"
+        groups[value] = groups.get(value, 0) + 1
+    return [{"key": k, "count": groups[k]} for k in sorted(groups)]
+
+
+def _bypass_due(payload: dict[str, object], due: dt.date) -> dict[str, object]:
+    rows = payload.get("entries", []) if isinstance(payload.get("entries"), list) else []
+    due_rows: list[dict[str, object]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        expiry = str(row.get("expiry", "")).strip()
+        if not expiry:
+            continue
+        try:
+            when = dt.date.fromisoformat(expiry)
+        except ValueError:
+            continue
+        if when <= due:
+            due_rows.append(
+                {
+                    "source": str(row.get("source", "")),
+                    "key": str(row.get("key", "")),
+                    "owner": str(row.get("owner", "")),
+                    "issue": str(row.get("issue_id", "")),
+                    "expiry": expiry,
+                    "removal_plan": str(row.get("removal_plan", "")),
+                }
+            )
+    due_rows.sort(key=lambda item: (item["expiry"], item["owner"], item["source"], item["key"]))
+    return {
+        "schema_version": 1,
+        "kind": "bypass-burn-due",
+        "due": due.isoformat(),
+        "count": len(due_rows),
+        "entries": due_rows,
     }
 
 
@@ -465,6 +510,19 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         payload = collect_bypass_inventory(repo)
         if bool(getattr(ns, "blame", False)):
             payload = _with_bypass_blame(repo, payload)
+        by = str(getattr(ns, "by", "") or "").strip()
+        if by == "owner":
+            payload = {
+                "schema_version": 1,
+                "kind": "bypass-by-owner",
+                "groups": _group_entries(payload, key="owner"),
+            }
+        elif by == "expiry":
+            payload = {
+                "schema_version": 1,
+                "kind": "bypass-by-expiry",
+                "groups": _group_entries(payload, key="expiry"),
+            }
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else render_text_report(payload))
         return 0 if not payload.get("errors") else 1
 
@@ -662,6 +720,24 @@ def run_policies_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         payload = _bypass_burndown(repo, update_trend=bool(getattr(ns, "update_trend", False)))
         print(json.dumps(payload, sort_keys=True) if ns.report == "json" else json.dumps(payload, indent=2, sort_keys=True))
         return 0
+    if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "") == "burn":
+        due_raw = str(getattr(ns, "due", "")).strip()
+        if not due_raw:
+            print(json.dumps({"schema_version": 1, "status": "error", "message": "missing --due"}, sort_keys=True))
+            return 2
+        try:
+            due = dt.date.fromisoformat(due_raw)
+        except ValueError:
+            print(json.dumps({"schema_version": 1, "status": "error", "message": f"invalid --due date `{due_raw}`"}, sort_keys=True))
+            return 2
+        payload = _bypass_due(collect_bypass_inventory(repo), due)
+        if ns.report == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"bypass removals due by {payload['due']}: {payload['count']}")
+            for row in payload["entries"][:100]:
+                print(f"- {row['expiry']} {row['owner']} {row['source']}:{row['key']}")
+        return 0 if payload["count"] == 0 else 1
     if ns.policies_cmd == "bypass" and getattr(ns, "bypass_cmd", "") == "pr-checklist":
         payload = _bypass_pr_checklist(repo)
         if ns.report == "json":
@@ -710,9 +786,11 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     bp_list = bypass_sub.add_parser("list", help="list policy bypass/allowlist inventory")
     bp_list.add_argument("--report", choices=["text", "json"], default="text")
     bp_list.add_argument("--blame", action="store_true")
+    bp_list.add_argument("--by", choices=["owner", "expiry"], default="")
     bp_inv = bypass_sub.add_parser("inventory", help="alias of bypass list inventory")
     bp_inv.add_argument("--report", choices=["text", "json"], default="text")
     bp_inv.add_argument("--blame", action="store_true")
+    bp_inv.add_argument("--by", choices=["owner", "expiry"], default="")
     rep2 = bypass_sub.add_parser("report", help="emit consolidated policy bypass report")
     rep2.add_argument("--report", choices=["text", "json"], default="text")
     rep2.add_argument("--out", default="artifacts/reports/atlasctl/policies-bypass-report.json")
@@ -725,6 +803,9 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     burn = bypass_sub.add_parser("burn-down", help="group bypass entries by domain and age")
     burn.add_argument("--report", choices=["text", "json"], default="text")
     burn.add_argument("--update-trend", action="store_true")
+    burn_due = bypass_sub.add_parser("burn", help="list bypass removals due on or before a date")
+    burn_due.add_argument("--due", required=True, help="due date in YYYY-MM-DD")
+    burn_due.add_argument("--report", choices=["text", "json"], default="text")
     prc = bypass_sub.add_parser("pr-checklist", help="generate a PR checklist snippet for bypasses")
     prc.add_argument("--report", choices=["text", "json"], default="text")
     drill = bypass_sub.add_parser("drill", help="run a local strict bypass drill and print a fix plan")
@@ -823,3 +904,19 @@ def configure_policies_parser(sub: argparse._SubParsersAction[argparse.ArgumentP
     report_budgets.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
     report_budgets.add_argument("--by-domain", action="store_true", help="aggregate offenders by top-level domain")
     report_budgets.add_argument("--out-file", default="", help="write report to file path")
+
+
+def configure_policy_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    p = sub.add_parser("policy", help="policy command alias")
+    p.add_argument("--list", action="store_true", help="list available policies commands")
+    p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
+    ps = p.add_subparsers(dest="policies_cmd", required=False)
+    bypass = ps.add_parser("bypass", help="bypass inventory helpers")
+    bypass_sub = bypass.add_subparsers(dest="bypass_cmd", required=True)
+    bp_list = bypass_sub.add_parser("list", help="list policy bypass/allowlist inventory")
+    bp_list.add_argument("--report", choices=["text", "json"], default="text")
+    bp_list.add_argument("--blame", action="store_true")
+    bp_list.add_argument("--by", choices=["owner", "expiry"], default="")
+    burn_due = bypass_sub.add_parser("burn", help="list bypass removals due on or before a date")
+    burn_due.add_argument("--due", required=True, help="due date in YYYY-MM-DD")
+    burn_due.add_argument("--report", choices=["text", "json"], default="text")
