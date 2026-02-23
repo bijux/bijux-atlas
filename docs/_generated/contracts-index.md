@@ -21,6 +21,7 @@ Generated from repository files. Do not edit manually.
 
 ## Schema Files
 
+- `configs/schema/config-compiler-report.schema.json`
 - `configs/schema/configs-ownership.schema.json`
 - `configs/schema/hpa-safety-caps.schema.json`
 - `configs/schema/layer-live-diff-allowlist.schema.json`

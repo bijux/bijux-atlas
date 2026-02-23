@@ -1,6 +1,6 @@
 # Config Keys (Generated)
 
-Generated from `configs/config-key-registry.md`. Do not edit manually.
+Generated from `docs/contracts/CONFIG_KEYS.json`. Do not edit manually.
 
 - Count: `112`
 

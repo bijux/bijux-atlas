@@ -220,17 +220,14 @@ def _generate_env_vars_doc(ctx: RunContext) -> tuple[int, str]:
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return 0, str(out.relative_to(ctx.repo_root))
 def _generate_config_keys_doc(ctx: RunContext) -> tuple[int, str]:
-    registry = ctx.repo_root / "configs" / "config-key-registry.md"
+    registry = ctx.repo_root / "docs" / "contracts" / "CONFIG_KEYS.json"
     out = ctx.repo_root / "docs" / "_generated" / "config-keys.md"
-    keys: list[str] = []
-    for line in registry.read_text(encoding="utf-8").splitlines():
-        item = line.strip()
-        if item.startswith("- `") and item.endswith("`"):
-            keys.append(item[3:-1])
+    payload = json.loads(registry.read_text(encoding="utf-8"))
+    keys = sorted(str(k) for k in payload.get("env_keys", []) if isinstance(k, str))
     lines = [
         "# Config Keys (Generated)",
         "",
-        "Generated from `configs/config-key-registry.md`. Do not edit manually.",
+        "Generated from `docs/contracts/CONFIG_KEYS.json`. Do not edit manually.",
         "",
         f"- Count: `{len(keys)}`",
         "",
