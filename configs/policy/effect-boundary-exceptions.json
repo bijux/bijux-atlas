@@ -87,7 +87,7 @@
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {
-        "path": "packages/atlasctl/src/atlasctl/commands/ops/ops_k8s.py",
+        "path": "packages/atlasctl/src/atlasctl/commands/ops/k8s/runtime_bridge.py",
         "reason": "temporary boundary exception; migrate to core boundary"
       },
       {

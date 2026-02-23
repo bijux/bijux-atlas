@@ -9,6 +9,7 @@ FORBID = ('registry/ops_tasks_catalog.json', 'registry/suites_catalog.json', 're
 ALLOW = {
     'packages/atlasctl/src/atlasctl/checks/layout/architecture/check_registry_reads_centralized.py',
     'packages/atlasctl/src/atlasctl/registry/readers.py',
+    'packages/atlasctl/src/atlasctl/registry/catalogs.py',
     'packages/atlasctl/src/atlasctl/registry/suites.py',
     'packages/atlasctl/src/atlasctl/commands/registry/command.py',
     'packages/atlasctl/src/atlasctl/checks/registry/ssot.py',

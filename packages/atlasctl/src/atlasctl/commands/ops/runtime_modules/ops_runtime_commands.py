@@ -21,6 +21,13 @@ from atlasctl.commands.ops.runtime_modules.layer_contract import (
     release_default as lc_release_default,
     service_atlas as lc_service_atlas,
 )
+from atlasctl.commands.ops.k8s.runtime_bridge import (
+    _k8s_checks_layout,
+    _k8s_flakes,
+    _k8s_surface_generate,
+    _k8s_test_contract,
+    _k8s_test_lib,
+)
 
 SELF_CLI = ["./bin/atlasctl"]
 

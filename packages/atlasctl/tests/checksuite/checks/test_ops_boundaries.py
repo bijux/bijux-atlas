@@ -79,3 +79,13 @@ def test_ops_command_group_entrypoints_check_passes() -> None:
 def test_registry_reads_centralized_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_registry_reads_centralized.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_runtime_modules_naming_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_ops_runtime_modules_naming.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_no_floating_ops_modules_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_floating_ops_modules.py")
+    assert proc.returncode == 0, proc.stderr
