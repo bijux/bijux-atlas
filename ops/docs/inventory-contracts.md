@@ -1,0 +1,14 @@
+# Ops Inventory Contract Map
+
+Canonical inventory SSOT files and their schemas/generators.
+
+| Inventory file | Schema | Generator / owner | Notes |
+|---|---|---|---|
+| `ops/inventory/owners.json` | `ops/schema/meta/ownership.schema.json` | manual + owner docs sync | Replaces `ops/_meta/ownership.json` |
+| `ops/inventory/surfaces.json` | `configs/ops/public-surface.json` (surface semantics) | `atlasctl ops gen run` / surface generator | Canonical ops surface inventory |
+| `ops/inventory/contracts.json` | `ops/schema/meta/artifact-allowlist.schema.json` (structure checked separately) | manual | References top-level + domain contract artifacts |
+| `ops/inventory/layers.json` | `ops/schema/meta/layer-contract.schema.json` | `atlasctl ops gen run` / layer contract generator | Canonical layer contract inventory |
+| `ops/inventory/pins.yaml` | `ops/schema/meta/pins.schema.json` (semantic mirror) | `atlasctl ops pins update` (compat output still JSON) | Canonical migration target |
+| `ops/inventory/toolchain.yaml` | `ops/schema/stack/version-manifest.schema.json` + tool-versions SSOT | `atlasctl ops stack versions-sync` + migration tooling | Unified toolchain inventory |
+| `ops/inventory/owner-docs.fragments.json` | n/a (generated fragment inventory) | `atlasctl ops migrate` | Derived from `ops/*/OWNER.md` during migration window |
+| `ops/inventory/contracts/*.contract.fragment.json` | n/a (fragment contract format) | `atlasctl ops migrate` | Structured fragments replacing per-domain free-form contract docs over time |

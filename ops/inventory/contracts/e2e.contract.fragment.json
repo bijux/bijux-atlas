@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "path": "ops/e2e",
+  "contract_doc": "ops/e2e/CONTRACT.md",
+  "title": "Contract",
+  "version": 1
+}

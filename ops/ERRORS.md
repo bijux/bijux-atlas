@@ -1,13 +1,12 @@
-# Ops Error Registry
+# Ops Errors
 
-SSOT source: `ops/_meta/error-registry.json` (`schema_version: v1`).
+Mapping of ops-facing failure categories to atlasctl error reporting.
 
-- `10` `OPS_ERR_CONFIG`: missing/invalid env or config contract.
-- `11` `OPS_ERR_CONTEXT`: cluster/profile context guard failed.
-- `12` `OPS_ERR_VERSION`: local tool versions drift from pinned versions.
-- `13` `OPS_ERR_PREREQ`: required tool missing.
-- `14` `OPS_ERR_TIMEOUT`: bounded operation exceeded timeout.
-- `15` `OPS_ERR_VALIDATION`: schema/manifest/contract validation failure.
-- `16` `OPS_ERR_ARTIFACT`: artifact policy/path violation.
-- `17` `OPS_ERR_DOCS`: docs policy violation for supported entrypoints.
-- `99` `OPS_ERR_INTERNAL`: unexpected internal failure.
+| Category | Typical atlasctl command family | Error shape | Notes |
+|---|---|---|---|
+| Contract validation | `atlasctl ops * validate/check` | non-zero + schema/contract message | Prefer deterministic schema path in output |
+| Prerequisite missing | `ops prereqs`, `ops kind`, `ops stack` | prereq failure / missing tool | Include missing binary/version |
+| Drift detected | `ops gen check`, surface/schema checks | drift message + remediation command | Must print canonical regen command |
+| Runtime orchestration failure | `ops up/down/deploy/e2e/load/obs` | subprocess/step failure | Include failed step id and log path |
+| Policy denial | lint/policy checks | explicit policy violation | Include owning policy/check id |
+| Migration guard | `ops migrate`, legacy path checks | cutoff or duplicate-path error | Include cutoff date + canonical path |

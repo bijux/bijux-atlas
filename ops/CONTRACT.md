@@ -7,10 +7,11 @@ kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af02
 ## Purpose
 
 `ops/` is the single source of truth for operational topology, manifests/contracts, and contract-governed artifacts.
+`ops/` defines the spec surface; `atlasctl` implements the behavior (validation, generation, orchestration) against that spec.
 
 ## Invariants
 
-- Stable operator entrypoints are Make targets listed in `ops/INDEX.md` and declared in `ops/inventory/surfaces.json`.
+- Stable operator entrypoints are documented in `ops/INDEX.md` (human landing page), `ops/_generated/INDEX.md` (compiled index), and declared in `ops/inventory/surfaces.json`.
 - Operator entrypoints are `atlasctl ops ...` commands and thin `make` wrappers; `ops/` shell scripts are implementation adapters only.
 - Shared shell/python helpers that are not operator entrypoints live in atlasctl-owned helper/assets modules or domain-local `scripts/` directories.
 - Canonical domain ownership has no overlap:
@@ -22,9 +23,9 @@ kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af02
   - `ops/datasets/` dataset manifests, pinning, QC, promotion
   - `ops/e2e/` composition-only scenarios across domains
     - `ops/e2e/k8s/tests/` only wrapper entry scripts, not invariant test ownership
-- Deterministic generated outputs under `ops/_generated_committed/` only.
+- Deterministic generated outputs are produced in `ops/_generated/`; committed mirrors (if any) must be explicitly policy-governed.
 - Runtime evidence outputs under `artifacts/evidence/` only.
-- Runtime artifacts write under `ops/_artifacts/` only, unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
+- Runtime artifacts write under `artifacts/` only (ops-local `_artifacts/` is deprecated/deleted during migration).
 - JSON schemas for ops manifests live under `ops/schema/`.
 - Symlinked domain directories inside `ops/` are forbidden.
 - Canonical pinned tool versions live in `configs/ops/tool-versions.json`.
@@ -32,7 +33,7 @@ kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af02
 ## Stable vs Generated
 
 Stable (versioned by review):
-- `ops/CONTRACT.md`, `ops/INDEX.md`
+- `ops/CONTRACT.md`, `ops/INDEX.md` (thin human entry)
 - `ops/_meta/*.json`
 - domain definitions and tests under canonical subtrees
 
@@ -54,7 +55,7 @@ Runtime artifacts (ephemeral evidence):
 ## Artifact Rules
 
 - Runtime evidence must write under `artifacts/evidence/**`.
-- Runtime artifacts (non-evidence) write under `ops/_artifacts/**`.
+- Runtime artifacts (non-evidence) write under `artifacts/**`.
 - `ops/_generated/` is reserved for static/generated contract assets only (no run-scoped evidence).
 - Any explicit exception must be listed in `configs/ops/artifacts-allowlist.txt`.
 
