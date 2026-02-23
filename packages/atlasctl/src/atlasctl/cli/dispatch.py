@@ -133,6 +133,20 @@ def dispatch_command(
         print(json.dumps(payload, sort_keys=True) if (as_json or ns.json) else f"removed={len(payload.get('removed', []))}")
         return 0
     if ns.cmd == "fix":
+        if ns.thing == "hygiene":
+            if not bool(getattr(ns, "apply", False)):
+                payload = {
+                    "schema_version": 1,
+                    "tool": "atlasctl",
+                    "status": "ok",
+                    "thing": "hygiene",
+                    "apply_required": True,
+                    "note": "Use `atlasctl fix hygiene --apply` to remove caches and bytecode files.",
+                }
+            else:
+                payload = import_attr("atlasctl.repo_hygiene", "apply_hygiene_fixes")(ctx.repo_root)
+            print(dumps_json(payload, pretty=not (as_json or ns.json)))
+            return 0
         payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "thing": ns.thing, "fixers": [], "note": "Fixers are explicit actions and are never run as part of `atlasctl check`."}
         print(dumps_json(payload, pretty=not (as_json or ns.json)))
         return 0
@@ -185,6 +199,17 @@ def dispatch_command(
         print(rendered)
         return 0
     if ns.cmd == "doctor":
+        if getattr(ns, "scope", None) == "repo-hygiene":
+            result = import_attr("atlasctl.repo_hygiene", "run_repo_hygiene_checks")(ctx.repo_root)
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "kind": "doctor-repo-hygiene",
+                "status": result.status,
+                "checks": result.checks,
+            }
+            print(dumps_json(payload, pretty=not (as_json or ns.json)))
+            return 0 if result.status == "ok" else ERR_CONFIG
         return import_attr("atlasctl.commands.doctor", "run_doctor")(ctx, ns.json, getattr(ns, "out_file", None))
     if ns.cmd == "config":
         mapped = argparse.Namespace(**vars(ns))

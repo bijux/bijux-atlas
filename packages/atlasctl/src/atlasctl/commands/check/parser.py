@@ -100,7 +100,8 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
     parser_sub.add_parser("configs", help="run configs checks")
     parser_sub.add_parser("license", help="run licensing checks")
     repo = parser_sub.add_parser("repo", help="run repo hygiene checks")
-    repo.add_argument("repo_check", nargs="?", choices=["all", "module-size"], default="all")
+    repo.add_argument("repo_check", nargs="?", choices=["all", "module-size", "hygiene"], default="all")
+    parser_sub.add_parser("repo-hygiene", help="run strict repository hygiene checks")
     parser_sub.add_parser("obs", help="run observability checks")
     parser_sub.add_parser("stack-report", help="validate stack report contracts")
 
