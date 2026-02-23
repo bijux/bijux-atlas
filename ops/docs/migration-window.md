@@ -7,7 +7,7 @@
 
 Legacy paths scheduled for removal after cutoff:
 
-- `ops/_schemas/**`
+- `ops/schema/**`
 - `ops/_meta/{ownership,surface,contracts,layer-contract}.json`
 - `ops/registry/pins.json`
 - `ops/stack/version-manifest.json`

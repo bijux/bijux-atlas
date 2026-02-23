@@ -724,7 +724,7 @@ def _ops_smoke_native(ctx: RunContext, report_format: str, reuse: bool) -> int:
     }
     write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
-    run_command([*SELF_CLI, "report", "unified", "--run-id", run_id, "--out", "ops/_generated_committed/report.unified.json"], repo, ctx=ctx)
+    run_command([*SELF_CLI, "report", "unified", "--run-id", run_id, "--out", "ops/_generated.example/report.unified.json"], repo, ctx=ctx)
     if status == "pass":
         budget = run_command(
             ["env", f"RUN_ID={run_id}", "python3", "./packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py"],
@@ -1520,13 +1520,13 @@ def _ops_refgrade_audit_native(ctx: RunContext, report_format: str, *, strict: b
         "strict": strict,
         "checks": rows,
     }
-    out = ctx.repo_root / "ops/_generated_committed/scorecard.json"
+    out = ctx.repo_root / "ops/_generated.example/scorecard.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if report_format == "json":
         print(json.dumps(payload, sort_keys=True))
         return 0 if ok else 1
-    return _emit_ops_status(report_format, 0 if ok else 1, "ops-refgrade-audit: wrote ops/_generated_committed/scorecard.json")
+    return _emit_ops_status(report_format, 0 if ok else 1, "ops-refgrade-audit: wrote ops/_generated.example/scorecard.json")
 
 
 

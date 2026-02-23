@@ -22,7 +22,7 @@ for path in sorted((ROOT / "ops").glob("*")):
     if not path.is_dir():
         continue
     rel = path.relative_to(ROOT).as_posix()
-    if rel in {"ops/_artifacts", "ops/_generated", "ops/_lib", "ops/_meta", "ops/_schemas", "ops/_lint", "ops/registry"}:
+    if rel in {"ops/_artifacts", "ops/_generated", "ops/_lib", "ops/_meta", "ops/schema", "ops/_lint", "ops/registry"}:
         continue
     if rel not in owned:
         errors.append(f"unowned area: {rel} (missing in ops/inventory/owners.json)")

@@ -24,7 +24,7 @@ for concept, cfg in rules.get("concepts", {}).items():
             rel = p.relative_to(ROOT).as_posix()
             if (
                 rel.startswith("ops/_generated/")
-                or rel.startswith("ops/_generated_committed/")
+                or rel.startswith("ops/_generated.example/")
                 or rel.startswith("ops/_artifacts/")
                 or rel.startswith("ops/_evidence/")
                 or rel.startswith("artifacts/evidence/")

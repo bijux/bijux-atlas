@@ -13,7 +13,7 @@ _ALLOWLISTED_OPS_ARTIFACT_EXAMPLES: set[str] = set()
 _GENERATED_PATH_PREFIXES = (
     "configs/_generated/",
     "docs/_generated/",
-    "ops/_generated_committed/",
+    "ops/_generated.example/",
     "ops/_generated.example/",
 )
 _TIMESTAMP_KEYS = ("generated_at", "timestamp", "created_at", "updated_at")

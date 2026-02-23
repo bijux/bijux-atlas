@@ -158,7 +158,7 @@ def _bypass_burndown(repo_root: Path, *, update_trend: bool = False) -> dict[str
         "items": items,
     }
     if update_trend:
-        scorecard_path = repo_root / "ops/_generated_committed/scorecard.json"
+        scorecard_path = repo_root / "ops/_generated.example/scorecard.json"
         scorecard: dict[str, object] = {}
         if scorecard_path.exists():
             try:

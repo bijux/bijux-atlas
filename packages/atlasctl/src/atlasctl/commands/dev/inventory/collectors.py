@@ -96,7 +96,7 @@ TOUCHED_PATHS: dict[str, list[str]] = {
     "configs": ["configs/", "docs/_generated/config*"],
     "ops": ["ops/", "artifacts/evidence/"],
     "make": ["makefiles/", "docs/development/make-targets.md"],
-    "report": ["artifacts/evidence/", "ops/_generated_committed/"],
+    "report": ["artifacts/evidence/", "ops/_generated.example/"],
     "gates": ["configs/gates/lanes.json", "artifacts/evidence/"],
 }
 

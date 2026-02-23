@@ -60,6 +60,9 @@ jobs:
       - name: Run ops smoke lane
         run: make ops-check
 
+      - name: Verify ops generation drift gate
+        run: ./bin/atlasctl ops gen check --report text
+
       - name: Upload ops artifacts
         if: always()
         uses: actions/upload-artifact@v4

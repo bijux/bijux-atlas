@@ -123,8 +123,8 @@ PY
     done
     echo
     echo "- unified: artifacts/evidence/make/${run_id}/unified.json"
-    echo "- unified-ops: ops/_generated_committed/report.unified.json"
-    echo "- scorecard: ops/_generated_committed/scorecard.json"
+    echo "- unified-ops: ops/_generated.example/report.unified.json"
+    echo "- scorecard: ops/_generated.example/scorecard.json"
   } > "$summary_file"
 
   if [ "${QUIET:-0}" != "1" ]; then
@@ -322,7 +322,7 @@ EOF
     done
   fi
 
-  ./bin/atlasctl report unified --run-id "$run_id" --out ops/_generated_committed/report.unified.json >/dev/null || true
+  ./bin/atlasctl report unified --run-id "$run_id" --out ops/_generated.example/report.unified.json >/dev/null || true
   python3 ./packages/atlasctl/src/atlasctl/layout_checks/check_make_lane_reports.py "$run_id" "${lanes[@]}"
   python3 ./packages/atlasctl/src/atlasctl/layout_checks/make_report.py merge --run-id "$run_id" >/dev/null
   write_summary "$run_id" "${lanes[@]}"

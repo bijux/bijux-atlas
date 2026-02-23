@@ -374,7 +374,7 @@ def _generate_docs_evidence_policy(repo_root: Path, out_rel: str = "docs/_genera
         "",
         "- Runtime evidence location: `artifacts/evidence/`",
         "- Committed generated docs location: `docs/_generated/`",
-        "- Ops committed generated location: `ops/_generated_committed/`",
+        "- Ops committed generated location: `ops/_generated.example/`",
         "- Runtime evidence must not be committed to git.",
     ]
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")

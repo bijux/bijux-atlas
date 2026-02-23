@@ -104,7 +104,7 @@ def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch
         "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: [
             "docs/_generated/2026-02-20/index.md",
-            "ops/_generated_committed/run.log",
+            "ops/_generated.example/run.log",
         ],
     )
     code, errors = check_committed_generated_hygiene(tmp_path)

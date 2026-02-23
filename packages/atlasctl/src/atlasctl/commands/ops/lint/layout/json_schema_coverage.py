@@ -81,8 +81,8 @@ EXCLUDE_PREFIXES = (
 )
 
 EXCLUDE_FILES = {
-    "ops/_generated_committed/report.unified.json",
-    "ops/_generated_committed/scorecard.json",
+    "ops/_generated.example/report.unified.json",
+    "ops/_generated.example/scorecard.json",
     "ops/_generated/pins/pin-drift-report.json",
 }
 

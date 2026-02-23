@@ -135,7 +135,7 @@ makefiles/root.mk
 mkdocs.yml
 ops/CONTRACT.md
 ops/INDEX.md
-ops/_generated_committed/report.unified.json
+ops/_generated.example/report.unified.json
 packages/atlasctl/src/atlasctl/commands/ops/lint/docs/naming_lint.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/json_schema_coverage.py
 packages/atlasctl/src/atlasctl/commands/ops/lint/layout/no_layer_literals.py

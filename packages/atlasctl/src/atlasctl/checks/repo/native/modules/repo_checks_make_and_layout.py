@@ -252,7 +252,7 @@ def check_tmp_paths_outside_artifacts(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_generated_dirs_policy(repo_root: Path) -> tuple[int, list[str]]:
-    allowed = {"docs/_generated", "ops/_generated", "ops/_generated_committed"}
+    allowed = {"docs/_generated", "ops/_generated", "ops/_generated.example"}
     errors: list[str] = []
     for path in sorted(repo_root.rglob("_generated")):
         if not path.is_dir():
@@ -493,7 +493,7 @@ def check_no_repo_root_path_literals(repo_root: Path) -> tuple[int, list[str]]:
 def check_committed_generated_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     tracked = _git_ls_files(
         repo_root,
-        ["docs/_generated", "ops/_generated_committed", "ops/_generated.example"],
+        ["docs/_generated", "ops/_generated.example", "ops/_generated.example"],
     )
     forbidden_suffixes = (".log", ".stderr", ".stdout", ".tmp")
     errors: list[str] = []

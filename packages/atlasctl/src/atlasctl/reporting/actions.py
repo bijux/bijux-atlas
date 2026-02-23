@@ -310,7 +310,7 @@ def _cmd_scorecard(ctx: RunContext, run_id: str, out: str | None) -> int:
     unified = _run_dir(ctx, run_id) / "unified.json"
     if not unified.exists():
         _cmd_collect(ctx, run_id, str(unified))
-    out_path = Path(out) if out else (ctx.repo_root / "ops/_generated_committed/scorecard.json")
+    out_path = Path(out) if out else (ctx.repo_root / "ops/_generated.example/scorecard.json")
     cmd = [
         "python3",
         "./packages/atlasctl/src/atlasctl/reporting/tools/make_confidence_scorecard.py",

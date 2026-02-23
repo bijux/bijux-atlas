@@ -1,6 +1,6 @@
 # Ops Schemas
 
-Generated from `ops/_schemas`. Do not edit manually.
+Generated from `ops/schema`. Do not edit manually.
 
 ## `ops/schema/datasets/corruption-drill-report.schema.json`
 

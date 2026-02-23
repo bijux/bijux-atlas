@@ -10,12 +10,26 @@ EXCLUDE = {
     "_artifacts",
     "_evidence",
     "_generated",
-    "_generated_committed",
+    "_generated.example",
     "_meta",
-    "_schemas",
     "vendor",
     "manifests",
     "registry",  # legacy internal registry area; enforce on new top-level dirs going forward
+    "docs",
+    "env",
+    "inventory",
+    "schema",
+    "observe",
+    "helm",
+    "kind",
+    "report",
+    "obs",
+    "datasets",
+    "e2e",
+    "k8s",
+    "load",
+    "stack",
+    "fixtures",
 }
 
 
