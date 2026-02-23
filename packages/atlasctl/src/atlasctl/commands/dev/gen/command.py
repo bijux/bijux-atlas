@@ -10,8 +10,7 @@ from ....contracts.command import run_contracts_command
 from ....core.context import RunContext
 from ....core.exec import run
 from ....core.runtime.paths import write_text_file
-from ....checks.registry.ssot import generate_registry_json, legacy_checks, toml_entry_from_check, write_registry_toml
-from ....checks.registry.catalog import check_tags
+from ....checks.gen_registry import generate_registry
 
 SELF_CLI = ["python3", "-m", "atlasctl.cli"]
 
@@ -89,10 +88,7 @@ def _require_ack(ns: argparse.Namespace, action: str) -> bool:
 def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.gen_cmd
     if sub == "checks-registry":
-        checks = sorted(legacy_checks(), key=lambda c: c.check_id)
-        rows = sorted((toml_entry_from_check(check, groups=check_tags(check)) for check in checks), key=lambda row: str(row.get("id", "")))
-        write_registry_toml(ctx.repo_root, rows)
-        out, _changed = generate_registry_json(ctx.repo_root, check_only=False)
+        out, _changed = generate_registry(ctx.repo_root, check_only=False)
         print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "registry_toml": "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml", "registry_json": str(out.relative_to(ctx.repo_root))}, sort_keys=True))
         return 0
     if sub == "contracts":
