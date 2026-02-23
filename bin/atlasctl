@@ -2,6 +2,21 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "atlasctl bootstrap error: python3 is required but was not found on PATH." >&2
+  exit 127
+fi
+
+if ! python3 -c 'import sys; exit(0 if sys.version_info >= (3, 11) else 1)' >/dev/null 2>&1; then
+  echo "atlasctl bootstrap error: python3.11+ is required." >&2
+  exit 2
+fi
+
+if [[ ! -d "$ROOT/packages/atlasctl/src/atlasctl" ]]; then
+  echo "atlasctl bootstrap error: expected runtime package at packages/atlasctl/src/atlasctl." >&2
+  exit 2
+fi
+
 PYTHONDONTWRITEBYTECODE=1 \
 PYTHONPATH="$ROOT/packages/atlasctl/src${PYTHONPATH:+:$PYTHONPATH}" \
   exec python3 -m atlasctl.cli "$@"
