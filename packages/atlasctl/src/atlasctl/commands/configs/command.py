@@ -290,6 +290,23 @@ def _generate_outputs(repo_root: Path, write: bool) -> dict[str, str]:
     ) + "\n"
     outputs[f"{CONFIG_COMPILER_GENERATED_DIR}/INDEX.md"] = compiler_index
     outputs[f"{CONFIG_COMPILER_GENERATED_DIR}/compiler-report.json"] = GENERATED_HEADER + compiler_report
+    checksums_payload = {
+        "schema_version": 1,
+        "kind": "atlasctl-config-generated-checksums",
+        "generated_root": CONFIG_COMPILER_GENERATED_DIR,
+        "files": [],
+    }
+    for rel, text in sorted(outputs.items()):
+        if not rel.startswith(f"{CONFIG_COMPILER_GENERATED_DIR}/"):
+            continue
+        body = text
+        if rel.endswith(".json") and not body.startswith(GENERATED_HEADER):
+            body = GENERATED_HEADER + body
+            outputs[rel] = body
+        checksums_payload["files"].append(
+            {"path": rel, "sha256": hashlib.sha256(body.encode("utf-8")).hexdigest()}
+        )
+    outputs[f"{CONFIG_COMPILER_GENERATED_DIR}/checksums.json"] = GENERATED_HEADER + json.dumps(checksums_payload, indent=2, sort_keys=True) + "\n"
     if write:
         for rel, text in outputs.items():
             out = repo_root / rel
