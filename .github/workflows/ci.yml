@@ -206,6 +206,42 @@ jobs:
           mkdir -p artifacts/reports/atlasctl
           ./bin/atlasctl suite run product --only fast --report json > artifacts/reports/atlasctl/suite-product.fast.json
 
+
+  product-build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Product build
+        run: ./bin/atlasctl product build
+
+  product-verify:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Product verify
+        run: ./bin/atlasctl product verify
+
+  product-release-dry:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Product release candidate dry run
+        run: ./bin/atlasctl product release-candidate --internal
   suite-ops-fast:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

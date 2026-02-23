@@ -143,6 +143,50 @@ def _validate_artifact_manifest(ctx: RunContext, path: Path | None = None) -> in
     return 0
 
 
+def _release_gates(ctx: RunContext) -> int:
+    # 180: release blocked if bypass inventory is non-empty
+    culprits = run_command(["./bin/atlasctl", "policies", "culprits", "--format", "json"], ctx.repo_root, ctx=ctx)
+    if culprits.code != 0:
+        print("release gate failed: policies culprits inventory command failed")
+        return 1
+    try:
+        payload = json.loads(culprits.stdout or culprits.combined_output or "{}")
+    except Exception:
+        print("release gate failed: policies culprits output is not valid json")
+        return 1
+    count = int(payload.get("entry_count", payload.get("total", 0)) or 0)
+    if count != 0:
+        print(f"release gate failed: bypass inventory is non-empty ({count})")
+        return 1
+
+    # 181: ops schema/contracts drift gate
+    ops_contracts = run_command(
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/validate_ops_contracts.py"],
+        ctx.repo_root,
+        ctx=ctx,
+    )
+    if ops_contracts.code != 0:
+        print("release gate failed: ops schema/contracts drift check failed")
+        return 1
+
+    # 182: floating pins gate
+    pins = run_command(["./bin/atlasctl", "ops", "pins", "check", "--report", "text"], ctx.repo_root, ctx=ctx)
+    if pins.code != 0:
+        print("release gate failed: ops pins check failed")
+        return 1
+
+    # 183: docs inventory freshness gate
+    docs_inv = run_command(
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/docs/check_commands_inventory_ops_product.py"],
+        ctx.repo_root,
+        ctx=ctx,
+    )
+    if docs_inv.code != 0:
+        print("release gate failed: commands inventory docs are out of date")
+        return 1
+    return 0
+
+
 def _diff_manifest(ctx: RunContext, left: Path, right: Path, report_json: bool) -> int:
     l = json.loads(left.read_text(encoding="utf-8"))
     r = json.loads(right.read_text(encoding="utf-8"))
@@ -296,6 +340,9 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if not bool(getattr(ns, "internal", False)):
             print("product release-candidate is internal-only; pass --internal")
             return 2
+        gate = _release_gates(ctx)
+        if gate != 0:
+            return gate
         for cmd in (
             ["./bin/atlasctl", "product", "build"],
             ["./bin/atlasctl", "product", "verify"],
