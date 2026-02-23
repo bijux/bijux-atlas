@@ -289,6 +289,37 @@ class CheckResult:
         return (str(self.domain), str(self.id))
 
 
+@dataclass(frozen=True)
+class CheckRunReport:
+    schema_version: int = 1
+    kind: str = "check-run"
+    status: str = "ok"
+    rows: tuple[CheckResult, ...] = ()
+    summary: Mapping[str, int] = field(default_factory=dict)
+    timings: Mapping[str, int] = field(default_factory=dict)
+    env: Mapping[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        ordered = tuple(sorted(self.rows, key=lambda row: row.canonical_key))
+        object.__setattr__(self, "rows", ordered)
+        if not self.summary:
+            passed = sum(1 for row in ordered if row.status == CheckStatus.PASS)
+            failed = sum(1 for row in ordered if row.status == CheckStatus.FAIL)
+            skipped = sum(1 for row in ordered if row.status == CheckStatus.SKIP)
+            errored = sum(1 for row in ordered if row.status == CheckStatus.ERROR)
+            object.__setattr__(
+                self,
+                "summary",
+                {
+                    "passed": passed,
+                    "failed": failed,
+                    "skipped": skipped,
+                    "errors": errored,
+                    "total": len(ordered),
+                },
+            )
+
+
 __all__ = [
     "CheckCategory",
     "Check",
@@ -300,6 +331,7 @@ __all__ = [
     "CheckId",
     "CheckOutcome",
     "CheckResult",
+    "CheckRunReport",
     "CheckSelector",
     "CheckStatus",
     "DomainId",
