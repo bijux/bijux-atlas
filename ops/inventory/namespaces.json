@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "namespaces": {
+    "stack": "atlas-e2e",
+    "k8s": "atlas-e2e",
+    "e2e": "atlas-e2e"
+  }
+}
