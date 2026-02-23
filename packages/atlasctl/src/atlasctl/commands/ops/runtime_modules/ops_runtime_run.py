@@ -509,6 +509,30 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
             return impl._ops_stack_down_native(ctx, ns.report)
         if ns.ops_cmd == "stack" and sub == "restart":
             return impl._ops_k8s_restart_native(ctx, ns.report)
+        if ns.ops_cmd == "stack" and sub == "reset":
+            if bool(getattr(ns, "dry_run", False)):
+                return impl._emit_ops_status(ns.report, 0, "dry-run: would run safe kind-only stack reset (down + up)")
+            current = impl.run_command(["kubectl", "config", "current-context"], ctx.repo_root, ctx=ctx)
+            context = current.combined_output.strip()
+            if current.code != 0 or (context and not context.startswith("kind-")):
+                return impl._emit_ops_status(ns.report, 2, f"stack reset is kind-only; refusing on context `{context or 'unknown'}`")
+            code, output = impl._run_check([*impl.SELF_CLI, "ops", "stack", "--report", ns.report, "down"], ctx.repo_root)
+            if output:
+                print(output)
+            if code != 0:
+                return code
+            code, output = impl._run_check([*impl.SELF_CLI, "ops", "stack", "--report", ns.report, "up", "--profile", "kind"], ctx.repo_root)
+            if output:
+                print(output)
+            return code
+        if ns.ops_cmd == "stack" and sub == "cleanup":
+            cmd = ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/cleanup.py"]
+            if bool(getattr(ns, "dry_run", False)):
+                cmd.append("--dry-run")
+            cmd.extend(["--report", ns.report])
+            return impl._run_simple_cmd(ctx, cmd, ns.report)
+        if ns.ops_cmd == "stack" and sub == "smoke":
+            return impl._run_simple_cmd(ctx, ["python3", "packages/atlasctl/src/atlasctl/commands/ops/stack/stack_smoke.py"], ns.report)
         if ns.ops_cmd == "stack" and sub == "check":
             for cmd in (
                 [*impl.SELF_CLI, "ops", "stack", "--report", ns.report, "versions-sync"],
