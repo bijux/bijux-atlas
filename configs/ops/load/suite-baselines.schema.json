@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ops-load-suite-baselines",
+  "type": "object",
+  "required": ["schema_version", "kind", "suites"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "kind": {"const": "ops-load-suite-baselines"},
+    "suites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "suite", "baseline", "mode", "must_validate_manifest"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "suite": {"type": "string", "minLength": 1},
+          "baseline": {"type": "string", "minLength": 1},
+          "mode": {"enum": ["smoke", "regression"]},
+          "must_validate_manifest": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
