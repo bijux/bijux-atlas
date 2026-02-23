@@ -2,10 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "schema_name": {
-      "const": "atlasctl.checks-registry.v1",
-      "type": "string"
-    },
     "checks": {
       "items": {
         "additionalProperties": false,
@@ -18,11 +14,8 @@
           },
           "category": {
             "enum": [
-              "policy",
-              "hygiene",
-              "contract",
-              "drift",
-              "security"
+              "lint",
+              "check"
             ],
             "type": "string"
           },
@@ -30,9 +23,19 @@
             "type": "string"
           },
           "domain": {
-            "type": "string"
-          },
-          "gate": {
+            "enum": [
+              "checks",
+              "configs",
+              "contracts",
+              "docker",
+              "docs",
+              "license",
+              "make",
+              "ops",
+              "policies",
+              "python",
+              "repo"
+            ],
             "type": "string"
           },
           "effects": {
@@ -54,6 +57,9 @@
             "type": "array"
           },
           "fix_hint": {
+            "type": "string"
+          },
+          "gate": {
             "type": "string"
           },
           "groups": {
@@ -124,6 +130,10 @@
     },
     "kind": {
       "const": "atlasctl-checks-registry",
+      "type": "string"
+    },
+    "schema_name": {
+      "const": "atlasctl.checks-registry.v1",
       "type": "string"
     },
     "schema_version": {

@@ -42,6 +42,20 @@ RENAMES_JSON = Path("configs/policy/target-renames.json")
 CHECK_ID_MIGRATION_JSON = Path("configs/policy/check-id-migration.json")
 FILENAME_ALLOWLIST_JSON = Path("configs/policy/check-filename-allowlist.json")
 TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json")
+CHECK_CATEGORY_ENUM = {"lint", "check"}
+CHECK_DOMAIN_ENUM = {"checks", "configs", "contracts", "docker", "docs", "license", "make", "ops", "policies", "python", "repo"}
+LINT_DOMAINS = {"configs", "docs", "make", "ops"}
+
+
+def normalize_category(raw: str, *, domain: str, groups: tuple[str, ...]) -> str:
+    value = str(raw).strip().lower()
+    if value in CHECK_CATEGORY_ENUM:
+        return value
+    if "lint" in {g.strip().lower() for g in groups}:
+        return "lint"
+    if domain in LINT_DOMAINS:
+        return "lint"
+    return "check"
 
 
 @dataclass(frozen=True)
@@ -98,7 +112,7 @@ def _parse_toml(repo_root: Path) -> list[RegistryEntry]:
                 callable=str(row.get("callable", "")).strip(),
                 description=str(row.get("description", "")).strip(),
                 severity=str(row.get("severity", "error")).strip(),
-                category=str(row.get("category", "hygiene")).strip(),
+                category=normalize_category(str(row.get("category", "check")), domain=str(row.get("domain", "")).strip(), groups=tuple(str(x).strip() for x in row.get("groups", []) if str(x).strip())),
                 fix_hint=str(row.get("fix_hint", "Review check output and apply the documented fix.")).strip(),
                 effects=tuple(str(x).strip() for x in row.get("effects", []) if str(x).strip()),
                 external_tools=tuple(str(x).strip() for x in row.get("external_tools", []) if str(x).strip()),
@@ -153,6 +167,12 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
         import re
         if re.match(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$", e.id) is None:
             errors.append(f"{e.id}: id must match checks_<domain>_<area>_<name>")
+        if e.domain not in CHECK_DOMAIN_ENUM:
+            errors.append(f"{e.id}: domain must be one of {sorted(CHECK_DOMAIN_ENUM)}")
+        if e.category not in CHECK_CATEGORY_ENUM:
+            errors.append(f"{e.id}: category must be one of {sorted(CHECK_CATEGORY_ENUM)}")
+        if "lint" in {group.lower() for group in e.groups}:
+            errors.append(f"{e.id}: `lint` marker in groups is forbidden; use category=lint")
         if e.speed not in {"fast", "slow", "nightly"}:
             errors.append(f"{e.id}: speed must be fast|slow|nightly")
         if not e.groups:
@@ -192,6 +212,13 @@ def _validate_entries(entries: list[RegistryEntry]) -> None:
                 errors.append(f"{e.id}: speed mismatch; expected `{expected_speed}` (or nightly) from implementation")
         if idx > 1 and entries[idx - 2].id > e.id:
             errors.append("registry entries must be sorted by id")
+
+    source_root = _repo_root() / "packages/atlasctl/src"
+    for entry in entries:
+        module_file = source_root / (entry.module.replace(".", "/") + ".py")
+        package_init = source_root / (entry.module.replace(".", "/") + "/__init__.py")
+        if not module_file.exists() and not package_init.exists():
+            errors.append(f"{entry.id}: implementation module file missing for `{entry.module}`")
     if errors:
         raise ValueError("checks registry invariants failed: " + "; ".join(sorted(set(errors))))
 
@@ -216,7 +243,11 @@ def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry,
             callable=str(r.get("impl_ref", {}).get("callable", "")),
             description=str(r["description"]),
             severity=str(r.get("impl_ref", {}).get("severity", "error")),
-            category=str(r.get("impl_ref", {}).get("category", "hygiene")),
+            category=normalize_category(
+                str(r.get("impl_ref", {}).get("category", "check")),
+                domain=str(r["domain"]),
+                groups=tuple(str(x) for x in r.get("groups", [])),
+            ),
             fix_hint=str(r.get("impl_ref", {}).get("fix_hint", "Review check output and apply the documented fix.")),
             effects=tuple(str(x) for x in r.get("impl_ref", {}).get("effects", [])),
             external_tools=tuple(str(x) for x in r.get("impl_ref", {}).get("external_tools", [])),

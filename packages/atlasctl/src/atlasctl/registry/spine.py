@@ -243,7 +243,7 @@ def load_registry(repo_root: Path | None = None) -> Registry:
         )
         for e in check_entries
     ]
-    checks.sort(key=lambda c: (c.domain, c.category, c.check_id))
+    checks.sort(key=lambda c: c.check_id)
 
     commands: list[RegistryCommand] = []
     capabilities: list[CapabilityModel] = []

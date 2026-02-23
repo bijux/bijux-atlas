@@ -3,7 +3,7 @@
     {
       "area": "count",
       "callable": "check_count_budget",
-      "category": "policy",
+      "category": "check",
       "description": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
       "domain": "checks",
       "effects": [],
@@ -30,7 +30,7 @@
     {
       "area": "docs",
       "callable": "check_docs_index_complete",
-      "category": "drift",
+      "category": "check",
       "description": "require checks docs index to include canonical check ids",
       "domain": "checks",
       "effects": [],
@@ -58,7 +58,7 @@
     {
       "area": "owners",
       "callable": "check_owners_ssot",
-      "category": "contract",
+      "category": "check",
       "description": "require every check entry to have an owner in SSOT registry",
       "domain": "checks",
       "effects": [],
@@ -85,7 +85,7 @@
     {
       "area": "registry",
       "callable": "check_registry_all_checks_have_canonical_id",
-      "category": "contract",
+      "category": "check",
       "description": "require every registered check to expose a canonical checks_* id",
       "domain": "checks",
       "effects": [],
@@ -113,7 +113,7 @@
     {
       "area": "registry",
       "callable": "check_registry_canonical_id_matches_module_path",
-      "category": "policy",
+      "category": "check",
       "description": "require canonical id domain/area segments to match implementation module path",
       "domain": "checks",
       "effects": [],
@@ -141,7 +141,7 @@
     {
       "area": "registry",
       "callable": "check_registry_change_requires_docs_update",
-      "category": "policy",
+      "category": "check",
       "description": "require docs update when checks registry changes",
       "domain": "checks",
       "effects": [],
@@ -170,7 +170,7 @@
     {
       "area": "registry",
       "callable": "check_registry_change_requires_golden_update",
-      "category": "policy",
+      "category": "check",
       "description": "require checks list/tree/owners goldens update when registry changes",
       "domain": "checks",
       "effects": [],
@@ -199,7 +199,7 @@
     {
       "area": "registry",
       "callable": "check_registry_change_requires_owner_update",
-      "category": "policy",
+      "category": "check",
       "description": "require ownership metadata update when checks registry changes",
       "domain": "checks",
       "effects": [],
@@ -228,7 +228,7 @@
     {
       "area": "registry",
       "callable": "check_registry_docs_link_required",
-      "category": "contract",
+      "category": "check",
       "description": "require docs_link metadata for every registry check entry",
       "domain": "checks",
       "effects": [],
@@ -256,7 +256,7 @@
     {
       "area": "registry",
       "callable": "check_registry_docs_meta_matches_runtime",
-      "category": "drift",
+      "category": "check",
       "description": "require generated docs _meta checks registry file to match runtime registry",
       "domain": "checks",
       "effects": [],
@@ -284,7 +284,7 @@
     {
       "area": "registry",
       "callable": "check_registry_integrity",
-      "category": "contract",
+      "category": "check",
       "description": "validate checks registry TOML/JSON integrity and drift",
       "domain": "checks",
       "effects": [],
@@ -312,7 +312,7 @@
     {
       "area": "registry",
       "callable": "check_registry_no_banned_adjectives_in_ids",
-      "category": "policy",
+      "category": "check",
       "description": "forbid policy-listed adjectives in canonical check ids",
       "domain": "checks",
       "effects": [],
@@ -339,7 +339,7 @@
     {
       "area": "registry",
       "callable": "check_registry_no_duplicate_canonical_id",
-      "category": "contract",
+      "category": "check",
       "description": "forbid duplicate canonical check ids in registry",
       "domain": "checks",
       "effects": [],
@@ -367,7 +367,7 @@
     {
       "area": "registry",
       "callable": "check_registry_owners_required",
-      "category": "contract",
+      "category": "check",
       "description": "require every registry entry to declare an owner",
       "domain": "checks",
       "effects": [],
@@ -395,7 +395,7 @@
     {
       "area": "registry",
       "callable": "check_registry_remediation_link_required",
-      "category": "contract",
+      "category": "check",
       "description": "require remediation_link metadata for every registry check entry",
       "domain": "checks",
       "effects": [],
@@ -423,7 +423,7 @@
     {
       "area": "registry",
       "callable": "check_registry_speed_required",
-      "category": "contract",
+      "category": "check",
       "description": "require speed classification for every registry entry (fast|slow|nightly)",
       "domain": "checks",
       "effects": [],
@@ -451,7 +451,7 @@
     {
       "area": "registry",
       "callable": "check_registry_suite_membership_required",
-      "category": "policy",
+      "category": "check",
       "description": "require every registry check to be selected by at least one suite manifest",
       "domain": "checks",
       "effects": [],
@@ -479,7 +479,7 @@
     {
       "area": "registry",
       "callable": "check_registry_transition_complete",
-      "category": "policy",
+      "category": "check",
       "description": "fail when check-id migration aliases remain after transition deadline",
       "domain": "checks",
       "effects": [],
@@ -507,7 +507,7 @@
     {
       "area": "remediation",
       "callable": "check_remediation_ssot",
-      "category": "contract",
+      "category": "check",
       "description": "require every check entry to have remediation documentation link",
       "domain": "checks",
       "effects": [],
@@ -534,7 +534,7 @@
     {
       "area": "suites",
       "callable": "check_suites_inventory_ssot",
-      "category": "contract",
+      "category": "check",
       "description": "require deterministic suite inventory in suite registry SSOT",
       "domain": "checks",
       "effects": [],
@@ -562,7 +562,7 @@
     {
       "area": "suites",
       "callable": "check_suites_no_orphans",
-      "category": "policy",
+      "category": "check",
       "description": "require every registered check to belong to at least one suite",
       "domain": "checks",
       "effects": [],
@@ -590,7 +590,7 @@
     {
       "area": "surfaces",
       "callable": "check_surfaces_no_banned_adjectives_in_paths",
-      "category": "policy",
+      "category": "check",
       "description": "forbid policy-listed adjectives in atlasctl module/docs path names",
       "domain": "checks",
       "effects": [],
@@ -617,7 +617,7 @@
     {
       "area": "pyproject",
       "callable": "check_pyproject_no_duplicate_tool_config",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid duplicate pyproject tool blocks",
       "domain": "configs",
       "effects": [],
@@ -644,7 +644,7 @@
     {
       "area": "pyproject",
       "callable": "check_pyproject_required_blocks",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate required pyproject blocks",
       "domain": "configs",
       "effects": [],
@@ -671,7 +671,7 @@
     {
       "area": "atlasctl",
       "callable": "check_atlas_scripts_cli_contract",
-      "category": "contract",
+      "category": "check",
       "description": "validate atlasctl CLI contract surface",
       "domain": "contracts",
       "effects": [],
@@ -698,7 +698,7 @@
     {
       "area": "layout",
       "callable": "check_layout_contract",
-      "category": "contract",
+      "category": "check",
       "description": "validate repository layout contract",
       "domain": "contracts",
       "effects": [],
@@ -727,7 +727,7 @@
     {
       "area": "schema",
       "callable": "check_schema_catalog_integrity",
-      "category": "contract",
+      "category": "check",
       "description": "validate schema catalog for duplicate names and missing files",
       "domain": "contracts",
       "effects": [],
@@ -754,7 +754,7 @@
     {
       "area": "schema",
       "callable": "check_schema_catalog_files_exist",
-      "category": "contract",
+      "category": "check",
       "description": "ensure schemas listed in catalog exist on disk",
       "domain": "contracts",
       "effects": [],
@@ -781,7 +781,7 @@
     {
       "area": "schema",
       "callable": "check_schema_catalog_referenced",
-      "category": "contract",
+      "category": "check",
       "description": "ensure schema catalog contains only referenced schemas",
       "domain": "contracts",
       "effects": [],
@@ -808,7 +808,7 @@
     {
       "area": "schema",
       "callable": "check_schema_catalog_sorted",
-      "category": "contract",
+      "category": "check",
       "description": "ensure schema catalog order is deterministic",
       "domain": "contracts",
       "effects": [],
@@ -835,7 +835,7 @@
     {
       "area": "schema",
       "callable": "check_schema_catalog_ssot",
-      "category": "contract",
+      "category": "check",
       "description": "enforce contracts catalog.json as schema SSOT",
       "domain": "contracts",
       "effects": [],
@@ -862,7 +862,7 @@
     {
       "area": "schema",
       "callable": "check_schema_change_release_notes",
-      "category": "contract",
+      "category": "check",
       "description": "enforce schema bump + release notes policy for schema changes",
       "domain": "contracts",
       "effects": [],
@@ -889,7 +889,7 @@
     {
       "area": "schema",
       "callable": "check_schema_disk_files_listed",
-      "category": "contract",
+      "category": "check",
       "description": "ensure no schema file exists outside catalog",
       "domain": "contracts",
       "effects": [],
@@ -916,7 +916,7 @@
     {
       "area": "schema",
       "callable": "check_schema_goldens_validate",
-      "category": "contract",
+      "category": "check",
       "description": "validate JSON goldens against declared schemas",
       "domain": "contracts",
       "effects": [],
@@ -943,7 +943,7 @@
     {
       "area": "schema",
       "callable": "check_schema_id_naming",
-      "category": "contract",
+      "category": "check",
       "description": "enforce schema id naming/version suffix policy",
       "domain": "contracts",
       "effects": [],
@@ -970,7 +970,7 @@
     {
       "area": "schema",
       "callable": "check_schema_readme_updated",
-      "category": "contract",
+      "category": "check",
       "description": "ensure schemas README stays in sync with schema catalog/files",
       "domain": "contracts",
       "effects": [],
@@ -997,7 +997,7 @@
     {
       "area": "schema",
       "callable": "check_schema_samples_validate",
-      "category": "contract",
+      "category": "check",
       "description": "validate sample payloads against declared schemas",
       "domain": "contracts",
       "effects": [],
@@ -1024,7 +1024,7 @@
     {
       "area": "image",
       "callable": "check_docker_image_size",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce docker image size budget",
       "domain": "docker",
       "effects": [],
@@ -1051,7 +1051,7 @@
     {
       "area": "layout",
       "callable": "check_docker_layout",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate docker layout contracts",
       "domain": "docker",
       "effects": [],
@@ -1078,7 +1078,7 @@
     {
       "area": "no",
       "callable": "check_no_latest_tags",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid floating latest image tags",
       "domain": "docker",
       "effects": [],
@@ -1105,7 +1105,7 @@
     {
       "area": "policy",
       "callable": "check_docker_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate docker policy contracts",
       "domain": "docker",
       "effects": [],
@@ -1132,7 +1132,7 @@
     {
       "area": "tag",
       "callable": "check_no_latest_tags",
-      "category": "hygiene",
+      "category": "check",
       "description": "docker tag contract forbids latest tags",
       "domain": "docker",
       "effects": [],
@@ -1159,7 +1159,7 @@
     {
       "area": "check",
       "callable": "check_docs_check_id_drift",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid docs references to unknown check ids",
       "domain": "docs",
       "effects": [],
@@ -1186,7 +1186,7 @@
     {
       "area": "ci",
       "callable": "check_docs_ci_lane_mapping",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require CI workflow lane mapping doc and referenced jobs/workflows",
       "domain": "docs",
       "effects": [],
@@ -1213,7 +1213,7 @@
     {
       "area": "command",
       "callable": "check_command_group_docs_pages",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require command-group docs pages with examples section",
       "domain": "docs",
       "effects": [],
@@ -1240,7 +1240,7 @@
     {
       "area": "index",
       "callable": "check_docs_index_complete",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate docs/index.md covers all docs files",
       "domain": "docs",
       "effects": [],
@@ -1267,7 +1267,7 @@
     {
       "area": "links",
       "callable": "check_docs_links_exist",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate docs markdown link targets exist",
       "domain": "docs",
       "effects": [],
@@ -1294,7 +1294,7 @@
     {
       "area": "lint",
       "callable": "check_docs_lint_style",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce docs style lint policy",
       "domain": "docs",
       "effects": [],
@@ -1321,7 +1321,7 @@
     {
       "area": "migration",
       "callable": "check_migration_docs_not_stale",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid stale migration wording once removals are active",
       "domain": "docs",
       "effects": [],
@@ -1348,7 +1348,7 @@
     {
       "area": "nav",
       "callable": "check_docs_nav_references_exist",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate mkdocs nav references existing docs pages",
       "domain": "docs",
       "effects": [],
@@ -1375,7 +1375,7 @@
     {
       "area": "new",
       "callable": "check_docs_new_command_workflow",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require docs/tests updates when command registry changes",
       "domain": "docs",
       "effects": [],
@@ -1402,7 +1402,7 @@
     {
       "area": "no",
       "callable": "check_docs_no_legacy_cli_invocation",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid legacy atlasctl invocation patterns in docs",
       "domain": "docs",
       "effects": [],
@@ -1429,7 +1429,7 @@
     {
       "area": "no",
       "callable": "check_docs_no_ops_generated_run_paths",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid runtime ops generated path references in docs",
       "domain": "docs",
       "effects": [],
@@ -1456,7 +1456,7 @@
     {
       "area": "no",
       "callable": "check_docs_no_orphans",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid orphan docs files outside allowed generated/meta paths",
       "domain": "docs",
       "effects": [],
@@ -1483,7 +1483,7 @@
     {
       "area": "no",
       "callable": "check_docs_no_placeholder_release_docs",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid placeholder docs paths in release docs tree",
       "domain": "docs",
       "effects": [],
@@ -1510,7 +1510,7 @@
     {
       "area": "no",
       "callable": "check_docs_scripts_references",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid scripts/ path references in docs",
       "domain": "docs",
       "effects": [],
@@ -1537,7 +1537,7 @@
     {
       "area": "ownership",
       "callable": "check_docs_ownership_metadata",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require docs ownership metadata for major docs areas",
       "domain": "docs",
       "effects": [],
@@ -1564,7 +1564,7 @@
     {
       "area": "package",
       "callable": "check_no_package_root_markdown_except_readme",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid markdown files at package root except README",
       "domain": "docs",
       "effects": [],
@@ -1591,7 +1591,7 @@
     {
       "area": "registry",
       "callable": "check_docs_registry_command_drift",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid docs references to unknown atlasctl commands",
       "domain": "docs",
       "effects": [],
@@ -1618,7 +1618,7 @@
     {
       "area": "registry",
       "callable": "check_docs_registry_indexes",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require registry-generated command/check/suite index pages to be in sync",
       "domain": "docs",
       "effects": [],
@@ -1645,7 +1645,7 @@
     {
       "area": "stable",
       "callable": "check_stable_command_examples_in_group_docs",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require stable commands to have examples in group docs",
       "domain": "docs",
       "effects": [],
@@ -1672,7 +1672,7 @@
     {
       "area": "file",
       "callable": "check_license_file_mit",
-      "category": "contract",
+      "category": "check",
       "description": "ensure package license file exists and is MIT",
       "domain": "license",
       "effects": [],
@@ -1699,7 +1699,7 @@
     {
       "area": "spdx",
       "callable": "check_spdx_policy",
-      "category": "policy",
+      "category": "check",
       "description": "enforce SPDX policy for python source headers",
       "domain": "license",
       "effects": [],
@@ -1726,7 +1726,7 @@
     {
       "area": "statements",
       "callable": "check_license_statements_consistent",
-      "category": "policy",
+      "category": "check",
       "description": "ensure package docs contain only MIT-compatible license statements",
       "domain": "license",
       "effects": [],
@@ -1753,7 +1753,7 @@
     {
       "area": "ci",
       "callable": "check_make_ci_entrypoints_contract",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate CI workflow entrypoints contract",
       "domain": "make",
       "effects": [],
@@ -1780,7 +1780,7 @@
     {
       "area": "ci",
       "callable": "check_ci_pr_lane_fast_only",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require CI PR lane suites to exclude slow checks unless explicitly allowlisted",
       "domain": "make",
       "effects": [],
@@ -1807,7 +1807,7 @@
     {
       "area": "ci",
       "callable": "check_ci_workflows_call_only_delegating_make_targets",
-      "category": "hygiene",
+      "category": "lint",
       "description": "CI workflows must call only make targets that delegate to atlasctl",
       "domain": "make",
       "effects": [],
@@ -1834,7 +1834,7 @@
     {
       "area": "ci",
       "callable": "check_ci_workflows_call_make_and_make_calls_atlasctl",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require CI workflows to call make entrypoints and keep atlasctl delegation in makefiles",
       "domain": "make",
       "effects": [],
@@ -1861,7 +1861,7 @@
     {
       "area": "command",
       "callable": "check_make_command_allowlist",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce allowed direct recipe commands",
       "domain": "make",
       "effects": [],
@@ -1888,7 +1888,7 @@
     {
       "area": "forbidden",
       "callable": "check_make_forbidden_paths",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct forbidden paths in make recipes",
       "domain": "make",
       "effects": [],
@@ -1915,7 +1915,7 @@
     {
       "area": "help",
       "callable": "check_make_help",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ensure deterministic make help output",
       "domain": "make",
       "effects": [],
@@ -1942,7 +1942,7 @@
     {
       "area": "index",
       "callable": "check_make_index_drift_contract",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce makefiles index drift contract",
       "domain": "make",
       "effects": [],
@@ -1969,7 +1969,7 @@
     {
       "area": "lane",
       "callable": "check_make_lane_reports_via_atlasctl_reporting",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require lane reports to be emitted through atlasctl reporting command",
       "domain": "make",
       "effects": [],
@@ -1996,7 +1996,7 @@
     {
       "area": "makefiles",
       "callable": "check_makefiles_wrappers_only_all",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce wrapper-only invariant across canonical makefiles",
       "domain": "make",
       "effects": [],
@@ -2023,7 +2023,7 @@
     {
       "area": "no",
       "callable": "check_make_no_atlasctl_run_ops_run",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid make recipes from calling atlasctl run ./ops/run scripts",
       "domain": "make",
       "effects": [],
@@ -2050,7 +2050,7 @@
     {
       "area": "no",
       "callable": "check_make_no_bypass_atlasctl_without_allowlist",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid make recipes bypassing atlasctl without explicit allowlist",
       "domain": "make",
       "effects": [],
@@ -2077,7 +2077,7 @@
     {
       "area": "no",
       "callable": "check_make_no_direct_artifact_writes",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct artifact writes in make recipes",
       "domain": "make",
       "effects": [],
@@ -2104,7 +2104,7 @@
     {
       "area": "no",
       "callable": "check_make_no_direct_bash_ops",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct `bash ops/...` invocations in make recipes",
       "domain": "make",
       "effects": [],
@@ -2131,7 +2131,7 @@
     {
       "area": "no",
       "callable": "check_make_no_direct_python_script_invocations",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct python script execution in make recipes",
       "domain": "make",
       "effects": [],
@@ -2158,7 +2158,7 @@
     {
       "area": "no",
       "callable": "check_make_no_direct_python_only_atlasctl",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct python invocations in make recipes",
       "domain": "make",
       "effects": [],
@@ -2185,7 +2185,7 @@
     {
       "area": "no",
       "callable": "check_make_no_direct_script_exec_drift",
-      "category": "hygiene",
+      "category": "lint",
       "description": "drift check for direct script execution in make recipes",
       "domain": "make",
       "effects": [],
@@ -2212,7 +2212,7 @@
     {
       "area": "no",
       "callable": "check_make_no_direct_scripts_only_atlasctl",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct script path invocations in make recipes",
       "domain": "make",
       "effects": [],
@@ -2239,7 +2239,7 @@
     {
       "area": "no",
       "callable": "check_make_no_duplicate_all_variants",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require `*-all` targets to provide distinct full behavior",
       "domain": "make",
       "effects": [],
@@ -2266,7 +2266,7 @@
     {
       "area": "no",
       "callable": "check_make_no_legacy_script_aliases",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)",
       "domain": "make",
       "effects": [],
@@ -2293,7 +2293,7 @@
     {
       "area": "no",
       "callable": "check_make_no_orphan_docs_refs",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid orphan docs references for make targets and atlasctl commands",
       "domain": "make",
       "effects": [],
@@ -2320,7 +2320,7 @@
     {
       "area": "no",
       "callable": "check_make_no_python_module_invocation",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid `python -m atlasctl.cli` in make recipes",
       "domain": "make",
       "effects": [],
@@ -2347,7 +2347,7 @@
     {
       "area": "ops",
       "callable": "check_make_ops_product_atlasctl_only_delegation",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ops.mk and product.mk must delegate only to matching atlasctl groups",
       "domain": "make",
       "effects": [],
@@ -2374,7 +2374,7 @@
     {
       "area": "ops",
       "callable": "check_make_ops_product_no_tool_tokens",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ops.mk/product.mk must not contain raw tool tokens",
       "domain": "make",
       "effects": [],
@@ -2401,7 +2401,7 @@
     {
       "area": "ops",
       "callable": "check_make_ops_product_ownership_complete",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ownership metadata must cover ops/product targets",
       "domain": "make",
       "effects": [],
@@ -2428,7 +2428,7 @@
     {
       "area": "product",
       "callable": "check_make_product_migration_complete_no_ops_run",
-      "category": "hygiene",
+      "category": "lint",
       "description": "fail if product.mk still references ops/run during migration completion",
       "domain": "make",
       "effects": [],
@@ -2455,7 +2455,7 @@
     {
       "area": "product",
       "callable": "check_make_product_mk_wrapper_contract",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce product.mk wrapper-only contract and forbid internal targets",
       "domain": "make",
       "effects": [],
@@ -2482,7 +2482,7 @@
     {
       "area": "public",
       "callable": "check_public_make_targets_map_to_atlasctl",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require every public make target to delegate to atlasctl",
       "domain": "make",
       "effects": [],
@@ -2509,7 +2509,7 @@
     {
       "area": "public",
       "callable": "check_make_public_targets_documented",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require documented public make targets",
       "domain": "make",
       "effects": [],
@@ -2536,7 +2536,7 @@
     {
       "area": "removed",
       "callable": "check_make_removed_makefiles_unreferenced",
-      "category": "hygiene",
+      "category": "lint",
       "description": "retired makefiles must not be referenced",
       "domain": "make",
       "effects": [],
@@ -2563,7 +2563,7 @@
     {
       "area": "root",
       "callable": "check_make_root_budget",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce root.mk LOC/target-count budget",
       "domain": "make",
       "effects": [],
@@ -2590,7 +2590,7 @@
     {
       "area": "scripts",
       "callable": "check_make_scripts_references",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid scripts/ references in make recipes",
       "domain": "make",
       "effects": [],
@@ -2617,7 +2617,7 @@
     {
       "area": "target",
       "callable": "check_make_target_boundaries_enforced",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce make target boundary contracts",
       "domain": "make",
       "effects": [],
@@ -2644,7 +2644,7 @@
     {
       "area": "target",
       "callable": "check_make_target_names_no_banned_adjectives",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid banned adjectives in make target names",
       "domain": "make",
       "effects": [],
@@ -2671,7 +2671,7 @@
     {
       "area": "target",
       "callable": "check_make_target_ownership_complete",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require make target ownership coverage",
       "domain": "make",
       "effects": [],
@@ -2698,7 +2698,7 @@
     {
       "area": "workflows",
       "callable": "check_workflows_reference_known_suites",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require workflow suite invocations to reference declared suite names",
       "domain": "make",
       "effects": [],
@@ -2725,7 +2725,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_no_direct_cargo",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct cargo calls in wrapper makefiles",
       "domain": "make",
       "effects": [],
@@ -2752,7 +2752,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_no_env_side_effects",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid shell/env side effects inside wrapper recipe bodies",
       "domain": "make",
       "effects": [],
@@ -2779,7 +2779,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_no_multiline_recipes",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid multi-line recipes in wrapper makefiles",
       "domain": "make",
       "effects": [],
@@ -2806,7 +2806,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_no_python_module_invocation",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid python module invocations in wrapper recipes",
       "domain": "make",
       "effects": [],
@@ -2833,7 +2833,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_only_calls_bin_atlasctl",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require wrapper targets to call ./bin/atlasctl only",
       "domain": "make",
       "effects": [],
@@ -2860,7 +2860,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_phony_complete",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require wrapper targets to be listed in .PHONY",
       "domain": "make",
       "effects": [],
@@ -2887,7 +2887,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_purity",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce make wrapper purity for canonical makefiles",
       "domain": "make",
       "effects": [],
@@ -2914,7 +2914,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_shell_is_sh",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require wrapper makefiles to pin SHELL := /bin/sh",
       "domain": "make",
       "effects": [],
@@ -2941,7 +2941,7 @@
     {
       "area": "wrapper",
       "callable": "check_make_wrapper_target_budget",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce per-makefile wrapper target count budgets",
       "domain": "make",
       "effects": [],
@@ -2968,7 +2968,7 @@
     {
       "area": "all",
       "callable": "check_ops_all_check_scripts_registered",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require all ops check scripts to be registered in atlasctl checks",
       "domain": "ops",
       "effects": [],
@@ -2996,7 +2996,7 @@
     {
       "area": "chart",
       "callable": "check_ops_chart_version_contract",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce chart/app version contract for bijux-atlas chart",
       "domain": "ops",
       "effects": [],
@@ -3024,7 +3024,7 @@
     {
       "area": "clean",
       "callable": "check_ops_clean_allowed_roots_only",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ensure ops clean only targets allowed generated roots",
       "domain": "ops",
       "effects": [],
@@ -3052,7 +3052,7 @@
     {
       "area": "committed",
       "callable": "check_committed_generated_hygiene",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate deterministic committed generated assets",
       "domain": "ops",
       "effects": [],
@@ -3080,7 +3080,7 @@
     {
       "area": "effect",
       "callable": "check_ops_effect_boundary_imports",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid ops command layer imports from CLI parser modules",
       "domain": "ops",
       "effects": [],
@@ -3108,7 +3108,7 @@
     {
       "area": "env",
       "callable": "check_ops_env_schema_is_used",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ensure ops env schema is the single interface for env validate/print",
       "domain": "ops",
       "effects": [],
@@ -3136,7 +3136,7 @@
     {
       "area": "generated",
       "callable": "check_ops_generated_not_tracked_unless_allowed",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid tracked generated ops outputs unless explicitly allowlisted",
       "domain": "ops",
       "effects": [],
@@ -3164,7 +3164,7 @@
     {
       "area": "manifests",
       "callable": "check_ops_manifests_schema",
-      "category": "hygiene",
+      "category": "lint",
       "description": "validate ops manifests against atlas.ops.manifest.v1 schema",
       "domain": "ops",
       "effects": [],
@@ -3192,7 +3192,7 @@
     {
       "area": "no",
       "callable": "check_ops_no_direct_script_entrypoints",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid direct ops script entrypoints in docs/workflows/makefiles",
       "domain": "ops",
       "effects": [],
@@ -3220,7 +3220,7 @@
     {
       "area": "no",
       "callable": "check_ops_no_new_run_scripts_without_approval_and_expiry",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid new ops/run scripts without valid temporary approval and expiry",
       "domain": "ops",
       "effects": [],
@@ -3248,7 +3248,7 @@
     {
       "area": "no",
       "callable": "check_ops_generated_tracked",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid tracked files in generated ops dirs",
       "domain": "ops",
       "effects": [],
@@ -3276,7 +3276,7 @@
     {
       "area": "no",
       "callable": "check_tracked_timestamp_paths",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid tracked timestamped paths",
       "domain": "ops",
       "effects": [],
@@ -3304,7 +3304,7 @@
     {
       "area": "obs",
       "callable": "check_ops_obs_drift_goldens",
-      "category": "hygiene",
+      "category": "lint",
       "description": "fail on observability golden drift (generated vs golden)",
       "domain": "ops",
       "effects": [],
@@ -3332,7 +3332,7 @@
     {
       "area": "pins",
       "callable": "check_ops_pins_no_unpinned_versions",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid floating/unpinned versions in ops pins",
       "domain": "ops",
       "effects": [],
@@ -3360,7 +3360,7 @@
     {
       "area": "pins",
       "callable": "check_ops_pins_update_is_deterministic",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require deterministic canonical ops pins payload",
       "domain": "ops",
       "effects": [],
@@ -3388,7 +3388,7 @@
     {
       "area": "product",
       "callable": "check_ops_product_task_scripts_zero",
-      "category": "hygiene",
+      "category": "lint",
       "description": "forbid product task scripts under ops and enforce zero-count baseline",
       "domain": "ops",
       "effects": [],
@@ -3416,7 +3416,7 @@
     {
       "area": "run",
       "callable": "check_ops_run_non_executable_unless_allowlisted",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ops/run scripts must be non-executable except allowlisted",
       "domain": "ops",
       "effects": [],
@@ -3444,7 +3444,7 @@
     {
       "area": "run",
       "callable": "check_ops_run_only_allowlisted_scripts",
-      "category": "hygiene",
+      "category": "lint",
       "description": "ops/run contains no scripts except explicitly allowed fixtures",
       "domain": "ops",
       "effects": [],
@@ -3472,7 +3472,7 @@
     {
       "area": "run",
       "callable": "check_ops_run_temp_script_approvals",
-      "category": "hygiene",
+      "category": "lint",
       "description": "temporary ops/run migration script approvals must be valid and unexpired",
       "domain": "ops",
       "effects": [],
@@ -3500,7 +3500,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_budget_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3528,7 +3528,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_threshold_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3556,7 +3556,7 @@
     {
       "area": "script",
       "callable": "check_ops_lint_layer_contract_drift_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/_lint/check_layer_contract_drift.py`",
       "domain": "ops",
       "effects": [],
@@ -3584,7 +3584,7 @@
     {
       "area": "script",
       "callable": "check_ops_lint_check_surfaces_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/_lint/check-surfaces.py`",
       "domain": "ops",
       "effects": [],
@@ -3612,7 +3612,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3640,7 +3640,7 @@
     {
       "area": "script",
       "callable": "check_ops_lint_layer_contract_drift_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`",
       "domain": "ops",
       "effects": [],
@@ -3668,7 +3668,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3696,7 +3696,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3724,7 +3724,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3752,7 +3752,7 @@
     {
       "area": "script",
       "callable": "check_ops_load_abuse_scenarios_required_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/load/scripts/check_abuse_scenarios_required.py`",
       "domain": "ops",
       "effects": [],
@@ -3780,7 +3780,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_baseline_update_policy_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py`",
       "domain": "ops",
       "effects": [],
@@ -3808,7 +3808,7 @@
     {
       "area": "script",
       "callable": "check_ops_load_perf_baselines_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/load/scripts/check_perf_baselines.py`",
       "domain": "ops",
       "effects": [],
@@ -3836,7 +3836,7 @@
     {
       "area": "script",
       "callable": "check_ops_load_pinned_queries_lock_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`",
       "domain": "ops",
       "effects": [],
@@ -3864,7 +3864,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_prereqs_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py`",
       "domain": "ops",
       "effects": [],
@@ -3892,7 +3892,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_regression_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py`",
       "domain": "ops",
       "effects": [],
@@ -3920,7 +3920,7 @@
     {
       "area": "script",
       "callable": "check_ops_load_runbook_suite_names_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/load/scripts/check_runbook_suite_names.py`",
       "domain": "ops",
       "effects": [],
@@ -3948,7 +3948,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_baseline_regression_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py`",
       "domain": "ops",
       "effects": [],
@@ -3976,7 +3976,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_metric_cardinality_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_metric_cardinality.py`",
       "domain": "ops",
       "effects": [],
@@ -4004,7 +4004,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_upgrade_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py`",
       "domain": "ops",
       "effects": [],
@@ -4032,7 +4032,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_versions_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py`",
       "domain": "ops",
       "effects": [],
@@ -4060,7 +4060,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_alerts_contract_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_alerts_contract.py`",
       "domain": "ops",
       "effects": [],
@@ -4088,7 +4088,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_contract_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_contract.py`",
       "domain": "ops",
       "effects": [],
@@ -4116,7 +4116,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_metric_compat_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_metric_compat.py`",
       "domain": "ops",
       "effects": [],
@@ -4144,7 +4144,7 @@
     {
       "area": "script",
       "callable": "check_ops_obs_endpoint_metrics_coverage_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_endpoint_metrics_coverage.py`",
       "domain": "ops",
       "effects": [],
@@ -4172,7 +4172,7 @@
     {
       "area": "script",
       "callable": "check_ops_obs_endpoint_trace_coverage_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_endpoint_trace_coverage.py`",
       "domain": "ops",
       "effects": [],
@@ -4200,7 +4200,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_contract_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_contract.py`",
       "domain": "ops",
       "effects": [],
@@ -4228,7 +4228,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_coverage_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_coverage.py`",
       "domain": "ops",
       "effects": [],
@@ -4256,7 +4256,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_drift_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_drift.py`",
       "domain": "ops",
       "effects": [],
@@ -4284,7 +4284,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_golden_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_golden.py`",
       "domain": "ops",
       "effects": [],
@@ -4312,7 +4312,7 @@
     {
       "area": "script",
       "callable": "check_ops_obs_budgets_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_obs_budgets.py`",
       "domain": "ops",
       "effects": [],
@@ -4340,7 +4340,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_observability_lag_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_observability_lag.py`",
       "domain": "ops",
       "effects": [],
@@ -4368,7 +4368,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_overload_behavior_contract_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_overload_behavior_contract.py`",
       "domain": "ops",
       "effects": [],
@@ -4396,7 +4396,7 @@
     {
       "area": "script",
       "callable": "check_ops_obs_profile_goldens_native",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_profile_goldens.py`",
       "domain": "ops",
       "effects": [],
@@ -4424,7 +4424,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_runtime_metrics_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_runtime_metrics.py`",
       "domain": "ops",
       "effects": [],
@@ -4452,7 +4452,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_coverage_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_coverage.py`",
       "domain": "ops",
       "effects": [],
@@ -4480,7 +4480,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_golden_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_golden.py`",
       "domain": "ops",
       "effects": [],
@@ -4508,7 +4508,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_tracing_contract_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_tracing_contract.py`",
       "domain": "ops",
       "effects": [],
@@ -4536,7 +4536,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_stack_idempotency_check_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py`",
       "domain": "ops",
       "effects": [],
@@ -4564,7 +4564,7 @@
     {
       "area": "script",
       "callable": "check_ops_stack_tests_check_live_layer_snapshot_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `ops/stack/tests/check_live_layer_snapshot.py`",
       "domain": "ops",
       "effects": [],
@@ -4592,7 +4592,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_allowlist_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_allowlist.py`",
       "domain": "ops",
       "effects": [],
@@ -4620,7 +4620,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_policy_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_policy.py`",
       "domain": "ops",
       "effects": [],
@@ -4648,7 +4648,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_validation_check_kind_cluster_contract_drift_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py`",
       "domain": "ops",
       "effects": [],
@@ -4676,7 +4676,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_no_root_dumping_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_no_root_dumping.py`",
       "domain": "ops",
       "effects": [],
@@ -4704,7 +4704,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_canonical_shims_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_canonical_shims.py`",
       "domain": "ops",
       "effects": [],
@@ -4732,7 +4732,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_ops_lib_canonical_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_lib_canonical.py`",
       "domain": "ops",
       "effects": [],
@@ -4760,7 +4760,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_script_targets_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_script_targets.py`",
       "domain": "ops",
       "effects": [],
@@ -4788,7 +4788,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_stack_order_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_stack_order.py`",
       "domain": "ops",
       "effects": [],
@@ -4816,7 +4816,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_workspace_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_workspace.py`",
       "domain": "ops",
       "effects": [],
@@ -4844,7 +4844,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_repo_hygiene_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_repo_hygiene.py`",
       "domain": "ops",
       "effects": [],
@@ -4872,7 +4872,7 @@
     {
       "area": "script",
       "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_stack_manifest_consolidation_py",
-      "category": "hygiene",
+      "category": "lint",
       "description": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_stack_manifest_consolidation.py`",
       "domain": "ops",
       "effects": [],
@@ -4900,7 +4900,7 @@
     {
       "area": "scripts",
       "callable": "check_ops_scripts_are_data_only",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce ops/manifests data-only file policy",
       "domain": "ops",
       "effects": [],
@@ -4928,7 +4928,7 @@
     {
       "area": "scripts",
       "callable": "check_ops_scripts_count_nonincreasing",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce migration gate: ops scripts count must not increase",
       "domain": "ops",
       "effects": [],
@@ -4956,7 +4956,7 @@
     {
       "area": "shell",
       "callable": "check_ops_shell_policy",
-      "category": "hygiene",
+      "category": "lint",
       "description": "enforce shell runtime guard requirements for ops/run wrappers",
       "domain": "ops",
       "effects": [],
@@ -4984,7 +4984,7 @@
     {
       "area": "stack",
       "callable": "check_ops_stack_versions_report_valid",
-      "category": "hygiene",
+      "category": "lint",
       "description": "require stack versions report to match tool versions SSOT",
       "domain": "ops",
       "effects": [],
@@ -5012,7 +5012,7 @@
     {
       "area": "adjective",
       "callable": "check_policies_adjective_allowlist_budget",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce adjective allowlist ratchet budget",
       "domain": "policies",
       "effects": [],
@@ -5040,7 +5040,7 @@
     {
       "area": "adjectives",
       "callable": "check_policies_adjectives_repo_clean",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid forbidden adjectives across tracked files",
       "domain": "policies",
       "effects": [],
@@ -5068,7 +5068,7 @@
     {
       "area": "budget",
       "callable": "check_policies_budget_approval_time_bounded",
-      "category": "hygiene",
+      "category": "check",
       "description": "require budget loosening approvals to be time bounded",
       "domain": "policies",
       "effects": [],
@@ -5096,7 +5096,7 @@
     {
       "area": "budget",
       "callable": "check_policies_budget_relaxation_requires_approval",
-      "category": "hygiene",
+      "category": "check",
       "description": "require explicit approval for any budget relaxation",
       "domain": "policies",
       "effects": [],
@@ -5124,7 +5124,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_all_entries_have_owner_issue_expiry",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass entries to include owner, issue id, and expiry metadata",
       "domain": "policies",
       "effects": [],
@@ -5152,7 +5152,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_budget",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce ratcheted bypass entry count budget",
       "domain": "policies",
       "effects": [],
@@ -5180,7 +5180,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_budget_trend",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce bypass budget trend gate",
       "domain": "policies",
       "effects": [],
@@ -5208,7 +5208,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_count_nonincreasing",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce migration gate: bypass count must not increase",
       "domain": "policies",
       "effects": [],
@@ -5236,7 +5236,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_count_nonincreasing",
-      "category": "hygiene",
+      "category": "check",
       "description": "hard fail invariant: bypass count must not increase",
       "domain": "policies",
       "effects": [],
@@ -5264,7 +5264,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_entry_matches_nothing",
-      "category": "hygiene",
+      "category": "check",
       "description": "fail if wildcard bypass entry matches nothing",
       "domain": "policies",
       "effects": [],
@@ -5292,7 +5292,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_entry_matches_too_broad",
-      "category": "hygiene",
+      "category": "check",
       "description": "fail if wildcard bypass entry matches too broadly",
       "domain": "policies",
       "effects": [],
@@ -5320,7 +5320,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_entry_paths_exist",
-      "category": "hygiene",
+      "category": "check",
       "description": "fail if bypass entry points to missing file/path",
       "domain": "policies",
       "effects": [],
@@ -5348,7 +5348,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_expiry_max_horizon",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce bypass expiry horizon limit",
       "domain": "policies",
       "effects": [],
@@ -5376,7 +5376,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_expiry_not_past",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid expired bypass entries",
       "domain": "policies",
       "effects": [],
@@ -5404,7 +5404,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_files_scoped",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure bypass files are scoped under configs/policy",
       "domain": "policies",
       "effects": [],
@@ -5432,7 +5432,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_hard_gate",
-      "category": "hygiene",
+      "category": "check",
       "description": "fail when bypass hard gate is enabled and any bypass entries exist",
       "domain": "policies",
       "effects": [],
@@ -5460,7 +5460,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_has_expiry",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass entries to declare expiry",
       "domain": "policies",
       "effects": [],
@@ -5488,7 +5488,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_has_owner",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass entries to declare owner",
       "domain": "policies",
       "effects": [],
@@ -5516,7 +5516,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_has_reason",
-      "category": "hygiene",
+      "category": "check",
       "description": "require specific bypass reasons and forbid vague `because` entries",
       "domain": "policies",
       "effects": [],
@@ -5544,7 +5544,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_has_test_coverage",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass entries to have declared validating test coverage",
       "domain": "policies",
       "effects": [],
@@ -5572,7 +5572,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_has_ticket_or_doc_ref",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass entries to link issue id or local doc reference",
       "domain": "policies",
       "effects": [],
@@ -5600,7 +5600,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_ids_unique",
-      "category": "hygiene",
+      "category": "check",
       "description": "require unique bypass IDs across policy files",
       "domain": "policies",
       "effects": [],
@@ -5628,7 +5628,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_inventory_deterministic",
-      "category": "hygiene",
+      "category": "check",
       "description": "require deterministic bypass inventory output ordering",
       "domain": "policies",
       "effects": [],
@@ -5656,7 +5656,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_inventory_growth_requires_ticket",
-      "category": "hygiene",
+      "category": "check",
       "description": "fail inventory growth without explicit bypass approval/ticket entry",
       "domain": "policies",
       "effects": [],
@@ -5684,7 +5684,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_inventory_present",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass inventory registry and sources to exist",
       "domain": "policies",
       "effects": [],
@@ -5712,7 +5712,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_inventory_schema_valid",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate bypass inventory sources against schemas",
       "domain": "policies",
       "effects": [],
@@ -5740,7 +5740,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_issue_id_format",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce bypass issue id format",
       "domain": "policies",
       "effects": [],
@@ -5768,7 +5768,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_mainline_strict_mode",
-      "category": "hygiene",
+      "category": "check",
       "description": "optional strict mode: fail on any bypass entry when enabled",
       "domain": "policies",
       "effects": [],
@@ -5796,7 +5796,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_new_entries_forbidden",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid new bypass entries unless explicitly approved",
       "domain": "policies",
       "effects": [],
@@ -5824,7 +5824,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_no_blank_justifications",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid blank bypass justifications",
       "domain": "policies",
       "effects": [],
@@ -5852,7 +5852,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_no_direct_script_runs",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid bypasses for direct script runs policy",
       "domain": "policies",
       "effects": [],
@@ -5880,7 +5880,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_no_network_guard",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid bypasses for network guard policy",
       "domain": "policies",
       "effects": [],
@@ -5909,7 +5909,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_no_new_files",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid unregistered new bypass files under configs/policy",
       "domain": "policies",
       "effects": [],
@@ -5937,7 +5937,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_no_security_or_pinning",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid bypasses in security and image pinning policy areas",
       "domain": "policies",
       "effects": [],
@@ -5965,7 +5965,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_no_unpinned_images",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid bypasses for unpinned images policy",
       "domain": "policies",
       "effects": [],
@@ -5993,7 +5993,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_owner_in_owners_registry",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure bypass owners resolve to owner registry ids",
       "domain": "policies",
       "effects": [],
@@ -6021,7 +6021,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_policy_name_known",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass policy/rule names to be known",
       "domain": "policies",
       "effects": [],
@@ -6049,7 +6049,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_readme_complete",
-      "category": "hygiene",
+      "category": "check",
       "description": "require configs/policy README to list every bypass source file",
       "domain": "policies",
       "effects": [],
@@ -6077,7 +6077,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_readme_sorted",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass source list in configs/policy README to be sorted",
       "domain": "policies",
       "effects": [],
@@ -6105,7 +6105,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_removal_milestones_defined",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass removal milestone SSOT file",
       "domain": "policies",
       "effects": [],
@@ -6133,7 +6133,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_removal_plan_required",
-      "category": "hygiene",
+      "category": "check",
       "description": "require removal plans for bypass entries",
       "domain": "policies",
       "effects": [],
@@ -6161,7 +6161,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_replacement_mechanism",
-      "category": "hygiene",
+      "category": "check",
       "description": "require replacement_mechanism on bypass entries",
       "domain": "policies",
       "effects": [],
@@ -6189,7 +6189,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_schema_valid",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate bypass JSON sources against schemas",
       "domain": "policies",
       "effects": [],
@@ -6217,7 +6217,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_scope_valid",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce valid bypass scope",
       "domain": "policies",
       "effects": [],
@@ -6245,7 +6245,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_severity_expiry_windows",
-      "category": "hygiene",
+      "category": "check",
       "description": "require tighter expiry windows for P0/P1 bypasses",
       "domain": "policies",
       "effects": [],
@@ -6273,7 +6273,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_severity_levels",
-      "category": "hygiene",
+      "category": "check",
       "description": "require bypass severity levels P0-P3",
       "domain": "policies",
       "effects": [],
@@ -6301,7 +6301,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_tokens_linked",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid ALLOWLIST/TEMP/HACK tokens without linked bypass ids",
       "domain": "policies",
       "effects": [],
@@ -6329,7 +6329,7 @@
     {
       "area": "bypass",
       "callable": "check_policies_bypass_usage_heatmap",
-      "category": "hygiene",
+      "category": "check",
       "description": "emit bypass usage heatmap report",
       "domain": "policies",
       "effects": [],
@@ -6357,7 +6357,7 @@
     {
       "area": "culprits",
       "callable": "check_policies_culprits_empty_on_release_tags",
-      "category": "hygiene",
+      "category": "check",
       "description": "require zero policy culprits on release tags",
       "domain": "policies",
       "effects": [],
@@ -6386,7 +6386,7 @@
     {
       "area": "culprits",
       "callable": "check_policies_culprits_nonincrease_on_main",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid bypass count increases on main",
       "domain": "policies",
       "effects": [],
@@ -6415,7 +6415,7 @@
     {
       "area": "dependency",
       "callable": "check_policies_dependency_exceptions_remove_by_issue",
-      "category": "hygiene",
+      "category": "check",
       "description": "require dependency exceptions to include remove_by and issue_id",
       "domain": "policies",
       "effects": [],
@@ -6443,7 +6443,7 @@
     {
       "area": "no",
       "callable": "check_policies_no_inline_bypass_entries",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid inline bypass metadata in source code",
       "domain": "policies",
       "effects": [],
@@ -6471,7 +6471,7 @@
     {
       "area": "ops",
       "callable": "check_ops_allowlisted_literals_have_contract_tests",
-      "category": "hygiene",
+      "category": "check",
       "description": "require allowlisted ops literals to link contract/necessity tests",
       "domain": "policies",
       "effects": [],
@@ -6500,7 +6500,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_allowlist_files_have_owner",
-      "category": "hygiene",
+      "category": "check",
       "description": "require structured ops allowlist files to declare owners",
       "domain": "policies",
       "effects": [],
@@ -6529,7 +6529,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_entries_have_necessity_tests",
-      "category": "hygiene",
+      "category": "check",
       "description": "require structured ops bypass entries to link a necessity test",
       "domain": "policies",
       "effects": [],
@@ -6558,7 +6558,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_ledger_domains",
-      "category": "hygiene",
+      "category": "check",
       "description": "require ops bypass ledger entries to be grouped by domain",
       "domain": "policies",
       "effects": [],
@@ -6587,7 +6587,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_ledger_expiry_not_past",
-      "category": "hygiene",
+      "category": "check",
       "description": "fail expired ops bypass ledger entries",
       "domain": "policies",
       "effects": [],
@@ -6616,7 +6616,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_ledger_has_expiry",
-      "category": "hygiene",
+      "category": "check",
       "description": "require ops bypass ledger entries to declare expires_at",
       "domain": "policies",
       "effects": [],
@@ -6645,7 +6645,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_ledger_refs_present",
-      "category": "hygiene",
+      "category": "check",
       "description": "require structured ops allowlist entries to reference ops bypass ledger ids",
       "domain": "policies",
       "effects": [],
@@ -6674,7 +6674,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_ledger_sorted",
-      "category": "hygiene",
+      "category": "check",
       "description": "require deterministic sorted ops bypass ledger",
       "domain": "policies",
       "effects": [],
@@ -6703,7 +6703,7 @@
     {
       "area": "ops",
       "callable": "check_ops_bypass_ledger_task_ids",
-      "category": "hygiene",
+      "category": "check",
       "description": "require concrete refactor task ids on ops bypass ledger entries",
       "domain": "policies",
       "effects": [],
@@ -6732,7 +6732,7 @@
     {
       "area": "shell",
       "callable": "check_policies_shell_network_fetch_allowlist_inline_meta",
-      "category": "hygiene",
+      "category": "check",
       "description": "require inline owner/why comments for network-fetch shell allowlist entries",
       "domain": "policies",
       "effects": [],
@@ -6761,7 +6761,7 @@
     {
       "area": "shell",
       "callable": "check_policies_shell_probes_allowlist_inline_meta",
-      "category": "hygiene",
+      "category": "check",
       "description": "require inline owner/why comments for shell probe allowlist entries",
       "domain": "policies",
       "effects": [],
@@ -6789,7 +6789,7 @@
     {
       "area": "tests",
       "callable": "check_policies_tests_bypass_dependency_marked",
-      "category": "hygiene",
+      "category": "check",
       "description": "require explicit marker when tests depend on bypass files",
       "domain": "policies",
       "effects": [],
@@ -6817,7 +6817,7 @@
     {
       "area": "lock",
       "callable": "check_python_lock",
-      "category": "contract",
+      "category": "check",
       "description": "validate python lock format",
       "domain": "python",
       "effects": [],
@@ -6844,7 +6844,7 @@
     {
       "area": "migration",
       "callable": "check_python_migration_exceptions_expiry",
-      "category": "policy",
+      "category": "check",
       "description": "fail on expired python migration exceptions",
       "domain": "python",
       "effects": [],
@@ -6871,7 +6871,7 @@
     {
       "area": "budget",
       "callable": "check_budget_drift_approval",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid budget loosening without explicit approval marker",
       "domain": "repo",
       "effects": [],
@@ -6898,7 +6898,7 @@
     {
       "area": "canonical",
       "callable": "check_canonical_concept_homes",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicate top-level concept packages for registry/runner/contracts/output",
       "domain": "repo",
       "effects": [],
@@ -6925,7 +6925,7 @@
     {
       "area": "check",
       "callable": "check_check_impl_no_cli_imports",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct CLI imports from check implementation files",
       "domain": "repo",
       "effects": [],
@@ -6952,7 +6952,7 @@
     {
       "area": "check",
       "callable": "check_check_test_coverage",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure each registered check has test or golden coverage marker",
       "domain": "repo",
       "effects": [],
@@ -6979,7 +6979,7 @@
     {
       "area": "checks",
       "callable": "check_checks_canonical_location",
-      "category": "hygiene",
+      "category": "check",
       "description": "require check implementations under atlasctl/checks canonical tree",
       "domain": "repo",
       "effects": [],
@@ -7006,7 +7006,7 @@
     {
       "area": "checks",
       "callable": "check_checks_domain_split",
-      "category": "hygiene",
+      "category": "check",
       "description": "require canonical check domain tree (repo_shape/makefiles/ops/docs/observability/artifacts)",
       "domain": "repo",
       "effects": [],
@@ -7033,7 +7033,7 @@
     {
       "area": "checks",
       "callable": "check_checks_import_lint",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce checks module import boundaries",
       "domain": "repo",
       "effects": [],
@@ -7060,7 +7060,7 @@
     {
       "area": "checks",
       "callable": "check_checks_no_cli_imports",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid checks modules from importing cli layer",
       "domain": "repo",
       "effects": [],
@@ -7087,7 +7087,7 @@
     {
       "area": "checks",
       "callable": "check_checks_root_contract",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce checks root contract (single python root file and module cap)",
       "domain": "repo",
       "effects": [],
@@ -7114,7 +7114,7 @@
     {
       "area": "checks",
       "callable": "check_checks_tree_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce checks tree depth, module-density budget, and naming hygiene",
       "domain": "repo",
       "effects": [],
@@ -7141,7 +7141,7 @@
     {
       "area": "ci",
       "callable": "check_ci_artifact_upload_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce workflow artifact upload roots and always-on policy",
       "domain": "repo",
       "effects": [],
@@ -7168,7 +7168,7 @@
     {
       "area": "ci",
       "callable": "check_ci_workflow_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce workflow command policy (make/atlasctl wrappers only)",
       "domain": "repo",
       "effects": [],
@@ -7195,7 +7195,7 @@
     {
       "area": "cli",
       "callable": "check_argparse_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "restrict direct argparse parser construction to canonical parser modules",
       "domain": "repo",
       "effects": [],
@@ -7222,7 +7222,7 @@
     {
       "area": "cli",
       "callable": "check_cli_canonical_paths",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce canonical cli parser/dispatch/output path",
       "domain": "repo",
       "effects": [],
@@ -7249,7 +7249,7 @@
     {
       "area": "cli",
       "callable": "check_cli_import_scope",
-      "category": "hygiene",
+      "category": "check",
       "description": "restrict cli imports to commands/core and approved runtime shims",
       "domain": "repo",
       "effects": [],
@@ -7276,7 +7276,7 @@
     {
       "area": "cold",
       "callable": "check_cold_import_budget",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce cold import time budget for atlasctl package",
       "domain": "repo",
       "effects": [],
@@ -7303,7 +7303,7 @@
     {
       "area": "command",
       "callable": "check_command_alias_budget",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce command alias/name budget",
       "domain": "repo",
       "effects": [],
@@ -7330,7 +7330,7 @@
     {
       "area": "command",
       "callable": "check_command_group_owners",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure every command group maps to a valid owner id",
       "domain": "repo",
       "effects": [],
@@ -7357,7 +7357,7 @@
     {
       "area": "command",
       "callable": "check_command_metadata_contract",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure command metadata includes touches/tools/effect declarations",
       "domain": "repo",
       "effects": [],
@@ -7384,7 +7384,7 @@
     {
       "area": "command",
       "callable": "check_command_module_cli_intent",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce command.py modules as CLI entry shims only",
       "domain": "repo",
       "effects": [],
@@ -7411,7 +7411,7 @@
     {
       "area": "command",
       "callable": "check_command_ownership_docs",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure command owners are documented",
       "domain": "repo",
       "effects": [],
@@ -7438,7 +7438,7 @@
     {
       "area": "command",
       "callable": "check_command_scripts_registry",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce command-invoked shell scripts are registered with owner and valid naming",
       "domain": "repo",
       "effects": [],
@@ -7465,7 +7465,7 @@
     {
       "area": "command",
       "callable": "check_command_test_coverage",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure each command has explicit test coverage marker",
       "domain": "repo",
       "effects": [],
@@ -7492,7 +7492,7 @@
     {
       "area": "commands",
       "callable": "check_command_help_docs_drift",
-      "category": "hygiene",
+      "category": "check",
       "description": "check command help/docs drift",
       "domain": "repo",
       "effects": [],
@@ -7519,7 +7519,7 @@
     {
       "area": "commands",
       "callable": "check_command_import_lint",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce command module import boundaries",
       "domain": "repo",
       "effects": [],
@@ -7546,7 +7546,7 @@
     {
       "area": "commands",
       "callable": "check_command_surface_stability",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce strict command surface compatibility against commands golden",
       "domain": "repo",
       "effects": [],
@@ -7573,7 +7573,7 @@
     {
       "area": "compileall",
       "callable": "check_compileall_gate",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure atlasctl source compiles with compileall",
       "domain": "repo",
       "effects": [],
@@ -7600,7 +7600,7 @@
     {
       "area": "console",
       "callable": "check_console_script_entry",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure atlasctl console script entry exists and points to callable target",
       "domain": "repo",
       "effects": [],
@@ -7627,7 +7627,7 @@
     {
       "area": "contract",
       "callable": "check_contract_import_boundaries",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce contracts/core-contracts import boundaries",
       "domain": "repo",
       "effects": [],
@@ -7654,7 +7654,7 @@
     {
       "area": "contracts",
       "callable": "check_contracts_namespace_purpose",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce contracts namespace for schema and validation modules only",
       "domain": "repo",
       "effects": [],
@@ -7681,7 +7681,7 @@
     {
       "area": "core",
       "callable": "check_core_no_bash_subprocess",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid subprocess.run(['bash'|'sh', ...]) in core logic",
       "domain": "repo",
       "effects": [],
@@ -7708,7 +7708,7 @@
     {
       "area": "core",
       "callable": "check_core_no_command_imports",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid core modules from importing command/cli layers",
       "domain": "repo",
       "effects": [],
@@ -7735,7 +7735,7 @@
     {
       "area": "dead",
       "callable": "check_dead_module_reachability_allowlist",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce dead module candidates are explicitly allowlisted",
       "domain": "repo",
       "effects": [],
@@ -7762,7 +7762,7 @@
     {
       "area": "dead",
       "callable": "check_dead_modules_report_runs",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure dead modules analyzer runs and returns canonical payload",
       "domain": "repo",
       "effects": [],
@@ -7789,7 +7789,7 @@
     {
       "area": "dependency",
       "callable": "check_dependency_declarations",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure pyproject dependency declarations match imports",
       "domain": "repo",
       "effects": [],
@@ -7816,7 +7816,7 @@
     {
       "area": "dependency",
       "callable": "check_dependency_gate_targets",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure dependency gate make targets exist",
       "domain": "repo",
       "effects": [],
@@ -7843,7 +7843,7 @@
     {
       "area": "dependency",
       "callable": "check_dependency_owner_justification",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure each dependency has owner and justification",
       "domain": "repo",
       "effects": [],
@@ -7870,7 +7870,7 @@
     {
       "area": "deps",
       "callable": "check_deps_command_surface",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure atlasctl deps command surface is runnable",
       "domain": "repo",
       "effects": [],
@@ -7897,7 +7897,7 @@
     {
       "area": "deps",
       "callable": "check_deps_workflow_doc",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure docs/deps.md matches chosen dependency workflow",
       "domain": "repo",
       "effects": [],
@@ -7924,7 +7924,7 @@
     {
       "area": "dir",
       "callable": "check_dir_entry_budgets",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce per-directory entries budget in atlasctl src/tests",
       "domain": "repo",
       "effects": [],
@@ -7951,7 +7951,7 @@
     {
       "area": "dir",
       "callable": "check_budget_exceptions_documented",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure budget exceptions are documented",
       "domain": "repo",
       "effects": [],
@@ -7978,7 +7978,7 @@
     {
       "area": "dir",
       "callable": "check_budget_exceptions_sorted",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure budget exceptions are sorted deterministically",
       "domain": "repo",
       "effects": [],
@@ -8005,7 +8005,7 @@
     {
       "area": "dir",
       "callable": "check_loc_per_dir",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce per-directory total LOC budget",
       "domain": "repo",
       "effects": [],
@@ -8032,7 +8032,7 @@
     {
       "area": "dir",
       "callable": "check_modules_per_dir",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce per-directory python module count budget",
       "domain": "repo",
       "effects": [],
@@ -8059,7 +8059,7 @@
     {
       "area": "dir",
       "callable": "check_py_files_per_dir",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce per-directory python file count budget",
       "domain": "repo",
       "effects": [],
@@ -8086,7 +8086,7 @@
     {
       "area": "dir",
       "callable": "check_py_files_per_dir_budget",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)",
       "domain": "repo",
       "effects": [],
@@ -8113,7 +8113,7 @@
     {
       "area": "dir",
       "callable": "<lambda>",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce per-directory shell file count budget",
       "domain": "repo",
       "effects": [],
@@ -8140,7 +8140,7 @@
     {
       "area": "dir",
       "callable": "check_critical_dir_count_trend",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid critical directory file/module count drift above baseline",
       "domain": "repo",
       "effects": [],
@@ -8167,7 +8167,7 @@
     {
       "area": "docs",
       "callable": "check_docs_no_ops_generated_run_paths",
-      "category": "hygiene",
+      "category": "check",
       "description": "disallow docs refs to ops generated runtime paths",
       "domain": "repo",
       "effects": [],
@@ -8194,7 +8194,7 @@
     {
       "area": "duplicate",
       "callable": "check_duplicate_contract_assertions",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicate contract assertions inside one test module",
       "domain": "repo",
       "effects": [],
@@ -8221,7 +8221,7 @@
     {
       "area": "duplicate",
       "callable": "check_duplicate_script_names",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicate script stem names",
       "domain": "repo",
       "effects": [],
@@ -8248,7 +8248,7 @@
     {
       "area": "effect",
       "callable": "check_forbidden_effect_calls",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct subprocess/fs/env/network effects outside core boundaries",
       "domain": "repo",
       "effects": [],
@@ -8275,7 +8275,7 @@
     {
       "area": "effect",
       "callable": "check_effect_boundary_exceptions_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce explicit sorted effect boundary exceptions with reasons",
       "domain": "repo",
       "effects": [],
@@ -8302,7 +8302,7 @@
     {
       "area": "env",
       "callable": "check_env_docs_present",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure docs/env.md exists and lists canonical env vars",
       "domain": "repo",
       "effects": [],
@@ -8329,7 +8329,7 @@
     {
       "area": "file",
       "callable": "<lambda>",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce complexity heuristic budget in core/cli",
       "domain": "repo",
       "effects": [],
@@ -8356,7 +8356,7 @@
     {
       "area": "file",
       "callable": "<lambda>",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce python import count budget per file",
       "domain": "repo",
       "effects": [],
@@ -8383,7 +8383,7 @@
     {
       "area": "file",
       "callable": "<lambda>",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce public symbol budget per module",
       "domain": "repo",
       "effects": [],
@@ -8410,7 +8410,7 @@
     {
       "area": "folder",
       "callable": "check_folder_intent_contract",
-      "category": "hygiene",
+      "category": "check",
       "description": "require intent marker for checks directories",
       "domain": "repo",
       "effects": [],
@@ -8437,7 +8437,7 @@
     {
       "area": "forbidden",
       "callable": "check_forbidden_adjectives",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid banned wording across tracked repository files",
       "domain": "repo",
       "effects": [],
@@ -8464,7 +8464,7 @@
     {
       "area": "forbidden",
       "callable": "run",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid junk files at repository root",
       "domain": "repo",
       "effects": [],
@@ -8491,7 +8491,7 @@
     {
       "area": "forbidden",
       "callable": "run",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid legacy top-level root names",
       "domain": "repo",
       "effects": [],
@@ -8518,7 +8518,7 @@
     {
       "area": "forbidden",
       "callable": "check_forbidden_top_dirs",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid top-level forbidden directories",
       "domain": "repo",
       "effects": [],
@@ -8545,7 +8545,7 @@
     {
       "area": "generated",
       "callable": "check_generated_dirs_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce canonical generated dirs list",
       "domain": "repo",
       "effects": [],
@@ -8572,7 +8572,7 @@
     {
       "area": "import",
       "callable": "check_import_smoke",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure atlasctl package imports in minimal environment",
       "domain": "repo",
       "effects": [],
@@ -8599,7 +8599,7 @@
     {
       "area": "internal",
       "callable": "check_internal_commands_not_public",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure unstable/internal commands are not exposed in public docs",
       "domain": "repo",
       "effects": [],
@@ -8626,7 +8626,7 @@
     {
       "area": "internal",
       "callable": "check_internal_import_boundaries",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid atlasctl.internal imports outside internal namespace",
       "domain": "repo",
       "effects": [],
@@ -8653,7 +8653,7 @@
     {
       "area": "internal",
       "callable": "check_internal_utils_stdlib_only",
-      "category": "hygiene",
+      "category": "check",
       "description": "prefer stdlib-only internal utility modules",
       "domain": "repo",
       "effects": [],
@@ -8680,7 +8680,7 @@
     {
       "area": "json",
       "callable": "check_no_conflicting_json_goldens",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid conflicting JSON goldens for the same schema surface",
       "domain": "repo",
       "effects": [],
@@ -8707,7 +8707,7 @@
     {
       "area": "json",
       "callable": "check_json_goldens_validate_schema",
-      "category": "hygiene",
+      "category": "check",
       "description": "require schema validation in JSON golden tests",
       "domain": "repo",
       "effects": [],
@@ -8734,7 +8734,7 @@
     {
       "area": "layout",
       "callable": "check_layout_domain_alias_cleanup",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid deprecated layout registry aliases",
       "domain": "repo",
       "effects": [],
@@ -8761,7 +8761,7 @@
     {
       "area": "layout",
       "callable": "check_layout_domain_readmes",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure each layout check domain includes a README",
       "domain": "repo",
       "effects": [],
@@ -8788,7 +8788,7 @@
     {
       "area": "layout",
       "callable": "check_layout_no_legacy_imports",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid legacy imports in checks/layout modules",
       "domain": "repo",
       "effects": [],
@@ -8815,7 +8815,7 @@
     {
       "area": "layout",
       "callable": "check_no_layout_shadow_configs",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce no-shadow config policy",
       "domain": "repo",
       "effects": [],
@@ -8842,7 +8842,7 @@
     {
       "area": "legacy",
       "callable": "check_legacy_package_absent",
-      "category": "hygiene",
+      "category": "check",
       "description": "require atlasctl legacy package to be absent",
       "domain": "repo",
       "effects": [],
@@ -8869,7 +8869,7 @@
     {
       "area": "legacy",
       "callable": "check_no_legacy_importers",
-      "category": "hygiene",
+      "category": "check",
       "description": "require zero importers of removed atlasctl legacy namespace",
       "domain": "repo",
       "effects": [],
@@ -8896,7 +8896,7 @@
     {
       "area": "managed",
       "callable": "check_managed_artifact_write_roots",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce managed write roots under artifacts and reject out-of-root writes",
       "domain": "repo",
       "effects": [],
@@ -8923,7 +8923,7 @@
     {
       "area": "migration",
       "callable": "check_migration_progress_regression",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid migration progress regression (no new legacy patterns)",
       "domain": "repo",
       "effects": [],
@@ -8950,7 +8950,7 @@
     {
       "area": "modern",
       "callable": "check_no_modern_imports_from_legacy",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid modern modules from importing atlasctl.legacy",
       "domain": "repo",
       "effects": [],
@@ -8977,7 +8977,7 @@
     {
       "area": "modern",
       "callable": "check_no_legacy_obs_imports_in_modern",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid modern modules from importing atlasctl.legacy.obs",
       "domain": "repo",
       "effects": [],
@@ -9004,7 +9004,7 @@
     {
       "area": "module",
       "callable": "check_modules_per_domain",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce module count budget per top-level atlasctl domain",
       "domain": "repo",
       "effects": [],
@@ -9031,7 +9031,7 @@
     {
       "area": "module",
       "callable": "check_module_size",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce module size budget",
       "domain": "repo",
       "effects": [],
@@ -9058,7 +9058,7 @@
     {
       "area": "modules",
       "callable": "check_repo_check_modules_registered",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure repo check modules are imported and reachable via registry",
       "domain": "repo",
       "effects": [],
@@ -9085,7 +9085,7 @@
     {
       "area": "network",
       "callable": "check_network_default_deny_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce network-forbidden-by-default command policy",
       "domain": "repo",
       "effects": [],
@@ -9113,7 +9113,7 @@
     {
       "area": "no",
       "callable": "check_no_adhoc_python",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid ad-hoc python files outside package boundaries",
       "domain": "repo",
       "effects": [],
@@ -9140,7 +9140,7 @@
     {
       "area": "no",
       "callable": "check_forbidden_core_integration_dir",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid deprecated core/integration namespace",
       "domain": "repo",
       "effects": [],
@@ -9167,7 +9167,7 @@
     {
       "area": "no",
       "callable": "check_no_deprecated_commands",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid deprecated command surfaces before 0.1 release",
       "domain": "repo",
       "effects": [],
@@ -9194,7 +9194,7 @@
     {
       "area": "no",
       "callable": "check_forbidden_deprecated_namespace_dirs",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid deprecated atlasctl/check report obs directories",
       "domain": "repo",
       "effects": [],
@@ -9221,7 +9221,7 @@
     {
       "area": "no",
       "callable": "check_forbidden_deprecated_namespaces",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid imports from atlasctl.check/report/obs namespaces",
       "domain": "repo",
       "effects": [],
@@ -9248,7 +9248,7 @@
     {
       "area": "no",
       "callable": "check_no_direct_bash_invocations",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct bash script calls in docs/makefiles",
       "domain": "repo",
       "effects": [],
@@ -9275,7 +9275,7 @@
     {
       "area": "no",
       "callable": "check_no_direct_python_invocations",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct python script calls in docs/makefiles",
       "domain": "repo",
       "effects": [],
@@ -9302,7 +9302,7 @@
     {
       "area": "no",
       "callable": "run",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct scripts/ or ops/ invocations in GitHub workflows",
       "domain": "repo",
       "effects": [],
@@ -9329,7 +9329,7 @@
     {
       "area": "no",
       "callable": "check_no_duplicate_command_implementation_patterns",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicate command implementation patterns",
       "domain": "repo",
       "effects": [],
@@ -9356,7 +9356,7 @@
     {
       "area": "no",
       "callable": "check_no_duplicate_command_names",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure command names are unique",
       "domain": "repo",
       "effects": [],
@@ -9383,7 +9383,7 @@
     {
       "area": "no",
       "callable": "check_no_empty_dirs_or_pointless_nests",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid empty directories and pointless single-child nesting under src/atlasctl",
       "domain": "repo",
       "effects": [],
@@ -9410,7 +9410,7 @@
     {
       "area": "no",
       "callable": "check_no_empty_packages",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid empty non-legacy packages without README",
       "domain": "repo",
       "effects": [],
@@ -9437,7 +9437,7 @@
     {
       "area": "no",
       "callable": "check_no_executable_python_outside_packages",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid executable python outside package boundaries",
       "domain": "repo",
       "effects": [],
@@ -9464,7 +9464,7 @@
     {
       "area": "no",
       "callable": "run",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid legacy root path references in tracked text surfaces",
       "domain": "repo",
       "effects": [],
@@ -9491,7 +9491,7 @@
     {
       "area": "no",
       "callable": "check_no_large_binary_files",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid large tracked binary files except approved fixtures",
       "domain": "repo",
       "effects": [],
@@ -9518,7 +9518,7 @@
     {
       "area": "no",
       "callable": "check_no_legacy_command_names",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid command names containing legacy",
       "domain": "repo",
       "effects": [],
@@ -9545,7 +9545,7 @@
     {
       "area": "no",
       "callable": "check_no_legacy_module_paths",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid legacy module paths in atlasctl src tree",
       "domain": "repo",
       "effects": [],
@@ -9572,7 +9572,7 @@
     {
       "area": "no",
       "callable": "check_no_nested_same_name_packages",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid nested package segments with same name",
       "domain": "repo",
       "effects": [],
@@ -9599,7 +9599,7 @@
     {
       "area": "no",
       "callable": "check_no_ops_generated_placeholder",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid placeholder generated dirs",
       "domain": "repo",
       "effects": [],
@@ -9626,7 +9626,7 @@
     {
       "area": "no",
       "callable": "check_no_path_cwd_usage",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid Path.cwd usage outside core.runtime.repo_root.py",
       "domain": "repo",
       "effects": [],
@@ -9653,7 +9653,7 @@
     {
       "area": "no",
       "callable": "check_no_placeholder_module_names",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid placeholder-like module filenames in modern code",
       "domain": "repo",
       "effects": [],
@@ -9680,7 +9680,7 @@
     {
       "area": "no",
       "callable": "check_repo_no_python_caches_committed",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid committed python caches under packages/atlasctl",
       "domain": "repo",
       "effects": [],
@@ -9707,7 +9707,7 @@
     {
       "area": "no",
       "callable": "check_scripts_dir_absent",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid legacy root scripts dir",
       "domain": "repo",
       "effects": [],
@@ -9734,7 +9734,7 @@
     {
       "area": "no",
       "callable": "check_ops_generated_tracked",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure ops/_generated has no tracked files",
       "domain": "repo",
       "effects": [],
@@ -9761,7 +9761,7 @@
     {
       "area": "no",
       "callable": "check_tracked_timestamp_paths",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid timestamp-like tracked paths",
       "domain": "repo",
       "effects": [],
@@ -9788,7 +9788,7 @@
     {
       "area": "no",
       "callable": "check_no_undocumented_help_commands",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid undocumented commands in public help surface",
       "domain": "repo",
       "effects": [],
@@ -9815,7 +9815,7 @@
     {
       "area": "no",
       "callable": "check_no_wildcard_exports",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid wildcard imports/exports outside public surface",
       "domain": "repo",
       "effects": [],
@@ -9842,7 +9842,7 @@
     {
       "area": "no",
       "callable": "check_no_xtask_refs",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid xtask references",
       "domain": "repo",
       "effects": [],
@@ -9869,7 +9869,7 @@
     {
       "area": "ops",
       "callable": "check_ops_configs_deterministic_newlines",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce LF-only and no trailing whitespace in ops/configs text files",
       "domain": "repo",
       "effects": [],
@@ -9896,7 +9896,7 @@
     {
       "area": "ops",
       "callable": "check_ops_examples_immutable",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce immutability of ops examples",
       "domain": "repo",
       "effects": [],
@@ -9923,7 +9923,7 @@
     {
       "area": "optional",
       "callable": "check_optional_dependency_groups",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure required pyproject optional-dependency groups exist and are non-empty",
       "domain": "repo",
       "effects": [],
@@ -9950,7 +9950,7 @@
     {
       "area": "optional",
       "callable": "check_optional_dependency_usage_gates",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid optional dependency usage without explicit allowlist gate",
       "domain": "repo",
       "effects": [],
@@ -9977,7 +9977,7 @@
     {
       "area": "output",
       "callable": "check_output_format_stability",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce output formatting stability across OS",
       "domain": "repo",
       "effects": [],
@@ -10004,7 +10004,7 @@
     {
       "area": "package",
       "callable": "check_package_has_module_or_readme",
-      "category": "hygiene",
+      "category": "check",
       "description": "require each non-legacy package to contain a module or README",
       "domain": "repo",
       "effects": [],
@@ -10031,7 +10031,7 @@
     {
       "area": "package",
       "callable": "check_tree_depth",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce maximum atlasctl package nesting depth",
       "domain": "repo",
       "effects": [],
@@ -10058,7 +10058,7 @@
     {
       "area": "packages",
       "callable": "check_atlasctl_package_root_shape",
-      "category": "hygiene",
+      "category": "check",
       "description": "require atlasctl package root to contain only allowed files and directories",
       "domain": "repo",
       "effects": [],
@@ -10085,7 +10085,7 @@
     {
       "area": "packaging",
       "callable": "check_packaging_metadata_completeness",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure pyproject packaging metadata is complete (classifiers and project URLs)",
       "domain": "repo",
       "effects": [],
@@ -10112,7 +10112,7 @@
     {
       "area": "public",
       "callable": "check_public_api_doc_exists",
-      "category": "hygiene",
+      "category": "check",
       "description": "require canonical PUBLIC_API.md documentation file",
       "domain": "repo",
       "effects": [],
@@ -10139,7 +10139,7 @@
     {
       "area": "public",
       "callable": "check_public_api_exports",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce docs/PUBLIC_API.md coverage for __all__ exports",
       "domain": "repo",
       "effects": [],
@@ -10166,7 +10166,7 @@
     {
       "area": "public",
       "callable": "check_public_commands_docs_index",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure public commands are listed in docs/commands/index.md",
       "domain": "repo",
       "effects": [],
@@ -10193,7 +10193,7 @@
     {
       "area": "pyproject",
       "callable": "check_pyproject_minimalism",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid dead/unknown pyproject tool keys",
       "domain": "repo",
       "effects": [],
@@ -10220,7 +10220,7 @@
     {
       "area": "pyproject",
       "callable": "check_pyproject_no_duplicate_tool_config",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicate tool config files beside pyproject",
       "domain": "repo",
       "effects": [],
@@ -10247,7 +10247,7 @@
     {
       "area": "pyproject",
       "callable": "check_pyproject_required_blocks",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure pyproject contains required project and tool config blocks",
       "domain": "repo",
       "effects": [],
@@ -10274,7 +10274,7 @@
     {
       "area": "python",
       "callable": "check_python_module_help",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure python -m atlasctl --help works",
       "domain": "repo",
       "effects": [],
@@ -10301,7 +10301,7 @@
     {
       "area": "python",
       "callable": "check_python_requires_version_and_ci",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce pyproject requires-python and CI python version alignment",
       "domain": "repo",
       "effects": [],
@@ -10328,7 +10328,7 @@
     {
       "area": "registry",
       "callable": "check_registry_definition_boundary",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid registry modules from importing command/cli/suite/check runtime modules",
       "domain": "repo",
       "effects": [],
@@ -10355,7 +10355,7 @@
     {
       "area": "registry",
       "callable": "check_registry_single_source",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce registry-only command/check registration points",
       "domain": "repo",
       "effects": [],
@@ -10382,7 +10382,7 @@
     {
       "area": "required",
       "callable": "check_required_target_shape",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce package root minimalism and src no-symlink target shape",
       "domain": "repo",
       "effects": [],
@@ -10409,7 +10409,7 @@
     {
       "area": "requirements",
       "callable": "check_requirements_artifact_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure only route-B requirements artifacts exist",
       "domain": "repo",
       "effects": [],
@@ -10436,7 +10436,7 @@
     {
       "area": "requirements",
       "callable": "check_requirements_sync_with_pyproject",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure requirements files match pyproject dev dependency declarations",
       "domain": "repo",
       "effects": [],
@@ -10463,7 +10463,7 @@
     {
       "area": "root",
       "callable": "run",
-      "category": "hygiene",
+      "category": "check",
       "description": "verify deterministic root output across two make root runs",
       "domain": "repo",
       "effects": [],
@@ -10490,7 +10490,7 @@
     {
       "area": "root",
       "callable": "run",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce repository root shape contract from root_whitelist.json",
       "domain": "repo",
       "effects": [],
@@ -10517,7 +10517,7 @@
     {
       "area": "runcontext",
       "callable": "check_runcontext_single_builder",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure RunContext is built only in core/context.py",
       "domain": "repo",
       "effects": [],
@@ -10544,7 +10544,7 @@
     {
       "area": "script",
       "callable": "check_script_help",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate script help contract coverage",
       "domain": "repo",
       "effects": [],
@@ -10571,7 +10571,7 @@
     {
       "area": "script",
       "callable": "check_script_ownership",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate script ownership coverage",
       "domain": "repo",
       "effects": [],
@@ -10598,7 +10598,7 @@
     {
       "area": "shell",
       "callable": "check_shell_docs_present",
-      "category": "hygiene",
+      "category": "check",
       "description": "require shell directory README and policy docs",
       "domain": "repo",
       "effects": [],
@@ -10625,7 +10625,7 @@
     {
       "area": "shell",
       "callable": "check_shell_invocation_via_core_exec",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct shell subprocess invocations outside core.exec",
       "domain": "repo",
       "effects": [],
@@ -10652,7 +10652,7 @@
     {
       "area": "shell",
       "callable": "check_shell_location_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid shell scripts under atlasctl python package tree",
       "domain": "repo",
       "effects": [],
@@ -10679,7 +10679,7 @@
     {
       "area": "shell",
       "callable": "check_shell_no_python_direct_calls",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct python invocation in shell scripts",
       "domain": "repo",
       "effects": [],
@@ -10706,7 +10706,7 @@
     {
       "area": "shell",
       "callable": "check_shell_no_network_download_tools",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct curl/wget usage in shell scripts",
       "domain": "repo",
       "effects": [],
@@ -10734,7 +10734,7 @@
     {
       "area": "shell",
       "callable": "check_shell_scripts_readonly",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid direct file writes in layout shell checks",
       "domain": "repo",
       "effects": [],
@@ -10761,7 +10761,7 @@
     {
       "area": "shell",
       "callable": "check_shell_script_budget",
-      "category": "hygiene",
+      "category": "check",
       "description": "cap total shell script count in repository",
       "domain": "repo",
       "effects": [],
@@ -10788,7 +10788,7 @@
     {
       "area": "shell",
       "callable": "check_shell_headers_and_strict_mode",
-      "category": "hygiene",
+      "category": "check",
       "description": "require shell header and strict mode",
       "domain": "repo",
       "effects": [],
@@ -10815,7 +10815,7 @@
     {
       "area": "single",
       "callable": "check_single_registry_module",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce a single canonical registry.py module",
       "domain": "repo",
       "effects": [],
@@ -10842,7 +10842,7 @@
     {
       "area": "single",
       "callable": "check_single_runner_module",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce a single canonical runner.py module",
       "domain": "repo",
       "effects": [],
@@ -10869,7 +10869,7 @@
     {
       "area": "stable",
       "callable": "check_stable_command_no_breaking_changes",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid breaking changes in stable command contracts",
       "domain": "repo",
       "effects": [],
@@ -10896,7 +10896,7 @@
     {
       "area": "subprocess",
       "callable": "check_subprocess_boundary",
-      "category": "hygiene",
+      "category": "check",
       "description": "restrict subprocess imports to core execution boundary",
       "domain": "repo",
       "effects": [],
@@ -10923,7 +10923,7 @@
     {
       "area": "suite",
       "callable": "check_suite_inventory_policy",
-      "category": "hygiene",
+      "category": "check",
       "description": "validate suite inventory coverage and required tag policy",
       "domain": "repo",
       "effects": [],
@@ -10950,7 +10950,7 @@
     {
       "area": "suite",
       "callable": "check_suite_marker_rules",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce check-suite-coverage marker file policy",
       "domain": "repo",
       "effects": [],
@@ -10977,7 +10977,7 @@
     {
       "area": "test",
       "callable": "check_test_determinism_patterns",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid nondeterministic test patterns without explicit marker",
       "domain": "repo",
       "effects": [],
@@ -11004,7 +11004,7 @@
     {
       "area": "test",
       "callable": "check_no_duplicated_coverage_paths",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicated golden coverage across multiple tests",
       "domain": "repo",
       "effects": [],
@@ -11031,7 +11031,7 @@
     {
       "area": "test",
       "callable": "check_no_unmarked_test_network",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid test network usage unless marked",
       "domain": "repo",
       "effects": [],
@@ -11059,7 +11059,7 @@
     {
       "area": "test",
       "callable": "check_test_ownership_tags",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure tests declare ownership tags or live in domain directories",
       "domain": "repo",
       "effects": [],
@@ -11086,7 +11086,7 @@
     {
       "area": "test",
       "callable": "check_no_unjustified_skips",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid skipped tests without justification and expiry markers",
       "domain": "repo",
       "effects": [],
@@ -11113,7 +11113,7 @@
     {
       "area": "test",
       "callable": "check_test_taxonomy_layout",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce test taxonomy and placement invariants",
       "domain": "repo",
       "effects": [],
@@ -11140,7 +11140,7 @@
     {
       "area": "test",
       "callable": "check_test_write_sandbox",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid writes outside temp/artifacts isolation sandbox in tests",
       "domain": "repo",
       "effects": [],
@@ -11167,7 +11167,7 @@
     {
       "area": "tests",
       "callable": "check_test_duplicate_expectations",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid duplicate test function names across test modules",
       "domain": "repo",
       "effects": [],
@@ -11194,7 +11194,7 @@
     {
       "area": "tmp",
       "callable": "check_tmp_paths_outside_artifacts",
-      "category": "hygiene",
+      "category": "check",
       "description": "forbid committed tmp paths outside artifacts/",
       "domain": "repo",
       "effects": [],
@@ -11221,7 +11221,7 @@
     {
       "area": "top",
       "callable": "check_top_level_package_group_mapping",
-      "category": "hygiene",
+      "category": "check",
       "description": "require top-level atlasctl packages to map to control-plane groups",
       "domain": "repo",
       "effects": [],
@@ -11248,7 +11248,7 @@
     {
       "area": "top",
       "callable": "check_top_level_structure",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce atlasctl top-level package intent and budget",
       "domain": "repo",
       "effects": [],
@@ -11275,7 +11275,7 @@
     {
       "area": "type",
       "callable": "check_type_coverage",
-      "category": "hygiene",
+      "category": "check",
       "description": "enforce minimum type coverage in core/contracts",
       "domain": "repo",
       "effects": [],
@@ -11302,7 +11302,7 @@
     {
       "area": "version",
       "callable": "check_version_matches_pyproject",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure atlasctl package version and --version output match pyproject",
       "domain": "repo",
       "effects": [],
@@ -11329,7 +11329,7 @@
     {
       "area": "workflows",
       "callable": "check_workflows_targets_exist",
-      "category": "hygiene",
+      "category": "check",
       "description": "ensure make targets used by workflows exist",
       "domain": "repo",
       "effects": [],

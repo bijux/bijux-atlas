@@ -15,7 +15,7 @@
       "id": "checks_checks_count_budget",
       "impl_ref": {
         "callable": "check_count_budget",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -56,7 +56,7 @@
       "id": "checks_checks_docs_index_complete",
       "impl_ref": {
         "callable": "check_docs_index_complete",
-        "category": "drift",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -97,7 +97,7 @@
       "id": "checks_checks_owners_ssot",
       "impl_ref": {
         "callable": "check_owners_ssot",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -138,7 +138,7 @@
       "id": "checks_checks_registry_all_checks_have_canonical_id",
       "impl_ref": {
         "callable": "check_registry_all_checks_have_canonical_id",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -180,7 +180,7 @@
       "id": "checks_checks_registry_canonical_id_matches_module_path",
       "impl_ref": {
         "callable": "check_registry_canonical_id_matches_module_path",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -223,7 +223,7 @@
       "id": "checks_checks_registry_change_docs_gate",
       "impl_ref": {
         "callable": "check_registry_change_requires_docs_update",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -267,7 +267,7 @@
       "id": "checks_checks_registry_change_goldens_gate",
       "impl_ref": {
         "callable": "check_registry_change_requires_golden_update",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -311,7 +311,7 @@
       "id": "checks_checks_registry_change_owners_gate",
       "impl_ref": {
         "callable": "check_registry_change_requires_owner_update",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -354,7 +354,7 @@
       "id": "checks_checks_registry_docs_link_required",
       "impl_ref": {
         "callable": "check_registry_docs_link_required",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -396,7 +396,7 @@
       "id": "checks_checks_registry_docs_meta_runtime_drift",
       "impl_ref": {
         "callable": "check_registry_docs_meta_matches_runtime",
-        "category": "drift",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -438,7 +438,7 @@
       "id": "checks_checks_registry_integrity",
       "impl_ref": {
         "callable": "check_registry_integrity",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -479,7 +479,7 @@
       "id": "checks_checks_registry_no_banned_adjectives_in_ids",
       "impl_ref": {
         "callable": "check_registry_no_banned_adjectives_in_ids",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -520,7 +520,7 @@
       "id": "checks_checks_registry_no_duplicate_canonical_id",
       "impl_ref": {
         "callable": "check_registry_no_duplicate_canonical_id",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -562,7 +562,7 @@
       "id": "checks_checks_registry_owners_required",
       "impl_ref": {
         "callable": "check_registry_owners_required",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -604,7 +604,7 @@
       "id": "checks_checks_registry_remediation_link_required",
       "impl_ref": {
         "callable": "check_registry_remediation_link_required",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -646,7 +646,7 @@
       "id": "checks_checks_registry_speed_required",
       "impl_ref": {
         "callable": "check_registry_speed_required",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -688,7 +688,7 @@
       "id": "checks_checks_registry_suite_membership_required",
       "impl_ref": {
         "callable": "check_registry_suite_membership_required",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -730,7 +730,7 @@
       "id": "checks_checks_registry_transition_complete",
       "impl_ref": {
         "callable": "check_registry_transition_complete",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -771,7 +771,7 @@
       "id": "checks_checks_remediation_ssot",
       "impl_ref": {
         "callable": "check_remediation_ssot",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -812,7 +812,7 @@
       "id": "checks_checks_suites_inventory_ssot",
       "impl_ref": {
         "callable": "check_suites_inventory_ssot",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -854,7 +854,7 @@
       "id": "checks_checks_suites_no_orphans",
       "impl_ref": {
         "callable": "check_suites_no_orphans",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -895,7 +895,7 @@
       "id": "checks_checks_surfaces_no_banned_adjectives_in_paths",
       "impl_ref": {
         "callable": "check_surfaces_no_banned_adjectives_in_paths",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -935,7 +935,7 @@
       "id": "checks_configs_pyproject_no_duplicate_tool_config",
       "impl_ref": {
         "callable": "check_pyproject_no_duplicate_tool_config",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -975,7 +975,7 @@
       "id": "checks_configs_pyproject_required_blocks",
       "impl_ref": {
         "callable": "check_pyproject_required_blocks",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1015,7 +1015,7 @@
       "id": "checks_contracts_atlasctl_cli",
       "impl_ref": {
         "callable": "check_atlas_scripts_cli_contract",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1055,7 +1055,7 @@
       "id": "checks_contracts_layout_contract",
       "impl_ref": {
         "callable": "check_layout_contract",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [
@@ -1097,7 +1097,7 @@
       "id": "checks_contracts_schema_catalog",
       "impl_ref": {
         "callable": "check_schema_catalog_integrity",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1137,7 +1137,7 @@
       "id": "checks_contracts_schema_catalog_files_exist",
       "impl_ref": {
         "callable": "check_schema_catalog_files_exist",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1177,7 +1177,7 @@
       "id": "checks_contracts_schema_catalog_referenced",
       "impl_ref": {
         "callable": "check_schema_catalog_referenced",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1217,7 +1217,7 @@
       "id": "checks_contracts_schema_catalog_sorted",
       "impl_ref": {
         "callable": "check_schema_catalog_sorted",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1257,7 +1257,7 @@
       "id": "checks_contracts_schema_catalog_ssot",
       "impl_ref": {
         "callable": "check_schema_catalog_ssot",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1297,7 +1297,7 @@
       "id": "checks_contracts_schema_change_release_notes",
       "impl_ref": {
         "callable": "check_schema_change_release_notes",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1337,7 +1337,7 @@
       "id": "checks_contracts_schema_disk_files_listed",
       "impl_ref": {
         "callable": "check_schema_disk_files_listed",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1377,7 +1377,7 @@
       "id": "checks_contracts_schema_goldens",
       "impl_ref": {
         "callable": "check_schema_goldens_validate",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1417,7 +1417,7 @@
       "id": "checks_contracts_schema_id_naming",
       "impl_ref": {
         "callable": "check_schema_id_naming",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1457,7 +1457,7 @@
       "id": "checks_contracts_schema_readme_updated",
       "impl_ref": {
         "callable": "check_schema_readme_updated",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1497,7 +1497,7 @@
       "id": "checks_contracts_schema_samples",
       "impl_ref": {
         "callable": "check_schema_samples_validate",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1537,7 +1537,7 @@
       "id": "checks_docker_image_size",
       "impl_ref": {
         "callable": "check_docker_image_size",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1577,7 +1577,7 @@
       "id": "checks_docker_layout_contract",
       "impl_ref": {
         "callable": "check_docker_layout",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1617,7 +1617,7 @@
       "id": "checks_docker_no_latest_tags",
       "impl_ref": {
         "callable": "check_no_latest_tags",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1657,7 +1657,7 @@
       "id": "checks_docker_policy_contract",
       "impl_ref": {
         "callable": "check_docker_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1697,7 +1697,7 @@
       "id": "checks_docker_tag_contract_no_latest",
       "impl_ref": {
         "callable": "check_no_latest_tags",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1737,7 +1737,7 @@
       "id": "checks_docs_check_id_drift",
       "impl_ref": {
         "callable": "check_docs_check_id_drift",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1777,7 +1777,7 @@
       "id": "checks_docs_ci_lane_mapping",
       "impl_ref": {
         "callable": "check_docs_ci_lane_mapping",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1817,7 +1817,7 @@
       "id": "checks_docs_command_group_pages",
       "impl_ref": {
         "callable": "check_command_group_docs_pages",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1857,7 +1857,7 @@
       "id": "checks_docs_index_complete",
       "impl_ref": {
         "callable": "check_docs_index_complete",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1897,7 +1897,7 @@
       "id": "checks_docs_links_exist",
       "impl_ref": {
         "callable": "check_docs_links_exist",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1937,7 +1937,7 @@
       "id": "checks_docs_lint_style",
       "impl_ref": {
         "callable": "check_docs_lint_style",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -1977,7 +1977,7 @@
       "id": "checks_docs_migration_not_stale",
       "impl_ref": {
         "callable": "check_migration_docs_not_stale",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2017,7 +2017,7 @@
       "id": "checks_docs_nav_references_exist",
       "impl_ref": {
         "callable": "check_docs_nav_references_exist",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2057,7 +2057,7 @@
       "id": "checks_docs_new_command_workflow",
       "impl_ref": {
         "callable": "check_docs_new_command_workflow",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2097,7 +2097,7 @@
       "id": "checks_docs_no_legacy_cli_invocation",
       "impl_ref": {
         "callable": "check_docs_no_legacy_cli_invocation",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2137,7 +2137,7 @@
       "id": "checks_docs_no_ops_generated_run_path_refs",
       "impl_ref": {
         "callable": "check_docs_no_ops_generated_run_paths",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2177,7 +2177,7 @@
       "id": "checks_docs_no_orphans",
       "impl_ref": {
         "callable": "check_docs_no_orphans",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2217,7 +2217,7 @@
       "id": "checks_docs_no_placeholder_release_docs",
       "impl_ref": {
         "callable": "check_docs_no_placeholder_release_docs",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2257,7 +2257,7 @@
       "id": "checks_docs_no_scripts_path_refs",
       "impl_ref": {
         "callable": "check_docs_scripts_references",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2297,7 +2297,7 @@
       "id": "checks_docs_ownership_metadata",
       "impl_ref": {
         "callable": "check_docs_ownership_metadata",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2337,7 +2337,7 @@
       "id": "checks_docs_package_root_markdown",
       "impl_ref": {
         "callable": "check_no_package_root_markdown_except_readme",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2377,7 +2377,7 @@
       "id": "checks_docs_registry_command_drift",
       "impl_ref": {
         "callable": "check_docs_registry_command_drift",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2417,7 +2417,7 @@
       "id": "checks_docs_registry_indexes",
       "impl_ref": {
         "callable": "check_docs_registry_indexes",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2457,7 +2457,7 @@
       "id": "checks_docs_stable_command_examples",
       "impl_ref": {
         "callable": "check_stable_command_examples_in_group_docs",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2497,7 +2497,7 @@
       "id": "checks_license_file_mit",
       "impl_ref": {
         "callable": "check_license_file_mit",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2537,7 +2537,7 @@
       "id": "checks_license_spdx_policy",
       "impl_ref": {
         "callable": "check_spdx_policy",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2577,7 +2577,7 @@
       "id": "checks_license_statements_consistent",
       "impl_ref": {
         "callable": "check_license_statements_consistent",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2617,7 +2617,7 @@
       "id": "checks_make_ci_entrypoints_contract",
       "impl_ref": {
         "callable": "check_make_ci_entrypoints_contract",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2657,7 +2657,7 @@
       "id": "checks_make_ci_pr_lane_fast_only",
       "impl_ref": {
         "callable": "check_ci_pr_lane_fast_only",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2697,7 +2697,7 @@
       "id": "checks_make_ci_workflows_delegating_targets_only",
       "impl_ref": {
         "callable": "check_ci_workflows_call_only_delegating_make_targets",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2737,7 +2737,7 @@
       "id": "checks_make_ci_workflows_make_only",
       "impl_ref": {
         "callable": "check_ci_workflows_call_make_and_make_calls_atlasctl",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2777,7 +2777,7 @@
       "id": "checks_make_command_allowlist",
       "impl_ref": {
         "callable": "check_make_command_allowlist",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2817,7 +2817,7 @@
       "id": "checks_make_forbidden_paths",
       "impl_ref": {
         "callable": "check_make_forbidden_paths",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2857,7 +2857,7 @@
       "id": "checks_make_help_determinism",
       "impl_ref": {
         "callable": "check_make_help",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2897,7 +2897,7 @@
       "id": "checks_make_index_drift_contract",
       "impl_ref": {
         "callable": "check_make_index_drift_contract",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2937,7 +2937,7 @@
       "id": "checks_make_lane_reports_via_atlasctl_reporting",
       "impl_ref": {
         "callable": "check_make_lane_reports_via_atlasctl_reporting",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -2977,7 +2977,7 @@
       "id": "checks_make_makefiles_wrappers_only_all",
       "impl_ref": {
         "callable": "check_makefiles_wrappers_only_all",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3017,7 +3017,7 @@
       "id": "checks_make_no_atlasctl_run_ops_run",
       "impl_ref": {
         "callable": "check_make_no_atlasctl_run_ops_run",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3057,7 +3057,7 @@
       "id": "checks_make_no_bypass_atlasctl",
       "impl_ref": {
         "callable": "check_make_no_bypass_atlasctl_without_allowlist",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3097,7 +3097,7 @@
       "id": "checks_make_no_direct_artifact_writes",
       "impl_ref": {
         "callable": "check_make_no_direct_artifact_writes",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3137,7 +3137,7 @@
       "id": "checks_make_no_direct_bash_ops",
       "impl_ref": {
         "callable": "check_make_no_direct_bash_ops",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3177,7 +3177,7 @@
       "id": "checks_make_no_direct_python",
       "impl_ref": {
         "callable": "check_make_no_direct_python_script_invocations",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3217,7 +3217,7 @@
       "id": "checks_make_no_direct_python_only_atlasctl",
       "impl_ref": {
         "callable": "check_make_no_direct_python_only_atlasctl",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3257,7 +3257,7 @@
       "id": "checks_make_no_direct_script_exec_drift",
       "impl_ref": {
         "callable": "check_make_no_direct_script_exec_drift",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3297,7 +3297,7 @@
       "id": "checks_make_no_direct_scripts_only_atlasctl",
       "impl_ref": {
         "callable": "check_make_no_direct_scripts_only_atlasctl",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3337,7 +3337,7 @@
       "id": "checks_make_no_duplicate_all_variants",
       "impl_ref": {
         "callable": "check_make_no_duplicate_all_variants",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3377,7 +3377,7 @@
       "id": "checks_make_no_legacy_script_aliases",
       "impl_ref": {
         "callable": "check_make_no_legacy_script_aliases",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3417,7 +3417,7 @@
       "id": "checks_make_no_orphan_docs_refs",
       "impl_ref": {
         "callable": "check_make_no_orphan_docs_refs",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3457,7 +3457,7 @@
       "id": "checks_make_no_python_module_invocation",
       "impl_ref": {
         "callable": "check_make_no_python_module_invocation",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3497,7 +3497,7 @@
       "id": "checks_make_ops_product_atlasctl_only_delegation",
       "impl_ref": {
         "callable": "check_make_ops_product_atlasctl_only_delegation",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3537,7 +3537,7 @@
       "id": "checks_make_ops_product_no_tool_tokens",
       "impl_ref": {
         "callable": "check_make_ops_product_no_tool_tokens",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3577,7 +3577,7 @@
       "id": "checks_make_ops_product_ownership_complete",
       "impl_ref": {
         "callable": "check_make_ops_product_ownership_complete",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3617,7 +3617,7 @@
       "id": "checks_make_product_migration_complete_no_ops_run",
       "impl_ref": {
         "callable": "check_make_product_migration_complete_no_ops_run",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3657,7 +3657,7 @@
       "id": "checks_make_product_mk_wrapper_contract",
       "impl_ref": {
         "callable": "check_make_product_mk_wrapper_contract",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3697,7 +3697,7 @@
       "id": "checks_make_public_target_atlasctl_mapping",
       "impl_ref": {
         "callable": "check_public_make_targets_map_to_atlasctl",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3737,7 +3737,7 @@
       "id": "checks_make_public_targets_documented",
       "impl_ref": {
         "callable": "check_make_public_targets_documented",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3777,7 +3777,7 @@
       "id": "checks_make_removed_makefiles_unreferenced",
       "impl_ref": {
         "callable": "check_make_removed_makefiles_unreferenced",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3817,7 +3817,7 @@
       "id": "checks_make_root_budget",
       "impl_ref": {
         "callable": "check_make_root_budget",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3857,7 +3857,7 @@
       "id": "checks_make_scripts_refs",
       "impl_ref": {
         "callable": "check_make_scripts_references",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3897,7 +3897,7 @@
       "id": "checks_make_target_boundaries_enforced",
       "impl_ref": {
         "callable": "check_make_target_boundaries_enforced",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3937,7 +3937,7 @@
       "id": "checks_make_target_names_no_banned_adjectives",
       "impl_ref": {
         "callable": "check_make_target_names_no_banned_adjectives",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -3977,7 +3977,7 @@
       "id": "checks_make_target_ownership_complete",
       "impl_ref": {
         "callable": "check_make_target_ownership_complete",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4017,7 +4017,7 @@
       "id": "checks_make_workflows_reference_known_suites",
       "impl_ref": {
         "callable": "check_workflows_reference_known_suites",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4057,7 +4057,7 @@
       "id": "checks_make_wrapper_no_direct_cargo",
       "impl_ref": {
         "callable": "check_make_wrapper_no_direct_cargo",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4097,7 +4097,7 @@
       "id": "checks_make_wrapper_no_env_side_effects",
       "impl_ref": {
         "callable": "check_make_wrapper_no_env_side_effects",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4137,7 +4137,7 @@
       "id": "checks_make_wrapper_no_multiline_recipes",
       "impl_ref": {
         "callable": "check_make_wrapper_no_multiline_recipes",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4177,7 +4177,7 @@
       "id": "checks_make_wrapper_no_python_m",
       "impl_ref": {
         "callable": "check_make_no_python_module_invocation",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4217,7 +4217,7 @@
       "id": "checks_make_wrapper_only_calls_bin_atlasctl",
       "impl_ref": {
         "callable": "check_make_wrapper_only_calls_bin_atlasctl",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4257,7 +4257,7 @@
       "id": "checks_make_wrapper_phony_complete",
       "impl_ref": {
         "callable": "check_make_wrapper_phony_complete",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4297,7 +4297,7 @@
       "id": "checks_make_wrapper_purity",
       "impl_ref": {
         "callable": "check_make_wrapper_purity",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4337,7 +4337,7 @@
       "id": "checks_make_wrapper_shell_is_sh",
       "impl_ref": {
         "callable": "check_make_wrapper_shell_is_sh",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4377,7 +4377,7 @@
       "id": "checks_make_wrapper_target_budget",
       "impl_ref": {
         "callable": "check_make_wrapper_target_budget",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4418,7 +4418,7 @@
       "id": "checks_ops_all_check_scripts_registered",
       "impl_ref": {
         "callable": "check_ops_all_check_scripts_registered",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4460,7 +4460,7 @@
       "id": "checks_ops_chart_version_contract",
       "impl_ref": {
         "callable": "check_ops_chart_version_contract",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4502,7 +4502,7 @@
       "id": "checks_ops_clean_allowed_roots_only",
       "impl_ref": {
         "callable": "check_ops_clean_allowed_roots_only",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4544,7 +4544,7 @@
       "id": "checks_ops_committed_generated_hygiene",
       "impl_ref": {
         "callable": "check_committed_generated_hygiene",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4586,7 +4586,7 @@
       "id": "checks_ops_effect_boundary_imports",
       "impl_ref": {
         "callable": "check_ops_effect_boundary_imports",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4628,7 +4628,7 @@
       "id": "checks_ops_env_schema_is_used",
       "impl_ref": {
         "callable": "check_ops_env_schema_is_used",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4670,7 +4670,7 @@
       "id": "checks_ops_generated_not_tracked_unless_allowed",
       "impl_ref": {
         "callable": "check_ops_generated_not_tracked_unless_allowed",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4712,7 +4712,7 @@
       "id": "checks_ops_manifests_schema",
       "impl_ref": {
         "callable": "check_ops_manifests_schema",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4754,7 +4754,7 @@
       "id": "checks_ops_no_direct_script_entrypoints",
       "impl_ref": {
         "callable": "check_ops_no_direct_script_entrypoints",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4796,7 +4796,7 @@
       "id": "checks_ops_no_new_run_scripts_without_approval_and_expiry",
       "impl_ref": {
         "callable": "check_ops_no_new_run_scripts_without_approval_and_expiry",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4838,7 +4838,7 @@
       "id": "checks_ops_no_tracked_generated",
       "impl_ref": {
         "callable": "check_ops_generated_tracked",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4880,7 +4880,7 @@
       "id": "checks_ops_no_tracked_timestamps",
       "impl_ref": {
         "callable": "check_tracked_timestamp_paths",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4922,7 +4922,7 @@
       "id": "checks_ops_obs_drift_goldens",
       "impl_ref": {
         "callable": "check_ops_obs_drift_goldens",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -4964,7 +4964,7 @@
       "id": "checks_ops_pins_no_unpinned_versions",
       "impl_ref": {
         "callable": "check_ops_pins_no_unpinned_versions",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5006,7 +5006,7 @@
       "id": "checks_ops_pins_update_is_deterministic",
       "impl_ref": {
         "callable": "check_ops_pins_update_is_deterministic",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5048,7 +5048,7 @@
       "id": "checks_ops_product_task_scripts_zero",
       "impl_ref": {
         "callable": "check_ops_product_task_scripts_zero",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5090,7 +5090,7 @@
       "id": "checks_ops_run_non_executable_unless_allowlisted",
       "impl_ref": {
         "callable": "check_ops_run_non_executable_unless_allowlisted",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5132,7 +5132,7 @@
       "id": "checks_ops_run_only_allowlisted_scripts",
       "impl_ref": {
         "callable": "check_ops_run_only_allowlisted_scripts",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5174,7 +5174,7 @@
       "id": "checks_ops_run_temp_script_approvals",
       "impl_ref": {
         "callable": "check_ops_run_temp_script_approvals",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5216,7 +5216,7 @@
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_budget_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_budget_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5258,7 +5258,7 @@
       "id": "checks_ops_script_ops_datasets_scripts_py_cache_threshold_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_threshold_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5300,7 +5300,7 @@
       "id": "checks_ops_script_ops_lint_check_layer_contract_drift_py",
       "impl_ref": {
         "callable": "check_ops_lint_layer_contract_drift_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5342,7 +5342,7 @@
       "id": "checks_ops_script_ops_lint_check_surfaces_py",
       "impl_ref": {
         "callable": "check_ops_lint_check_surfaces_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5384,7 +5384,7 @@
       "id": "checks_ops_script_ops_lint_lane_budget_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5426,7 +5426,7 @@
       "id": "checks_ops_script_ops_lint_layout_check_layer_contract_drift_py",
       "impl_ref": {
         "callable": "check_ops_lint_layer_contract_drift_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5468,7 +5468,7 @@
       "id": "checks_ops_script_ops_lint_ops_smoke_budget_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5510,7 +5510,7 @@
       "id": "checks_ops_script_ops_lint_policy_lane_budget_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5552,7 +5552,7 @@
       "id": "checks_ops_script_ops_lint_policy_ops_smoke_budget_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5594,7 +5594,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_abuse_scenarios_required_py",
       "impl_ref": {
         "callable": "check_ops_load_abuse_scenarios_required_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5636,7 +5636,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_baseline_update_policy_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_baseline_update_policy_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5678,7 +5678,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_perf_baselines_py",
       "impl_ref": {
         "callable": "check_ops_load_perf_baselines_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5720,7 +5720,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_pinned_queries_lock_py",
       "impl_ref": {
         "callable": "check_ops_load_pinned_queries_lock_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5762,7 +5762,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_prereqs_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_prereqs_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5804,7 +5804,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_regression_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_regression_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5846,7 +5846,7 @@
       "id": "checks_ops_script_ops_load_scripts_check_runbook_suite_names_py",
       "impl_ref": {
         "callable": "check_ops_load_runbook_suite_names_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5888,7 +5888,7 @@
       "id": "checks_ops_script_ops_load_scripts_regression_check_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_baseline_regression_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5930,7 +5930,7 @@
       "id": "checks_ops_script_ops_obs_scripts_check_metric_cardinality_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_metric_cardinality_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -5972,7 +5972,7 @@
       "id": "checks_ops_script_ops_obs_scripts_check_pack_upgrade_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_upgrade_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6014,7 +6014,7 @@
       "id": "checks_ops_script_ops_obs_scripts_check_pack_versions_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_versions_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6056,7 +6056,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_alerts_contract_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_alerts_contract_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6098,7 +6098,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_contract_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_contract_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6140,7 +6140,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_metric_compat_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6182,7 +6182,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py",
       "impl_ref": {
         "callable": "check_ops_obs_endpoint_metrics_coverage_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6224,7 +6224,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_endpoint_trace_coverage_py",
       "impl_ref": {
         "callable": "check_ops_obs_endpoint_trace_coverage_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6266,7 +6266,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_contract_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_contract_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6308,7 +6308,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_coverage_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_coverage_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6350,7 +6350,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_drift_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_drift_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6392,7 +6392,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_metrics_golden_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_golden_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6434,7 +6434,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_obs_budgets_py",
       "impl_ref": {
         "callable": "check_ops_obs_budgets_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6476,7 +6476,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_observability_lag_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_observability_lag_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6518,7 +6518,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_overload_behavior_contract_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_overload_behavior_contract_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6560,7 +6560,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_profile_goldens_py",
       "impl_ref": {
         "callable": "check_ops_obs_profile_goldens_native",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6602,7 +6602,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_runtime_metrics_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_runtime_metrics_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6644,7 +6644,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_coverage_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_coverage_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6686,7 +6686,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_trace_golden_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_golden_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6728,7 +6728,7 @@
       "id": "checks_ops_script_ops_obs_scripts_contracts_check_tracing_contract_py",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_tracing_contract_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6770,7 +6770,7 @@
       "id": "checks_ops_script_ops_stack_scripts_idempotency_check_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_stack_idempotency_check_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6812,7 +6812,7 @@
       "id": "checks_ops_script_ops_stack_tests_check_live_layer_snapshot_py",
       "impl_ref": {
         "callable": "check_ops_stack_tests_check_live_layer_snapshot_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6854,7 +6854,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_allowlist_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_allowlist_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6896,7 +6896,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_artifacts_policy_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_policy_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6938,7 +6938,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_validation_check_kind_cluster_contract_drift_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -6980,7 +6980,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_no_root_dumping_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_no_root_dumping_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7022,7 +7022,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_canonical_shims_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_canonical_shims_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7064,7 +7064,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_lib_canonical_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_ops_lib_canonical_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7106,7 +7106,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_script_targets_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_script_targets_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7148,7 +7148,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_stack_order_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_stack_order_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7190,7 +7190,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_ops_workspace_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_workspace_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7232,7 +7232,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_repo_hygiene_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_repo_hygiene_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7274,7 +7274,7 @@
       "id": "checks_ops_script_ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
       "impl_ref": {
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_stack_manifest_consolidation_py",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7316,7 +7316,7 @@
       "id": "checks_ops_scripts_are_data_only",
       "impl_ref": {
         "callable": "check_ops_scripts_are_data_only",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7358,7 +7358,7 @@
       "id": "checks_ops_scripts_count_nonincreasing",
       "impl_ref": {
         "callable": "check_ops_scripts_count_nonincreasing",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7400,7 +7400,7 @@
       "id": "checks_ops_shell_policy",
       "impl_ref": {
         "callable": "check_ops_shell_policy",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7442,7 +7442,7 @@
       "id": "checks_ops_stack_versions_report_valid",
       "impl_ref": {
         "callable": "check_ops_stack_versions_report_valid",
-        "category": "hygiene",
+        "category": "lint",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7484,7 +7484,7 @@
       "id": "checks_policies_adjective_allowlist_budget",
       "impl_ref": {
         "callable": "check_policies_adjective_allowlist_budget",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7526,7 +7526,7 @@
       "id": "checks_policies_adjectives_repo_clean",
       "impl_ref": {
         "callable": "check_policies_adjectives_repo_clean",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7568,7 +7568,7 @@
       "id": "checks_policies_budget_approval_time_bounded",
       "impl_ref": {
         "callable": "check_policies_budget_approval_time_bounded",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7610,7 +7610,7 @@
       "id": "checks_policies_budget_relaxation_requires_approval",
       "impl_ref": {
         "callable": "check_policies_budget_relaxation_requires_approval",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7652,7 +7652,7 @@
       "id": "checks_policies_bypass_all_entries_have_owner_issue_expiry",
       "impl_ref": {
         "callable": "check_policies_bypass_all_entries_have_owner_issue_expiry",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7694,7 +7694,7 @@
       "id": "checks_policies_bypass_budget",
       "impl_ref": {
         "callable": "check_policies_bypass_budget",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7736,7 +7736,7 @@
       "id": "checks_policies_bypass_budget_trend",
       "impl_ref": {
         "callable": "check_policies_bypass_budget_trend",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7778,7 +7778,7 @@
       "id": "checks_policies_bypass_count_nonincreasing",
       "impl_ref": {
         "callable": "check_policies_bypass_count_nonincreasing",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7820,7 +7820,7 @@
       "id": "checks_policies_bypass_count_nonincreasing_hard",
       "impl_ref": {
         "callable": "check_policies_bypass_count_nonincreasing",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7862,7 +7862,7 @@
       "id": "checks_policies_bypass_entry_matches_nothing",
       "impl_ref": {
         "callable": "check_policies_bypass_entry_matches_nothing",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7904,7 +7904,7 @@
       "id": "checks_policies_bypass_entry_matches_too_broad",
       "impl_ref": {
         "callable": "check_policies_bypass_entry_matches_too_broad",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7946,7 +7946,7 @@
       "id": "checks_policies_bypass_entry_paths_exist",
       "impl_ref": {
         "callable": "check_policies_bypass_entry_paths_exist",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -7988,7 +7988,7 @@
       "id": "checks_policies_bypass_expiry_max_horizon",
       "impl_ref": {
         "callable": "check_policies_bypass_expiry_max_horizon",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8030,7 +8030,7 @@
       "id": "checks_policies_bypass_expiry_not_past",
       "impl_ref": {
         "callable": "check_policies_bypass_expiry_not_past",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8072,7 +8072,7 @@
       "id": "checks_policies_bypass_files_scoped",
       "impl_ref": {
         "callable": "check_policies_bypass_files_scoped",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8114,7 +8114,7 @@
       "id": "checks_policies_bypass_hard_gate",
       "impl_ref": {
         "callable": "check_policies_bypass_hard_gate",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8156,7 +8156,7 @@
       "id": "checks_policies_bypass_has_expiry",
       "impl_ref": {
         "callable": "check_policies_bypass_has_expiry",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8198,7 +8198,7 @@
       "id": "checks_policies_bypass_has_owner",
       "impl_ref": {
         "callable": "check_policies_bypass_has_owner",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8240,7 +8240,7 @@
       "id": "checks_policies_bypass_has_reason",
       "impl_ref": {
         "callable": "check_policies_bypass_has_reason",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8282,7 +8282,7 @@
       "id": "checks_policies_bypass_has_test_coverage",
       "impl_ref": {
         "callable": "check_policies_bypass_has_test_coverage",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8324,7 +8324,7 @@
       "id": "checks_policies_bypass_has_ticket_or_doc_ref",
       "impl_ref": {
         "callable": "check_policies_bypass_has_ticket_or_doc_ref",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8366,7 +8366,7 @@
       "id": "checks_policies_bypass_ids_unique",
       "impl_ref": {
         "callable": "check_policies_bypass_ids_unique",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8408,7 +8408,7 @@
       "id": "checks_policies_bypass_inventory_deterministic",
       "impl_ref": {
         "callable": "check_policies_bypass_inventory_deterministic",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8450,7 +8450,7 @@
       "id": "checks_policies_bypass_inventory_growth_requires_ticket",
       "impl_ref": {
         "callable": "check_policies_bypass_inventory_growth_requires_ticket",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8492,7 +8492,7 @@
       "id": "checks_policies_bypass_inventory_present",
       "impl_ref": {
         "callable": "check_policies_bypass_inventory_present",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8534,7 +8534,7 @@
       "id": "checks_policies_bypass_inventory_schema_valid",
       "impl_ref": {
         "callable": "check_policies_bypass_inventory_schema_valid",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8576,7 +8576,7 @@
       "id": "checks_policies_bypass_issue_id_format",
       "impl_ref": {
         "callable": "check_policies_bypass_issue_id_format",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8618,7 +8618,7 @@
       "id": "checks_policies_bypass_mainline_strict_mode",
       "impl_ref": {
         "callable": "check_policies_bypass_mainline_strict_mode",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8660,7 +8660,7 @@
       "id": "checks_policies_bypass_new_entries_forbidden",
       "impl_ref": {
         "callable": "check_policies_bypass_new_entries_forbidden",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8702,7 +8702,7 @@
       "id": "checks_policies_bypass_no_blank_justifications",
       "impl_ref": {
         "callable": "check_policies_bypass_no_blank_justifications",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8744,7 +8744,7 @@
       "id": "checks_policies_bypass_no_direct_script_runs",
       "impl_ref": {
         "callable": "check_policies_bypass_no_direct_script_runs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8787,7 +8787,7 @@
       "id": "checks_policies_bypass_no_network_guard",
       "impl_ref": {
         "callable": "check_policies_bypass_no_network_guard",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8830,7 +8830,7 @@
       "id": "checks_policies_bypass_no_new_files",
       "impl_ref": {
         "callable": "check_policies_bypass_no_new_files",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8872,7 +8872,7 @@
       "id": "checks_policies_bypass_no_security_or_pinning",
       "impl_ref": {
         "callable": "check_policies_bypass_no_security_or_pinning",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8914,7 +8914,7 @@
       "id": "checks_policies_bypass_no_unpinned_images",
       "impl_ref": {
         "callable": "check_policies_bypass_no_unpinned_images",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8956,7 +8956,7 @@
       "id": "checks_policies_bypass_owner_in_owners_registry",
       "impl_ref": {
         "callable": "check_policies_bypass_owner_in_owners_registry",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -8998,7 +8998,7 @@
       "id": "checks_policies_bypass_policy_name_known",
       "impl_ref": {
         "callable": "check_policies_bypass_policy_name_known",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9040,7 +9040,7 @@
       "id": "checks_policies_bypass_readme_complete",
       "impl_ref": {
         "callable": "check_policies_bypass_readme_complete",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9082,7 +9082,7 @@
       "id": "checks_policies_bypass_readme_sorted",
       "impl_ref": {
         "callable": "check_policies_bypass_readme_sorted",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9124,7 +9124,7 @@
       "id": "checks_policies_bypass_removal_milestones_defined",
       "impl_ref": {
         "callable": "check_policies_bypass_removal_milestones_defined",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9166,7 +9166,7 @@
       "id": "checks_policies_bypass_removal_plan_required",
       "impl_ref": {
         "callable": "check_policies_bypass_removal_plan_required",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9208,7 +9208,7 @@
       "id": "checks_policies_bypass_replacement_mechanism",
       "impl_ref": {
         "callable": "check_policies_bypass_replacement_mechanism",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9250,7 +9250,7 @@
       "id": "checks_policies_bypass_schema_valid",
       "impl_ref": {
         "callable": "check_policies_bypass_schema_valid",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9292,7 +9292,7 @@
       "id": "checks_policies_bypass_scope_valid",
       "impl_ref": {
         "callable": "check_policies_bypass_scope_valid",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9334,7 +9334,7 @@
       "id": "checks_policies_bypass_severity_expiry_windows",
       "impl_ref": {
         "callable": "check_policies_bypass_severity_expiry_windows",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9376,7 +9376,7 @@
       "id": "checks_policies_bypass_severity_levels",
       "impl_ref": {
         "callable": "check_policies_bypass_severity_levels",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9418,7 +9418,7 @@
       "id": "checks_policies_bypass_tokens_linked",
       "impl_ref": {
         "callable": "check_policies_bypass_tokens_linked",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9460,7 +9460,7 @@
       "id": "checks_policies_bypass_usage_heatmap",
       "impl_ref": {
         "callable": "check_policies_bypass_usage_heatmap",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9503,7 +9503,7 @@
       "id": "checks_policies_culprits_empty_on_release_tags",
       "impl_ref": {
         "callable": "check_policies_culprits_empty_on_release_tags",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9547,7 +9547,7 @@
       "id": "checks_policies_culprits_nonincrease_on_main",
       "impl_ref": {
         "callable": "check_policies_culprits_nonincrease_on_main",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9590,7 +9590,7 @@
       "id": "checks_policies_dependency_exceptions_remove_by_issue",
       "impl_ref": {
         "callable": "check_policies_dependency_exceptions_remove_by_issue",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9632,7 +9632,7 @@
       "id": "checks_policies_no_inline_bypass_entries",
       "impl_ref": {
         "callable": "check_policies_no_inline_bypass_entries",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9675,7 +9675,7 @@
       "id": "checks_policies_ops_allowlisted_literals_have_contract_tests",
       "impl_ref": {
         "callable": "check_ops_allowlisted_literals_have_contract_tests",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9719,7 +9719,7 @@
       "id": "checks_policies_ops_bypass_allowlist_files_have_owner",
       "impl_ref": {
         "callable": "check_ops_bypass_allowlist_files_have_owner",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9763,7 +9763,7 @@
       "id": "checks_policies_ops_bypass_entries_have_necessity_tests",
       "impl_ref": {
         "callable": "check_ops_bypass_entries_have_necessity_tests",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9807,7 +9807,7 @@
       "id": "checks_policies_ops_bypass_ledger_domains",
       "impl_ref": {
         "callable": "check_ops_bypass_ledger_domains",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9851,7 +9851,7 @@
       "id": "checks_policies_ops_bypass_ledger_expiry_not_past",
       "impl_ref": {
         "callable": "check_ops_bypass_ledger_expiry_not_past",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9895,7 +9895,7 @@
       "id": "checks_policies_ops_bypass_ledger_has_expiry",
       "impl_ref": {
         "callable": "check_ops_bypass_ledger_has_expiry",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9939,7 +9939,7 @@
       "id": "checks_policies_ops_bypass_ledger_refs_present",
       "impl_ref": {
         "callable": "check_ops_bypass_ledger_refs_present",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -9983,7 +9983,7 @@
       "id": "checks_policies_ops_bypass_ledger_sorted",
       "impl_ref": {
         "callable": "check_ops_bypass_ledger_sorted",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10027,7 +10027,7 @@
       "id": "checks_policies_ops_bypass_ledger_task_ids",
       "impl_ref": {
         "callable": "check_ops_bypass_ledger_task_ids",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10071,7 +10071,7 @@
       "id": "checks_policies_shell_network_fetch_allowlist_inline_meta",
       "impl_ref": {
         "callable": "check_policies_shell_network_fetch_allowlist_inline_meta",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10114,7 +10114,7 @@
       "id": "checks_policies_shell_probes_allowlist_inline_meta",
       "impl_ref": {
         "callable": "check_policies_shell_probes_allowlist_inline_meta",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10156,7 +10156,7 @@
       "id": "checks_policies_tests_bypass_dependency_marked",
       "impl_ref": {
         "callable": "check_policies_tests_bypass_dependency_marked",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10197,7 +10197,7 @@
       "id": "checks_python_lock_lockfile",
       "impl_ref": {
         "callable": "check_python_lock",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10237,7 +10237,7 @@
       "id": "checks_python_migration_exceptions_expiry",
       "impl_ref": {
         "callable": "check_python_migration_exceptions_expiry",
-        "category": "policy",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10277,7 +10277,7 @@
       "id": "checks_repo_budget_drift_approval",
       "impl_ref": {
         "callable": "check_budget_drift_approval",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10317,7 +10317,7 @@
       "id": "checks_repo_canonical_concept_homes",
       "impl_ref": {
         "callable": "check_canonical_concept_homes",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10357,7 +10357,7 @@
       "id": "checks_repo_check_impl_no_cli_imports",
       "impl_ref": {
         "callable": "check_check_impl_no_cli_imports",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10397,7 +10397,7 @@
       "id": "checks_repo_check_test_coverage",
       "impl_ref": {
         "callable": "check_check_test_coverage",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10437,7 +10437,7 @@
       "id": "checks_repo_checks_canonical_location",
       "impl_ref": {
         "callable": "check_checks_canonical_location",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10477,7 +10477,7 @@
       "id": "checks_repo_checks_domain_split",
       "impl_ref": {
         "callable": "check_checks_domain_split",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10517,7 +10517,7 @@
       "id": "checks_repo_checks_import_lint",
       "impl_ref": {
         "callable": "check_checks_import_lint",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10557,7 +10557,7 @@
       "id": "checks_repo_checks_no_cli_imports",
       "impl_ref": {
         "callable": "check_checks_no_cli_imports",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10597,7 +10597,7 @@
       "id": "checks_repo_checks_root_contract",
       "impl_ref": {
         "callable": "check_checks_root_contract",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10637,7 +10637,7 @@
       "id": "checks_repo_checks_tree_policy",
       "impl_ref": {
         "callable": "check_checks_tree_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10677,7 +10677,7 @@
       "id": "checks_repo_ci_artifact_upload_policy",
       "impl_ref": {
         "callable": "check_ci_artifact_upload_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10717,7 +10717,7 @@
       "id": "checks_repo_ci_workflow_policy",
       "impl_ref": {
         "callable": "check_ci_workflow_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10757,7 +10757,7 @@
       "id": "checks_repo_cli_argparse_policy",
       "impl_ref": {
         "callable": "check_argparse_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10797,7 +10797,7 @@
       "id": "checks_repo_cli_canonical_paths",
       "impl_ref": {
         "callable": "check_cli_canonical_paths",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10837,7 +10837,7 @@
       "id": "checks_repo_cli_import_scope",
       "impl_ref": {
         "callable": "check_cli_import_scope",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10877,7 +10877,7 @@
       "id": "checks_repo_cold_import_budget",
       "impl_ref": {
         "callable": "check_cold_import_budget",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10917,7 +10917,7 @@
       "id": "checks_repo_command_alias_budget",
       "impl_ref": {
         "callable": "check_command_alias_budget",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10957,7 +10957,7 @@
       "id": "checks_repo_command_group_owners",
       "impl_ref": {
         "callable": "check_command_group_owners",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -10997,7 +10997,7 @@
       "id": "checks_repo_command_metadata_contract",
       "impl_ref": {
         "callable": "check_command_metadata_contract",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11037,7 +11037,7 @@
       "id": "checks_repo_command_module_cli_intent",
       "impl_ref": {
         "callable": "check_command_module_cli_intent",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11077,7 +11077,7 @@
       "id": "checks_repo_command_ownership_docs",
       "impl_ref": {
         "callable": "check_command_ownership_docs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11117,7 +11117,7 @@
       "id": "checks_repo_command_scripts_registry",
       "impl_ref": {
         "callable": "check_command_scripts_registry",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11157,7 +11157,7 @@
       "id": "checks_repo_command_test_coverage",
       "impl_ref": {
         "callable": "check_command_test_coverage",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11197,7 +11197,7 @@
       "id": "checks_repo_commands_help_docs_drift",
       "impl_ref": {
         "callable": "check_command_help_docs_drift",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11237,7 +11237,7 @@
       "id": "checks_repo_commands_import_lint",
       "impl_ref": {
         "callable": "check_command_import_lint",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11277,7 +11277,7 @@
       "id": "checks_repo_commands_surface_stability",
       "impl_ref": {
         "callable": "check_command_surface_stability",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11317,7 +11317,7 @@
       "id": "checks_repo_compileall_gate",
       "impl_ref": {
         "callable": "check_compileall_gate",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11357,7 +11357,7 @@
       "id": "checks_repo_console_script_entry",
       "impl_ref": {
         "callable": "check_console_script_entry",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11397,7 +11397,7 @@
       "id": "checks_repo_contract_import_boundaries",
       "impl_ref": {
         "callable": "check_contract_import_boundaries",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11437,7 +11437,7 @@
       "id": "checks_repo_contracts_namespace_purpose",
       "impl_ref": {
         "callable": "check_contracts_namespace_purpose",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11477,7 +11477,7 @@
       "id": "checks_repo_core_no_bash_subprocess",
       "impl_ref": {
         "callable": "check_core_no_bash_subprocess",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11517,7 +11517,7 @@
       "id": "checks_repo_core_no_command_imports",
       "impl_ref": {
         "callable": "check_core_no_command_imports",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11557,7 +11557,7 @@
       "id": "checks_repo_dead_module_reachability",
       "impl_ref": {
         "callable": "check_dead_module_reachability_allowlist",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11597,7 +11597,7 @@
       "id": "checks_repo_dead_modules",
       "impl_ref": {
         "callable": "check_dead_modules_report_runs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11637,7 +11637,7 @@
       "id": "checks_repo_dependency_declarations",
       "impl_ref": {
         "callable": "check_dependency_declarations",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11677,7 +11677,7 @@
       "id": "checks_repo_dependency_gate_targets",
       "impl_ref": {
         "callable": "check_dependency_gate_targets",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11717,7 +11717,7 @@
       "id": "checks_repo_dependency_owner_justification",
       "impl_ref": {
         "callable": "check_dependency_owner_justification",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11757,7 +11757,7 @@
       "id": "checks_repo_deps_command_surface",
       "impl_ref": {
         "callable": "check_deps_command_surface",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11797,7 +11797,7 @@
       "id": "checks_repo_deps_workflow_doc",
       "impl_ref": {
         "callable": "check_deps_workflow_doc",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11837,7 +11837,7 @@
       "id": "checks_repo_dir_budget_entries",
       "impl_ref": {
         "callable": "check_dir_entry_budgets",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11877,7 +11877,7 @@
       "id": "checks_repo_dir_budget_exceptions_documented",
       "impl_ref": {
         "callable": "check_budget_exceptions_documented",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11917,7 +11917,7 @@
       "id": "checks_repo_dir_budget_exceptions_sorted",
       "impl_ref": {
         "callable": "check_budget_exceptions_sorted",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11957,7 +11957,7 @@
       "id": "checks_repo_dir_budget_loc",
       "impl_ref": {
         "callable": "check_loc_per_dir",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -11997,7 +11997,7 @@
       "id": "checks_repo_dir_budget_modules",
       "impl_ref": {
         "callable": "check_modules_per_dir",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12037,7 +12037,7 @@
       "id": "checks_repo_dir_budget_py_files",
       "impl_ref": {
         "callable": "check_py_files_per_dir",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12077,7 +12077,7 @@
       "id": "checks_repo_dir_budget_py_scope",
       "impl_ref": {
         "callable": "check_py_files_per_dir_budget",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12117,7 +12117,7 @@
       "id": "checks_repo_dir_budget_shell_files",
       "impl_ref": {
         "callable": "<lambda>",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12157,7 +12157,7 @@
       "id": "checks_repo_dir_count_trend_gate",
       "impl_ref": {
         "callable": "check_critical_dir_count_trend",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12197,7 +12197,7 @@
       "id": "checks_repo_docs_no_ops_generated_refs",
       "impl_ref": {
         "callable": "check_docs_no_ops_generated_run_paths",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12237,7 +12237,7 @@
       "id": "checks_repo_duplicate_contract_assertions",
       "impl_ref": {
         "callable": "check_duplicate_contract_assertions",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12277,7 +12277,7 @@
       "id": "checks_repo_duplicate_script_names",
       "impl_ref": {
         "callable": "check_duplicate_script_names",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12317,7 +12317,7 @@
       "id": "checks_repo_effect_boundaries",
       "impl_ref": {
         "callable": "check_forbidden_effect_calls",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12357,7 +12357,7 @@
       "id": "checks_repo_effect_boundary_exceptions_policy",
       "impl_ref": {
         "callable": "check_effect_boundary_exceptions_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12397,7 +12397,7 @@
       "id": "checks_repo_env_docs_present",
       "impl_ref": {
         "callable": "check_env_docs_present",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12437,7 +12437,7 @@
       "id": "checks_repo_file_complexity_budget",
       "impl_ref": {
         "callable": "<lambda>",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12477,7 +12477,7 @@
       "id": "checks_repo_file_import_budget",
       "impl_ref": {
         "callable": "<lambda>",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12517,7 +12517,7 @@
       "id": "checks_repo_file_public_symbol_budget",
       "impl_ref": {
         "callable": "<lambda>",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12557,7 +12557,7 @@
       "id": "checks_repo_folder_intent_contract",
       "impl_ref": {
         "callable": "check_folder_intent_contract",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12597,7 +12597,7 @@
       "id": "checks_repo_forbidden_adjectives",
       "impl_ref": {
         "callable": "check_forbidden_adjectives",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12637,7 +12637,7 @@
       "id": "checks_repo_forbidden_root_files",
       "impl_ref": {
         "callable": "run",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12677,7 +12677,7 @@
       "id": "checks_repo_forbidden_root_names",
       "impl_ref": {
         "callable": "run",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12717,7 +12717,7 @@
       "id": "checks_repo_forbidden_top_dirs",
       "impl_ref": {
         "callable": "check_forbidden_top_dirs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12757,7 +12757,7 @@
       "id": "checks_repo_generated_dirs_policy",
       "impl_ref": {
         "callable": "check_generated_dirs_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12797,7 +12797,7 @@
       "id": "checks_repo_import_smoke",
       "impl_ref": {
         "callable": "check_import_smoke",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12837,7 +12837,7 @@
       "id": "checks_repo_internal_commands_not_public",
       "impl_ref": {
         "callable": "check_internal_commands_not_public",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12877,7 +12877,7 @@
       "id": "checks_repo_internal_import_boundaries",
       "impl_ref": {
         "callable": "check_internal_import_boundaries",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12917,7 +12917,7 @@
       "id": "checks_repo_internal_utils_stdlib_only",
       "impl_ref": {
         "callable": "check_internal_utils_stdlib_only",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12957,7 +12957,7 @@
       "id": "checks_repo_json_golden_conflicts",
       "impl_ref": {
         "callable": "check_no_conflicting_json_goldens",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -12997,7 +12997,7 @@
       "id": "checks_repo_json_goldens_validate_schema",
       "impl_ref": {
         "callable": "check_json_goldens_validate_schema",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13037,7 +13037,7 @@
       "id": "checks_repo_layout_domain_alias_cleanup",
       "impl_ref": {
         "callable": "check_layout_domain_alias_cleanup",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13077,7 +13077,7 @@
       "id": "checks_repo_layout_domain_readmes",
       "impl_ref": {
         "callable": "check_layout_domain_readmes",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13117,7 +13117,7 @@
       "id": "checks_repo_layout_no_legacy_imports",
       "impl_ref": {
         "callable": "check_layout_no_legacy_imports",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13157,7 +13157,7 @@
       "id": "checks_repo_layout_no_shadow",
       "impl_ref": {
         "callable": "check_no_layout_shadow_configs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13197,7 +13197,7 @@
       "id": "checks_repo_legacy_package_absent",
       "impl_ref": {
         "callable": "check_legacy_package_absent",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13237,7 +13237,7 @@
       "id": "checks_repo_legacy_zero_importers",
       "impl_ref": {
         "callable": "check_no_legacy_importers",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13277,7 +13277,7 @@
       "id": "checks_repo_managed_artifact_write_roots",
       "impl_ref": {
         "callable": "check_managed_artifact_write_roots",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13317,7 +13317,7 @@
       "id": "checks_repo_migration_progress_regression",
       "impl_ref": {
         "callable": "check_migration_progress_regression",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13357,7 +13357,7 @@
       "id": "checks_repo_modern_no_legacy_imports",
       "impl_ref": {
         "callable": "check_no_modern_imports_from_legacy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13397,7 +13397,7 @@
       "id": "checks_repo_modern_no_legacy_obs_imports",
       "impl_ref": {
         "callable": "check_no_legacy_obs_imports_in_modern",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13437,7 +13437,7 @@
       "id": "checks_repo_module_budget_domains",
       "impl_ref": {
         "callable": "check_modules_per_domain",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13477,7 +13477,7 @@
       "id": "checks_repo_module_size",
       "impl_ref": {
         "callable": "check_module_size",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13517,7 +13517,7 @@
       "id": "checks_repo_modules_reachability",
       "impl_ref": {
         "callable": "check_repo_check_modules_registered",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13558,7 +13558,7 @@
       "id": "checks_repo_network_default_deny",
       "impl_ref": {
         "callable": "check_network_default_deny_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13599,7 +13599,7 @@
       "id": "checks_repo_no_adhoc_python",
       "impl_ref": {
         "callable": "check_no_adhoc_python",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13639,7 +13639,7 @@
       "id": "checks_repo_no_core_integration_dir",
       "impl_ref": {
         "callable": "check_forbidden_core_integration_dir",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13679,7 +13679,7 @@
       "id": "checks_repo_no_deprecated_commands",
       "impl_ref": {
         "callable": "check_no_deprecated_commands",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13719,7 +13719,7 @@
       "id": "checks_repo_no_deprecated_namespace_dirs",
       "impl_ref": {
         "callable": "check_forbidden_deprecated_namespace_dirs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13759,7 +13759,7 @@
       "id": "checks_repo_no_deprecated_namespaces",
       "impl_ref": {
         "callable": "check_forbidden_deprecated_namespaces",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13799,7 +13799,7 @@
       "id": "checks_repo_no_direct_bash_invocations",
       "impl_ref": {
         "callable": "check_no_direct_bash_invocations",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13839,7 +13839,7 @@
       "id": "checks_repo_no_direct_python_invocations",
       "impl_ref": {
         "callable": "check_no_direct_python_invocations",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13879,7 +13879,7 @@
       "id": "checks_repo_no_direct_script_runs",
       "impl_ref": {
         "callable": "run",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13919,7 +13919,7 @@
       "id": "checks_repo_no_duplicate_command_impl_patterns",
       "impl_ref": {
         "callable": "check_no_duplicate_command_implementation_patterns",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13959,7 +13959,7 @@
       "id": "checks_repo_no_duplicate_command_names",
       "impl_ref": {
         "callable": "check_no_duplicate_command_names",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -13999,7 +13999,7 @@
       "id": "checks_repo_no_empty_dirs_or_pointless_nests",
       "impl_ref": {
         "callable": "check_no_empty_dirs_or_pointless_nests",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14039,7 +14039,7 @@
       "id": "checks_repo_no_empty_packages",
       "impl_ref": {
         "callable": "check_no_empty_packages",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14079,7 +14079,7 @@
       "id": "checks_repo_no_exec_python_outside_packages",
       "impl_ref": {
         "callable": "check_no_executable_python_outside_packages",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14119,7 +14119,7 @@
       "id": "checks_repo_no_forbidden_paths",
       "impl_ref": {
         "callable": "run",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14159,7 +14159,7 @@
       "id": "checks_repo_no_large_binary_files",
       "impl_ref": {
         "callable": "check_no_large_binary_files",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14199,7 +14199,7 @@
       "id": "checks_repo_no_legacy_command_names",
       "impl_ref": {
         "callable": "check_no_legacy_command_names",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14239,7 +14239,7 @@
       "id": "checks_repo_no_legacy_module_paths",
       "impl_ref": {
         "callable": "check_no_legacy_module_paths",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14279,7 +14279,7 @@
       "id": "checks_repo_no_nested_same_name_packages",
       "impl_ref": {
         "callable": "check_no_nested_same_name_packages",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14319,7 +14319,7 @@
       "id": "checks_repo_no_ops_generated_placeholder",
       "impl_ref": {
         "callable": "check_no_ops_generated_placeholder",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14359,7 +14359,7 @@
       "id": "checks_repo_no_path_cwd_usage",
       "impl_ref": {
         "callable": "check_no_path_cwd_usage",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14399,7 +14399,7 @@
       "id": "checks_repo_no_placeholder_module_names",
       "impl_ref": {
         "callable": "check_no_placeholder_module_names",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14439,7 +14439,7 @@
       "id": "checks_repo_no_python_caches_committed",
       "impl_ref": {
         "callable": "check_repo_no_python_caches_committed",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14479,7 +14479,7 @@
       "id": "checks_repo_no_scripts_dir",
       "impl_ref": {
         "callable": "check_scripts_dir_absent",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14519,7 +14519,7 @@
       "id": "checks_repo_no_tracked_ops_generated",
       "impl_ref": {
         "callable": "check_ops_generated_tracked",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14559,7 +14559,7 @@
       "id": "checks_repo_no_tracked_timestamp_paths",
       "impl_ref": {
         "callable": "check_tracked_timestamp_paths",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14599,7 +14599,7 @@
       "id": "checks_repo_no_undocumented_help_commands",
       "impl_ref": {
         "callable": "check_no_undocumented_help_commands",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14639,7 +14639,7 @@
       "id": "checks_repo_no_wildcard_exports",
       "impl_ref": {
         "callable": "check_no_wildcard_exports",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14679,7 +14679,7 @@
       "id": "checks_repo_no_xtask_refs",
       "impl_ref": {
         "callable": "check_no_xtask_refs",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14719,7 +14719,7 @@
       "id": "checks_repo_ops_configs_newline_policy",
       "impl_ref": {
         "callable": "check_ops_configs_deterministic_newlines",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14759,7 +14759,7 @@
       "id": "checks_repo_ops_examples_immutable",
       "impl_ref": {
         "callable": "check_ops_examples_immutable",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14799,7 +14799,7 @@
       "id": "checks_repo_optional_dependency_groups",
       "impl_ref": {
         "callable": "check_optional_dependency_groups",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14839,7 +14839,7 @@
       "id": "checks_repo_optional_dependency_usage_gates",
       "impl_ref": {
         "callable": "check_optional_dependency_usage_gates",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14879,7 +14879,7 @@
       "id": "checks_repo_output_format_stability",
       "impl_ref": {
         "callable": "check_output_format_stability",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14919,7 +14919,7 @@
       "id": "checks_repo_package_has_module_or_readme",
       "impl_ref": {
         "callable": "check_package_has_module_or_readme",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14959,7 +14959,7 @@
       "id": "checks_repo_package_max_depth",
       "impl_ref": {
         "callable": "check_tree_depth",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -14999,7 +14999,7 @@
       "id": "checks_repo_packages_atlasctl_root_shape",
       "impl_ref": {
         "callable": "check_atlasctl_package_root_shape",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15039,7 +15039,7 @@
       "id": "checks_repo_packaging_metadata_completeness",
       "impl_ref": {
         "callable": "check_packaging_metadata_completeness",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15079,7 +15079,7 @@
       "id": "checks_repo_public_api_doc_exists",
       "impl_ref": {
         "callable": "check_public_api_doc_exists",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15119,7 +15119,7 @@
       "id": "checks_repo_public_api_exports",
       "impl_ref": {
         "callable": "check_public_api_exports",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15159,7 +15159,7 @@
       "id": "checks_repo_public_commands_docs_index",
       "impl_ref": {
         "callable": "check_public_commands_docs_index",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15199,7 +15199,7 @@
       "id": "checks_repo_pyproject_minimalism",
       "impl_ref": {
         "callable": "check_pyproject_minimalism",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15239,7 +15239,7 @@
       "id": "checks_repo_pyproject_no_duplicate_tool_config",
       "impl_ref": {
         "callable": "check_pyproject_no_duplicate_tool_config",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15279,7 +15279,7 @@
       "id": "checks_repo_pyproject_required_blocks",
       "impl_ref": {
         "callable": "check_pyproject_required_blocks",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15319,7 +15319,7 @@
       "id": "checks_repo_python_module_help",
       "impl_ref": {
         "callable": "check_python_module_help",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15359,7 +15359,7 @@
       "id": "checks_repo_python_requires_version_and_ci",
       "impl_ref": {
         "callable": "check_python_requires_version_and_ci",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15399,7 +15399,7 @@
       "id": "checks_repo_registry_definition_boundary",
       "impl_ref": {
         "callable": "check_registry_definition_boundary",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15439,7 +15439,7 @@
       "id": "checks_repo_registry_single_source",
       "impl_ref": {
         "callable": "check_registry_single_source",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15479,7 +15479,7 @@
       "id": "checks_repo_required_target_shape",
       "impl_ref": {
         "callable": "check_required_target_shape",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15519,7 +15519,7 @@
       "id": "checks_repo_requirements_artifact_policy",
       "impl_ref": {
         "callable": "check_requirements_artifact_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15559,7 +15559,7 @@
       "id": "checks_repo_requirements_sync",
       "impl_ref": {
         "callable": "check_requirements_sync_with_pyproject",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15599,7 +15599,7 @@
       "id": "checks_repo_root_determinism",
       "impl_ref": {
         "callable": "run",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15639,7 +15639,7 @@
       "id": "checks_repo_root_shape",
       "impl_ref": {
         "callable": "run",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15679,7 +15679,7 @@
       "id": "checks_repo_runcontext_single_builder",
       "impl_ref": {
         "callable": "check_runcontext_single_builder",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15719,7 +15719,7 @@
       "id": "checks_repo_script_help_coverage",
       "impl_ref": {
         "callable": "check_script_help",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15759,7 +15759,7 @@
       "id": "checks_repo_script_ownership_coverage",
       "impl_ref": {
         "callable": "check_script_ownership",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15799,7 +15799,7 @@
       "id": "checks_repo_shell_docs_present",
       "impl_ref": {
         "callable": "check_shell_docs_present",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15839,7 +15839,7 @@
       "id": "checks_repo_shell_invocation_boundary",
       "impl_ref": {
         "callable": "check_shell_invocation_via_core_exec",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15879,7 +15879,7 @@
       "id": "checks_repo_shell_location_policy",
       "impl_ref": {
         "callable": "check_shell_location_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15919,7 +15919,7 @@
       "id": "checks_repo_shell_no_direct_python",
       "impl_ref": {
         "callable": "check_shell_no_python_direct_calls",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -15960,7 +15960,7 @@
       "id": "checks_repo_shell_no_network_fetch",
       "impl_ref": {
         "callable": "check_shell_no_network_download_tools",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16001,7 +16001,7 @@
       "id": "checks_repo_shell_readonly_checks",
       "impl_ref": {
         "callable": "check_shell_scripts_readonly",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16041,7 +16041,7 @@
       "id": "checks_repo_shell_script_budget",
       "impl_ref": {
         "callable": "check_shell_script_budget",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16081,7 +16081,7 @@
       "id": "checks_repo_shell_strict_mode",
       "impl_ref": {
         "callable": "check_shell_headers_and_strict_mode",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16121,7 +16121,7 @@
       "id": "checks_repo_single_registry_module",
       "impl_ref": {
         "callable": "check_single_registry_module",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16161,7 +16161,7 @@
       "id": "checks_repo_single_runner_module",
       "impl_ref": {
         "callable": "check_single_runner_module",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16201,7 +16201,7 @@
       "id": "checks_repo_stable_command_no_breaking_changes",
       "impl_ref": {
         "callable": "check_stable_command_no_breaking_changes",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16241,7 +16241,7 @@
       "id": "checks_repo_subprocess_boundary",
       "impl_ref": {
         "callable": "check_subprocess_boundary",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16281,7 +16281,7 @@
       "id": "checks_repo_suite_inventory_policy",
       "impl_ref": {
         "callable": "check_suite_inventory_policy",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16321,7 +16321,7 @@
       "id": "checks_repo_suite_marker_rules",
       "impl_ref": {
         "callable": "check_suite_marker_rules",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16361,7 +16361,7 @@
       "id": "checks_repo_test_determinism_patterns",
       "impl_ref": {
         "callable": "check_test_determinism_patterns",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16401,7 +16401,7 @@
       "id": "checks_repo_test_no_duplicated_coverage",
       "impl_ref": {
         "callable": "check_no_duplicated_coverage_paths",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16442,7 +16442,7 @@
       "id": "checks_repo_test_no_unmarked_network",
       "impl_ref": {
         "callable": "check_no_unmarked_test_network",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16483,7 +16483,7 @@
       "id": "checks_repo_test_ownership_tags",
       "impl_ref": {
         "callable": "check_test_ownership_tags",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16523,7 +16523,7 @@
       "id": "checks_repo_test_skip_justification",
       "impl_ref": {
         "callable": "check_no_unjustified_skips",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16563,7 +16563,7 @@
       "id": "checks_repo_test_taxonomy_layout",
       "impl_ref": {
         "callable": "check_test_taxonomy_layout",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16603,7 +16603,7 @@
       "id": "checks_repo_test_write_sandbox",
       "impl_ref": {
         "callable": "check_test_write_sandbox",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16643,7 +16643,7 @@
       "id": "checks_repo_tests_no_duplicate_expectations",
       "impl_ref": {
         "callable": "check_test_duplicate_expectations",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16683,7 +16683,7 @@
       "id": "checks_repo_tmp_paths_under_artifacts",
       "impl_ref": {
         "callable": "check_tmp_paths_outside_artifacts",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16723,7 +16723,7 @@
       "id": "checks_repo_top_level_package_group_mapping",
       "impl_ref": {
         "callable": "check_top_level_package_group_mapping",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16763,7 +16763,7 @@
       "id": "checks_repo_top_level_structure",
       "impl_ref": {
         "callable": "check_top_level_structure",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16803,7 +16803,7 @@
       "id": "checks_repo_type_coverage",
       "impl_ref": {
         "callable": "check_type_coverage",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16843,7 +16843,7 @@
       "id": "checks_repo_version_matches_pyproject",
       "impl_ref": {
         "callable": "check_version_matches_pyproject",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
@@ -16883,7 +16883,7 @@
       "id": "checks_repo_workflows_targets_exist",
       "impl_ref": {
         "callable": "check_workflows_targets_exist",
-        "category": "hygiene",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],
