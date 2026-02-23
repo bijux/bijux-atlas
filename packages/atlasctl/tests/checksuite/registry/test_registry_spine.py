@@ -6,7 +6,7 @@ from atlasctl.registry.spine import load_registry
 def test_registry_spine_loads_with_stable_ordering() -> None:
     reg = load_registry()
     assert reg.commands == tuple(sorted(reg.commands, key=lambda c: (c.group, c.name)))
-    assert reg.checks == tuple(sorted(reg.checks, key=lambda c: (c.domain, c.category, c.check_id)))
+    assert reg.checks == tuple(sorted(reg.checks, key=lambda c: c.check_id))
 
 
 def test_registry_spine_selectors_work() -> None:
