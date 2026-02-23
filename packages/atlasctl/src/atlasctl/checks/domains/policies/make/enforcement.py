@@ -568,6 +568,19 @@ def check_workflows_reference_known_suites(repo_root: Path) -> tuple[int, list[s
     return (0 if not errors else 1), sorted(errors)
 
 
+def check_workflows_no_adhoc_check_run(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    forbidden_tokens = ("atlasctl check run --id", "atlasctl check run --group", "atlasctl check run --domain")
+    for rel, text in _workflow_texts(repo_root):
+        for lineno, line in enumerate(text.splitlines(), start=1):
+            lowered = line.lower()
+            if any(token in lowered for token in forbidden_tokens):
+                errors.append(
+                    f"{rel}:{lineno}: workflow must use suite/gate entrypoints instead of ad-hoc `atlasctl check run ...`"
+                )
+    return (0 if not errors else 1), sorted(errors)
+
+
 def check_ci_pr_lane_fast_only(repo_root: Path) -> tuple[int, list[str]]:
     from .....checks.registry import get_check
     from .....registry.suites import resolve_check_ids, suite_manifest_specs

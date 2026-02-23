@@ -38,6 +38,7 @@ from .enforcement import (
     check_make_target_boundaries_enforced,
     check_make_target_ownership_complete,
     check_workflows_reference_known_suites,
+    check_workflows_no_adhoc_check_run,
     check_policies_bypass_no_new_files,
     check_policies_bypass_all_entries_have_owner_issue_expiry,
     check_policies_bypass_expiry_not_past,
@@ -515,6 +516,14 @@ CHECKS: tuple[CheckDef, ...] = (
         900,
         check_workflows_reference_known_suites,
         fix_hint="Update workflow suite names or registry/suites catalog entries so they match.",
+    ),
+    CheckDef(
+        "make.workflows_no_adhoc_check_run",
+        "make",
+        "forbid ad-hoc atlasctl check run selectors in CI workflows",
+        900,
+        check_workflows_no_adhoc_check_run,
+        fix_hint="Route workflow checks through `atlasctl suite run ...` or `atlasctl gate run ...` only.",
     ),
     CheckDef(
         "make.public_targets_documented",
