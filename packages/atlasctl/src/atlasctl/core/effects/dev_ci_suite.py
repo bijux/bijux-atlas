@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ...core.runtime.paths import write_text_file
 from ..context import RunContext
-from .exec import run as process_run
+from ..exec import run as process_run
 from .run_meta import write_run_meta
 
 

@@ -16,7 +16,7 @@ from ..isolation import build_isolate_env
 from ..runtime.paths import write_text_file
 from .run_meta import write_run_meta
 from .dev_cargo_plan import build_dev_cargo_plan
-from .exec import run as process_run
+from ..exec import run as process_run
 
 NEXTEST_TOML = "configs/nextest/nextest.toml"
 DENY_CONFIG = "configs/security/deny.toml"
