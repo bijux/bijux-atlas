@@ -20,7 +20,7 @@ jobs:
       - name: Generate bypass inventory and reports
         run: |
           mkdir -p artifacts/reports/atlasctl
-          ./bin/atlasctl suite run refgrade-audit --only slow --report json --list > artifacts/reports/atlasctl/reference-audit-suite.list.json
+          ./bin/atlasctl suite run required-audit --only slow --report json --list > artifacts/reports/atlasctl/reference-audit-suite.list.json
           ./bin/atlasctl policies bypass inventory --report json > artifacts/reports/atlasctl/policies-bypass-inventory.json
           ./bin/atlasctl report bypass --json --out artifacts/reports/atlasctl/policies-bypass-summary.json
           ./bin/atlasctl report bypass culprits --json --out artifacts/reports/atlasctl/policies-bypass-culprits.json

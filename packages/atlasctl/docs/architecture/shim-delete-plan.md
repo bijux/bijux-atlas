@@ -26,4 +26,5 @@ Cutoff target: `2026-04-01` (cleanup PRs must delete or replace all entries belo
 
 ## Scope Note
 
-`ops` remains repository spec; `atlasctl` remains behavior implementation. This plan deletes compatibility shims only and does not change command surface contracts.
+`ops` remains repository spec; `atlasctl` remains behavior implementation.
+This plan deletes compatibility shims only and does not change command surface contracts.

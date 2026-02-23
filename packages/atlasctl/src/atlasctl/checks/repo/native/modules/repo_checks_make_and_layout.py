@@ -261,7 +261,7 @@ def check_tmp_paths_outside_artifacts(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_generated_dirs_policy(repo_root: Path) -> tuple[int, list[str]]:
-    allowed = {"docs/_generated", "ops/_generated", "ops/_generated.example"}
+    allowed = {"configs/_generated", "docs/_generated", "ops/_generated", "ops/_generated.example", "packages/atlasctl/docs/_generated"}
     errors: list[str] = []
     for path in sorted(repo_root.rglob("_generated")):
         if not path.is_dir():
@@ -378,7 +378,7 @@ def check_single_canonical_runtime_adapters(repo_root: Path) -> tuple[int, list[
 
 def check_cli_help_output_deterministic(repo_root: Path) -> tuple[int, list[str]]:
     del repo_root
-    from atlasctl.cli.main import build_parser
+    from atlasctl.cli import build_parser
 
     p1 = build_parser().format_help()
     p2 = build_parser().format_help()

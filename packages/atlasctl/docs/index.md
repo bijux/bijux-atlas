@@ -47,6 +47,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Taxonomy Map](architecture/taxonomy-map.md)
 - [Lint Selector Contract](architecture/lint-is-selector-not-subsystem.md)
 - [Registry SSOT Spine](architecture/registry-spine-ssot.md)
+- [Shim Delete Plan](architecture/shim-delete-plan.md)
 - [CLI Stability](cli-stability.md)
 - [Compatibility Promise](compatibility-promise.md)
 - [Support Policy](support-policy.md)
@@ -89,6 +90,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 
 - [Check Domains](checks/index.md)
 - [Check ID Migration Rules](checks/check-id-migration-rules.md)
+- [Shell Check Migration Inventory](checks/shell-check-migration.md)
 
 ## Schemas
 

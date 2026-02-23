@@ -142,19 +142,19 @@
     },
     {
       "actions": [
-        "refgrade-audit",
+        "required-audit",
         "schema-check",
         "pins.check",
         "surface"
       ],
-      "atlasctl_suite": "refgrade-audit",
+      "atlasctl_suite": "required-audit",
       "evidence_area": "scorecard",
       "markers": [
         "ops",
         "policies",
         "slow"
       ],
-      "name": "ops.refgrade.audit",
+      "name": "ops.required.audit",
       "reduction_plan": "split cheap schema/surface checks from strict bypass and determinism audit lanes",
       "slow_reason": "runs cross-domain policy/schema/surface checks and scorecard generation",
       "speed": "slow"
