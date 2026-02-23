@@ -119,6 +119,11 @@ def _validate_file_well_formed(repo_root: Path) -> list[str]:
 def _check_ownership(repo_root: Path) -> list[str]:
     own = _load_json(repo_root / "configs/inventory/owners.json")
     areas = {str(k) for k in own.get("areas", {}).keys()}
+    declared_owners = {
+        str(row.get("id", ""))
+        for row in _load_json(repo_root / "configs/meta/owners.json").get("owners", [])
+        if isinstance(row, dict)
+    }
     errors: list[str] = []
     for d in sorted((repo_root / "configs").iterdir()):
         if not d.is_dir() or d.name.startswith("_"):
@@ -129,6 +134,10 @@ def _check_ownership(repo_root: Path) -> list[str]:
     for area in sorted(areas):
         if not (repo_root / area).exists():
             errors.append(f"ownership points to missing area: {area}")
+    for area, owner in sorted((own.get("areas", {}) or {}).items()):
+        owner_id = str(owner)
+        if owner_id and owner_id not in declared_owners:
+            errors.append(f"ownership uses unknown owner id `{owner_id}` for {area}")
     return errors
 
 

@@ -2,8 +2,24 @@
   "schema_version": 1,
   "owners": [
     {
+      "id": "api-contracts",
+      "name": "API Contracts Team"
+    },
+    {
+      "id": "bijux-atlas-operations",
+      "name": "Bijux Atlas Operations"
+    },
+    {
+      "id": "bijux-atlas-performance",
+      "name": "Bijux Atlas Performance"
+    },
+    {
       "id": "docs",
       "name": "Docs Team"
+    },
+    {
+      "id": "docs-governance",
+      "name": "Docs Governance"
     },
     {
       "id": "ops",
@@ -16,6 +32,14 @@
     {
       "id": "repo",
       "name": "Repo Team"
+    },
+    {
+      "id": "rust-foundation",
+      "name": "Rust Foundation"
+    },
+    {
+      "id": "security",
+      "name": "Security Team"
     }
   ],
   "command_groups": {
