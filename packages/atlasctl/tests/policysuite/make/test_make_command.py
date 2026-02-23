@@ -94,6 +94,7 @@ def test_make_parser_supports_new_subcommands() -> None:
         ["make", "list-targets", "--json"],
         ["make", "list-public-targets", "--json"],
         ["make", "inventory-logic", "--json"],
+        ["make", "emit", "--json"],
         ["make", "lint", "--json"],
         ["make", "rewrite", "--json"],
         ["make", "doctor", "--json"],
@@ -137,6 +138,58 @@ def test_make_rewrite_preview_json() -> None:
     ns = argparse.Namespace(make_cmd="rewrite", write=False, limit=2, json=True)
     rc = run_make_command(ctx, ns)
     assert rc == 0
+
+
+def test_make_emit_writes_catalog(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr("atlasctl.core.context.find_repo_root", lambda: tmp_path)
+    (tmp_path / "configs/make").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "configs/make/public-targets.json").write_text(
+        json.dumps(
+            {
+                "public_targets": [
+                    {
+                        "name": "ci",
+                        "description": "Run ci",
+                        "lanes": ["ci"],
+                        "area": "policies",
+                    }
+                ]
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "configs/make/ownership.json").write_text(
+        json.dumps({"targets": {"ci": {"owner": "build"}}}, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    ctx = RunContext.from_args("make-emit", None, "test", False)
+    ns = argparse.Namespace(make_cmd="emit", out="makefiles/targets.json", check=False, json=True)
+    rc = run_make_command(ctx, ns)
+    assert rc == 0
+    out = tmp_path / "makefiles/targets.json"
+    assert out.exists()
+
+
+def test_make_emit_check_detects_drift(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr("atlasctl.core.context.find_repo_root", lambda: tmp_path)
+    (tmp_path / "configs/make").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "configs/make/public-targets.json").write_text(
+        json.dumps({"public_targets": []}, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "configs/make/ownership.json").write_text(
+        json.dumps({"targets": {}}, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    out = tmp_path / "makefiles/targets.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("{\"schema_version\":1,\"targets\":[{\"name\":\"stale\"}]}\n", encoding="utf-8")
+    ctx = RunContext.from_args("make-emit-check", None, "test", False)
+    ns = argparse.Namespace(make_cmd="emit", out="makefiles/targets.json", check=True, json=True)
+    rc = run_make_command(ctx, ns)
+    assert rc == 1
 
 
 def test_dev_ci_target_map_payload_is_complete_for_repo() -> None:
