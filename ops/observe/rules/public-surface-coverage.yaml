@@ -1,0 +1,8 @@
+# Phase 6 coverage marker for first-class ops observe/ inventory migration.
+surfaces:
+  - atlas
+  - prometheus
+  - grafana
+  - minio
+  - otel
+  - redis

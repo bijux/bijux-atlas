@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "require_digest": true,
+  "allow_non_digest_image_keys": [
+    "minio",
+    "minio_mc",
+    "prometheus",
+    "otel_collector",
+    "redis",
+    "toxiproxy"
+  ]
+}
