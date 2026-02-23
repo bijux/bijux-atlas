@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "policy": "temporary ops subprocess exceptions; prefer atlasctl.core.process",
+  "paths": [
+    "packages/atlasctl/src/atlasctl/commands/ops/e2e/",
+    "packages/atlasctl/src/atlasctl/commands/ops/stack/",
+    "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/",
+    "packages/atlasctl/src/atlasctl/commands/ops/k8s/ci/",
+    "packages/atlasctl/src/atlasctl/commands/ops/k8s/clean_uninstall.py",
+    "packages/atlasctl/src/atlasctl/commands/ops/obs/",
+    "packages/atlasctl/src/atlasctl/commands/ops/observability/",
+    "packages/atlasctl/src/atlasctl/commands/ops/datasets/",
+    "packages/atlasctl/src/atlasctl/commands/ops/load/",
+    "packages/atlasctl/src/atlasctl/commands/ops/lint/repo/",
+    "packages/atlasctl/src/atlasctl/commands/ops/orchestrate/"
+  ]
+}

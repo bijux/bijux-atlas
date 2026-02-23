@@ -147,6 +147,30 @@ LINT_CHECKS: list[OpsCheck] = [
         ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_internal_not_public.py"],
         "Move migration glue under commands/ops/internal and keep public ops docs/help free of internal entries.",
     ),
+    _check(
+        "ops-no-exec-read-text",
+        "Forbid exec(read_text()) in ops command modules",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_exec_read_text_forbidden.py"],
+        "Replace exec(read_text()) loaders with explicit imports.",
+    ),
+    _check(
+        "ops-subprocess-boundary",
+        "Validate ops subprocess boundary policy",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_subprocess_boundary.py"],
+        "Route subprocess usage through core.process or record temporary exceptions in configs/ops/ops-subprocess-allowlist.json.",
+    ),
+    _check(
+        "ops-external-tools-manifest",
+        "Validate ops external tools allowlist manifest",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_external_tools_manifest.py"],
+        "Declare area tool invocations in configs/ops/external-tools-allowlist.json.",
+    ),
+    _check(
+        "ops-surface-manifest",
+        "Validate ops public surface manifest",
+        ["python3", "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_surface_manifest.py"],
+        "Keep one public entrypoint mapping per ops area in configs/ops/ops-surface-manifest.json.",
+    ),
 ]
 
 
