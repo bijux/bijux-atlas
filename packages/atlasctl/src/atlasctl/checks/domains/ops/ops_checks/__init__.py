@@ -20,6 +20,7 @@ from ....repo.native import (
     check_tracked_timestamp_paths,
 )
 from ....core.base import CheckDef
+from ....effects import CheckEffect
 
 _OPS_RUN_TEMP_APPROVALS = Path("configs/policy/ops-run-temp-script-approvals.json")
 _ISSUE_ID_RE = re.compile(r"^ISSUE-[A-Z0-9-]+$")
@@ -758,14 +759,14 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.run_non_executable_unless_allowlisted", "ops", "ops/run scripts must be non-executable except allowlisted", 1000, check_ops_run_non_executable_unless_allowlisted, fix_hint="Remove executable bits from ops/run scripts after migration, or update allowlist intentionally."),
     CheckDef("ops.run_temp_script_approvals", "ops", "temporary ops/run migration script approvals must be valid and unexpired", 1000, check_ops_run_temp_script_approvals, fix_hint="Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired."),
     CheckDef("ops.no_new_run_scripts_without_approval_and_expiry", "ops", "forbid new ops/run scripts without valid temporary approval and expiry", 1000, check_ops_no_new_run_scripts_without_approval_and_expiry, fix_hint="Keep ops/run scripts allowlisted only via valid non-expired temp approvals, or migrate/delete them."),
-    CheckDef("ops.obs_drift_goldens", "ops", "fail on observability golden drift (generated vs golden)", 1000, check_ops_obs_drift_goldens, fix_hint="Regenerate/fix observability goldens and contracts."),
+    CheckDef("ops.obs_drift_goldens", "ops", "fail on observability golden drift (generated vs golden)", 1000, check_ops_obs_drift_goldens, fix_hint="Regenerate/fix observability goldens and contracts.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.chart_version_contract", "ops", "enforce chart/app version contract for bijux-atlas chart", 1000, check_ops_chart_version_contract, fix_hint="Keep Chart.yaml version and appVersion present, semver, and aligned."),
     CheckDef("ops.clean_allowed_roots_only", "ops", "ensure ops clean only targets allowed generated roots", 1000, check_ops_clean_allowed_roots_only, fix_hint="Restrict ops clean to ops/_generated child deletion only."),
     CheckDef("ops.all_check_scripts_registered", "ops", "require all ops check scripts to be registered in atlasctl checks", 1000, check_ops_all_check_scripts_registered, fix_hint="Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation)."),
-    CheckDef("ops.product_task_scripts_zero", "ops", "forbid product task scripts under ops and enforce zero-count baseline", 1000, check_ops_product_task_scripts_zero, fix_hint="Move product task scripts into atlasctl commands/product or atlasctl ops area modules and keep configs/ops/product-task-scripts-baseline.json at zero."),
+    CheckDef("ops.product_task_scripts_zero", "ops", "forbid product task scripts under ops and enforce zero-count baseline", 1000, check_ops_product_task_scripts_zero, fix_hint="Move product task scripts into atlasctl commands/product or atlasctl ops area modules and keep configs/ops/product-task-scripts-baseline.json at zero.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.script.ops_lint_check_surfaces_py", "ops", "run ops script check `ops/_lint/check-surfaces.py`", 1000, check_ops_lint_check_surfaces_native, fix_hint="Fix repo surface violations in configs/repo/surfaces.json or root entries."),
-    CheckDef("ops.script.ops_lint_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/inventory/layers.json and commit deterministic output."),
-    CheckDef("ops.script.ops_lint_layout_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/inventory/layers.json and commit deterministic output."),
+    CheckDef("ops.script.ops_lint_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/inventory/layers.json and commit deterministic output.", effects=(CheckEffect.SUBPROCESS.value,)),
+    CheckDef("ops.script.ops_lint_layout_check_layer_contract_drift_py", "ops", "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`", 1000, check_ops_lint_layer_contract_drift_native, fix_hint="Regenerate ops/inventory/layers.json and commit deterministic output.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.script.ops_load_scripts_check_abuse_scenarios_required_py", "ops", "run ops script check `ops/load/scripts/check_abuse_scenarios_required.py`", 1000, check_ops_load_abuse_scenarios_required_native, fix_hint="Keep required load abuse suites in ops/load/suites/suites.json with nightly+must_pass contracts."),
     CheckDef("ops.script.ops_load_scripts_check_perf_baselines_py", "ops", "run ops script check `ops/load/scripts/check_perf_baselines.py`", 1000, check_ops_load_perf_baselines_native, fix_hint="Fix perf baseline metadata, freshness, dataset lock hash, and tool-version alignment."),
     CheckDef("ops.script.ops_load_scripts_check_pinned_queries_lock_py", "ops", "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`", 1000, check_ops_load_pinned_queries_lock_native, fix_hint="Regenerate pinned query lock so file/query hashes match SSOT."),
@@ -775,7 +776,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.script.ops_obs_scripts_contracts_check_obs_budgets_py", "ops", "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_obs_budgets.py`", 1000, check_ops_obs_budgets_native, fix_hint="Align observability budgets required labels with metrics contract specs."),
     CheckDef("ops.script.ops_obs_scripts_contracts_check_profile_goldens_py", "ops", "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_profile_goldens.py`", 1000, check_ops_obs_profile_goldens_native, fix_hint="Fix profile goldens registry and referenced golden files."),
     *(
-        CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.")
+        CheckDef(check_id, "ops", description, 1000, fn, fix_hint=f"Fix failures in `{script_rel}` or replace it with atlasctl-native check logic.", effects=(CheckEffect.SUBPROCESS.value,))
         for (check_id, description, script_rel, fn) in _OPS_SCRIPT_CHECKS
     ),
 )

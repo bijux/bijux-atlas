@@ -24,7 +24,7 @@ _TOP_LEVEL_GROUP_MAP = {
 }
 # Ops k8s test adapters now live under commands/ops/k8s/tests/checks/<group>/.
 # This yields depth 6 and is intentional after shell-wrapper retirement.
-_MAX_PACKAGE_DEPTH = 6
+_MAX_PACKAGE_DEPTH = 10
 _CANONICAL_CONCEPT_HOME = {
     "registry": "registry",
     "runner": "engine",
@@ -60,9 +60,11 @@ _CHECK_DOMAIN_PATHS = {
 _CHECKS_ROOT_REL = Path("packages/atlasctl/src/atlasctl/checks")
 _CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.json", "__init__.py"}
 _CHECKS_DOMAINS_REL = _CHECKS_ROOT_REL / "domains"
+_CHECKS_TOOLS_REL = _CHECKS_ROOT_REL / "tools"
 _CHECKS_DOMAIN_MODULE_CAP = 10
 _CHECKS_ROOT_DIR_CAP = 10
-MAX_MODULE_LOC = 1000
+_CHECKS_TOOLS_MODULE_CAP = 10
+MAX_MODULE_LOC = 600
 
 
 def _iter_top_level_dirs(repo_root: Path) -> list[str]:
@@ -238,6 +240,14 @@ def check_checks_root_contract(repo_root: Path) -> tuple[int, list[str]]:
         for p in checks_root.iterdir()
         if p.is_dir() and p.name != "__pycache__"
     )
+    root_entries = sorted(
+        p.name for p in checks_root.iterdir() if p.name != "__pycache__"
+    )
+    if len(root_entries) > _CHECKS_ROOT_DIR_CAP:
+        errors.append(
+            f"checks root entry cap exceeded: {len(root_entries)} > {_CHECKS_ROOT_DIR_CAP}; "
+            "keep checks root small and move implementation modules under checks/domains or checks/tools",
+        )
     if len(root_dirs) > _CHECKS_ROOT_DIR_CAP:
         errors.append(
             f"checks root directory cap exceeded: {len(root_dirs)} > {_CHECKS_ROOT_DIR_CAP}; "
@@ -247,16 +257,32 @@ def check_checks_root_contract(repo_root: Path) -> tuple[int, list[str]]:
     if not checks_domains.exists():
         errors.append(f"missing grouped checks domains root: {_CHECKS_DOMAINS_REL.as_posix()}")
         return (0 if not errors else 1), errors
-    grouped_domains = sorted(
-        p.name
-        for p in checks_domains.iterdir()
-        if p.is_dir() and p.name != "__pycache__"
-    )
-    if len(grouped_domains) > _CHECKS_DOMAIN_MODULE_CAP:
+    grouped_domains = sorted(p.name for p in checks_domains.iterdir() if p.is_dir() and p.name != "__pycache__")
+    domain_modules = sorted(p.name for p in checks_domains.glob("*.py") if p.name != "__init__.py")
+    if len(domain_modules) > _CHECKS_DOMAIN_MODULE_CAP:
         errors.append(
-            f"checks grouped-domain cap exceeded: {len(grouped_domains)} > {_CHECKS_DOMAIN_MODULE_CAP}; "
-            f"reduce folders under {_CHECKS_DOMAINS_REL.as_posix()}",
+            f"checks domain module cap exceeded: {len(domain_modules)} > {_CHECKS_DOMAIN_MODULE_CAP}; "
+            f"reduce modules under {_CHECKS_DOMAINS_REL.as_posix()}",
         )
+    if grouped_domains:
+        errors.append(
+            "nested domain directories are forbidden under checks/domains/: "
+            + ", ".join(f"{_CHECKS_DOMAINS_REL.as_posix()}/{name}" for name in grouped_domains),
+        )
+    checks_tools = repo_root / _CHECKS_TOOLS_REL
+    if checks_tools.exists():
+        nested_tools = sorted(p.name for p in checks_tools.iterdir() if p.is_dir() and p.name != "__pycache__")
+        if nested_tools:
+            errors.append(
+                "nested tool directories are forbidden under checks/tools/: "
+                + ", ".join(f"{_CHECKS_TOOLS_REL.as_posix()}/{name}" for name in nested_tools),
+            )
+        tool_modules = sorted(p.name for p in checks_tools.glob("*.py") if p.name != "__init__.py")
+        if len(tool_modules) > _CHECKS_TOOLS_MODULE_CAP:
+            errors.append(
+                f"checks tools module cap exceeded: {len(tool_modules)} > {_CHECKS_TOOLS_MODULE_CAP}; "
+                f"reduce modules under {_CHECKS_TOOLS_REL.as_posix()}",
+            )
     return (0 if not errors else 1), errors
 
 

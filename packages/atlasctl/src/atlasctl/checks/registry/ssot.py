@@ -41,7 +41,7 @@ FILENAME_ALLOWLIST_JSON = Path("configs/policy/check-filename-allowlist.json")
 TRANSITION_ALLOWLIST_JSON = Path("configs/policy/checks-registry-transition.json")
 CHECK_CATEGORY_ENUM = {"lint", "check"}
 CHECK_DOMAIN_ENUM = {"checks", "configs", "contracts", "docker", "docs", "license", "make", "ops", "policies", "python", "repo"}
-CHECK_EFFECT_ENUM = {CheckEffect.FS_READ.value, CheckEffect.FS_WRITE.value, CheckEffect.SUBPROCESS.value, CheckEffect.NETWORK.value}
+CHECK_EFFECT_ENUM = {CheckEffect.FS_READ.value, CheckEffect.FS_WRITE.value, CheckEffect.SUBPROCESS.value, CheckEffect.GIT.value, CheckEffect.NETWORK.value}
 LINT_DOMAINS = {"configs", "docs", "make", "ops"}
 DOMAIN_MAX_PY_FILES = 140
 
