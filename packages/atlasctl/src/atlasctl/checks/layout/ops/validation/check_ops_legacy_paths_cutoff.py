@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[8]
 DOC = ROOT / 'ops/docs/migration-window.md'
 LEGACY = [
-    ROOT/'ops/_schemas', ROOT/'ops/_meta/ownership.json', ROOT/'ops/_meta/surface.json', ROOT/'ops/_meta/contracts.json', ROOT/'ops/_meta/layer-contract.json', ROOT/'ops/registry/pins.json', ROOT/'ops/stack/version-manifest.json', ROOT/'ops/stack/versions.json'
+    ROOT/'ops/schema', ROOT/'ops/inventory/owners.json', ROOT/'ops/inventory/surfaces.json', ROOT/'ops/_meta/contracts.json', ROOT/'ops/_meta/layer-contract.json', ROOT/'ops/registry/pins.json', ROOT/'ops/stack/version-manifest.json', ROOT/'ops/stack/versions.json'
 ]
 
 def main() -> int:

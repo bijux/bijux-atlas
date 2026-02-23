@@ -13,7 +13,7 @@ SCAN_ROOTS = (
 )
 
 ALLOWED_TOKENS = (
-    "ops/_generated_committed/",
+    "ops/_generated.example/",
     "ops/_generated_static/",
 )
 
@@ -33,7 +33,7 @@ def should_scan(path: Path) -> bool:
         return False
     if rel.startswith("ops/_generated/"):
         return False
-    if rel.startswith("ops/_generated_committed/"):
+    if rel.startswith("ops/_generated.example/"):
         return False
     return True
 

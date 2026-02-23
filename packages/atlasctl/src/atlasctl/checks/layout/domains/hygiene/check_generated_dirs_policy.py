@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[6]
 ALLOWED = {
     "docs/_generated",
     "ops/_generated",
-    "ops/_generated_committed",
+    "ops/_generated.example",
 }
 
 errors: list[str] = []

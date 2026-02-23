@@ -61,7 +61,7 @@ def main() -> int:
             errs.append(f"{cpath}: invalid json ({exc})")
     actual = {
         p.relative_to(ROOT).as_posix()
-        for p in (ROOT / "ops/_schemas").rglob("*.json")
+        for p in (ROOT / "ops/schema").rglob("*.json")
         if p.name != ".gitkeep"
     }
     missing = sorted(actual - seen_paths)

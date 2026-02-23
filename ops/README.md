@@ -21,7 +21,7 @@ Runbook index: `ops/INDEX.md`.
 - atlasctl shell helper assets: `packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/`.
 - `ops/_meta/`: ownership/surface/contracts metadata.
 - `ops/schema/`: ops JSON schemas.
-- `ops/_generated_committed/`: deterministic generated ops outputs committed to git.
+- `ops/_generated.example/`: deterministic generated ops outputs committed to git.
 - `artifacts/evidence/`: runtime evidence outputs (gitignored).
 - `ops/_artifacts/`: canonical runtime artifacts root.
 

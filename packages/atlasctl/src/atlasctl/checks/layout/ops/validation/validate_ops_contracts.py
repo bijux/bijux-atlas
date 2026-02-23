@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# Purpose: validate canonical ops manifests against ops/_schemas contracts.
-# Inputs: schema files under ops/_schemas and referenced manifest files.
+# Purpose: validate canonical ops manifests against ops/schema contracts.
+# Inputs: schema files under ops/schema and referenced manifest files.
 # Outputs: non-zero exit on contract violations.
 from __future__ import annotations
 

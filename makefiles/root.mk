@@ -373,7 +373,7 @@ root: ## CI-fast lane subset (no cluster bring-up)
 	./bin/atlasctl --quiet report collect --run-id "$$run_id" >/dev/null; \
 	./bin/atlasctl --quiet report scorecard --run-id "$$run_id" >/dev/null; \
 	test -f "artifacts/evidence/make/$$run_id/unified.json"; \
-	test -f "ops/_generated_committed/scorecard.json"; \
+	test -f "ops/_generated.example/scorecard.json"; \
 	./bin/atlasctl --quiet report print --run-id "$$run_id"
 
 root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
@@ -386,7 +386,7 @@ root-local: ## All lanes in parallel + ops smoke lane (PARALLEL=0 for serial)
 	./bin/atlasctl --quiet report collect --run-id "$$run_id" >/dev/null; \
 	./bin/atlasctl --quiet report scorecard --run-id "$$run_id" >/dev/null; \
 	test -f "artifacts/evidence/make/$$run_id/unified.json"; \
-	test -f "ops/_generated_committed/scorecard.json"; \
+	test -f "ops/_generated.example/scorecard.json"; \
 	./bin/atlasctl --quiet report print --run-id "$$run_id"
 
 root-local/no-ops: ## Local lanes without ops smoke lane (explicit skip)

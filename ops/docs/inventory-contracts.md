@@ -4,7 +4,7 @@ Canonical inventory SSOT files and their schemas/generators.
 
 | Inventory file | Schema | Generator / owner | Notes |
 |---|---|---|---|
-| `ops/inventory/owners.json` | `ops/schema/meta/ownership.schema.json` | manual + owner docs sync | Replaces `ops/_meta/ownership.json` |
+| `ops/inventory/owners.json` | `ops/schema/meta/ownership.schema.json` | manual + owner docs sync | Replaces `ops/inventory/owners.json` |
 | `ops/inventory/surfaces.json` | `configs/ops/public-surface.json` (surface semantics) | `atlasctl ops gen run` / surface generator | Canonical ops surface inventory |
 | `ops/inventory/contracts.json` | `ops/schema/meta/artifact-allowlist.schema.json` (structure checked separately) | manual | References top-level + domain contract artifacts |
 | `ops/inventory/layers.json` | `ops/schema/meta/layer-contract.schema.json` | `atlasctl ops gen run` / layer contract generator | Canonical layer contract inventory |

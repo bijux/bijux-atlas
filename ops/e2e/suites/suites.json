@@ -17,7 +17,7 @@
             "expected_qps": 5,
             "expected_artifacts": [
               "artifacts/evidence/e2e-smoke",
-              "ops/_generated_committed/report.unified.json"
+              "ops/_generated.example/report.unified.json"
             ]
           }
         },

@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[8]
 BASE = ROOT / "packages" / "atlasctl" / "src" / "atlasctl" / "commands" / "ops"
-PATTERN = re.compile(r"ops/_generated_committed/")
+PATTERN = re.compile(r"ops/_generated.example/")
 ALLOW = {
     "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/ops_runtime_run.py",
     "packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/ops_runtime_commands.py",
@@ -30,11 +30,11 @@ def main() -> int:
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
         if PATTERN.search(text) and rel not in ALLOW:
-            errs.append(f"{rel}: writes/refs ops/_generated_committed outside explicit update commands")
+            errs.append(f"{rel}: writes/refs ops/_generated.example outside explicit update commands")
     if errs:
         print("\n".join(errs), file=sys.stderr)
         return 1
-    print("ops/_generated_committed writes are limited to explicit update commands")
+    print("ops/_generated.example writes are limited to explicit update commands")
     return 0
 
 

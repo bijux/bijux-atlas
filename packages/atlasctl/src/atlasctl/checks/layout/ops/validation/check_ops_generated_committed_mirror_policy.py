@@ -4,7 +4,7 @@ import json, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[8]
 POL = ROOT/'ops/inventory/generated-committed-mirror.json'
-DIR = ROOT/'ops/_generated_committed'
+DIR = ROOT/'ops/_generated.example'
 
 def main() -> int:
     p = json.loads(POL.read_text(encoding='utf-8'))

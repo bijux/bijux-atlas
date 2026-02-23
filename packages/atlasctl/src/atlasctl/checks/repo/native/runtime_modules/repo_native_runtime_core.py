@@ -314,7 +314,7 @@ def check_script_write_roots(repo_root: Path) -> tuple[int, list[str]]:
     allowed = (
         "artifacts/",
         "ops/_generated/",
-        "ops/_generated_committed/",
+        "ops/_generated.example/",
         "artifacts/evidence/",
         "docs/_generated/",
         "scripts/_generated/",

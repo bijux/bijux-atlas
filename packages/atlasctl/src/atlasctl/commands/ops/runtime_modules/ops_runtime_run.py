@@ -350,7 +350,7 @@ def run_ops_command(ctx, ns: argparse.Namespace) -> int:
                 "diff",
                 "--exit-code",
                 "--",
-                "ops/_generated_committed",
+                "ops/_generated.example",
                 "docs/_generated/ops-*.md",
                 "docs/_generated/layer-contract.md",
                 "ops/k8s/charts/bijux-atlas/values.schema.json",

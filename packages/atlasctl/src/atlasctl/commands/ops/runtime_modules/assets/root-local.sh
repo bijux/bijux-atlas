@@ -71,7 +71,7 @@ PY
     fi
     echo "- ${lane}: ${status} (${report})"
   done
-  echo "- unified: ops/_generated_committed/report.unified.json"
+  echo "- unified: ops/_generated.example/report.unified.json"
 }
 
 if [ "$mode" = "summary" ]; then
@@ -127,6 +127,6 @@ for pid in "${pids[@]}"; do
   fi
 done
 
-./bin/atlasctl report unified --run-id "$run_id" --out ops/_generated_committed/report.unified.json >/dev/null || true
+./bin/atlasctl report unified --run-id "$run_id" --out ops/_generated.example/report.unified.json >/dev/null || true
 print_summary "$run_id"
 exit "$failed"

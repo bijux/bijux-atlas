@@ -17,7 +17,7 @@ Separates ephemeral run outputs from committed source artifacts so git state and
 - Root-local pointer files are:
   - `artifacts/runs/latest-run-id.txt`
   - `artifacts/evidence/root-local/latest-run-id.txt`
-- Committed generated artifacts remain under `ops/_generated_committed/`.
+- Committed generated artifacts remain under `ops/_generated.example/`.
 
 ## Where To Find Reports
 

@@ -11,7 +11,7 @@ _WORKFLOW_RUN_RE = re.compile(r"^\s*run:\s*(.+?)\s*$")
 _RAW_CARGO_RE = re.compile(r"\bcargo\s+(fmt|test|clippy|check)\b")
 _ATLASCTL_MODULE_RE = re.compile(r"\bpython3?\s+-m\s+atlasctl(\.cli)?\b")
 _COMPILEALL_RE = re.compile(r"\bpython3?\s+-m\s+compileall\b")
-_ALLOWED_ARTIFACT_ROOTS = ("artifacts/**", "ops/_generated/**", "ops/_generated_committed/**")
+_ALLOWED_ARTIFACT_ROOTS = ("artifacts/**", "ops/_generated/**", "ops/_generated.example/**")
 
 
 def _make_targets(repo_root: Path) -> set[str]:

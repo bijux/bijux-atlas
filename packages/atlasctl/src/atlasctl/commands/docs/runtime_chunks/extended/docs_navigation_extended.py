@@ -35,7 +35,7 @@ def _generate_ops_contracts_doc(ctx: RunContext) -> tuple[int, str]:
 def _generate_ops_schema_docs(ctx: RunContext) -> tuple[int, str]:
     schemas = sorted((ctx.repo_root / "ops" / "_schemas").rglob("*.json"))
     out = ctx.repo_root / "docs" / "_generated" / "ops-schemas.md"
-    lines = ["# Ops Schemas", "", "Generated from `ops/_schemas`. Do not edit manually.", ""]
+    lines = ["# Ops Schemas", "", "Generated from `ops/schema`. Do not edit manually.", ""]
     for path in schemas:
         rel = path.relative_to(ctx.repo_root).as_posix()
         try:

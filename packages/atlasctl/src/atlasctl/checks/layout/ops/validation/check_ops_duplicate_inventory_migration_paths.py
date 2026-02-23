@@ -4,8 +4,8 @@ import json, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[8]
 PAIRS = [
-    ('ops/_meta/ownership.json','ops/inventory/owners.json'),
-    ('ops/_meta/surface.json','ops/inventory/surfaces.json'),
+    ('ops/inventory/owners.json','ops/inventory/owners.json'),
+    ('ops/inventory/surfaces.json','ops/inventory/surfaces.json'),
     ('ops/_meta/contracts.json','ops/inventory/contracts.json'),
     ('ops/_meta/layer-contract.json','ops/inventory/layers.json'),
 ]

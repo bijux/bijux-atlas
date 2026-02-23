@@ -16,13 +16,12 @@ ROOT = _repo_root()
 OPS = ROOT / "ops"
 
 required = {
-    "stack", "k8s", "obs", "load", "datasets", "e2e", "run",
-    "_lib", "_meta", "_schemas", "_generated", "_generated_committed", "_artifacts",
+    "stack", "k8s", "obs", "load", "datasets", "e2e", "inventory", "schema", "env", "observe",
+    "_meta", "_generated", "_generated.example", "_artifacts",
     "CONTRACT.md", "INDEX.md", "README.md", "ERRORS.md",
 }
 
-allowed_extra = {"fixtures", "registry", "report", "_evidence"}
-allowed_extra = allowed_extra | {"_lint"}
+allowed_extra = {"fixtures", "registry", "report", "_evidence", "docs", "helm", "kind", "manifests", "vendor"}
 allowed = required | allowed_extra
 
 errors: list[str] = []
