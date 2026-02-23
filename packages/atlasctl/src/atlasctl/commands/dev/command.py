@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -45,6 +46,7 @@ _DEV_ITEMS: tuple[str, ...] = (
     "test-and-slow",
     "audit-and-slow",
     "check-and-slow",
+    "check-new",
 )
 
 
@@ -175,6 +177,8 @@ def run_dev_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         return 0
     if sub == "split-module":
         return _run_split_module(ctx, ns)
+    if sub == "check-new":
+        return _run_check_new(ctx, ns)
     if sub == "clean":
         return _run_dev_clean(ctx, bool(getattr(ns, "json", False)) or ctx.output_format == "json")
     if sub == "doctor":
@@ -263,6 +267,48 @@ def _run_split_module(ctx: RunContext, ns: argparse.Namespace) -> int:
     return 0
 
 
+def _run_check_new(ctx: RunContext, ns: argparse.Namespace) -> int:
+    domain = str(getattr(ns, "domain", "")).strip()
+    name = str(getattr(ns, "name", "")).strip()
+    if not domain or not name:
+        print("usage: atlasctl dev check-new <domain> <name>")
+        return 2
+    safe_name = re.sub(r"[^a-z0-9_]+", "_", name.lower().replace("-", "_")).strip("_")
+    if not safe_name:
+        print("name must contain letters or numbers")
+        return 2
+    module_dir = ctx.repo_root / "packages/atlasctl/src/atlasctl/checks/domains" / domain
+    module_dir.mkdir(parents=True, exist_ok=True)
+    module_path = module_dir / f"check_{safe_name}.py"
+    if module_path.exists() and not bool(getattr(ns, "force", False)):
+        print(f"check module exists: {module_path.relative_to(ctx.repo_root).as_posix()} (use --force to overwrite)")
+        return 2
+    check_id = f"checks_{domain}_general_{safe_name}"
+    template = (
+        "from __future__ import annotations\n\n"
+        "from pathlib import Path\n\n"
+        "from atlasctl.checks.api import check\n\n\n"
+        f"@check(check_id=\"{check_id}\", domain=\"{domain}\", intent=\"validate {safe_name.replace('_', ' ')} contract\")\n"
+        f"def {safe_name}(repo_root: Path) -> tuple[int, list[str]]:\n"
+        "    errors: list[str] = []\n"
+        "    return (0 if not errors else 1), errors\n\n\n"
+        f"CHECKS = [{safe_name}]\n"
+    )
+    module_path.write_text(template, encoding="utf-8")
+    payload = {
+        "schema_version": 1,
+        "tool": "atlasctl",
+        "status": "ok",
+        "check_id": check_id,
+        "module": module_path.relative_to(ctx.repo_root).as_posix(),
+    }
+    if bool(getattr(ns, "json", False)):
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(payload["module"])
+    return 0
+
+
 def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = sub.add_parser("dev", help="dev control-plane group (checks, suites, tests, listing)")
     parser.add_argument("--list", action="store_true", help="list available dev commands")
@@ -325,6 +371,11 @@ def configure_dev_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     split = dev_sub.add_parser("split-module", help="generate a module split plan for a path")
     split.add_argument("--path", required=True)
     split.add_argument("--json", action="store_true", help="emit JSON output")
+    check_new = dev_sub.add_parser("check-new", help="generate a new check module template")
+    check_new.add_argument("domain")
+    check_new.add_argument("name")
+    check_new.add_argument("--force", action="store_true", help="overwrite existing module")
+    check_new.add_argument("--json", action="store_true", help="emit JSON output")
     tooling = dev_sub.add_parser("tooling", help="tooling inspection helpers")
     tooling_sub = tooling.add_subparsers(dest="dev_tooling_cmd", required=True)
     tooling_sub.add_parser("versions", help="print toolchain and local tooling versions")

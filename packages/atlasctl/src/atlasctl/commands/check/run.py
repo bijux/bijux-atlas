@@ -212,8 +212,10 @@ def run(ctx, ns: argparse.Namespace) -> int:
                     "title": check.title,
                     "domain": check.domain,
                     "description": check.description,
+                    "intent": check.intent or check.description,
                     "severity": check.severity.value,
                     "category": check.category.value,
+                    "result_code": check.result_code,
                     "fix_hint": check.fix_hint,
                     "slow": check.slow,
                     "tags": list(check_tags(check)),
@@ -375,6 +377,32 @@ def run(ctx, ns: argparse.Namespace) -> int:
             "callable": check.fn.__name__,
             "module_docstring": module_doc,
             "gate": next((tag.removeprefix("gate:") for tag in check.tags if tag.startswith("gate:")), check.domain),
+        }
+        print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    if sub == "doc":
+        if "." in str(ns.check_id) and not bool(getattr(ns, "legacy_id", False)) and not (ctx.output_format == "json" or ns.json):
+            print(f"warning: using legacy dotted check id without --legacy-id: {ns.check_id}")
+        check = get_check(ns.check_id)
+        if check is None:
+            print(f"unknown check id: {ns.check_id}")
+            return ERR_USER
+        payload = {
+            "schema_version": 1,
+            "tool": "atlasctl",
+            "kind": "check-doc",
+            "status": "ok",
+            "id": check.check_id,
+            "title": check.title,
+            "domain": check.domain,
+            "category": check.category.value,
+            "intent": check.intent or check.description,
+            "owners": list(check.owners),
+            "result_code": check.result_code,
+            "remediation": {
+                "short": check.remediation_short or check.fix_hint,
+                "link": check.remediation_link,
+            },
         }
         print(json.dumps(payload, sort_keys=True) if ctx.output_format == "json" or ns.json else json.dumps(payload, indent=2, sort_keys=True))
         return 0
