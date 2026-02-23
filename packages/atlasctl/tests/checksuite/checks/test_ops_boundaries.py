@@ -46,6 +46,21 @@ def test_ops_report_contract_fields_check_passes() -> None:
     assert proc.returncode == 0, proc.stderr
 
 
+def test_ops_generated_committed_write_policy_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_generated_committed_write_policy.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_latest_run_pointer_single_writer_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_latest_run_pointer_single_writer.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_ops_obs_scripts_lib_wrapper_only_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_obs_scripts_lib_wrapper_only.py")
+    assert proc.returncode == 0, proc.stderr
+
+
 def test_ops_actions_docs_generated_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_actions_docs_generated.py")
     assert proc.returncode == 0, proc.stderr

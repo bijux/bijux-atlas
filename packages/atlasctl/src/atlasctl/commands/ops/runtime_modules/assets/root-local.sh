@@ -83,7 +83,6 @@ run_id="${RUN_ID:-root-local-$(date -u +%Y%m%dT%H%M%SZ)}"
 mkdir -p artifacts/evidence/make/root-local artifacts/evidence/root-local
 printf '%s\n' "$run_id" > artifacts/evidence/root-local/latest-run-id.txt
 printf '%s\n' "$run_id" > artifacts/evidence/make/root-local/latest-run-id.txt
-printf '%s\n' "$run_id" > artifacts/evidence/latest-run-id.txt
 
 if [ "$with_ops" = "1" ]; then
   export WITH_OPS=1
