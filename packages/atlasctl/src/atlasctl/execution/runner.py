@@ -107,7 +107,7 @@ def run_checks_payload(
     on_event: Callable[[RunnerEvent], None] | None = None,
 ) -> tuple[int, dict[str, object]]:
     check_defs = sorted(check_defs or [], key=lambda c: c.check_id)
-    command_defs = list(command_defs or [])
+    command_defs = sorted(list(command_defs or []), key=lambda c: c.check_id)
     all_ids = [c.check_id for c in check_defs] + [c.check_id for c in command_defs]
     if options.dry_run:
         rows = [
@@ -156,7 +156,7 @@ def run_checks_payload(
     failed_count = 0
 
     if check_defs:
-        fn_failed, fn_rows = run_function_checks(repo_root, check_defs, timeout_ms=options.timeout_ms, jobs=options.jobs)
+        fn_failed, fn_rows = run_function_checks(repo_root, check_defs, timeout_ms=options.timeout_ms, jobs=options.jobs, run_root=options.run_root)
         failed_count += fn_failed
         for row in fn_rows:
             seq += 1
@@ -178,11 +178,12 @@ def run_checks_payload(
                     "category": "lint" if "lint" in row.tags else "check",
                     "markers": _marker_set(category=("lint" if "lint" in row.tags else "check"), effects=row.effects, duration_ms=duration_ms),
                     "check_category": row.category,
+                    "result_code": row.result_code,
                     "severity": row.severity,
                     "budget_ms": int(row.metrics.get("budget_ms", 0)),
                     "budget_status": str(row.metrics.get("budget_status", "pass")),
-                    "findings": [{"code": f"{row.id}.error", "message": msg, "hint": row.fix_hint} for msg in row.errors]
-                    + [{"code": f"{row.id}.warn", "message": msg, "hint": row.fix_hint} for msg in row.warnings],
+                    "findings": [{"code": row.result_code, "message": msg, "hint": row.fix_hint} for msg in row.errors]
+                    + [{"code": f"{row.result_code}.WARN", "message": msg, "hint": row.fix_hint} for msg in row.warnings],
                     "attachments": attachments,
                     "writes_allowed_roots": list(row.writes_allowed_roots),
                 }
@@ -231,6 +232,7 @@ def run_checks_payload(
                     "category": "lint",
                     "markers": _marker_set(category="lint", effects=(), duration_ms=int(row.get("duration_ms", 0))),
                     "check_category": "lint",
+                    "result_code": "LINT_COMMAND_FAILED",
                     "severity": "error",
                     "budget_ms": int(row.get("budget_ms", 0)),
                     "budget_status": str(row.get("budget_status", "pass")),

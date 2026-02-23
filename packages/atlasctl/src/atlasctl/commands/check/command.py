@@ -483,21 +483,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         slow_path = ensure_evidence_path(ctx, Path(slow_report))
         write_text_file(
             slow_path,
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "tool": "atlasctl",
-                    "kind": "check-slow-report",
-                    "run_id": ctx.run_id,
-                    "threshold_ms": slow_threshold_ms,
-                    "summary": summary,
-                    "slow_checks": slow_rows,
-                    "ratchet_errors": ratchet_errors,
-                },
-                indent=2,
-                sort_keys=True,
-            )
-            + "\n",
+            json.dumps(slow_rows, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
     if ns.profile:
