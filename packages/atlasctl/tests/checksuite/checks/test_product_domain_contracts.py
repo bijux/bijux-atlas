@@ -28,3 +28,13 @@ def test_product_pinned_tools_policy_check_passes() -> None:
 def test_product_provenance_and_tmp_policy_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/product/validation/check_product_provenance_and_tmp_policy.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_product_external_tools_manifest_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/product/validation/check_product_external_tools_manifest.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_product_release_tag_contract_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/product/validation/check_product_release_tag_contract.py")
+    assert proc.returncode == 0, proc.stderr

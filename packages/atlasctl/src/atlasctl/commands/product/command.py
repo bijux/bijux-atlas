@@ -27,6 +27,7 @@ from ...core.effects.product import (
 )
 
 PRODUCT_SCHEMA = Path("configs/product/artifact-manifest.schema.json")
+PRODUCT_TOOLS_MANIFEST = Path("configs/product/external-tools-manifest.json")
 
 
 def _product_manifest_path(ctx: RunContext) -> Path:
@@ -143,6 +144,29 @@ def _validate_artifact_manifest(ctx: RunContext, path: Path | None = None) -> in
     return 0
 
 
+def _validate_product_tools_manifest(ctx: RunContext) -> int:
+    path = ctx.repo_root / PRODUCT_TOOLS_MANIFEST
+    if not path.exists():
+        print(f"missing product tools manifest: {_rel(ctx.repo_root, path)}")
+        return 1
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        print("invalid product tools manifest json")
+        return 1
+    tools = payload.get("tools")
+    if not isinstance(tools, list) or not all(isinstance(x, str) and x.strip() for x in tools):
+        print("invalid product tools manifest: tools[] must be non-empty strings")
+        return 1
+    return 0
+
+
+def _validate_release_tag_contract(tag: str) -> bool:
+    import re
+
+    return bool(re.fullmatch(r"v\d+\.\d+\.\d+(?:[-+][A-Za-z0-9._-]+)?", tag.strip()))
+
+
 def _release_gates(ctx: RunContext) -> int:
     # 180: release blocked if bypass inventory is non-empty
     culprits = run_command(["./bin/atlasctl", "policies", "culprits", "--format", "json"], ctx.repo_root, ctx=ctx)
@@ -183,6 +207,13 @@ def _release_gates(ctx: RunContext) -> int:
     )
     if docs_inv.code != 0:
         print("release gate failed: commands inventory docs are out of date")
+        return 1
+    if _validate_product_tools_manifest(ctx) != 0:
+        print("release gate failed: product external tools manifest invalid")
+        return 1
+    tag = str(os.environ.get("GITHUB_REF_NAME") or os.environ.get("RELEASE_TAG") or "").strip()
+    if tag and not _validate_release_tag_contract(tag):
+        print(f"release gate failed: tag does not match release tag contract ({tag})")
         return 1
     return 0
 
@@ -243,6 +274,9 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     artifact_index = product_sub.add_parser("artifact-index", help="write artifact index JSON derived from artifact manifest")
     artifact_index.add_argument("--manifest", help="path to artifact manifest (defaults to current run)")
     artifact_index.add_argument("--out", help="output path (defaults next to manifest)")
+    integration = product_sub.add_parser("integration-smoke", help="ops+product integration smoke flow")
+    integration.add_argument("--internal", action="store_true")
+    integration.add_argument("--dry-run", action="store_true")
     publish = product_sub.add_parser("publish", help="publish product artifacts (internal/optional)")
     publish.add_argument("--internal", action="store_true")
     release_candidate = product_sub.add_parser("release-candidate", help="build -> verify -> sign -> publish dry flow")
@@ -359,6 +393,29 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
             print("product publish is internal-only; pass --internal")
             return 2
         print("product publish plan: validate -> push image/chart -> publish manifest index (not yet wired)")
+        return 0
+    if sub == "integration-smoke":
+        if not bool(getattr(ns, "internal", False)):
+            print("product integration-smoke is internal-only; pass --internal")
+            return 2
+        steps = [
+            ["./bin/atlasctl", "ops", "stack", "up", "--report", "text"],
+            ["./bin/atlasctl", "ops", "deploy", "apply", "--report", "text"],
+            ["./bin/atlasctl", "ops", "datasets", "verify", "--report", "text"],
+            ["./bin/atlasctl", "ops", "e2e", "run", "--report", "text", "--suite", "smoke"],
+            ["./bin/atlasctl", "report", "unified", "--format", "json"],
+        ]
+        if bool(getattr(ns, "dry_run", False)) or bool(getattr(ns, "dry_run", False)):
+            print("product integration-smoke plan:")
+            for cmd in steps:
+                print(f"- {' '.join(cmd)}")
+            return 0
+        for cmd in steps:
+            proc = run_command(cmd, ctx.repo_root, ctx=ctx)
+            if proc.combined_output:
+                print(proc.combined_output.rstrip())
+            if proc.code != 0:
+                return proc.code
         return 0
     if sub == "release-candidate":
         if not bool(getattr(ns, "internal", False)):
