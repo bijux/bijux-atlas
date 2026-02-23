@@ -4,8 +4,11 @@ import argparse
 import json
 import os
 import sys
+import tempfile
 from pathlib import Path
 
+from ....checks.engine.execution import run_function_checks
+from ....checks.registry import list_checks
 from ....core.context import RunContext
 from ....core.exec import run
 from ....core.fs import write_json
@@ -117,6 +120,42 @@ def run_test_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         if (proc.stderr or "").strip():
             print(proc.stderr.rstrip(), file=sys.stderr)
         return proc.returncode
+    elif ns.test_cmd == "checks-sandbox":
+        checks = list(list_checks())
+        domain = str(getattr(ns, "domain", "") or "").strip()
+        if domain:
+            checks = [check for check in checks if check.domain == domain]
+        check_id = str(getattr(ns, "check_id", "") or "").strip()
+        if check_id:
+            checks = [check for check in checks if check.check_id == check_id]
+        if not checks:
+            payload = {"schema_version": 1, "tool": "atlasctl", "status": "error", "message": "no checks selected"}
+            print(json.dumps(payload, sort_keys=True))
+            return 2
+        with tempfile.TemporaryDirectory(prefix="atlasctl-check-sandbox-", dir=str(ctx.repo_root / "artifacts" / "isolate")) as tmp:
+            run_root = Path(tmp).resolve()
+            failed, rows = run_function_checks(ctx.repo_root, checks, run_root=run_root, jobs=1)
+            illegal = [
+                row.id
+                for row in rows
+                if any(
+                    token in msg
+                    for msg in row.errors
+                    for token in ("write outside allowed roots", "file writes require effects.fs_write=true", "undeclared effects used")
+                )
+            ]
+            payload = {
+                "schema_version": 1,
+                "tool": "atlasctl",
+                "status": "ok" if failed == 0 else "error",
+                "kind": "check-write-sandbox",
+                "run_root": run_root.as_posix(),
+                "total": len(rows),
+                "failed": failed,
+                "illegal_write_or_effect_violations": sorted(set(illegal)),
+            }
+            print(json.dumps(payload, sort_keys=True) if (ns.json or ctx.output_format == "json") else json.dumps(payload, indent=2, sort_keys=True))
+            return 0 if failed == 0 else 1
     else:
         return 2
     env, resolved_target = _isolation_env(ctx, target_dir)
@@ -170,3 +209,7 @@ def configure_test_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     refresh = p_sub.add_parser("refresh-goldens", help="refresh goldens in isolated deterministic lane")
     refresh.add_argument("--json", action="store_true", help="emit machine-readable summary")
     refresh.add_argument("--target-dir", help="isolation directory for refresh artifacts")
+    checks_sandbox = p_sub.add_parser("checks-sandbox", help="run checks in temp sandbox and fail on illegal writes/effects")
+    checks_sandbox.add_argument("--domain", help="optional domain filter")
+    checks_sandbox.add_argument("--check-id", help="optional single check id")
+    checks_sandbox.add_argument("--json", action="store_true", help="emit machine-readable summary")

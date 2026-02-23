@@ -23,12 +23,14 @@ from ..core.effects import command_effects
 from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_INTERNAL
 from ..core.runtime.env import getenv
-from ..core.runtime.guards.network_guard import install_no_network_guard, resolve_network_mode
+from ..core.runtime.guards.network_guard import resolve_network_mode
 from ..core.runtime.repo_root import try_find_repo_root
 from ..core.runtime.telemetry import emit_telemetry
 from ..contracts.ids import HELP
 from ..cli.constants import NO_NETWORK_FLAG_EXPIRY
 from ..runtime.logging import log_event
+from ..runtime.capability_install import install_runtime_capabilities
+from ..runtime.context_safety import enforce_context_safety_scaffold
 from .invocation import parse_cli_invocation
 from .render import render_error
 
@@ -89,18 +91,13 @@ def main(argv: list[str] | None = None) -> int:
     )
     _apply_python_env(ctx)
     _emit_runtime_contracts(ctx, ns.cmd, raw_argv)
-
-    restore_network = None
-    if ctx.no_network:
-        from ..core.runtime.guards.env_guard import guard_no_network_mode
-
-        guard_no_network_mode(True)
-        restore_network = install_no_network_guard()
+    restore_network = install_runtime_capabilities(ctx)
 
     try:
         should_emit_diag = bool(ctx.verbose) and (not ctx.quiet) and (ctx.output_format != "json")
         if should_emit_diag:
             print(f"run_id={ctx.run_id}", file=sys.stderr)
+        enforce_context_safety_scaffold(ctx, ns.cmd)
         if ctx.require_clean_git and ctx.git_dirty:
             raise ScriptError("git workspace is dirty; rerun without --require-clean-git or commit changes", ERR_CONFIG)
         if decision.allow_effective and should_emit_diag:

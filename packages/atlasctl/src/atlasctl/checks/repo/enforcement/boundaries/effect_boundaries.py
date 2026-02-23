@@ -11,6 +11,7 @@ _CORE_FS = "packages/atlasctl/src/atlasctl/core/fs.py"
 _CORE_ENV = "packages/atlasctl/src/atlasctl/core/runtime/env.py"
 _CORE_NETWORK = "packages/atlasctl/src/atlasctl/core/network.py"
 _CORE_PATHS = "packages/atlasctl/src/atlasctl/core/runtime/paths.py"
+_CHECKS_ADAPTERS = "packages/atlasctl/src/atlasctl/checks/adapters.py"
 _RULES = (
     "subprocess_import",
     "subprocess_call",
@@ -89,7 +90,7 @@ def _rule_violations_for_file(path: Path, rel: str) -> set[str]:
                 violations.add("network_call")
         elif isinstance(node, ast.Call):
             if isinstance(node.func, ast.Attribute) and isinstance(node.func.value, ast.Name):
-                if node.func.value.id == "subprocess":
+                if node.func.value.id == "subprocess" and node.func.attr == "run":
                     violations.add("subprocess_call")
                 if node.func.attr in {"write_text", "write_bytes"}:
                     violations.add("path_write_call")
@@ -127,7 +128,7 @@ def _scan_effect_boundary_violations(repo_root: Path) -> tuple[dict[str, list[st
                 continue
             if rule == "os_environ_access" and _is_core_path(rel, _CORE_ENV):
                 continue
-            if rule == "network_call" and _is_core_path(rel, _CORE_NETWORK):
+            if rule == "network_call" and (_is_core_path(rel, _CORE_NETWORK) or _is_core_path(rel, _CHECKS_ADAPTERS)):
                 continue
             found[rule].add(rel)
             if rel not in exceptions[rule]:
@@ -151,6 +152,41 @@ def check_subprocess_boundary(repo_root: Path) -> tuple[int, list[str]]:
     _, errors = _scan_effect_boundary_violations(repo_root)
     filtered = [err for err in errors if ": subprocess_" in err or _EXCEPTIONS_PATH.as_posix() in err]
     return (0 if not filtered else 1), sorted(set(filtered))
+
+
+def check_no_direct_subprocess_run_outside_adapters(repo_root: Path) -> tuple[int, list[str]]:
+    _, errors = _scan_effect_boundary_violations(repo_root)
+    filtered = [err for err in errors if ": subprocess_call" in err]
+    normalized = [entry.replace(": subprocess_call outside enforced core boundary", ": direct subprocess.run outside adapter boundary") for entry in filtered]
+    return (0 if not normalized else 1), sorted(set(normalized))
+
+
+def check_no_direct_check_writes_without_adapter(repo_root: Path) -> tuple[int, list[str]]:
+    _, errors = _scan_effect_boundary_violations(repo_root)
+    filtered = [
+        err
+        for err in errors
+        if err.startswith("packages/atlasctl/src/atlasctl/checks/")
+        and (
+            ": open_write_call outside enforced core boundary" in err
+            or ": path_write_call outside enforced core boundary" in err
+        )
+    ]
+    normalized = [
+        entry.replace(" outside enforced core boundary", " (use atlasctl.checks.adapters.FS)")
+        for entry in filtered
+    ]
+    return (0 if not normalized else 1), sorted(set(normalized))
+
+
+def check_no_direct_requests_outside_network_adapter(repo_root: Path) -> tuple[int, list[str]]:
+    _, errors = _scan_effect_boundary_violations(repo_root)
+    filtered = [err for err in errors if ": network_call outside enforced core boundary" in err]
+    normalized = [
+        entry.replace(": network_call outside enforced core boundary", ": direct requests/urllib usage outside network adapter")
+        for entry in filtered
+    ]
+    return (0 if not normalized else 1), sorted(set(normalized))
 
 
 def check_effect_boundary_exceptions_policy(repo_root: Path) -> tuple[int, list[str]]:
