@@ -3,34 +3,32 @@
 SHELL := /bin/sh
 PYTHONPATH ?= packages/atlasctl/src
 ATLASCTL_ARTIFACT_ROOT ?= artifacts/atlasctl
-ATLASCTL ?= ./bin/atlasctl
-
 atlasctl-check: ## Run all atlasctl checks across all groups
-	@./bin/atlasctl check run --group all
+	@./bin/atlasctl check run --profile fast --durations 10
 
 atlasctl-check-all: ## Run all atlasctl checks including slow checks
-	@./bin/atlasctl check run --group all --all --timeout-ms 30000 --ignore-speed-regressions
+	@./bin/atlasctl check run --profile all --all --timeout-ms 30000 --ignore-speed-regressions --durations 20
 
 atlasctl-check-contracts: ## Run atlasctl contracts checks
-	@./bin/atlasctl check run --group contracts
+	@./bin/atlasctl check run --group contracts --durations 10
 
 atlasctl-check-docs: ## Run atlasctl docs checks
-	@./bin/atlasctl check run --group docs
+	@./bin/atlasctl check run --group docs --durations 10
 
 atlasctl-check-layout: ## Validate repository layout/root-shape checks
 	@./bin/atlasctl check layout
 
 atlasctl-check-make: ## Run atlasctl makefile checks
-	@./bin/atlasctl check run --group make
+	@./bin/atlasctl check run --group make --durations 10
 
 atlasctl-check-ops: ## Run atlasctl ops checks
-	@./bin/atlasctl check run --group ops
+	@./bin/atlasctl check run --group ops --durations 10
 
 atlasctl-check-python: ## Run atlasctl python checks
-	@./bin/atlasctl check run --group python
+	@./bin/atlasctl check run --group python --durations 10
 
 atlasctl-check-repo: ## Run atlasctl repo checks
-	@./bin/atlasctl check run --group repo
+	@./bin/atlasctl check run --group repo --durations 10
 
 atlasctl-registry-list: ## Print atlasctl registry inventory
 	@./bin/atlasctl registry checks
