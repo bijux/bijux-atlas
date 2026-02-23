@@ -39,9 +39,7 @@ artifacts/atlasctl/ruff/
 artifacts/atlasctl/pytest/
 artifacts/atlasctl/pip/
 ops/_artifacts/
-ops/_evidence/**
-!ops/_evidence/.gitkeep
-!ops/_evidence/latest-run-id.txt
+ops/_evidence/
 ops/_generated/**
 ops/openapi/v1/openapi.generated.json
 
