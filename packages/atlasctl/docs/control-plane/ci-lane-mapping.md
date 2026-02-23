@@ -6,6 +6,7 @@ Reference map for canonical GitHub Actions lanes and their atlasctl CLI front do
 
 - `ci`: canonical repo CI entrypoint (`make ci`) plus registry/bypass snapshots.
 - `control-plane-conformance`: `atlasctl check run make|contracts|docs` and registry/help/bypass gates.
+- `repo-hygiene-fast`: `atlasctl fix hygiene --apply`, `atlasctl doctor repo-hygiene`, `atlasctl suite run repo-hygiene`, and a clean git diff gate.
 - `suite-product`: `atlasctl suite run product --only fast` (PR-safe lane surface check).
 - `suite-ops-fast`: `atlasctl suite run ops --only fast` (PR-safe lane surface check).
 

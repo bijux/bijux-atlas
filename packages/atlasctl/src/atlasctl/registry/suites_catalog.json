@@ -518,6 +518,33 @@
         "process"
       ],
       "exclude_markers": [],
+      "include_checks": [
+        "checks_repo_generated_dirs_policy",
+        "checks_repo_managed_artifact_write_roots",
+        "checks_repo_no_large_binary_files",
+        "checks_repo_no_python_caches_committed",
+        "checks_repo_no_tracked_ops_generated",
+        "checks_repo_no_tracked_timestamp_paths",
+        "checks_repo_required_target_shape"
+      ],
+      "internal": false,
+      "markers": [
+        "repo",
+        "hygiene",
+        "fast"
+      ],
+      "name": "repo-hygiene",
+      "required_env": [
+        "PYTHONPATH"
+      ],
+      "time_budget_ms": 120000
+    },
+    {
+      "default_effects": [
+        "read",
+        "process"
+      ],
+      "exclude_markers": [],
       "include_checks": [],
       "internal": false,
       "markers": [
