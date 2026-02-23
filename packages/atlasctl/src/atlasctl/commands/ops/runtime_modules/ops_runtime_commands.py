@@ -11,6 +11,7 @@ from pathlib import Path
 from atlasctl.core.context import RunContext
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
+from atlasctl.commands.ops._shared.json_emit import write_ops_json_report
 from atlasctl.commands.ops.runtime_modules.layer_contract import (
     load_layer_contract,
     ns_e2e as lc_ns_e2e,
@@ -30,6 +31,14 @@ def _write_json_report(repo_root: Path, out_rel: str, payload: dict[str, object]
     write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     try:
         return out.relative_to(repo_root).as_posix()
+    except ValueError:
+        return out.as_posix()
+
+
+def _write_json_report_ctx(ctx: RunContext, area: str, payload: dict[str, object]) -> str:
+    out = write_ops_json_report(ctx, area, "report.json", payload)
+    try:
+        return out.relative_to(ctx.repo_root).as_posix()
     except ValueError:
         return out.as_posix()
 
