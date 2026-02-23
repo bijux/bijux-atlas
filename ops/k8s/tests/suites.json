@@ -49,6 +49,7 @@
         "autoscaling",
         "install",
         "observability",
+        "pdb",
         "readiness",
         "sanity"
       ]
