@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "namespace": "atlas-e2e",
+  "timestamp": "2026-01-01T00:00:00+00:00",
+  "checks": {
+    "nodes": {"ok": true, "code": 0, "stdout": "node/kind-control-plane", "stderr": ""},
+    "pods": {"ok": true, "code": 0, "stdout": "pod/atlas", "stderr": ""},
+    "services": {"ok": true, "code": 0, "stdout": "service/atlas", "stderr": ""},
+    "storageclass": {"ok": true, "code": 0, "stdout": "storageclass.storage.k8s.io/standard", "stderr": ""}
+  }
+}
