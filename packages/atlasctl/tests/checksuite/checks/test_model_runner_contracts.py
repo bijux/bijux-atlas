@@ -9,7 +9,8 @@ from atlasctl.checks.adapters import FS
 from atlasctl.checks.model import CheckContext, CheckDef, CheckId, CheckSelector, DomainId, ResultCode
 from atlasctl.checks.policy import Capabilities
 from atlasctl.checks.registry import TAGS_VOCAB, list_checks, resolve_aliases
-from atlasctl.checks.report import build_report_payload, render_text
+from atlasctl.checks.registry.ssot import generate_registry_json
+from atlasctl.checks.report import build_report_payload, render_explain, render_text
 from atlasctl.checks.runner import run_checks
 from atlasctl.checks.selectors import apply_selection_criteria, parse_selection_criteria, select_checks
 
@@ -121,6 +122,19 @@ def test_registry_invariants_and_aliases() -> None:
         assert all(str(tag) in set(map(str, TAGS_VOCAB)) for tag in check.tags)
     aliases = resolve_aliases()
     assert isinstance(aliases, tuple)
+
+
+def test_render_explain_is_stable_json() -> None:
+    check = CheckDef("checks_repo_explain_contract", "repo", "explain contract", 100, _ok, owners=("platform",))
+    payload = render_explain(check)
+    assert "\"id\": \"checks_repo_explain_contract\"" in payload
+    assert "\"domain\": \"repo\"" in payload
+
+
+def test_registry_generator_check_only_mode() -> None:
+    out, changed = generate_registry_json(check_only=True)
+    assert out.name == "REGISTRY.generated.json"
+    assert isinstance(changed, bool)
 
 
 def test_select_checks_deterministic_order() -> None:
