@@ -9,6 +9,7 @@ import datetime as dt
 from pathlib import Path
 
 from atlasctl.core.context import RunContext
+from atlasctl.registry.readers import load_ops_tasks_catalog as load_ops_tasks_catalog_file
 from atlasctl.core.process import run_command
 from atlasctl.core.runtime.paths import write_text_file
 from atlasctl.commands.ops._shared.json_emit import write_ops_json_report
@@ -143,23 +144,7 @@ def _ops_stack_contract_report(repo_root: Path, run_id: str) -> dict[str, object
     }
 
 def load_ops_task_catalog(repo_root: Path) -> dict[str, dict[str, str]]:
-    path = repo_root / "packages/atlasctl/src/atlasctl/registry/ops_tasks_catalog.json"
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    rows = payload.get("tasks", []) if isinstance(payload, dict) else []
-    catalog: dict[str, dict[str, str]] = {}
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        name = str(row.get("name", "")).strip()
-        if not name:
-            continue
-        catalog[name] = {
-            "manifest": str(row.get("manifest", "")).strip(),
-            "owner": str(row.get("owner", "")).strip(),
-            "docs": str(row.get("docs", "")).strip(),
-            "description": str(row.get("description", "")).strip(),
-        }
-    return catalog
+    return load_ops_tasks_catalog_file(repo_root)
 
 def _ops_policy_audit(ctx: RunContext, report_format: str) -> int:
     repo = ctx.repo_root

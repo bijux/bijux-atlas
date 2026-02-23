@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 
 from atlasctl.core.context import RunContext
+from atlasctl.commands._shared_runtime import run_group_action
 
 from .runtime import run_load_action
 
