@@ -6,10 +6,10 @@ Do not edit rows manually; regenerate via `atlasctl contracts generate --generat
 | schema_name | version | file | sha256_16 |
 |---|---:|---|---|
 | atlasctl.check-list.v1 | 1 | atlasctl.check-list.v1.schema.json | `84f1382153b984af` |
-| atlasctl.check-run.v1 | 1 | atlasctl.check-run.v1.schema.json | `37135d04b9a739d5` |
+| atlasctl.check-run.v1 | 1 | atlasctl.check-run.v1.schema.json | `c5f9024c51906f03` |
 | atlasctl.check-taxonomy.v1 | 1 | atlasctl.check-taxonomy.v1.schema.json | `cd9739a960547e3b` |
-| atlasctl.checks-catalog.v1 | 1 | atlasctl.checks-catalog.v1.schema.json | `b2cc2c3c8150cd48` |
-| atlasctl.checks-registry.v1 | 1 | atlasctl.checks-registry.v1.schema.json | `680fcfca8048aa88` |
+| atlasctl.checks-catalog.v1 | 1 | atlasctl.checks-catalog.v1.schema.json | `10bc46065fe780db` |
+| atlasctl.checks-registry.v1 | 1 | atlasctl.checks-registry.v1.schema.json | `b3c5e0510d05f8ba` |
 | atlasctl.commands.v1 | 1 | atlasctl.commands.v1.schema.json | `85a3fe7e9d88e85b` |
 | atlasctl.explain.v1 | 1 | atlasctl.explain.v1.schema.json | `0ea5e9b7d6ba22f0` |
 | atlasctl.help.v1 | 1 | atlasctl.help.v1.schema.json | `0afd4c50eba70e0f` |
@@ -20,7 +20,7 @@ Do not edit rows manually; regenerate via `atlasctl contracts generate --generat
 | atlasctl.ops.manifest.v1 | 1 | atlasctl.ops.manifest.v1.schema.json | `e98b3816cebd169a` |
 | atlasctl.output-base.v1 | 1 | output/atlasctl.output-base.v1.schema.json | `2dcde2ec625976de` |
 | atlasctl.output-base.v2 | 2 | output/atlasctl.output-base.v2.schema.json | `65403c8c9bb1f558` |
-| atlasctl.registry-spine.v1 | 1 | atlasctl.registry-spine.v1.schema.json | `f514d3a53ba1c5ee` |
+| atlasctl.registry-spine.v1 | 1 | atlasctl.registry-spine.v1.schema.json | `321443763a95aedd` |
 | atlasctl.runtime_contracts.v1 | 1 | output/atlasctl.runtime_contracts.v1.schema.json | `328c97c92f64d965` |
 | atlasctl.suite-manifests.v1 | 1 | atlasctl.suite-manifests.v1.schema.json | `3c2765203ad31ba7` |
 | atlasctl.suite-run.v1 | 1 | atlasctl.suite-run.v1.schema.json | `bde01f643602012b` |

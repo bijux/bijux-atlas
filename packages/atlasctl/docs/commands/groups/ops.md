@@ -1,47 +1,19 @@
 # Ops Command Group
 
-Stable public `atlasctl ops ...` command surface.
+Commands mapped to `ops` effects policy.
 
-- `ops` (group root; use `atlasctl ops --help`)
+## Commands
 
-## Canonical Areas
-
-- `stack`
-- `deploy`
 - `k8s`
-- `obs`
 - `load`
-- `e2e`
-- `datasets`
-- `pins`
-- `reports`
-
-## Stable Subcommands (Public)
-
-- `atlasctl ops stack {check,verify,report,up,down,status,validate}`
-- `atlasctl ops deploy {check,verify,report,plan,apply,rollback}`
-- `atlasctl ops k8s {check,verify,report,render,validate,diff}`
-- `atlasctl ops obs {check,verify,report,lint,drill}`
-- `atlasctl ops load {check,verify,report,run,compare}`
-- `atlasctl ops e2e {check,verify,report,run,validate-results}`
-- `atlasctl ops datasets {check,verify,report,lock,qc,validate}`
-- `atlasctl ops pins {check,verify,report}`
-
-## Public vs Internal
-
-- `commands/ops/internal/**` is implementation-only and must not appear in public help/docs.
-- Temporary migration glue must use `commands/ops/internal/migrate_*`.
+- `obs`
+- `ops`
+- `stack`
 
 ## Examples
 
-- `atlasctl ops doctor --report text`
-- `atlasctl ops --help`
-- `atlasctl stack validate`
-- `atlasctl k8s validate`
-- `atlasctl load compare`
-- `atlasctl obs report`
-- `atlasctl ops --report json stack status`
-- `atlasctl ops --report json deploy plan`
-- `atlasctl ops --report json k8s validate`
-- `atlasctl ops --report json load compare`
-- `atlasctl ops --report json obs report`
+- `atlasctl k8s conformance --report json`
+- `atlasctl load run --report json`
+- `atlasctl obs checks --report json`
+- `atlasctl ops status --report json`
+- `atlasctl stack status --report json`
