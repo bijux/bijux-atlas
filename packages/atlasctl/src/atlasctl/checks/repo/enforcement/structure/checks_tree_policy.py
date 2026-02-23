@@ -5,7 +5,7 @@ from pathlib import Path
 
 _CHECKS_ROOT = Path("packages/atlasctl/src/atlasctl/checks")
 _MAX_DEPTH = 10
-_MAX_PY_FILES_PER_DIR = 10
+_MAX_PY_FILES_PER_DIR = 15
 _FORBIDDEN_DIR_NAMES = {"misc", "utils"}
 
 

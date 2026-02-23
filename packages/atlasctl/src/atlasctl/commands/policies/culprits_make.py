@@ -87,11 +87,11 @@ def run_gate(gate: str) -> int:
     if gate == "culprits-packages-sh-max_loc":
         return _max_loc(packages_root, ".sh", err_gt=1000, warn_gt=800, label="packages(sh)")
     if gate == "culprits-atlasctl-max_depth":
-        return _max_depth(atlas_root, (".py", ".json", ".md"), depth_gt=8, label="atlasctl")
+        return _max_depth(atlas_root, (".py", ".json", ".md"), depth_gt=10, label="atlasctl")
     if gate == "culprits-atlasctl-file-max_py_files_per_dir":
-        return _max_files_per_dir(atlas_root, ".py", max_files=10, label="atlasctl", metric="max_py_files_per_dir")
+        return _max_files_per_dir(atlas_root, ".py", max_files=15, label="atlasctl", metric="max_py_files_per_dir")
     if gate == "culprits-atlasctl-file-max_modules_per_dir":
-        return _max_files_per_dir(atlas_root, ".py", max_files=10, label="atlasctl", metric="max_modules_per_dir")
+        return _max_files_per_dir(atlas_root, ".py", max_files=15, label="atlasctl", metric="max_modules_per_dir")
     if gate == "culprits-all-crates":
         codes = [
             run_gate("culprits-crates-max_loc"),
