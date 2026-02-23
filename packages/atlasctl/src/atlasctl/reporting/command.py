@@ -8,6 +8,7 @@ from ..core.context import RunContext
 from ..core.runtime.paths import write_text_file
 from ..commands.policies.runtime.dir_entry_budgets import report_budgets
 from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
+from ..commands.policies.culprits_make import run_gate_structured
 from ..checks.registry import list_checks
 from .actions import (
     _cmd_artifact_gc,
@@ -227,6 +228,7 @@ def run_report_command(ctx: RunContext, ns: argparse.Namespace) -> int:
                 for row in rows
                 if isinstance(row, dict)
             ]
+            out["culprits_make_gate"] = run_gate_structured("culprits-atlasctl-max_loc")
         text = json.dumps(out, sort_keys=True) if bool(getattr(ns, "json", False)) else json.dumps(out, indent=2, sort_keys=True)
         if ns.out:
             out_path = ctx.repo_root / ns.out

@@ -29,6 +29,8 @@ jobs:
           ./bin/atlasctl --format json check run --id checks_policies_bypass_budget_trend > artifacts/reports/atlasctl/bypass-budget-trend.gate.json
           ./bin/atlasctl --format json check run --id checks_policies_bypass_new_entries_forbidden > artifacts/reports/atlasctl/bypass-new-entries.gate.json
           ./bin/atlasctl --format json check run --id checks_policies_bypass_has_test_coverage > artifacts/reports/atlasctl/bypass-test-coverage.gate.json
+          ./bin/atlasctl --format json check run --id checks_policies_culprits_nonincrease_on_main > artifacts/reports/atlasctl/bypass-main-trend.gate.json
+          ./bin/atlasctl --format json check run --id checks_policies_culprits_empty_on_release_tags > artifacts/reports/atlasctl/bypass-release-tag.gate.json
       - name: Upload bypass burn-down artifacts
         if: always()
         uses: actions/upload-artifact@v4
