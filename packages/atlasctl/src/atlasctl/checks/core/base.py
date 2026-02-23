@@ -5,6 +5,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Callable, Protocol
 
+from ..effects import CheckEffect
+
 CheckFunc = Callable[[Path], tuple[int, list[str]]]
 
 
@@ -41,7 +43,7 @@ class CheckDef:
     remediation_link: str = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
     slow: bool = False
     tags: tuple[str, ...] = ()
-    effects: tuple[str, ...] = ()
+    effects: tuple[str, ...] = (CheckEffect.FS_READ.value,)
     owners: tuple[str, ...] = ()
     external_tools: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
@@ -77,6 +79,7 @@ class CheckResult:
     severity: str
     tags: list[str]
     effects: list[str]
+    effects_used: list[str]
     owners: list[str]
     writes_allowed_roots: list[str]
     result_code: str
