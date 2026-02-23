@@ -5,6 +5,7 @@ import argparse
 def configure_ops_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     p = sub.add_parser("ops", help="ops control-plane command surface")
     p.add_argument("--list", action="store_true", help="list available ops commands")
+    p.add_argument("--list-actions", action="store_true", help="list canonical ops action inventory")
     p.add_argument("--json", action="store_true", help="emit machine-readable JSON output")
     ops_sub = p.add_subparsers(dest="ops_cmd", required=False)
 

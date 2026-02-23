@@ -6,9 +6,18 @@ import os
 from pathlib import Path
 
 from . import ops_runtime_commands as impl
+from .actions_inventory import inventory_payload
 from atlasctl.core.process import shell_script_command
 
 def run_ops_command(ctx, ns: argparse.Namespace) -> int:
+    if not getattr(ns, "ops_cmd", None) and bool(getattr(ns, "list_actions", False)):
+        payload = inventory_payload()
+        if bool(getattr(ns, "json", False)):
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            for item in payload["items"]:
+                print(item)
+        return 0
     if not getattr(ns, "ops_cmd", None) and bool(getattr(ns, "list", False)):
         items = sorted(
             {
