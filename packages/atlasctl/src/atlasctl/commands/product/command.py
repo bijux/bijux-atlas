@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import os
+from pathlib import Path
 
 from ...core.context import RunContext
+from ...core.runtime.paths import write_text_file
+from ...core.schema.schema_utils import validate_json
 from ...core.effects.product import (
     ProductStep,
     product_steps_bootstrap,
@@ -18,6 +23,122 @@ from ...core.effects.product import (
     product_steps_naming_lint,
     run_product_lane,
 )
+
+PRODUCT_SCHEMA = Path("configs/product/artifact-manifest.schema.json")
+
+
+def _product_manifest_path(ctx: RunContext) -> Path:
+    return ctx.repo_root / "artifacts" / "evidence" / "product" / "build" / ctx.run_id / "artifact-manifest.json"
+
+
+def _rel(repo_root: Path, path: Path) -> str:
+    try:
+        return path.relative_to(repo_root).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    h.update(path.read_bytes())
+    return h.hexdigest()
+
+
+def _artifact_rows(ctx: RunContext) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    chart_dir = ctx.repo_root / "artifacts" / "chart"
+    if chart_dir.exists():
+        for p in sorted(chart_dir.rglob("*")):
+            if not p.is_file():
+                continue
+            rows.append(
+                {
+                    "id": f"chart:{p.name}",
+                    "path": _rel(ctx.repo_root, p),
+                    "kind": "helm-chart-package" if p.suffix == ".tgz" else "file",
+                    "sha256": _sha256(p),
+                    "size_bytes": p.stat().st_size,
+                }
+            )
+    image_tag = str(os.environ.get("DOCKER_IMAGE", "bijux-atlas:local")).strip()
+    if image_tag:
+        rows.append(
+            {
+                "id": "docker-image-tag",
+                "path": image_tag,
+                "kind": "docker-image-tag",
+                "sha256": hashlib.sha256(image_tag.encode("utf-8")).hexdigest(),
+                "size_bytes": 0,
+            }
+        )
+    rows.sort(key=lambda r: (str(r["kind"]), str(r["id"]), str(r["path"])))
+    return rows
+
+
+def _build_manifest_payload(ctx: RunContext) -> dict[str, object]:
+    version = str(os.environ.get("IMAGE_VERSION") or os.environ.get("VERSION") or "local").strip() or "local"
+    payload: dict[str, object] = {
+        "schema_version": 1,
+        "kind": "product-artifact-manifest",
+        "run_id": ctx.run_id,
+        "version": version,
+        "artifacts": _artifact_rows(ctx),
+        "meta": {
+            "allowed_roots": ["artifacts/chart", "artifacts/evidence/product"],
+            "tool_versions_hint": "use atlasctl ops pins check for pinned tool validation",
+        },
+    }
+    validate_json(payload, ctx.repo_root / PRODUCT_SCHEMA)
+    return payload
+
+
+def _write_artifact_manifest(ctx: RunContext) -> Path:
+    out = _product_manifest_path(ctx)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    payload = _build_manifest_payload(ctx)
+    write_text_file(out, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return out
+
+
+def _validate_artifact_manifest(ctx: RunContext, path: Path | None = None) -> int:
+    target = path or _product_manifest_path(ctx)
+    if not target.exists():
+        print(f"missing product artifact manifest: {_rel(ctx.repo_root, target)}")
+        return 1
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    validate_json(payload, ctx.repo_root / PRODUCT_SCHEMA)
+    for row in payload.get("artifacts", []):
+        if not isinstance(row, dict):
+            continue
+        kind = str(row.get("kind", ""))
+        apath = str(row.get("path", ""))
+        if kind == "docker-image-tag":
+            continue
+        p = ctx.repo_root / apath
+        if not p.exists():
+            print(f"missing artifact file: {apath}")
+            return 1
+        if str(row.get("sha256", "")) != _sha256(p):
+            print(f"artifact checksum mismatch: {apath}")
+            return 1
+    print(f"product artifact manifest valid: {_rel(ctx.repo_root, target)}")
+    return 0
+
+
+def _diff_manifest(ctx: RunContext, left: Path, right: Path, report_json: bool) -> int:
+    l = json.loads(left.read_text(encoding="utf-8"))
+    r = json.loads(right.read_text(encoding="utf-8"))
+    li = {str(x.get("id")): x for x in l.get("artifacts", []) if isinstance(x, dict)}
+    ri = {str(x.get("id")): x for x in r.get("artifacts", []) if isinstance(x, dict)}
+    added = sorted(set(ri) - set(li))
+    removed = sorted(set(li) - set(ri))
+    changed = sorted(k for k in set(li).intersection(ri) if li[k] != ri[k])
+    payload = {"schema_version": 1, "tool": "atlasctl", "kind": "product-artifact-diff", "status": "ok", "added": added, "removed": removed, "changed": changed}
+    if report_json or ctx.output_format == "json":
+        print(json.dumps(payload, sort_keys=True))
+    else:
+        print(f"added={len(added)} removed={len(removed)} changed={len(changed)}")
+    return 0
 
 
 def _plan_rows() -> list[tuple[str, list[str]]]:
@@ -48,6 +169,15 @@ def configure_product_parser(sub: argparse._SubParsersAction[argparse.ArgumentPa
     release_sub.add_parser("plan", help="print release version/tag strategy")
     product_sub.add_parser("explain", help="print product lane plan and underlying commands")
     product_sub.add_parser("graph", help="print product lane dependency graph")
+    product_sub.add_parser("build", help="produce canonical product artifact set and manifest")
+    product_sub.add_parser("validate", help="validate product artifact manifest and artifact integrity")
+    diff = product_sub.add_parser("diff", help="compare two product artifact manifests")
+    diff.add_argument("left")
+    diff.add_argument("right")
+    inventory = product_sub.add_parser("inventory", help="print product artifact inventory")
+    inventory.add_argument("--manifest", help="path to artifact manifest (defaults to current run)")
+    publish = product_sub.add_parser("publish", help="publish product artifacts (internal/optional)")
+    publish.add_argument("--internal", action="store_true")
 
     docker = product_sub.add_parser("docker", help="product docker lanes")
     docker_sub = docker.add_subparsers(dest="product_docker_cmd", required=True)
@@ -92,10 +222,51 @@ def run_product_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         print("product.docker.release -> product.docker.push")
         print("product.chart.verify -> product.chart.package")
         return 0
+    if sub == "build":
+        code = run_product_lane(
+            ctx,
+            lane="build",
+            steps=[
+                ProductStep("docker-build", ["./bin/atlasctl", "product", "docker", "build"]),
+                ProductStep("chart-package", ["./bin/atlasctl", "product", "chart", "package"]),
+            ],
+        )
+        if code != 0:
+            return code
+        out = _write_artifact_manifest(ctx)
+        print(f"artifact-manifest: {_rel(ctx.repo_root, out)}")
+        return 0
+    if sub == "validate":
+        return _validate_artifact_manifest(ctx)
+    if sub == "diff":
+        return _diff_manifest(ctx, Path(ns.left), Path(ns.right), report_json=False)
+    if sub == "inventory":
+        p = Path(getattr(ns, "manifest", "")).expanduser() if getattr(ns, "manifest", None) else _product_manifest_path(ctx)
+        if not p.is_absolute():
+            p = (ctx.repo_root / p).resolve()
+        if not p.exists():
+            print(f"missing product artifact manifest: {_rel(ctx.repo_root, p)}")
+            return 1
+        payload = json.loads(p.read_text(encoding="utf-8"))
+        if ctx.output_format == "json":
+            print(json.dumps(payload, sort_keys=True))
+        else:
+            print(f"product inventory version={payload.get('version')} artifacts={len(payload.get('artifacts', []))}")
+            for row in payload.get("artifacts", []):
+                if isinstance(row, dict):
+                    print(f"- {row.get('id')} {row.get('path')}")
+        return 0
+    if sub == "publish":
+        if not bool(getattr(ns, "internal", False)):
+            print("product publish is internal-only; pass --internal")
+            return 2
+        print("product publish plan: validate -> push image/chart -> publish manifest index (not yet wired)")
+        return 0
     if sub == "release" and getattr(ns, "product_release_cmd", "") == "plan":
         lines = [
             "product release plan",
             "- verify docker contracts and chart validation before release",
+            "- build canonical product artifact set and artifact-manifest.json",
             "- compute immutable image tags (no `latest`)",
             "- publish chart package and verify app/chart version alignment",
             "- execute docker release in CI-only environment",
