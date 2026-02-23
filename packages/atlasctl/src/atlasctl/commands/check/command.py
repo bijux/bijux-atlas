@@ -25,6 +25,7 @@ from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
 from ...execution.runner import RunnerOptions, run_checks_payload
+from ...checks.effects import CheckEffect, normalize_effect
 from .selection import split_group_values, split_marker_values
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
@@ -282,6 +283,24 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         timeout_label = "disabled" if timeout_ms == 0 else f"{timeout_ms}ms"
         print(f"running {total_live} checks (timeout={timeout_label} per check)")
 
+    requires_write_root = any(CheckEffect.FS_WRITE.value in {normalize_effect(x) for x in check.effects} for check in matched_checks)
+    write_root_arg = str(getattr(ns, "write_root", "") or "").strip()
+    if requires_write_root and not write_root_arg:
+        print("write-enabled checks require --write-root under artifacts/runs/<run_id>/")
+        return ERR_USER
+    resolved_run_root = (ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id).resolve()
+    if write_root_arg:
+        candidate = Path(write_root_arg)
+        resolved_run_root = (candidate if candidate.is_absolute() else (ctx.repo_root / candidate)).resolve()
+        try:
+            rel = resolved_run_root.relative_to(ctx.repo_root).as_posix()
+        except ValueError:
+            print("--write-root must be inside repository")
+            return ERR_USER
+        if requires_write_root and not rel.startswith(f"artifacts/runs/{ctx.run_id}/"):
+            print(f"--write-root must be under artifacts/runs/{ctx.run_id}/ for write-enabled runs")
+            return ERR_USER
+
     jobs = max(1, int(getattr(ns, "jobs", 1) or 1))
     max_failures = int(getattr(ns, "max_failures", 0) or getattr(ns, "maxfail", 0) or 0)
     if bool(getattr(ns, "failfast", False)):
@@ -296,7 +315,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             timeout_ms=timeout_ms if timeout_ms > 0 else None,
             output="json" if (ctx.output_format == "json" or ns.json) else ("verbose" if ns.run_verbose else ("quiet" if ns.run_quiet else "text")),
             kind="check-run",
-            run_root=(ctx.repo_root / "artifacts" / "evidence" / "checks" / ctx.run_id),
+            run_root=resolved_run_root,
         ),
         on_event=_emit_live_row if live_print else None,
     )
