@@ -1,0 +1,35 @@
+{
+  "required": [
+    ".cargo",
+    ".github",
+    ".gitignore",
+    "Cargo.toml",
+    "Cargo.lock",
+    "Makefile",
+    "README.md",
+    "makefiles",
+    "docs",
+    "ops",
+    "configs"
+  ],
+  "allowed": [
+    ".dockerignore",
+    "rust-toolchain.toml",
+    "python-toolchain.toml",
+    "mkdocs.yml",
+    "packages",
+    "crates",
+    "docker",
+    "artifacts"
+  ],
+  "compat_shims": [
+    "Dockerfile",
+    "bin"
+  ],
+  "local_noise": [
+    ".idea",
+    ".DS_Store",
+    "target",
+    ".ruff_cache"
+  ]
+}

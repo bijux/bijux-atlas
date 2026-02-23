@@ -457,7 +457,7 @@ Core commands:
 - `checks_repo_requirements_artifact_policy`: ensure only route-B requirements artifacts exist
 - `checks_repo_requirements_sync`: ensure requirements files match pyproject dev dependency declarations
 - `checks_repo_root_determinism`: verify deterministic root output across two make root runs
-- `checks_repo_root_shape`: enforce repository root shape contract from root_whitelist.json
+- `checks_repo_root_shape`: enforce repository root shape contract from `checks/tools/root_shape_whitelist.json`
 - `checks_repo_runcontext_single_builder`: ensure RunContext is built only in core/context.py
 - `checks_repo_script_help_coverage`: validate script help contract coverage
 - `checks_repo_script_ownership_coverage`: validate script ownership coverage
