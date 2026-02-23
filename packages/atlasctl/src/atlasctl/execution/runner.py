@@ -11,6 +11,8 @@ from ..checks.engine.execution import CommandCheckDef, run_command_checks, run_f
 from ..contracts.ids import CHECK_RUN
 from ..contracts.validate_self import validate_self
 
+RUNNER_MARKERS = frozenset({"fast", "slow", "network", "write", "lint", "check"})
+
 
 @dataclass(frozen=True)
 class RunnerOptions:
@@ -22,6 +24,7 @@ class RunnerOptions:
     run_root: Path | None = None
     suite_name: str | None = None
     kind: str = "check-run"
+    budget_exceed_behavior: str = "warn"  # warn|fail
 
 
 @dataclass(frozen=True)
@@ -51,6 +54,49 @@ def _attach_rel(run_root: Path | None, values: Iterable[str]) -> list[str]:
     return out
 
 
+def _timing_histogram(rows: list[dict[str, object]]) -> dict[str, int]:
+    buckets = {"lt_100ms": 0, "100_500ms": 0, "500_1000ms": 0, "1000_2000ms": 0, "gte_2000ms": 0}
+    for row in rows:
+        if row.get("status") == "SKIP":
+            continue
+        d = int(row.get("duration_ms", 0))
+        if d < 100:
+            buckets["lt_100ms"] += 1
+        elif d < 500:
+            buckets["100_500ms"] += 1
+        elif d < 1000:
+            buckets["500_1000ms"] += 1
+        elif d < 2000:
+            buckets["1000_2000ms"] += 1
+        else:
+            buckets["gte_2000ms"] += 1
+    return buckets
+
+
+def _marker_set(*, category: str, effects: Iterable[str], duration_ms: int) -> list[str]:
+    markers = {category}
+    markers.add("slow" if duration_ms >= 1000 else "fast")
+    eff = set(str(x) for x in effects)
+    if "network" in eff:
+        markers.add("network")
+    if any(x in eff for x in {"write", "fs-write"}):
+        markers.add("write")
+    invalid = markers.difference(RUNNER_MARKERS)
+    if invalid:
+        raise ValueError(f"invalid runner markers: {sorted(invalid)}")
+    return sorted(markers)
+
+
+def _lint_command_policy_violations(cmd: str) -> list[str]:
+    low = cmd.lower()
+    violations: list[str] = []
+    if any(tok in low for tok in (" curl ", " wget ", "http://", "https://")):
+        violations.append("lint category forbids network by default")
+    if any(tok in cmd for tok in (">", ">>")) or any(tok in low for tok in (" touch ", " mkdir ", " rm ", " cp ", " mv ")):
+        violations.append("lint category forbids writes by default")
+    return violations
+
+
 def run_checks_payload(
     repo_root: Path,
     *,
@@ -77,6 +123,8 @@ def run_checks_payload(
                 "category": "check" if cid.startswith("checks_") else "lint",
                 "findings": [],
                 "attachments": [],
+                "markers": ["check"],
+                "budget_status": "pass",
             }
             for cid in all_ids
         ]
@@ -94,6 +142,9 @@ def run_checks_payload(
             "stream_version": 1,
             "evidence_root": (options.run_root.as_posix() if options.run_root else ""),
             "format_support": ["quiet", "verbose", "json", "text", "junit"],
+            "timing_histogram": _timing_histogram(rows),
+            "budget_contract": {"exceed_behavior": options.budget_exceed_behavior, "budget_warn_count": 0, "budget_fail_count": 0},
+            "marker_contract": {"allowed_markers": sorted(RUNNER_MARKERS)},
         }
         validate_self(CHECK_RUN, payload)
         return 0, payload
@@ -125,8 +176,11 @@ def run_checks_payload(
                     "owners": list(row.owners),
                     "artifacts": [a["path"] for a in attachments],
                     "category": "lint" if "lint" in row.tags else "check",
+                    "markers": _marker_set(category=("lint" if "lint" in row.tags else "check"), effects=row.effects, duration_ms=duration_ms),
                     "check_category": row.category,
                     "severity": row.severity,
+                    "budget_ms": int(row.metrics.get("budget_ms", 0)),
+                    "budget_status": str(row.metrics.get("budget_status", "pass")),
                     "findings": [{"code": f"{row.id}.error", "message": msg, "hint": row.fix_hint} for msg in row.errors]
                     + [{"code": f"{row.id}.warn", "message": msg, "hint": row.fix_hint} for msg in row.warnings],
                     "attachments": attachments,
@@ -156,6 +210,13 @@ def run_checks_payload(
                 failed_count += 1
             rid = str(row["id"])
             reason = str(row.get("error", ""))[:500]
+            policy_violations = _lint_command_policy_violations(str(row.get("command", "")))
+            if policy_violations:
+                if reason:
+                    reason = "; ".join([reason, *policy_violations])
+                else:
+                    reason = "; ".join(policy_violations)
+                status = "FAIL"
             rows.append(
                 {
                     "id": rid,
@@ -168,8 +229,11 @@ def run_checks_payload(
                     "owners": [],
                     "artifacts": [],
                     "category": "lint",
+                    "markers": _marker_set(category="lint", effects=(), duration_ms=int(row.get("duration_ms", 0))),
                     "check_category": "lint",
                     "severity": "error",
+                    "budget_ms": int(row.get("budget_ms", 0)),
+                    "budget_status": str(row.get("budget_status", "pass")),
                     "findings": ([{"code": f"{rid}.lint", "message": reason, "hint": "Run underlying lint command."}] if reason else []),
                     "attachments": [],
                     "writes_allowed_roots": ["artifacts/evidence/"],
@@ -195,6 +259,12 @@ def run_checks_payload(
         for a in r.get("attachments", []):
             if isinstance(a, dict):
                 attachments.append(a)
+    budget_warn_count = sum(1 for r in rows if str(r.get("budget_status", "pass")) == "warn")
+    budget_fail_count = 0
+    if options.budget_exceed_behavior == "fail":
+        budget_fail_count = budget_warn_count
+        if budget_fail_count:
+            failed = max(failed, 1)
     payload = {
         "schema_name": CHECK_RUN,
         "schema_version": 1,
@@ -209,6 +279,13 @@ def run_checks_payload(
         "stream_version": 1,
         "evidence_root": (options.run_root.as_posix() if options.run_root else ""),
         "format_support": ["quiet", "verbose", "json", "text", "junit"],
+        "timing_histogram": _timing_histogram(rows),
+        "budget_contract": {
+            "exceed_behavior": options.budget_exceed_behavior,
+            "budget_warn_count": budget_warn_count,
+            "budget_fail_count": budget_fail_count,
+        },
+        "marker_contract": {"allowed_markers": sorted(RUNNER_MARKERS)},
     }
     validate_self(CHECK_RUN, payload)
     return (0 if failed == 0 else 1), payload

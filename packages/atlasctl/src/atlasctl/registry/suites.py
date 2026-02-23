@@ -46,10 +46,12 @@ def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
     rows = payload.get("suites", [])
     specs: list[SuiteManifestSpec] = []
     for row in rows:
+        raw_markers = tuple(str(x) for x in row.get("markers", []))
+        normalized_markers = tuple(sorted(set(raw_markers)))
         specs.append(
             SuiteManifestSpec(
                 name=str(row["name"]),
-                markers=tuple(str(x) for x in row.get("markers", [])),
+                markers=normalized_markers,
                 required_env=tuple(str(x) for x in row.get("required_env", [])),
                 default_effects=tuple(str(x) for x in row.get("default_effects", [])),
                 time_budget_ms=int(row.get("time_budget_ms", 0)),
@@ -59,6 +61,23 @@ def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
             )
         )
     return tuple(specs)
+
+
+def suite_marker_violations() -> list[str]:
+    payload = load_suites_catalog(_SUITES_CATALOG.parents[5])
+    rows = payload.get("suites", [])
+    errors: list[str] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        name = str(row.get("name", ""))
+        markers = tuple(str(x) for x in row.get("markers", []))
+        if markers != tuple(sorted(set(markers))):
+            errors.append(f"suite `{name}` markers must be sorted and unique")
+        unknown = set(markers).difference(_SUITE_MARKERS)
+        if unknown:
+            errors.append(f"suite `{name}` has unknown markers: {sorted(unknown)}")
+    return sorted(errors)
 
 
 def suite_markers() -> tuple[str, ...]:

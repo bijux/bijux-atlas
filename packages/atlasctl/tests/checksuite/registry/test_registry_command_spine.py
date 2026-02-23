@@ -20,6 +20,12 @@ def test_registry_select_commands_by_group_text() -> None:
     assert "check" in rows
 
 
+def test_registry_select_invalid_subject_has_well_defined_error() -> None:
+    proc = run_atlasctl("--quiet", "registry", "select", "bad-subject")
+    assert proc.returncode != 0
+    assert "invalid choice" in (proc.stderr or proc.stdout)
+
+
 def test_registry_diff_runs_check_mode() -> None:
     proc = run_atlasctl("--quiet", "registry", "diff")
     assert proc.returncode in {0, 2, 20}, proc.stderr
