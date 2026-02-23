@@ -97,7 +97,7 @@ def _make_result(
         },
         description=str(check.description),
         fix_hint=str(check.fix_hint),
-        category=str(check.category),
+        category=getattr(check.category, "value", str(check.category)),
         severity=check.severity,
         tags=tuple(check.tags),
         effects=tuple(check.effects),

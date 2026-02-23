@@ -12,18 +12,23 @@ from .model import CheckResult, CheckRunReport
 def results_as_rows(results: list[CheckResult]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for result in sorted(results, key=lambda row: row.canonical_key):
+        reason = "; ".join(item.message for item in result.violations) or "; ".join(result.errors)
+        hints = [str(result.fix_hint)] if str(result.fix_hint).strip() else []
         rows.append(
             {
                 "id": str(result.id),
                 "title": str(result.title),
                 "domain": str(result.domain),
-                "status": str(result.status).upper(),
+                "status": str(getattr(result.status, "value", result.status)).upper(),
                 "duration_ms": int(result.metrics.get("duration_ms", 0)),
-                "category": str(result.category),
+                "category": str(getattr(result.category, "value", result.category)),
                 "result_code": str(result.result_code),
                 "owners": list(result.owners),
                 "tags": list(result.tags),
                 "effects": list(result.effects),
+                "reason": reason,
+                "hints": hints,
+                "artifacts": list(result.evidence_paths),
                 "violations": [
                     {
                         "code": str(item.code),
@@ -40,7 +45,7 @@ def results_as_rows(results: list[CheckResult]) -> list[dict[str, Any]]:
                 "metrics": dict(result.metrics),
                 "evidence_paths": list(result.evidence_paths),
                 "hint": str(result.fix_hint),
-                "detail": "; ".join(item.message for item in result.violations) or "; ".join(result.errors),
+                "detail": reason,
             }
         )
     return rows
@@ -177,7 +182,7 @@ def resolve_last_run_report(last_run: str) -> Path:
         return path
     if not path.exists():
         raise FileNotFoundError(f"last-run path does not exist: {last_run}")
-    candidates = sorted(path.rglob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    candidates = sorted(path.rglob("*.json"), key=lambda p: (-p.stat().st_mtime, p.as_posix()))
     for candidate in candidates:
         try:
             payload = json.loads(candidate.read_text(encoding="utf-8"))
