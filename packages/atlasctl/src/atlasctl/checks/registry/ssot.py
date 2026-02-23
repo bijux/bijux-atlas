@@ -61,6 +61,15 @@ def normalize_category(raw: str, *, domain: str, groups: tuple[str, ...]) -> str
     return "check"
 
 
+def _default_groups_for_check(check: CheckDef) -> tuple[str, ...]:
+    tags = {str(item).strip() for item in check.tags if str(item).strip()}
+    tags.add(str(check.domain))
+    tags.add("slow" if bool(check.slow) else "fast")
+    if "internal" not in tags and "internal-only" not in tags:
+        tags.add("required")
+    return tuple(sorted(tags))
+
+
 @dataclass(frozen=True)
 class RegistryEntry:
     id: str
@@ -407,9 +416,43 @@ def _render_docs_meta(catalog_payload: dict[str, Any]) -> str:
 
 def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = False) -> tuple[Path, bool]:
     root = repo_root or _repo_root()
-    entries = _parse_toml(root)
+    checks = sorted(legacy_checks(), key=lambda check: str(check.check_id))
+    entries = [
+        RegistryEntry(
+            id=str(row["id"]),
+            domain=str(row["domain"]),
+            area=str(row["area"]),
+            gate=str(row["gate"]),
+            owner=str(row["owner"]),
+            speed=str(row["speed"]),
+            groups=tuple(str(item) for item in row.get("groups", []) if str(item).strip()),
+            timeout_ms=int(row["timeout_ms"]),
+            module=str(row["module"]),
+            callable=str(row["callable"]),
+            description=str(row["description"]),
+            severity=str(row.get("severity", "error")),
+            category=normalize_category(str(row.get("category", "check")), domain=str(row["domain"]), groups=tuple(str(item) for item in row.get("groups", []))),
+            intent=str(row.get("intent", row.get("description", ""))),
+            remediation_short=str(row.get("remediation_short", row.get("fix_hint", "Review check output and apply the documented fix."))),
+            remediation_link=str(row.get("remediation_link", "packages/atlasctl/docs/checks/check-id-migration-rules.md")),
+            result_code=str(row.get("result_code", "CHECK_GENERIC")),
+            fix_hint=str(row.get("fix_hint", "Review check output and apply the documented fix.")),
+            effects=tuple(
+                normalize_effect(str(item))
+                for item in row.get("effects", [CheckEffect.FS_READ.value])
+                if str(item).strip()
+            )
+            or (CheckEffect.FS_READ.value,),
+            external_tools=tuple(str(item) for item in row.get("external_tools", []) if str(item).strip()),
+            evidence=tuple(str(item) for item in row.get("evidence", []) if str(item).strip()),
+            writes_allowed_roots=tuple(str(item) for item in row.get("writes_allowed_roots", ["artifacts/evidence/"]) if str(item).strip()),
+            legacy_id=(str(row.get("legacy_id")).strip() if row.get("legacy_id") is not None else None),
+        )
+        for row in (toml_entry_from_check(check, groups=_default_groups_for_check(check)) for check in checks)
+    ]
+    entries = sorted(entries, key=lambda entry: entry.id)
     _validate_entries(entries)
-    legacy = {canonical_check_id(check) for check in legacy_checks()}
+    legacy = {canonical_check_id(check) for check in checks}
     registered = {entry.id for entry in entries}
     missing_registry = sorted(legacy - registered)
     missing_impl = sorted(registered - legacy)
@@ -464,8 +507,22 @@ def generate_registry_json(repo_root: Path | None = None, *, check_only: bool = 
 
 
 def registry_delta(repo_root: Path | None = None) -> dict[str, list[str]]:
-    root = repo_root or _repo_root()
-    entries = _parse_toml(root)
+    entries = [
+        RegistryEntry(
+            id=str(row["id"]),
+            domain=str(row["domain"]),
+            area=str(row["area"]),
+            gate=str(row["gate"]),
+            owner=str(row["owner"]),
+            speed=str(row["speed"]),
+            groups=tuple(str(item) for item in row.get("groups", []) if str(item).strip()),
+            timeout_ms=int(row["timeout_ms"]),
+            module=str(row["module"]),
+            callable=str(row["callable"]),
+            description=str(row["description"]),
+        )
+        for row in (toml_entry_from_check(check, groups=_default_groups_for_check(check)) for check in legacy_checks())
+    ]
     registered = {entry.id for entry in entries}
     implemented = {canonical_check_id(check) for check in legacy_checks()}
     return {
