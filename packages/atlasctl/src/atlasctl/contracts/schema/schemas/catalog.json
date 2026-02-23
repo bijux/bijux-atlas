@@ -41,6 +41,11 @@
       "file": "atlasctl.help.v1.schema.json"
     },
     {
+      "name": "atlasctl.ops-report.v1",
+      "version": 1,
+      "file": "atlasctl.ops-report.v1.schema.json"
+    },
+    {
       "name": "atlasctl.ops.manifest.v1",
       "version": 1,
       "file": "atlasctl.ops.manifest.v1.schema.json"
