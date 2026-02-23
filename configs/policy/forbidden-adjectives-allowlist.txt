@@ -1,3 +1,0 @@
-# Keep empty when possible.
-# If a temporary exception is required, use:
-# <term> # owner=<id>; why=<reason>; issue=ISSUE-<TOKEN>; remove_by=YYYY-MM-DD
