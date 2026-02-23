@@ -56,6 +56,12 @@ def _call_check_function(check: CheckDef, ctx: CheckContext) -> tuple[int, list[
     return (0, [])
 
 
+def _speed_label(check: CheckDef, duration_ms: int) -> str:
+    if bool(getattr(check, "slow", False)):
+        return "slow"
+    return "slow" if int(duration_ms) >= 1000 else "fast"
+
+
 def _make_result(
     check: CheckDef,
     *,
@@ -77,7 +83,11 @@ def _make_result(
         violations=violations,
         warnings=tuple(warnings or ()),
         evidence_paths=tuple(check.evidence),
-        metrics={"duration_ms": int(duration_ms), "budget_ms": int(check.budget_ms)},
+        metrics={
+            "duration_ms": int(duration_ms),
+            "budget_ms": int(check.budget_ms),
+            "speed": _speed_label(check, duration_ms),
+        },
         description=str(check.description),
         fix_hint=str(check.fix_hint),
         category=str(check.category),
