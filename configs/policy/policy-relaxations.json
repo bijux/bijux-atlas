@@ -16,7 +16,9 @@
       "owner": "platform",
       "risk": "low",
       "issue_id": "ISSUE-ATLAS-EXC-0001",
-      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
+      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-EXC-0002",
@@ -28,7 +30,9 @@
       "owner": "cli",
       "risk": "medium",
       "issue_id": "ISSUE-ATLAS-EXC-0002",
-      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code."
+      "removal_plan": "Remove exception after planned contract cleanups and delete tagged usage in code.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-EXC-0101",
@@ -40,7 +44,9 @@
       "owner": "docs-governance",
       "risk": "low",
       "issue_id": "ISSUE-ATLAS-EXC-0101",
-      "removal_plan": "Drop once forbidden-adjectives scanner fully relies on migration map and no literal token exceptions remain."
+      "removal_plan": "Drop once forbidden-adjectives scanner fully relies on migration map and no literal token exceptions remain.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     },
     {
       "id": "ATLAS-EXC-0102",
@@ -52,7 +58,9 @@
       "owner": "docs-governance",
       "risk": "low",
       "issue_id": "ISSUE-ATLAS-EXC-0102",
-      "removal_plan": "Drop once forbidden-adjectives migration map rollout is complete and scanner no longer depends on literal legacy tokens."
+      "removal_plan": "Drop once forbidden-adjectives migration map rollout is complete and scanner no longer depends on literal legacy tokens.",
+      "replacement_mechanism": "refactor_module_boundary",
+      "severity": "P2"
     }
   ]
 }

@@ -677,7 +677,9 @@ def _load_bypass_entries(repo_root: Path) -> list[dict[str, object]]:
                         "issue_id": str(item.get("approval_id", "")).strip(),
                         "expiry": str(item.get("expires_on", "")).strip(),
                         "justification": str(item.get("reason", "")).strip(),
-                        "removal_plan": "Remove temporary shim after migration parity is proven.",
+                        "removal_plan": str(item.get("removal_plan", "")).strip() or "Remove temporary shim after migration parity is proven.",
+                        "replacement_mechanism": str(item.get("replacement_mechanism", "")).strip(),
+                        "severity": str(item.get("severity", "")).strip(),
                         "requires_metadata": True,
                     }
                 )
@@ -823,7 +825,7 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
     entries = _load_bypass_entries(repo_root)
     by_check: dict[str, list[str]] = {k: [] for k in ("meta", "expiry", "horizon", "justification", "issue", "owner", "removal", "scope", "policy", "schema", "budget", "files")}
     by_check.update({k: [] for k in ("severity", "replacement", "severity_expiry", "forbidden_policy")})
-    known_files = {row[0] for row in _bypass_sources_registry(repo_root)} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/check-id-migration.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json", _BYPASS_FILES_REGISTRY.as_posix(), _BYPASS_TYPES_REGISTRY.as_posix(), "configs/policy/bypass-new-entry-approvals.json"}
+    known_files = {row[0] for row in _bypass_sources_registry(repo_root)} | {"configs/policy/migration_exceptions.json", "configs/policy/checks-registry-transition.json", "configs/policy/check-id-migration.json", "configs/policy/forbidden-adjectives-approvals.json", "configs/policy/check_speed_approvals.json", "configs/policy/checks-shell-direct-allowlist.json", _BYPASS_FILES_REGISTRY.as_posix(), _BYPASS_TYPES_REGISTRY.as_posix(), "configs/policy/bypass-new-entry-approvals.json"}
     actual_files = {p.relative_to(repo_root).as_posix() for p in (repo_root / "configs/policy").glob("*") if p.is_file() and any(t in p.name for t in ("allowlist", "relax", "exceptions", "ratchet"))}
     for path in sorted(actual_files - known_files):
         by_check["files"].append(f"unexpected bypass file under configs/policy: {path}")
@@ -837,7 +839,7 @@ def _bypass_errors(repo_root: Path) -> dict[str, list[str]]:
     known_policy = set(policy_relax.get("exception_budgets", {}).keys())
     layer = json.loads((repo_root / "configs/policy/layer-relaxations.json").read_text(encoding="utf-8"))
     known_policy.update(str(row.get("rule", "")).strip() for row in layer.get("exceptions", []) if isinstance(row, dict))
-    known_policy.update({"allow", "allowlist", "exceptions", "relaxations", "undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist"})
+    known_policy.update({"allow", "allowlist", "exceptions", "relaxations", "undeclared_import_allowlist", "optional_dependency_usage_allowlist", "internal_third_party_allowlist", "temporary-shim"})
     today = dt.date.today()
     for row in entries:
         if not bool(row.get("requires_metadata", False)):
@@ -951,7 +953,7 @@ def _bypass_readme_errors(repo_root: Path) -> dict[str, list[str]]:
     if not path.exists():
         return {"complete": ["configs/policy/README.md missing"], "sorted": ["configs/policy/README.md missing"]}
     text = path.read_text(encoding="utf-8")
-    refs = sorted(set(re.findall(r"`(configs/policy/[^`]+)`", text)))
+    refs = sorted(set(re.findall(r"`((?:configs/(?:policy|layout|ops|security)|ops/(?:_artifacts|_meta))/[^`]+)`", text)))
     expected = sorted(row[0] for row in _bypass_sources_registry(repo_root))
     missing = sorted(item for item in expected if item not in refs); extra = sorted(item for item in refs if item not in expected)
     complete: list[str] = [*(f"README missing bypass file entry: {item}" for item in missing), *(f"README lists non-bypass file entry: {item}" for item in extra)]
