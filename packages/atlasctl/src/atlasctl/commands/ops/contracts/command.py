@@ -7,6 +7,7 @@ from typing import Any
 
 from atlasctl.core.context import RunContext
 from atlasctl.core.runtime.paths import write_text_file
+from atlasctl.commands.ops._shared.output import emit_ops_payload
 from atlasctl.commands.ops.orchestrate._wrappers import artifact_base as _artifact_base
 from atlasctl.commands.ops.tools import command_rendered, environment_summary, hash_inputs, invocation_report, preflight_tools, run_tool
 
@@ -81,9 +82,9 @@ def contracts_snapshot(ctx: RunContext, report_format: str, *, no_write: bool = 
         report_path = out_dir / "report.json"
         write_text_file(report_path, json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if report_format == "json":
-        print(json.dumps(payload, sort_keys=True))
+        emit_ops_payload(payload, report_format)
     else:
-        print(json.dumps(payload, indent=2, sort_keys=True))
+        emit_ops_payload(payload, "json", compact_json=False)
     return 0 if not failed else 1
 
 

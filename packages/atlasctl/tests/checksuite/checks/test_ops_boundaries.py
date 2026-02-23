@@ -89,3 +89,15 @@ def test_ops_runtime_modules_naming_check_passes() -> None:
 def test_no_floating_ops_modules_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_floating_ops_modules.py")
     assert proc.returncode == 0, proc.stderr
+
+
+def test_no_print_in_ops_command_entrypoints_check_passes() -> None:
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_print_in_ops_command_entrypoints.py")
+    assert proc.returncode == 0, proc.stderr
+
+
+def test_no_stdout_writes_in_ops_command_entrypoints_check_passes() -> None:
+    proc = _run(
+        "packages/atlasctl/src/atlasctl/checks/layout/architecture/check_no_stdout_writes_in_ops_command_entrypoints.py"
+    )
+    assert proc.returncode == 0, proc.stderr
