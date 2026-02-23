@@ -26,6 +26,7 @@ from ..core.runtime.logging import log_event
 from ..core.runtime.serialize import dumps_json
 from ..core.errors import ScriptError
 from ..core.exit_codes import ERR_CONFIG, ERR_USER
+from ..execution.runner import RunnerOptions, run_checks_payload
 from .manifests import SuiteManifest, load_first_class_suites
 
 try:
@@ -412,31 +413,47 @@ def _run_first_class_suite(
             "total_count": len(selected_ids),
             "group_filter": list(groups),
         }
-        print(dumps_json(payload, pretty=not as_json))
+        if as_json:
+            print(dumps_json(payload, pretty=not as_json))
+        else:
+            for check_id in selected_ids:
+                print(check_id)
         return 0
 
     checks = [check for check_id in selected_ids if (check := get_check(check_id)) is not None]
     target = Path(target_dir) if target_dir else (ctx.repo_root / "artifacts/isolate" / ctx.run_id / "atlasctl-suite")
     target.mkdir(parents=True, exist_ok=True)
-    started = time.perf_counter()
-    failed, results = run_function_checks(ctx.repo_root, checks)
-    total_duration_ms = int((time.perf_counter() - started) * 1000)
+    rc, check_payload = run_checks_payload(
+        ctx.repo_root,
+        check_defs=checks,
+        run_id=ctx.run_id,
+        options=RunnerOptions(
+            fail_fast=False,
+            output=("json" if as_json else "text"),
+            run_root=target,
+            suite_name=manifest.name,
+            kind="check-run",
+        ),
+    )
+    total_duration_ms = int(check_payload["summary"]["duration_ms"])  # type: ignore[index]
     budget_exceeded = total_duration_ms > manifest.time_budget_ms
-    if budget_exceeded:
-        failed += 1
+    failed = (1 if rc else 0) + (1 if budget_exceeded else 0)
     rows = [
         {
             "index": idx,
             "suite": manifest.name,
-            "label": f"check {row.id}",
+            "label": f"check {row['id']}",
             "kind": "check",
-            "value": row.id,
-            "status": row.status,
-            "duration_ms": int(row.metrics.get("duration_ms", 0)),
-            "hint": row.fix_hint,
-            "detail": "; ".join([*row.errors[:2], *row.warnings[:2]]),
+            "value": row["id"],
+            "status": "pass" if row["status"] == "PASS" else "fail",
+            "duration_ms": int(row.get("duration_ms", 0)),
+            "hint": (row.get("hints") or [""])[0] if isinstance(row.get("hints"), list) and row.get("hints") else "",
+            "detail": str(row.get("reason", "")),
+            "attachments": list(row.get("artifacts", [])),
+            "findings": list(row.get("findings", [])),
         }
-        for idx, row in enumerate(results, start=1)
+        for idx, row in enumerate(check_payload.get("rows", []), start=1)  # type: ignore[union-attr]
+        if isinstance(row, dict)
     ]
     summary = {
         "passed": sum(1 for row in rows if row["status"] == "pass"),
@@ -462,6 +479,11 @@ def _run_first_class_suite(
         "summary": summary,
         "results": rows,
         "target_dir": target.as_posix(),
+        "runner": {
+            "schema_name": check_payload.get("schema_name"),
+            "events": check_payload.get("events", []),
+            "attachments": check_payload.get("attachments", []),
+        },
     }
     validate_self(SUITE_RUN, payload)
     (target / "results.json").write_text(dumps_json(payload, pretty=True) + "\n", encoding="utf-8")

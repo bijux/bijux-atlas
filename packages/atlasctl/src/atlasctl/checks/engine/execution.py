@@ -28,7 +28,12 @@ def run_command_checks(repo_root: Path, checks: list[CommandCheckDef]) -> tuple[
     failed = 0
     for chk in checks:
         start = time.perf_counter()
-        result = run_command(chk.cmd, repo_root)
+        cmd = list(chk.cmd)
+        cmd_str = " ".join(cmd)
+        if "atlasctl.cli" in cmd_str or (len(cmd) >= 3 and Path(cmd[0]).name.startswith("python") and cmd[1] == "-m"):
+            src_path = str(repo_root / "packages/atlasctl/src")
+            cmd = ["env", f"PYTHONPATH={src_path}", *cmd]
+        result = run_command(cmd, repo_root)
         elapsed_ms = int((time.perf_counter() - start) * 1000)
         status = "pass" if result.code == 0 else "fail"
         if result.code != 0:
@@ -36,7 +41,7 @@ def run_command_checks(repo_root: Path, checks: list[CommandCheckDef]) -> tuple[
         row: dict[str, object] = {
             "id": chk.check_id,
             "domain": chk.domain,
-            "command": " ".join(chk.cmd),
+            "command": " ".join(cmd),
             "status": status,
             "duration_ms": elapsed_ms,
             "budget_ms": chk.budget_ms,
