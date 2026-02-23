@@ -12,11 +12,10 @@ def _run(rel: str) -> subprocess.CompletedProcess[str]:
 
 
 def test_ops_load_phase4_contract_checks_pass() -> None:
-    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_load_contracts_phase4.py")
+    proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_load_contracts_k6.py")
     assert proc.returncode == 0, proc.stderr
 
 
 def test_ops_load_report_determinism_check_passes() -> None:
     proc = _run("packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_load_reports_deterministic.py")
     assert proc.returncode == 0, proc.stderr
-
