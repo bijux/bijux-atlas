@@ -10,6 +10,7 @@ _WORKFLOW_MAKE_RE = re.compile(r"\bmake(?:\s+-[A-Za-z0-9_-]+)*\s+([A-Za-z0-9_./-
 _WORKFLOW_RUN_RE = re.compile(r"^\s*run:\s*(.+?)\s*$")
 _RAW_CARGO_RE = re.compile(r"\bcargo\s+(fmt|test|clippy|check)\b")
 _ATLASCTL_MODULE_RE = re.compile(r"\bpython3?\s+-m\s+atlasctl(\.cli)?\b")
+_COMPILEALL_RE = re.compile(r"\bpython3?\s+-m\s+compileall\b")
 _ALLOWED_ARTIFACT_ROOTS = ("artifacts/**", "ops/_generated/**", "ops/_generated_committed/**")
 
 
@@ -50,6 +51,8 @@ def check_ci_workflow_policy(repo_root: Path) -> tuple[int, list[str]]:
     for workflow in sorted(workflows_root.glob("*.yml")):
         rel = workflow.relative_to(repo_root).as_posix()
         text = workflow.read_text(encoding="utf-8", errors="ignore")
+        if workflow.name == "ci.yml" and "PYTHONDONTWRITEBYTECODE" not in text:
+            errors.append(f"{rel}: missing PYTHONDONTWRITEBYTECODE guard for atlasctl CI test steps")
         for line_no, line in enumerate(text.splitlines(), start=1):
             run_match = _WORKFLOW_RUN_RE.match(line)
             if not run_match:
@@ -59,6 +62,8 @@ def check_ci_workflow_policy(repo_root: Path) -> tuple[int, list[str]]:
                 errors.append(f"{rel}:{line_no}: workflow must not invoke atlasctl via `python -m`; use `./bin/atlasctl`")
             if _RAW_CARGO_RE.search(cmd):
                 errors.append(f"{rel}:{line_no}: workflow must not run raw cargo fmt/test/clippy/check")
+            if _COMPILEALL_RE.search(cmd):
+                errors.append(f"{rel}:{line_no}: workflow must not run `python -m compileall` (writes bytecode into source tree)")
             for make_match in _WORKFLOW_MAKE_RE.finditer(cmd):
                 target = make_match.group(1)
                 if target not in known_targets:

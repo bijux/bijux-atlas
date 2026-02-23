@@ -8,7 +8,25 @@ on:
 permissions:
   contents: read
 
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
 jobs:
+  hygiene-fast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fast hygiene checks
+        run: |
+          ./bin/atlasctl --quiet dev doctor
+          ./bin/atlasctl --quiet python lint
+          ./bin/atlasctl --format json check run --id checks_repo_no_tracked_timestamp_paths > /tmp/check-repo-no-tracked-timestamp-paths.json
+          ./bin/atlasctl --format json check run --id checks_repo_no_adhoc_python > /tmp/check-repo-no-adhoc-python.json
+
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 90
