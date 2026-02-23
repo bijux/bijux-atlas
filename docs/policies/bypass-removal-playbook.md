@@ -24,12 +24,3 @@ This playbook defines the mandatory removal flow for any entry in the policy byp
 
 - Anchor: `#ops-bypass-removal`
 - Use this anchor in `removal_plan` fields when one playbook path is shared.
-
-## Release Readiness Bar
-
-The next release readiness bar is met only when all of the following are true:
-
-- zero `.sh` checks remain under `packages/atlasctl/src/atlasctl/checks`
-- zero `__pycache__/` and `*.pyc` files exist in the repository
-- `ops/` and `configs/` layout contracts pass in their reshaped model
-- bypass inventory trend is non-increasing and milestones are not missed
