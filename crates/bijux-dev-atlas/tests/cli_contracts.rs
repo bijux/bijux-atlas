@@ -678,3 +678,35 @@ fn check_list_accepts_local_and_deep_suites() {
         assert!(output.status.success(), "suite `{suite}` failed");
     }
 }
+
+#[test]
+fn workflows_validate_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["workflows", "validate", "--format", "json"])
+        .output()
+        .expect("workflows validate json");
+    assert!(output.status.success());
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert!(payload.get("run_id").is_some());
+    assert!(payload.get("command").and_then(|v| v.as_str()).is_some());
+    assert!(payload.get("results").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn gates_list_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["gates", "list", "--format", "json"])
+        .output()
+        .expect("gates list json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
+}
