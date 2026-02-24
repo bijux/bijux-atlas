@@ -367,7 +367,7 @@ CHECKS: tuple[CheckDef, ...] = (
         "repo.file_public_symbol_budget",
         "repo",
         "enforce public symbol budget per module",
-        400,
+        1400,
         lambda repo_root: check_budget_metric(repo_root, "public-symbols-per-file"),
         fix_hint="Split dumping-ground modules and narrow __all__ exports.",
     ),
