@@ -54,3 +54,9 @@ def test_checks_tree_json_matches_golden() -> None:
     proc = run_atlasctl("--quiet", "--json", "checks", "tree")
     assert proc.returncode == 0, proc.stderr
     assert proc.stdout.strip() == _golden("check/checks-tree.json.golden")
+
+
+def test_check_explain_json_matches_golden() -> None:
+    proc = run_atlasctl("--quiet", "--json", "check", "explain", "checks.import_cycles")
+    assert proc.returncode == 0, proc.stderr
+    assert proc.stdout.strip() == _golden("check/check-explain-import-cycles.json.golden")
