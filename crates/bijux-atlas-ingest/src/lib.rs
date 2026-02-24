@@ -1,37 +1,35 @@
 #![forbid(unsafe_code)]
 
 mod diff_index;
+mod decode;
 mod extract;
 mod fai;
 mod gff3;
+mod hashing;
+mod job;
+mod logging;
 mod manifest;
 mod normalized;
 mod sqlite;
+mod write;
 
-use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
-    artifact_paths, BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
+    BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy,
     FeatureIdUniquenessPolicy, GeneIdentifierPolicy, GeneNamePolicy, IngestAnomalyReport,
     SeqidNormalizationPolicy, ShardCatalog, ShardingPlan, StrictnessMode, TranscriptIdPolicy,
     TranscriptTypePolicy, UnknownFeaturePolicy,
 };
-use diff_index::build_and_write_release_gene_index;
-use extract::extract_gene_rows;
-use gff3::parse_gff3_records;
-use manifest::{
-    build_and_write_manifest_and_reports, write_qc_and_anomaly_reports_only, BuildManifestArgs,
-};
-use normalized::{replay_counts_from_normalized, write_normalized_jsonl_zst};
 #[cfg(test)]
 use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
-use sqlite::{
-    explain_plan_for_region_query, write_sharded_sqlite_catalog, write_sqlite, WriteSqliteInput,
-};
+use sqlite::explain_plan_for_region_query;
 use std::fmt::{Display, Formatter};
-use std::fs;
 use std::path::{Path, PathBuf};
 
 pub const CRATE_NAME: &str = "bijux-atlas-ingest";
+
+pub use hashing::{compute_input_hashes, hash_file, InputHashes};
+pub use job::{IngestInputs, IngestJob};
+pub use logging::{IngestEvent, IngestLog, IngestStage};
 
 #[derive(Debug)]
 pub struct IngestError(pub String);
@@ -79,6 +77,13 @@ pub struct IngestOptions {
     pub emit_normalized_debug: bool,
     pub normalized_replay_mode: bool,
     pub prod_mode: bool,
+    pub timestamp_policy: TimestampPolicy,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TimestampPolicy {
+    DeterministicZero,
+    SourceMetadataOnly,
 }
 
 impl Default for IngestOptions {
@@ -119,6 +124,7 @@ impl Default for IngestOptions {
             emit_normalized_debug: false,
             normalized_replay_mode: false,
             prod_mode: false,
+            timestamp_policy: TimestampPolicy::DeterministicZero,
         }
     }
 }
@@ -135,9 +141,23 @@ pub struct IngestResult {
     pub shard_catalog: Option<ShardCatalog>,
     pub manifest: bijux_atlas_model::ArtifactManifest,
     pub anomaly_report: IngestAnomalyReport,
+    pub events: Vec<IngestEvent>,
 }
 
 pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError> {
+    ingest_dataset_with_events(opts).map(|(result, _)| result)
+}
+
+pub fn ingest_dataset_with_events(
+    opts: &IngestOptions,
+) -> Result<(IngestResult, Vec<IngestEvent>), IngestError> {
+    let mut log = logging::IngestLog::default();
+    log.emit(
+        logging::IngestStage::Prepare,
+        "ingest.start",
+        std::collections::BTreeMap::new(),
+    );
+
     if opts.dataset.release.as_str() == "0"
         && opts.dataset.species.as_str() == "unknown"
         && opts.dataset.assembly.as_str() == "unknown"
@@ -147,198 +167,42 @@ pub fn ingest_dataset(opts: &IngestOptions) -> Result<IngestResult, IngestError>
         ));
     }
     let _effective_threads = extract::parallelism_policy(opts.max_threads)?;
-
-    if !opts.fai_path.exists() {
-        if opts.dev_allow_auto_generate_fai {
-            fai::write_fai_from_fasta(&opts.fasta_path, &opts.fai_path)?;
-        } else {
-            return Err(IngestError(
-                "FAI index is required for ingest (enable dev auto-generate explicitly)"
-                    .to_string(),
-            ));
-        }
-    }
     if opts.prod_mode && opts.emit_normalized_debug {
         return Err(IngestError(
             "policy gate: normalized debug output is disabled in production mode".to_string(),
         ));
     }
-    let contig_lengths = fai::read_fai_contig_lengths(&opts.fai_path)?;
-    let contig_stats = if opts.fasta_scanning_enabled {
-        fai::read_fasta_contig_stats(
-            &opts.fasta_path,
-            opts.compute_contig_fractions,
-            opts.fasta_scan_max_bases,
-        )?
-    } else {
-        contig_lengths
-            .iter()
-            .map(|(k, v)| {
-                (
-                    k.clone(),
-                    fai::ContigStats {
-                        length: *v,
-                        gc_fraction: None,
-                        n_fraction: None,
-                    },
-                )
-            })
-            .collect()
-    };
-    let records = parse_gff3_records(&opts.gff3_path)?;
-    let extracted = extract_gene_rows(records, &contig_lengths, opts)?;
-    if opts.fail_on_warn && has_qc_warn(&extracted.anomaly) {
+    let job = job::IngestJob::from_options(opts);
+    log.emit(
+        logging::IngestStage::Decode,
+        "ingest.decode.begin",
+        std::collections::BTreeMap::new(),
+    );
+    let decoded = decode::decode_ingest_inputs(&job)?;
+    log.emit(
+        logging::IngestStage::Decode,
+        "ingest.decode.complete",
+        std::collections::BTreeMap::new(),
+    );
+
+    if opts.fail_on_warn && has_qc_warn(&decoded.extract.anomaly) {
         return Err(IngestError(
             "strict warning policy rejected ingest: QC WARN present".to_string(),
         ));
     }
-
-    let paths = artifact_paths(&opts.output_root, &opts.dataset);
-    fs::create_dir_all(&paths.inputs_dir).map_err(|e| IngestError(e.to_string()))?;
-    fs::create_dir_all(&paths.derived_dir).map_err(|e| IngestError(e.to_string()))?;
-
-    if opts.report_only {
-        let qc_report_path = write_qc_and_anomaly_reports_only(
-            &opts.output_root,
-            &opts.dataset,
-            &paths.anomaly_report,
-            &extracted,
-        )?;
-        let manifest = bijux_atlas_model::ArtifactManifest::new(
-            "1".to_string(),
-            "report-only".to_string(),
-            opts.dataset.clone(),
-            bijux_atlas_model::ArtifactChecksums::new(
-                String::new(),
-                String::new(),
-                String::new(),
-                String::new(),
-            ),
-            bijux_atlas_model::ManifestStats::new(
-                extracted.gene_rows.len() as u64,
-                extracted
-                    .gene_rows
-                    .iter()
-                    .map(|x| x.transcript_count)
-                    .sum::<u64>(),
-                extracted.contig_distribution.len() as u64,
-            ),
-        );
-        return Ok(IngestResult {
-            manifest_path: paths.manifest,
-            sqlite_path: paths.sqlite,
-            anomaly_report_path: paths.anomaly_report,
-            qc_report_path,
-            release_gene_index_path: paths.release_gene_index,
-            normalized_debug_path: None,
-            shard_catalog_path: None,
-            shard_catalog: None,
-            manifest,
-            anomaly_report: extracted.anomaly,
-        });
-    }
-
-    fs::copy(&opts.gff3_path, &paths.gff3).map_err(|e| IngestError(e.to_string()))?;
-    fs::copy(&opts.fasta_path, &paths.fasta).map_err(|e| IngestError(e.to_string()))?;
-    fs::copy(&opts.fai_path, &paths.fai).map_err(|e| IngestError(e.to_string()))?;
-
-    write_sqlite(WriteSqliteInput {
-        path: &paths.sqlite,
-        dataset: &opts.dataset,
-        genes: &extracted.gene_rows,
-        transcripts: &extracted.transcript_rows,
-        exons: &extracted.exon_rows,
-        contigs: &contig_stats,
-        gff3_sha256: &sha256_hex(&fs::read(&paths.gff3).map_err(|e| IngestError(e.to_string()))?),
-        fasta_sha256: &sha256_hex(&fs::read(&paths.fasta).map_err(|e| IngestError(e.to_string()))?),
-        fai_sha256: &sha256_hex(&fs::read(&paths.fai).map_err(|e| IngestError(e.to_string()))?),
-    })?;
-    let effective_sharding_plan = if opts.emit_shards {
-        ShardingPlan::Contig
-    } else {
-        opts.sharding_plan
-    };
-    let (shard_catalog_path, shard_catalog) =
-        if matches!(effective_sharding_plan, ShardingPlan::Contig) {
-            let (catalog_path, catalog) = write_sharded_sqlite_catalog(
-                &paths.derived_dir,
-                &opts.dataset,
-                &extracted.gene_rows,
-                &extracted.transcript_rows,
-                effective_sharding_plan,
-                opts.shard_partitions,
-                opts.max_shards,
-            )?;
-            (Some(catalog_path), Some(catalog))
-        } else if matches!(effective_sharding_plan, ShardingPlan::RegionGrid) {
-            return Err(IngestError(
-                "region_grid sharding plan is reserved for future implementation".to_string(),
-            ));
-        } else {
-            (None, None)
-        };
-    let normalized_debug_path = if opts.emit_normalized_debug || opts.normalized_replay_mode {
-        let path = paths.derived_dir.join("normalized_features.jsonl.zst");
-        write_normalized_jsonl_zst(
-            &path,
-            &extracted.gene_rows,
-            &extracted.transcript_rows,
-            &extracted.exon_rows,
-        )?;
-        if opts.normalized_replay_mode {
-            let replay = replay_counts_from_normalized(&path)?;
-            if replay.genes != extracted.gene_rows.len() as u64
-                || replay.transcripts != extracted.transcript_rows.len() as u64
-                || replay.exons != extracted.exon_rows.len() as u64
-            {
-                return Err(IngestError(format!(
-                    "normalized replay mismatch: replay=({},{},{}) extracted=({},{},{})",
-                    replay.genes,
-                    replay.transcripts,
-                    replay.exons,
-                    extracted.gene_rows.len(),
-                    extracted.transcript_rows.len(),
-                    extracted.exon_rows.len()
-                )));
-            }
-        }
-        Some(path)
-    } else {
-        None
-    };
-    let built = build_and_write_manifest_and_reports(BuildManifestArgs {
-        output_root: &opts.output_root,
-        dataset: &opts.dataset,
-        gff3_path: &paths.gff3,
-        fasta_path: &paths.fasta,
-        fai_path: &paths.fai,
-        sqlite_path: &paths.sqlite,
-        manifest_path: &paths.manifest,
-        anomaly_path: &paths.anomaly_report,
-        extract: &extracted,
-        contig_aliases: &opts.seqid_policy.aliases,
-        sharding_plan: effective_sharding_plan,
-    })?;
-    if opts.compute_gene_signatures {
-        build_and_write_release_gene_index(
-            &opts.dataset,
-            &paths.release_gene_index,
-            &extracted.gene_rows,
-        )?;
-    }
-
-    Ok(IngestResult {
-        manifest_path: paths.manifest,
-        sqlite_path: paths.sqlite,
-        anomaly_report_path: paths.anomaly_report,
-        qc_report_path: built.qc_report_path,
-        release_gene_index_path: paths.release_gene_index,
-        normalized_debug_path,
-        shard_catalog_path,
-        shard_catalog,
-        manifest: built.manifest,
-        anomaly_report: extracted.anomaly,
-    })
+    log.emit(
+        logging::IngestStage::Persist,
+        "ingest.persist.begin",
+        std::collections::BTreeMap::new(),
+    );
+    let mut result = write::write_ingest_outputs(&job, decoded)?;
+    log.emit(
+        logging::IngestStage::Finalize,
+        "ingest.persist.complete",
+        std::collections::BTreeMap::new(),
+    );
+    result.events = log.events().to_vec();
+    Ok((result, log.events().to_vec()))
 }
 
 fn has_qc_warn(anomaly: &IngestAnomalyReport) -> bool {
@@ -367,7 +231,7 @@ pub fn explain_region_query_plan(sqlite_path: &Path) -> Result<Vec<String>, Inge
 }
 
 pub fn replay_normalized_counts(path: &Path) -> Result<normalized::ReplayCounts, IngestError> {
-    replay_counts_from_normalized(path)
+    normalized::replay_counts_from_normalized(path)
 }
 
 pub fn diff_normalized_ids(

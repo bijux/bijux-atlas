@@ -42,6 +42,7 @@ fn opts(root: &Path, strictness: StrictnessMode) -> IngestOptions {
         emit_normalized_debug: false,
         normalized_replay_mode: false,
         prod_mode: false,
+        timestamp_policy: TimestampPolicy::DeterministicZero,
     }
 }
 

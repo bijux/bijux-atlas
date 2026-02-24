@@ -6,10 +6,10 @@ use std::path::Path;
 
 fn signature_for_gene(row: &GeneRecord) -> Result<String, IngestError> {
     let payload = GeneSignatureInput::new(
-        row.gene_id.clone(),
+        bijux_atlas_model::GeneId::parse(&row.gene_id).map_err(|e| IngestError(e.to_string()))?,
         row.gene_name.clone(),
         row.biotype.clone(),
-        row.seqid.clone(),
+        bijux_atlas_model::SeqId::parse(&row.seqid).map_err(|e| IngestError(e.to_string()))?,
         row.start,
         row.end,
         row.transcript_count,
@@ -26,8 +26,8 @@ pub fn build_and_write_release_gene_index(
     let mut entries = Vec::with_capacity(rows.len());
     for row in rows {
         entries.push(ReleaseGeneIndexEntry::new(
-            row.gene_id.clone(),
-            row.seqid.clone(),
+            bijux_atlas_model::GeneId::parse(&row.gene_id).map_err(|e| IngestError(e.to_string()))?,
+            bijux_atlas_model::SeqId::parse(&row.seqid).map_err(|e| IngestError(e.to_string()))?,
             row.start,
             row.end,
             signature_for_gene(row)?,
