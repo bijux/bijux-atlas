@@ -88,6 +88,14 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_make_configs_wrappers_delegate_dev_atlas" => {
             Some(check_make_configs_wrappers_delegate_dev_atlas)
         }
+        "checks_ops_control_plane_doc_contract" => Some(check_ops_control_plane_doc_contract),
+        "checks_docs_ops_command_list_matches_snapshot" => {
+            Some(check_docs_ops_command_list_matches_snapshot)
+        }
+        "checks_docs_configs_command_list_matches_snapshot" => {
+            Some(check_docs_configs_command_list_matches_snapshot)
+        }
+        "checks_ops_ssot_manifests_schema_versions" => Some(check_ops_ssot_manifests_schema_versions),
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
             Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
         }
@@ -1383,6 +1391,133 @@ fn check_make_configs_wrappers_delegate_dev_atlas(
                 Some(rel),
             ));
         }
+    }
+    Ok(violations)
+}
+
+fn check_ops_control_plane_doc_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("ops/CONTROL_PLANE.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "Control plane version:",
+        "## Scope",
+        "## SSOT Rules",
+        "## Invariants",
+        "## Effect Rules",
+        "bijux dev atlas doctor",
+        "check run --suite ci",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_DOC_INCOMPLETE",
+                format!("ops/CONTROL_PLANE.md is missing required content `{required}`"),
+                "update the control plane definition document with the required invariant/entrypoint text",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_ops_command_list_matches_snapshot(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md");
+    let current = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let expected = [
+        "ops",
+        "doctor",
+        "validate",
+        "render",
+        "install",
+        "status",
+        "list-profiles",
+        "explain-profile",
+        "list-tools",
+        "verify-tools",
+        "list-actions",
+        "up",
+        "down",
+        "clean",
+        "reset",
+        "pins",
+        "generate",
+    ]
+    .join("\n");
+    if current.trim() == expected.trim() {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "DOCS_OPS_COMMAND_LIST_MISMATCH",
+            "ops command list doc does not match canonical ops help snapshot".to_string(),
+            "update crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md to match ops --help command list",
+            Some(rel),
+        )])
+    }
+}
+
+fn check_docs_configs_command_list_matches_snapshot(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md");
+    let current = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let expected = ["configs", "doctor", "validate", "lint", "inventory", "compile", "diff"]
+        .join("\n");
+    if current.trim() == expected.trim() {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
+            "configs command list doc does not match canonical configs help snapshot".to_string(),
+            "update crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md to match configs --help command list",
+            Some(rel),
+        )])
+    }
+}
+
+fn check_ops_ssot_manifests_schema_versions(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let manifests = [
+        "ops/stack/profiles.json",
+        "ops/stack/version-manifest.json",
+        "ops/inventory/toolchain.json",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/contracts.json",
+        "ops/inventory/generated-committed-mirror.json",
+    ];
+    let mut violations = Vec::new();
+    for path in manifests {
+        let rel = Path::new(path);
+        let text = fs::read_to_string(ctx.repo_root.join(rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let value: serde_json::Value =
+            serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        if value.get("schema_version").is_none() {
+            violations.push(violation(
+                "OPS_SSOT_SCHEMA_VERSION_MISSING",
+                format!("ssot manifest `{path}` must include `schema_version`"),
+                "add schema_version to the SSOT manifest payload",
+                Some(rel),
+            ));
+        }
+    }
+    let control_plane = Path::new("ops/CONTROL_PLANE.md");
+    let control_text = fs::read_to_string(ctx.repo_root.join(control_plane))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if !control_text.contains("Control plane version:") {
+        violations.push(violation(
+            "OPS_CONTROL_PLANE_VERSION_MISSING",
+            "ops/CONTROL_PLANE.md must declare a control plane version".to_string(),
+            "add `Control plane version:` line to ops/CONTROL_PLANE.md",
+            Some(control_plane),
+        ));
     }
     Ok(violations)
 }

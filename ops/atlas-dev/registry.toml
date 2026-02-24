@@ -576,6 +576,50 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_control_plane_doc_contract"
+domain = "ops"
+title = "ops control plane definition doc exists and declares invariants"
+docs = "ops/CONTROL_PLANE.md"
+tags = ["internal", "fast"]
+suites = ["deep", "ops", "doctor"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_ops_command_list_matches_snapshot"
+domain = "docs"
+title = "ops command list doc matches ops command snapshot"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_configs_command_list_matches_snapshot"
+domain = "docs"
+title = "configs command list doc matches configs command snapshot"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_ssot_manifests_schema_versions"
+domain = "ops"
+title = "ops ssot manifests and control plane doc declare schema or version fields"
+docs = "ops/CONTROL_PLANE.md"
+tags = ["internal", "fast"]
+suites = ["deep", "ops"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
 domain = "crates"
 title = "umbrella runtime tests reserve dev verb ownership"
