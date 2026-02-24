@@ -18,7 +18,7 @@ docs-serve: ## Serve docs locally
 	@$(BIJUX_DEV_ATLAS) docs serve --allow-subprocess --format text
 
 docs-clean: ## Clean docs generated outputs
-	@$(BIJUX_DEV_ATLAS) docs grep atlasctl --format text >/dev/null
+	@$(BIJUX_DEV_ATLAS) docs inventory --format text >/dev/null
 
 docs-lock: ## Refresh docs requirements lock deterministically
 	@$(BIJUX_DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
