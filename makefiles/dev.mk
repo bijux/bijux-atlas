@@ -30,14 +30,14 @@ test: ## Rust tests lane
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@cargo nextest run --workspace --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}"
+	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}"
 
 test-all: ## Rust tests full variant (includes ignored)
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@cargo nextest run --workspace --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
+	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
 
 dev-doctor: ## Run dev control-plane doctor suite
 	@$(DEV_ATLAS) check doctor --format text
