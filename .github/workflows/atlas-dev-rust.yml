@@ -49,6 +49,10 @@ jobs:
       - name: Verify canonical governance entrypoint
         run: |
           cargo run -p bijux-dev-atlas -- doctor --format json >/dev/null
+      - name: Verify ops doctor and validate entrypoints
+        run: |
+          cargo run -p bijux-dev-atlas -- ops doctor --format json >/dev/null
+          cargo run -p bijux-dev-atlas -- ops validate --format json >/dev/null
       - name: Verify release binaries are produced
         run: |
           cargo build --release -p bijux-atlas-cli -p bijux-dev-atlas
