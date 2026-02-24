@@ -41,6 +41,7 @@ This section does not duplicate full command reference details from each tooling
 - [control-plane migration rationale](control-plane-migration-rationale.md)
 - [command inventory](command-inventory.md)
 - [build outputs](build-outputs.md)
+- [rust toolchain contract](rust-toolchain.md)
 - [ops command inventory](ops-command-inventory.md)
 - [tooling naming policy](naming-policy.md)
 - [release packaging plan](release-packaging-plan.md)

@@ -27,6 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
       - name: Build atlas dev crates
         run: |
           cargo build -p bijux-dev-atlas-model -p bijux-dev-atlas-adapters -p bijux-dev-atlas-core -p bijux-dev-atlas -p bijux-atlas-cli
