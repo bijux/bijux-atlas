@@ -475,24 +475,46 @@ fn ops_render_write_requires_allow_write() {
 }
 
 #[test]
-fn ops_render_kind_default_does_not_write_without_explicit_flag() {
+fn ops_render_kind_default_requires_allow_write() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["ops", "render", "--target", "kind", "--format", "json"])
         .output()
         .expect("ops render kind default");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("ops render write requires --allow-write"));
+}
+
+#[test]
+fn ops_render_kind_writes_with_allow_write() {
+    let run_id = "ops_render_kind_write_contract";
+    let render_path = repo_root()
+        .join("artifacts/ops")
+        .join(run_id)
+        .join("render/developer/kind/render.yaml");
+    let _ = fs::remove_file(&render_path);
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "render",
+            "--target",
+            "kind",
+            "--run-id",
+            run_id,
+            "--allow-write",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops render kind write");
+    assert!(output.status.success());
     assert!(
-        output.status.success(),
-        "stderr={}",
-        String::from_utf8_lossy(&output.stderr)
+        render_path.exists(),
+        "expected render at {}",
+        render_path.display()
     );
-    let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid json output");
-    let row = payload["rows"]
-        .as_array()
-        .and_then(|rows| rows.first())
-        .expect("row");
-    assert_eq!(row["write_enabled"].as_bool(), Some(false));
 }
 
 #[test]
