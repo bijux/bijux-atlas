@@ -1,0 +1,47 @@
+name: ci-nightly
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-nightly-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: nightly-${{ github.run_id }}-${{ github.run_attempt }}
+  CARGO_TERM_COLOR: always
+
+jobs:
+  nightly-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      NETWORK_ACCESS: required
+      ISO_ROOT: artifacts/isolates/ci-nightly
+      CARGO_TARGET_DIR: artifacts/isolates/ci-nightly/target
+      CARGO_HOME: artifacts/isolates/ci-nightly/cargo-home
+      TMPDIR: artifacts/isolates/ci-nightly/tmp
+      TMP: artifacts/isolates/ci-nightly/tmp
+      TEMP: artifacts/isolates/ci-nightly/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - name: Run nightly lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/ci/reports
+          make ci-nightly > artifacts/ci/reports/ci-nightly-${RUN_ID}.json
+          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" artifacts/ci/reports/ci-nightly-${RUN_ID}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-nightly-report-${{ env.RUN_ID }}
+          path: artifacts/ci/reports/ci-nightly-${{ env.RUN_ID }}.json

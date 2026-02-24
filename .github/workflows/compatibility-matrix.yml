@@ -12,6 +12,7 @@ permissions:
 jobs:
   update-matrix:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       ISO_ROOT: artifacts/isolates/compatibility-matrix
       TMPDIR: artifacts/isolates/compatibility-matrix/tmp
