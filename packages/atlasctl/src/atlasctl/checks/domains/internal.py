@@ -60,6 +60,7 @@ _DOCS_META_PATH = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
 _COUNT_BUDGET_PATH = Path("configs/policy/checks-count-budget.json")
 _SHAPE_BUDGET_PATH = Path("configs/policy/checks-shape-budget.json")
 _FORBIDDEN_ADJECTIVES_CONFIG = Path("configs/policy/forbidden-adjectives.json")
+_REQUIRED_PROFILE_TAGS = ("ci", "dev", "internal", "lint", "slow", "fast")
 
 
 def check_registry_integrity(repo_root: Path) -> tuple[int, list[str]]:
@@ -411,6 +412,17 @@ def check_registry_no_banned_adjectives_in_ids(repo_root: Path) -> tuple[int, li
         if bad:
             errors.append(f"{entry.id}: check id contains banned adjective(s): {', '.join(sorted(set(bad)))}")
     return (1, errors) if errors else (0, [])
+
+
+def check_registry_profile_tag_vocabulary(repo_root: Path) -> tuple[int, list[str]]:
+    del repo_root
+    from ..registry import TAGS_VOCAB
+
+    available = {str(tag) for tag in TAGS_VOCAB}
+    missing = [tag for tag in _REQUIRED_PROFILE_TAGS if tag not in available]
+    if missing:
+        return 1, [f"missing required profile tags in registry vocabulary: {', '.join(missing)}"]
+    return 0, []
 
 
 def check_surfaces_no_banned_adjectives_in_paths(repo_root: Path) -> tuple[int, list[str]]:
@@ -1291,6 +1303,17 @@ CHECKS = (
         check_registry_no_banned_adjectives_in_ids,
         category=CheckCategory.POLICY,
         fix_hint="Rename check ids to remove policy-listed adjectives.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_profile_tag_vocabulary",
+        "checks",
+        "require profile tag vocabulary to include ci dev internal lint slow fast",
+        500,
+        check_registry_profile_tag_vocabulary,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Ensure check tags include ci/dev/internal/lint/slow/fast where applicable.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
