@@ -78,6 +78,11 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_command_surface_docs_exist" => Some(check_docs_command_surface_docs_exist),
         "checks_docs_no_legacy_make_targets" => Some(check_docs_no_legacy_make_targets),
         "checks_make_docs_wrappers_delegate_dev_atlas" => Some(check_make_docs_wrappers_delegate_dev_atlas),
+        "checks_configs_required_surface_paths" => Some(check_configs_required_surface_paths),
+        "checks_configs_schema_paths_present" => Some(check_configs_schema_paths_present),
+        "checks_configs_no_atlasctl_string_references" => {
+            Some(check_configs_no_atlasctl_string_references)
+        }
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
             Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
         }
@@ -1165,6 +1170,55 @@ fn check_make_docs_wrappers_delegate_dev_atlas(
         }
     }
     Ok(violations)
+}
+
+fn check_configs_required_surface_paths(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required = ["configs/README.md", "configs/INDEX.md", "configs/CONTRACT.md"];
+    let mut violations = Vec::new();
+    for path in required {
+        let rel = Path::new(path);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "CONFIGS_REQUIRED_PATH_MISSING",
+                format!("missing required configs path `{path}`"),
+                "restore required configs contract files",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_configs_schema_paths_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required = ["configs/schema", "configs/contracts"];
+    let mut violations = Vec::new();
+    for path in required {
+        let rel = Path::new(path);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "CONFIGS_SCHEMA_PATH_MISSING",
+                format!("missing required configs schema path `{path}`"),
+                "restore configs schema and contracts directories",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_configs_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_string_references_under(
+        ctx,
+        "configs",
+        "atlasctl",
+        "CONFIGS_LEGACY_ATLASCTL_REFERENCE",
+    )
 }
 
 fn checks_ops_no_atlasctl_invocations(

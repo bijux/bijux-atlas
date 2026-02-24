@@ -510,6 +510,39 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
+id = "checks_configs_required_surface_paths"
+domain = "configs"
+title = "configs control-plane contract files exist"
+docs = "configs/CONTRACT.md"
+tags = ["internal", "fast"]
+suites = ["deep", "configs"]
+effects_required = ["fs_read"]
+budget_ms = 600
+visibility = "internal"
+
+[[checks]]
+id = "checks_configs_schema_paths_present"
+domain = "configs"
+title = "configs schema and contracts directories exist"
+docs = "configs/CONTRACT.md"
+tags = ["internal", "fast"]
+suites = ["deep", "configs"]
+effects_required = ["fs_read"]
+budget_ms = 600
+visibility = "internal"
+
+[[checks]]
+id = "checks_configs_no_atlasctl_string_references"
+domain = "configs"
+title = "configs files do not reference atlasctl"
+docs = "configs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep", "configs"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
 domain = "crates"
 title = "umbrella runtime tests reserve dev verb ownership"
@@ -653,6 +686,12 @@ tags_any = []
 id = "docs"
 checks = []
 domains = ["docs"]
+tags_any = []
+
+[[suites]]
+id = "configs"
+checks = []
+domains = ["configs"]
 tags_any = []
 
 [[suites]]
