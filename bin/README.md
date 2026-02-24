@@ -2,7 +2,10 @@
 
 Root `bin/` contains only tiny command shims.
 
-Canonical supported local entrypoint for atlasctl is:
+Canonical location for legacy atlasctl wrapper is:
+- `packages/atlasctl/bin/atlasctl`
+
+Compatibility shim remains at:
 - `./bin/atlasctl`
 
 Rules:
