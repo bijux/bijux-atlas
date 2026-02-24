@@ -1,30 +1,30 @@
 # bijux-atlas-ingest
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+Ingestion pipeline for converting GFF3/FASTA/FAI inputs into atlas artifacts.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Supported Formats
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+- GFF3 features (genes, transcripts, exons, CDS)
+- FASTA sequence file
+- FASTA index (FAI)
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+## Deterministic Guarantees
 
-## Telemetry
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
+- decode/parse is separated from write/store effects
+- ingest plans are explicit (`IngestJob`)
+- deterministic ordering for extracted records before persistence
+- centralized input hashing/content-address policy
+- deterministic timestamp policy by default
 
-## Tests
-- [tests/](tests/)
+## Common Failure Modes
 
-## Benches
-- [benches/](benches/)
+- malformed GFF3 coordinates or missing required fields
+- missing FAI index without explicit auto-generation opt-in
+- unknown contigs under strict mode
+- checksum mismatches in generated artifacts
 
-## Docs index
-- [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)
+## Reference Docs
+
+- `docs/INGEST_CONTRACT.md`
+- `docs/ARTIFACT_OUTPUT_CONTRACT.md`
+- `docs/DETERMINISM.md`

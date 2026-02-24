@@ -47,6 +47,7 @@ fn opts_for_fixture(base: &std::path::Path, fixture_dir: &str) -> IngestOptions 
         emit_normalized_debug: false,
         normalized_replay_mode: false,
         prod_mode: false,
+        timestamp_policy: bijux_atlas_ingest::TimestampPolicy::DeterministicZero,
     }
 }
 

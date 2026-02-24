@@ -20,6 +20,7 @@ Docs:
 - [Effects policy](effects.md)
 - [Determinism policy](DETERMINISM.md)
 - [Ingest contract](INGEST_CONTRACT.md)
+- [Artifact output contract](ARTIFACT_OUTPUT_CONTRACT.md)
 - [QC policy](QC.md)
 - [Ensembl ingest workflow](ENSEMBL_LAYOUT.md)
 
@@ -41,4 +42,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-

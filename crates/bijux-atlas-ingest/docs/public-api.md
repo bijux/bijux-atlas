@@ -25,8 +25,14 @@ Defines the current public surface exported by `bijux-atlas-ingest`.
 ## Public types
 
 - `IngestOptions`
+- `IngestInputs`
+- `IngestJob`
 - `IngestResult`
 - `IngestError`
+- `InputHashes`
+- `IngestEvent`
+- `IngestLog`
+- `IngestStage`
 
 ## How to test
 

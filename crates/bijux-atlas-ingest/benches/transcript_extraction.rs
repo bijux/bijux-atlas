@@ -46,6 +46,7 @@ fn make_options(root: &std::path::Path) -> IngestOptions {
         emit_normalized_debug: false,
         normalized_replay_mode: false,
         prod_mode: false,
+        timestamp_policy: bijux_atlas_ingest::TimestampPolicy::DeterministicZero,
     }
 }
 

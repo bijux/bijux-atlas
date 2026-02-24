@@ -50,3 +50,8 @@ required-features = ["bench-ingest-throughput"]
 name = "db_size_growth"
 harness = false
 required-features = ["bench-ingest-throughput"]
+
+[[bench]]
+name = "ingest_large_scenario"
+harness = false
+required-features = ["bench-ingest-throughput"]
