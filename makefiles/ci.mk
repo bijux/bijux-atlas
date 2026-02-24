@@ -1,25 +1,23 @@
 # Scope: canonical CI wrappers delegated to stable command entrypoints.
 # Public targets are surfaced via root help/catalog.
 SHELL := /bin/sh
-BIJUX ?= bijux
-BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 ci: ## Canonical CI entrypoint
 	@$(MAKE) -s dev-doctor && $(MAKE) -s dev-check-ci
 
 ci-fast: ## CI fast lane wrapper
-	@$(BIJUX_DEV_ATLAS) check run --suite ci_fast --format json
+	@$(DEV_ATLAS) check run --suite ci_fast --format json
 
 ci-nightly: ## CI nightly lane (includes slow checks)
-	@$(BIJUX_DEV_ATLAS) check run --suite deep --include-internal --include-slow --format json
+	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --format json
 
 ci-docs: ## CI docs lane wrapper
-	@$(BIJUX_DEV_ATLAS) check run --domain docs --format json
+	@$(DEV_ATLAS) check run --domain docs --format json
 
 ci-dependency-lock-refresh: ## CI dependency lock refresh wrapper
-	@$(BIJUX_DEV_ATLAS) check run --domain root --tag lint --format json
+	@$(DEV_ATLAS) check run --domain root --tag lint --format json
 
 ci-help: ## Show CI command help
-	@$(BIJUX) dev atlas --help
+	@$(DEV_ATLAS) --help
 
 .PHONY: ci ci-fast ci-nightly ci-docs ci-dependency-lock-refresh ci-help
