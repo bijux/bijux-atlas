@@ -41,6 +41,7 @@ SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
     "checks_repo_shell_script_budget",
     "checks_repo_shell_docs_present",
 )
+CHECK_EVIDENCE_ROOT = "artifacts/atlasctl/checks"
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
@@ -282,7 +283,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     if requires_write_root and not write_root_arg:
         print("write-enabled checks require --write-root under artifacts/runs/<run_id>/")
         return ERR_USER
-    run_evidence_root = ensure_evidence_path(ctx, Path(f"artifacts/evidence/{ctx.run_id}/checks"))
+    run_evidence_root = ensure_evidence_path(ctx, Path(f"{CHECK_EVIDENCE_ROOT}/{ctx.run_id}"))
     resolved_run_root = run_evidence_root.resolve()
     if write_root_arg:
         candidate = Path(write_root_arg)
@@ -458,7 +459,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
                 if row["status"] == "FAIL":
                     print(f"- {row['id']}: {row['detail'] or row['hint']}")
 
-    default_report_path = ensure_evidence_path(ctx, Path(f"artifacts/evidence/{ctx.run_id}/checks/report.unified.json"))
+    default_report_path = ensure_evidence_path(ctx, Path(f"{CHECK_EVIDENCE_ROOT}/{ctx.run_id}/report.unified.json"))
     write_text_file(default_report_path, json.dumps(report_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     if ns.json_report:
         report_path = ensure_evidence_path(ctx, Path(ns.json_report))
@@ -494,7 +495,7 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             + "\n",
             encoding="utf-8",
         )
-    timings_path = ensure_evidence_path(ctx, Path(f"artifacts/evidence/{ctx.run_id}/checks/timings.json"))
+    timings_path = ensure_evidence_path(ctx, Path(f"{CHECK_EVIDENCE_ROOT}/{ctx.run_id}/timings.json"))
     timings_payload = {
         "schema_version": 1,
         "tool": "atlasctl",

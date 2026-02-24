@@ -13,8 +13,11 @@ def ensure_evidence_path(ctx: RunContext, path: Path) -> Path:
     forbidden = (ctx.repo_root / "ops").resolve()
     if resolved == forbidden or forbidden in resolved.parents:
         raise ScriptError(f"forbidden write path under ops/: {resolved}", ERR_ARTIFACT, kind="forbidden_write_path")
-    allowed = ctx.evidence_root.resolve()
-    if resolved == allowed or allowed in resolved.parents:
+    allowed_roots = (
+        ctx.evidence_root.resolve(),
+        (ctx.repo_root / "artifacts/atlasctl/checks").resolve(),
+    )
+    if any(resolved == root or root in resolved.parents for root in allowed_roots):
         resolved.parent.mkdir(parents=True, exist_ok=True)
         return resolved
     raise ScriptError(f"forbidden write path outside evidence root: {resolved}", ERR_ARTIFACT, kind="forbidden_write_path")
