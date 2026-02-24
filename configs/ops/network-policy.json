@@ -2,7 +2,7 @@
   "schema_version": 1,
   "default_mode": "allow",
   "forbid_when": {
-    "env_any": ["CI_NETWORK_FORBID", "ATLASCTL_OPS_NETWORK_FORBID"],
+    "env_any": ["CI_NETWORK_FORBID", "BIJUX_DEV_ATLAS_OPS_NETWORK_FORBID"],
     "env_value_true": ["1", "true", "yes", "on"]
   },
   "network_invocations": [

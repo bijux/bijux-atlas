@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Atlasctl Output Envelope",
+  "title": "Dev Atlas Output Envelope",
   "type": "object",
   "required": ["schema_version", "tool"],
   "properties": {
