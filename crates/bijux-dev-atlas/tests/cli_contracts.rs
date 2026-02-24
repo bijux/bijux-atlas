@@ -523,7 +523,7 @@ fn build_bin_requires_effect_flags() {
 #[test]
 fn build_bin_writes_manifest_when_effects_enabled() {
     let repo = repo_root();
-    let manifest = repo.join("artifacts/bin/manifest.json");
+    let manifest = repo.join("artifacts/dist/bin/manifest.json");
     let _ = fs::remove_file(&manifest);
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(&repo)
@@ -598,4 +598,41 @@ fn build_doctor_supports_json_format() {
         Some("doctor")
     );
     assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn build_plan_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["build", "plan", "--format", "json"])
+        .output()
+        .expect("build plan");
+    assert!(output.status.success());
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("valid json");
+    assert_eq!(payload.get("action").and_then(|v| v.as_str()), Some("plan"));
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn build_verify_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["build", "verify", "--format", "json"])
+        .output()
+        .expect("build verify");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("build verify requires --allow-subprocess"));
+}
+
+#[test]
+fn build_meta_requires_allow_write() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["build", "meta", "--format", "json"])
+        .output()
+        .expect("build meta");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("build meta requires --allow-write"));
 }

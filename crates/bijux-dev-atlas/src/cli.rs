@@ -609,9 +609,13 @@ pub enum DockerCommand {
 #[derive(Subcommand, Debug)]
 pub enum BuildCommand {
     Bin(BuildCommonArgs),
+    Plan(BuildCommonArgs),
+    Verify(BuildCommonArgs),
+    Meta(BuildCommonArgs),
     Dist(BuildCommonArgs),
     Clean(BuildCleanArgs),
     Doctor(BuildCommonArgs),
+    InstallLocal(BuildCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
