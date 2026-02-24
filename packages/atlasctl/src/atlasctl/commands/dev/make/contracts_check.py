@@ -43,7 +43,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "no-orphan-docs-refs",
         "Validate documented commands exist",
-        "packages/atlasctl/src/atlasctl/checks/domains/docs/check_no_orphan_docs_refs.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_no_orphan_docs_refs.py",
         "Fix docs references or add missing command help coverage.",
     ),
     _check(
@@ -115,7 +115,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "help-excludes-internal",
         "Ensure help excludes internal targets",
-        "packages/atlasctl/src/atlasctl/checks/domains/docs/check_help_excludes_internal.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_help_excludes_internal.py",
         "Move internal targets out of public help rendering.",
     ),
     _check_cmd(
@@ -133,7 +133,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "ci-targets-documented",
         "Ensure ci.mk targets are documented",
-        "packages/atlasctl/src/atlasctl/checks/domains/docs/check_ci_targets_documented.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_ci_targets_documented.py",
         "Document every ci.mk target in docs/development/ci/ci.md.",
     ),
     _check(
@@ -157,7 +157,7 @@ CHECKS: list[MakeCheck] = [
     _check(
         "internal-target-doc-refs",
         "Validate internal targets are not in docs",
-        "packages/atlasctl/src/atlasctl/checks/domains/docs/check_internal_targets_not_in_docs.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_internal_targets_not_in_docs.py",
         "Replace internal target references in docs with public targets.",
     ),
     _check_cmd(
@@ -271,13 +271,13 @@ CHECKS: list[MakeCheck] = [
     _check(
         "help-output-determinism",
         "Validate help output determinism",
-        "packages/atlasctl/src/atlasctl/checks/domains/docs/check_help_output_determinism.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_help_output_determinism.py",
         "Remove nondeterministic ordering from help rendering sources.",
     ),
     _check(
         "help-snapshot",
         "Validate help snapshot",
-        "packages/atlasctl/src/atlasctl/checks/domains/docs/check_help_snapshot.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_help_snapshot.py",
         "Update help snapshot intentionally after reviewing target surface changes.",
     ),
     _check(
