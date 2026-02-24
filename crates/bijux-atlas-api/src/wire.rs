@@ -1,7 +1,9 @@
+use crate::convert::list_genes_response_dto;
+use crate::dto::DatasetKeyDto;
 use crate::errors::ApiError;
-use crate::params::{IncludeField, ListGenesParams};
-use bijux_atlas_query::{GeneQueryResponse, GeneRow};
-use serde_json::{json, Map, Value};
+use crate::params::ListGenesParams;
+use bijux_atlas_query::GeneQueryResponse;
+use serde_json::Value;
 use std::collections::BTreeSet;
 
 pub trait QueryAdapter {
@@ -17,84 +19,18 @@ pub fn list_genes_v1<A: QueryAdapter>(
         .include
         .as_ref()
         .map(|v| v.iter().cloned().collect::<BTreeSet<_>>());
-    let rows = page
-        .rows
-        .iter()
-        .map(|row| shape_row(row, requested.as_ref()))
-        .collect::<Vec<_>>();
-    let links = page
-        .next_cursor
-        .as_ref()
-        .map(|cursor| json!({ "next_cursor": cursor }));
-    Ok(json!({
-        "api_version": "v1",
-        "contract_version": "v1",
-        "dataset": {
-            "release": params.release.clone(),
-            "species": params.species.clone(),
-            "assembly": params.assembly.clone()
-        },
-        "page": {
-            "next_cursor": page.next_cursor
-        },
-        "data": {
-            "rows": rows
-        },
-        "links": links
-    }))
-}
-
-fn include_field(requested: Option<&BTreeSet<IncludeField>>, field: IncludeField) -> bool {
-    requested.is_some_and(|set| set.contains(&field))
-}
-
-fn shape_row(row: &GeneRow, requested: Option<&BTreeSet<IncludeField>>) -> Value {
-    // Policy: omitted when field is not requested; null when requested but value is absent.
-    let mut map = Map::new();
-    map.insert("gene_id".to_string(), Value::String(row.gene_id.clone()));
-    map.insert(
-        "name".to_string(),
-        row.name
-            .as_ref()
-            .map_or(Value::Null, |x| Value::String(x.clone())),
-    );
-    if include_field(requested, IncludeField::Coords) {
-        map.insert(
-            "seqid".to_string(),
-            row.seqid
-                .as_ref()
-                .map_or(Value::Null, |x| Value::String(x.clone())),
-        );
-        map.insert(
-            "start".to_string(),
-            row.start.map_or(Value::Null, |x| Value::Number(x.into())),
-        );
-        map.insert(
-            "end".to_string(),
-            row.end.map_or(Value::Null, |x| Value::Number(x.into())),
-        );
-    }
-    if include_field(requested, IncludeField::Biotype) {
-        map.insert(
-            "biotype".to_string(),
-            row.biotype
-                .as_ref()
-                .map_or(Value::Null, |x| Value::String(x.clone())),
-        );
-    }
-    if include_field(requested, IncludeField::Counts) {
-        map.insert(
-            "transcript_count".to_string(),
-            row.transcript_count
-                .map_or(Value::Null, |x| Value::Number(x.into())),
-        );
-    }
-    if include_field(requested, IncludeField::Length) {
-        map.insert(
-            "sequence_length".to_string(),
-            row.sequence_length
-                .map_or(Value::Null, |x| Value::Number(x.into())),
-        );
-    }
-    Value::Object(map)
+    let dataset = DatasetKeyDto::new(
+        params.release.clone(),
+        params.species.clone(),
+        params.assembly.clone(),
+    )
+    .map_err(|reason| {
+        ApiError::validation_failed(serde_json::json!([{ "field": "dataset", "reason": reason }]))
+    })?;
+    let dto = list_genes_response_dto(page, dataset, requested.as_ref())?;
+    serde_json::to_value(dto).map_err(|e| {
+        ApiError::validation_failed(
+            serde_json::json!([{ "field": "response", "reason": e.to_string() }]),
+        )
+    })
 }

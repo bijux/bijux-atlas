@@ -1,11 +1,13 @@
 #![forbid(unsafe_code)]
 
-use bijux_atlas_model::{DatasetId, LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
+use bijux_atlas_model::{LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
 
 pub const CRATE_NAME: &str = "bijux-atlas-api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
 pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
 
+pub mod convert;
+pub mod dto;
 pub mod errors;
 mod generated;
 pub mod openapi;
@@ -13,6 +15,7 @@ pub mod params;
 pub mod responses;
 pub mod wire;
 
+pub use dto::DatasetKeyDto;
 pub use errors::{ApiError, ApiErrorCode};
 pub use openapi::openapi_v1_spec;
 pub use params::{
@@ -23,11 +26,8 @@ pub use responses::{ApiContentType, ApiResponseEnvelope, ContentNegotiation};
 pub use wire::{list_genes_v1, QueryAdapter};
 
 #[must_use]
-pub fn dataset_route_key(dataset: &DatasetId) -> String {
-    format!(
-        "release={}/species={}/assembly={}",
-        dataset.release, dataset.species, dataset.assembly
-    )
+pub fn dataset_route_key(dataset: &DatasetKeyDto) -> String {
+    dataset.route_key()
 }
 
 #[cfg(test)]
