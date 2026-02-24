@@ -155,6 +155,8 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         }
     };
 
+    validate_pins_file_content(repo_root, &mut errors);
+
     if inventory.stack_profiles.schema_version != EXPECTED_STACK_PROFILES_SCHEMA {
         errors.push(format!(
             "{OPS_STACK_PROFILES_PATH}: expected schema_version={EXPECTED_STACK_PROFILES_SCHEMA}, got {}",
@@ -422,6 +424,39 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     errors
 }
 
+fn validate_pins_file_content(repo_root: &Path, errors: &mut Vec<String>) {
+    let path = repo_root.join(OPS_PINS_PATH);
+    let Ok(text) = fs::read_to_string(&path) else {
+        return;
+    };
+    for (idx, line) in text.lines().enumerate() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        if trimmed.contains(":latest") {
+            errors.push(format!(
+                "{OPS_PINS_PATH}: line {} uses forbidden latest tag",
+                idx + 1
+            ));
+        }
+        if let Some(at_pos) = trimmed.find('@') {
+            let digest = &trimmed[at_pos + 1..];
+            if !digest.starts_with("sha256:") {
+                errors.push(format!(
+                    "{OPS_PINS_PATH}: line {} uses unsupported digest format (expected sha256)",
+                    idx + 1
+                ));
+            } else if digest.len() <= "sha256:".len() {
+                errors.push(format!(
+                    "{OPS_PINS_PATH}: line {} has empty sha256 digest",
+                    idx + 1
+                ));
+            }
+        }
+    }
+}
+
 pub fn ops_inventory_summary(repo_root: &Path) -> Result<serde_json::Value, String> {
     let inventory = load_ops_inventory(repo_root)?;
     Ok(serde_json::json!({
@@ -451,4 +486,27 @@ fn collect_files_recursive(path: PathBuf) -> Vec<PathBuf> {
         }
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_pins_file_content;
+    use std::fs;
+
+    #[test]
+    fn pins_file_forbids_latest_and_invalid_digest_formats() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let ops_inventory = root.path().join("ops/inventory");
+        fs::create_dir_all(&ops_inventory).expect("mkdir");
+        fs::write(
+            ops_inventory.join("pins.yaml"),
+            "images:\n  app: repo/app:latest\n  good: repo/app:v1@sha256:abc\n  bad: repo/app:v1@sha1:abc\n",
+        )
+        .expect("write pins");
+        let mut errors = Vec::new();
+        validate_pins_file_content(root.path(), &mut errors);
+        let text = errors.join("\n");
+        assert!(text.contains("forbidden latest tag"));
+        assert!(text.contains("unsupported digest format"));
+    }
 }
