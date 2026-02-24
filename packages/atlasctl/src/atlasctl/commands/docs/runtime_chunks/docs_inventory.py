@@ -312,7 +312,7 @@ def _generate_docs_inventory(repo_root: Path, out: Path) -> None:
 
 
 def _generate_registry_indexes(ctx: RunContext) -> tuple[int, str]:
-    from ...checks.domains.docs.integrity import (
+    from ...checks.tools.docs_domain.integrity import (
         _render_checks_index,
         _render_commands_index,
         _render_suites_index,

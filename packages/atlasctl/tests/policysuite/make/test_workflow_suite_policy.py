@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.domains.policies.make.enforcement import check_workflows_no_adhoc_check_run
+from atlasctl.checks.tools.make_enforcement import check_workflows_no_adhoc_check_run
 
 
 def test_workflows_no_adhoc_check_run_detects_violation(tmp_path: Path) -> None:

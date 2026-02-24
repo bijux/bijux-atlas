@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.checks.domains.policies.make import check_policies_budget_relaxations_expiry_and_issue
+from atlasctl.checks.tools.policies_domain.make import check_policies_budget_relaxations_expiry_and_issue
 
 
 def test_budget_relaxations_issue_and_expiry_pass(tmp_path: Path) -> None:

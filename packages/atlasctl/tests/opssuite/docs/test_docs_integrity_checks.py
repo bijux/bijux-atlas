@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.domains.docs.integrity import (
+from atlasctl.checks.tools.docs_domain.integrity import (
     check_command_group_docs_pages,
     check_docs_check_id_drift,
     check_docs_index_complete,
