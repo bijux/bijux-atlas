@@ -1435,6 +1435,39 @@
     },
     {
       "area": "registry",
+      "callable": "check_registry_profile_tag_vocabulary",
+      "category": "check",
+      "description": "require profile tag vocabulary to include ci dev internal lint slow fast",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Ensure check tags include ci/dev/internal/lint/slow/fast where applicable.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_profile_tag_vocabulary",
+      "intent": "require profile tag vocabulary to include ci dev internal lint slow fast",
+      "legacy_id": "checks.registry_profile_tag_vocabulary",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
       "callable": "check_registry_remediation_link_required",
       "category": "check",
       "description": "require remediation_link metadata for every registry check entry",
