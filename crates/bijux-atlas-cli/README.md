@@ -28,3 +28,7 @@
 - [docs/architecture.md](docs/architecture.md)
 - [docs/effects.md](docs/effects.md)
 - [docs/testing.md](docs/testing.md)
+
+## Command Routing
+- Runtime commands stay on `bijux atlas <...>` and execute `bijux-atlas`.
+- Atlas control-plane commands moved to `bijux dev atlas <...>` and execute `bijux-dev-atlas`.
