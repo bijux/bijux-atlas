@@ -11,6 +11,14 @@ Common usage:
 - `atlasctl check run --id checks_repo_root_shape`
 - `atlasctl check run --tag required --fail-fast`
 - `atlasctl check run --include-internal --json`
+- `atlasctl check run --suite lint`
+
+Inventory usage:
+
+- `atlasctl check list --json`
+- `atlasctl check list --domains`
+- `atlasctl check list --tags`
+- `atlasctl check list --suites`
 
 Output modes:
 
