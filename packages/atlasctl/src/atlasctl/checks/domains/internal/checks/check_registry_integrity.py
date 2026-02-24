@@ -10,6 +10,7 @@ _CANONICAL_RE = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
 _CATALOG_PATH = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
 _DOCS_META_PATH = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
 _COUNT_BUDGET_PATH = Path("configs/policy/checks-count-budget.json")
+_SHAPE_BUDGET_PATH = Path("configs/policy/checks-shape-budget.json")
 _FORBIDDEN_ADJECTIVES_CONFIG = Path("configs/policy/forbidden-adjectives.json")
 
 
@@ -212,6 +213,108 @@ def check_count_budget(repo_root: Path) -> tuple[int, list[str]]:
     max_total = int(payload.get("max_total", total))
     if total > max_total:
         return 1, [f"checks count budget exceeded: {total} > {max_total} ({_COUNT_BUDGET_PATH.as_posix()})"]
+    return 0, []
+
+
+def _shape_budget(repo_root: Path) -> dict[str, int]:
+    path = repo_root / _SHAPE_BUDGET_PATH
+    if not path.exists():
+        return {
+            "checks_root_max_entries": 15,
+            "checks_domains_max_modules": 10,
+            "checks_tools_max_modules": 10,
+            "checks_module_max_loc": 600,
+            "checks_legacy_signature_max": 398,
+        }
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        "checks_root_max_entries": int(payload.get("checks_root_max_entries", 15)),
+        "checks_domains_max_modules": int(payload.get("checks_domains_max_modules", 10)),
+        "checks_tools_max_modules": int(payload.get("checks_tools_max_modules", 10)),
+        "checks_module_max_loc": int(payload.get("checks_module_max_loc", 600)),
+        "checks_legacy_signature_max": int(payload.get("checks_legacy_signature_max", 398)),
+    }
+
+
+def check_checks_root_entry_budget(repo_root: Path) -> tuple[int, list[str]]:
+    budget = _shape_budget(repo_root)["checks_root_max_entries"]
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not root.exists():
+        return 1, ["missing checks root directory: packages/atlasctl/src/atlasctl/checks"]
+    entries = [
+        item.name
+        for item in root.iterdir()
+        if item.name != "__pycache__"
+    ]
+    count = len(entries)
+    if count > budget:
+        return 1, [f"checks root entry budget exceeded: {count} > {budget}"]
+    return 0, []
+
+
+def check_checks_domains_module_budget(repo_root: Path) -> tuple[int, list[str]]:
+    budget = _shape_budget(repo_root)["checks_domains_max_modules"]
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks/domains"
+    if not root.exists():
+        return 1, ["missing checks domains directory: packages/atlasctl/src/atlasctl/checks/domains"]
+    module_like: list[str] = []
+    for item in root.iterdir():
+        if item.name == "__pycache__":
+            continue
+        if item.is_file() and item.suffix == ".py":
+            module_like.append(item.name)
+            continue
+        if item.is_dir() and (item / "__init__.py").exists():
+            module_like.append(item.name)
+    count = len(module_like)
+    if count > budget:
+        return 1, [f"checks domains module budget exceeded: {count} > {budget}"]
+    return 0, []
+
+
+def check_checks_tools_module_budget(repo_root: Path) -> tuple[int, list[str]]:
+    budget = _shape_budget(repo_root)["checks_tools_max_modules"]
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks/tools"
+    if not root.exists():
+        return 1, ["missing checks tools directory: packages/atlasctl/src/atlasctl/checks/tools"]
+    modules = [path.name for path in root.glob("*.py")]
+    count = len(modules)
+    if count > budget:
+        return 1, [f"checks tools module budget exceeded: {count} > {budget}"]
+    return 0, []
+
+
+def check_checks_module_loc_budget(repo_root: Path) -> tuple[int, list[str]]:
+    budget = _shape_budget(repo_root)["checks_module_max_loc"]
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    offenders: list[str] = []
+    for path in sorted(root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        loc = len(path.read_text(encoding="utf-8", errors="ignore").splitlines())
+        if loc > budget:
+            offenders.append(f"{rel}: {loc} LOC > {budget}")
+    return (1, offenders) if offenders else (0, [])
+
+
+def check_structured_results_legacy_signature_budget(repo_root: Path) -> tuple[int, list[str]]:
+    budget = _shape_budget(repo_root)["checks_legacy_signature_max"]
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    pattern = re.compile(r"def\s+check_[A-Za-z0-9_]+\([^)]*\)\s*->\s*tuple\[\s*int\s*,\s*list\[\s*str\s*\]\s*\]")
+    legacy_defs: list[str] = []
+    for path in sorted(root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if pattern.search(text):
+            legacy_defs.append(path.relative_to(repo_root).as_posix())
+    total = len(legacy_defs)
+    if total > budget:
+        return 1, [
+            f"legacy tuple-signature budget exceeded: {total} > {budget}",
+            "migrate checks to structured Violation/CheckOutcome returns",
+        ]
     return 0, []
 
 
