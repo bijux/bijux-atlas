@@ -38,6 +38,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigsCommand,
     },
+    Docker {
+        #[command(subcommand)]
+        command: DockerCommand,
+    },
     Policies {
         #[command(subcommand)]
         command: PoliciesCommand,
@@ -477,6 +481,38 @@ pub enum ConfigsCommand {
     Inventory(ConfigsCommonArgs),
     Compile(ConfigsCommonArgs),
     Diff(ConfigsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DockerCommand {
+    Build(DockerCommonArgs),
+    Check(DockerCommonArgs),
+    Push(DockerReleaseArgs),
+    Release(DockerReleaseArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DockerCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DockerReleaseArgs {
+    #[command(flatten)]
+    pub common: DockerCommonArgs,
+    #[arg(long, default_value_t = false)]
+    pub i_know_what_im_doing: bool,
 }
 
 #[derive(Args, Debug, Clone)]
