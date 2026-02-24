@@ -145,7 +145,6 @@ nav:
           - K8s Tests: operations/e2e/k8s-tests.md
           - Realdata Drills: operations/e2e/realdata-drills.md
           - Fixtures: operations/e2e/fixtures.md
-          - Scripts: operations/e2e/scripts.md
           - What E2E Is Not: operations/e2e/what-e2e-is-not.md
       - Load:
           - Index: operations/load/INDEX.md

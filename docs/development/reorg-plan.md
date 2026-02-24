@@ -24,7 +24,6 @@ Keep repository operations discoverable and stable by capping public surface and
   - docs surface contract
   - suite-id docs contract
   - JSON gate reports under `artifacts/evidence/gates/<run_id>/`
-- `make scripts-lint`:
   - naming convention checks
   - duplicate naming form checks
   - no-shadow-config checks
