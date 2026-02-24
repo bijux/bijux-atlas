@@ -92,10 +92,10 @@ jobs:
           fi
       - name: Verify configs doctor entrypoint (no subprocess)
         run: |
-          make configs-doctor >/dev/null
+          CONFIGS_STRICT=--strict make configs-doctor >/dev/null
       - name: Verify configs validate entrypoint
         run: |
-          cargo run -p bijux-dev-atlas -- configs validate --format json >/dev/null
+          cargo run -p bijux-dev-atlas -- configs validate --strict --format json >/dev/null
       - name: Verify explicit ci-fast suite entrypoint
         run: |
           cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json >/dev/null
@@ -116,7 +116,7 @@ jobs:
           make ops-validate
           make ops-pins-check
           make docs-doctor
-          make configs-doctor
+          CONFIGS_STRICT=--strict make configs-doctor
           make ops-help >/dev/null
       - name: Verify release binaries are produced
         run: |
