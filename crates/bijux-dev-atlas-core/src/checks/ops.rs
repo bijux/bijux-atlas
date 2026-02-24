@@ -125,7 +125,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_configs_command_list_matches_snapshot" => {
             Some(check_docs_configs_command_list_matches_snapshot)
         }
-        "checks_docs_control_plane_naming_contract" => Some(check_control_plane_naming_contract_docs),
+        "checks_docs_control_plane_naming_contract" => {
+            Some(check_control_plane_naming_contract_docs)
+        }
         "checks_docs_atlasctl_deletion_cutoff_rules" => Some(check_atlasctl_deletion_cutoff_rules),
         "checks_docs_atlasctl_tombstone_directory_contract" => {
             Some(check_atlasctl_tombstone_directory_contract)

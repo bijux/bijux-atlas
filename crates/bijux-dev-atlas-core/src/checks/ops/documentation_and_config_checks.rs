@@ -492,11 +492,7 @@ pub(super) fn check_atlasctl_tombstone_directory_contract(
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
-    for required in [
-        "only allowed location",
-        "atlasctl",
-        "archival notes only",
-    ] {
+    for required in ["only allowed location", "atlasctl", "archival notes only"] {
         if !text.contains(required) {
             violations.push(violation(
                 "ATLASCTL_TOMBSTONE_DIR_INVALID",
@@ -523,7 +519,10 @@ pub(super) fn check_final_dev_atlas_crate_set_contract(
         if !ctx.repo_root.join(rel).is_dir() {
             violations.push(violation(
                 "DEV_ATLAS_CRATE_SET_MISSING",
-                format!("required control-plane crate directory is missing: {}", rel.display()),
+                format!(
+                    "required control-plane crate directory is missing: {}",
+                    rel.display()
+                ),
                 "keep the final dev-atlas crate set present and explicitly named",
                 Some(rel),
             ));
