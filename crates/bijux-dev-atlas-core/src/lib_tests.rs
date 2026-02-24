@@ -105,6 +105,45 @@ fn doctor_reports_ok_for_valid_registry() {
 }
 
 #[test]
+fn validate_flags_unsorted_registry_ordering() {
+    let mut registry = load_registry(&root()).expect("registry");
+    registry.checks.swap(0, 1);
+    let errors = registry_ordering_errors(&registry);
+    assert!(errors
+        .iter()
+        .any(|err| err == "registry checks must be sorted by id"));
+}
+
+#[test]
+fn doctor_detects_missing_implementation_for_registered_check() {
+    let mut registry = load_registry(&root()).expect("registry");
+    registry.checks.push(CheckSpec {
+        id: CheckId::parse("checks_ops_sample_unimplemented").expect("id"),
+        domain: DomainId::Ops,
+        title: "sample unimplemented".to_string(),
+        docs: "ops/CONTRACT.md".to_string(),
+        tags: vec![Tag::parse("lint").expect("tag")],
+        suites: vec![SuiteId::parse("deep").expect("suite")],
+        effects_required: vec![Effect::FsRead],
+        budget_ms: 100,
+        visibility: Visibility::Internal,
+    });
+    let mut errors = validate_registry(&registry);
+    let registered_ids: std::collections::BTreeSet<String> = registry
+        .checks
+        .iter()
+        .map(|check| check.id.as_str().to_string())
+        .collect();
+    let implemented_ids = crate::check_runner::builtin_check_ids();
+    for missing in registered_ids.difference(&implemented_ids) {
+        errors.push(format!("registered check missing implementation `{missing}`"));
+    }
+    assert!(errors.iter().any(|err| {
+        err == "registered check missing implementation `checks_ops_sample_unimplemented`"
+    }));
+}
+
+#[test]
 fn glob_selector_filters_ids() {
     let registry = load_registry(&root()).expect("registry");
     let selected = select_checks(
