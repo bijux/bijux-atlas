@@ -118,14 +118,14 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
 pub(super) fn check_workflows_governance_entrypoints_bijux_only(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let rel = Path::new(".github/workflows/ci-pr.yml");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     if text.contains("atlasctl") {
         violations.push(violation(
             "WORKFLOW_GOVERNANCE_ATLASCTL_REFERENCE_FOUND",
-            "atlas-dev-rust workflow must not reference atlasctl in governance lanes".to_string(),
+            "ci-pr workflow must not reference atlasctl in governance lanes".to_string(),
             "route governance checks through make wrappers or bijux dev atlas",
             Some(rel),
         ));
@@ -136,7 +136,7 @@ pub(super) fn check_workflows_governance_entrypoints_bijux_only(
 pub(super) fn check_workflows_ops_entrypoints_bijux_only(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let rel = Path::new(".github/workflows/ci-pr.yml");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     if text.contains("atlasctl ops") || text.contains("./bin/atlasctl ops") {

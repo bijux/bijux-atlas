@@ -6,7 +6,7 @@ pub(super) fn checks_ops_no_atlasctl_invocations(
     let targets = [
         Path::new("makefiles/_ops.mk"),
         Path::new("makefiles/CONTRACT.md"),
-        Path::new(".github/workflows/atlas-dev-rust.yml"),
+        Path::new(".github/workflows/ci-pr.yml"),
         Path::new("ops/CONTRACT.md"),
         Path::new("ops/README.md"),
         Path::new("ops/INDEX.md"),
@@ -43,7 +43,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
 ) -> Result<Vec<Violation>, CheckError> {
     let targets = [
         Path::new("makefiles/_ops.mk"),
-        Path::new(".github/workflows/atlas-dev-rust.yml"),
+        Path::new(".github/workflows/ci-pr.yml"),
         Path::new("ops/README.md"),
         Path::new("ops/INDEX.md"),
     ];
@@ -101,7 +101,7 @@ pub(super) fn checks_ops_artifacts_gitignore_policy(
 pub(super) fn checks_ops_workflow_routes_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let rel = Path::new(".github/workflows/ci-pr.yml");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let has_legacy_ops_route =
@@ -109,7 +109,7 @@ pub(super) fn checks_ops_workflow_routes_dev_atlas(
     if has_legacy_ops_route {
         Ok(vec![violation(
             "OPS_WORKFLOW_ROUTE_INVALID",
-            "atlas-dev-rust workflow must not call atlasctl ops commands".to_string(),
+            "ci-pr workflow must not call atlasctl ops commands".to_string(),
             "route ops checks through bijux-dev-atlas commands",
             Some(rel),
         )])
