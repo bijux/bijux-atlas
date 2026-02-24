@@ -171,12 +171,12 @@ pub(super) fn check_root_bin_atlasctl_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("bin/atlasctl");
-    if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![violation(
             "ROOT_BIN_ATLASCTL_SHIM_PRESENT",
             "legacy root atlasctl shim still exists".to_string(),
             "delete bin/atlasctl; use cargo run -p bijux-dev-atlas or bijux dev atlas",
-            Some(&rel),
+            Some(rel),
         )])
     } else {
         Ok(Vec::new())
@@ -187,12 +187,12 @@ pub(super) fn check_root_artifacts_reports_atlasctl_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("artifacts/reports/atlasctl");
-    if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![violation(
             "ROOT_ARTIFACTS_REPORTS_ATLASCTL_PRESENT",
             "legacy atlasctl report artifact directory exists".to_string(),
             "remove artifacts/reports/atlasctl and migrate report writers to artifacts/atlas-dev",
-            Some(&rel),
+            Some(rel),
         )])
     } else {
         Ok(Vec::new())

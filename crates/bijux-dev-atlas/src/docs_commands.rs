@@ -411,6 +411,7 @@ pub(crate) fn docs_lint_payload(
     common: &DocsCommonArgs,
 ) -> Result<serde_json::Value, String> {
     let mut errors = Vec::<String>::new();
+    let adr_filename_re = Regex::new(r"^ADR-\d{4}-[a-z0-9-]+\.md$").map_err(|e| e.to_string())?;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
             .strip_prefix(&ctx.docs_root)
@@ -429,9 +430,7 @@ pub(crate) fn docs_lint_payload(
             && stem
                 .chars()
                 .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_' || c == '-');
-        let is_adr_filename = Regex::new(r"^ADR-\d{4}-[a-z0-9-]+\.md$")
-            .map_err(|e| e.to_string())?
-            .is_match(name);
+        let is_adr_filename = adr_filename_re.is_match(name);
         if !matches!(name, "README.md" | "INDEX.md")
             && !is_canonical_upper_doc
             && !is_adr_filename
