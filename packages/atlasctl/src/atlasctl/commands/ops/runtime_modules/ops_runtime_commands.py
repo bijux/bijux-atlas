@@ -209,17 +209,32 @@ def _ops_env_validate_native(repo_root: Path, schema: str) -> tuple[int, str, di
     if not isinstance(variables, dict):
         return 1, "ops env schema missing variables map", {}
     resolved: dict[str, str] = {}
+    specs: dict[str, dict[str, object]] = {}
     for name, spec_any in variables.items():
         if not isinstance(name, str) or not isinstance(spec_any, dict):
             continue
+        specs[name] = spec_any
         raw = os.environ.get(name)
         if raw is not None and raw != "":
             resolved[name] = raw
             continue
+        from_name = str(spec_any.get("default_from", "")).strip()
+        if from_name and from_name in resolved and resolved[from_name]:
+            resolved[name] = resolved[from_name]
+            continue
         default = spec_any.get("default")
         resolved[name] = str(default) if isinstance(default, (str, int, float)) else ""
+    for name, spec_any in specs.items():
+        if resolved.get(name):
+            continue
+        from_name = str(spec_any.get("default_from", "")).strip()
+        if from_name and resolved.get(from_name):
+            resolved[name] = resolved[from_name]
     errors: list[str] = []
     for name, value in resolved.items():
+        spec_any = specs.get(name, {})
+        if bool(spec_any.get("allow_empty", False)):
+            continue
         if not value:
             errors.append(f"{name} resolved empty")
     if errors:
@@ -1167,18 +1182,29 @@ def _ops_stack_up_native(ctx: RunContext, report_format: str, profile: str, reus
         write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
         return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
 
-    guard = run_command([*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"], repo, ctx=ctx)
+    env_overrides = {
+        "ATLAS_NS": (os.environ.get("ATLAS_NS") or resolved.get("ATLAS_NS") or atlas_ns),
+        "ATLAS_E2E_NAMESPACE": atlas_ns,
+        "ATLAS_E2E_CLUSTER_NAME": atlas_cluster,
+        "ATLAS_E2E_VALUES_FILE": (os.environ.get("ATLAS_E2E_VALUES_FILE") or resolved.get("ATLAS_E2E_VALUES_FILE") or ""),
+    }
+
+    def _with_ops_env(cmd: list[str]) -> list[str]:
+        pairs = [f"{k}={v}" for k, v in sorted(env_overrides.items()) if str(v).strip()]
+        return ["env", *pairs, *cmd]
+
+    guard = run_command(_with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"]), repo, ctx=ctx)
     if reuse and snapshot_json.exists() and guard.code == 0:
-        ns_check = run_command(["kubectl", "get", "ns", atlas_ns], repo, ctx=ctx)
+        ns_check = run_command(_with_ops_env(["kubectl", "get", "ns", atlas_ns]), repo, ctx=ctx)
         health = run_command(
-            [
+            _with_ops_env([
                 "env",
                 "ATLAS_HEALTH_REPORT_FORMAT=json",
                 "python3",
                 "./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
                 atlas_ns,
                 str(health_json),
-            ],
+            ]),
             repo,
             ctx=ctx,
         )
@@ -1197,19 +1223,16 @@ def _ops_stack_up_native(ctx: RunContext, report_format: str, profile: str, reus
 
     status = "pass"
     cmds: list[list[str]] = [
-        ["make", "-s", "ops-kind-up"],
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"],
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"],
-        ["make", "-s", "ops-kind-version-check"],
-        ["make", "-s", "ops-kubectl-version-check"],
-        ["make", "-s", "ops-helm-version-check"],
+        _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/up.py"]),
+        _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"]),
+        _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"]),
     ]
     if os.environ.get("ATLAS_KIND_REGISTRY_ENABLE", "0") == "1":
-        cmds.append(["make", "-s", "ops-kind-registry-up"])
+        cmds.append(_with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/registry/up.py"]))
     cmds.extend(
         [
-            [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/install.py"],
-            ["make", "-s", "ops-cluster-sanity"],
+            _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/install.py"]),
+            _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/stack_smoke.py"]),
         ]
     )
     for cmd in cmds:
@@ -1221,14 +1244,14 @@ def _ops_stack_up_native(ctx: RunContext, report_format: str, profile: str, reus
             break
 
     run_command(
-        [
+        _with_ops_env([
             "env",
             "ATLAS_HEALTH_REPORT_FORMAT=json",
             "python3",
             "./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
             atlas_ns,
             str(health_json),
-        ],
+        ]),
         repo,
         ctx=ctx,
     )
@@ -1285,11 +1308,39 @@ def _ops_stack_down_native(ctx: RunContext, report_format: str) -> int:
         write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
         return _emit_ops_status(report_format, 1, "\n".join(outputs).strip())
 
+    context_check = run_command(["kubectl", "config", "current-context"], repo, ctx=ctx)
+    current_context = context_check.combined_output.strip()
+    if context_check.code != 0 or not current_context:
+        msg = "stack-down: kubectl context is not set; nothing to tear down"
+        outputs.append(msg)
+        write_text_file(log_file, "\n".join(outputs).strip() + "\n", encoding="utf-8")
+        lane_report = {
+            "schema_version": 1,
+            "run_id": run_id,
+            "status": "pass",
+            "duration_seconds": max(0.0, (dt.datetime.now(dt.timezone.utc) - start).total_seconds()),
+            "log": log_file.relative_to(repo).as_posix(),
+        }
+        write_text_file(log_dir / "report.json", json.dumps(lane_report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        snapshot_json.unlink(missing_ok=True)
+        return _emit_ops_status(report_format, 0, "\n".join(outputs).strip())
+
+    env_overrides = {
+        "ATLAS_NS": (os.environ.get("ATLAS_NS") or resolved.get("ATLAS_NS") or atlas_ns),
+        "ATLAS_E2E_NAMESPACE": atlas_ns,
+        "ATLAS_E2E_CLUSTER_NAME": (os.environ.get("ATLAS_E2E_CLUSTER_NAME") or resolved.get("ATLAS_E2E_CLUSTER_NAME") or ""),
+        "ATLAS_E2E_VALUES_FILE": (os.environ.get("ATLAS_E2E_VALUES_FILE") or resolved.get("ATLAS_E2E_VALUES_FILE") or ""),
+    }
+
+    def _with_ops_env(cmd: list[str]) -> list[str]:
+        pairs = [f"{k}={v}" for k, v in sorted(env_overrides.items()) if str(v).strip()]
+        return ["env", *pairs, *cmd]
+
     status = "pass"
     for cmd in (
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"],
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"],
-        [*SELF_CLI, "run", "./packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py"],
+        _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/context_guard.py"]),
+        _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/kind/namespace_guard.py"]),
+        _with_ops_env(["python3", "./packages/atlasctl/src/atlasctl/commands/ops/stack/uninstall.py"]),
     ):
         result = run_command(cmd, repo, ctx=ctx)
         if result.combined_output.strip():
@@ -1299,14 +1350,14 @@ def _ops_stack_down_native(ctx: RunContext, report_format: str) -> int:
             break
 
     run_command(
-        [
+        _with_ops_env([
             "env",
             "ATLAS_HEALTH_REPORT_FORMAT=json",
             "python3",
             "./packages/atlasctl/src/atlasctl/commands/ops/stack/health_report.py",
             atlas_ns,
             str(health_json),
-        ],
+        ]),
         repo,
         ctx=ctx,
     )
