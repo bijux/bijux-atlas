@@ -1,18 +1,20 @@
-# Scope: canonical CI wrappers delegated to stable atlasctl entrypoints.
+# Scope: canonical CI wrappers delegated to stable command entrypoints.
 # Public targets are surfaced via root help/catalog.
 SHELL := /bin/sh
+BIJUX ?= bijux
+BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 ci: ## Canonical CI entrypoint
-	@./bin/atlasctl gate run --preset root --all --report json
+	@$(MAKE) -s dev-doctor && $(MAKE) -s dev-check-ci
 
 ci-fast: ## CI fast lane wrapper
-	@./bin/atlasctl ci run --json --lane fmt --lane lint --lane test --lane contracts
+	@$(BIJUX_DEV_ATLAS) check run --suite ci_fast --format json
 
 ci-nightly: ## CI nightly lane (includes slow checks)
-	@./bin/atlasctl ci nightly --json
+	@$(BIJUX_DEV_ATLAS) check run --suite deep --include-internal --include-slow --format json
 
 ci-docs: ## CI docs lane wrapper
-	@./bin/atlasctl ci docs --json
+	@$(BIJUX_DEV_ATLAS) check run --domain docs --format json
 
 ci-cosign-sign: ## CI release signing wrapper
 	@./bin/atlasctl ci cosign-sign
@@ -27,9 +29,9 @@ ci-init-tmp: ## CI init tmp/isolation dirs wrapper
 	@./bin/atlasctl ci init-tmp
 
 ci-dependency-lock-refresh: ## CI dependency lock refresh wrapper
-	@./bin/atlasctl ci deps --json
+	@$(BIJUX_DEV_ATLAS) check run --domain root --tag lint --format json
 
 ci-help: ## Show CI command help
-	@./bin/atlasctl help ci
+	@$(BIJUX) dev atlas --help
 
 .PHONY: ci ci-fast ci-nightly ci-docs ci-cosign-sign ci-cosign-verify ci-chart-package-release ci-init-tmp ci-dependency-lock-refresh ci-help

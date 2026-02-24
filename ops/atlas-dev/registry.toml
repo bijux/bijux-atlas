@@ -344,6 +344,28 @@ effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "internal"
 
+[[checks]]
+id = "checks_make_governance_wrappers_bijux_only"
+domain = "make"
+title = "ci make wrappers route governance through make and bijux only"
+docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_governance_entrypoints_bijux_only"
+domain = "workflows"
+title = "atlas dev workflow uses make and bijux governance entrypoints only"
+docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
 [[suites]]
 id = "all_fast"
 checks = []
