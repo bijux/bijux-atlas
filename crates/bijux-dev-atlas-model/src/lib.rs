@@ -265,6 +265,7 @@ pub struct RunReport {
     pub repo_root: String,
     pub command: String,
     pub selections: BTreeMap<String, String>,
+    pub capabilities: BTreeMap<String, bool>,
     pub results: Vec<CheckResult>,
     pub durations_ms: BTreeMap<CheckId, u64>,
     pub counts: RunSummary,
@@ -277,12 +278,13 @@ pub fn report_json_schema() -> Value {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "title": "bijux-dev-atlas run report",
         "type": "object",
-        "required": ["run_id", "repo_root", "command", "selections", "results", "durations_ms", "counts", "summary", "timings_ms"],
+        "required": ["run_id", "repo_root", "command", "selections", "capabilities", "results", "durations_ms", "counts", "summary", "timings_ms"],
         "properties": {
             "run_id": {"type": "string"},
             "repo_root": {"type": "string"},
             "command": {"type": "string"},
             "selections": {"type": "object", "additionalProperties": {"type": "string"}},
+            "capabilities": {"type": "object", "additionalProperties": {"type": "boolean"}},
             "results": {"type": "array"},
             "durations_ms": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
             "counts": {"type": "object"},
@@ -335,6 +337,7 @@ mod tests {
         assert!(required_text.contains("results"));
         assert!(required_text.contains("command"));
         assert!(required_text.contains("selections"));
+        assert!(required_text.contains("capabilities"));
         assert!(required_text.contains("durations_ms"));
         assert!(required_text.contains("counts"));
     }
