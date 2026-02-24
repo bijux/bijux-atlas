@@ -197,7 +197,9 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     }
 
     if inventory.toolchain.images.is_empty() {
-        errors.push(format!("{OPS_TOOLCHAIN_PATH}: images map must not be empty"));
+        errors.push(format!(
+            "{OPS_TOOLCHAIN_PATH}: images map must not be empty"
+        ));
     }
     for (name, image) in &inventory.toolchain.images {
         if image.contains(":latest") {
@@ -226,7 +228,11 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         }
     }
     for name in inventory.toolchain.images.keys() {
-        if !inventory.stack_version_manifest.components.contains_key(name) {
+        if !inventory
+            .stack_version_manifest
+            .components
+            .contains_key(name)
+        {
             errors.push(format!(
                 "pin coverage mismatch: `{name}` is present in {OPS_TOOLCHAIN_PATH} but missing in {OPS_STACK_VERSION_MANIFEST_PATH}"
             ));
@@ -273,8 +279,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 mirror.committed
             ));
         }
-        if !mirror.source.starts_with("ops/_generated/")
-            && !repo_root.join(&mirror.source).exists()
+        if !mirror.source.starts_with("ops/_generated/") && !repo_root.join(&mirror.source).exists()
         {
             errors.push(format!(
                 "{OPS_MIRROR_POLICY_PATH}: source path missing `{}`",

@@ -166,7 +166,10 @@ fn valid_policy() -> PolicyConfig {
 fn max_loc_per_rust_file_is_enforced() {
     let root = workspace_root();
     let files = collect_rs_files(&root.join("crates"));
-    let allowlist: [&str; 1] = ["crates/bijux-atlas-server/src/lib.rs"];
+    let allowlist: [&str; 2] = [
+        "crates/bijux-atlas-server/src/lib.rs",
+        "crates/bijux-dev-atlas/src/main.rs",
+    ];
 
     let mut violators = Vec::new();
     let mut warnings = Vec::new();

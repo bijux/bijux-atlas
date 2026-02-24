@@ -5,11 +5,12 @@ use std::process::Command as ProcessCommand;
 use std::{fs, io::Write};
 
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
+use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas_core::{
     exit_code_for_report, explain_output, list_output, load_registry, registry_doctor, render_json,
-    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest, Selectors,
+    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
+    Selectors,
 };
-use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas_model::{CheckId, DomainId, RunId, SuiteId, Tag};
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use serde::{Deserialize, Serialize};
@@ -398,7 +399,10 @@ struct OpsFs {
 
 impl OpsFs {
     fn new(repo_root: PathBuf, ops_root: PathBuf) -> Self {
-        Self { repo_root, ops_root }
+        Self {
+            repo_root,
+            ops_root,
+        }
     }
 
     fn read_ops_json<T: for<'de> Deserialize<'de>>(&self, rel: &str) -> Result<T, OpsCommandError> {
@@ -406,11 +410,17 @@ impl OpsFs {
         let text = std::fs::read_to_string(&path).map_err(|err| {
             OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
         })?;
-        serde_json::from_str(&text)
-            .map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display())))
+        serde_json::from_str(&text).map_err(|err| {
+            OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+        })
     }
 
-    fn write_artifact_json(&self, run_id: &RunId, rel: &str, payload: &serde_json::Value) -> Result<PathBuf, OpsCommandError> {
+    fn write_artifact_json(
+        &self,
+        run_id: &RunId,
+        rel: &str,
+        payload: &serde_json::Value,
+    ) -> Result<PathBuf, OpsCommandError> {
         let path = self
             .repo_root
             .join("artifacts/atlas-dev/ops")
@@ -423,8 +433,9 @@ impl OpsFs {
         }
         let content = serde_json::to_string_pretty(payload)
             .map_err(|err| OpsCommandError::Schema(format!("failed to serialize json: {err}")))?;
-        std::fs::write(&path, content)
-            .map_err(|err| OpsCommandError::Manifest(format!("failed to write {}: {err}", path.display())))?;
+        std::fs::write(&path, content).map_err(|err| {
+            OpsCommandError::Manifest(format!("failed to write {}: {err}", path.display()))
+        })?;
         Ok(path)
     }
 }
@@ -450,10 +461,12 @@ impl OpsProcess {
                 let version = text.lines().next().unwrap_or("").trim().to_string();
                 Ok(serde_json::json!({"name": name, "installed": true, "version": version}))
             }
-            Ok(_) => Ok(serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null})),
-            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
-                Ok(serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}))
-            }
+            Ok(_) => Ok(
+                serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}),
+            ),
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => Ok(
+                serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}),
+            ),
             Err(err) => Err(OpsCommandError::Tool(format!(
                 "failed to probe tool `{name}`: {err}"
             ))),
@@ -474,14 +487,21 @@ impl OpsProcess {
         let mut cmd = ProcessCommand::new(binary);
         cmd.args(args).current_dir(cwd);
         cmd.env_clear();
-        for key in ["PATH", "HOME", "KUBECONFIG", "HELM_CACHE_HOME", "HELM_CONFIG_HOME", "HELM_DATA_HOME"] {
+        for key in [
+            "PATH",
+            "HOME",
+            "KUBECONFIG",
+            "HELM_CACHE_HOME",
+            "HELM_CONFIG_HOME",
+            "HELM_DATA_HOME",
+        ] {
             if let Ok(value) = std::env::var(key) {
                 cmd.env(key, value);
             }
         }
-        let output = cmd.output().map_err(|err| {
-            OpsCommandError::Tool(format!("failed to run `{binary}`: {err}"))
-        })?;
+        let output = cmd
+            .output()
+            .map_err(|err| OpsCommandError::Tool(format!("failed to run `{binary}`: {err}")))?;
         let stdout = String::from_utf8(output.stdout).map_err(|err| {
             OpsCommandError::Tool(format!("`{binary}` emitted non-utf8 stdout: {err}"))
         })?;
@@ -523,8 +543,7 @@ fn discover_repo_root(start: &Path) -> Result<PathBuf, String> {
             current = parent.to_path_buf();
         } else {
             return Err(
-                "could not discover repo root (no ops/atlas-dev/registry.toml found)"
-                    .to_string(),
+                "could not discover repo root (no ops/atlas-dev/registry.toml found)".to_string(),
             );
         }
     }
@@ -591,16 +610,20 @@ fn render_explain_output(explain_text: String, format: FormatArg) -> Result<Stri
             let mut map = serde_json::Map::new();
             for line in explain_text.lines() {
                 if let Some((key, value)) = line.split_once(": ") {
-                    map.insert(key.to_string(), serde_json::Value::String(value.to_string()));
+                    map.insert(
+                        key.to_string(),
+                        serde_json::Value::String(value.to_string()),
+                    );
                 }
             }
-            serde_json::to_string_pretty(&serde_json::Value::Object(map)).map_err(|err| err.to_string())
+            serde_json::to_string_pretty(&serde_json::Value::Object(map))
+                .map_err(|err| err.to_string())
         }
         FormatArg::Jsonl => Err("jsonl output is not supported for explain".to_string()),
     }
 }
 
-fn run_check_list(
+struct CheckListOptions {
     repo_root: Option<PathBuf>,
     suite: Option<String>,
     domain: Option<DomainArg>,
@@ -610,13 +633,22 @@ fn run_check_list(
     include_slow: bool,
     format: FormatArg,
     out: Option<PathBuf>,
-) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(repo_root)?;
-    let selectors = parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
+}
+
+fn run_check_list(options: CheckListOptions) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(options.repo_root)?;
+    let selectors = parse_selectors(
+        options.suite,
+        options.domain,
+        options.tag,
+        options.id,
+        options.include_internal,
+        options.include_slow,
+    )?;
     let registry = load_registry(&root)?;
     let checks = select_checks(&registry, &selectors)?;
-    let rendered = render_list_output(list_output(&checks), format)?;
-    write_output_if_requested(out, &rendered)?;
+    let rendered = render_list_output(list_output(&checks), options.format)?;
+    write_output_if_requested(options.out, &rendered)?;
     Ok((rendered, 0))
 }
 
@@ -634,7 +666,7 @@ fn run_check_explain(
     Ok((rendered, 0))
 }
 
-fn run_check_run(
+struct CheckRunOptions {
     repo_root: Option<PathBuf>,
     artifacts_root: Option<PathBuf>,
     run_id: Option<String>,
@@ -653,32 +685,49 @@ fn run_check_run(
     format: FormatArg,
     out: Option<PathBuf>,
     durations: usize,
-) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(repo_root)?;
-    let selectors = parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
+}
+
+fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(options.repo_root)?;
+    let selectors = parse_selectors(
+        options.suite,
+        options.domain,
+        options.tag,
+        options.id,
+        options.include_internal,
+        options.include_slow,
+    )?;
     let request = RunRequest {
         repo_root: root.clone(),
         domain: selectors.domain,
         capabilities: Capabilities::from_cli_flags(
-            allow_write,
-            allow_subprocess,
-            allow_git,
-            allow_network,
+            options.allow_write,
+            options.allow_subprocess,
+            options.allow_git,
+            options.allow_network,
         ),
-        artifacts_root: artifacts_root.or_else(|| Some(root.join("artifacts"))),
-        run_id: run_id.map(|rid| RunId::parse(&rid)).transpose()?,
+        artifacts_root: options
+            .artifacts_root
+            .or_else(|| Some(root.join("artifacts"))),
+        run_id: options.run_id.map(|rid| RunId::parse(&rid)).transpose()?,
     };
-    let options = RunOptions {
-        fail_fast,
-        max_failures,
+    let run_options = RunOptions {
+        fail_fast: options.fail_fast,
+        max_failures: options.max_failures,
     };
-    let report = run_checks(&RealProcessRunner, &RealFs, &request, &selectors, &options)?;
-    let rendered = match format {
-        FormatArg::Text => render_text_with_durations(&report, durations),
+    let report = run_checks(
+        &RealProcessRunner,
+        &RealFs,
+        &request,
+        &selectors,
+        &run_options,
+    )?;
+    let rendered = match options.format {
+        FormatArg::Text => render_text_with_durations(&report, options.durations),
         FormatArg::Json => render_json(&report)?,
         FormatArg::Jsonl => render_jsonl(&report)?,
     };
-    write_output_if_requested(out, &rendered)?;
+    write_output_if_requested(options.out, &rendered)?;
     Ok((rendered, exit_code_for_report(&report)))
 }
 
@@ -690,14 +739,7 @@ fn run_check_doctor(
     let root = resolve_repo_root(repo_root)?;
     let registry_report = registry_doctor(&root);
     let inventory_errors = validate_ops_inventory(&root);
-    let selectors = parse_selectors(
-        Some("ci_fast".to_string()),
-        None,
-        None,
-        None,
-        false,
-        false,
-    )?;
+    let selectors = parse_selectors(Some("ci_fast".to_string()), None, None, None, false, false)?;
     let request = RunRequest {
         repo_root: root.clone(),
         domain: None,
@@ -713,11 +755,12 @@ fn run_check_doctor(
         &RunOptions::default(),
     )?;
     let check_exit = exit_code_for_report(&report);
-    let status = if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
-        "ok"
-    } else {
-        "failed"
-    };
+    let status =
+        if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
+            "ok"
+        } else {
+            "failed"
+        };
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": status,
@@ -727,7 +770,8 @@ fn run_check_doctor(
     });
 
     let evidence_dir = root.join("artifacts/atlas-dev/doctor");
-    fs::create_dir_all(&evidence_dir).map_err(|err| format!("failed to create {}: {err}", evidence_dir.display()))?;
+    fs::create_dir_all(&evidence_dir)
+        .map_err(|err| format!("failed to create {}: {err}", evidence_dir.display()))?;
     let evidence_path = evidence_dir.join("doctor.report.json");
     fs::write(
         &evidence_path,
@@ -758,22 +802,31 @@ fn run_check_doctor(
 const REQUIRED_OPS_TOOLS: &[&str] = &["kind", "kubectl", "helm", "curl"];
 const OPTIONAL_OPS_TOOLS: &[&str] = &["k6", "kubeconform"];
 
-fn resolve_ops_root(repo_root: &Path, ops_root: Option<PathBuf>) -> Result<PathBuf, OpsCommandError> {
+fn resolve_ops_root(
+    repo_root: &Path,
+    ops_root: Option<PathBuf>,
+) -> Result<PathBuf, OpsCommandError> {
     let path = ops_root.unwrap_or_else(|| repo_root.join("ops"));
-    path.canonicalize()
-        .map_err(|err| OpsCommandError::Manifest(format!("cannot resolve ops root {}: {err}", path.display())))
+    path.canonicalize().map_err(|err| {
+        OpsCommandError::Manifest(format!("cannot resolve ops root {}: {err}", path.display()))
+    })
 }
 
 fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCommandError> {
     let path = ops_root.join("stack/profiles.json");
-    let text =
-        std::fs::read_to_string(&path).map_err(|err| OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display())))?;
-    let payload: StackProfiles =
-        serde_json::from_str(&text).map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display())))?;
+    let text = std::fs::read_to_string(&path).map_err(|err| {
+        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
+    })?;
+    let payload: StackProfiles = serde_json::from_str(&text).map_err(|err| {
+        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    })?;
     Ok(payload.profiles)
 }
 
-fn resolve_profile(requested: Option<String>, profiles: &[StackProfile]) -> Result<StackProfile, OpsCommandError> {
+fn resolve_profile(
+    requested: Option<String>,
+    profiles: &[StackProfile],
+) -> Result<StackProfile, OpsCommandError> {
     if profiles.is_empty() {
         return Err(OpsCommandError::Profile(
             "no profiles declared in ops/stack/profiles.json".to_string(),
@@ -800,7 +853,11 @@ fn run_id_or_default(raw: Option<String>) -> Result<RunId, String> {
         .map_or_else(|| Ok(RunId::from_seed("ops_run")), Ok)
 }
 
-fn emit_payload(format: FormatArg, out: Option<PathBuf>, payload: &serde_json::Value) -> Result<String, String> {
+fn emit_payload(
+    format: FormatArg,
+    out: Option<PathBuf>,
+    payload: &serde_json::Value,
+) -> Result<String, String> {
     let rendered = match format {
         FormatArg::Text => payload
             .get("text")
@@ -847,12 +904,17 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
     }
     for line in rendered.lines() {
         if line.trim_start().starts_with("image:") && line.contains(":latest") {
-            errors.push(format!("rendered image uses forbidden latest tag: {}", line.trim()));
+            errors.push(format!(
+                "rendered image uses forbidden latest tag: {}",
+                line.trim()
+            ));
         }
     }
     for marker in ["generatedAt:", "timestamp:", "creationTimestamp:"] {
         if rendered.contains(marker) {
-            errors.push(format!("render output contains forbidden timestamp marker `{marker}`"));
+            errors.push(format!(
+                "render output contains forbidden timestamp marker `{marker}`"
+            ));
         }
     }
     errors.sort();
@@ -898,7 +960,11 @@ fn expected_kind_context(profile: &StackProfile) -> String {
     format!("kind-{}", profile.kind_profile)
 }
 
-fn ensure_kind_context(process: &OpsProcess, profile: &StackProfile, force: bool) -> Result<(), OpsCommandError> {
+fn ensure_kind_context(
+    process: &OpsProcess,
+    profile: &StackProfile,
+    force: bool,
+) -> Result<(), OpsCommandError> {
     let args = vec!["config".to_string(), "current-context".to_string()];
     let (stdout, _) = process.run_subprocess("kubectl", &args, Path::new("."))?;
     let current = stdout.trim();
@@ -912,7 +978,11 @@ fn ensure_kind_context(process: &OpsProcess, profile: &StackProfile, force: bool
     }
 }
 
-fn ensure_namespace_exists(process: &OpsProcess, namespace: &str, dry_run: &str) -> Result<(), OpsCommandError> {
+fn ensure_namespace_exists(
+    process: &OpsProcess,
+    namespace: &str,
+    dry_run: &str,
+) -> Result<(), OpsCommandError> {
     let get_args = vec![
         "get".to_string(),
         "namespace".to_string(),
@@ -920,7 +990,10 @@ fn ensure_namespace_exists(process: &OpsProcess, namespace: &str, dry_run: &str)
         "-o".to_string(),
         "name".to_string(),
     ];
-    if process.run_subprocess("kubectl", &get_args, Path::new(".")).is_ok() {
+    if process
+        .run_subprocess("kubectl", &get_args, Path::new("."))
+        .is_ok()
+    {
         return Ok(());
     }
     let mut create_args = vec![
@@ -935,7 +1008,12 @@ fn ensure_namespace_exists(process: &OpsProcess, namespace: &str, dry_run: &str)
     Ok(())
 }
 
-fn run_ops_checks(common: &OpsCommonArgs, suite: &str, include_internal: bool, include_slow: bool) -> Result<(String, i32), String> {
+fn run_ops_checks(
+    common: &OpsCommonArgs,
+    suite: &str,
+    include_internal: bool,
+    include_slow: bool,
+) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let selectors = parse_selectors(
         Some(suite.to_string()),
@@ -981,9 +1059,7 @@ fn render_ops_validation_output(
     let error_count = inventory_error_count + checks_error_count;
     let status = if error_count == 0 { "ok" } else { "failed" };
     let strict_failed = common.strict && error_count > 0;
-    let exit = if strict_failed {
-        1
-    } else if checks_exit != 0 || inventory_error_count > 0 {
+    let exit = if strict_failed || checks_exit != 0 || inventory_error_count > 0 {
         1
     } else {
         0
@@ -1017,26 +1093,40 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let inventory_errors = validate_ops_inventory(&repo_root);
-            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(|err| {
-                serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")})
-            });
+            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
+                |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
+            );
             let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_fast", false, false)?;
-            render_ops_validation_output(&common, "doctor", &inventory_errors, &checks_rendered, checks_exit, summary)
+            render_ops_validation_output(
+                &common,
+                "doctor",
+                &inventory_errors,
+                &checks_rendered,
+                checks_exit,
+                summary,
+            )
         }
         OpsCommand::Validate(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let inventory_errors = validate_ops_inventory(&repo_root);
-            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(|err| {
-                serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")})
-            });
+            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
+                |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
+            );
             let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_all", true, true)?;
-            render_ops_validation_output(&common, "validate", &inventory_errors, &checks_rendered, checks_exit, summary)
+            render_ops_validation_output(
+                &common,
+                "validate",
+                &inventory_errors,
+                &checks_rendered,
+                checks_exit,
+                summary,
+            )
         }
         OpsCommand::Render(args) => {
             let common = &args.common;
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let fs_adapter = OpsFs::new(repo_root.clone(), ops_root.clone());
             let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
             profiles.sort_by(|a, b| a.name.cmp(&b.name));
@@ -1050,51 +1140,57 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                 OpsRenderTarget::Kind => "kind",
             };
 
-            let (rendered_manifest, subprocess_events): (String, Vec<serde_json::Value>) = match args.target {
-                OpsRenderTarget::Helm => {
-                    if !common.allow_subprocess {
-                        return Err(OpsCommandError::Effect(
-                            "helm render requires --allow-subprocess".to_string(),
-                        )
-                        .to_stable_message());
+            let (rendered_manifest, subprocess_events): (String, Vec<serde_json::Value>) =
+                match args.target {
+                    OpsRenderTarget::Helm => {
+                        if !common.allow_subprocess {
+                            return Err(OpsCommandError::Effect(
+                                "helm render requires --allow-subprocess".to_string(),
+                            )
+                            .to_stable_message());
+                        }
+                        let helm_binary = args
+                            .helm_binary
+                            .clone()
+                            .unwrap_or_else(|| "helm".to_string());
+                        let chart_path = ops_root.join("k8s/charts/bijux-atlas");
+                        let values_path = ops_root.join("k8s/charts/bijux-atlas/values.yaml");
+                        let cmd_args = vec![
+                            "template".to_string(),
+                            "bijux-atlas".to_string(),
+                            chart_path.display().to_string(),
+                            "--namespace".to_string(),
+                            "bijux-atlas".to_string(),
+                            "-f".to_string(),
+                            values_path.display().to_string(),
+                        ];
+                        let (stdout, event) = process
+                            .run_subprocess(&helm_binary, &cmd_args, &repo_root)
+                            .map_err(|e| e.to_stable_message())?;
+                        (stdout, vec![event])
                     }
-                    let helm_binary = args.helm_binary.clone().unwrap_or_else(|| "helm".to_string());
-                    let chart_path = ops_root.join("k8s/charts/bijux-atlas");
-                    let values_path = ops_root.join("k8s/charts/bijux-atlas/values.yaml");
-                    let cmd_args = vec![
-                        "template".to_string(),
-                        "bijux-atlas".to_string(),
-                        chart_path.display().to_string(),
-                        "--namespace".to_string(),
-                        "bijux-atlas".to_string(),
-                        "-f".to_string(),
-                        values_path.display().to_string(),
-                    ];
-                    let (stdout, event) = process
-                        .run_subprocess(&helm_binary, &cmd_args, &repo_root)
-                        .map_err(|e| e.to_stable_message())?;
-                    (stdout, vec![event])
-                }
-                OpsRenderTarget::Kind => {
-                    let cluster_config_path = repo_root.join(&profile.cluster_config);
-                    let content = fs::read_to_string(&cluster_config_path).map_err(|err| {
-                        OpsCommandError::Manifest(format!(
-                            "failed to read cluster config {}: {err}",
-                            cluster_config_path.display()
-                        ))
-                        .to_stable_message()
-                    })?;
-                    (format!("# source: {}\n{content}", profile.cluster_config), Vec::new())
-                }
-                OpsRenderTarget::Kustomize => {
-                    return Err(
-                        OpsCommandError::Effect(
-                            "kustomize render is not enabled; use --target helm or --target kind".to_string(),
+                    OpsRenderTarget::Kind => {
+                        let cluster_config_path = repo_root.join(&profile.cluster_config);
+                        let content = fs::read_to_string(&cluster_config_path).map_err(|err| {
+                            OpsCommandError::Manifest(format!(
+                                "failed to read cluster config {}: {err}",
+                                cluster_config_path.display()
+                            ))
+                            .to_stable_message()
+                        })?;
+                        (
+                            format!("# source: {}\n{content}", profile.cluster_config),
+                            Vec::new(),
                         )
-                        .to_stable_message(),
-                    )
-                }
-            };
+                    }
+                    OpsRenderTarget::Kustomize => {
+                        return Err(OpsCommandError::Effect(
+                            "kustomize render is not enabled; use --target helm or --target kind"
+                                .to_string(),
+                        )
+                        .to_stable_message())
+                    }
+                };
 
             let mut validation_errors = validate_render_output(&rendered_manifest, args.target);
             if matches!(args.target, OpsRenderTarget::Helm) {
@@ -1139,13 +1235,14 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     ))
                     .to_stable_message()
                 })?;
-                file.write_all(rendered_manifest.as_bytes()).map_err(|err| {
-                    OpsCommandError::Manifest(format!(
-                        "failed to write {}: {err}",
-                        yaml_path.display()
-                    ))
-                    .to_stable_message()
-                })?;
+                file.write_all(rendered_manifest.as_bytes())
+                    .map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to write {}: {err}",
+                            yaml_path.display()
+                        ))
+                        .to_stable_message()
+                    })?;
                 written_files.push(rel_yaml.clone());
 
                 let index_payload = serde_json::json!({
@@ -1160,7 +1257,11 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     .map_err(|e| e.to_stable_message())?;
                 written_files.push(
                     index_path
-                        .strip_prefix(repo_root.join("artifacts/atlas-dev/ops").join(run_id.as_str()))
+                        .strip_prefix(
+                            repo_root
+                                .join("artifacts/atlas-dev/ops")
+                                .join(run_id.as_str()),
+                        )
                         .unwrap_or(index_path.as_path())
                         .display()
                         .to_string(),
@@ -1211,8 +1312,8 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
         OpsCommand::Install(args) => {
             let common = &args.common;
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
             profiles.sort_by(|a, b| a.name.cmp(&b.name));
             let profile = resolve_profile(common.profile.clone(), &profiles)
@@ -1300,8 +1401,8 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
         OpsCommand::Status(args) => {
             let common = &args.common;
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
             profiles.sort_by(|a, b| a.name.cmp(&b.name));
             let profile = resolve_profile(common.profile.clone(), &profiles)
@@ -1310,10 +1411,21 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             let (payload, text) = match args.target {
                 OpsStatusTarget::Local => {
                     let toolchain_path = ops_root.join("inventory/toolchain.json");
-                    let toolchain = std::fs::read_to_string(&toolchain_path)
-                        .map_err(|err| OpsCommandError::Manifest(format!("failed to read {}: {err}", toolchain_path.display())).to_stable_message())?;
-                    let toolchain_json: serde_json::Value =
-                        serde_json::from_str(&toolchain).map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", toolchain_path.display())).to_stable_message())?;
+                    let toolchain = std::fs::read_to_string(&toolchain_path).map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to read {}: {err}",
+                            toolchain_path.display()
+                        ))
+                        .to_stable_message()
+                    })?;
+                    let toolchain_json: serde_json::Value = serde_json::from_str(&toolchain)
+                        .map_err(|err| {
+                            OpsCommandError::Schema(format!(
+                                "failed to parse {}: {err}",
+                                toolchain_path.display()
+                            ))
+                            .to_stable_message()
+                        })?;
                     (
                         serde_json::json!({
                             "schema_version": 1,
@@ -1349,8 +1461,11 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     let (stdout, _) = process
                         .run_subprocess("kubectl", &args, &repo_root)
                         .map_err(|e| e.to_stable_message())?;
-                    let value: serde_json::Value = serde_json::from_str(&stdout)
-                        .map_err(|err| OpsCommandError::Schema(format!("failed to parse kubectl json: {err}")).to_stable_message())?;
+                    let value: serde_json::Value =
+                        serde_json::from_str(&stdout).map_err(|err| {
+                            OpsCommandError::Schema(format!("failed to parse kubectl json: {err}"))
+                                .to_stable_message()
+                        })?;
                     (
                         serde_json::json!({
                             "schema_version": 1,
@@ -1379,8 +1494,11 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     let (stdout, _) = process
                         .run_subprocess("kubectl", &args, &repo_root)
                         .map_err(|e| e.to_stable_message())?;
-                    let value: serde_json::Value = serde_json::from_str(&stdout)
-                        .map_err(|err| OpsCommandError::Schema(format!("failed to parse kubectl json: {err}")).to_stable_message())?;
+                    let value: serde_json::Value =
+                        serde_json::from_str(&stdout).map_err(|err| {
+                            OpsCommandError::Schema(format!("failed to parse kubectl json: {err}"))
+                                .to_stable_message()
+                        })?;
                     let mut pods = value
                         .get("items")
                         .and_then(|v| v.as_array())
@@ -1390,9 +1508,11 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                         a.get("metadata")
                             .and_then(|m| m.get("name"))
                             .and_then(|v| v.as_str())
-                            .cmp(&b.get("metadata")
-                                .and_then(|m| m.get("name"))
-                                .and_then(|v| v.as_str()))
+                            .cmp(
+                                &b.get("metadata")
+                                    .and_then(|m| m.get("name"))
+                                    .and_then(|v| v.as_str()),
+                            )
                     });
                     (
                         serde_json::json!({
@@ -1422,8 +1542,11 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     let (stdout, _) = process
                         .run_subprocess("kubectl", &args, &repo_root)
                         .map_err(|e| e.to_stable_message())?;
-                    let value: serde_json::Value = serde_json::from_str(&stdout)
-                        .map_err(|err| OpsCommandError::Schema(format!("failed to parse kubectl json: {err}")).to_stable_message())?;
+                    let value: serde_json::Value =
+                        serde_json::from_str(&stdout).map_err(|err| {
+                            OpsCommandError::Schema(format!("failed to parse kubectl json: {err}"))
+                                .to_stable_message()
+                        })?;
                     (
                         serde_json::json!({
                             "schema_version": 1,
@@ -1441,26 +1564,31 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
         }
         OpsCommand::ListProfiles(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
             profiles.sort_by(|a, b| a.name.cmp(&b.name));
             let rows = profiles
                 .iter()
                 .map(|p| serde_json::json!({"name": p.name, "kind_profile": p.kind_profile, "cluster_config": p.cluster_config}))
                 .collect::<Vec<_>>();
-            let text = profiles.iter().map(|p| p.name.clone()).collect::<Vec<_>>().join("\n");
+            let text = profiles
+                .iter()
+                .map(|p| p.name.clone())
+                .collect::<Vec<_>>()
+                .join("\n");
             let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": profiles.len(), "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::ExplainProfile { name, common } => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
             profiles.sort_by(|a, b| a.name.cmp(&b.name));
-            let profile = resolve_profile(Some(name), &profiles).map_err(|e| e.to_stable_message())?;
+            let profile =
+                resolve_profile(Some(name), &profiles).map_err(|e| e.to_stable_message())?;
             let text = format!(
                 "profile={} kind_profile={} cluster_config={}",
                 profile.name, profile.kind_profile, profile.cluster_config
@@ -1489,7 +1617,14 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
             let text = rows
                 .iter()
-                .map(|r| format!("{} required={} installed={}", r["name"].as_str().unwrap_or(""), r["required"], r["installed"]))
+                .map(|r| {
+                    format!(
+                        "{} required={} installed={}",
+                        r["name"].as_str().unwrap_or(""),
+                        r["required"],
+                        r["installed"]
+                    )
+                })
                 .collect::<Vec<_>>()
                 .join("\n");
             let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": rows.len(), "errors": 0, "warnings": 0}});
@@ -1544,8 +1679,8 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
         }
         OpsCommand::ListActions(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let fs_adapter = OpsFs::new(repo_root, ops_root);
             let mut payload: SurfacesInventory = fs_adapter
                 .read_ops_json("inventory/surfaces.json")
@@ -1554,26 +1689,35 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             let rows = payload.actions.iter()
                 .map(|a| serde_json::json!({"id": a.id, "domain": a.domain, "command": a.command, "argv": a.argv}))
                 .collect::<Vec<_>>();
-            let text = payload.actions.iter().map(|a| a.id.clone()).collect::<Vec<_>>().join("\n");
+            let text = payload
+                .actions
+                .iter()
+                .map(|a| a.id.clone())
+                .collect::<Vec<_>>()
+                .join("\n");
             let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": payload.actions.len(), "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::Up(common) => {
             if !common.allow_subprocess {
-                return Err(OpsCommandError::Effect(
-                    "up requires --allow-subprocess".to_string(),
-                )
-                .to_stable_message());
+                return Err(
+                    OpsCommandError::Effect("up requires --allow-subprocess".to_string())
+                        .to_stable_message(),
+                );
             }
             if !common.allow_write {
-                return Err(OpsCommandError::Effect(
-                    "up requires --allow-write".to_string(),
-                )
-                .to_stable_message());
+                return Err(
+                    OpsCommandError::Effect("up requires --allow-write".to_string())
+                        .to_stable_message(),
+                );
             }
             let text = "ops up delegates to install --kind --apply --plan".to_string();
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}))?;
+            let rendered = emit_payload(
+                common.format,
+                common.out.clone(),
+                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
+            )?;
             Ok((rendered, 0))
         }
         OpsCommand::Down(common) => {
@@ -1584,8 +1728,8 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                 .to_stable_message());
             }
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root =
-                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
             let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
             profiles.sort_by(|a, b| a.name.cmp(&b.name));
             let profile = resolve_profile(common.profile.clone(), &profiles)
@@ -1601,17 +1745,26 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                 .run_subprocess("kind", &args, &repo_root)
                 .map_err(|e| e.to_stable_message())?;
             let text = format!("ops down deleted kind cluster `{}`", profile.kind_profile);
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}))?;
+            let rendered = emit_payload(
+                common.format,
+                common.out.clone(),
+                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
+            )?;
             Ok((rendered, 0))
         }
         OpsCommand::Clean(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let path = repo_root.join("artifacts/atlas-dev/ops");
             if path.exists() {
-                std::fs::remove_dir_all(&path).map_err(|err| format!("failed to remove {}: {err}", path.display()))?;
+                std::fs::remove_dir_all(&path)
+                    .map_err(|err| format!("failed to remove {}: {err}", path.display()))?;
             }
             let text = format!("cleaned {}", path.display());
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}))?;
+            let rendered = emit_payload(
+                common.format,
+                common.out.clone(),
+                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
+            )?;
             Ok((rendered, 0))
         }
         OpsCommand::Reset(args) => {
@@ -1628,8 +1781,16 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                 std::fs::remove_dir_all(&target)
                     .map_err(|err| format!("failed to remove {}: {err}", target.display()))?;
             }
-            let text = format!("reset artifacts for run_id={} at {}", run_id.as_str(), target.display());
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}))?;
+            let text = format!(
+                "reset artifacts for run_id={} at {}",
+                run_id.as_str(),
+                target.display()
+            );
+            let rendered = emit_payload(
+                common.format,
+                common.out.clone(),
+                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+            )?;
             Ok((rendered, 0))
         }
         OpsCommand::Pins { command } => match command {
@@ -1642,7 +1803,11 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                 } else {
                     format!("pins check failed: missing {}", path.display())
                 };
-                let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": if ok {0} else {1}, "warnings": 0}}))?;
+                let rendered = emit_payload(
+                    common.format,
+                    common.out.clone(),
+                    &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": if ok {0} else {1}, "warnings": 0}}),
+                )?;
                 Ok((rendered, if ok { 0 } else { 1 }))
             }
             OpsPinsCommand::Update {
@@ -1657,8 +1822,13 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     )
                     .to_stable_message())
                 } else {
-                    let text = "ops pins update is migration-gated; no mutation performed".to_string();
-                    let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}))?;
+                    let text =
+                        "ops pins update is migration-gated; no mutation performed".to_string();
+                    let rendered = emit_payload(
+                        common.format,
+                        common.out.clone(),
+                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+                    )?;
                     Ok((rendered, 0))
                 }
             }
@@ -1702,7 +1872,7 @@ fn main() {
             include_slow,
             format,
             out,
-        } => match run_check_list(
+        } => match run_check_list(CheckListOptions {
             repo_root,
             suite,
             domain,
@@ -1712,7 +1882,7 @@ fn main() {
             include_slow,
             format,
             out,
-        ) {
+        }) {
             Ok((text, code)) => {
                 if !cli.quiet && !text.is_empty() {
                     println!("{text}");
@@ -1780,7 +1950,7 @@ fn main() {
             format,
             out,
             durations,
-        } => match run_check_run(
+        } => match run_check_run(CheckRunOptions {
             repo_root,
             artifacts_root,
             run_id,
@@ -1799,7 +1969,7 @@ fn main() {
             format,
             out,
             durations,
-        ) {
+        }) {
             Ok((rendered, code)) => {
                 if !cli.quiet {
                     println!("{rendered}");
@@ -1823,7 +1993,7 @@ fn main() {
                     include_slow,
                     format,
                     out,
-                } => run_check_list(
+                } => run_check_list(CheckListOptions {
                     repo_root,
                     suite,
                     domain,
@@ -1833,7 +2003,7 @@ fn main() {
                     include_slow,
                     format,
                     out,
-                ),
+                }),
                 CheckCommand::Explain {
                     check_id,
                     repo_root,
@@ -1864,7 +2034,7 @@ fn main() {
                     format,
                     out,
                     durations,
-                } => run_check_run(
+                } => run_check_run(CheckRunOptions {
                     repo_root,
                     artifacts_root,
                     run_id,
@@ -1883,7 +2053,7 @@ fn main() {
                     format,
                     out,
                     durations,
-                ),
+                }),
             };
             match result {
                 Ok((rendered, code)) => {
@@ -1953,16 +2123,40 @@ mod tests {
             vec!["bijux-dev-atlas", "ops", "render", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "ops", "install", "--plan"],
             vec!["bijux-dev-atlas", "ops", "status"],
-            vec!["bijux-dev-atlas", "ops", "status", "--target", "k8s", "--allow-subprocess"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "status",
+                "--target",
+                "k8s",
+                "--allow-subprocess",
+            ],
             vec!["bijux-dev-atlas", "ops", "list-profiles"],
             vec!["bijux-dev-atlas", "ops", "explain-profile", "kind"],
             vec!["bijux-dev-atlas", "ops", "list-tools", "--allow-subprocess"],
-            vec!["bijux-dev-atlas", "ops", "verify-tools", "--allow-subprocess"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "verify-tools",
+                "--allow-subprocess",
+            ],
             vec!["bijux-dev-atlas", "ops", "list-actions"],
-            vec!["bijux-dev-atlas", "ops", "up", "--allow-subprocess", "--allow-write"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "up",
+                "--allow-subprocess",
+                "--allow-write",
+            ],
             vec!["bijux-dev-atlas", "ops", "down", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "ops", "clean"],
-            vec!["bijux-dev-atlas", "ops", "reset", "--reset-run-id", "ops_reset"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "reset",
+                "--reset-run-id",
+                "ops_reset",
+            ],
             vec!["bijux-dev-atlas", "ops", "pins", "check"],
             vec![
                 "bijux-dev-atlas",
@@ -1986,7 +2180,12 @@ mod tests {
     fn check_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "check", "list"],
-            vec!["bijux-dev-atlas", "check", "explain", "ops_surface_manifest"],
+            vec![
+                "bijux-dev-atlas",
+                "check",
+                "explain",
+                "ops_surface_manifest",
+            ],
             vec!["bijux-dev-atlas", "check", "doctor"],
             vec!["bijux-dev-atlas", "check", "run", "--suite", "ci_fast"],
         ];
