@@ -2,6 +2,7 @@ use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
 use crate::*;
+use serde_json::Value;
 use std::io::Write;
 
 pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32), String> {
@@ -9,7 +10,6 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let ops_root =
         resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
-    let fs_adapter = OpsFs::new(repo_root.clone(), ops_root.clone());
     let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
     profiles.sort_by(|a, b| a.name.cmp(&b.name));
     let profile =
@@ -86,7 +86,17 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
         )
         .to_stable_message());
     }
-    let write_enabled = args.write;
+    let write_enabled = if args.check || args.stdout {
+        false
+    } else {
+        true
+    };
+    if write_enabled && !common.allow_write {
+        return Err(
+            OpsCommandError::Effect("ops render write requires --allow-write".to_string())
+                .to_stable_message(),
+        );
+    }
     let rel_base = render_profile_artifact_base(&profile.name, args.target);
     let rel_yaml = format!("{rel_base}/render.yaml");
     let rel_index = format!("{rel_base}/render.index.json");
@@ -100,10 +110,15 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
         "bytes": rendered_manifest.len(),
     });
     rows.push(manifest_row.clone());
+    rows.sort_by(|a, b| {
+        a.get("path")
+            .and_then(Value::as_str)
+            .cmp(&b.get("path").and_then(Value::as_str))
+    });
 
     if write_enabled {
         let yaml_path = repo_root
-            .join("artifacts/atlas-dev/ops")
+            .join("artifacts/ops")
             .join(run_id.as_str())
             .join(&rel_yaml);
         if let Some(parent) = yaml_path.parent() {
@@ -130,21 +145,53 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             "target": target_name,
             "files": rows
         });
-        let index_path = fs_adapter
-            .write_artifact_json(&run_id, &rel_index, &index_payload)
-            .map_err(|e| e.to_stable_message())?;
+        let index_path = repo_root
+            .join("artifacts/ops")
+            .join(run_id.as_str())
+            .join(&rel_index);
+        if let Some(parent) = index_path.parent() {
+            fs::create_dir_all(parent).map_err(|err| {
+                OpsCommandError::Manifest(format!("failed to create {}: {err}", parent.display()))
+                    .to_stable_message()
+            })?;
+        }
+        fs::write(
+            &index_path,
+            serde_json::to_string_pretty(&index_payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|err| {
+            OpsCommandError::Manifest(format!("failed to write {}: {err}", index_path.display()))
+                .to_stable_message()
+        })?;
         written_files.push(
             index_path
-                .strip_prefix(
-                    repo_root
-                        .join("artifacts/atlas-dev/ops")
-                        .join(run_id.as_str()),
-                )
+                .strip_prefix(repo_root.join("artifacts/ops").join(run_id.as_str()))
                 .unwrap_or(index_path.as_path())
                 .display()
                 .to_string(),
         );
     }
+    let previous_hash = latest_render_hash(&repo_root, run_id.as_str(), &profile.name, target_name);
+    if args.check {
+        if let Some(previous_hash) = &previous_hash {
+            if previous_hash != &render_sha {
+                validation_errors.push(format!(
+                    "render stability violation: previous_sha256={previous_hash} current_sha256={render_sha}"
+                ));
+            }
+        }
+    }
+    let changed = previous_hash.as_deref().is_some_and(|v| v != render_sha);
+    let diff = if args.diff {
+        Some(serde_json::json!({
+            "compared_against_previous_run": previous_hash.is_some(),
+            "previous_sha256": previous_hash.clone(),
+            "current_sha256": render_sha,
+            "changed": changed
+        }))
+    } else {
+        None
+    };
 
     let text = if args.stdout {
         rendered_manifest.clone()
@@ -172,6 +219,7 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             "check_only": args.check,
             "stdout_mode": args.stdout,
             "diff_mode": args.diff,
+            "diff_result": diff,
             "written_files": written_files,
             "render_index_files": rows,
             "validation_errors": validation_errors,
@@ -200,17 +248,54 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
             errors.push(format!("missing required rendered resource `{needle}`"));
         }
     }
-    if rendered.contains("kind: ClusterRole") {
-        errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());
-    }
-    for line in rendered.lines() {
-        if line.trim_start().starts_with("image:") && line.contains(":latest") {
-            errors.push(format!(
-                "rendered image uses forbidden latest tag: {}",
-                line.trim()
-            ));
+    errors.extend(scan_forbidden_kinds(rendered));
+    errors.extend(scan_unpinned_images(rendered));
+    errors.extend(scan_timestamps(rendered));
+    errors.sort();
+    errors.dedup();
+    errors
+}
+
+fn latest_render_hash(
+    repo_root: &Path,
+    run_id: &str,
+    profile: &str,
+    target: &str,
+) -> Option<String> {
+    let root = repo_root.join("artifacts/ops");
+    let mut candidates = fs::read_dir(root).ok()?;
+    let mut runs = candidates
+        .by_ref()
+        .filter_map(Result::ok)
+        .map(|e| e.path())
+        .filter(|p| p.is_dir())
+        .filter(|p| p.file_name().and_then(|n| n.to_str()) != Some(run_id))
+        .collect::<Vec<_>>();
+    runs.sort();
+    runs.reverse();
+    for run in runs {
+        let index_path = run.join(format!("render/{profile}/{target}/render.index.json"));
+        let Ok(raw) = fs::read_to_string(index_path) else {
+            continue;
+        };
+        let Ok(json) = serde_json::from_str::<Value>(&raw) else {
+            continue;
+        };
+        if let Some(hash) = json
+            .get("files")
+            .and_then(Value::as_array)
+            .and_then(|files| files.first())
+            .and_then(|f| f.get("sha256"))
+            .and_then(Value::as_str)
+        {
+            return Some(hash.to_string());
         }
     }
+    None
+}
+
+fn scan_timestamps(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
     for marker in ["generatedAt:", "timestamp:", "creationTimestamp:"] {
         if rendered.contains(marker) {
             errors.push(format!(
@@ -218,8 +303,34 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
             ));
         }
     }
-    errors.sort();
-    errors.dedup();
+    errors
+}
+
+fn scan_unpinned_images(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    for line in rendered.lines() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("image:") {
+            continue;
+        }
+        if trimmed.contains(":latest") {
+            errors.push(format!(
+                "rendered image uses forbidden latest tag: {trimmed}"
+            ));
+            continue;
+        }
+        if !trimmed.contains("@sha256:") {
+            errors.push(format!("rendered image is not digest pinned: {trimmed}"));
+        }
+    }
+    errors
+}
+
+fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    if rendered.contains("kind: ClusterRole") {
+        errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());
+    }
     errors
 }
 
@@ -368,7 +479,7 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
             ensure_namespace_exists(&process, "bijux-atlas", &args.dry_run)
                 .map_err(|e| e.to_stable_message())?;
             let render_path = repo_root
-                .join("artifacts/atlas-dev/ops")
+                .join("artifacts/ops")
                 .join(run_id.as_str())
                 .join(format!("render/{}/helm/render.yaml", profile.name));
             let mut apply_args = vec![
@@ -568,4 +679,27 @@ pub(crate) fn run_ops_status(args: &cli::OpsStatusArgs) -> Result<(String, i32),
     let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
     let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
     Ok((rendered, 0))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn scanner_detects_timestamp_markers() {
+        let errors = scan_timestamps("metadata:\n  creationTimestamp: now\n");
+        assert!(errors.iter().any(|e| e.contains("creationTimestamp")));
+    }
+
+    #[test]
+    fn scanner_detects_unpinned_images() {
+        let errors = scan_unpinned_images("image: registry.example/app:v1\n");
+        assert!(errors.iter().any(|e| e.contains("digest pinned")));
+    }
+
+    #[test]
+    fn scanner_detects_forbidden_kind() {
+        let errors = scan_forbidden_kinds("kind: ClusterRole\n");
+        assert!(errors.iter().any(|e| e.contains("ClusterRole")));
+    }
 }
