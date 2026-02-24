@@ -11,7 +11,9 @@ endif
 
 VERIFICATION_ACCEPT_CODES ?= 0
 VERIFICATION_ACCEPT_CODES_configs ?= 0 2
+VERIFICATION_ACCEPT_CODES__configs ?= 0 2
 VERIFICATION_ACCEPT_CODES_docs ?= 0 2
+VERIFICATION_ACCEPT_CODES__docs ?= 0 2
 
 verification: ## Run every target declared in makefiles/<module>.mk
 	@module="$(VERIFICATION_MODULE)"; \
