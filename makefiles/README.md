@@ -4,8 +4,8 @@ Owner: `build-and-release`
 
 ## Contract
 - Make is a thin wrapper layer.
-- Wrapper recipes delegate to `./bin/atlasctl ...` only.
-- Public target surface is defined by atlasctl make metadata and rendered by `make help`.
+- Wrapper recipes delegate to stable `bijux ...` surfaces.
+- Public target surface is defined by make metadata and rendered by `make help`.
 - `makefiles/root.mk` is the publish/router file, not a second control-plane.
 
 See `makefiles/CONTRACT.md` for normative rules.
@@ -42,7 +42,7 @@ Optional wrapper files (not part of default root include):
 
 ## Verification
 ```bash
-make atlasctl-check
+make ops-doctor
 make help
-./bin/atlasctl check run make
+bijux dev atlas check run --domain make
 ```

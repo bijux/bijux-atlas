@@ -147,7 +147,7 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make verify-inventory`
 
 ## Public Ops Run Commands
-- `././bin/atlasctl ops prereqs --report text`
-- `././bin/atlasctl ops doctor --report text`
-- `./bin/atlasctl ops stack --report text up`
-- `./bin/atlasctl ops stack --report text down`
+- `bijux dev atlas ops verify-tools --allow-subprocess --format text`
+- `bijux dev atlas ops doctor --format text`
+- `bijux dev atlas ops install --kind --apply --profile kind --allow-subprocess --allow-write --format text`
+- `bijux dev atlas ops down --profile kind --allow-subprocess --format text`
