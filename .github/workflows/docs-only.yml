@@ -5,7 +5,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
-      - 'makefiles/docs.mk'
+      - 'makefiles/_docs.mk'
       - 'docs/contracts/**/*.json'
       - 'docs/_generated/openapi/**'
       - 'configs/openapi/v1/openapi.generated.json'
@@ -25,12 +25,18 @@ jobs:
       TEMP: artifacts/isolates/docs-only/tmp
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          python-version: "3.11"
-      - run: make ci-docs
+          toolchain: 1.84.1
+      - run: make docs-doctor
+      - run: |
+          if command -v mkdocs >/dev/null 2>&1; then
+            cargo run -p bijux-dev-atlas -- docs check --allow-subprocess --allow-write --format json
+          else
+            echo "mkdocs not installed; skipping docs build check"
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: docs-site-pr
-          path: artifacts/docs/site
+          path: artifacts/atlas-dev/docs
