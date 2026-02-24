@@ -1,5 +1,8 @@
 #![forbid(unsafe_code)]
 
+mod cli;
+mod dispatch;
+
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
@@ -14,347 +17,14 @@ use bijux_dev_atlas_core::{
 };
 use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
-use clap::{Args, Parser, Subcommand, ValueEnum};
+use clap::Parser;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-
-#[derive(Parser, Debug)]
-#[command(name = "bijux-dev-atlas", version)]
-#[command(about = "Bijux Atlas development control-plane")]
-struct Cli {
-    #[arg(long, default_value_t = false)]
-    quiet: bool,
-    #[arg(long, default_value_t = false)]
-    verbose: bool,
-    #[arg(long, default_value_t = false)]
-    debug: bool,
-    #[arg(long, default_value_t = false)]
-    print_policies: bool,
-    #[arg(long)]
-    repo_root: Option<PathBuf>,
-    #[command(subcommand)]
-    command: Option<Command>,
-}
-
-#[derive(Subcommand, Debug)]
-enum Command {
-    List {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Explain {
-        check_id: String,
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Doctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Run {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long)]
-        artifacts_root: Option<PathBuf>,
-        #[arg(long)]
-        run_id: Option<String>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, default_value_t = false)]
-        allow_subprocess: bool,
-        #[arg(long, default_value_t = false)]
-        allow_git: bool,
-        #[arg(long = "allow-write", default_value_t = false)]
-        allow_write: bool,
-        #[arg(long, default_value_t = false)]
-        allow_network: bool,
-        #[arg(long, default_value_t = false)]
-        fail_fast: bool,
-        #[arg(long)]
-        max_failures: Option<usize>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-        #[arg(long, default_value_t = 0)]
-        durations: usize,
-    },
-    Ops {
-        #[command(subcommand)]
-        command: OpsCommand,
-    },
-    Check {
-        #[command(subcommand)]
-        command: CheckCommand,
-    },
-}
-
-#[derive(Subcommand, Debug)]
-enum CheckCommand {
-    List {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Explain {
-        check_id: String,
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Doctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-    },
-    Run {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
-        #[arg(long)]
-        artifacts_root: Option<PathBuf>,
-        #[arg(long)]
-        run_id: Option<String>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
-        suite: Option<String>,
-        #[arg(long, value_enum)]
-        domain: Option<DomainArg>,
-        #[arg(long)]
-        tag: Option<String>,
-        #[arg(long, value_name = "GLOB")]
-        id: Option<String>,
-        #[arg(long, default_value_t = false)]
-        include_internal: bool,
-        #[arg(long, default_value_t = false)]
-        include_slow: bool,
-        #[arg(long, default_value_t = false)]
-        allow_subprocess: bool,
-        #[arg(long, default_value_t = false)]
-        allow_git: bool,
-        #[arg(long = "allow-write", default_value_t = false)]
-        allow_write: bool,
-        #[arg(long, default_value_t = false)]
-        allow_network: bool,
-        #[arg(long, default_value_t = false)]
-        fail_fast: bool,
-        #[arg(long)]
-        max_failures: Option<usize>,
-        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-        format: FormatArg,
-        #[arg(long)]
-        out: Option<PathBuf>,
-        #[arg(long, default_value_t = 0)]
-        durations: usize,
-    },
-}
-
-#[derive(Clone, Copy, Debug, ValueEnum)]
-enum DomainArg {
-    Root,
-    Workflows,
-    Configs,
-    Docker,
-    Crates,
-    Ops,
-    Repo,
-    Docs,
-    Make,
-}
-
-#[derive(Clone, Copy, Debug, ValueEnum)]
-enum FormatArg {
-    Text,
-    Json,
-    Jsonl,
-}
-
-#[derive(Subcommand, Debug)]
-enum OpsCommand {
-    Doctor(OpsCommonArgs),
-    Validate(OpsCommonArgs),
-    Render(OpsRenderArgs),
-    Install(OpsInstallArgs),
-    Status(OpsStatusArgs),
-    ListProfiles(OpsCommonArgs),
-    ExplainProfile {
-        name: String,
-        #[command(flatten)]
-        common: OpsCommonArgs,
-    },
-    ListTools(OpsCommonArgs),
-    VerifyTools(OpsCommonArgs),
-    ListActions(OpsCommonArgs),
-    Up(OpsCommonArgs),
-    Down(OpsCommonArgs),
-    Clean(OpsCommonArgs),
-    Reset(OpsResetArgs),
-    Pins {
-        #[command(subcommand)]
-        command: OpsPinsCommand,
-    },
-    Generate {
-        #[command(subcommand)]
-        command: OpsGenerateCommand,
-    },
-}
-
-#[derive(Args, Debug, Clone)]
-struct OpsRenderArgs {
-    #[command(flatten)]
-    common: OpsCommonArgs,
-    #[arg(long, value_enum, default_value_t = OpsRenderTarget::Helm)]
-    target: OpsRenderTarget,
-    #[arg(long, default_value_t = false)]
-    check: bool,
-    #[arg(long, default_value_t = false)]
-    write: bool,
-    #[arg(long, default_value_t = false)]
-    stdout: bool,
-    #[arg(long, default_value_t = false)]
-    diff: bool,
-    #[arg(long)]
-    helm_binary: Option<String>,
-}
-
-#[derive(Clone, Copy, Debug, ValueEnum)]
-enum OpsRenderTarget {
-    Helm,
-    Kustomize,
-    Kind,
-}
-
-#[derive(Subcommand, Debug)]
-enum OpsPinsCommand {
-    Check(OpsCommonArgs),
-    Update {
-        #[arg(long, default_value_t = false)]
-        i_know_what_im_doing: bool,
-        #[command(flatten)]
-        common: OpsCommonArgs,
-    },
-}
-
-#[derive(Subcommand, Debug)]
-enum OpsGenerateCommand {
-    PinsIndex(OpsCommonArgs),
-}
-
-#[derive(Args, Debug, Clone)]
-struct OpsCommonArgs {
-    #[arg(long)]
-    repo_root: Option<PathBuf>,
-    #[arg(long)]
-    ops_root: Option<PathBuf>,
-    #[arg(long)]
-    profile: Option<String>,
-    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
-    format: FormatArg,
-    #[arg(long)]
-    out: Option<PathBuf>,
-    #[arg(long)]
-    run_id: Option<String>,
-    #[arg(long, default_value_t = false)]
-    strict: bool,
-    #[arg(long, default_value_t = false)]
-    allow_subprocess: bool,
-    #[arg(long, default_value_t = false)]
-    allow_write: bool,
-}
-
-#[derive(Args, Debug, Clone)]
-struct OpsInstallArgs {
-    #[command(flatten)]
-    common: OpsCommonArgs,
-    #[arg(long, default_value_t = false)]
-    kind: bool,
-    #[arg(long, default_value_t = false)]
-    apply: bool,
-    #[arg(long, default_value_t = false)]
-    plan: bool,
-    #[arg(long, default_value = "none")]
-    dry_run: String,
-    #[arg(long, default_value_t = false)]
-    force: bool,
-}
-
-#[derive(Args, Debug, Clone)]
-struct OpsStatusArgs {
-    #[command(flatten)]
-    common: OpsCommonArgs,
-    #[arg(long, value_enum, default_value_t = OpsStatusTarget::Local)]
-    target: OpsStatusTarget,
-}
-
-#[derive(Clone, Copy, Debug, ValueEnum)]
-enum OpsStatusTarget {
-    Local,
-    K8s,
-    Pods,
-    Endpoints,
-}
-
-#[derive(Args, Debug, Clone)]
-struct OpsResetArgs {
-    #[command(flatten)]
-    common: OpsCommonArgs,
-    #[arg(long = "reset-run-id")]
-    reset_id: String,
-}
+use crate::cli::{
+    Cli, DomainArg, FormatArg, OpsCommand, OpsCommonArgs, OpsGenerateCommand,
+    OpsPinsCommand, OpsRenderTarget, OpsStatusTarget,
+};
 
 #[derive(Debug, Deserialize, Clone)]
 struct StackProfiles {
@@ -726,7 +396,7 @@ fn render_explain_output(explain_text: String, format: FormatArg) -> Result<Stri
     }
 }
 
-struct CheckListOptions {
+pub(crate) struct CheckListOptions {
     repo_root: Option<PathBuf>,
     suite: Option<String>,
     domain: Option<DomainArg>,
@@ -738,7 +408,7 @@ struct CheckListOptions {
     out: Option<PathBuf>,
 }
 
-fn run_check_list(options: CheckListOptions) -> Result<(String, i32), String> {
+pub(crate) fn run_check_list(options: CheckListOptions) -> Result<(String, i32), String> {
     let root = resolve_repo_root(options.repo_root)?;
     let selectors = parse_selectors(
         options.suite,
@@ -755,7 +425,7 @@ fn run_check_list(options: CheckListOptions) -> Result<(String, i32), String> {
     Ok((rendered, 0))
 }
 
-fn run_check_explain(
+pub(crate) fn run_check_explain(
     check_id: String,
     repo_root: Option<PathBuf>,
     format: FormatArg,
@@ -769,7 +439,7 @@ fn run_check_explain(
     Ok((rendered, 0))
 }
 
-struct CheckRunOptions {
+pub(crate) struct CheckRunOptions {
     repo_root: Option<PathBuf>,
     artifacts_root: Option<PathBuf>,
     run_id: Option<String>,
@@ -790,7 +460,7 @@ struct CheckRunOptions {
     durations: usize,
 }
 
-fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
+pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
     let root = resolve_repo_root(options.repo_root)?;
     let selectors = parse_selectors(
         options.suite,
@@ -835,7 +505,7 @@ fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
     Ok((rendered, exit_code_for_report(&report)))
 }
 
-fn run_check_doctor(
+pub(crate) fn run_check_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,
     out: Option<PathBuf>,
@@ -904,7 +574,7 @@ fn run_check_doctor(
     Ok((rendered, exit))
 }
 
-fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), String> {
+pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
     let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
     let rendered = canonical_policy_json(&policies.to_document()).map_err(|err| err.to_string())?;
@@ -1256,7 +926,7 @@ fn render_ops_validation_output(
     Ok((rendered, exit))
 }
 
-fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
+pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let run: Result<(String, i32), String> = (|| match command {
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -2088,243 +1758,7 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
 
 fn main() {
     let cli = Cli::parse();
-    if cli.print_policies {
-        let exit = match run_print_policies(cli.repo_root.clone()) {
-            Ok((rendered, code)) => {
-                if !cli.quiet && !rendered.is_empty() {
-                    println!("{rendered}");
-                }
-                code
-            }
-            Err(err) => {
-                eprintln!("bijux-dev-atlas --print-policies failed: {err}");
-                1
-            }
-        };
-        std::process::exit(exit);
-    }
-
-    let Some(command) = cli.command else {
-        eprintln!(
-            "bijux-dev-atlas requires a subcommand unless --print-policies is provided"
-        );
-        std::process::exit(2);
-    };
-
-    let exit = match command {
-        Command::List {
-            repo_root,
-            suite,
-            domain,
-            tag,
-            id,
-            include_internal,
-            include_slow,
-            format,
-            out,
-        } => match run_check_list(CheckListOptions {
-            repo_root,
-            suite,
-            domain,
-            tag,
-            id,
-            include_internal,
-            include_slow,
-            format,
-            out,
-        }) {
-            Ok((text, code)) => {
-                if !cli.quiet && !text.is_empty() {
-                    println!("{text}");
-                }
-                code
-            }
-            Err(err) => {
-                eprintln!("bijux-dev-atlas list failed: {err}");
-                1
-            }
-        },
-        Command::Explain {
-            check_id,
-            repo_root,
-            format,
-            out,
-        } => match run_check_explain(check_id, repo_root, format, out) {
-            Ok((text, code)) => {
-                if !cli.quiet && !text.is_empty() {
-                    println!("{text}");
-                }
-                code
-            }
-            Err(err) => {
-                eprintln!("bijux-dev-atlas explain failed: {err}");
-                1
-            }
-        },
-        Command::Doctor {
-            repo_root,
-            format,
-            out,
-        } => match run_check_doctor(repo_root, format, out) {
-            Ok((rendered, code)) => {
-                if !cli.quiet && !rendered.is_empty() {
-                    if code == 0 {
-                        println!("{rendered}");
-                    } else {
-                        eprintln!("{rendered}");
-                    }
-                }
-                code
-            }
-            Err(err) => {
-                eprintln!("bijux-dev-atlas doctor failed: {err}");
-                1
-            }
-        },
-        Command::Run {
-            repo_root,
-            artifacts_root,
-            run_id,
-            suite,
-            domain,
-            tag,
-            id,
-            include_internal,
-            include_slow,
-            allow_subprocess,
-            allow_git,
-            allow_write,
-            allow_network,
-            fail_fast,
-            max_failures,
-            format,
-            out,
-            durations,
-        } => match run_check_run(CheckRunOptions {
-            repo_root,
-            artifacts_root,
-            run_id,
-            suite,
-            domain,
-            tag,
-            id,
-            include_internal,
-            include_slow,
-            allow_subprocess,
-            allow_git,
-            allow_write,
-            allow_network,
-            fail_fast,
-            max_failures,
-            format,
-            out,
-            durations,
-        }) {
-            Ok((rendered, code)) => {
-                if !cli.quiet {
-                    println!("{rendered}");
-                }
-                code
-            }
-            Err(err) => {
-                eprintln!("bijux-dev-atlas run failed: {err}");
-                1
-            }
-        },
-        Command::Check { command } => {
-            let result = match command {
-                CheckCommand::List {
-                    repo_root,
-                    suite,
-                    domain,
-                    tag,
-                    id,
-                    include_internal,
-                    include_slow,
-                    format,
-                    out,
-                } => run_check_list(CheckListOptions {
-                    repo_root,
-                    suite,
-                    domain,
-                    tag,
-                    id,
-                    include_internal,
-                    include_slow,
-                    format,
-                    out,
-                }),
-                CheckCommand::Explain {
-                    check_id,
-                    repo_root,
-                    format,
-                    out,
-                } => run_check_explain(check_id, repo_root, format, out),
-                CheckCommand::Doctor {
-                    repo_root,
-                    format,
-                    out,
-                } => run_check_doctor(repo_root, format, out),
-                CheckCommand::Run {
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    suite,
-                    domain,
-                    tag,
-                    id,
-                    include_internal,
-                    include_slow,
-                    allow_subprocess,
-                    allow_git,
-                    allow_write,
-                    allow_network,
-                    fail_fast,
-                    max_failures,
-                    format,
-                    out,
-                    durations,
-                } => run_check_run(CheckRunOptions {
-                    repo_root,
-                    artifacts_root,
-                    run_id,
-                    suite,
-                    domain,
-                    tag,
-                    id,
-                    include_internal,
-                    include_slow,
-                    allow_subprocess,
-                    allow_git,
-                    allow_write,
-                    allow_network,
-                    fail_fast,
-                    max_failures,
-                    format,
-                    out,
-                    durations,
-                }),
-            };
-            match result {
-                Ok((rendered, code)) => {
-                    if !cli.quiet && !rendered.is_empty() {
-                        println!("{rendered}");
-                    }
-                    code
-                }
-                Err(err) => {
-                    eprintln!("bijux-dev-atlas check failed: {err}");
-                    1
-                }
-            }
-        }
-        Command::Ops { command } => run_ops_command(cli.quiet, cli.debug, command),
-    };
-
-    if cli.verbose {
-        eprintln!("bijux-dev-atlas exit={exit}");
-    }
-    std::process::exit(exit);
+    std::process::exit(dispatch::run_cli(cli));
 }
 
 #[cfg(test)]
