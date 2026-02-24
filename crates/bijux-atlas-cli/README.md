@@ -1,34 +1,23 @@
 # bijux-atlas-cli
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+End-user Atlas CLI for dataset/catalog/ingest/query contract workflows.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Install and Use
+- Local binary: `cargo run -p bijux-atlas-cli --bin bijux-atlas -- <command>`
+- Examples:
+  - `bijux-atlas dataset verify --root <dir> --release 110 --species homo_sapiens --assembly GRCh38`
+  - `bijux-atlas catalog validate <path>`
+  - `bijux-atlas openapi generate --out configs/openapi/v1/openapi.generated.json`
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+## Command Surface
+- Stable command map: [docs/CLI_COMMAND_LIST.md](docs/CLI_COMMAND_LIST.md)
+- UX and output contract: [docs/CLI_UX_CONTRACT.md](docs/CLI_UX_CONTRACT.md)
+- Exit codes: [docs/EXIT_CODES.md](docs/EXIT_CODES.md)
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+## Stability Guarantees
+- Global flags and noun-first product commands are stable.
+- `--json` emits deterministic canonical JSON for CI snapshots.
+- Error payloads and exit code classes are stable contracts.
 
-## Telemetry
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
-
-## Tests
-- [tests/](tests/)
-
-## Benches
-- N/A (no benches in this crate)
-
-## Docs index
+## Docs
 - [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)
-
-## Command Routing
-- Runtime commands stay on `bijux atlas <...>` and execute `bijux-atlas`.
-- Atlas control-plane commands moved to `bijux dev atlas <...>` and execute `bijux-dev-atlas`.
