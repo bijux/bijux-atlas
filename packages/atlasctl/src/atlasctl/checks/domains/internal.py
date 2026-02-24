@@ -2,10 +2,56 @@ from __future__ import annotations
 
 import ast
 import json
+import os
 import re
 from pathlib import Path
-from .....core.process import run_command
 
+from ...core.process import run_command
+from ..model import CheckCategory, CheckDef
+
+
+REGISTRY_PATH = "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
+REQUIRED_OWNERS = "configs/make/ownership.json"
+REQUIRED_DOCS = {"docs/checks/registry.md", "docs/INDEX.md"}
+REQUIRED_GOLDENS = {
+    "packages/atlasctl/tests/goldens/check/check-list.json.golden",
+    "packages/atlasctl/tests/goldens/check/checks-tree.json.golden",
+    "packages/atlasctl/tests/goldens/check/checks-owners.json.golden",
+}
+
+
+def _changed_files(repo_root: Path) -> set[str]:
+    proc = run_command(
+        ["git", "diff", "--name-only", "HEAD"],
+        cwd=repo_root,
+    )
+    if proc.code != 0:
+        return set()
+    return {line.strip() for line in (proc.stdout or "").splitlines() if line.strip()}
+
+
+def _gate(repo_root: Path, *, required: set[str], label: str) -> tuple[int, list[str]]:
+    if str(os.environ.get("CI", "")).lower() not in {"1", "true", "yes"}:
+        return 0, []
+    changed = _changed_files(repo_root)
+    if REGISTRY_PATH not in changed:
+        return 0, []
+    if any(path in changed for path in required):
+        return 0, []
+    needed = ", ".join(sorted(required))
+    return 1, [f"registry changed; require {label} update: {needed}"]
+
+
+def check_registry_change_requires_owner_update(repo_root: Path) -> tuple[int, list[str]]:
+    return _gate(repo_root, required={REQUIRED_OWNERS}, label="owners")
+
+
+def check_registry_change_requires_docs_update(repo_root: Path) -> tuple[int, list[str]]:
+    return _gate(repo_root, required=REQUIRED_DOCS, label="docs index")
+
+
+def check_registry_change_requires_golden_update(repo_root: Path) -> tuple[int, list[str]]:
+    return _gate(repo_root, required=REQUIRED_GOLDENS, label="goldens")
 
 _CANONICAL_RE = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
 _CATALOG_PATH = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
@@ -16,7 +62,7 @@ _FORBIDDEN_ADJECTIVES_CONFIG = Path("configs/policy/forbidden-adjectives.json")
 
 
 def check_registry_integrity(repo_root: Path) -> tuple[int, list[str]]:
-    from ....registry.ssot import generate_registry_json
+    from ..registry.ssot import generate_registry_json
 
     try:
         _out, changed = generate_registry_json(repo_root, check_only=True)
@@ -34,7 +80,7 @@ def _catalog_rows(repo_root: Path) -> list[dict[str, object]]:
 
 
 def _entries(repo_root: Path):
-    from ....registry.ssot import load_registry_entries
+    from ..registry.ssot import load_registry_entries
 
     return load_registry_entries(repo_root)
 
@@ -89,7 +135,7 @@ def check_registry_speed_required(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_registry_suite_membership_required(repo_root: Path) -> tuple[int, list[str]]:
-    from .....registry.suites import resolve_check_ids, suite_manifest_specs
+    from ...registry.suites import resolve_check_ids, suite_manifest_specs
 
     covered: set[str] = set()
     for spec in suite_manifest_specs():
@@ -146,7 +192,7 @@ def check_registry_docs_meta_matches_runtime(repo_root: Path) -> tuple[int, list
 
 
 def check_registry_transition_complete(repo_root: Path) -> tuple[int, list[str]]:
-    from ....registry.ssot import check_id_alias_expiry, check_id_renames
+    from ..registry.ssot import check_id_alias_expiry, check_id_renames
     from datetime import date
 
     renames = check_id_renames(repo_root)
@@ -165,7 +211,7 @@ def check_registry_transition_complete(repo_root: Path) -> tuple[int, list[str]]
 
 
 def check_suites_inventory_ssot(repo_root: Path) -> tuple[int, list[str]]:
-    from .....registry.suites import suite_manifest_specs
+    from ...registry.suites import suite_manifest_specs
 
     specs = list(suite_manifest_specs())
     names = [spec.name for spec in specs]
@@ -434,3 +480,339 @@ def check_checks_no_commands_import(repo_root: Path) -> tuple[int, list[str]]:
         forbidden_prefixes=("atlasctl.commands",),
     )
     return (1, violations) if violations else (0, [])
+
+CHECKS = (
+    CheckDef(
+        "checks.registry_integrity",
+        "checks",
+        "validate checks registry TOML/JSON integrity and drift",
+        2500,
+        check_registry_integrity,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json.",
+        slow=True,
+        owners=("platform",),
+        tags=("checks", "registry"),
+    ),
+    CheckDef(
+        "checks.registry_change_owners_gate",
+        "checks",
+        "require ownership metadata update when checks registry changes",
+        500,
+        check_registry_change_requires_owner_update,
+        category=CheckCategory.POLICY,
+        fix_hint="Update configs/make/ownership.json when REGISTRY.toml changes.",
+        owners=("platform",),
+        tags=("checks", "registry", "ci"),
+    ),
+    CheckDef(
+        "checks.registry_change_docs_gate",
+        "checks",
+        "require docs update when checks registry changes",
+        500,
+        check_registry_change_requires_docs_update,
+        category=CheckCategory.POLICY,
+        fix_hint="Update docs/checks/registry.md when REGISTRY.toml changes.",
+        owners=("platform",),
+        tags=("checks", "registry", "ci"),
+    ),
+    CheckDef(
+        "checks.registry_change_goldens_gate",
+        "checks",
+        "require checks list/tree/owners goldens update when registry changes",
+        500,
+        check_registry_change_requires_golden_update,
+        category=CheckCategory.POLICY,
+        fix_hint="Refresh check list/tree/owners goldens when REGISTRY.toml changes.",
+        owners=("platform",),
+        tags=("checks", "registry", "ci"),
+    ),
+    CheckDef(
+        "checks.registry_all_checks_have_canonical_id",
+        "checks",
+        "require every registered check to expose a canonical checks_* id",
+        700,
+        check_registry_all_checks_have_canonical_id,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Update REGISTRY.toml ids to checks_<domain>_<area>_<name>.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_no_duplicate_canonical_id",
+        "checks",
+        "forbid duplicate canonical check ids in registry",
+        700,
+        check_registry_no_duplicate_canonical_id,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Deduplicate conflicting ids in REGISTRY.toml.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_canonical_id_matches_module_path",
+        "checks",
+        "require canonical id domain/area segments to match implementation module path",
+        900,
+        check_registry_canonical_id_matches_module_path,
+        category=CheckCategory.POLICY,
+        fix_hint="Align check module paths with canonical check id segments.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_owners_required",
+        "checks",
+        "require every registry entry to declare an owner",
+        500,
+        check_registry_owners_required,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Add owner field to registry entries.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_speed_required",
+        "checks",
+        "require speed classification for every registry entry (fast|slow|nightly)",
+        500,
+        check_registry_speed_required,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Set speed to fast, slow, or nightly in REGISTRY.toml.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_suite_membership_required",
+        "checks",
+        "require every registry check to be selected by at least one suite manifest",
+        900,
+        check_registry_suite_membership_required,
+        category=CheckCategory.POLICY,
+        fix_hint="Add unassigned checks to at least one suite in registry/suites_catalog.json.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_docs_link_required",
+        "checks",
+        "require docs_link metadata for every registry check entry",
+        700,
+        check_registry_docs_link_required,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Set docs_link to an existing documentation page in checks catalog generation.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_remediation_link_required",
+        "checks",
+        "require remediation_link metadata for every registry check entry",
+        700,
+        check_registry_remediation_link_required,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Set remediation_link to an existing remediation playbook page.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_docs_meta_runtime_drift",
+        "checks",
+        "require generated docs _meta checks registry file to match runtime registry",
+        700,
+        check_registry_docs_meta_matches_runtime,
+        category=CheckCategory.DRIFT,
+        fix_hint="Run `./bin/atlasctl gen checks-registry` and commit docs/_meta/checks-registry.txt.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.registry_transition_complete",
+        "checks",
+        "fail when check-id migration aliases remain after transition deadline",
+        700,
+        check_registry_transition_complete,
+        category=CheckCategory.POLICY,
+        fix_hint="Clear configs/policy/check-id-migration.json aliases after deadline or extend with explicit policy.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.suites_inventory_ssot",
+        "checks",
+        "require deterministic suite inventory in suite registry SSOT",
+        700,
+        check_suites_inventory_ssot,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Sort suite names and remove duplicates in registry/suites_catalog.json.",
+        owners=("platform",),
+        tags=("checks", "suite", "required"),
+    ),
+    CheckDef(
+        "checks.suites_no_orphans",
+        "checks",
+        "require every registered check to belong to at least one suite",
+        700,
+        check_suites_no_orphans,
+        category=CheckCategory.POLICY,
+        fix_hint="Add orphan checks to suite registry manifests.",
+        owners=("platform",),
+        tags=("checks", "suite", "required"),
+    ),
+    CheckDef(
+        "checks.owners_ssot",
+        "checks",
+        "require every check entry to have an owner in SSOT registry",
+        500,
+        check_owners_ssot,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Set owners for every check in REGISTRY.toml.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.remediation_ssot",
+        "checks",
+        "require every check entry to have remediation documentation link",
+        500,
+        check_remediation_ssot,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Set remediation_link for every check in checks catalog generation.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.docs_index_complete",
+        "checks",
+        "require checks docs index to include canonical check ids",
+        700,
+        check_docs_index_complete,
+        category=CheckCategory.DRIFT,
+        fix_hint="Regenerate/update packages/atlasctl/docs/checks/index.md with full canonical inventory.",
+        owners=("platform",),
+        tags=("checks", "docs", "required"),
+    ),
+    CheckDef(
+        "checks.count_budget",
+        "checks",
+        "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
+        500,
+        check_count_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Reduce checks count or intentionally raise budget in configs/policy/checks-count-budget.json.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.root_entry_budget",
+        "checks",
+        "enforce checks root entry budget",
+        500,
+        check_checks_root_entry_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Reduce top-level entries under packages/atlasctl/src/atlasctl/checks or adjust policy budget intentionally.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.domains_module_budget",
+        "checks",
+        "enforce checks domains module budget",
+        500,
+        check_checks_domains_module_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks domain module count within budget or adjust policy budget intentionally.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.tools_module_budget",
+        "checks",
+        "enforce checks tools module budget",
+        500,
+        check_checks_tools_module_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks tools module count within budget or adjust policy budget intentionally.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.module_loc_budget",
+        "checks",
+        "enforce checks module loc budget",
+        600,
+        check_checks_module_loc_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Split oversized checks modules into intent-focused modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.structured_results_legacy_signature_budget",
+        "checks",
+        "ratchet down legacy tuple check signatures in favor of structured results",
+        600,
+        check_structured_results_legacy_signature_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Migrate tuple[int, list[str]] check signatures to structured Violation/CheckOutcome results.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.domains_contracts_no_nested_dirs",
+        "checks",
+        "forbid nested directories under canonical domain contract modules",
+        500,
+        check_domains_contracts_no_nested_dirs,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep domain contracts flat: avoid nested directories under checks/domains/ops/contracts and checks/domains/policies/make.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_no_banned_adjectives_in_ids",
+        "checks",
+        "forbid policy-listed adjectives in canonical check ids",
+        500,
+        check_registry_no_banned_adjectives_in_ids,
+        category=CheckCategory.POLICY,
+        fix_hint="Rename check ids to remove policy-listed adjectives.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.surfaces_no_banned_adjectives_in_paths",
+        "checks",
+        "forbid policy-listed adjectives in atlasctl module/docs path names",
+        500,
+        check_surfaces_no_banned_adjectives_in_paths,
+        category=CheckCategory.POLICY,
+        fix_hint="Rename atlasctl source/docs files and directories to remove banned adjectives.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.commands_no_domains_import",
+        "checks",
+        "forbid command modules from importing checks domain modules directly",
+        500,
+        check_commands_no_domains_import,
+        category=CheckCategory.POLICY,
+        fix_hint="Use checks.registry APIs from command code; do not import checks.domains modules directly.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.checks_no_commands_import",
+        "checks",
+        "forbid checks modules from importing command modules",
+        500,
+        check_checks_no_commands_import,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks implementation independent from command layer imports.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+)
+
+__all__ = ["CHECKS"]
