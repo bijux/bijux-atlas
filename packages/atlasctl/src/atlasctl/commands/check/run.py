@@ -547,7 +547,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
     if sub == "workflow-calls-atlasctl":
         return impl._run(
             ctx,
-            ["python3", "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflow_calls_atlasctl.py"],
+            ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_workflow_calls_atlasctl.py"],
         )
     if sub == "ci-surface-documented":
         from ...checks.domains.docs.check_ci_surface_documented import main as run_ci_surface_documented

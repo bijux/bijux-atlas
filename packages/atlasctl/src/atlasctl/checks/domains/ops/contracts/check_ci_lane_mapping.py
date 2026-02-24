@@ -9,7 +9,15 @@ from pathlib import Path
 
 from atlasctl.core.exec import run
 
-ROOT = Path(__file__).resolve().parents[7]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists() and (base / ".github").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 CI_MK = ROOT / "makefiles" / "ci.mk"
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", re.M)
 

@@ -73,37 +73,37 @@ CHECKS: list[MakeCheck] = [
     _check(
         "ci-entrypoints",
         "Validate CI workflows only call allowed targets",
-        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_entrypoints.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ci_entrypoints.py",
         "Update workflow jobs to call approved public targets only.",
     ),
     _check(
         "workflow-command-bans",
         "Validate workflows ban direct cargo and internal make invocations",
-        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_workflow_command_bans.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_workflow_command_bans.py",
         "Use atlasctl commands or approved public wrappers in workflows.",
     ),
     _check(
         "ci-lane-mapping",
         "Validate ci.mk wrappers map 1:1 to atlasctl ci lanes",
-        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_lane_mapping.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ci_lane_mapping.py",
         "Keep ci.mk wrappers and atlasctl ci lane registry aligned.",
     ),
     _check(
         "ci-legacy-target-cutoff",
         "Validate CI workflows have no legacy targets after cutoff date",
-        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_legacy_target_cutoff.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ci_legacy_target_cutoff.py",
         "Replace legacy make target calls in workflows with canonical atlasctl-backed targets before cutoff date.",
     ),
     _check(
         "ci-write-scope",
         "Validate ci wrappers avoid direct writes outside isolate/evidence",
-        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_writes_scoped.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ci_writes_scoped.py",
         "Keep makefiles/ci.mk wrapper-only and route all writes through atlasctl-managed isolate/evidence outputs.",
     ),
     _check(
         "ci-artifact-uploads",
         "Validate CI workflows always upload artifacts for reports/logs",
-        "packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_artifact_uploads.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ci_artifact_uploads.py",
         "Add upload-artifact step with `if: always()` for workflows running CI.",
     ),
     _check_cmd(

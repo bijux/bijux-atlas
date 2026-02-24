@@ -6,7 +6,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[7]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists() and (base / ".github").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 WF = ROOT / ".github/workflows"
 DEV_MK = ROOT / "makefiles" / "dev.mk"
 CI_MK = ROOT / "makefiles" / "ci.mk"

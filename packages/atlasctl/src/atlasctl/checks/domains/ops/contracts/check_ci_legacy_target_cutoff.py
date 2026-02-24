@@ -7,7 +7,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[7]
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve()
+    for base in (cur, *cur.parents):
+        if (base / "makefiles").exists() and (base / "packages").exists() and (base / ".github").exists():
+            return base
+    raise RuntimeError("unable to resolve repository root")
+
+
+ROOT = _repo_root()
 WF = ROOT / ".github" / "workflows"
 LEGACY = ROOT / "configs" / "ops" / "nonroot-legacy-targets.txt"
 CUTOFF_DATE = dt.date(2026, 3, 1)
