@@ -2,6 +2,7 @@ name: ci-pr
 
 on:
   pull_request:
+  merge_group:
 
 permissions:
   contents: read
@@ -33,13 +34,6 @@ jobs:
               - 'configs/docs/**'
               - 'configs/openapi/**'
               - 'makefiles/_docs.mk'
-            code:
-              - 'crates/**'
-              - 'Cargo.toml'
-              - 'Cargo.lock'
-              - 'makefiles/**'
-              - 'configs/**'
-              - 'ops/**'
 
   minimal-root-policies:
     runs-on: ubuntu-latest
@@ -48,8 +42,9 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ci-pr-minimal
-      CARGO_TARGET_DIR: artifacts/isolates/ci-pr-minimal/target
-      CARGO_HOME: artifacts/isolates/ci-pr-minimal/cargo-home
+      CARGO_TARGET_DIR: .cache/cargo/target/ci-pr-minimal
+      CARGO_HOME: .cache/cargo/home/ci-pr-minimal
+      NEXTEST_CACHE_DIR: .cache/cargo/nextest/ci-pr-minimal
       TMPDIR: artifacts/isolates/ci-pr-minimal/tmp
       TMP: artifacts/isolates/ci-pr-minimal/tmp
       TEMP: artifacts/isolates/ci-pr-minimal/tmp
@@ -58,18 +53,52 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
+      - name: Restore cargo registry cache
+        id: cache-registry
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-pr-minimal/registry
+            .cache/cargo/home/ci-pr-minimal/git
+          key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Restore cargo target cache
+        id: cache-target
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/cargo/target/ci-pr-minimal
+          key: cargo-target-pr-minimal-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run minimal lane
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts/ci/reports
-          make ci-fast > artifacts/ci/reports/ci-fast-${RUN_ID}.json
-          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" artifacts/ci/reports/ci-fast-${RUN_ID}.json
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ci-pr-minimal"
+          mkdir -p "${report_root}" "${logs_root}"
+          make ci-fast > "${report_root}/ci-fast.json" 2> "${logs_root}/ci-fast.stderr.log"
+          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
+          printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo registry cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-pr-minimal/registry
+            .cache/cargo/home/ci-pr-minimal/git
+          key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Save cargo target cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/cargo/target/ci-pr-minimal
+          key: cargo-target-pr-minimal-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ci-fast-report-${{ env.RUN_ID }}
-          path: artifacts/ci/reports/ci-fast-${{ env.RUN_ID }}.json
+          name: ci-pr-minimal-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 5
 
   validate-pr:
     if: needs.route-changes.outputs.docs_only != 'true'
@@ -79,8 +108,9 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ci-pr
-      CARGO_TARGET_DIR: artifacts/isolates/ci-pr/target
-      CARGO_HOME: artifacts/isolates/ci-pr/cargo-home
+      CARGO_TARGET_DIR: .cache/cargo/target/ci-pr
+      CARGO_HOME: .cache/cargo/home/ci-pr
+      NEXTEST_CACHE_DIR: .cache/cargo/nextest/ci-pr
       TMPDIR: artifacts/isolates/ci-pr/tmp
       TMP: artifacts/isolates/ci-pr/tmp
       TEMP: artifacts/isolates/ci-pr/tmp
@@ -89,18 +119,52 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
+      - name: Restore cargo registry cache
+        id: cache-registry
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-pr/registry
+            .cache/cargo/home/ci-pr/git
+          key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Restore cargo target cache
+        id: cache-target
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/cargo/target/ci-pr
+          key: cargo-target-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run PR lane
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts/ci/reports
-          make ci-pr > artifacts/ci/reports/ci-pr-${RUN_ID}.json
-          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" artifacts/ci/reports/ci-pr-${RUN_ID}.json
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ci-pr"
+          mkdir -p "${report_root}" "${logs_root}"
+          make ci-pr > "${report_root}/ci-pr.json" 2> "${logs_root}/ci-pr.stderr.log"
+          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-pr.json"
+          printf "- lane: ci-pr\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/ci-pr.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo registry cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-pr/registry
+            .cache/cargo/home/ci-pr/git
+          key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Save cargo target cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/cargo/target/ci-pr
+          key: cargo-target-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ci-pr-report-${{ env.RUN_ID }}
-          path: artifacts/ci/reports/ci-pr-${{ env.RUN_ID }}.json
+          name: ci-pr-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 5
 
   supply-chain:
     runs-on: ubuntu-latest
@@ -108,8 +172,9 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ci-supply-chain
-      CARGO_TARGET_DIR: artifacts/isolates/ci-supply-chain/target
-      CARGO_HOME: artifacts/isolates/ci-supply-chain/cargo-home
+      CARGO_TARGET_DIR: .cache/cargo/target/ci-supply-chain
+      CARGO_HOME: .cache/cargo/home/ci-supply-chain
+      NEXTEST_CACHE_DIR: .cache/cargo/nextest/ci-supply-chain
       TMPDIR: artifacts/isolates/ci-supply-chain/tmp
       TMP: artifacts/isolates/ci-supply-chain/tmp
       TEMP: artifacts/isolates/ci-supply-chain/tmp
@@ -118,19 +183,53 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
+      - name: Restore cargo registry cache
+        id: cache-registry
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-supply-chain/registry
+            .cache/cargo/home/ci-supply-chain/git
+          key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Restore cargo target cache
+        id: cache-target
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/cargo/target/ci-supply-chain
+          key: cargo-target-pr-supply-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run audit lane
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts/ci/reports
-          make audit
-          printf '{"schema_version":1,"command":"make audit","status":"ok"}\n' > artifacts/ci/reports/supply-chain-${RUN_ID}.json
-          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" artifacts/ci/reports/supply-chain-${RUN_ID}.json
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ci-supply-chain"
+          mkdir -p "${report_root}" "${logs_root}"
+          make audit > "${logs_root}/audit.stdout.log" 2> "${logs_root}/audit.stderr.log"
+          printf '{"schema_version":1,"kind":"supply_chain_report_v1","command":"make audit","status":"ok"}\n' > "${report_root}/supply-chain.json"
+          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/supply-chain.json"
+          printf "- lane: supply-chain\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/supply-chain.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo registry cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-supply-chain/registry
+            .cache/cargo/home/ci-supply-chain/git
+          key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Save cargo target cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/cargo/target/ci-supply-chain
+          key: cargo-target-pr-supply-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: supply-chain-report-${{ env.RUN_ID }}
-          path: artifacts/ci/reports/supply-chain-${{ env.RUN_ID }}.json
+          name: ci-supply-chain-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 5
 
   workflow-policy:
     runs-on: ubuntu-latest
@@ -158,3 +257,24 @@ jobs:
         run: |
           set -euo pipefail
           ! rg -n "bash +scripts/|python(3)? +scripts/" .github/workflows
+      - name: Enforce no direct external tool invocations
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! rg -n "(^|\s)(helm|kubectl|k6|kind)(\s|$)" .github/workflows \
+            -g '!ops-integration-kind.yml' -g '!ci-pr.yml'
+      - name: Enforce dependabot config contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .github/dependabot.yml
+          rg -n 'package-ecosystem:\s+"cargo"' .github/dependabot.yml
+          rg -n 'package-ecosystem:\s+"github-actions"' .github/dependabot.yml
+      - name: Enforce cache size cap
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d .cache/cargo/target ]; then
+            size_kb="$(du -sk .cache/cargo/target | awk '{print $1}')"
+            [ "${size_kb}" -le 4194304 ]
+          fi
