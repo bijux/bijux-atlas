@@ -5,6 +5,9 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[features]
+kind_integration = []
+
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 serde.workspace = true
