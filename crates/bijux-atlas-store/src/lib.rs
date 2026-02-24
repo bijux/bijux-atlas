@@ -1,19 +1,32 @@
 #![forbid(unsafe_code)]
 
 mod backend;
+pub mod backends;
 mod catalog;
+mod contracts;
 mod manifest;
 mod paths;
+mod retry;
 
 pub use backend::{
     enforce_dataset_immutability, ArtifactStore, HttpReadonlyStore, LocalFsStore,
-    NoopInstrumentation, PublishLockGuard, RetryPolicy, S3LikeStore, StoreError, StoreErrorCode,
+    NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
     StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
 };
+#[cfg(feature = "backend-s3")]
+pub use backend::S3LikeStore;
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
 };
+pub use contracts::{
+    ArtifactRef, CatalogRef, StoreAdmin, StorePath, StoreRead, StoreWrite,
+};
 pub use manifest::{verify_expected_sha256, ManifestLock};
-pub use paths::{dataset_artifact_paths, manifest_lock_path, publish_lock_path};
+pub use paths::{
+    dataset_artifact_paths, dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key,
+    dataset_sqlite_key, manifest_lock_path, publish_lock_path, CATALOG_FILE, MANIFEST_FILE,
+    MANIFEST_LOCK_FILE, SQLITE_FILE,
+};
+pub use retry::{BackoffPolicy, RetryPolicy};
 
 pub const CRATE_NAME: &str = "bijux-atlas-store";

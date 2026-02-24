@@ -5,6 +5,10 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 
+[features]
+default = ["backend-s3"]
+backend-s3 = []
+
 [dependencies]
 bijux-atlas-core.workspace = true
 bijux-atlas-model.workspace = true
@@ -27,4 +31,8 @@ harness = false
 
 [[bench]]
 name = "catalog_merge"
+harness = false
+
+[[bench]]
+name = "store_hot_read"
 harness = false

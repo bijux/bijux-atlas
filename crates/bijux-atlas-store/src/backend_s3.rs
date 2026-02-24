@@ -1,12 +1,3 @@
-impl Default for RetryPolicy {
-    fn default() -> Self {
-        Self {
-            max_attempts: 4,
-            base_backoff_ms: 120,
-        }
-    }
-}
-
 pub struct S3LikeStore {
     pub endpoint: String,
     pub presigned_endpoint: Option<String>,
@@ -135,9 +126,7 @@ impl S3LikeStore {
                                         "partial content did not complete within retry budget",
                                     ));
                                 }
-                                thread::sleep(Duration::from_millis(
-                                    self.retry.base_backoff_ms.saturating_mul(attempt as u64),
-                                ));
+                                thread::sleep(self.retry.delay_for_attempt(attempt));
                                 continue;
                             }
                         }
@@ -172,8 +161,7 @@ impl S3LikeStore {
                 }
             }
             attempt += 1;
-            let backoff = self.retry.base_backoff_ms.saturating_mul(attempt as u64);
-            thread::sleep(Duration::from_millis(backoff));
+            thread::sleep(self.retry.delay_for_attempt(attempt));
         }
     }
 
@@ -200,7 +188,7 @@ impl S3LikeStore {
 
 impl ArtifactStore for S3LikeStore {
     fn list_datasets(&self) -> Result<Vec<DatasetId>, StoreError> {
-        let bytes = self.get_with_retry("catalog.json")?;
+        let bytes = self.get_with_retry(CATALOG_FILE)?;
         let catalog: Catalog = serde_json::from_slice(&bytes)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e.to_string()))?;
         validate_catalog_strict(&catalog)
@@ -209,8 +197,8 @@ impl ArtifactStore for S3LikeStore {
     }
 
     fn get_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError> {
-        let key = format!("{}/manifest.json", dataset.canonical_string());
-        let lock_key = format!("{}/manifest.lock", dataset.canonical_string());
+        let key = dataset_manifest_key(dataset);
+        let lock_key = dataset_manifest_lock_key(dataset);
         let bytes = self.get_with_retry(&key)?;
         let lock_bytes = self.get_with_retry(&lock_key)?;
         let lock: ManifestLock = serde_json::from_slice(&lock_bytes)
@@ -226,10 +214,7 @@ impl ArtifactStore for S3LikeStore {
     }
 
     fn get_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, StoreError> {
-        self.get_with_retry(&format!(
-            "{}/gene_summary.sqlite",
-            dataset.canonical_string()
-        ))
+        self.get_with_retry(&dataset_sqlite_key(dataset))
     }
 
     fn put_dataset(
@@ -252,7 +237,7 @@ impl ArtifactStore for S3LikeStore {
         verify_expected_sha256(sqlite_bytes, expected_sqlite_sha256)
             .map_err(|e| StoreError::new(StoreErrorCode::Validation, e))?;
 
-        let prefix = dataset.canonical_string();
+        let prefix = dataset_key_prefix(dataset);
         self.put_bytes(&format!("{prefix}/manifest.json.tmp"), manifest_bytes)?;
         self.put_bytes(&format!("{prefix}/gene_summary.sqlite.tmp"), sqlite_bytes)?;
 
