@@ -1,8 +1,0 @@
-# Allowlisted shell assets under atlasctl package tree.
-# These are fixtures/runtime helper assets and not direct user entrypoints.
-packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/assets/k8s_test_common.sh
-packages/atlasctl/src/atlasctl/commands/ops/observability/tests/assets/observability_test_lib.sh
-packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/ops_common.sh
-packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/root-lanes.sh
-packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/root-local.sh
-packages/atlasctl/src/atlasctl/commands/ops/stack/tests/assets/minio_invariants.sh
