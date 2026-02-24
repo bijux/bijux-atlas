@@ -19,7 +19,7 @@ Rust control-plane tool for Atlas development checks and workflows.
 - `crates`
 
 ## Non-goals
-- No direct dependency on `packages/atlasctl` runtime.
+- No direct dependency on the removed Python control-plane runtime.
 - No shell-script check execution as SSOT.
 
 ## Plugin dispatch

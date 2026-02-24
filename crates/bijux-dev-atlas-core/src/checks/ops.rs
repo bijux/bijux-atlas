@@ -538,7 +538,7 @@ fn checks_ops_no_python_legacy_runtime_refs(
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     let forbidden = [
-        ["packages/", "atlasctl"].concat(),
+        ["packages", "/", "atlasctl"].concat(),
         ["python -m ", "atlasctl"].concat(),
         ["./bin/", "atlasctl"].concat(),
     ];
