@@ -21,3 +21,15 @@ def test_python_sources_do_not_import_docs_domain_integrity_module() -> None:
     for path in src_root.rglob("*.py"):
         text = path.read_text(encoding="utf-8")
         assert "checks.tools.docs_domain.integrity" not in text, path.as_posix()
+
+
+def test_check_command_uses_deterministic_check_evidence_root() -> None:
+    command_py = Path("packages/atlasctl/src/atlasctl/commands/check/command.py")
+    text = command_py.read_text(encoding="utf-8")
+    assert 'CHECK_EVIDENCE_ROOT = "artifacts/atlasctl/check"' in text
+
+
+def test_check_command_blocks_running_from_ops_cwd() -> None:
+    command_py = Path("packages/atlasctl/src/atlasctl/commands/check/command.py")
+    text = command_py.read_text(encoding="utf-8")
+    assert "refusing to run checks from inside ops/" in text
