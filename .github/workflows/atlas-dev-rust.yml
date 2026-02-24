@@ -42,5 +42,12 @@ jobs:
           cargo test -p bijux-atlas-cli --test lib_contracts
       - name: Smoke help and version
         run: |
+          cargo run -p bijux-atlas-cli -- --help >/dev/null
+          cargo run -p bijux-atlas-cli -- --version >/dev/null
           cargo run -p bijux-dev-atlas -- --help >/dev/null
           cargo run -p bijux-dev-atlas -- --version >/dev/null
+      - name: Verify release binaries are produced
+        run: |
+          cargo build --release -p bijux-atlas-cli -p bijux-dev-atlas
+          test -x artifacts/target/release/bijux-atlas
+          test -x artifacts/target/release/bijux-dev-atlas

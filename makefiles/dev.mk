@@ -31,4 +31,13 @@ test: ## Rust tests lane
 test-all: ## Rust tests full variant (includes ignored)
 	@cargo test --workspace -- --include-ignored
 
-.PHONY: audit check coverage fmt lint test test-all
+install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
+	@mkdir -p artifacts/bin
+	@cargo build -p bijux-atlas-cli -p bijux-dev-atlas
+	@cp artifacts/target/debug/bijux-atlas artifacts/bin/bijux-atlas
+	@cp artifacts/target/debug/bijux-dev-atlas artifacts/bin/bijux-dev-atlas
+	@chmod +x artifacts/bin/bijux-atlas artifacts/bin/bijux-dev-atlas
+	@echo "installed artifacts/bin/bijux-atlas"
+	@echo "installed artifacts/bin/bijux-dev-atlas"
+
+.PHONY: audit check coverage fmt lint test test-all install-local
