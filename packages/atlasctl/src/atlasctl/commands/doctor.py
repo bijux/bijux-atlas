@@ -24,7 +24,7 @@ def _tool_version(cmd: list[str]) -> str:
 
 
 def build_report(ctx: RunContext) -> dict[str, object]:
-    toolchain_ok = (ctx.repo_root / "python-toolchain.toml").exists()
+    toolchain_ok = (ctx.repo_root / "packages/python-toolchain.toml").exists()
     repo_ok = (ctx.repo_root / ".git").exists() and (ctx.repo_root / "makefiles").is_dir()
     write_roots_ok = ctx.scripts_artifact_root.as_posix().find("artifacts/atlasctl") != -1
     python_env_ok = shutil.which("python3") is not None

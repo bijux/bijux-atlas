@@ -41,7 +41,7 @@ def test_root_shape_passes_with_required_and_allowed_entries(tmp_path: Path) -> 
     _touch(tmp_path / ".dockerignore")
     _touch(tmp_path / "mkdocs.yml")
     _touch(tmp_path / "rust-toolchain.toml")
-    _touch(tmp_path / "python-toolchain.toml")
+    _touch(tmp_path / "packages/python-toolchain.toml")
     _touch(tmp_path / "LICENSE")
     _touch(tmp_path / "CHANGELOG.md")
     _touch(tmp_path / "pyproject.toml")
