@@ -11,6 +11,7 @@ Docs:
 - [Effects policy](effects.md)
 - [Pagination contract](PAGINATION.md)
 - [Performance contract](PERF.md)
+- [Query language spec](QUERY_LANGUAGE_SPEC.md)
 - [Ordering rules](ORDERING.md)
 - [Cost estimator calibration](COST_ESTIMATOR.md)
 - [Adding filters safely](ADDING_FILTERS.md)
@@ -34,4 +35,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-
