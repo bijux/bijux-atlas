@@ -41,13 +41,10 @@ Current implementation maps these through `atlasctl` namespaces (for example `op
 - Internal commands may exist for maintainers but must be excluded from default user documentation.
 - Internal commands must still honor run context, schema contracts, and output policies.
 
-## Toolchain contract
+## Toolchain contract (historical legacy note)
 
-- Python toolchain manager: `pip-tools` (SSOT in `packages/python-toolchain.toml`).
-- Test runner: `pytest`.
-- Lint/format: `ruff`.
-- Type checker: `mypy`.
-- Packaging backend: `setuptools`.
+- Legacy atlasctl Python toolchain contracts are being removed with `packages/atlasctl`.
+- Active dev governance control-plane commands are Rust-native (`bijux-dev-atlas`).
 
 ## How to verify
 

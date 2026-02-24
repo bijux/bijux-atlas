@@ -197,6 +197,38 @@ pub(super) fn check_root_artifacts_reports_atlasctl_absent(
     }
 }
 
+pub(super) fn check_root_python_toolchain_toml_absent(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("packages/python-toolchain.toml");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(vec![violation(
+            "ROOT_PYTHON_TOOLCHAIN_TOML_PRESENT",
+            "legacy python toolchain SSOT file still exists".to_string(),
+            "delete packages/python-toolchain.toml after atlasctl removal",
+            Some(rel),
+        )])
+    } else {
+        Ok(Vec::new())
+    }
+}
+
+pub(super) fn check_root_uv_lock_absent(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("uv.lock");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(vec![violation(
+            "ROOT_UV_LOCK_PRESENT",
+            "legacy root uv.lock exists".to_string(),
+            "remove uv.lock if it is only used for atlasctl tooling",
+            Some(rel),
+        )])
+    } else {
+        Ok(Vec::new())
+    }
+}
+
 pub(super) fn check_docs_no_atlasctl_string_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
