@@ -101,6 +101,10 @@ pub enum Command {
         #[command(subcommand)]
         command: OpsCommand,
     },
+    Docs {
+        #[command(subcommand)]
+        command: DocsCommand,
+    },
     Check {
         #[command(subcommand)]
         command: CheckCommand,
@@ -337,4 +341,51 @@ pub struct OpsResetArgs {
     pub common: OpsCommonArgs,
     #[arg(long = "reset-run-id")]
     pub reset_id: String,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsCommand {
+    Doctor(DocsCommonArgs),
+    Validate(DocsCommonArgs),
+    Build(DocsCommonArgs),
+    Serve(DocsServeArgs),
+    Lint(DocsCommonArgs),
+    Links(DocsCommonArgs),
+    Inventory(DocsCommonArgs),
+    Grep(DocsGrepArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsServeArgs {
+    #[command(flatten)]
+    pub common: DocsCommonArgs,
+    #[arg(long, default_value_t = 8000)]
+    pub port: u16,
+    #[arg(long, default_value = "127.0.0.1")]
+    pub host: String,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct DocsGrepArgs {
+    #[command(flatten)]
+    pub common: DocsCommonArgs,
+    pub pattern: String,
 }
