@@ -97,6 +97,7 @@ mod tests {
                 "--i-know-what-im-doing",
             ],
             vec!["bijux-dev-atlas", "ops", "generate", "pins-index"],
+            vec!["bijux-dev-atlas", "ops", "generate", "pins-index", "--check"],
         ];
         for argv in commands {
             let cli = crate::Cli::try_parse_from(argv).expect("parse");

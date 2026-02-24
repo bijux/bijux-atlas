@@ -282,6 +282,73 @@ fn ops_report_writes_structured_report_under_artifacts() {
 }
 
 #[test]
+fn ops_generate_pins_index_check_fails_when_artifact_missing() {
+    let run_id = "ops_pins_index_check_missing";
+    let target = repo_root()
+        .join("artifacts/atlas-dev/ops")
+        .join(run_id)
+        .join("generate/pins.index.json");
+    let _ = fs::remove_file(&target);
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "generate",
+            "pins-index",
+            "--check",
+            "--run-id",
+            run_id,
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("pins-index check");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("pins-index check failed: missing"));
+}
+
+#[test]
+fn ops_generate_pins_index_check_passes_after_generation() {
+    let run_id = "ops_pins_index_check_ok";
+    let generate = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "generate",
+            "pins-index",
+            "--run-id",
+            run_id,
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("pins-index generate");
+    assert!(generate.status.success());
+    let check = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "generate",
+            "pins-index",
+            "--check",
+            "--run-id",
+            run_id,
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("pins-index check");
+    assert!(check.status.success(), "stderr={}", String::from_utf8_lossy(&check.stderr));
+    let payload: serde_json::Value =
+        serde_json::from_slice(&check.stdout).expect("valid json");
+    assert_eq!(
+        payload.get("summary").and_then(|v| v.get("errors")).and_then(|v| v.as_u64()),
+        Some(0)
+    );
+}
+
+#[test]
 fn ops_explain_profile_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
