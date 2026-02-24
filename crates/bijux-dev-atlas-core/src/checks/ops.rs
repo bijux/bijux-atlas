@@ -67,6 +67,14 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_make_no_direct_ops_script_execution" => {
             Some(check_make_no_direct_ops_script_execution)
         }
+        "checks_makefiles_no_cd_invocations" => Some(check_makefiles_no_cd_invocations),
+        "checks_makefiles_no_direct_tool_invocations" => {
+            Some(check_makefiles_no_direct_tool_invocations)
+        }
+        "checks_makefiles_no_direct_fetch_commands" => {
+            Some(check_makefiles_no_direct_fetch_commands)
+        }
+        "checks_makefiles_no_multiline_recipes" => Some(check_makefiles_no_multiline_recipes),
         "checks_root_dockerignore_context_contract" => Some(check_root_dockerignore_context_contract),
         "checks_root_dockerfile_pointer_only" => Some(check_root_dockerfile_pointer_only),
         "checks_dockerfiles_under_canonical_directory_only" => {
@@ -217,6 +225,10 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_make_no_atlasctl_string_references",
         "checks_workflows_no_direct_ops_script_execution",
         "checks_make_no_direct_ops_script_execution",
+        "checks_makefiles_no_cd_invocations",
+        "checks_makefiles_no_direct_tool_invocations",
+        "checks_makefiles_no_direct_fetch_commands",
+        "checks_makefiles_no_multiline_recipes",
         "checks_root_dockerignore_context_contract",
         "checks_root_dockerfile_pointer_only",
         "checks_dockerfiles_under_canonical_directory_only",
