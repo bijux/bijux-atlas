@@ -118,10 +118,10 @@ CHECKS: list[MakeCheck] = [
         "packages/atlasctl/src/atlasctl/checks/layout/docs/check_help_excludes_internal.py",
         "Move internal targets out of public help rendering.",
     ),
-    _check(
+    _check_cmd(
         "public-target-ownership",
         "Ensure public target ownership coverage",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_make_target_ownership.py",
+        ["python3", "-m", "atlasctl.cli", "check", "run", "--id", "make.target_ownership_complete", "--json"],
         "Add missing target owners in configs/make/ownership.json.",
     ),
     _check(
@@ -160,10 +160,10 @@ CHECKS: list[MakeCheck] = [
         "packages/atlasctl/src/atlasctl/checks/layout/docs/check_internal_targets_not_in_docs.py",
         "Replace internal target references in docs with public targets.",
     ),
-    _check(
+    _check_cmd(
         "makefile-boundaries",
         "Validate makefile target boundaries",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_makefile_target_boundaries.py",
+        ["python3", "-m", "atlasctl.cli", "check", "run", "--id", "make.target_boundaries_enforced", "--json"],
         "Keep top-level/public and internal target boundaries strict.",
     ),
     _check(
