@@ -18,7 +18,7 @@ This section does not duplicate full command reference details from each tooling
 
 ## Contracts
 
-- Tooling command surfaces are exposed via `make` and `atlasctl`.
+- Tooling command surfaces are exposed via `make` and `bijux dev atlas`.
 - Documentation pages must stay linked through index navigation.
 
 ## Failure modes
@@ -38,6 +38,7 @@ This section does not duplicate full command reference details from each tooling
 ## Pages
 
 - [atlasctl](atlasctl.md)
+- [atlasctl migration map](atlasctl-migration-map.md)
 - [bijux-atlas-py roadmap](bijux-atlas-py.md)
 - [Python version policy](python-version-policy.md)
 - [Scripts air-gapped mode](scripts-air-gapped.md)
