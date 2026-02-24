@@ -575,6 +575,9 @@ pub(crate) fn run_check_doctor(
     let docs_links = docs_links_payload(&docs_ctx, &docs_common)?;
     let docs_lint = docs_lint_payload(&docs_ctx, &docs_common)?;
     let check_exit = exit_code_for_report(&report);
+    let inventory_error_count = inventory_errors.len();
+    let ops_doctor_status =
+        if inventory_errors.is_empty() && check_exit == 0 { "ok" } else { "failed" };
     let status =
         if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
             "ok"
@@ -586,6 +589,11 @@ pub(crate) fn run_check_doctor(
         "status": status,
         "registry_errors": registry_report.errors,
         "inventory_errors": inventory_errors,
+        "ops_doctor": {
+            "status": ops_doctor_status,
+            "inventory_errors": inventory_error_count,
+            "checks_exit": check_exit
+        },
         "docs_doctor": {
             "validate_errors": docs_validate.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
             "links_errors": docs_links.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
