@@ -8,6 +8,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 pub const CONTRACT_SCHEMA_VERSION: u64 = 1;
+pub const fn schema_version() -> u64 {
+    CONTRACT_SCHEMA_VERSION
+}
 
 fn is_lower_snake(input: &str) -> bool {
     !input.is_empty()
@@ -49,6 +52,62 @@ impl CheckId {
 
     pub fn as_str(&self) -> &str {
         &self.0
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct ViolationId(String);
+
+impl ViolationId {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        let raw = value.trim();
+        if raw.is_empty() {
+            return Err("violation id cannot be empty".to_string());
+        }
+        if !is_lower_snake(raw) {
+            return Err(format!(
+                "invalid violation id `{raw}`: expected lowercase snake_case"
+            ));
+        }
+        Ok(Self(raw.to_string()))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl fmt::Display for ViolationId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct ArtifactPath(String);
+
+impl ArtifactPath {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        let raw = value.trim();
+        if raw.is_empty() {
+            return Err("artifact path cannot be empty".to_string());
+        }
+        if raw.contains('\n') || raw.contains('\r') {
+            return Err("artifact path must be single-line".to_string());
+        }
+        Ok(Self(raw.to_string()))
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl fmt::Display for ArtifactPath {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 
@@ -145,7 +204,7 @@ pub enum Effect {
     Network,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Severity {
     Info,
@@ -155,10 +214,12 @@ pub enum Severity {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Violation {
-    pub code: String,
+    #[serde(default = "schema_version")]
+    pub schema_version: u64,
+    pub code: ViolationId,
     pub message: String,
     pub hint: Option<String>,
-    pub path: Option<String>,
+    pub path: Option<ArtifactPath>,
     pub line: Option<u32>,
     pub severity: Severity,
 }
@@ -186,8 +247,10 @@ pub enum ErrorCode {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EvidenceRef {
+    #[serde(default = "schema_version")]
+    pub schema_version: u64,
     pub kind: String,
-    pub path: String,
+    pub path: ArtifactPath,
     pub content_type: String,
     pub description: String,
 }
@@ -214,6 +277,8 @@ pub struct CheckSpec {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CheckResult {
+    #[serde(default = "schema_version")]
+    pub schema_version: u64,
     pub id: CheckId,
     pub status: CheckStatus,
     pub skip_reason: Option<String>,
@@ -278,6 +343,12 @@ impl RunId {
     }
 }
 
+impl fmt::Display for RunId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct ArtifactsRoot(String);
@@ -312,6 +383,8 @@ impl ArtifactsRoot {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RunSummary {
+    #[serde(default = "schema_version")]
+    pub schema_version: u64,
     pub passed: u64,
     pub failed: u64,
     pub skipped: u64,
@@ -321,6 +394,8 @@ pub struct RunSummary {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RunReport {
+    #[serde(default = "schema_version")]
+    pub schema_version: u64,
     pub run_id: RunId,
     pub repo_root: String,
     pub command: String,
@@ -333,12 +408,61 @@ pub struct RunReport {
     pub timings_ms: BTreeMap<CheckId, u64>,
 }
 
+pub mod fingerprint {
+    use super::*;
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+
+    pub fn violation_fingerprint(violation: &Violation) -> String {
+        let mut hasher = DefaultHasher::new();
+        violation.code.hash(&mut hasher);
+        violation.message.hash(&mut hasher);
+        violation.path.hash(&mut hasher);
+        violation.line.hash(&mut hasher);
+        violation.severity.hash(&mut hasher);
+        format!("{:016x}", hasher.finish())
+    }
+
+    pub fn check_result_fingerprints(result: &CheckResult) -> Vec<String> {
+        result
+            .violations
+            .iter()
+            .map(violation_fingerprint)
+            .collect::<Vec<_>>()
+    }
+}
+
+pub mod display {
+    use super::*;
+
+    pub fn summary_line(report: &RunReport) -> String {
+        format!(
+            "run={} passed={} failed={} skipped={} errors={} total={}",
+            report.run_id,
+            report.summary.passed,
+            report.summary.failed,
+            report.summary.skipped,
+            report.summary.errors,
+            report.summary.total
+        )
+    }
+
+    pub fn check_result_line(result: &CheckResult) -> String {
+        format!(
+            "check={} status={:?} violations={}",
+            result.id,
+            result.status,
+            result.violations.len()
+        )
+    }
+}
+
 pub fn report_json_schema() -> Value {
     json!({
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "title": "bijux-dev-atlas run report",
         "type": "object",
-        "required": ["run_id", "repo_root", "command", "selections", "capabilities", "results", "durations_ms", "counts", "summary", "timings_ms"],
+        "required": ["schema_version", "run_id", "repo_root", "command", "selections", "capabilities", "results", "durations_ms", "counts", "summary", "timings_ms"],
         "properties": {
             "schema_version": {"type": "integer", "const": CONTRACT_SCHEMA_VERSION},
             "run_id": {"type": "string"},
@@ -409,5 +533,30 @@ mod tests {
         assert!(required_text.contains("capabilities"));
         assert!(required_text.contains("durations_ms"));
         assert!(required_text.contains("counts"));
+        assert!(required_text.contains("schema_version"));
+    }
+
+    #[test]
+    fn typed_ids_validate() {
+        assert!(ViolationId::parse("make_contract_missing").is_ok());
+        assert!(ViolationId::parse("MAKE_CONTRACT").is_err());
+        assert!(ArtifactPath::parse("ops/CONTRACT.md").is_ok());
+        assert!(ArtifactPath::parse("").is_err());
+    }
+
+    #[test]
+    fn violation_fingerprint_is_stable() {
+        let violation = Violation {
+            schema_version: schema_version(),
+            code: ViolationId::parse("ops_contract_missing").expect("id"),
+            message: "missing contract".to_string(),
+            hint: None,
+            path: Some(ArtifactPath::parse("ops/CONTRACT.md").expect("path")),
+            line: Some(1),
+            severity: Severity::Error,
+        };
+        let one = fingerprint::violation_fingerprint(&violation);
+        let two = fingerprint::violation_fingerprint(&violation);
+        assert_eq!(one, two);
     }
 }

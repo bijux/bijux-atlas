@@ -10,6 +10,7 @@
     "errors": 0,
     "failed": 1,
     "passed": 20,
+    "schema_version": 1,
     "skipped": 0,
     "total": 21
   },
@@ -42,15 +43,17 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "fail",
       "violations": [
         {
-          "code": "CRATES_UMBRELLA_DISPATCH_OWNER_INVALID",
+          "code": "crates_umbrella_dispatch_owner_invalid",
           "hint": "keep bijux-atlas-cli as the only owner of umbrella dispatch metadata flags",
           "line": null,
           "message": "umbrella dispatch ownership must be bijux-atlas-cli only; found {\"bijux-atlas-cli\", \"bijux-dev-atlas\"}",
           "path": "crates",
+          "schema_version": 1,
           "severity": "error"
         }
       ]
@@ -59,6 +62,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_crates_bijux_atlas_help_excludes_dev_commands",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -67,6 +71,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_crates_bijux_dev_atlas_help_dispatch_present",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -75,6 +80,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_docs_index_links",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -83,6 +89,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_make_wrapper_commands",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -91,6 +98,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_artifacts_gitignore_policy",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -99,6 +107,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_artifacts_not_tracked",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -107,6 +116,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_generated_readonly_markers",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -115,6 +125,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_makefile_routes_dev_atlas",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -123,6 +134,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_manifest_integrity",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -131,6 +143,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_no_atlasctl_invocations",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -139,6 +152,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_no_legacy_runner_paths",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -147,6 +161,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_no_legacy_tooling_refs",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -155,6 +170,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_no_python_legacy_runtime_refs",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -163,6 +179,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_no_scripts_areas_or_xtask_refs",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -171,6 +188,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_schema_presence",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -179,6 +197,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_surface_inventory",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -187,6 +206,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_surface_manifest",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -195,6 +215,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_tree_contract",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -203,6 +224,7 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_workflow_routes_dev_atlas",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
@@ -211,12 +233,14 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_repo_import_boundary",
+      "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
       "violations": []
     }
   ],
   "run_id": "registry_run",
+  "schema_version": 1,
   "selections": {
     "domain": "",
     "id_glob": "",
@@ -227,6 +251,7 @@
     "errors": 0,
     "failed": 1,
     "passed": 20,
+    "schema_version": 1,
     "skipped": 0,
     "total": 21
   },

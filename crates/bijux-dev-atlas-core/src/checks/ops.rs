@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use bijux_dev_atlas_model::{CheckId, Severity, Violation};
+use bijux_dev_atlas_model::{ArtifactPath, CheckId, Severity, Violation, ViolationId};
 use serde_yaml::Value as YamlValue;
 
 use crate::{CheckContext, CheckError, CheckFn};
@@ -301,10 +301,11 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
 
 fn violation(code: &str, message: String, hint: &str, path: Option<&Path>) -> Violation {
     Violation {
-        code: code.to_string(),
+        schema_version: bijux_dev_atlas_model::schema_version(),
+        code: ViolationId::parse(&code.to_ascii_lowercase()).expect("valid violation id"),
         message,
         hint: Some(hint.to_string()),
-        path: path.map(|p| p.display().to_string()),
+        path: path.map(|p| ArtifactPath::parse(&p.display().to_string()).expect("valid path")),
         line: None,
         severity: Severity::Error,
     }
