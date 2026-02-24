@@ -253,7 +253,53 @@ def check_make_target_ownership_complete(repo_root: Path) -> tuple[int, list[str
 
 
 def check_make_target_boundaries_enforced(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/policies/make/check_makefile_target_boundaries.py")
+    from .make_public_targets import public_names
+
+    public = set(public_names())
+    legacy_path = repo_root / "configs" / "ops" / "nonroot-legacy-targets.txt"
+    legacy = {
+        line.strip()
+        for line in legacy_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    } if legacy_path.exists() else set()
+
+    errs: list[str] = []
+    by_file: dict[str, set[str]] = {}
+    root_make = repo_root / "Makefile"
+    if root_make.exists():
+        by_file["Makefile"] = {
+            m.group("target")
+            for line in root_make.read_text(encoding="utf-8").splitlines()
+            if (m := _MAKE_TARGET_RE.match(line))
+            and not m.group("target").startswith(".")
+        }
+    for mk in sorted((repo_root / "makefiles").glob("*.mk")):
+        by_file[mk.name] = {
+            m.group("target")
+            for line in mk.read_text(encoding="utf-8").splitlines()
+            if (m := _MAKE_TARGET_RE.match(line))
+            and not m.group("target").startswith(".")
+        }
+
+    allowed_public_files = {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "verification.mk"}
+    publication_targets: set[str] = set()
+    for mk_name in ({"Makefile"} | allowed_public_files):
+        publication_targets |= by_file.get(mk_name, set())
+    for target in sorted(public):
+        if target not in publication_targets:
+            errs.append(f"public target must be defined in an allowed makefile: {target}")
+
+    current_legacy: set[str] = set()
+    for mk_name, targets in by_file.items():
+        if mk_name in {"root.mk", "product.mk", "dev.mk", "ci.mk", "docs.mk", "ops.mk", "configs.mk", "policies.mk", "packages.mk", "atlasctl.mk", "verification.mk", "env.mk", "_macros.mk"}:
+            continue
+        for target in sorted(targets):
+            if target.startswith("internal/") or target.startswith("_") or target.startswith("."):
+                continue
+            current_legacy.add(f"{mk_name}:{target}")
+    for item in sorted(current_legacy - legacy):
+        errs.append(f"new non-internal target outside root/help: {item} (must be internal/... or _..., or update baseline intentionally)")
+    return (0 if not errs else 1), errs
 
 
 def check_make_index_drift_contract(repo_root: Path) -> tuple[int, list[str]]:
