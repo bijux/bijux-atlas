@@ -352,7 +352,8 @@ pub fn expand_suite(registry: &Registry, suite_id: &SuiteId) -> Result<Vec<Check
         let in_tag =
             suite.tags_any.is_empty() || check.tags.iter().any(|tag| suite.tags_any.contains(tag));
         let explicit = suite.checks.iter().any(|check_id| check_id == &check.id);
-        if (in_domain && in_tag) || explicit {
+        let filters_present = !suite.domains.is_empty() || !suite.tags_any.is_empty();
+        if explicit || (filters_present && in_domain && in_tag) {
             out.insert(check.id.as_str().to_string(), check.clone());
         }
     }

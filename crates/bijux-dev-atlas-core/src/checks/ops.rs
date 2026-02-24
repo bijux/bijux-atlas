@@ -28,6 +28,30 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_makefile_routes_dev_atlas" => Some(checks_ops_makefile_routes_dev_atlas),
         "checks_ops_workflow_routes_dev_atlas" => Some(checks_ops_workflow_routes_dev_atlas),
         "checks_ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
+        "checks_root_packages_atlasctl_absent" => Some(check_root_packages_atlasctl_absent),
+        "checks_docs_no_atlasctl_string_references" => Some(check_docs_no_atlasctl_string_references),
+        "checks_workflows_no_atlasctl_string_references" => {
+            Some(check_workflows_no_atlasctl_string_references)
+        }
+        "checks_make_no_atlasctl_string_references" => {
+            Some(check_make_no_atlasctl_string_references)
+        }
+        "checks_workflows_no_direct_ops_script_execution" => {
+            Some(check_workflows_no_direct_ops_script_execution)
+        }
+        "checks_make_no_direct_ops_script_execution" => Some(check_make_no_direct_ops_script_execution),
+        "checks_root_no_scripts_areas_presence_or_references" => {
+            Some(check_root_no_scripts_areas_presence_or_references)
+        }
+        "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch" => {
+            Some(check_crates_bijux_atlas_cli_owns_umbrella_dispatch)
+        }
+        "checks_crates_bijux_atlas_help_excludes_dev_commands" => {
+            Some(check_crates_bijux_atlas_help_excludes_dev_commands)
+        }
+        "checks_crates_bijux_dev_atlas_help_dispatch_present" => {
+            Some(check_crates_bijux_dev_atlas_help_dispatch_present)
+        }
         _ => None,
     }
 }
@@ -684,4 +708,239 @@ fn check_ops_internal_registry_consistency(
             Some(Path::new(crate::DEFAULT_REGISTRY_PATH)),
         )])
     }
+}
+
+fn check_root_packages_atlasctl_absent(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("packages/atlasctl");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(vec![Violation {
+            code: "ROOT_PACKAGES_ATLASCTL_STILL_PRESENT".to_string(),
+            message: "legacy packages/atlasctl directory still exists".to_string(),
+            hint: Some("remove packages/atlasctl after migration closure".to_string()),
+            path: Some(rel.display().to_string()),
+            line: None,
+            severity: Severity::Warn,
+        }])
+    } else {
+        Ok(Vec::new())
+    }
+}
+
+fn check_docs_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_string_references_under(ctx, "docs", "atlasctl", "DOCS_ATLASCTL_REFERENCE_FOUND")
+}
+
+fn check_workflows_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_string_references_under(
+        ctx,
+        ".github/workflows",
+        "atlasctl",
+        "WORKFLOW_ATLASCTL_REFERENCE_FOUND",
+    )
+}
+
+fn check_make_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_string_references_under(ctx, "makefiles", "atlasctl", "MAKE_ATLASCTL_REFERENCE_FOUND")
+}
+
+fn check_workflows_no_direct_ops_script_execution(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        ".github/workflows",
+        &["bash ops/", "sh ops/", "./ops/"],
+        "WORKFLOW_DIRECT_OPS_SCRIPT_EXECUTION_FOUND",
+    )
+}
+
+fn check_make_no_direct_ops_script_execution(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        "makefiles",
+        &["bash ops/", "sh ops/", "./ops/"],
+        "MAKE_DIRECT_OPS_SCRIPT_EXECUTION_FOUND",
+    )
+}
+
+fn check_root_no_scripts_areas_presence_or_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let root = Path::new("scripts/areas");
+    if ctx.adapters.fs.exists(ctx.repo_root, root) {
+        violations.push(violation(
+            "ROOT_SCRIPTS_AREAS_DIRECTORY_PRESENT",
+            "scripts/areas directory exists".to_string(),
+            "remove scripts/areas; route control-plane through bijux dev atlas",
+            Some(root),
+        ));
+    }
+    for rel in ["makefiles", ".github/workflows", "docs", "ops"] {
+        let nested =
+            check_no_string_references_under(ctx, rel, "scripts/areas", "ROOT_SCRIPTS_AREAS_REFERENCE_FOUND")?;
+        violations.extend(nested);
+    }
+    Ok(violations)
+}
+
+fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let crates_root = ctx.repo_root.join("crates");
+    if !crates_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut owners = BTreeSet::new();
+    for file in walk_files(&crates_root) {
+        if file.extension().and_then(|v| v.to_str()) != Some("rs") {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&file) else {
+            continue;
+        };
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+        if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
+            continue;
+        }
+        if content.contains("--bijux-plugin-metadata") || content.contains("--umbrella-version") {
+            let owner = rel
+                .components()
+                .nth(1)
+                .and_then(|v| v.as_os_str().to_str())
+                .unwrap_or_default()
+                .to_string();
+            if !owner.is_empty() {
+                owners.insert(owner);
+            }
+        }
+    }
+    if owners == BTreeSet::from(["bijux-atlas-cli".to_string()]) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "CRATES_UMBRELLA_DISPATCH_OWNER_INVALID",
+            format!("umbrella dispatch ownership must be bijux-atlas-cli only; found {owners:?}"),
+            "keep bijux-atlas-cli as the only owner of umbrella dispatch metadata flags",
+            Some(Path::new("crates")),
+        )])
+    }
+}
+
+fn check_crates_bijux_atlas_help_excludes_dev_commands(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let src = ctx.repo_root.join("crates/bijux-atlas-cli/src/lib.rs");
+    let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
+    if text.contains("Subcommand::Dev") {
+        Ok(vec![violation(
+            "CRATES_ATLAS_HELP_EXPOSES_DEV_COMMANDS",
+            "bijux atlas help surface must not include dev commands".to_string(),
+            "move dev command routing under bijux-dev-atlas only",
+            Some(Path::new("crates/bijux-atlas-cli/src/lib.rs")),
+        )])
+    } else {
+        Ok(Vec::new())
+    }
+}
+
+fn check_crates_bijux_dev_atlas_help_dispatch_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let src = ctx.repo_root.join("crates/bijux-atlas-cli/src/lib.rs");
+    let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
+    if text.contains("bijux dev atlas <command>") {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "CRATES_DEV_ATLAS_DISPATCH_HINT_MISSING",
+            "bijux atlas command routing must advertise `bijux dev atlas --help`".to_string(),
+            "restore dev atlas dispatch hint in bijux-atlas-cli help routing",
+            Some(Path::new("crates/bijux-atlas-cli/src/lib.rs")),
+        )])
+    }
+}
+
+fn check_no_string_references_under(
+    ctx: &CheckContext<'_>,
+    rel_root: &str,
+    needle: &str,
+    code: &str,
+) -> Result<Vec<Violation>, CheckError> {
+    let base = ctx.repo_root.join(rel_root);
+    if !base.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    for file in walk_files(&base) {
+        let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "rs" {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&file) else {
+            continue;
+        };
+        for line in content.lines() {
+            if line.contains(needle) {
+                let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+                violations.push(violation(
+                    code,
+                    format!("forbidden `{needle}` reference in {}: `{}`", rel.display(), line.trim()),
+                    "remove legacy references and route through bijux dev atlas",
+                    Some(rel),
+                ));
+                break;
+            }
+        }
+    }
+    Ok(violations)
+}
+
+fn check_no_any_string_references_under(
+    ctx: &CheckContext<'_>,
+    rel_root: &str,
+    needles: &[&str],
+    code: &str,
+) -> Result<Vec<Violation>, CheckError> {
+    let base = ctx.repo_root.join(rel_root);
+    if !base.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    for file in walk_files(&base) {
+        let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "rs" {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&file) else {
+            continue;
+        };
+        for line in content.lines() {
+            for needle in needles {
+                if line.contains(needle) {
+                    let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+                    violations.push(violation(
+                        code,
+                        format!(
+                            "forbidden `{needle}` reference in {}: `{}`",
+                            rel.display(),
+                            line.trim()
+                        ),
+                        "remove direct ops script execution and route through bijux dev atlas",
+                        Some(rel),
+                    ));
+                    break;
+                }
+            }
+        }
+    }
+    Ok(violations)
 }
