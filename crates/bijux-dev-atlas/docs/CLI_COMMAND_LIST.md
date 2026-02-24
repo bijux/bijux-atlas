@@ -1,7 +1,3 @@
-list
-explain
-doctor
-run
 ops
 docs
 configs

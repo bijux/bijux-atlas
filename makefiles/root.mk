@@ -48,7 +48,7 @@ dev-atlas: ## Print canonical dev-atlas invocation and examples
 	@printf '%s\n' "Local: cargo run -q -p bijux-dev-atlas -- <args>"
 	@printf '%s\n' "Installed umbrella: bijux dev atlas <args>"
 	@printf '%s\n' "Examples:"
-	@printf '%s\n' "  $(DEV_ATLAS) doctor --format json"
+	@printf '%s\n' "  $(DEV_ATLAS) check doctor --format json"
 	@printf '%s\n' "  $(DEV_ATLAS) check list --format text"
 	@printf '%s\n' "  $(DEV_ATLAS) ops validate --profile kind --format json"
 
