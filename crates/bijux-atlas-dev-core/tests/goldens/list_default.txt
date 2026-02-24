@@ -1,0 +1,4 @@
+docs_index_links	docs index links must resolve
+make_wrapper_commands	make wrapper commands stay canonical
+ops_surface_manifest	ops surface manifest consistency
+repo_import_boundary	repo import boundary contracts

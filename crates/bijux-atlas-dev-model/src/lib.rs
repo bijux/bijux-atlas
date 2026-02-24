@@ -24,7 +24,9 @@ impl CheckId {
             return Err("check id cannot be empty".to_string());
         }
         if !is_lower_snake(raw) {
-            return Err(format!("invalid check id `{raw}`: expected lowercase snake_case"));
+            return Err(format!(
+                "invalid check id `{raw}`: expected lowercase snake_case"
+            ));
         }
         Ok(Self(raw.to_string()))
     }
@@ -65,7 +67,9 @@ impl Tag {
             return Err(format!("tag `{raw}` exceeds max length {}", Self::MAX_LEN));
         }
         if !is_lower_snake(raw) {
-            return Err(format!("invalid tag `{raw}`: expected lowercase snake_case"));
+            return Err(format!(
+                "invalid tag `{raw}`: expected lowercase snake_case"
+            ));
         }
         Ok(Self(raw.to_string()))
     }
@@ -92,7 +96,9 @@ impl SuiteId {
             return Err("suite id cannot be empty".to_string());
         }
         if !is_lower_snake(raw) {
-            return Err(format!("invalid suite id `{raw}`: expected lowercase snake_case"));
+            return Err(format!(
+                "invalid suite id `{raw}`: expected lowercase snake_case"
+            ));
         }
         Ok(Self(raw.to_string()))
     }
@@ -165,6 +171,7 @@ pub struct CheckSpec {
     pub id: CheckId,
     pub domain: DomainId,
     pub title: String,
+    pub docs: String,
     pub tags: Vec<Tag>,
     pub suites: Vec<SuiteId>,
     pub effects_required: Vec<Effect>,
@@ -192,7 +199,9 @@ impl RunId {
             return Err("run id cannot be empty".to_string());
         }
         if !is_lower_snake(raw) {
-            return Err(format!("invalid run id `{raw}`: expected lowercase snake_case"));
+            return Err(format!(
+                "invalid run id `{raw}`: expected lowercase snake_case"
+            ));
         }
         Ok(Self(raw.to_string()))
     }
