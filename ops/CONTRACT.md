@@ -57,7 +57,7 @@ Runtime outputs (ephemeral):
 
 - Additive updates stay backward-compatible within a major version.
 - Breaking updates require a schema version bump and migration notes in this contract.
-- Contract conformance is gated by atlasctl checks and CI suites.
+- Contract conformance is gated by `bijux dev atlas` checks and CI suites.
 
 ## Naming Policy
 
