@@ -166,18 +166,26 @@ def check_registry_single_source(repo_root: Path) -> tuple[int, list[str]]:
     src_root = repo_root / "packages/atlasctl/src/atlasctl"
     command_spec_offenders: list[str] = []
     checkdef_offenders: list[str] = []
+    allowed_checkdef_paths = {
+        "packages/atlasctl/src/atlasctl/checks/domains/__init__.py",
+    }
     for path in sorted(src_root.rglob("*.py")):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
         if ("Command" + "Spec(") in text and rel != "packages/atlasctl/src/atlasctl/cli/surface_registry.py":
             command_spec_offenders.append(rel)
-        if ("Check" + "Def(") in text and "/checks/" in rel and not rel.endswith("__init__.py"):
+        if rel.startswith("packages/atlasctl/src/atlasctl/checks/domains/") and rel.endswith(".py"):
+            allowed_checkdef_paths.add(rel)
+        # Transitional allowance while tools mirrors are being migrated into canonical domains.
+        if rel.startswith("packages/atlasctl/src/atlasctl/checks/tools/") and rel.endswith("/__init__.py"):
+            allowed_checkdef_paths.add(rel)
+        if ("Check" + "Def(") in text and "/checks/" in rel and rel not in allowed_checkdef_paths:
             checkdef_offenders.append(rel)
     errors: list[str] = []
     if command_spec_offenders:
         errors.append(f"command registration must be defined only in cli/surface_registry.py: {', '.join(command_spec_offenders)}")
     if checkdef_offenders:
-        errors.append(f"check registration must be declared in checks/*/__init__.py only: {', '.join(checkdef_offenders)}")
+        errors.append(f"check registration must be declared only in checks/domains modules: {', '.join(checkdef_offenders)}")
     return (0 if not errors else 1), errors
 
 
