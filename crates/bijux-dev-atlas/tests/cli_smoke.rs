@@ -93,13 +93,12 @@ fn dev_atlas_help_command_list_matches_doc() {
     let mut observed = parse_commands_from_help(&help);
     observed.sort();
 
-    let mut expected = fs::read_to_string(
-        repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"),
-    )
-    .expect("dev command list")
-    .lines()
-    .map(ToString::to_string)
-    .collect::<Vec<_>>();
+    let mut expected =
+        fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"))
+            .expect("dev command list")
+            .lines()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
     expected.sort();
     assert_eq!(observed, expected);
 }

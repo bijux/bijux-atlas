@@ -38,11 +38,19 @@ pub(super) fn check_make_governance_wrappers_bijux_only(
     let mut violations = Vec::new();
     for line in content.lines().filter(|line| line.starts_with('\t')) {
         let trimmed = line.trim();
-        if !(trimmed.contains("make ") || trimmed.contains("$(BIJUX_DEV_ATLAS)") || trimmed.contains("$(BIJUX) dev atlas")) {
+        if !(trimmed.contains("make ")
+            || trimmed.contains("$(BIJUX_DEV_ATLAS)")
+            || trimmed.contains("$(BIJUX) dev atlas"))
+        {
             continue;
         }
         let words = trimmed.split_whitespace().collect::<Vec<_>>();
-        if words.iter().any(|w| matches!(*w, "python" | "python3" | "bash" | "helm" | "kubectl" | "k6")) {
+        if words.iter().any(|w| {
+            matches!(
+                *w,
+                "python" | "python3" | "bash" | "helm" | "kubectl" | "k6"
+            )
+        }) {
             violations.push(violation(
                 "MAKE_GOVERNANCE_DELEGATION_ONLY_VIOLATION",
                 format!("governance wrapper must be delegation-only: `{trimmed}`"),
@@ -87,9 +95,15 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
             ));
         }
         let tokens = line.split_whitespace().collect::<Vec<_>>();
-        let direct_tool = tokens.first().copied().unwrap_or_default().trim_start_matches('@');
-        if matches!(direct_tool, "python" | "python3" | "bash" | "sh" | "kubectl" | "helm" | "k6")
-        {
+        let direct_tool = tokens
+            .first()
+            .copied()
+            .unwrap_or_default()
+            .trim_start_matches('@');
+        if matches!(
+            direct_tool,
+            "python" | "python3" | "bash" | "sh" | "kubectl" | "helm" | "k6"
+        ) {
             violations.push(violation(
                 "MAKE_OPS_DELEGATION_ONLY_VIOLATION",
                 format!("makefiles/ops.mk must be delegation-only: `{line}`"),
@@ -148,7 +162,10 @@ pub(super) fn check_make_governance_wrappers_no_direct_cargo(
         if line.contains("cargo ") {
             violations.push(violation(
                 "MAKE_GOVERNANCE_DIRECT_CARGO_REFERENCE_FOUND",
-                format!("governance wrapper must not call cargo directly: `{}`", line.trim()),
+                format!(
+                    "governance wrapper must not call cargo directly: `{}`",
+                    line.trim()
+                ),
                 "route governance wrappers through bijux dev atlas",
                 Some(rel),
             ));
@@ -238,8 +255,16 @@ pub(super) fn check_crates_command_namespace_ownership_unique(
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let dev = fs::read_to_string(ctx.repo_root.join(dev_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let runtime_first = runtime.lines().map(str::trim).filter(|v| !v.is_empty()).collect::<BTreeSet<_>>();
-    let dev_first = dev.lines().map(str::trim).filter(|v| !v.is_empty()).collect::<BTreeSet<_>>();
+    let runtime_first = runtime
+        .lines()
+        .map(str::trim)
+        .filter(|v| !v.is_empty())
+        .collect::<BTreeSet<_>>();
+    let dev_first = dev
+        .lines()
+        .map(str::trim)
+        .filter(|v| !v.is_empty())
+        .collect::<BTreeSet<_>>();
     let overlap = runtime_first
         .intersection(&dev_first)
         .filter(|v| **v != "version")

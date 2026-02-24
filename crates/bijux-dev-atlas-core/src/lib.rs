@@ -13,8 +13,8 @@ use bijux_dev_atlas_model::{
 use serde::Deserialize;
 use std::borrow::Cow;
 
-pub mod checks;
 mod check_runner;
+pub mod checks;
 pub mod ops_inventory;
 mod report_rendering;
 
@@ -450,13 +450,13 @@ pub fn registry_doctor(repo_root: &Path) -> RegistryDoctorReport {
     }
 }
 
+#[cfg(test)]
+pub(crate) use check_runner::evidence_path_has_timestamp;
 pub use check_runner::run_checks;
 pub use report_rendering::{
     exit_code_for_report, render_ci_summary_line, render_json, render_jsonl, render_text_summary,
     render_text_with_durations,
 };
-#[cfg(test)]
-pub(crate) use check_runner::evidence_path_has_timestamp;
 
 #[cfg(test)]
 mod lib_tests;
