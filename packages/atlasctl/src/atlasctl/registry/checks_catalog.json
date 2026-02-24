@@ -17388,7 +17388,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 1800,
+        "timeout_ms": 400,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
@@ -18170,7 +18170,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 400,
+        "timeout_ms": 1400,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
