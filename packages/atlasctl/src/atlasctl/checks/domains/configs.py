@@ -24,3 +24,10 @@ CHECKS: tuple[CheckDef, ...] = (
         fix_hint="Deduplicate tool.atlasctl/tool.pytest sections in packages/atlasctl/pyproject.toml.",
     ),
 )
+
+
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]

@@ -2283,4 +2283,8 @@ CHECKS = (
     ),
 )
 
-__all__ = ["CHECKS"]
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]

@@ -6,15 +6,15 @@ from . import configs, docs, internal, make, ops, policies, python, repo, root
 
 def register_all() -> tuple[CheckDef, ...]:
     checks = (
-        *configs.CHECKS,
-        *docs.CHECKS,
-        *internal.CHECKS,
-        *make.CHECKS,
-        *ops.CHECKS,
-        *policies.CHECKS,
-        *python.CHECKS,
-        *repo.CHECKS,
-        *root.CHECKS,
+        *configs.register(),
+        *docs.register(),
+        *internal.register(),
+        *make.register(),
+        *ops.register(),
+        *policies.register(),
+        *python.register(),
+        *repo.register(),
+        *root.register(),
     )
     by_id: dict[str, CheckDef] = {}
     for check in checks:

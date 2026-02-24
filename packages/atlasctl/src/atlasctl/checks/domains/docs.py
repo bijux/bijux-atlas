@@ -44,4 +44,9 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("docs.no_placeholder_release_docs", "docs", "forbid placeholder docs paths in release docs tree", 600, check_docs_no_placeholder_release_docs, fix_hint="Remove placeholder docs files or move drafts under docs/_drafts/."),
 )
 
-__all__ = ["CHECKS"]
+
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]
