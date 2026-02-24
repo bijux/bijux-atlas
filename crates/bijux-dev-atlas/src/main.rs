@@ -180,8 +180,8 @@ fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String,
                     .collect::<Vec<_>>()
                     .join(",");
                 lines.push(format!(
-                    "{}\ttags={}\tsuites={}\t{}",
-                    check.id, tags, suites, check.title
+                    "{}\tbudget_ms={}\ttags={}\tsuites={}\t{}",
+                    check.id, check.budget_ms, tags, suites, check.title
                 ));
             }
             Ok(lines.join("\n"))
@@ -195,6 +195,7 @@ fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String,
                         "domain": format!("{:?}", check.domain).to_ascii_lowercase(),
                         "tags": check.tags.iter().map(|v| v.as_str()).collect::<Vec<_>>(),
                         "suites": check.suites.iter().map(|v| v.as_str()).collect::<Vec<_>>(),
+                        "budget_ms": check.budget_ms,
                         "title": check.title,
                     })
                 })

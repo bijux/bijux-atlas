@@ -310,6 +310,25 @@ pub fn validate_registry(registry: &Registry) -> Vec<String> {
     errors
 }
 
+fn registry_ordering_errors(registry: &Registry) -> Vec<String> {
+    let mut errors = Vec::new();
+    if !registry
+        .checks
+        .windows(2)
+        .all(|pair| pair[0].id.as_str() <= pair[1].id.as_str())
+    {
+        errors.push("registry checks must be sorted by id".to_string());
+    }
+    if !registry
+        .suites
+        .windows(2)
+        .all(|pair| pair[0].id.as_str() <= pair[1].id.as_str())
+    {
+        errors.push("registry suites must be sorted by id".to_string());
+    }
+    errors
+}
+
 fn wildcard_matches(pattern: &str, value: &str) -> bool {
     if pattern == "*" {
         return true;
@@ -443,9 +462,29 @@ pub fn explain_output(registry: &Registry, check_id: &CheckId) -> Result<String,
 
 pub fn registry_doctor(repo_root: &Path) -> RegistryDoctorReport {
     match load_registry(repo_root) {
-        Ok(registry) => RegistryDoctorReport {
-            errors: validate_registry(&registry),
-        },
+        Ok(registry) => {
+            let mut errors = validate_registry(&registry);
+            errors.extend(registry_ordering_errors(&registry));
+            let registered_ids: BTreeSet<String> = registry
+                .checks
+                .iter()
+                .map(|check| check.id.as_str().to_string())
+                .collect();
+            let implemented_ids = check_runner::builtin_check_ids();
+            for missing in registered_ids.difference(&implemented_ids) {
+                errors.push(format!(
+                    "registered check missing implementation `{missing}`"
+                ));
+            }
+            for floating in implemented_ids.difference(&registered_ids) {
+                errors.push(format!(
+                    "check implementation not registered `{floating}`"
+                ));
+            }
+            errors.sort();
+            errors.dedup();
+            RegistryDoctorReport { errors }
+        }
         Err(err) => RegistryDoctorReport { errors: vec![err] },
     }
 }

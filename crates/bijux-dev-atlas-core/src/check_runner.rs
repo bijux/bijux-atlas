@@ -19,6 +19,14 @@ fn builtin_check_fn(check_id: &CheckId) -> Option<CheckFn> {
     })
 }
 
+pub(crate) fn builtin_check_ids() -> BTreeSet<String> {
+    let mut ids = checks::ops::builtin_ops_check_ids();
+    ids.insert("checks_repo_import_boundary".to_string());
+    ids.insert("checks_docs_index_links".to_string());
+    ids.insert("checks_make_wrapper_commands".to_string());
+    ids
+}
+
 fn sorted_violations(mut violations: Vec<Violation>) -> Vec<Violation> {
     violations.sort_by(|a, b| {
         a.code

@@ -21,7 +21,12 @@ fn list_supports_json_format() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
+    let checks = payload
+        .get("checks")
+        .and_then(|v| v.as_array())
+        .expect("checks array");
+    assert!(!checks.is_empty());
+    assert!(checks[0].get("budget_ms").and_then(|v| v.as_u64()).is_some());
 }
 
 #[test]
@@ -591,7 +596,12 @@ fn check_list_supports_json_format() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
+    let checks = payload
+        .get("checks")
+        .and_then(|v| v.as_array())
+        .expect("checks array");
+    assert!(!checks.is_empty());
+    assert!(checks[0].get("budget_ms").and_then(|v| v.as_u64()).is_some());
 }
 
 #[test]
