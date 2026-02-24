@@ -49,7 +49,9 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
     }
 }
 
-fn policies_inventory_rows(doc: &bijux_dev_atlas_policies::DevAtlasPolicySetDocument) -> Vec<serde_json::Value> {
+fn policies_inventory_rows(
+    doc: &bijux_dev_atlas_policies::DevAtlasPolicySetDocument,
+) -> Vec<serde_json::Value> {
     vec![
         serde_json::json!({
             "id": "repo",
@@ -264,7 +266,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
 }
 
 pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
-    let run = (|| -> Result<(String, i32), String> {
+    let run: Result<(String, i32), String> = {
         let started = std::time::Instant::now();
         match command {
             BuildCommand::Bin(common) => run_build_bin(&common, started),
@@ -272,7 +274,7 @@ pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
             BuildCommand::Doctor(common) => run_build_doctor(&common, started),
             BuildCommand::Clean(args) => run_build_clean(args, started),
         }
-    })();
+    };
     match run {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
@@ -328,7 +330,9 @@ fn run_build_bin(
             .status()
             .map_err(|e| format!("failed to run cargo build for {bin_name}: {e}"))?;
         if !status.success() {
-            return Err(format!("cargo build failed for {bin_name} (package {package})"));
+            return Err(format!(
+                "cargo build failed for {bin_name} (package {package})"
+            ));
         }
         let src = cargo_target_dir
             .join("debug")
@@ -404,7 +408,8 @@ fn run_build_clean(
     }
     let bin_dir = repo_root.join("artifacts/bin");
     if args.include_bin && bin_dir.exists() {
-        fs::remove_dir_all(&bin_dir).map_err(|e| format!("cannot remove {}: {e}", bin_dir.display()))?;
+        fs::remove_dir_all(&bin_dir)
+            .map_err(|e| format!("cannot remove {}: {e}", bin_dir.display()))?;
         removed.push(bin_dir);
     }
     let payload = serde_json::json!({
@@ -487,7 +492,11 @@ fn run_build_dist(
     hasher.update(&bytes);
     let checksum = format!("{:x}", hasher.finalize());
     let checksum_path = dist_dir.join("sha256sum.txt");
-    let checksum_line = format!("{}  {}\n", checksum, archive_path.file_name().unwrap().to_string_lossy());
+    let checksum_line = format!(
+        "{}  {}\n",
+        checksum,
+        archive_path.file_name().unwrap().to_string_lossy()
+    );
     fs::write(&checksum_path, checksum_line)
         .map_err(|e| format!("cannot write {}: {e}", checksum_path.display()))?;
     let payload = serde_json::json!({
@@ -524,7 +533,10 @@ fn run_build_doctor(
     rows.push(serde_json::json!({"kind":"path","name":"artifacts_dist","path": repo_root.join("artifacts/dist").display().to_string()}));
     let errors = rows
         .iter()
-        .filter(|row| row.get("kind").and_then(|v| v.as_str()) == Some("tool") && row.get("found").and_then(|v| v.as_bool()) == Some(false))
+        .filter(|row| {
+            row.get("kind").and_then(|v| v.as_str()) == Some("tool")
+                && row.get("found").and_then(|v| v.as_bool()) == Some(false)
+        })
         .count();
     let payload = serde_json::json!({
         "schema_version": 1,

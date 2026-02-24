@@ -358,7 +358,8 @@ fn docs_verify_contracts_payload(
         }
     }
     if runtime_examples == 0 {
-        warnings.push("DOCS_CONTRACT_ERROR: no `bijux atlas ...` examples found in docs/".to_string());
+        warnings
+            .push("DOCS_CONTRACT_ERROR: no `bijux atlas ...` examples found in docs/".to_string());
     }
     if dev_examples == 0 {
         warnings.push(

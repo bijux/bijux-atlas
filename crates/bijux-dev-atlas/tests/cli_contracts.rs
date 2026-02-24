@@ -477,7 +477,10 @@ fn policies_report_supports_json_format() {
         .expect("policies report");
     assert!(output.status.success());
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
-    assert_eq!(payload.get("report_kind").and_then(|v| v.as_str()), Some("control_plane_policies"));
+    assert_eq!(
+        payload.get("report_kind").and_then(|v| v.as_str()),
+        Some("control_plane_policies")
+    );
 }
 
 #[test]
@@ -540,7 +543,11 @@ fn build_bin_writes_manifest_when_effects_enabled() {
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert_eq!(payload.get("action").and_then(|v| v.as_str()), Some("bin"));
-    assert!(manifest.exists(), "manifest should exist: {}", manifest.display());
+    assert!(
+        manifest.exists(),
+        "manifest should exist: {}",
+        manifest.display()
+    );
     let manifest_payload: serde_json::Value =
         serde_json::from_slice(&fs::read(manifest).expect("read manifest")).expect("manifest json");
     assert_eq!(
@@ -586,6 +593,9 @@ fn build_doctor_supports_json_format() {
         &output.stdout
     };
     let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
-    assert_eq!(payload.get("action").and_then(|v| v.as_str()), Some("doctor"));
+    assert_eq!(
+        payload.get("action").and_then(|v| v.as_str()),
+        Some("doctor")
+    );
     assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
 }
