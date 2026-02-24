@@ -322,6 +322,11 @@ pub(crate) fn docs_links_payload(
     issues.errors.dedup();
     issues.warnings.sort();
     issues.warnings.dedup();
+    if common.strict && !issues.warnings.is_empty() {
+        issues.errors.append(&mut issues.warnings);
+        issues.errors.sort();
+        issues.errors.dedup();
+    }
     Ok(serde_json::json!({
         "schema_version":1,
         "run_id":ctx.run_id.as_str(),

@@ -447,6 +447,38 @@ fn docs_inventory_respects_include_drafts_flag() {
 }
 
 #[test]
+fn docs_inventory_fixture_json_matches_golden() {
+    let fixture_root = repo_root().join("crates/bijux-dev-atlas/tests/fixtures/docs-mini");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "docs",
+            "inventory",
+            "--repo-root",
+            fixture_root.to_str().expect("fixture root"),
+            "--run-id",
+            "docs_inventory_fixture",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("docs inventory fixture");
+    assert!(
+        output.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let mut payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    payload["duration_ms"] = serde_json::json!(0);
+    let actual = serde_json::to_string_pretty(&payload).expect("json");
+    let golden_path =
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/docs_inventory_fixture.json");
+    let golden = fs::read_to_string(golden_path).expect("golden");
+    assert_eq!(actual.trim(), golden.trim());
+}
+
+#[test]
 fn docs_validate_strict_escalates_warnings_to_errors() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -467,6 +499,34 @@ fn docs_validate_strict_escalates_warnings_to_errors() {
         Some(true)
     );
     assert!(payload.get("error_code").is_some());
+}
+
+#[test]
+fn docs_links_strict_escalates_generated_link_warnings() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["docs", "links", "--strict", "--format", "json"])
+        .output()
+        .expect("docs links strict");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert_eq!(
+        payload
+            .get("options")
+            .and_then(|v| v.get("strict"))
+            .and_then(|v| v.as_bool()),
+        Some(true)
+    );
+    assert!(
+        payload
+            .get("errors")
+            .and_then(|v| v.as_array())
+            .is_some_and(|rows| !rows.is_empty())
+    );
 }
 
 #[test]
