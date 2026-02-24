@@ -1,0 +1,37 @@
+{
+  "capabilities": {
+    "fs_write": false,
+    "network": false,
+    "subprocess": false
+  },
+  "counts": {
+    "errors": 0
+  },
+  "duration_ms": 0,
+  "error_code": null,
+  "options": {
+    "include_drafts": false,
+    "strict": false
+  },
+  "rows": [
+    {
+      "errors": 0,
+      "name": "validate"
+    },
+    {
+      "errors": 0,
+      "name": "links"
+    },
+    {
+      "errors": 0,
+      "name": "lint"
+    },
+    {
+      "name": "build",
+      "status": "skipped"
+    }
+  ],
+  "run_id": "docs_fixture",
+  "schema_version": 1,
+  "text": "docs: 4 checks collected, 0 failed, build=skipped"
+}

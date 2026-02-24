@@ -475,6 +475,12 @@ struct DocsContext {
     run_id: RunId,
 }
 
+#[derive(Default)]
+struct DocsIssues {
+    errors: Vec<String>,
+    warnings: Vec<String>,
+}
+
 pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
     let root = resolve_repo_root(options.repo_root)?;
     let selectors = parse_selectors(
@@ -631,11 +637,18 @@ fn slugify_anchor(text: &str) -> String {
     out.trim_matches('-').to_string()
 }
 
-fn docs_markdown_files(docs_root: &Path) -> Vec<PathBuf> {
+fn docs_markdown_files(docs_root: &Path, include_drafts: bool) -> Vec<PathBuf> {
     let mut files = Vec::new();
     if docs_root.exists() {
         for file in walk_files_local(docs_root) {
             if file.extension().and_then(|v| v.to_str()) == Some("md") {
+                if !include_drafts {
+                    if let Ok(rel) = file.strip_prefix(docs_root) {
+                        if rel.to_string_lossy().starts_with("_drafts/") {
+                            continue;
+                        }
+                    }
+                }
                 files.push(file);
             }
         }
@@ -700,10 +713,10 @@ fn mkdocs_nav_refs(repo_root: &Path) -> Result<Vec<(String, String)>, String> {
     Ok(refs)
 }
 
-fn docs_inventory_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+fn docs_inventory_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
     let nav_refs = mkdocs_nav_refs(&ctx.repo_root)?;
     let nav_set = nav_refs.iter().map(|(_, p)| p.clone()).collect::<std::collections::BTreeSet<_>>();
-    let rows = docs_markdown_files(&ctx.docs_root)
+    let rows = docs_markdown_files(&ctx.docs_root, common.include_drafts)
         .into_iter()
         .filter_map(|p| p.strip_prefix(&ctx.docs_root).ok().map(|r| r.display().to_string()))
         .map(|rel| DocsPageRow {
@@ -713,7 +726,7 @@ fn docs_inventory_payload(ctx: &DocsContext) -> Result<serde_json::Value, String
         .collect::<Vec<_>>();
     let orphan_pages = rows
         .iter()
-        .filter(|r| !r.in_nav && !r.path.starts_with("_assets/") && !r.path.starts_with("_drafts/"))
+        .filter(|r| !r.in_nav && !r.path.starts_with("_assets/") && (common.include_drafts || !r.path.starts_with("_drafts/")))
         .map(|r| r.path.clone())
         .collect::<Vec<_>>();
     let duplicate_titles = {
@@ -728,6 +741,8 @@ fn docs_inventory_payload(ctx: &DocsContext) -> Result<serde_json::Value, String
     Ok(serde_json::json!({
         "schema_version": 1,
         "run_id": ctx.run_id.as_str(),
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts},
         "nav": nav_refs.iter().map(|(title, path)| serde_json::json!({"title": title, "path": path})).collect::<Vec<_>>(),
         "pages": rows,
         "orphan_pages": orphan_pages,
@@ -735,32 +750,42 @@ fn docs_inventory_payload(ctx: &DocsContext) -> Result<serde_json::Value, String
     }))
 }
 
-fn docs_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+fn docs_validate_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
     let yaml = parse_mkdocs_yaml(&ctx.repo_root)?;
-    let mut errors = Vec::<String>::new();
+    let mut issues = DocsIssues::default();
     let docs_dir = yaml.get("docs_dir").and_then(|v| v.as_str()).unwrap_or_default();
     if docs_dir != "docs" {
-        errors.push(format!("mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"));
+        issues.errors.push(format!("DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"));
     }
     for (_, rel) in mkdocs_nav_refs(&ctx.repo_root)? {
         if !ctx.docs_root.join(&rel).exists() {
-            errors.push(format!("mkdocs nav references missing file `{rel}`"));
+            issues.errors.push(format!("DOCS_NAV_ERROR: mkdocs nav references missing file `{rel}`"));
         }
     }
-    let inv = docs_inventory_payload(ctx)?;
+    let inv = docs_inventory_payload(ctx, common)?;
     for dup in inv["duplicate_nav_titles"].as_array().into_iter().flatten() {
         if let Some(title) = dup.as_str() {
-            errors.push(format!("duplicate mkdocs nav title `{title}`"));
+            issues.warnings.push(format!("DOCS_NAV_ERROR: duplicate mkdocs nav title `{title}`"));
         }
     }
-    let text = if errors.is_empty() { "docs validate passed".to_string() } else { format!("docs validate failed ({} errors)", errors.len()) };
+    if common.strict {
+        issues.errors.append(&mut issues.warnings);
+    }
+    let text = if issues.errors.is_empty() {
+        format!("docs validate passed (warnings={})", issues.warnings.len())
+    } else {
+        format!("docs validate failed (errors={} warnings={})", issues.errors.len(), issues.warnings.len())
+    };
     Ok(serde_json::json!({
         "schema_version": 1,
         "run_id": ctx.run_id.as_str(),
         "text": text,
-        "errors": errors,
+        "errors": issues.errors,
+        "warnings": issues.warnings,
         "rows": inv["nav"].as_array().cloned().unwrap_or_default(),
-        "summary": {"total": inv["nav"].as_array().map(|v| v.len()).unwrap_or(0), "errors": inv["errors"].as_array().map(|v| v.len()).unwrap_or(0)}
+        "summary": {"total": inv["nav"].as_array().map(|v| v.len()).unwrap_or(0), "errors": inv["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": inv["warnings"].as_array().map(|v| v.len()).unwrap_or(0)},
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts}
     }))
 }
 
@@ -778,11 +803,11 @@ fn markdown_anchors(text: &str) -> std::collections::BTreeSet<String> {
     out
 }
 
-fn docs_links_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+fn docs_links_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
     let mut rows = Vec::<serde_json::Value>::new();
-    let mut errors = Vec::<String>::new();
+    let mut issues = DocsIssues::default();
     let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
-    for file in docs_markdown_files(&ctx.docs_root) {
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file.strip_prefix(&ctx.repo_root).unwrap_or(&file).display().to_string();
         let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
         let anchors = markdown_anchors(&text);
@@ -790,12 +815,15 @@ fn docs_links_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
             for cap in link_re.captures_iter(line) {
                 let target = cap.get(1).map(|m| m.as_str()).unwrap_or("");
                 if target.starts_with("http://") || target.starts_with("https://") || target.starts_with("mailto:") {
+                    if common.allow_network {
+                        rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": true, "external": true, "checked_network": false}));
+                    }
                     continue;
                 }
                 if let Some(anchor) = target.strip_prefix('#') {
                     let ok = anchors.contains(anchor);
                     if !ok {
-                        errors.push(format!("{rel}:{} missing same-file anchor `#{anchor}`", idx + 1));
+                        issues.errors.push(format!("DOCS_LINK_ERROR: {rel}:{} missing same-file anchor `#{anchor}`", idx + 1));
                     }
                     rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}));
                     continue;
@@ -816,21 +844,31 @@ fn docs_links_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
                     }
                 }
                 if !ok {
-                    errors.push(format!("{rel}:{} unresolved link `{target}`", idx + 1));
+                    issues.errors.push(format!("DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`", idx + 1));
                 }
                 rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}));
             }
         }
     }
     rows.sort_by(|a,b| a["file"].as_str().cmp(&b["file"].as_str()).then(a["line"].as_u64().cmp(&b["line"].as_u64())).then(a["target"].as_str().cmp(&b["target"].as_str())));
-    errors.sort();
-    errors.dedup();
-    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors.is_empty() {"docs links passed"} else {"docs links failed"},"rows":rows,"errors":errors}))
+    issues.errors.sort();
+    issues.errors.dedup();
+    Ok(serde_json::json!({
+        "schema_version":1,
+        "run_id":ctx.run_id.as_str(),
+        "text": if issues.errors.is_empty() {"docs links passed"} else {"docs links failed"},
+        "rows":rows,
+        "errors":issues.errors,
+        "warnings": issues.warnings,
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts},
+        "external_link_check": {"enabled": common.allow_network, "mode": "disabled_best_effort"}
+    }))
 }
 
-fn docs_lint_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+fn docs_lint_payload(ctx: &DocsContext, common: &DocsCommonArgs) -> Result<serde_json::Value, String> {
     let mut errors = Vec::<String>::new();
-    for file in docs_markdown_files(&ctx.docs_root) {
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file.strip_prefix(&ctx.docs_root).unwrap_or(&file).display().to_string();
         if rel.contains(' ') {
             errors.push(format!("docs filename must not contain spaces: `{rel}`"));
@@ -848,12 +886,12 @@ fn docs_lint_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
     }
     errors.sort();
     errors.dedup();
-    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors.is_empty() {"docs lint passed"} else {"docs lint failed"},"rows":[],"errors":errors}))
+    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors.is_empty() {"docs lint passed"} else {"docs lint failed"},"rows":[],"errors":errors,"warnings":[],"capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},"options": {"strict": common.strict, "include_drafts": common.include_drafts}}))
 }
 
-fn docs_grep_payload(ctx: &DocsContext, pattern: &str) -> Result<serde_json::Value, String> {
+fn docs_grep_payload(ctx: &DocsContext, common: &DocsCommonArgs, pattern: &str) -> Result<serde_json::Value, String> {
     let mut rows = Vec::<serde_json::Value>::new();
-    for file in docs_markdown_files(&ctx.docs_root) {
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file.strip_prefix(&ctx.repo_root).unwrap_or(&file).display().to_string();
         let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
         for (idx, line) in text.lines().enumerate() {
@@ -863,7 +901,7 @@ fn docs_grep_payload(ctx: &DocsContext, pattern: &str) -> Result<serde_json::Val
         }
     }
     rows.sort_by(|a,b| a["file"].as_str().cmp(&b["file"].as_str()).then(a["line"].as_u64().cmp(&b["line"].as_u64())));
-    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": format!("{} matches", rows.len()),"rows":rows}))
+    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": format!("{} matches", rows.len()),"rows":rows,"capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},"options": {"strict": common.strict, "include_drafts": common.include_drafts}}))
 }
 
 fn docs_build_or_serve_subprocess(args: &[String], common: &DocsCommonArgs, label: &str) -> Result<(serde_json::Value, i32), String> {
@@ -887,63 +925,106 @@ fn docs_build_or_serve_subprocess(args: &[String], common: &DocsCommonArgs, labe
     let stdout = String::from_utf8_lossy(&out.stdout).to_string();
     let stderr = String::from_utf8_lossy(&out.stderr).to_string();
     let code = out.status.code().unwrap_or(1);
+    let mut files = Vec::<serde_json::Value>::new();
+    if label == "docs build" && output_dir.exists() {
+        for path in walk_files_local(&output_dir) {
+            let Ok(bytes) = fs::read(&path) else { continue };
+            let rel = path
+                .strip_prefix(&output_dir)
+                .unwrap_or(&path)
+                .display()
+                .to_string();
+            let mut hasher = Sha256::new();
+            hasher.update(&bytes);
+            files.push(serde_json::json!({
+                "path": rel,
+                "sha256": format!("{:x}", hasher.finalize()),
+                "bytes": bytes.len()
+            }));
+        }
+        files.sort_by(|a,b| a["path"].as_str().cmp(&b["path"].as_str()));
+        let index_path = ctx.artifacts_root.join("atlas-dev").join("docs").join(ctx.run_id.as_str()).join("build.index.json");
+        if common.allow_write {
+            if let Some(parent) = index_path.parent() {
+                let _ = fs::create_dir_all(parent);
+            }
+            let _ = fs::write(&index_path, serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "run_id": ctx.run_id.as_str(),
+                "files": files
+            })).unwrap_or_default());
+        }
+    }
     Ok((serde_json::json!({
         "schema_version":1,
         "run_id": ctx.run_id.as_str(),
+        "error_code": if code == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) },
         "text": format!("{label} {}", if code==0 {"ok"} else {"failed"}),
         "rows":[{"command": args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string()}],
-        "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write}
+        "artifacts": {"site_dir": output_dir.display().to_string(), "build_index": ctx.artifacts_root.join("atlas-dev").join("docs").join(ctx.run_id.as_str()).join("build.index.json").display().to_string(), "files": files},
+        "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts}
     }), code))
 }
 
 pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {
+        let started = std::time::Instant::now();
         match command {
             DocsCommand::Validate(common) => {
                 let ctx = docs_context(&common)?;
-                let payload = docs_validate_payload(&ctx)?;
+                let mut payload = docs_validate_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 };
+                if code != 0 { payload["error_code"] = serde_json::json!("DOCS_NAV_ERROR"); }
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Inventory(common) => {
                 let ctx = docs_context(&common)?;
-                let payload = docs_inventory_payload(&ctx)?;
+                let mut payload = docs_inventory_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
             DocsCommand::Links(common) => {
                 let ctx = docs_context(&common)?;
-                let payload = docs_links_payload(&ctx)?;
+                let mut payload = docs_links_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 };
+                if code != 0 { payload["error_code"] = serde_json::json!("DOCS_LINK_ERROR"); }
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Lint(common) => {
                 let ctx = docs_context(&common)?;
-                let payload = docs_lint_payload(&ctx)?;
+                let mut payload = docs_lint_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 };
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Grep(args) => {
                 let ctx = docs_context(&args.common)?;
-                let payload = docs_grep_payload(&ctx, &args.pattern)?;
+                let mut payload = docs_grep_payload(&ctx, &args.common, &args.pattern)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
             }
             DocsCommand::Build(common) => {
-                let (payload, code) = docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
+                let (mut payload, code) = docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Serve(args) => {
-                let (payload, code) = docs_build_or_serve_subprocess(
+                let (mut payload, code) = docs_build_or_serve_subprocess(
                     &["serve".to_string(), "--dev-addr".to_string(), format!("{}:{}", args.host, args.port)],
                     &args.common,
                     "docs serve",
                 )?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(args.common.format, args.common.out, &payload)?, code))
             }
             DocsCommand::Doctor(common) => {
                 let ctx = docs_context(&common)?;
-                let validate = docs_validate_payload(&ctx)?;
-                let links = docs_links_payload(&ctx)?;
-                let lint = docs_lint_payload(&ctx)?;
+                let validate = docs_validate_payload(&ctx, &common)?;
+                let links = docs_links_payload(&ctx, &common)?;
+                let lint = docs_lint_payload(&ctx, &common)?;
                 let mut rows = Vec::<serde_json::Value>::new();
                 rows.push(serde_json::json!({"name":"validate","errors":validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
                 rows.push(serde_json::json!({"name":"links","errors":links["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
@@ -958,7 +1039,21 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + usize::from(build_status == "failed");
-                let payload = serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors==0 {"docs doctor passed"} else {"docs doctor failed"},"rows":rows,"counts":{"errors":errors},"capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write}});
+                let payload = serde_json::json!({
+                    "schema_version":1,
+                    "run_id":ctx.run_id.as_str(),
+                    "text": if errors==0 {
+                        format!("docs: 4 checks collected, 0 failed, build={build_status}")
+                    } else {
+                        format!("docs: 4 checks collected, {errors} failed, build={build_status}")
+                    },
+                    "rows":rows,
+                    "counts":{"errors":errors},
+                    "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "options":{"strict": common.strict, "include_drafts": common.include_drafts},
+                    "duration_ms": started.elapsed().as_millis() as u64,
+                    "error_code": if errors == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_NAV_ERROR".to_string()) }
+                });
                 Ok((emit_payload(common.format, common.out, &payload)?, if errors == 0 {0} else {1}))
             }
         }
@@ -2288,8 +2383,8 @@ mod tests {
             vec!["bijux-dev-atlas", "docs", "links"],
             vec!["bijux-dev-atlas", "docs", "inventory"],
             vec!["bijux-dev-atlas", "docs", "grep", "atlasctl"],
-            vec!["bijux-dev-atlas", "docs", "build", "--allow-subprocess", "--allow-write"],
-            vec!["bijux-dev-atlas", "docs", "serve", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "docs", "build", "--allow-subprocess", "--allow-write", "--strict"],
+            vec!["bijux-dev-atlas", "docs", "serve", "--allow-subprocess", "--include-drafts"],
         ];
         for argv in commands {
             let cli = super::Cli::try_parse_from(argv).expect("parse");
@@ -2298,5 +2393,50 @@ mod tests {
                 _ => panic!("expected docs command"),
             }
         }
+    }
+
+    #[test]
+    fn mkdocs_nav_parser_extracts_refs() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/docs-mini");
+        let refs = super::mkdocs_nav_refs(&root).expect("mkdocs nav");
+        let paths = refs.into_iter().map(|(_, p)| p).collect::<Vec<_>>();
+        assert_eq!(paths, vec!["index.md".to_string(), "sub/intro.md".to_string()]);
+    }
+
+    #[test]
+    fn docs_link_resolver_accepts_fixture_links() {
+        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/docs-mini");
+        let ctx = super::DocsContext {
+            docs_root: repo_root.join("docs"),
+            artifacts_root: repo_root.join("artifacts"),
+            run_id: super::RunId::from_seed("docs_fixture"),
+            repo_root: repo_root.clone(),
+        };
+        let common = super::cli::DocsCommonArgs {
+            repo_root: Some(repo_root),
+            artifacts_root: None,
+            run_id: None,
+            format: super::cli::FormatArg::Json,
+            out: None,
+            allow_subprocess: false,
+            allow_write: false,
+            allow_network: false,
+            strict: false,
+            include_drafts: false,
+        };
+        let payload = super::docs_links_payload(&ctx, &common).expect("links payload");
+        assert_eq!(
+            payload.get("errors").and_then(|v| v.as_array()).map(|v| v.len()),
+            Some(0)
+        );
+        assert_eq!(
+            payload
+                .get("external_link_check")
+                .and_then(|v| v.get("enabled"))
+                .and_then(|v| v.as_bool()),
+            Some(false)
+        );
     }
 }

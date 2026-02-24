@@ -208,6 +208,76 @@ fn docs_inventory_supports_json_format() {
 }
 
 #[test]
+fn docs_inventory_respects_include_drafts_flag() {
+    let fixture_root = repo_root().join("crates/bijux-dev-atlas/tests/fixtures/docs-mini");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "docs",
+            "inventory",
+            "--repo-root",
+            fixture_root.to_str().expect("fixture root"),
+            "--include-drafts",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("docs inventory include drafts");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let pages = payload.get("pages").and_then(|v| v.as_array()).expect("pages");
+    assert!(pages.iter().any(|row| {
+        row.get("path")
+            .and_then(|v| v.as_str())
+            .is_some_and(|p| p == "_drafts/draft.md")
+    }));
+}
+
+#[test]
+fn docs_validate_strict_escalates_warnings_to_errors() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["docs", "validate", "--strict", "--format", "json"])
+        .output()
+        .expect("docs validate strict");
+    let bytes = if output.stdout.is_empty() { &output.stderr } else { &output.stdout };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert_eq!(
+        payload.get("options").and_then(|v| v.get("strict")).and_then(|v| v.as_bool()),
+        Some(true)
+    );
+    assert!(payload.get("error_code").is_some());
+}
+
+#[test]
+fn docs_doctor_fixture_json_matches_golden() {
+    let fixture_root = repo_root().join("crates/bijux-dev-atlas/tests/fixtures/docs-mini");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "docs",
+            "doctor",
+            "--repo-root",
+            fixture_root.to_str().expect("fixture root"),
+            "--run-id",
+            "docs_fixture",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("docs doctor fixture");
+    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
+    let mut payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    payload["duration_ms"] = serde_json::json!(0);
+    let actual = serde_json::to_string_pretty(&payload).expect("json");
+    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/docs_doctor_fixture.json");
+    let golden = fs::read_to_string(golden_path).expect("golden");
+    assert_eq!(actual.trim(), golden.trim());
+}
+
+#[test]
 fn ops_status_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
