@@ -684,6 +684,36 @@ pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, 
     Ok((rendered, 0))
 }
 
+pub(crate) fn run_capabilities_command(
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "text": "capabilities default-deny; commands require explicit effect flags",
+        "defaults": {
+            "fs_write": false,
+            "subprocess": false,
+            "network": false,
+            "git": false
+        },
+        "rules": [
+            {"effect": "fs_write", "policy": "explicit flag required", "flags": ["--allow-write"]},
+            {"effect": "subprocess", "policy": "explicit flag required", "flags": ["--allow-subprocess"]},
+            {"effect": "network", "policy": "explicit flag required", "flags": ["--allow-network"]},
+            {"effect": "git", "policy": "check run only", "flags": ["--allow-git"]}
+        ],
+        "command_groups": [
+            {"name": "check", "writes": "flag-gated", "subprocess": "flag-gated", "network": "flag-gated"},
+            {"name": "docs", "writes": "flag-gated", "subprocess": "flag-gated", "network": "default-deny"},
+            {"name": "configs", "writes": "flag-gated", "subprocess": "flag-gated", "network": "default-deny"},
+            {"name": "ops", "writes": "flag-gated", "subprocess": "flag-gated", "network": "default-deny"}
+        ]
+    });
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, 0))
+}
+
 fn configs_context(common: &ConfigsCommonArgs) -> Result<ConfigsContext, String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let artifacts_root = common.artifacts_root.clone().unwrap_or_else(|| repo_root.join("artifacts"));

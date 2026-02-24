@@ -25,6 +25,26 @@ fn list_supports_json_format() {
 }
 
 #[test]
+fn capabilities_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["capabilities", "--format", "json"])
+        .output()
+        .expect("capabilities json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload
+            .get("defaults")
+            .and_then(|v| v.get("subprocess"))
+            .and_then(|v| v.as_bool()),
+        Some(false)
+    );
+}
+
+#[test]
 fn explain_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
