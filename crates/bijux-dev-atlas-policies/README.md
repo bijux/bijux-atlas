@@ -1,15 +1,22 @@
 # bijux-dev-atlas-policies
 
-Governance policy crate for `bijux-dev-atlas`.
+Development control-plane policy contracts and pure policy evaluation logic.
 
 ## Scope
-- Repository governance policies only (repo shape, ops SSOT paths, check routing constraints).
-- Runtime query/ingest/API budgets are out of scope and remain in `bijux-atlas-policies`.
+Belongs here:
+- Repository shape policies used by `bijux dev atlas`.
+- Ops/check/config/dev governance contracts for local and CI control-plane checks.
+- Relaxations and ratchets for dev control-plane policy rollout.
 
-## Allowed dependencies
-- `serde`
-- `serde_json`
+Belongs in `bijux-atlas-policies`:
+- Runtime product policy contracts for atlas data/query/store/server surfaces.
 
-## Forbidden dependencies
-- Async/web runtime dependencies: `tokio`, `axum`, `hyper`.
-- Runtime atlas crates: `bijux-atlas-ingest`, `bijux-atlas-store`, `bijux-atlas-query`, `bijux-atlas-server`, `bijux-atlas-api`.
+## Stability
+- Policy ids in `POLICY_REGISTRY` are machine-stable.
+- Policy evaluation consumes pure snapshots and emits deterministic violations.
+- Relaxations require explicit expiry dates.
+
+## Workflow
+- Edit policy source: `ops/atlas-dev/policies/dev-atlas-policy.json`.
+- Keep schema synchronized: `ops/atlas-dev/policies/dev-atlas-policy.schema.json`.
+- Run: `cargo test -p bijux-dev-atlas-policies`.
