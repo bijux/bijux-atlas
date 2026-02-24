@@ -1,0 +1,190 @@
+use std::fs;
+use std::path::Path;
+
+use bijux_atlas_dev_adapters::{Capabilities, DeniedProcessRunner, RealFs};
+use bijux_atlas_dev_core::{run_checks, RunOptions, RunRequest, Selectors};
+use bijux_atlas_dev_model::SuiteId;
+
+fn write(path: &Path, content: &str) {
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).expect("mkdir");
+    }
+    fs::write(path, content).expect("write");
+}
+
+#[test]
+fn ops_foundation_suite_passes_on_minimal_fixture() {
+    let temp = tempfile::tempdir().expect("tempdir");
+    let root = temp.path();
+
+    write(
+        &root.join("ops/atlas-dev/registry.toml"),
+        r#"schema_version = 1
+
+[tags]
+vocabulary = ["ops", "fast"]
+
+[[checks]]
+id = "ops_tree_contract"
+domain = "ops"
+title = "ops contract files are present"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_schema_presence"
+domain = "ops"
+title = "ops schema baseline is present"
+docs = "ops/schema/README.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_manifest_integrity"
+domain = "ops"
+title = "ops inventory manifests are valid json with required keys"
+docs = "ops/inventory/README.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_surface_inventory"
+domain = "ops"
+title = "ops index inventories top-level surfaces"
+docs = "ops/INDEX.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_surface_manifest"
+domain = "ops"
+title = "ops surface manifest consistency"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_generated_readonly_markers"
+domain = "ops"
+title = "ops generated files keep readonly generator markers"
+docs = "ops/_generated.example/MIRROR_POLICY.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_artifacts_not_tracked"
+domain = "ops"
+title = "ops evidence paths stay empty in repository"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_no_legacy_tooling_refs"
+domain = "ops"
+title = "ops does not reference legacy tooling paths"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[suites]]
+id = "ops_fast"
+checks = []
+domains = ["ops"]
+tags_any = ["fast"]
+"#,
+    );
+
+    write(&root.join("ops/CONTRACT.md"), "# Contract\n");
+    write(&root.join("ops/ERRORS.md"), "# Errors\n");
+    write(
+        &root.join("ops/INDEX.md"),
+        "# Ops\n- `ops/stack/`\n- `ops/k8s/`\n- `ops/observe/`\n- `ops/load/`\n- `ops/e2e/`\n- `ops/datasets/`\n- `ops/report/`\n",
+    );
+    write(&root.join("ops/README.md"), "# Ops\n");
+    write(&root.join("ops/schema/README.md"), "# Schema\n");
+    write(&root.join("ops/schema/meta/ownership.schema.json"), "{}\n");
+    write(&root.join("ops/schema/report/unified.schema.json"), "{}\n");
+    write(&root.join("ops/schema/stack/profile-manifest.schema.json"), "{}\n");
+    write(&root.join("ops/inventory/README.md"), "# Inventory\n");
+    write(
+        &root.join("ops/inventory/surfaces.json"),
+        "{\"schema_version\":1,\"entrypoints\":[]}\n",
+    );
+    write(
+        &root.join("ops/inventory/contracts.json"),
+        "{\"schema_version\":1}\n",
+    );
+    write(
+        &root.join("ops/inventory/drills.json"),
+        "{\"schema_version\":1}\n",
+    );
+    write(
+        &root.join("ops/inventory/generated-committed-mirror.json"),
+        "{\"schema_version\":1,\"allow_runtime_compat\":[],\"mirrors\":[{\"committed\":\"ops/_generated.example/.gitkeep\",\"source\":\"ops/_generated/.gitkeep\"}]}\n",
+    );
+    write(&root.join("ops/_generated.example/.gitkeep"), "\n");
+    write(&root.join("ops/_evidence/.gitkeep"), "\n");
+    write(&root.join("ops/stack/.gitkeep"), "\n");
+    write(&root.join("ops/k8s/.gitkeep"), "\n");
+    write(&root.join("ops/observe/.gitkeep"), "\n");
+    write(&root.join("ops/load/.gitkeep"), "\n");
+    write(&root.join("ops/e2e/.gitkeep"), "\n");
+    write(&root.join("ops/datasets/.gitkeep"), "\n");
+    write(&root.join("ops/report/.gitkeep"), "\n");
+    write(
+        &root.join("configs/ops/ops-surface-manifest.json"),
+        "{\"schema_version\":1}\n",
+    );
+
+    let request = RunRequest {
+        repo_root: root.to_path_buf(),
+        domain: None,
+        capabilities: Capabilities::deny_all(),
+        artifacts_root: None,
+        run_id: None,
+    };
+    let selectors = Selectors {
+        suite: Some(SuiteId::parse("ops_fast").expect("suite")),
+        include_internal: true,
+        include_slow: true,
+        ..Selectors::default()
+    };
+    let report = run_checks(
+        &DeniedProcessRunner,
+        &RealFs,
+        &request,
+        &selectors,
+        &RunOptions::default(),
+    )
+    .expect("run");
+
+    assert_eq!(report.summary.failed, 0);
+    assert_eq!(report.summary.errors, 0);
+    assert_eq!(report.summary.total, 8);
+}
