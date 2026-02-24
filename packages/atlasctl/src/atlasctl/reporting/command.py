@@ -7,7 +7,7 @@ from ..reporting.make_area_report import main as make_area_report_main
 from ..core.context import RunContext
 from ..core.runtime.paths import write_text_file
 from ..commands.policies.runtime.dir_entry_budgets import report_budgets
-from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
+from ..checks.tools.make_enforcement import collect_bypass_inventory
 from ..commands.policies.culprits_make import run_gate_structured
 from ..checks.registry import list_checks
 from .actions import (

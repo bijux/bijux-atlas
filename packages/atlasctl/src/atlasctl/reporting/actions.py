@@ -8,7 +8,7 @@ from pathlib import Path
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ..core.context import RunContext
-from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
+from ..checks.tools.make_enforcement import collect_bypass_inventory
 from .artifact_actions import _cmd_artifact_gc, _cmd_artifact_index
 
 def _make_root(ctx: RunContext) -> Path:

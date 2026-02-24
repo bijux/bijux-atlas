@@ -10,7 +10,7 @@ _THIS_DIR = Path(__file__).resolve().parent
 if str(_THIS_DIR) not in sys.path:
     sys.path.insert(0, str(_THIS_DIR))
 
-from public_make_targets import public_names
+from atlasctl.checks.tools.make_public_targets import public_names
 
 ROOT = Path(__file__).resolve().parents[6]
 TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):(?:\s|$)", flags=re.M)

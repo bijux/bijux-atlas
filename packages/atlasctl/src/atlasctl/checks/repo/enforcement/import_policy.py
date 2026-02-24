@@ -17,7 +17,7 @@ _CLI_IMPORT_ALLOW_PREFIXES = ("commands", "core", "cli")
 _CLI_IMPORT_ALLOW_EXACT = {"errors", "exit_codes", "network_guard"}
 _COLD_IMPORT_BUDGET_MS = 250.0
 _CHECKS_TO_COMMANDS_ALLOWLIST = {
-    "packages/atlasctl/src/atlasctl/checks/domains/policies/make/enforcement.py",
+    "packages/atlasctl/src/atlasctl/checks/tools/make_enforcement.py",
     "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_indexes_generated.py",
     "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
     "packages/atlasctl/src/atlasctl/checks/tools/reachability.py",
