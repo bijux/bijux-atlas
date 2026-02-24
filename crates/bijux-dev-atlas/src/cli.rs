@@ -708,6 +708,8 @@ pub struct DocsCommonArgs {
 pub struct DocsServeArgs {
     #[command(flatten)]
     pub common: DocsCommonArgs,
+    #[arg(long, default_value_t = false)]
+    pub json: bool,
     #[arg(long, default_value_t = 8000)]
     pub port: u16,
     #[arg(long, default_value = "127.0.0.1")]
