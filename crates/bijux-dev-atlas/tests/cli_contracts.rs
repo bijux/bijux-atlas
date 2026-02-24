@@ -224,6 +224,64 @@ fn ops_docs_supports_json_format() {
 }
 
 #[test]
+fn ops_conformance_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "conformance", "--format", "json"])
+        .output()
+        .expect("ops conformance");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("conformance requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_report_requires_allow_write() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "report", "--format", "json"])
+        .output()
+        .expect("ops report");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("report requires --allow-write"));
+}
+
+#[test]
+fn ops_report_writes_structured_report_under_artifacts() {
+    let run_id = "ops_report_contract";
+    let target = repo_root()
+        .join("artifacts/reports/dev-atlas/ops")
+        .join(format!("{run_id}.json"));
+    let _ = fs::remove_file(&target);
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "report",
+            "--allow-write",
+            "--run-id",
+            run_id,
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops report write");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+    assert!(target.exists(), "expected report file {}", target.display());
+    let written = fs::read_to_string(target).expect("read report");
+    let report: serde_json::Value = serde_json::from_str(&written).expect("report json");
+    assert_eq!(report.get("kind").and_then(|v| v.as_str()), Some("ops_report"));
+    assert_eq!(report.get("run_id").and_then(|v| v.as_str()), Some(run_id));
+}
+
+#[test]
 fn ops_explain_profile_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
