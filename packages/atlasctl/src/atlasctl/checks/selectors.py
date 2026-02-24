@@ -93,7 +93,17 @@ def apply_selection_criteria(checks: list[CheckDef], criteria: SelectionCriteria
     for check in checks:
         if criteria.domain and str(check.domain) != criteria.domain:
             continue
-        if criteria.id_globs and not any(fnmatch(str(check.id), glob) or str(check.id) == glob for glob in criteria.id_globs):
+        legacy_id = str(check.check_id)
+        canonical_id = legacy_id if legacy_id.startswith("checks_") else f"checks_{legacy_id.replace('.', '_')}"
+        if criteria.id_globs and not any(
+            fnmatch(str(check.id), glob)
+            or str(check.id) == glob
+            or fnmatch(legacy_id, glob)
+            or legacy_id == glob
+            or fnmatch(canonical_id, glob)
+            or canonical_id == glob
+            for glob in criteria.id_globs
+        ):
             continue
         if criteria.query and criteria.query not in str(check.id) and criteria.query not in str(check.title):
             continue

@@ -30,7 +30,28 @@ ALL_CHECKS: tuple[CheckDef, ...] = tuple(
 )
 TAGS_VOCAB: frozenset[Tag] = frozenset(Tag(tag) for check in ALL_CHECKS for tag in check_tags(check))
 MARKERS_VOCAB: frozenset[Tag] = frozenset(Tag(marker) for marker in marker_vocabulary())
-_CHECK_INDEX: dict[str, CheckDef] = {str(check.check_id): check for check in ALL_CHECKS}
+def _legacy_to_canonical(raw: str) -> str | None:
+    if not raw.startswith("checks_"):
+        return None
+    parts = raw.split("_", 2)
+    if len(parts) < 3:
+        return None
+    return f"{parts[1]}.{parts[2]}"
+
+
+def _canonical_to_legacy(raw: str) -> str | None:
+    if "." not in raw:
+        return None
+    return f"checks_{raw.replace('.', '_')}"
+
+
+_CHECK_INDEX: dict[str, CheckDef] = {}
+for _check in ALL_CHECKS:
+    _legacy = str(_check.check_id)
+    _CHECK_INDEX[_legacy] = _check
+    _canonical = _canonical_to_legacy(_legacy)
+    if _canonical:
+        _CHECK_INDEX.setdefault(_canonical, _check)
 RUNTIME_REGISTRY_SOURCE = "python"
 GENERATED_REGISTRY_ARTIFACTS: tuple[str, ...] = (
     "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
@@ -52,7 +73,16 @@ def get_check(check_id: CheckId | str) -> CheckDef | None:
     raw = str(check_id)
     aliases = check_rename_aliases()
     resolved = aliases.get(raw, raw)
-    return _CHECK_INDEX.get(resolved)
+    found = _CHECK_INDEX.get(resolved)
+    if found is not None:
+        return found
+    canonical = _legacy_to_canonical(resolved)
+    if canonical:
+        return _CHECK_INDEX.get(canonical)
+    legacy = _canonical_to_legacy(resolved)
+    if legacy:
+        return _CHECK_INDEX.get(legacy)
+    return None
 
 
 def list_domains() -> list[str]:
