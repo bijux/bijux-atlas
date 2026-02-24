@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use bijux_atlas_dev_adapters::StdProcessAdapter;
 use bijux_atlas_dev_core::{run_checks, RunRequest};
-use bijux_atlas_dev_model::CheckDomain;
+use bijux_atlas_dev_model::DomainId;
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
@@ -34,7 +34,7 @@ enum DomainArg {
     Make,
 }
 
-impl From<DomainArg> for CheckDomain {
+impl From<DomainArg> for DomainId {
     fn from(value: DomainArg) -> Self {
         match value {
             DomainArg::Ops => Self::Ops,
