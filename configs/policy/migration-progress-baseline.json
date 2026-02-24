@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "max": {
-    "docs_legacy_cli_invocations": 0,
-    "make_legacy_alias_tokens": 0
+    "docs_retired_cli_invocations": 0,
+    "make_retired_alias_tokens": 0
   }
 }

@@ -484,7 +484,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     }
 
     if repo_root.join("ops/_lib").exists() {
-        errors.push("forbidden legacy path exists: ops/_lib".to_string());
+        errors.push("forbidden retired path exists: ops/_lib".to_string());
     }
 
     errors.sort();

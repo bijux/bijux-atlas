@@ -25,17 +25,19 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
     match check_id.as_str() {
         "checks_ops_surface_manifest" => Some(check_ops_surface_manifest),
         "checks_ops_tree_contract" => Some(checks_ops_tree_contract),
-        "checks_ops_no_legacy_tooling_refs" => Some(checks_ops_no_legacy_tooling_refs),
+        "checks_ops_no_retired_tooling_refs" => Some(checks_ops_no_retired_tooling_refs),
         "checks_ops_generated_readonly_markers" => Some(checks_ops_generated_readonly_markers),
         "checks_ops_schema_presence" => Some(checks_ops_schema_presence),
         "checks_ops_manifest_integrity" => Some(checks_ops_manifest_integrity),
         "checks_ops_surface_inventory" => Some(checks_ops_surface_inventory),
         "checks_ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
-        "checks_ops_no_python_legacy_runtime_refs" => {
-            Some(checks_ops_no_python_legacy_runtime_refs)
+        "checks_ops_no_python_retired_runtime_refs" => {
+            Some(checks_ops_no_python_retired_runtime_refs)
         }
-        "checks_ops_no_legacy_runner_paths" => Some(checks_ops_no_legacy_runner_paths),
-        "checks_ops_no_atlasctl_invocations" => Some(checks_ops_no_atlasctl_invocations),
+        "checks_ops_no_retired_runner_paths" => Some(checks_ops_no_retired_runner_paths),
+        "checks_ops_no_retired_control_plane_invocations" => {
+            Some(checks_ops_no_retired_control_plane_invocations)
+        }
         "checks_ops_no_scripts_areas_or_xtask_refs" => {
             Some(checks_ops_no_scripts_areas_or_xtask_refs)
         }
@@ -49,21 +51,25 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_workflows_ops_entrypoints_bijux_only)
         }
         "checks_ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
-        "checks_root_packages_atlasctl_absent" => Some(check_root_packages_atlasctl_absent),
-        "checks_root_bin_atlasctl_absent" => Some(check_root_bin_atlasctl_absent),
-        "checks_root_artifacts_reports_atlasctl_absent" => {
-            Some(check_root_artifacts_reports_atlasctl_absent)
+        "checks_root_packages_retired_control_plane_absent" => {
+            Some(check_root_packages_retired_control_plane_token_absent)
+        }
+        "checks_root_bin_retired_control_plane_absent" => {
+            Some(check_root_bin_retired_control_plane_token_absent)
+        }
+        "checks_root_artifacts_reports_retired_control_plane_absent" => {
+            Some(check_root_artifacts_reports_retired_control_plane_token_absent)
         }
         "checks_root_python_toolchain_toml_absent" => Some(check_root_python_toolchain_toml_absent),
         "checks_root_uv_lock_absent" => Some(check_root_uv_lock_absent),
-        "checks_docs_no_atlasctl_string_references" => {
-            Some(check_docs_no_atlasctl_string_references)
+        "checks_docs_no_retired_control_plane_string_references" => {
+            Some(check_docs_no_retired_control_plane_token_string_references)
         }
-        "checks_workflows_no_atlasctl_string_references" => {
-            Some(check_workflows_no_atlasctl_string_references)
+        "checks_workflows_no_retired_control_plane_string_references" => {
+            Some(check_workflows_no_retired_control_plane_token_string_references)
         }
-        "checks_make_no_atlasctl_string_references" => {
-            Some(check_make_no_atlasctl_string_references)
+        "checks_make_no_retired_control_plane_string_references" => {
+            Some(check_make_no_retired_control_plane_token_string_references)
         }
         "checks_workflows_no_direct_ops_script_execution" => {
             Some(check_workflows_no_direct_ops_script_execution)
@@ -94,8 +100,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_root_no_scripts_areas_presence_or_references" => {
             Some(check_root_no_scripts_areas_presence_or_references)
         }
-        "checks_root_forbidden_legacy_directories_absent" => {
-            Some(check_root_forbidden_legacy_directories_absent)
+        "checks_root_forbidden_retired_directories_absent" => {
+            Some(check_root_forbidden_retired_directories_absent)
         }
         "checks_root_makefile_single_include_entrypoint" => {
             Some(check_root_makefile_single_include_entrypoint)
@@ -125,7 +131,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_crates_bijux_dev_atlas_help_dispatch_present)
         }
         "checks_ops_no_bash_lib_execution" => Some(check_ops_no_bash_lib_execution),
-        "checks_ops_legacy_shell_quarantine_empty" => Some(check_ops_legacy_shell_quarantine_empty),
+        "checks_ops_retired_shell_quarantine_empty" => {
+            Some(check_ops_retired_shell_quarantine_empty)
+        }
         "checks_make_governance_wrappers_bijux_only" => {
             Some(check_make_governance_wrappers_bijux_only)
         }
@@ -149,16 +157,16 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_docs_readme_index_contract_presence)
         }
         "checks_docs_file_naming_conventions" => Some(check_docs_file_naming_conventions),
-        "checks_docs_no_legacy_scripts_strings" => Some(check_docs_no_legacy_scripts_strings),
+        "checks_docs_no_retired_scripts_strings" => Some(check_docs_no_retired_scripts_strings),
         "checks_docs_command_surface_docs_exist" => Some(check_docs_command_surface_docs_exist),
-        "checks_docs_no_legacy_make_targets" => Some(check_docs_no_legacy_make_targets),
+        "checks_docs_no_retired_make_targets" => Some(check_docs_no_retired_make_targets),
         "checks_make_docs_wrappers_delegate_dev_atlas" => {
             Some(check_make_docs_wrappers_delegate_dev_atlas)
         }
         "checks_configs_required_surface_paths" => Some(check_configs_required_surface_paths),
         "checks_configs_schema_paths_present" => Some(check_configs_schema_paths_present),
-        "checks_configs_no_atlasctl_string_references" => {
-            Some(check_configs_no_atlasctl_string_references)
+        "checks_configs_no_retired_control_plane_string_references" => {
+            Some(check_configs_no_retired_control_plane_token_string_references)
         }
         "checks_make_configs_wrappers_delegate_dev_atlas" => {
             Some(check_make_configs_wrappers_delegate_dev_atlas)
@@ -173,9 +181,11 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_control_plane_naming_contract" => {
             Some(check_control_plane_naming_contract_docs)
         }
-        "checks_docs_atlasctl_deletion_cutoff_rules" => Some(check_atlasctl_deletion_cutoff_rules),
-        "checks_docs_atlasctl_tombstone_directory_contract" => {
-            Some(check_atlasctl_tombstone_directory_contract)
+        "checks_docs_control_plane_reference_cutoff_rules" => {
+            Some(check_retired_control_plane_token_deletion_cutoff_rules)
+        }
+        "checks_docs_control_plane_reference_boundary_contract" => {
+            Some(check_retired_control_plane_token_tombstone_directory_contract)
         }
         "checks_ops_ssot_manifests_schema_versions" => {
             Some(check_ops_ssot_manifests_schema_versions)
@@ -209,15 +219,15 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
     [
         "checks_ops_surface_manifest",
         "checks_ops_tree_contract",
-        "checks_ops_no_legacy_tooling_refs",
+        "checks_ops_no_retired_tooling_refs",
         "checks_ops_generated_readonly_markers",
         "checks_ops_schema_presence",
         "checks_ops_manifest_integrity",
         "checks_ops_surface_inventory",
         "checks_ops_artifacts_not_tracked",
-        "checks_ops_no_python_legacy_runtime_refs",
-        "checks_ops_no_legacy_runner_paths",
-        "checks_ops_no_atlasctl_invocations",
+        "checks_ops_no_python_retired_runtime_refs",
+        "checks_ops_no_retired_runner_paths",
+        "checks_ops_no_retired_control_plane_invocations",
         "checks_ops_no_scripts_areas_or_xtask_refs",
         "checks_ops_artifacts_gitignore_policy",
         "checks_ops_makefile_routes_dev_atlas",
@@ -225,14 +235,14 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_make_ops_wrappers_delegate_dev_atlas",
         "checks_workflows_ops_entrypoints_bijux_only",
         "checks_ops_internal_registry_consistency",
-        "checks_root_packages_atlasctl_absent",
-        "checks_root_bin_atlasctl_absent",
-        "checks_root_artifacts_reports_atlasctl_absent",
+        "checks_root_packages_retired_control_plane_absent",
+        "checks_root_bin_retired_control_plane_absent",
+        "checks_root_artifacts_reports_retired_control_plane_absent",
         "checks_root_python_toolchain_toml_absent",
         "checks_root_uv_lock_absent",
-        "checks_docs_no_atlasctl_string_references",
-        "checks_workflows_no_atlasctl_string_references",
-        "checks_make_no_atlasctl_string_references",
+        "checks_docs_no_retired_control_plane_string_references",
+        "checks_workflows_no_retired_control_plane_string_references",
+        "checks_make_no_retired_control_plane_string_references",
         "checks_workflows_no_direct_ops_script_execution",
         "checks_make_no_direct_ops_script_execution",
         "checks_makefiles_no_cd_invocations",
@@ -250,7 +260,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_bijux_atlas_help_excludes_dev_commands",
         "checks_crates_bijux_dev_atlas_help_dispatch_present",
         "checks_ops_no_bash_lib_execution",
-        "checks_ops_legacy_shell_quarantine_empty",
+        "checks_ops_retired_shell_quarantine_empty",
         "checks_make_governance_wrappers_bijux_only",
         "checks_workflows_governance_entrypoints_bijux_only",
         "checks_make_governance_wrappers_no_direct_cargo",
@@ -262,20 +272,20 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_no_duplicate_nav_titles",
         "checks_docs_readme_index_contract_presence",
         "checks_docs_file_naming_conventions",
-        "checks_docs_no_legacy_scripts_strings",
+        "checks_docs_no_retired_scripts_strings",
         "checks_docs_command_surface_docs_exist",
-        "checks_docs_no_legacy_make_targets",
+        "checks_docs_no_retired_make_targets",
         "checks_make_docs_wrappers_delegate_dev_atlas",
         "checks_configs_required_surface_paths",
         "checks_configs_schema_paths_present",
-        "checks_configs_no_atlasctl_string_references",
+        "checks_configs_no_retired_control_plane_string_references",
         "checks_make_configs_wrappers_delegate_dev_atlas",
         "checks_ops_control_plane_doc_contract",
         "checks_docs_ops_command_list_matches_snapshot",
         "checks_docs_configs_command_list_matches_snapshot",
         "checks_docs_control_plane_naming_contract",
-        "checks_docs_atlasctl_deletion_cutoff_rules",
-        "checks_docs_atlasctl_tombstone_directory_contract",
+        "checks_docs_control_plane_reference_cutoff_rules",
+        "checks_docs_control_plane_reference_boundary_contract",
         "checks_ops_ssot_manifests_schema_versions",
         "checks_crates_dev_atlas_final_crate_set_contract",
         "checks_docs_scripting_contract_rust_control_plane_lock",
@@ -284,7 +294,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_command_namespace_ownership_unique",
         "checks_crates_plugin_conformance_binaries",
         "checks_root_artifacts_bin_binaries_executable_and_version_printable",
-        "checks_root_forbidden_legacy_directories_absent",
+        "checks_root_forbidden_retired_directories_absent",
         "checks_root_makefile_single_include_entrypoint",
         "checks_makefiles_root_includes_sorted",
         "checks_root_top_level_directories_contract",
@@ -381,7 +391,9 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
     Ok(violations)
 }
 
-fn checks_ops_no_legacy_tooling_refs(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+fn checks_ops_no_retired_tooling_refs(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
     let forbidden = [
         ("scripts/areas", "OPS_FORBIDDEN_SCRIPTS_AREAS_REF"),
         ("xtask", "OPS_FORBIDDEN_XTASK_REF"),
@@ -412,10 +424,10 @@ fn checks_ops_no_legacy_tooling_refs(ctx: &CheckContext<'_>) -> Result<Vec<Viola
                 violations.push(violation(
                     code,
                     format!(
-                        "forbidden legacy reference `{needle}` found in {}",
+                        "forbidden retired reference `{needle}` found in {}",
                         rel.display()
                     ),
-                    "remove legacy tooling references from ops contracts",
+                    "remove retired tooling references from ops contracts",
                     Some(rel.as_path()),
                 ));
             }
@@ -600,14 +612,14 @@ fn checks_ops_artifacts_not_tracked(ctx: &CheckContext<'_>) -> Result<Vec<Violat
     }
 }
 
-fn checks_ops_no_python_legacy_runtime_refs(
+fn checks_ops_no_python_retired_runtime_refs(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     let forbidden = [
-        ["packages", "/", "atlasctl"].concat(),
-        ["python -m ", "atlasctl"].concat(),
-        ["./bin/", "atlasctl"].concat(),
+        ["packages", "/", "retired_control_plane_token"].concat(),
+        ["python -m ", "retired_control_plane_token"].concat(),
+        ["./bin/", "retired_control_plane_token"].concat(),
     ];
     let roots = [
         ctx.repo_root.join("crates/bijux-dev-atlas"),
@@ -644,10 +656,10 @@ fn checks_ops_no_python_legacy_runtime_refs(
                     violations.push(violation(
                         "OPS_PYTHON_LEGACY_REFERENCE_FOUND",
                         format!(
-                            "forbidden legacy runtime reference `{needle}` found in {}",
+                            "forbidden retired runtime reference `{needle}` found in {}",
                             rel.display()
                         ),
-                        "remove python atlasctl coupling from bijux-dev-atlas crates",
+                        "remove python retired_control_plane_token coupling from bijux-dev-atlas crates",
                         Some(rel),
                     ));
                 }
@@ -658,7 +670,9 @@ fn checks_ops_no_python_legacy_runtime_refs(
     Ok(violations)
 }
 
-fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+fn checks_ops_no_retired_runner_paths(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     let forbidden = [
         ["scripts/", "areas"].concat(),
@@ -701,10 +715,10 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
                     violations.push(violation(
                         "OPS_LEGACY_RUNNER_PATH_REFERENCE_FOUND",
                         format!(
-                            "forbidden legacy runner path reference `{needle}` found in {}",
+                            "forbidden retired runner path reference `{needle}` found in {}",
                             rel.display()
                         ),
-                        "remove legacy runner path references from dev-atlas crates",
+                        "remove retired runner path references from dev-atlas crates",
                         Some(rel),
                     ));
                 }

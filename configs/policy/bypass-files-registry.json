@@ -32,7 +32,7 @@
       "path": "configs/policy/dead-modules-allowlist.json",
       "requires_metadata": false,
       "schema": "configs/policy/bypass.schema.json",
-      "type": "legacy"
+      "type": "retired"
     },
     {
       "kind": "json",
@@ -105,7 +105,7 @@
     },
     {
       "kind": "json",
-      "path": "configs/policy/runtime-access-legacy-allowlist.json",
+      "path": "configs/policy/runtime-access-retired-allowlist.json",
       "requires_metadata": false,
       "schema": "configs/policy/bypass.schema.json",
       "type": "allowlist"

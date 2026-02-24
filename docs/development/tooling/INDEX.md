@@ -38,7 +38,7 @@ This section does not duplicate full command reference details from each tooling
 ## Pages
 
 - [control plane](control-plane.md)
-- [control-plane migration rationale](control-plane-migration-rationale.md)
+- [control-plane transition rationale](control-plane-transition-rationale.md)
 - [command inventory](command-inventory.md)
 - [build outputs](build-outputs.md)
 - [rust toolchain contract](rust-toolchain.md)
@@ -49,4 +49,4 @@ This section does not duplicate full command reference details from each tooling
 - [tooling compatibility matrix](compat-matrix.md)
 - [tooling compatibility policy](scripts-compat-policy.md)
 - [tooling directory intent map](tools.md)
-- [atlasctl deletion policy](atlasctl-deletion/README.md)
+- [retired control-plane token deletion policy](control-plane-reference-policy/README.md)

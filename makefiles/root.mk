@@ -30,7 +30,7 @@ CURATED_TARGETS := \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
 	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-stack ops-k8s ops-e2e ops-load ops-obs ops-tools-verify ops-pins-check ops-pins-update \
-	make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
+	make-gate-no-retired-cli-refs make-gate-no-retired-cli-shim
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "Curated make targets (Rust control plane):"; \
@@ -105,9 +105,9 @@ lint-configs: ## Lint configs contracts via dev-atlas configs checks
 lint-docs: ## Lint docs contracts via dev-atlas docs checks
 	@$(DEV_ATLAS) check run --domain docs --format json
 
-make-gate-no-legacy-cli-refs: ## Fail if legacy Python control-plane token appears in makefiles
-	@legacy_cli_token='atlas''ctl'; ! rg -n "$$legacy_cli_token" makefiles -g'*.mk'
+make-gate-no-retired-cli-refs: ## Fail if retired Python control-plane token appears in makefiles
+	@retired_cli_token='atlas''ctl'; ! rg -n "$$retired_cli_token" makefiles -g'*.mk'
 
-make-gate-no-legacy-cli-shim: ## Fail if legacy root control-plane shim exists
-	@legacy_cli_path=bin/atlas''ctl; test ! -e "$$legacy_cli_path"
-.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates gate-10 gate-20 clean verify lanes lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
+make-gate-no-retired-cli-shim: ## Fail if retired root control-plane shim exists
+	@retired_cli_path=bin/atlas''ctl; test ! -e "$$retired_cli_path"
+.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates gate-10 gate-20 clean verify lanes lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs make-gate-no-retired-cli-refs make-gate-no-retired-cli-shim

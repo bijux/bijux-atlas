@@ -246,12 +246,12 @@ jobs:
             echo "${violations}"
             exit 1
           fi
-      - name: Enforce no legacy control-plane token in github files
+      - name: Enforce no retired control-plane token in github files
         shell: bash
         run: |
           set -euo pipefail
-          legacy_token="$(printf 'atlas%s' 'ctl')"
-          ! rg -n "${legacy_token}|\./bin/${legacy_token}|packages/${legacy_token}" .github
+          retired_token="$(printf 'atlas%s' 'ctl')"
+          ! rg -n "${retired_token}|\./bin/${retired_token}|packages/${retired_token}" .github
       - name: Enforce no direct script execution in workflows
         shell: bash
         run: |

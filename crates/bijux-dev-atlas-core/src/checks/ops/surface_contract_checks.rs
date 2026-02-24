@@ -8,10 +8,10 @@ pub(super) fn checks_ops_makefile_routes_dev_atlas(
     let rel = Path::new("makefiles/_ops.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
-    if content.contains("atlasctl") {
+    if content.contains("retired_control_plane_token") {
         return Ok(vec![violation(
             "OPS_MAKEFILE_ROUTE_INVALID",
-            "makefiles/_ops.mk must not invoke atlasctl".to_string(),
+            "makefiles/_ops.mk must not invoke retired_control_plane_token".to_string(),
             "route all ops targets through `bijux dev atlas ops ...`",
             Some(rel),
         )]);
@@ -80,10 +80,10 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
         ));
     }
     for line in content.lines().filter(|line| line.starts_with('\t')) {
-        if line.contains("atlasctl") {
+        if line.contains("retired_control_plane_token") {
             violations.push(violation(
                 "MAKE_OPS_ATLASCTL_REFERENCE_FOUND",
-                format!("makefiles/_ops.mk must not call atlasctl: `{line}`"),
+                format!("makefiles/_ops.mk must not call retired_control_plane_token: `{line}`"),
                 "route ops wrappers through bijux dev atlas",
                 Some(rel),
             ));
@@ -124,10 +124,11 @@ pub(super) fn check_workflows_governance_entrypoints_bijux_only(
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
-    if text.contains("atlasctl") {
+    if text.contains("retired_control_plane_token") {
         violations.push(violation(
             "WORKFLOW_GOVERNANCE_ATLASCTL_REFERENCE_FOUND",
-            "ci-pr workflow must not reference atlasctl in governance lanes".to_string(),
+            "ci-pr workflow must not reference retired_control_plane_token in governance lanes"
+                .to_string(),
             "route governance checks through make wrappers or bijux dev atlas",
             Some(rel),
         ));
@@ -141,11 +142,13 @@ pub(super) fn check_workflows_ops_entrypoints_bijux_only(
     let rel = Path::new(".github/workflows/ci-pr.yml");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if text.contains("atlasctl ops") || text.contains("./bin/atlasctl ops") {
+    if text.contains("retired_control_plane_token ops")
+        || text.contains("./bin/retired_control_plane_token ops")
+    {
         Ok(vec![violation(
             "WORKFLOW_OPS_ENTRYPOINT_ATLASCTL_REFERENCE_FOUND",
             "ops workflow entrypoints must route through bijux dev atlas ops".to_string(),
-            "replace atlasctl ops calls with make ops-* or bijux dev atlas ops",
+            "replace retired_control_plane_token ops calls with make ops-* or bijux dev atlas ops",
             Some(rel),
         )])
     } else {

@@ -1,6 +1,6 @@
-# Layout shell-to-python migration checklist
+# Layout shell-to-python transition checklist
 
-This checklist tracks migration of legacy shell checks under
+This checklist tracks transition of retired shell checks under
 `ops/vendor/layout-checks/`.
 
 ## Converted to Python (`checks/layout/root`)

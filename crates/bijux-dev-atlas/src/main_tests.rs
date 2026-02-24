@@ -7,10 +7,10 @@ mod tests {
     use std::path::PathBuf;
 
     #[test]
-    fn source_does_not_reference_atlasctl_runtime() {
+    fn source_does_not_reference_retired_control_plane_token_runtime() {
         let src = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src");
-        let forbidden_python_module = ["python -m ", "atlasctl"].concat();
-        let forbidden_wrapper = ["/bin/", "atlasctl"].concat();
+        let forbidden_python_module = ["python -m ", "retired_control_plane_token"].concat();
+        let forbidden_wrapper = ["/bin/", "retired_control_plane_token"].concat();
         let mut stack = vec![src];
         while let Some(path) = stack.pop() {
             for entry in fs::read_dir(path).expect("read_dir") {
@@ -31,7 +31,7 @@ mod tests {
                 );
                 assert!(
                     !text.contains(&forbidden_wrapper),
-                    "new rust dev tool must not invoke atlasctl binary wrapper: {}",
+                    "new rust dev tool must not invoke retired_control_plane_token binary wrapper: {}",
                     path.display()
                 );
             }
@@ -307,7 +307,12 @@ mod tests {
             vec!["bijux-dev-atlas", "docs", "lint"],
             vec!["bijux-dev-atlas", "docs", "links"],
             vec!["bijux-dev-atlas", "docs", "inventory"],
-            vec!["bijux-dev-atlas", "docs", "grep", "atlasctl"],
+            vec![
+                "bijux-dev-atlas",
+                "docs",
+                "grep",
+                "retired_control_plane_token",
+            ],
             vec![
                 "bijux-dev-atlas",
                 "docs",

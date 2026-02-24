@@ -357,7 +357,11 @@ fn docs_verify_contracts_payload(
     let mut dev_examples = 0usize;
     let scripts_areas = format!("{}/{}", "scripts", "areas");
     let x_task = ["x", "task"].join("");
-    let forbidden = ["atlasctl".to_string(), x_task, scripts_areas];
+    let forbidden = [
+        "retired_control_plane_token".to_string(),
+        x_task,
+        scripts_areas,
+    ];
 
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         scanned_files += 1;

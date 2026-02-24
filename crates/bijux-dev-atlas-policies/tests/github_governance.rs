@@ -26,7 +26,7 @@ fn collect_files_recursive(root: &Path, out: &mut Vec<PathBuf>) {
 }
 
 #[test]
-fn github_files_do_not_reference_legacy_control_plane_token() {
+fn github_files_do_not_reference_retired_control_plane_token() {
     let root = workspace_root();
     let github_root = root.join(".github");
     let mut files = Vec::new();
@@ -34,7 +34,7 @@ fn github_files_do_not_reference_legacy_control_plane_token() {
     files.sort();
 
     let mut violations = Vec::new();
-    let legacy_token = ["atlas", "ctl"].concat();
+    let retired_token = ["atlas", "ctl"].concat();
     for file in files {
         let rel = file
             .strip_prefix(&root)
@@ -44,14 +44,14 @@ fn github_files_do_not_reference_legacy_control_plane_token() {
         let Ok(content) = fs::read_to_string(&file) else {
             continue;
         };
-        if content.contains(&legacy_token) {
+        if content.contains(&retired_token) {
             violations.push(rel);
         }
     }
 
     assert!(
         violations.is_empty(),
-        "forbidden legacy token found in .github files: {violations:?}"
+        "forbidden retired token found in .github files: {violations:?}"
     );
 }
 

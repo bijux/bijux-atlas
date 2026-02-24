@@ -26,7 +26,7 @@ pub(super) fn check_root_no_scripts_areas_presence_or_references(
     Ok(violations)
 }
 
-pub(super) fn check_root_forbidden_legacy_directories_absent(
+pub(super) fn check_root_forbidden_retired_directories_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
@@ -35,7 +35,7 @@ pub(super) fn check_root_forbidden_legacy_directories_absent(
         if ctx.adapters.fs.exists(ctx.repo_root, path) {
             violations.push(violation(
                 "ROOT_FORBIDDEN_LEGACY_DIRECTORY_PRESENT",
-                format!("forbidden legacy top-level directory exists: {}", path.display()),
+                format!("forbidden retired top-level directory exists: {}", path.display()),
                 "delete the directory and move behavior into crates/bijux-dev-atlas command surfaces",
                 Some(path),
             ));
@@ -129,7 +129,7 @@ pub(super) fn check_root_top_level_directories_contract(
         Ok(vec![violation(
             "ROOT_TOP_LEVEL_DIRECTORIES_CONTRACT_MISMATCH",
             format!("top-level visible directories mismatch: actual={actual:?} expected={expected_vec:?}"),
-            "keep only the canonical top-level directory set and move legacy roots into crates/ or ops/",
+            "keep only the canonical top-level directory set and move retired roots into crates/ or ops/",
             None,
         )])
     }
@@ -390,7 +390,7 @@ pub(super) fn check_no_string_references_under(
                         rel.display(),
                         line.trim()
                     ),
-                    "remove legacy references and route through bijux dev atlas",
+                    "remove retired references and route through bijux dev atlas",
                     Some(rel),
                 ));
                 break;
@@ -472,10 +472,10 @@ pub(super) fn check_ops_no_bash_lib_execution(
                 let invokes_ops_shell = trimmed.contains("bash ops/")
                     || trimmed.contains("source ops/")
                     || trimmed.starts_with(". ops/");
-                let sources_legacy_lib = trimmed.contains("source ops/_lib")
+                let sources_retired_lib = trimmed.contains("source ops/_lib")
                     || trimmed.contains(". ops/_lib")
                     || trimmed.contains("bash ops/_lib");
-                if invokes_ops_shell || sources_legacy_lib {
+                if invokes_ops_shell || sources_retired_lib {
                     let path = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
                     violations.push(violation(
                         "OPS_BASH_LIB_EXECUTION_REFERENCE_FOUND",
@@ -495,10 +495,10 @@ pub(super) fn check_ops_no_bash_lib_execution(
     Ok(violations)
 }
 
-pub(super) fn check_ops_legacy_shell_quarantine_empty(
+pub(super) fn check_ops_retired_shell_quarantine_empty(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("ops/quarantine/legacy-ops-shell");
+    let rel = Path::new("ops/quarantine/retired-ops-shell");
     let dir = ctx.repo_root.join(rel);
     if !dir.exists() {
         return Ok(Vec::new());
@@ -522,10 +522,10 @@ pub(super) fn check_ops_legacy_shell_quarantine_empty(
         Ok(vec![violation(
             "OPS_LEGACY_SHELL_QUARANTINE_NOT_EMPTY",
             format!(
-                "legacy ops shell quarantine must be empty; found `{}`",
+                "retired ops shell quarantine must be empty; found `{}`",
                 first.display()
             ),
-            "delete legacy shell helpers and keep quarantine empty",
+            "delete retired shell helpers and keep quarantine empty",
             Some(rel),
         )])
     }

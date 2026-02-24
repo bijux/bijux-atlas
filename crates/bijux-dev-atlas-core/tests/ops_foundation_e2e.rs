@@ -166,9 +166,9 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "checks_ops_no_legacy_tooling_refs"
+id = "checks_ops_no_retired_tooling_refs"
 domain = "ops"
-title = "ops does not reference legacy tooling paths"
+title = "ops does not reference retired tooling paths"
 docs = "ops/CONTRACT.md"
 tags = ["ops", "fast"]
 suites = ["ops_fast"]
