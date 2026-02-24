@@ -33,6 +33,14 @@
       "path": "check/check-run-verbose.txt.golden"
     },
     {
+      "name": "runner-effect-denied-skip.json.golden",
+      "path": "check/runner-effect-denied-skip.json.golden"
+    },
+    {
+      "name": "runner-fail-fast.json.golden",
+      "path": "check/runner-fail-fast.json.golden"
+    },
+    {
       "name": "check-suite-coverage.markers.txt",
       "path": "check/check-suite-coverage.markers.txt"
     },
