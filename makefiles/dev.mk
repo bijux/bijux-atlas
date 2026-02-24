@@ -17,6 +17,7 @@ coverage: ## Rust coverage lane
 		echo "cargo-llvm-cov is required. Install with: cargo install cargo-llvm-cov"; \
 		exit 1; \
 	}
+	@mkdir -p artifacts/coverage
 	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info
 
 fmt: ## Rust formatter check
