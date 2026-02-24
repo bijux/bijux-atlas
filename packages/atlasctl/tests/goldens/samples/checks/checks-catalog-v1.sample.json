@@ -14,7 +14,7 @@
       "id": "checks_checks_registry_integrity",
       "impl_ref": {
         "callable": "check_registry_integrity",
-        "category": "contract",
+        "category": "check",
         "effects": [],
         "evidence": [],
         "external_tools": [],

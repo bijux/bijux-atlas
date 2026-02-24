@@ -136,7 +136,7 @@ def check_schema_catalog_ssot(repo_root: Path) -> tuple[int, list[str]]:
         if not path.is_file() or path.suffix not in {".py", ".md"}:
             continue
         rel = path.relative_to(src_root).as_posix()
-        if rel == "checks/domains/policies/contracts/schema_contracts.py":
+        if rel == "checks/tools/policies_domain/contracts/schema_contracts.py":
             continue
         if rel in allow_rel:
             continue
