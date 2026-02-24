@@ -15,6 +15,8 @@ pub use crate::errors::{
     ConfigPathScope, Error, ErrorCode, ErrorContext, ExitCode, MachineError, Result, ResultExt,
     ERROR_CODES,
 };
+pub use crate::ports::{ClockPort, FsPort, NetPort, ProcessPort, ProcessResult};
+pub use crate::types::{DatasetId, RunId, ShardId};
 
 pub const CRATE_NAME: &str = "bijux-atlas-core";
 pub const ENV_BIJUX_LOG_LEVEL: &str = "BIJUX_LOG_LEVEL";
