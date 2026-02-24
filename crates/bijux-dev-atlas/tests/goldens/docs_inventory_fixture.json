@@ -1,0 +1,36 @@
+{
+  "capabilities": {
+    "fs_write": false,
+    "network": false,
+    "subprocess": false
+  },
+  "duplicate_nav_titles": [],
+  "duration_ms": 0,
+  "nav": [
+    {
+      "path": "index.md",
+      "title": "Home"
+    },
+    {
+      "path": "sub/intro.md",
+      "title": "Intro"
+    }
+  ],
+  "options": {
+    "include_drafts": false,
+    "strict": false
+  },
+  "orphan_pages": [],
+  "pages": [
+    {
+      "in_nav": true,
+      "path": "index.md"
+    },
+    {
+      "in_nav": true,
+      "path": "sub/intro.md"
+    }
+  ],
+  "run_id": "docs_inventory_fixture",
+  "schema_version": 1
+}
