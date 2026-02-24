@@ -8,9 +8,6 @@ dev-doctor: ## Run dev control-plane doctor suite
 dev-check-ci: ## Run dev control-plane ci suite
 	@$(DEV_ATLAS) check run --suite ci --format text
 
-dev-check: ## Alias for dev-check-ci
-	@$(MAKE) -s dev-check-ci
-
 dev-ci: ## Alias for dev-check-ci
 	@$(MAKE) -s dev-check-ci
 
@@ -23,4 +20,4 @@ install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts
 	@echo "installed artifacts/bin/bijux-atlas"
 	@echo "installed artifacts/bin/bijux-dev-atlas"
 
-.PHONY: dev-doctor dev-check-ci dev-check dev-ci install-local
+.PHONY: dev-doctor dev-check-ci dev-ci install-local

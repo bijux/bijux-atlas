@@ -8,6 +8,9 @@ ci: ## Canonical CI entrypoint
 ci-fast: ## CI fast lane wrapper
 	@$(DEV_ATLAS) check run --suite ci_fast --format json
 
+ci-pr: ## CI PR lane wrapper
+	@$(DEV_ATLAS) check run --suite ci_fast --format json
+
 ci-nightly: ## CI nightly lane (includes slow checks)
 	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --format json
 
@@ -20,4 +23,4 @@ ci-dependency-lock-refresh: ## CI dependency lock refresh wrapper
 ci-help: ## Show CI command help
 	@$(DEV_ATLAS) --help
 
-.PHONY: ci ci-fast ci-nightly ci-docs ci-dependency-lock-refresh ci-help
+.PHONY: ci ci-fast ci-pr ci-nightly ci-docs ci-dependency-lock-refresh ci-help
