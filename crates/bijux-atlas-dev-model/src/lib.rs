@@ -183,6 +183,7 @@ pub struct CheckSpec {
 pub struct CheckResult {
     pub id: CheckId,
     pub status: CheckStatus,
+    pub skip_reason: Option<String>,
     pub violations: Vec<Violation>,
     pub duration_ms: u64,
     pub evidence: Vec<EvidenceRef>,

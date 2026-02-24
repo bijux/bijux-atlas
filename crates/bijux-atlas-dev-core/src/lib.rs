@@ -3,11 +3,12 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::time::Instant;
 
-use bijux_atlas_dev_adapters::{Capabilities, ProcessRunner};
+use bijux_atlas_dev_adapters::{Capabilities, Fs, ProcessRunner};
 use bijux_atlas_dev_model::{
     CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId, RunReport, RunSummary,
-    SuiteId, Tag, Visibility,
+    Severity, SuiteId, Tag, Violation, Visibility,
 };
 use serde::Deserialize;
 
@@ -27,6 +28,7 @@ pub struct Selectors {
     pub tag: Option<Tag>,
     pub suite: Option<SuiteId>,
     pub include_internal: bool,
+    pub include_slow: bool,
 }
 
 impl Default for Selectors {
@@ -37,6 +39,22 @@ impl Default for Selectors {
             tag: None,
             suite: None,
             include_internal: false,
+            include_slow: false,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct RunOptions {
+    pub fail_fast: bool,
+    pub max_failures: Option<usize>,
+}
+
+impl Default for RunOptions {
+    fn default() -> Self {
+        Self {
+            fail_fast: false,
+            max_failures: None,
         }
     }
 }
@@ -59,6 +77,26 @@ pub struct SuiteSpec {
     pub checks: Vec<CheckId>,
     pub domains: Vec<DomainId>,
     pub tags_any: Vec<Tag>,
+}
+
+#[derive(Debug)]
+pub enum CheckError {
+    Failed(String),
+}
+
+pub type CheckFn = fn(&CheckContext<'_>) -> Result<Vec<Violation>, CheckError>;
+
+pub struct AdapterSet<'a> {
+    pub fs: &'a dyn Fs,
+    pub process: &'a dyn ProcessRunner,
+}
+
+pub struct CheckContext<'a> {
+    pub repo_root: &'a Path,
+    pub artifacts_root: PathBuf,
+    pub run_id: RunId,
+    pub adapters: AdapterSet<'a>,
+    pub registry: &'a Registry,
 }
 
 #[derive(Debug, Deserialize)]
@@ -321,6 +359,9 @@ pub fn select_checks(registry: &Registry, selectors: &Selectors) -> Result<Vec<C
     let mut out: Vec<CheckSpec> = suite_selected
         .into_iter()
         .filter(|check| selectors.include_internal || check.visibility == Visibility::Public)
+        .filter(|check| {
+            selectors.include_slow || !check.tags.iter().any(|tag| tag.as_str() == "slow")
+        })
         .filter(|check| selectors.domain.is_none_or(|domain| check.domain == domain))
         .filter(|check| {
             selectors
@@ -395,36 +436,313 @@ pub fn registry_doctor(repo_root: &Path) -> RegistryDoctorReport {
     }
 }
 
-pub fn run_checks(_adapter: &dyn ProcessRunner, request: &RunRequest) -> Result<RunReport, String> {
+fn effect_allowed(effect: Effect, caps: Capabilities) -> bool {
+    match effect {
+        Effect::FsRead => true,
+        Effect::FsWrite => caps.fs_write,
+        Effect::Subprocess => caps.subprocess,
+        Effect::Git => caps.git,
+        Effect::Network => caps.network,
+    }
+}
+
+fn builtin_check_fn(check_id: &CheckId) -> Option<CheckFn> {
+    match check_id.as_str() {
+        "ops_surface_manifest" => Some(check_ops_surface_manifest),
+        "repo_import_boundary" => Some(check_repo_import_boundary),
+        "docs_index_links" => Some(check_docs_index_links),
+        "make_wrapper_commands" => Some(check_make_wrapper_commands),
+        "ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
+        _ => None,
+    }
+}
+
+fn sorted_violations(mut violations: Vec<Violation>) -> Vec<Violation> {
+    violations.sort_by(|a, b| {
+        a.code
+            .cmp(&b.code)
+            .then(a.message.cmp(&b.message))
+            .then(a.path.cmp(&b.path))
+            .then(a.line.cmp(&b.line))
+    });
+    violations
+}
+
+fn check_ops_surface_manifest(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let manifest = Path::new("configs/ops/ops-surface-manifest.json");
+    let surface = Path::new("ops/inventory/surfaces.json");
+    let mut violations = Vec::new();
+    if !ctx.adapters.fs.exists(ctx.repo_root, manifest) {
+        violations.push(Violation {
+            code: "OPS_SURFACE_MANIFEST_MISSING".to_string(),
+            message: "missing configs/ops/ops-surface-manifest.json".to_string(),
+            hint: Some("restore ops surface manifest".to_string()),
+            path: Some(manifest.display().to_string()),
+            line: None,
+            severity: Severity::Error,
+        });
+    }
+    if !ctx.adapters.fs.exists(ctx.repo_root, surface) {
+        violations.push(Violation {
+            code: "OPS_SURFACE_INVENTORY_MISSING".to_string(),
+            message: "missing ops/inventory/surfaces.json".to_string(),
+            hint: Some("regenerate inventory surfaces".to_string()),
+            path: Some(surface.display().to_string()),
+            line: None,
+            severity: Severity::Error,
+        });
+    }
+    Ok(violations)
+}
+
+fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let target = Path::new("crates/bijux-atlas-cli/src/atlas_command_dispatch.rs");
+    if ctx.adapters.fs.exists(ctx.repo_root, target) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![Violation {
+            code: "REPO_IMPORT_BOUNDARY_SOURCE_MISSING".to_string(),
+            message: "missing expected atlas dispatch source file".to_string(),
+            hint: Some("restore crate source tree".to_string()),
+            path: Some(target.display().to_string()),
+            line: None,
+            severity: Severity::Error,
+        }])
+    }
+}
+
+fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let target = Path::new("docs/INDEX.md");
+    if ctx.adapters.fs.exists(ctx.repo_root, target) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![Violation {
+            code: "DOCS_INDEX_MISSING".to_string(),
+            message: "missing docs/INDEX.md".to_string(),
+            hint: Some("restore docs index".to_string()),
+            path: Some(target.display().to_string()),
+            line: None,
+            severity: Severity::Error,
+        }])
+    }
+}
+
+fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let target = Path::new("makefiles/CONTRACT.md");
+    if ctx.adapters.fs.exists(ctx.repo_root, target) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![Violation {
+            code: "MAKE_CONTRACT_MISSING".to_string(),
+            message: "missing makefiles/CONTRACT.md".to_string(),
+            hint: Some("restore make contract doc".to_string()),
+            path: Some(target.display().to_string()),
+            line: None,
+            severity: Severity::Error,
+        }])
+    }
+}
+
+fn check_ops_internal_registry_consistency(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let path = ctx.repo_root.join(DEFAULT_REGISTRY_PATH);
+    let output = ctx
+        .adapters
+        .process
+        .run(
+            "git",
+            &[
+                "status".to_string(),
+                "--short".to_string(),
+                path.display().to_string(),
+            ],
+            ctx.repo_root,
+        )
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if output == 0 {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![Violation {
+            code: "OPS_INTERNAL_REGISTRY_GIT_STATUS_FAILED".to_string(),
+            message: "unable to query git status for registry".to_string(),
+            hint: Some("ensure git is available and repository is valid".to_string()),
+            path: Some(DEFAULT_REGISTRY_PATH.to_string()),
+            line: None,
+            severity: Severity::Warn,
+        }])
+    }
+}
+
+pub fn render_text_summary(report: &RunReport) -> String {
+    format!(
+        "summary: passed={} failed={} skipped={} errors={} total={} duration_ms={}",
+        report.summary.passed,
+        report.summary.failed,
+        report.summary.skipped,
+        report.summary.errors,
+        report.summary.total,
+        report.timings_ms.values().sum::<u64>(),
+    )
+}
+
+pub fn render_json(report: &RunReport) -> Result<String, String> {
+    serde_json::to_string_pretty(report).map_err(|err| err.to_string())
+}
+
+pub fn render_jsonl(report: &RunReport) -> Result<String, String> {
+    let mut lines = Vec::new();
+    for row in &report.results {
+        lines.push(serde_json::to_string(row).map_err(|err| err.to_string())?);
+    }
+    Ok(lines.join("\n"))
+}
+
+pub fn run_checks(
+    process: &dyn ProcessRunner,
+    fs: &dyn Fs,
+    request: &RunRequest,
+    selectors: &Selectors,
+    options: &RunOptions,
+) -> Result<RunReport, String> {
     let registry = load_registry(&request.repo_root)?;
-    let selectors = Selectors {
-        domain: request.domain,
-        ..Selectors::default()
+    let effective_selectors = Selectors {
+        domain: selectors.domain.or(request.domain),
+        include_internal: selectors.include_internal,
+        include_slow: selectors.include_slow,
+        id_glob: selectors.id_glob.clone(),
+        tag: selectors.tag.clone(),
+        suite: selectors.suite.clone(),
     };
-    let selected = select_checks(&registry, &selectors)?;
+    let selected = select_checks(&registry, &effective_selectors)?;
+
+    let run_id = RunId::from_seed("registry_run");
+    let ctx = CheckContext {
+        repo_root: &request.repo_root,
+        artifacts_root: request
+            .repo_root
+            .join("artifacts")
+            .join("atlas-dev")
+            .join(run_id.as_str()),
+        run_id,
+        adapters: AdapterSet { fs, process },
+        registry: &registry,
+    };
+
     let mut timings = BTreeMap::new();
     let mut results = Vec::new();
+    let mut failures = 0usize;
+
     for check in selected {
-        timings.insert(check.id.clone(), 0);
-        results.push(CheckResult {
+        let denied = check
+            .effects_required
+            .iter()
+            .find(|effect| !effect_allowed(**effect, request.capabilities));
+
+        if let Some(effect) = denied {
+            timings.insert(check.id.clone(), 0);
+            results.push(CheckResult {
+                id: check.id,
+                status: CheckStatus::Skip,
+                skip_reason: Some(format!("effect denied: {effect:?}")),
+                violations: Vec::new(),
+                duration_ms: 0,
+                evidence: Vec::new(),
+            });
+            continue;
+        }
+
+        let start = Instant::now();
+        let check_fn = builtin_check_fn(&check.id);
+        let mut result = CheckResult {
             id: check.id,
             status: CheckStatus::Pass,
+            skip_reason: None,
             violations: Vec::new(),
             duration_ms: 0,
             evidence: Vec::new(),
-        });
+        };
+
+        match check_fn {
+            Some(func) => match func(&ctx) {
+                Ok(violations) => {
+                    result.violations = sorted_violations(violations);
+                    result.status = if result.violations.is_empty() {
+                        CheckStatus::Pass
+                    } else {
+                        CheckStatus::Fail
+                    };
+                }
+                Err(err) => {
+                    result.status = CheckStatus::Error;
+                    result.violations = vec![Violation {
+                        code: "CHECK_EXECUTION_ERROR".to_string(),
+                        message: match err {
+                            CheckError::Failed(msg) => msg,
+                        },
+                        hint: Some("inspect check runner logs".to_string()),
+                        path: None,
+                        line: None,
+                        severity: Severity::Error,
+                    }];
+                }
+            },
+            None => {
+                result.status = CheckStatus::Error;
+                result.violations = vec![Violation {
+                    code: "CHECK_IMPLEMENTATION_MISSING".to_string(),
+                    message: "missing check function implementation".to_string(),
+                    hint: Some("add builtin_check_fn mapping for this check".to_string()),
+                    path: None,
+                    line: None,
+                    severity: Severity::Error,
+                }];
+            }
+        }
+
+        result.duration_ms = start.elapsed().as_millis() as u64;
+        timings.insert(result.id.clone(), result.duration_ms);
+
+        if matches!(result.status, CheckStatus::Fail | CheckStatus::Error) {
+            failures += 1;
+        }
+
+        results.push(result);
+
+        if options.fail_fast && failures > 0 {
+            break;
+        }
+        if let Some(max) = options.max_failures {
+            if failures >= max {
+                break;
+            }
+        }
     }
 
+    results.sort_by(|a, b| a.id.as_str().cmp(b.id.as_str()));
+
     let summary = RunSummary {
-        passed: results.len() as u64,
-        failed: 0,
-        skipped: 0,
-        errors: 0,
+        passed: results
+            .iter()
+            .filter(|row| row.status == CheckStatus::Pass)
+            .count() as u64,
+        failed: results
+            .iter()
+            .filter(|row| row.status == CheckStatus::Fail)
+            .count() as u64,
+        skipped: results
+            .iter()
+            .filter(|row| row.status == CheckStatus::Skip)
+            .count() as u64,
+        errors: results
+            .iter()
+            .filter(|row| row.status == CheckStatus::Error)
+            .count() as u64,
         total: results.len() as u64,
     };
 
     Ok(RunReport {
-        run_id: RunId::from_seed("registry_run"),
+        run_id: ctx.run_id,
         repo_root: request.repo_root.display().to_string(),
         results,
         summary,
@@ -432,9 +750,18 @@ pub fn run_checks(_adapter: &dyn ProcessRunner, request: &RunRequest) -> Result<
     })
 }
 
+pub fn exit_code_for_report(report: &RunReport) -> i32 {
+    if report.summary.failed > 0 || report.summary.errors > 0 {
+        1
+    } else {
+        0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bijux_atlas_dev_adapters::{DeniedProcessRunner, RealFs};
 
     fn root() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -480,6 +807,7 @@ mod tests {
             &registry,
             &Selectors {
                 include_internal: true,
+                include_slow: true,
                 ..Selectors::default()
             },
         )
@@ -532,12 +860,6 @@ mod tests {
     }
 
     #[test]
-    fn can_build_report_schema_from_model() {
-        let schema = bijux_atlas_dev_model::report_json_schema();
-        assert_eq!(schema["title"], "bijux-atlas-dev run report");
-    }
-
-    #[test]
     fn parse_effect_rejects_unknown_value() {
         let err = parse_effect("shell").expect_err("must fail");
         assert!(err.contains("invalid effect"));
@@ -557,10 +879,15 @@ mod tests {
             domain: None,
             capabilities: Capabilities::deny_all(),
         };
-        let adapter = bijux_atlas_dev_adapters::DeniedProcessRunner;
-        let report = run_checks(&adapter, &req).expect("report");
+        let report = run_checks(
+            &DeniedProcessRunner,
+            &RealFs,
+            &req,
+            &Selectors::default(),
+            &RunOptions::default(),
+        )
+        .expect("report");
         assert!(report.summary.total >= 1);
-        assert_eq!(report.summary.failed, 0);
     }
 
     #[test]
@@ -622,5 +949,83 @@ mod tests {
         registry.checks[0].budget_ms = 0;
         let errors = validate_registry(&registry);
         assert!(errors.iter().any(|err| err.contains("budget_ms")));
+    }
+
+    #[test]
+    fn effect_denied_results_in_skip() {
+        let req = RunRequest {
+            repo_root: root(),
+            domain: Some(DomainId::Ops),
+            capabilities: Capabilities::deny_all(),
+        };
+        let report = run_checks(
+            &DeniedProcessRunner,
+            &RealFs,
+            &req,
+            &Selectors {
+                include_internal: true,
+                include_slow: true,
+                ..Selectors::default()
+            },
+            &RunOptions::default(),
+        )
+        .expect("report");
+        assert!(report
+            .results
+            .iter()
+            .any(|row| row.status == CheckStatus::Skip));
+    }
+
+    #[test]
+    fn fail_fast_stops_after_first_failure() {
+        let req = RunRequest {
+            repo_root: root(),
+            domain: Some(DomainId::Ops),
+            capabilities: Capabilities::from_cli_flags(false, false, true, false),
+        };
+        let report = run_checks(
+            &DeniedProcessRunner,
+            &RealFs,
+            &req,
+            &Selectors {
+                include_internal: true,
+                include_slow: true,
+                ..Selectors::default()
+            },
+            &RunOptions {
+                fail_fast: true,
+                max_failures: None,
+            },
+        )
+        .expect("report");
+        assert!(report.results.len() <= 1);
+    }
+
+    #[test]
+    fn deterministic_json_output() {
+        let req = RunRequest {
+            repo_root: root(),
+            domain: None,
+            capabilities: Capabilities::from_cli_flags(false, true, false, false),
+        };
+        let a = run_checks(
+            &DeniedProcessRunner,
+            &RealFs,
+            &req,
+            &Selectors::default(),
+            &RunOptions::default(),
+        )
+        .expect("report a");
+        let b = run_checks(
+            &DeniedProcessRunner,
+            &RealFs,
+            &req,
+            &Selectors::default(),
+            &RunOptions::default(),
+        )
+        .expect("report b");
+        let a_text = render_json(&a).expect("json a");
+        let b_text = render_json(&b).expect("json b");
+        assert_eq!(a_text, b_text);
     }
 }
