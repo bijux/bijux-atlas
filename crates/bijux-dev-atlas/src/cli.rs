@@ -459,6 +459,7 @@ pub struct OpsResetArgs {
 #[derive(Subcommand, Debug)]
 pub enum DocsCommand {
     Check(DocsCommonArgs),
+    VerifyContracts(DocsCommonArgs),
     Doctor(DocsCommonArgs),
     Validate(DocsCommonArgs),
     Build(DocsCommonArgs),
