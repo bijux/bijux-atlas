@@ -13,7 +13,7 @@
 
 Compatibility shims retained at root:
 - Root config symlinks (`deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale/`, `nextest.toml`).
-- `bin/` keeps minimal bootstrap wrappers that delegate to package CLIs.
+- Root `bin/` is removed; package entrypoints live under `packages/` and local build outputs live under `artifacts/bin/`.
 
 Operational policy:
 - `ops/` is the canonical operations surface.
