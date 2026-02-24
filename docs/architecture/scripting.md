@@ -1,28 +1,24 @@
-# Scripting Architecture Contract
+# Scripting Architecture Contract (Historical Transition Note)
 
 - Owner: `bijux-atlas-platform`
 - Stability: `stable`
 
 ## What
 
-Defines the end-state contract for repository automation and scripting.
+Defines historical scripting constraints and the current Rust control-plane replacement contract.
 
-## Core decisions
+## Current Contract (Locked)
 
-1. All automation logic lives in `packages/atlasctl`.
-2. The single scripting CLI entrypoint is `./bin/atlasctl`.
-3. User-facing library implementations (Python or other languages) belong under `packages/<name>` and must not host repo-ops automation.
-4. Root `bin/` stays, but only for minimal execution shims (no business logic).
-5. No direct `python` path invocations are allowed in docs/make surfaces.
-6. No direct `bash` path invocations are allowed in docs/make surfaces.
-7. Makefile automation must invoke the package CLI (`./bin/atlasctl`), not ad-hoc Python paths.
-8. Runtime evidence is non-committed and must write under ignored artifact roots.
-9. Script-focused artifacts default to `artifacts/atlasctl/`; lane evidence remains under `artifacts/evidence/`.
-10. Run IDs use `atlas-YYYYMMDD-HHMMSS-<gitsha>` and are only allowed in ignored artifact paths.
-11. Deterministic generated outputs can be committed only when timestamp-free.
-12. Runtime logs, lane reports, and run evidence must never be committed.
+1. Repository automation entrypoints are Rust-native and routed through `bijux dev atlas ...`.
+2. Runtime product CLI commands are routed through `bijux atlas ...`.
+3. `atlasctl` is legacy and scheduled for removal; see `docs/development/tooling/atlasctl-deletion-plan.md`.
+4. No direct `python` or `bash` path invocations are allowed in make/workflow/docs control-plane surfaces.
+5. Runtime evidence is non-committed and must write under ignored artifact roots.
+6. Control-plane artifacts use `artifacts/<run-kind>/<run-id>/...` (current dev-atlas layout: `artifacts/atlas-dev/<domain>/<run-id>/...`).
+7. Deterministic generated outputs can be committed only when timestamp-free.
+8. Runtime logs, lane reports, and run evidence must never be committed.
 
-## Command taxonomy
+## Legacy Taxonomy (Historical)
 
 Stable command families:
 - `doctor`
@@ -34,24 +30,25 @@ Stable command families:
 - `ci`
 - `release`
 
-Current implementation maps these through `atlasctl` namespaces (for example `ops`, `docs`, `configs`, `policies`, `report`, `inventory`, `gates`), and aliases must remain documented.
+Legacy implementations mapped these through `atlasctl` namespaces. Active control-plane ownership is now `bijux dev atlas` command groups.
 
 ## Internal command policy
 
 - Internal commands may exist for maintainers but must be excluded from default user documentation.
 - Internal commands must still honor run context, schema contracts, and output policies.
 
-## Toolchain contract (historical legacy note)
+## Toolchain Contract (Historical Legacy Note)
 
 - Legacy atlasctl Python toolchain contracts are being removed with `packages/atlasctl`.
 - Active dev governance control-plane commands are Rust-native (`bijux-dev-atlas`).
+- Python tooling documents are historical-only and should be moved under `docs/tombstones/atlasctl/` during cleanup.
 
 ## How to verify
 
 ```bash
-make scripts-check
-make gates-check
-make docs/check
+make gates
+make check
+make docs
 ```
 
 Expected output: policy and command-surface checks pass without direct legacy script invocations.
