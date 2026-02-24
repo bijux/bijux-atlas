@@ -19,3 +19,7 @@ path = "src/lib.rs"
 [[bench]]
 name = "policy_validate"
 harness = false
+
+[[bench]]
+name = "policy_evaluation"
+harness = false

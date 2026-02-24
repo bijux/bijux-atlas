@@ -18,6 +18,7 @@ Docs:
 - [Schema evolution guide](SCHEMA_EVOLUTION.md)
 - [Evolution](EVOLUTION.md)
 - [Policy change checklist](CHANGE_CHECKLIST.md)
+- [Policy authoring guide](POLICY_AUTHORING_GUIDE.md)
 
 - [How to test](testing.md)
 - [How to extend](#how-to-extend)
@@ -37,4 +38,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-

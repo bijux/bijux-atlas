@@ -1,32 +1,32 @@
 # bijux-atlas-policies
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
-- Scope: runtime policies only (query/response/cache/rate-limit/publish/runtime invariants).
-- Governance policy enforcement is owned by `bijux-dev-atlas-policies`.
+Policy contracts, validation rules, and machine-readable enforcement results for atlas runtime behavior.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Scope
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+This crate owns:
+- `PolicySet` parsing and validation
+- policy evaluation output (`PolicyViolation`)
+- severity taxonomy (`PolicySeverity`)
+- repository budget evaluation (`RepositoryMetrics`)
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+## Extend Policies
 
-## Telemetry
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
+1. Add data fields in `configs/policy/policy.json` and schema updates in `configs/policy/policy.schema.json`.
+2. Add or update evaluation rules with stable IDs.
+3. Add table-driven tests and golden fixtures.
 
-## Tests
-- [tests/](tests/)
+## Interpret Violations
 
-## Benches
-- [benches/](benches/)
+Every violation includes:
+- `id`: stable machine identifier
+- `severity`: `info`, `warning`, or `error`
+- `message`: deterministic rule summary
+- `evidence`: concrete field/value context
 
-## Docs index
-- [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)
+## Docs
+
+- `docs/POLICY_AUTHORING_GUIDE.md`
+- `docs/SCHEMA.md`
+- `docs/CONFIG_SCHEMA.md`
+- `docs/public-api.md`
