@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::*;
 
 fn effect_allowed(effect: Effect, caps: Capabilities) -> bool {

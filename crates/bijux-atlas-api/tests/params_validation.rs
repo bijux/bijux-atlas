@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_api::{
     openapi_v1_spec, parse_list_genes_params, parse_region_filter, ApiError, ApiErrorCode,
 };

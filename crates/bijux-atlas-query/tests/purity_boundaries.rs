@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #[test]
 fn planner_modules_do_not_pull_io_or_db_deps() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));

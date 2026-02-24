@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::ops_support::StackManifestToml;
 use crate::*;
 use serde::{Deserialize, Serialize};

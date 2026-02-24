@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::executor::ExecError;
 use crate::parser::ParseError;
 use crate::planner::PlanError;

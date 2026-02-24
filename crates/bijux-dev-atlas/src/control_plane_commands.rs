@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::cli::{DockerCommand, DockerCommonArgs, DockerPolicyCommand, PoliciesCommand};
 use crate::*;
 use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;

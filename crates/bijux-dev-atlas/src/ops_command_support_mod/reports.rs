@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_model::OpsRunReport;
 
 use super::manifests::{load_stack_pins, resolve_ops_root, run_id_or_default};

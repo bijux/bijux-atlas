@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::schema::{DevAtlasPolicySetDocument, PolicySchemaVersion, POLICY_REGISTRY};
 use serde_json::{Map, Value};
 use std::fs;

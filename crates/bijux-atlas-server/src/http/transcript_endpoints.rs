@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub(crate) async fn gene_transcripts_handler(
     State(state): State<AppState>,
     headers: HeaderMap,

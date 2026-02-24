@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use std::path::PathBuf;
 
 use bijux_atlas_model::{artifact_paths, ArtifactPaths, DatasetId};

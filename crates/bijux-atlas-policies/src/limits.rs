@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub const MIN_POLICY_SCHEMA_VERSION: u32 = 1;
 pub const MAX_SCHEMA_BUMP_STEP: u32 = 1;
 

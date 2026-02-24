@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use super::*;
 
 pub(super) fn check_root_no_scripts_areas_presence_or_references(

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::*;
 
 pub fn render_text_summary(report: &RunReport) -> String {

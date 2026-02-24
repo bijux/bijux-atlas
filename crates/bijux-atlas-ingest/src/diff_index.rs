@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::extract::GeneRecord;
 use crate::IngestError;
 use bijux_atlas_core::{canonical, sha256_hex};

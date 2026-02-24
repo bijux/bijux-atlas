@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_core::{
     render_json, run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors,
 };

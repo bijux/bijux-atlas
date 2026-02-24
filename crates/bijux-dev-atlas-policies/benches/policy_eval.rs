@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_policies::{
     evaluate_policy_set_pure, DevAtlasPolicyMode, DevAtlasPolicySet, OpsPolicy,
     PolicyInputSnapshot, PolicySchemaVersion, RepoPolicy,

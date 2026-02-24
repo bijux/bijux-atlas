@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_model::{
     parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, DatasetId,
     DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, ManifestStats, SeqId,

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_store::{verify_expected_sha256, ManifestLock};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};

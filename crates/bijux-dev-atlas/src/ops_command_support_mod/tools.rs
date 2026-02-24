@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::*;
 
 pub(crate) fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {

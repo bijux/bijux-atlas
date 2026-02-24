@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #[path = "atlas_command_actions/ingest_inputs.rs"]
 mod ingest_inputs;
 

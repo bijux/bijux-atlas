@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 impl AppState {
     fn derive_runtime_policy_hash(api: &ApiConfig, limits: &QueryLimits) -> String {
         let payload = serde_json::json!({

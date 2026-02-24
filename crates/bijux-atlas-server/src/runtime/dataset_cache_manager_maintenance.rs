@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 impl DatasetCacheManager {
     async fn reverify_cached_datasets(&self) -> Result<(), CacheError> {
         let datasets: Vec<DatasetId> = {

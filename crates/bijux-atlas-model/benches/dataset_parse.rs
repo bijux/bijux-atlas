@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_model::DatasetId;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 fn chrono_like_unix_millis() -> u128 {
     use std::time::{SystemTime, UNIX_EPOCH};
     SystemTime::now()

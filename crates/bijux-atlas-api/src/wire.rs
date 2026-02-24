@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::convert::list_genes_response_dto;
 use crate::dto::DatasetKeyDto;
 use crate::errors::ApiError;

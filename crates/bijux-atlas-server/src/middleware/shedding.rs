@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::AppState;
 use bijux_atlas_query::QueryClass;
 

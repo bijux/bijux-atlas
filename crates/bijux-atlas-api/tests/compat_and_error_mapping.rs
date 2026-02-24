@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_api::compat::{
     compatibility_channel, legacy_dataset_path_redirect, ApiCompatibilityChannel,
 };

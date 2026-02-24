@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::http::{genes_support, handlers};
 use crate::*;
 use serde_json::json;

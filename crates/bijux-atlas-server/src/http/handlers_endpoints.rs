@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub(crate) async fn metrics_handler(State(state): State<AppState>) -> impl IntoResponse {
     crate::telemetry::metrics_endpoint::metrics_handler(State(state)).await
 }

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #![allow(missing_docs)]
 
 use bijux_atlas_api::openapi_v1_spec;

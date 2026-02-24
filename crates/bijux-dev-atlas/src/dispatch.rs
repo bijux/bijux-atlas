@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::cli::{
     CheckCommand, CheckRegistryCommand, Cli, Command, ConfigsCommand, DocsCommand, FormatArg,
     OpsCommand, PoliciesCommand,

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub struct S3LikeStore {
     pub endpoint: String,
     pub presigned_endpoint: Option<String>,

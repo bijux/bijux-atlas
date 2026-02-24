@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 include!("runtime_mod/render.rs");
 include!("runtime_mod/k8s.rs");
 include!("runtime_mod/load.rs");

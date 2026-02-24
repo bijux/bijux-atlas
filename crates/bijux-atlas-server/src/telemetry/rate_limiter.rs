@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::telemetry::redis_backend::RedisBackend;
 use crate::*;
 

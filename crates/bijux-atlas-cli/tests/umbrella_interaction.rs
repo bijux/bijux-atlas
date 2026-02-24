@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use assert_cmd::assert::OutputAssertExt;
 use predicates::prelude::*;
 use std::fs;

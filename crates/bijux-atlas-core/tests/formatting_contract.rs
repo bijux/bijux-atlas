@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_core::{sha256, ErrorCode, ExitCode, MachineError};
 
 #[test]

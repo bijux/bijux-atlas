@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, BiotypePolicy, Catalog, CatalogEntry, DatasetId,
     GeneNamePolicy, ManifestStats, OptionalFieldPolicy, SeqidNormalizationPolicy,

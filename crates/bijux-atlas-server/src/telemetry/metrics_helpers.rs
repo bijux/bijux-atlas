@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::*;
 
 pub const METRIC_SUBSYSTEM: &str = "atlas";

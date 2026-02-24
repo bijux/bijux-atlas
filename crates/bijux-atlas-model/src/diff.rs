@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::ModelVersion;
 use crate::ValidationError;
 use crate::{Assembly, GeneId, Release, SeqId, Species};

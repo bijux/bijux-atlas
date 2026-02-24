@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::errors::ApiError;
 use bijux_atlas_query::RegionFilter;
 use std::collections::{BTreeMap, BTreeSet};

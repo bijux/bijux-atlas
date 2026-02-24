@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 fn run_atlas_command(
     command: AtlasCommand,
     log_flags: LogFlags,

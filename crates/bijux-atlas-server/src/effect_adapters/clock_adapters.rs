@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #![allow(dead_code)] // ATLAS-EXC-0001
 
 use std::time::{Duration, Instant};

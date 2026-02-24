@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::cost::estimate_prefix_match_cost;
 use crate::filters::GeneQueryRequest;
 use crate::limits::QueryLimits;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::http::request_tracing::extract_request_trace;
 use crate::AppState;
 use axum::body::Body;

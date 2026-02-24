@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::dto::{DatasetKeyDto, GeneRowsDto, LinkCursorDto, ListGenesResponseDto, PageCursorDto};
 use crate::errors::ApiError;
 use crate::params::IncludeField;
