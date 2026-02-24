@@ -201,7 +201,7 @@ def _release_gates(ctx: RunContext) -> int:
 
     # 183: docs inventory freshness gate
     docs_inv = run_command(
-        ["python3", "packages/atlasctl/src/atlasctl/checks/domains/docs/check_commands_inventory_ops_product.py"],
+        ["python3", "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/check_commands_inventory_ops_product.py"],
         ctx.repo_root,
         ctx=ctx,
     )
