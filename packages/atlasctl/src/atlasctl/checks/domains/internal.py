@@ -1164,6 +1164,34 @@ def check_internal_registry_ssot_only(repo_root: Path) -> tuple[int, list[str]]:
     return (1, errors) if errors else (0, [])
 
 
+def check_docs_checks_no_ops_imports(repo_root: Path) -> tuple[int, list[str]]:
+    docs_root = repo_root / "packages/atlasctl/src/atlasctl/checks/tools/docs_domain"
+    if not docs_root.exists():
+        return 1, ["missing docs checks root: packages/atlasctl/src/atlasctl/checks/tools/docs_domain"]
+    errors: list[str] = []
+    forbidden_prefixes = ("atlasctl.commands.ops", "atlasctl.ops")
+    for path in sorted(docs_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError as exc:
+            errors.append(f"{rel}: syntax error while parsing imports: {exc.msg}")
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                modules = [str(node.module or "")]
+            else:
+                continue
+            for module in modules:
+                if any(module == prefix or module.startswith(f"{prefix}.") for prefix in forbidden_prefixes):
+                    errors.append(f"{rel}:{getattr(node, 'lineno', 0)}: docs checks must not import ops modules directly (`{module}`)")
+    return (1, errors) if errors else (0, [])
+
+
 def check_scattered_registry_caches(repo_root: Path) -> tuple[int, list[str]]:
     checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
     if not checks_root.exists():
@@ -1921,6 +1949,17 @@ CHECKS = (
         check_internal_registry_ssot_only,
         category=CheckCategory.POLICY,
         fix_hint="Route registry access through checks.registry and confine registry_legacy imports to bridge modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.docs_checks_no_ops_imports",
+        "checks",
+        "forbid docs checks from importing ops implementation modules directly",
+        500,
+        check_docs_checks_no_ops_imports,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep docs checks independent from ops modules and rely on documented contracts/inputs.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
