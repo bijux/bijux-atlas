@@ -31,6 +31,19 @@ pub(crate) struct ToolsToml {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+pub(crate) struct LoadToml {
+    pub(crate) suites: std::collections::BTreeMap<String, LoadSuiteToml>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub(crate) struct LoadSuiteToml {
+    pub(crate) script: String,
+    pub(crate) dataset: String,
+    pub(crate) thresholds: String,
+    pub(crate) env: std::collections::BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub(crate) struct ToolTomlEntry {
     pub(crate) name: String,
     pub(crate) required: bool,
@@ -104,6 +117,38 @@ pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml,
     toml::from_str(&text).map_err(|err| {
         OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
     })
+}
+
+pub(crate) fn load_load_manifest(repo_root: &Path) -> Result<LoadToml, OpsCommandError> {
+    let path = repo_root.join("ops/load/load.toml");
+    let text = std::fs::read_to_string(&path).map_err(|err| {
+        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
+    })?;
+    toml::from_str(&text).map_err(|err| {
+        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    })
+}
+
+pub(crate) fn validate_load_manifest(
+    repo_root: &Path,
+    manifest: &LoadToml,
+) -> Result<Vec<String>, OpsCommandError> {
+    let mut errors = Vec::new();
+    if manifest.suites.is_empty() {
+        errors.push("load manifest must declare at least one suite".to_string());
+    }
+    for (suite, def) in &manifest.suites {
+        for rel in [&def.script, &def.dataset, &def.thresholds] {
+            if !repo_root.join(rel).exists() {
+                errors.push(format!(
+                    "load suite `{suite}` references missing file `{rel}`"
+                ));
+            }
+        }
+    }
+    errors.sort();
+    errors.dedup();
+    Ok(errors)
 }
 
 pub(crate) fn validate_stack_manifest(
@@ -732,5 +777,30 @@ mod tests {
             .iter()
             .any(|e| e.contains("components must be lexicographically sorted")));
         assert!(errors.iter().any(|e| e.contains("missing component")));
+    }
+
+    #[test]
+    fn load_manifest_parses_and_validates() {
+        let root = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(root.path().join("ops/load")).expect("mkdir");
+        std::fs::write(
+            root.path().join("ops/load/load.toml"),
+            "[suites.smoke]\nscript=\"ops/load/k6/suites/mixed-80-20.js\"\ndataset=\"ops/load/queries/pinned-v1.json\"\nthresholds=\"ops/load/thresholds/mixed.thresholds.json\"\n[suites.smoke.env]\nK6_OUT=\"json=/tmp/out.json\"\n",
+        )
+        .expect("write");
+        std::fs::create_dir_all(root.path().join("ops/load/k6/suites")).expect("mkdir suites");
+        std::fs::create_dir_all(root.path().join("ops/load/queries")).expect("mkdir queries");
+        std::fs::create_dir_all(root.path().join("ops/load/thresholds")).expect("mkdir thresholds");
+        std::fs::write(root.path().join("ops/load/k6/suites/mixed-80-20.js"), "").expect("script");
+        std::fs::write(root.path().join("ops/load/queries/pinned-v1.json"), "{}").expect("dataset");
+        std::fs::write(
+            root.path()
+                .join("ops/load/thresholds/mixed.thresholds.json"),
+            "{}",
+        )
+        .expect("thresholds");
+        let parsed = load_load_manifest(root.path()).expect("parse");
+        let errors = validate_load_manifest(root.path(), &parsed).expect("validate");
+        assert!(errors.is_empty());
     }
 }

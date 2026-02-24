@@ -48,7 +48,10 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::Cleanup(common)
         | OpsCommand::K8sPlan(common)
         | OpsCommand::K8sDryRun(common)
-        | OpsCommand::K8sConformance(common) => common.format = FormatArg::Json,
+        | OpsCommand::K8sConformance(common)
+        | OpsCommand::LoadPlan { common, .. }
+        | OpsCommand::LoadRun { common, .. }
+        | OpsCommand::LoadReport { common, .. } => common.format = FormatArg::Json,
         OpsCommand::Explain { common, .. } => common.format = FormatArg::Json,
         OpsCommand::Render(args) => args.common.format = FormatArg::Json,
         OpsCommand::Install(args) => args.common.format = FormatArg::Json,
@@ -97,7 +100,9 @@ fn force_json_ops(command: &mut OpsCommand) {
             crate::cli::OpsK8sCommand::Status(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::Load { command } => match command {
-            crate::cli::OpsLoadCommand::Run(common) => common.format = FormatArg::Json,
+            crate::cli::OpsLoadCommand::Plan { common, .. }
+            | crate::cli::OpsLoadCommand::Run { common, .. }
+            | crate::cli::OpsLoadCommand::Report { common, .. } => common.format = FormatArg::Json,
         },
         OpsCommand::E2e { command } => match command {
             crate::cli::OpsE2eCommand::Run(common) => common.format = FormatArg::Json,
@@ -222,6 +227,9 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             | OpsCommand::K8sPlan(common)
             | OpsCommand::K8sDryRun(common)
             | OpsCommand::K8sConformance(common) => common.repo_root = Some(root.clone()),
+            OpsCommand::LoadPlan { common, .. }
+            | OpsCommand::LoadRun { common, .. }
+            | OpsCommand::LoadReport { common, .. } => common.repo_root = Some(root.clone()),
             OpsCommand::Explain { common, .. } => common.repo_root = Some(root.clone()),
             OpsCommand::Render(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Install(args) => args.common.repo_root = Some(root.clone()),
@@ -290,7 +298,11 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                 }
             },
             OpsCommand::Load { command } => match command {
-                crate::cli::OpsLoadCommand::Run(common) => common.repo_root = Some(root.clone()),
+                crate::cli::OpsLoadCommand::Plan { common, .. }
+                | crate::cli::OpsLoadCommand::Run { common, .. }
+                | crate::cli::OpsLoadCommand::Report { common, .. } => {
+                    common.repo_root = Some(root.clone())
+                }
             },
             OpsCommand::E2e { command } => match command {
                 crate::cli::OpsE2eCommand::Run(common) => common.repo_root = Some(root.clone()),

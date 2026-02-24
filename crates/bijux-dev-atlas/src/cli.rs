@@ -411,6 +411,24 @@ pub enum OpsCommand {
     K8sLogs(OpsK8sLogsArgs),
     #[command(hide = true)]
     K8sPortForward(OpsK8sPortForwardArgs),
+    #[command(hide = true)]
+    LoadPlan {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+    #[command(hide = true)]
+    LoadRun {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+    #[command(hide = true)]
+    LoadReport {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Subcommand, Debug)]
@@ -476,7 +494,21 @@ pub struct OpsK8sPortForwardArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum OpsLoadCommand {
-    Run(OpsCommonArgs),
+    Plan {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+    Run {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+    Report {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Subcommand, Debug)]

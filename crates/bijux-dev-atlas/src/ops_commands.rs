@@ -1,9 +1,10 @@
 use crate::cli::OpsInstallArgs;
 use crate::ops_command_support::{
-    build_ops_run_report, load_stack_manifest, load_stack_pins, load_toolchain_inventory_for_ops,
-    load_tools_manifest, ops_exit, ops_pins_check_payload, parse_tool_overrides, render_ops_human,
-    render_ops_validation_output, run_ops_checks, validate_pins_completeness,
-    validate_stack_manifest, verify_tools_snapshot, ToolMismatchCode,
+    build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
+    load_toolchain_inventory_for_ops, load_tools_manifest, ops_exit, ops_pins_check_payload,
+    parse_tool_overrides, render_ops_human, render_ops_validation_output, run_ops_checks,
+    validate_load_manifest, validate_pins_completeness, validate_stack_manifest,
+    verify_tools_snapshot, ToolMismatchCode,
 };
 pub(crate) use crate::ops_command_support::{
     emit_payload, load_profiles, normalize_tool_version_with_regex, resolve_ops_root,
@@ -35,10 +36,9 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsK8sCommand::Status(args) => OpsCommand::Status(args),
         },
         OpsCommand::Load { command } => match command {
-            OpsLoadCommand::Run(common) => OpsCommand::Explain {
-                action: "load-run".to_string(),
-                common,
-            },
+            OpsLoadCommand::Plan { suite, common } => OpsCommand::LoadPlan { suite, common },
+            OpsLoadCommand::Run { suite, common } => OpsCommand::LoadRun { suite, common },
+            OpsLoadCommand::Report { suite, common } => OpsCommand::LoadReport { suite, common },
         },
         OpsCommand::E2e { command } => match command {
             OpsE2eCommand::Run(common) => OpsCommand::Explain {
@@ -106,7 +106,9 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "down" | "stack-down" => serde_json::json!({"action":"down","purpose":"teardown local ops stack resources","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "status" | "stack-status" => serde_json::json!({"action":"status","purpose":"collect local/k8s status rows","effects_required":["subprocess (for k8s/pods/endpoints)"]}),
                 "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
-                "load-run" => serde_json::json!({"action":"load-run","purpose":"reserved for k6 orchestration under ops load","status":"not_implemented"}),
+                "load-plan" => serde_json::json!({"action":"load-plan","purpose":"resolve load suite to script env and thresholds","effects_required":[]}),
+                "load-run" => serde_json::json!({"action":"load-run","purpose":"run k6 load suite and collect summary","effects_required":["subprocess","network","fs_write"]}),
+                "load-report" => serde_json::json!({"action":"load-report","purpose":"parse k6 summary into structured report","effects_required":[]}),
                 "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
                 "obs-drill-run" => serde_json::json!({"action":"obs-drill-run","purpose":"reserved for observability drill orchestration","status":"not_implemented"}),
                 "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify observability contracts","effects_required":[]}),
@@ -116,7 +118,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "cleanup" => serde_json::json!({"action":"cleanup","purpose":"remove scoped artifacts and local ops resources","effects_required":["subprocess (optional)"]}),
                 _ => {
                     return Err(format!(
-                        "unknown ops action `{}` (try inventory|validate|render|install|down|status|conformance|cleanup|load-run|e2e-run|obs-drill-run)",
+                        "unknown ops action `{}` (try inventory|validate|render|install|down|status|conformance|cleanup|load-plan|load-run|load-report|e2e-run|obs-drill-run)",
                         action
                     ))
                 }
@@ -149,6 +151,11 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             if let Ok(stack_manifest) = load_stack_manifest(&repo_root) {
                 if let Ok(stack_errors) = validate_stack_manifest(&repo_root, &stack_manifest) {
                     inventory_errors.extend(stack_errors);
+                }
+            }
+            if let Ok(load_manifest) = load_load_manifest(&repo_root) {
+                if let Ok(load_errors) = validate_load_manifest(&repo_root, &load_manifest) {
+                    inventory_errors.extend(load_errors);
                 }
             }
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
@@ -197,6 +204,12 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 load_stack_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
             inventory_errors.extend(
                 validate_stack_manifest(&repo_root, &stack_manifest)
+                    .map_err(|e| e.to_stable_message())?,
+            );
+            let load_manifest =
+                load_load_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+            inventory_errors.extend(
+                validate_load_manifest(&repo_root, &load_manifest)
                     .map_err(|e| e.to_stable_message())?,
             );
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
@@ -452,6 +465,15 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         OpsCommand::K8sLogs(args) => crate::ops_runtime_execution::run_ops_k8s_logs(&args),
         OpsCommand::K8sPortForward(args) => {
             crate::ops_runtime_execution::run_ops_k8s_port_forward(&args)
+        }
+        OpsCommand::LoadPlan { suite, common } => {
+            crate::ops_runtime_execution::run_ops_load_plan(&common, &suite)
+        }
+        OpsCommand::LoadRun { suite, common } => {
+            crate::ops_runtime_execution::run_ops_load_run(&common, &suite)
+        }
+        OpsCommand::LoadReport { suite, common } => {
+            crate::ops_runtime_execution::run_ops_load_report(&common, &suite, None)
         }
         OpsCommand::ListProfiles(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;

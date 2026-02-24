@@ -1,3 +1,4 @@
+use crate::ops_command_support::{load_load_manifest, validate_load_manifest};
 use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
@@ -816,6 +817,240 @@ pub(crate) fn run_ops_k8s_port_forward(
     Ok((rendered, 0))
 }
 
+pub(crate) fn run_ops_load_plan(
+    common: &OpsCommonArgs,
+    suite: &str,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let manifest = load_load_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+    let manifest_errors =
+        validate_load_manifest(&repo_root, &manifest).map_err(|e| e.to_stable_message())?;
+    let suite_cfg = manifest
+        .suites
+        .get(suite)
+        .ok_or_else(|| format!("OPS_USAGE_ERROR: unknown load suite `{suite}`"))?;
+    let mut env_rows = suite_cfg
+        .env
+        .iter()
+        .map(|(k, v)| serde_json::json!({"name":k,"value":v}))
+        .collect::<Vec<_>>();
+    env_rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    let payload = serde_json::json!({
+        "schema_version":1,
+        "text": format!("ops load plan suite={suite}"),
+        "rows":[{
+            "suite":suite,
+            "script":suite_cfg.script,
+            "dataset":suite_cfg.dataset,
+            "thresholds":suite_cfg.thresholds,
+            "env":env_rows
+        }],
+        "errors":manifest_errors,
+        "summary":{"total":1,"errors":manifest_errors.len(),"warnings":0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((
+        rendered,
+        if payload["summary"]["errors"] == serde_json::json!(0) {
+            0
+        } else {
+            1
+        },
+    ))
+}
+
+pub(crate) fn run_ops_load_run(
+    common: &OpsCommonArgs,
+    suite: &str,
+) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("OPS_EFFECT_ERROR: load run requires --allow-subprocess".to_string());
+    }
+    if !common.allow_network {
+        return Err("OPS_EFFECT_ERROR: load run requires --allow-network".to_string());
+    }
+    if !common.allow_write {
+        return Err("OPS_EFFECT_ERROR: load run requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let manifest = load_load_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+    let suite_cfg = manifest
+        .suites
+        .get(suite)
+        .ok_or_else(|| format!("OPS_USAGE_ERROR: unknown load suite `{suite}`"))?;
+    let dataset_path = repo_root.join(&suite_cfg.dataset);
+    if !dataset_path.exists() {
+        return Err(format!(
+            "OPS_MANIFEST_ERROR: dataset path missing `{}` and downloads are disabled by default",
+            suite_cfg.dataset
+        ));
+    }
+    let run_id = run_id_or_default(common.run_id.clone())?;
+    let out_dir = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join(format!("load/{suite}"));
+    fs::create_dir_all(&out_dir).map_err(|e| e.to_string())?;
+    let summary_path = out_dir.join("k6-summary.json");
+    let process = OpsProcess::new(true);
+    let script_path = repo_root.join(&suite_cfg.script);
+    let mut argv = vec![
+        "run".to_string(),
+        script_path.display().to_string(),
+        "--summary-export".to_string(),
+        summary_path.display().to_string(),
+    ];
+    for (k, v) in &suite_cfg.env {
+        argv.push("-e".to_string());
+        argv.push(format!("{k}={v}"));
+    }
+    let (stdout, event) = process
+        .run_subprocess("k6", &argv, &repo_root)
+        .map_err(|e| e.to_stable_message())?;
+    let (report_payload, report_code) = run_ops_load_report(common, suite, Some(run_id.clone()))?;
+    let report_json: Value =
+        serde_json::from_str(&report_payload).unwrap_or_else(|_| serde_json::json!({}));
+    let payload = serde_json::json!({
+        "schema_version":1,
+        "text": format!("ops load run suite={suite}"),
+        "rows":[{
+            "suite":suite,
+            "run_id":run_id.as_str(),
+            "k6_stdout":stdout,
+            "subprocess_event":event,
+            "summary_path":summary_path.display().to_string(),
+            "report":report_json
+        }],
+        "summary":{"total":1,"errors": if report_code==0 {0} else {1},"warnings":0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if report_code == 0 { 0 } else { 1 }))
+}
+
+fn load_threshold_limits(repo_root: &Path, threshold_rel: &str) -> Result<Value, String> {
+    let path = repo_root.join(threshold_rel);
+    let raw =
+        fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
+    serde_json::from_str(&raw).map_err(|e| format!("failed to parse {}: {e}", path.display()))
+}
+
+fn parse_k6_summary(summary: &Value) -> (f64, f64, f64) {
+    let p95 = summary
+        .get("metrics")
+        .and_then(|v| v.get("http_req_duration"))
+        .and_then(|v| v.get("values"))
+        .and_then(|v| v.get("p(95)"))
+        .and_then(Value::as_f64)
+        .unwrap_or(0.0);
+    let p99 = summary
+        .get("metrics")
+        .and_then(|v| v.get("http_req_duration"))
+        .and_then(|v| v.get("values"))
+        .and_then(|v| v.get("p(99)"))
+        .and_then(Value::as_f64)
+        .unwrap_or(0.0);
+    let error_rate = summary
+        .get("metrics")
+        .and_then(|v| v.get("http_req_failed"))
+        .and_then(|v| v.get("values"))
+        .and_then(|v| v.get("rate"))
+        .and_then(Value::as_f64)
+        .unwrap_or(0.0);
+    (p95, p99, error_rate)
+}
+
+pub(crate) fn run_ops_load_report(
+    common: &OpsCommonArgs,
+    suite: &str,
+    run_override: Option<RunId>,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let manifest = load_load_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+    let suite_cfg = manifest
+        .suites
+        .get(suite)
+        .ok_or_else(|| format!("OPS_USAGE_ERROR: unknown load suite `{suite}`"))?;
+    let run_id = if let Some(v) = run_override {
+        v
+    } else {
+        run_id_or_default(common.run_id.clone())?
+    };
+    let summary_path = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join(format!("load/{suite}/k6-summary.json"));
+    let summary_raw = fs::read_to_string(&summary_path).map_err(|e| {
+        format!(
+            "OPS_MANIFEST_ERROR: failed to read {}: {e}",
+            summary_path.display()
+        )
+    })?;
+    let summary_json: Value =
+        serde_json::from_str(&summary_raw).map_err(|e| format!("OPS_SCHEMA_ERROR: {e}"))?;
+    let thresholds = load_threshold_limits(&repo_root, &suite_cfg.thresholds)?;
+    let (p95, p99, error_rate) = parse_k6_summary(&summary_json);
+    let p95_max = thresholds
+        .get("p95_ms_max")
+        .and_then(Value::as_f64)
+        .unwrap_or(f64::MAX);
+    let p99_max = thresholds
+        .get("p99_ms_max")
+        .and_then(Value::as_f64)
+        .unwrap_or(f64::MAX);
+    let error_max = thresholds
+        .get("error_rate_max")
+        .and_then(Value::as_f64)
+        .unwrap_or(f64::MAX);
+    let mut violations = Vec::new();
+    if p95 > p95_max {
+        violations.push(format!("threshold breach p95 {p95} > {p95_max}"));
+    }
+    if p99 > p99_max {
+        violations.push(format!("threshold breach p99 {p99} > {p99_max}"));
+    }
+    if error_rate > error_max {
+        violations.push(format!(
+            "threshold breach error_rate {error_rate} > {error_max}"
+        ));
+    }
+    let report = serde_json::json!({
+        "schema_version":1,
+        "kind":"ops_load_report_v1",
+        "suite":suite,
+        "run_id":run_id.as_str(),
+        "metrics":{"p95_ms":p95,"p99_ms":p99,"error_rate":error_rate},
+        "thresholds":{"p95_ms_max":p95_max,"p99_ms_max":p99_max,"error_rate_max":error_max},
+        "violations":violations
+    });
+    let report_path = repo_root
+        .join("artifacts/ops")
+        .join(run_id.as_str())
+        .join(format!("load/{suite}/report.json"));
+    if let Some(parent) = report_path.parent() {
+        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+    fs::write(
+        &report_path,
+        serde_json::to_string_pretty(&report).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    let payload = serde_json::json!({
+        "schema_version":1,
+        "text": format!("ops load report suite={suite}"),
+        "rows":[{"report_path":report_path.display().to_string(),"report":report}],
+        "summary":{"total":1,"errors": if report["violations"].as_array().is_some_and(|v| v.is_empty()) {0} else {1},"warnings":0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((
+        rendered,
+        if payload["summary"]["errors"] == serde_json::json!(0) {
+            0
+        } else {
+            1
+        },
+    ))
+}
+
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
     let common = &args.common;
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -1118,5 +1353,112 @@ mod tests {
         assert_eq!(rows.len(), 2);
         assert!(errors.iter().any(|e| e.contains("deployment")));
         assert!(errors.iter().any(|e| e.contains("pod")));
+    }
+
+    #[test]
+    fn load_report_parses_k6_summary_and_enforces_thresholds() {
+        let root = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(root.path().join("ops/load/thresholds")).expect("mkdir thresholds");
+        std::fs::create_dir_all(root.path().join("ops/load/k6/suites")).expect("mkdir suites");
+        std::fs::create_dir_all(root.path().join("ops/load/queries")).expect("mkdir queries");
+        std::fs::create_dir_all(root.path().join("ops/atlas-dev")).expect("mkdir atlas-dev");
+        std::fs::write(
+            root.path().join("ops/atlas-dev/registry.toml"),
+            "schema_version = 1\n",
+        )
+        .expect("registry");
+        std::fs::create_dir_all(root.path().join("artifacts/ops/ops_run/load/mixed"))
+            .expect("mkdir artifacts");
+        std::fs::write(
+            root.path().join("ops/load/load.toml"),
+            "[suites.mixed]\nscript=\"ops/load/k6/suites/mixed-80-20.js\"\ndataset=\"ops/load/queries/pinned-v1.json\"\nthresholds=\"ops/load/thresholds/mixed.thresholds.json\"\n[suites.mixed.env]\nATLAS_BASE_URL=\"http://127.0.0.1:8080\"\n",
+        )
+        .expect("manifest");
+        std::fs::write(
+            root.path()
+                .join("ops/load/thresholds/mixed.thresholds.json"),
+            "{\"p95_ms_max\":900,\"p99_ms_max\":1200,\"error_rate_max\":0.01}",
+        )
+        .expect("thresholds");
+        std::fs::write(root.path().join("ops/load/k6/suites/mixed-80-20.js"), "").expect("script");
+        std::fs::write(root.path().join("ops/load/queries/pinned-v1.json"), "{}").expect("dataset");
+        std::fs::write(
+            root.path().join("artifacts/ops/ops_run/load/mixed/k6-summary.json"),
+            "{\"metrics\":{\"http_req_duration\":{\"values\":{\"p(95)\":1200,\"p(99)\":1500}},\"http_req_failed\":{\"values\":{\"rate\":0.02}}}}",
+        )
+        .expect("summary");
+        let common = crate::cli::OpsCommonArgs {
+            repo_root: Some(root.path().to_path_buf()),
+            ops_root: None,
+            artifacts_root: None,
+            profile: None,
+            format: crate::cli::FormatArg::Json,
+            out: None,
+            run_id: Some("ops_run".to_string()),
+            strict: false,
+            fail_fast: false,
+            max_failures: None,
+            allow_subprocess: false,
+            allow_write: false,
+            allow_network: false,
+            force: false,
+            tool_overrides: Vec::new(),
+        };
+        let (rendered, code) = run_ops_load_report(&common, "mixed", None).expect("report");
+        assert_eq!(code, 1);
+        let payload: Value = serde_json::from_str(&rendered).expect("json");
+        assert!(payload["rows"][0]["report"]["violations"]
+            .as_array()
+            .is_some_and(|v| !v.is_empty()));
+    }
+
+    #[test]
+    fn load_plan_emits_sorted_env_rows() {
+        let root = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(root.path().join("ops/load/k6/suites")).expect("mkdir suites");
+        std::fs::create_dir_all(root.path().join("ops/load/queries")).expect("mkdir queries");
+        std::fs::create_dir_all(root.path().join("ops/load/thresholds")).expect("mkdir thresholds");
+        std::fs::create_dir_all(root.path().join("ops/atlas-dev")).expect("mkdir atlas-dev");
+        std::fs::write(
+            root.path().join("ops/atlas-dev/registry.toml"),
+            "schema_version = 1\n",
+        )
+        .expect("registry");
+        std::fs::write(
+            root.path().join("ops/load/load.toml"),
+            "[suites.mixed]\nscript=\"ops/load/k6/suites/mixed-80-20.js\"\ndataset=\"ops/load/queries/pinned-v1.json\"\nthresholds=\"ops/load/thresholds/mixed.thresholds.json\"\n[suites.mixed.env]\nZZZ=\"1\"\nAAA=\"2\"\n",
+        )
+        .expect("manifest");
+        std::fs::write(root.path().join("ops/load/k6/suites/mixed-80-20.js"), "").expect("script");
+        std::fs::write(root.path().join("ops/load/queries/pinned-v1.json"), "{}").expect("dataset");
+        std::fs::write(
+            root.path()
+                .join("ops/load/thresholds/mixed.thresholds.json"),
+            "{}",
+        )
+        .expect("thresholds");
+        let common = crate::cli::OpsCommonArgs {
+            repo_root: Some(root.path().to_path_buf()),
+            ops_root: None,
+            artifacts_root: None,
+            profile: None,
+            format: crate::cli::FormatArg::Json,
+            out: None,
+            run_id: None,
+            strict: false,
+            fail_fast: false,
+            max_failures: None,
+            allow_subprocess: false,
+            allow_write: false,
+            allow_network: false,
+            force: false,
+            tool_overrides: Vec::new(),
+        };
+        let (rendered, code) = run_ops_load_plan(&common, "mixed").expect("plan");
+        assert_eq!(code, 0);
+        let payload: Value = serde_json::from_str(&rendered).expect("json");
+        let env = payload["rows"][0]["env"].as_array().expect("env");
+        assert_eq!(env[0]["name"].as_str(), Some("AAA"));
+        assert_eq!(env[1]["name"].as_str(), Some("ZZZ"));
     }
 }
