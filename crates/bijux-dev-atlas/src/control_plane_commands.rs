@@ -143,8 +143,8 @@ pub(crate) fn run_policies_print(
     let doc = policies.to_document();
     let rendered = match format {
         FormatArg::Text => format!(
-            "status: ok\nschema_version: {}\ncompatibility_rules: {}\ndocumented_defaults: {}",
-            format!("{:?}", doc.schema_version),
+            "status: ok\nschema_version: {:?}\ncompatibility_rules: {}\ndocumented_defaults: {}",
+            doc.schema_version,
             doc.compatibility.len(),
             doc.documented_defaults.len()
         ),

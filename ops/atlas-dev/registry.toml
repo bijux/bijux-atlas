@@ -4,575 +4,14 @@ schema_version = 1
 vocabulary = ["ops", "repo", "docs", "make", "lint", "internal", "fast", "slow"]
 
 [[checks]]
-id = "checks_ops_surface_manifest"
-domain = "ops"
-title = "ops surface manifest consistency"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_tree_contract"
-domain = "ops"
-title = "ops contract files are present"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_legacy_tooling_refs"
-domain = "ops"
-title = "ops does not reference legacy tooling paths"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_generated_readonly_markers"
-domain = "ops"
-title = "ops generated files keep readonly generator markers"
-docs = "ops/_generated.example/MIRROR_POLICY.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_schema_presence"
-domain = "ops"
-title = "ops schema baseline is present"
-docs = "ops/schema/README.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_manifest_integrity"
-domain = "ops"
-title = "ops inventory manifests are valid json with required keys"
-docs = "ops/inventory/README.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_surface_inventory"
-domain = "ops"
-title = "ops index inventories top-level surfaces"
-docs = "ops/INDEX.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_artifacts_not_tracked"
-domain = "ops"
-title = "ops evidence paths stay empty in repository"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_python_legacy_runtime_refs"
-domain = "ops"
-title = "dev atlas crates do not reference python atlasctl runtime"
-docs = "docs/development/tooling/atlasctl.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_legacy_runner_paths"
-domain = "ops"
-title = "dev atlas crates do not reference legacy runner path conventions"
-docs = "docs/development/scripts.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_atlasctl_invocations"
-domain = "ops"
-title = "ops owned surfaces avoid atlasctl command invocations"
-docs = "makefiles/ops.mk"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_scripts_areas_or_xtask_refs"
-domain = "ops"
-title = "ops owned surfaces avoid scripts areas and xtask references"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_artifacts_gitignore_policy"
-domain = "ops"
-title = "artifacts root remains gitignored"
-docs = ".gitignore"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_makefile_routes_dev_atlas"
-domain = "ops"
-title = "ops makefile routes through dev atlas command surface"
-docs = "makefiles/ops.mk"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_workflow_routes_dev_atlas"
-domain = "ops"
-title = "atlas dev workflow avoids atlasctl ops routes"
-docs = ".github/workflows/atlas-dev-rust.yml"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_repo_import_boundary"
-domain = "repo"
-title = "repo import boundary contracts"
-docs = "docs/INDEX.md"
-tags = ["repo", "lint", "fast"]
-suites = ["repo_fast", "all_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_docs_index_links"
-domain = "docs"
-title = "docs index links must resolve"
-docs = "docs/INDEX.md"
-tags = ["docs", "fast"]
-suites = ["docs_fast", "all_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_make_wrapper_commands"
-domain = "make"
-title = "make wrapper commands stay canonical"
-docs = "makefiles/CONTRACT.md"
-tags = ["make", "fast"]
-suites = ["make_fast", "all_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_internal_registry_consistency"
-domain = "ops"
-title = "ops internal registry consistency"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "internal", "slow"]
-suites = ["ops_all"]
-effects_required = ["fs_read", "git"]
-budget_ms = 4000
-visibility = "internal"
-
-[[checks]]
-id = "checks_root_packages_atlasctl_absent"
-domain = "root"
-title = "legacy atlasctl package directory is absent"
-docs = "docs/development/tooling/atlasctl.md"
+id = "checks_configs_no_atlasctl_string_references"
+domain = "configs"
+title = "configs files do not reference atlasctl"
+docs = "configs/CONTRACT.md"
 tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_root_bin_atlasctl_absent"
-domain = "root"
-title = "legacy root atlasctl shim is absent"
-docs = "docs/development/tooling/atlasctl-deletion-plan.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_root_artifacts_reports_atlasctl_absent"
-domain = "root"
-title = "legacy atlasctl report artifact directory is absent"
-docs = "docs/development/tooling/atlasctl-deletion-plan.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_root_python_toolchain_toml_absent"
-domain = "root"
-title = "legacy python toolchain ssot file is absent"
-docs = "docs/development/tooling/atlasctl-deletion-plan.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_root_uv_lock_absent"
-domain = "root"
-title = "legacy root uv lockfile is absent"
-docs = "docs/development/tooling/atlasctl-deletion-plan.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_no_atlasctl_string_references"
-domain = "docs"
-title = "docs avoid legacy atlasctl string references"
-docs = "docs/development/tooling/atlasctl.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 3000
-visibility = "internal"
-
-[[checks]]
-id = "checks_workflows_no_atlasctl_string_references"
-domain = "workflows"
-title = "workflows avoid legacy atlasctl string references"
-docs = ".github/workflows/atlas-dev-rust.yml"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_make_no_atlasctl_string_references"
-domain = "make"
-title = "make wrappers avoid legacy atlasctl string references"
-docs = "makefiles/root.mk"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_workflows_no_direct_ops_script_execution"
-domain = "workflows"
-title = "workflows avoid direct ops script execution"
-docs = ".github/workflows/atlas-dev-rust.yml"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_make_no_direct_ops_script_execution"
-domain = "make"
-title = "make wrappers avoid direct ops script execution"
-docs = "makefiles/ops.mk"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_root_no_scripts_areas_presence_or_references"
-domain = "root"
-title = "repository avoids scripts areas presence and references"
-docs = "docs/development/scripts.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 3000
-visibility = "internal"
-
-[[checks]]
-id = "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch"
-domain = "crates"
-title = "bijux atlas cli exclusively owns umbrella dispatch metadata"
-docs = "docs/contracts/plugin/spec.md"
-tags = ["fast"]
-suites = ["ci", "ci_fast", "local", "deep"]
+suites = ["deep", "configs"]
 effects_required = ["fs_read"]
 budget_ms = 1200
-visibility = "public"
-
-[[checks]]
-id = "checks_crates_bijux_atlas_help_excludes_dev_commands"
-domain = "crates"
-title = "bijux atlas help does not expose dev command surfaces"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["fast"]
-suites = ["ci", "ci_fast", "local", "deep"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "public"
-
-[[checks]]
-id = "checks_crates_bijux_dev_atlas_help_dispatch_present"
-domain = "crates"
-title = "bijux atlas routes dev control plane to bijux dev atlas help"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["fast"]
-suites = ["ci", "ci_fast", "local", "deep"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_bash_lib_execution"
-domain = "ops"
-title = "ops surfaces avoid direct bash library execution"
-docs = "ops/README.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_ops_legacy_shell_quarantine_empty"
-domain = "ops"
-title = "legacy ops shell quarantine remains empty"
-docs = "ops/quarantine/legacy-ops-shell/README.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_make_governance_wrappers_bijux_only"
-domain = "make"
-title = "ci make wrappers route governance through make and bijux only"
-docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_workflows_governance_entrypoints_bijux_only"
-domain = "workflows"
-title = "atlas dev workflow uses make and bijux governance entrypoints only"
-docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_make_governance_wrappers_no_direct_cargo"
-domain = "make"
-title = "governance wrapper makefiles avoid direct cargo commands"
-docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_runtime_command_list_matches_contract"
-domain = "docs"
-title = "runtime command list doc matches runtime command contract"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_dev_command_list_matches_contract"
-domain = "docs"
-title = "dev command list doc matches dev help command contract"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_mkdocs_yaml_parseable"
-domain = "docs"
-title = "mkdocs configuration exists and parses"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_mkdocs_nav_files_exist"
-domain = "docs"
-title = "mkdocs nav references existing doc files"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_no_orphan_markdown_pages"
-domain = "docs"
-title = "docs markdown pages are referenced by mkdocs nav"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 4000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_no_duplicate_nav_titles"
-domain = "docs"
-title = "mkdocs nav titles remain globally unique"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_readme_index_contract_presence"
-domain = "docs"
-title = "docs and ops index contract pages are present"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_file_naming_conventions"
-domain = "docs"
-title = "docs files follow deterministic naming conventions"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 3000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_no_legacy_scripts_strings"
-domain = "docs"
-title = "docs avoid legacy scripts and xtask references"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_command_surface_docs_exist"
-domain = "docs"
-title = "runtime and dev command surface docs are present"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_no_legacy_make_targets"
-domain = "docs"
-title = "docs avoid legacy atlasctl make target references"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_make_docs_wrappers_delegate_dev_atlas"
-domain = "make"
-title = "docs make wrappers delegate through bijux dev atlas docs commands"
-docs = "docs/development/tooling/dev-atlas-docs.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_make_ops_wrappers_delegate_dev_atlas"
-domain = "make"
-title = "ops make wrappers delegate through bijux dev atlas ops commands"
-docs = "makefiles/ops.mk"
-tags = ["internal", "slow"]
-suites = ["deep", "ops"]
-effects_required = ["fs_read"]
-budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_workflows_ops_entrypoints_bijux_only"
-domain = "workflows"
-title = "ops workflow entrypoints use make or bijux dev atlas only"
-docs = ".github/workflows/atlas-dev-rust.yml"
-tags = ["internal", "slow"]
-suites = ["deep", "ops"]
-effects_required = ["fs_read"]
-budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
@@ -598,70 +37,26 @@ budget_ms = 600
 visibility = "internal"
 
 [[checks]]
-id = "checks_configs_no_atlasctl_string_references"
-domain = "configs"
-title = "configs files do not reference atlasctl"
-docs = "configs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep", "configs"]
+id = "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch"
+domain = "crates"
+title = "bijux atlas cli exclusively owns umbrella dispatch metadata"
+docs = "docs/contracts/plugin/spec.md"
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
 effects_required = ["fs_read"]
 budget_ms = 1200
-visibility = "internal"
+visibility = "public"
 
 [[checks]]
-id = "checks_make_configs_wrappers_delegate_dev_atlas"
-domain = "make"
-title = "configs make wrappers delegate through bijux dev atlas configs commands"
-docs = "makefiles/configs.mk"
-tags = ["internal", "slow"]
-suites = ["deep", "configs"]
-effects_required = ["fs_read"]
-budget_ms = 1200
-visibility = "internal"
-
-[[checks]]
-id = "checks_ops_control_plane_doc_contract"
-domain = "ops"
-title = "ops control plane definition doc exists and declares invariants"
-docs = "ops/CONTROL_PLANE.md"
-tags = ["internal", "fast"]
-suites = ["deep", "ops", "doctor"]
-effects_required = ["fs_read"]
-budget_ms = 800
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_ops_command_list_matches_snapshot"
-domain = "docs"
-title = "ops command list doc matches ops command snapshot"
+id = "checks_crates_bijux_atlas_help_excludes_dev_commands"
+domain = "crates"
+title = "bijux atlas help does not expose dev command surfaces"
 docs = "docs/contracts/plugin/mode.md"
-tags = ["internal", "fast"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 800
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_configs_command_list_matches_snapshot"
-domain = "docs"
-title = "configs command list doc matches configs command snapshot"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["internal", "fast"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 800
-visibility = "internal"
-
-[[checks]]
-id = "checks_ops_ssot_manifests_schema_versions"
-domain = "ops"
-title = "ops ssot manifests and control plane doc declare schema or version fields"
-docs = "ops/CONTROL_PLANE.md"
-tags = ["internal", "fast"]
-suites = ["deep", "ops"]
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
 effects_required = ["fs_read"]
 budget_ms = 1200
-visibility = "internal"
+visibility = "public"
 
 [[checks]]
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
@@ -673,6 +68,17 @@ suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1200
 visibility = "internal"
+
+[[checks]]
+id = "checks_crates_bijux_dev_atlas_help_dispatch_present"
+domain = "crates"
+title = "bijux atlas routes dev control plane to bijux dev atlas help"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "public"
 
 [[checks]]
 id = "checks_crates_bijux_dev_atlas_not_umbrella_binary"
@@ -708,6 +114,490 @@ budget_ms = 8000
 visibility = "internal"
 
 [[checks]]
+id = "checks_docs_command_surface_docs_exist"
+domain = "docs"
+title = "runtime and dev command surface docs are present"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_configs_command_list_matches_snapshot"
+domain = "docs"
+title = "configs command list doc matches configs command snapshot"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_dev_command_list_matches_contract"
+domain = "docs"
+title = "dev command list doc matches dev help command contract"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_file_naming_conventions"
+domain = "docs"
+title = "docs files follow deterministic naming conventions"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_index_links"
+domain = "docs"
+title = "docs index links must resolve"
+docs = "docs/INDEX.md"
+tags = ["docs", "fast"]
+suites = ["docs_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_docs_mkdocs_nav_files_exist"
+domain = "docs"
+title = "mkdocs nav references existing doc files"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_mkdocs_yaml_parseable"
+domain = "docs"
+title = "mkdocs configuration exists and parses"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_atlasctl_string_references"
+domain = "docs"
+title = "docs avoid legacy atlasctl string references"
+docs = "docs/development/tooling/atlasctl.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_duplicate_nav_titles"
+domain = "docs"
+title = "mkdocs nav titles remain globally unique"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_legacy_make_targets"
+domain = "docs"
+title = "docs avoid legacy atlasctl make target references"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_legacy_scripts_strings"
+domain = "docs"
+title = "docs avoid legacy scripts and xtask references"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_orphan_markdown_pages"
+domain = "docs"
+title = "docs markdown pages are referenced by mkdocs nav"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 4000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_ops_command_list_matches_snapshot"
+domain = "docs"
+title = "ops command list doc matches ops command snapshot"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_readme_index_contract_presence"
+domain = "docs"
+title = "docs and ops index contract pages are present"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_runtime_command_list_matches_contract"
+domain = "docs"
+title = "runtime command list doc matches runtime command contract"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_configs_wrappers_delegate_dev_atlas"
+domain = "make"
+title = "configs make wrappers delegate through bijux dev atlas configs commands"
+docs = "makefiles/configs.mk"
+tags = ["internal", "slow"]
+suites = ["deep", "configs"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_docs_wrappers_delegate_dev_atlas"
+domain = "make"
+title = "docs make wrappers delegate through bijux dev atlas docs commands"
+docs = "docs/development/tooling/dev-atlas-docs.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_governance_wrappers_bijux_only"
+domain = "make"
+title = "ci make wrappers route governance through make and bijux only"
+docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_governance_wrappers_no_direct_cargo"
+domain = "make"
+title = "governance wrapper makefiles avoid direct cargo commands"
+docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_no_atlasctl_string_references"
+domain = "make"
+title = "make wrappers avoid legacy atlasctl string references"
+docs = "makefiles/root.mk"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_no_direct_ops_script_execution"
+domain = "make"
+title = "make wrappers avoid direct ops script execution"
+docs = "makefiles/ops.mk"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_ops_wrappers_delegate_dev_atlas"
+domain = "make"
+title = "ops make wrappers delegate through bijux dev atlas ops commands"
+docs = "makefiles/ops.mk"
+tags = ["internal", "slow"]
+suites = ["deep", "ops"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_wrapper_commands"
+domain = "make"
+title = "make wrapper commands stay canonical"
+docs = "makefiles/CONTRACT.md"
+tags = ["make", "fast"]
+suites = ["make_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_artifacts_gitignore_policy"
+domain = "ops"
+title = "artifacts root remains gitignored"
+docs = ".gitignore"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_artifacts_not_tracked"
+domain = "ops"
+title = "ops evidence paths stay empty in repository"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_control_plane_doc_contract"
+domain = "ops"
+title = "ops control plane definition doc exists and declares invariants"
+docs = "ops/CONTROL_PLANE.md"
+tags = ["internal", "fast"]
+suites = ["deep", "ops", "doctor"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_generated_readonly_markers"
+domain = "ops"
+title = "ops generated files keep readonly generator markers"
+docs = "ops/_generated.example/MIRROR_POLICY.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_internal_registry_consistency"
+domain = "ops"
+title = "ops internal registry consistency"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "internal", "slow"]
+suites = ["ops_all"]
+effects_required = ["fs_read", "git"]
+budget_ms = 4000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_legacy_shell_quarantine_empty"
+domain = "ops"
+title = "legacy ops shell quarantine remains empty"
+docs = "ops/quarantine/legacy-ops-shell/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_makefile_routes_dev_atlas"
+domain = "ops"
+title = "ops makefile routes through dev atlas command surface"
+docs = "makefiles/ops.mk"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_manifest_integrity"
+domain = "ops"
+title = "ops inventory manifests are valid json with required keys"
+docs = "ops/inventory/README.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_atlasctl_invocations"
+domain = "ops"
+title = "ops owned surfaces avoid atlasctl command invocations"
+docs = "makefiles/ops.mk"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_bash_lib_execution"
+domain = "ops"
+title = "ops surfaces avoid direct bash library execution"
+docs = "ops/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_no_legacy_runner_paths"
+domain = "ops"
+title = "dev atlas crates do not reference legacy runner path conventions"
+docs = "docs/development/scripts.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_legacy_tooling_refs"
+domain = "ops"
+title = "ops does not reference legacy tooling paths"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_python_legacy_runtime_refs"
+domain = "ops"
+title = "dev atlas crates do not reference python atlasctl runtime"
+docs = "docs/development/tooling/atlasctl.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_scripts_areas_or_xtask_refs"
+domain = "ops"
+title = "ops owned surfaces avoid scripts areas and xtask references"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_schema_presence"
+domain = "ops"
+title = "ops schema baseline is present"
+docs = "ops/schema/README.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_ssot_manifests_schema_versions"
+domain = "ops"
+title = "ops ssot manifests and control plane doc declare schema or version fields"
+docs = "ops/CONTROL_PLANE.md"
+tags = ["internal", "fast"]
+suites = ["deep", "ops"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_surface_inventory"
+domain = "ops"
+title = "ops index inventories top-level surfaces"
+docs = "ops/INDEX.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_surface_manifest"
+domain = "ops"
+title = "ops surface manifest consistency"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_tree_contract"
+domain = "ops"
+title = "ops contract files are present"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_workflow_routes_dev_atlas"
+domain = "ops"
+title = "atlas dev workflow avoids atlasctl ops routes"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_repo_import_boundary"
+domain = "repo"
+title = "repo import boundary contracts"
+docs = "docs/INDEX.md"
+tags = ["repo", "lint", "fast"]
+suites = ["repo_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
 id = "checks_root_artifacts_bin_binaries_executable_and_version_printable"
 domain = "root"
 title = "artifacts bin binaries are executable and print version"
@@ -718,65 +608,120 @@ effects_required = ["fs_read", "subprocess"]
 budget_ms = 8000
 visibility = "internal"
 
+[[checks]]
+id = "checks_root_artifacts_reports_atlasctl_absent"
+domain = "root"
+title = "legacy atlasctl report artifact directory is absent"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_bin_atlasctl_absent"
+domain = "root"
+title = "legacy root atlasctl shim is absent"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_no_scripts_areas_presence_or_references"
+domain = "root"
+title = "repository avoids scripts areas presence and references"
+docs = "docs/development/scripts.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_packages_atlasctl_absent"
+domain = "root"
+title = "legacy atlasctl package directory is absent"
+docs = "docs/development/tooling/atlasctl.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_python_toolchain_toml_absent"
+domain = "root"
+title = "legacy python toolchain ssot file is absent"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_uv_lock_absent"
+domain = "root"
+title = "legacy root uv lockfile is absent"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_governance_entrypoints_bijux_only"
+domain = "workflows"
+title = "atlas dev workflow uses make and bijux governance entrypoints only"
+docs = "docs/development/tooling/make-workflow-governance-entrypoints.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_no_atlasctl_string_references"
+domain = "workflows"
+title = "workflows avoid legacy atlasctl string references"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_no_direct_ops_script_execution"
+domain = "workflows"
+title = "workflows avoid direct ops script execution"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_ops_entrypoints_bijux_only"
+domain = "workflows"
+title = "ops workflow entrypoints use make or bijux dev atlas only"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep", "ops"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
 [[suites]]
 id = "all_fast"
 checks = []
 domains = ["ops", "repo", "docs", "make"]
-tags_any = ["fast"]
-
-[[suites]]
-id = "ops_fast"
-checks = [
-  "checks_ops_surface_manifest",
-  "checks_ops_tree_contract",
-  "checks_ops_no_legacy_tooling_refs",
-  "checks_ops_generated_readonly_markers",
-  "checks_ops_schema_presence",
-  "checks_ops_manifest_integrity",
-  "checks_ops_surface_inventory",
-  "checks_ops_artifacts_not_tracked",
-  "checks_ops_no_python_legacy_runtime_refs",
-  "checks_ops_no_legacy_runner_paths",
-  "checks_ops_no_atlasctl_invocations",
-  "checks_ops_no_scripts_areas_or_xtask_refs",
-  "checks_ops_artifacts_gitignore_policy",
-  "checks_ops_makefile_routes_dev_atlas",
-  "checks_ops_workflow_routes_dev_atlas",
-]
-domains = ["ops"]
-tags_any = ["fast"]
-
-[[suites]]
-id = "ops_all"
-checks = []
-domains = ["ops"]
-tags_any = []
-
-[[suites]]
-id = "ops"
-checks = [
-  "checks_make_ops_wrappers_delegate_dev_atlas",
-  "checks_workflows_ops_entrypoints_bijux_only",
-]
-domains = ["ops"]
-tags_any = []
-
-[[suites]]
-id = "repo_fast"
-checks = []
-domains = ["repo"]
-tags_any = ["fast"]
-
-[[suites]]
-id = "docs_fast"
-checks = []
-domains = ["docs"]
-tags_any = ["fast"]
-
-[[suites]]
-id = "make_fast"
-checks = []
-domains = ["make"]
 tags_any = ["fast"]
 
 [[suites]]
@@ -823,10 +768,10 @@ domains = []
 tags_any = []
 
 [[suites]]
-id = "local"
+id = "configs"
 checks = []
-domains = ["ops", "repo", "docs", "make"]
-tags_any = ["fast"]
+domains = ["configs"]
+tags_any = []
 
 [[suites]]
 id = "deep"
@@ -841,10 +786,10 @@ domains = ["docs"]
 tags_any = []
 
 [[suites]]
-id = "configs"
+id = "docs_fast"
 checks = []
-domains = ["configs"]
-tags_any = []
+domains = ["docs"]
+tags_any = ["fast"]
 
 [[suites]]
 id = "doctor"
@@ -857,3 +802,58 @@ checks = [
 ]
 domains = []
 tags_any = []
+[[suites]]
+id = "local"
+checks = []
+domains = ["ops", "repo", "docs", "make"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "make_fast"
+checks = []
+domains = ["make"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "ops"
+checks = [
+  "checks_make_ops_wrappers_delegate_dev_atlas",
+  "checks_workflows_ops_entrypoints_bijux_only",
+]
+domains = ["ops"]
+tags_any = []
+
+[[suites]]
+id = "ops_all"
+checks = []
+domains = ["ops"]
+tags_any = []
+
+[[suites]]
+id = "ops_fast"
+checks = [
+  "checks_ops_surface_manifest",
+  "checks_ops_tree_contract",
+  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_generated_readonly_markers",
+  "checks_ops_schema_presence",
+  "checks_ops_manifest_integrity",
+  "checks_ops_surface_inventory",
+  "checks_ops_artifacts_not_tracked",
+  "checks_ops_no_python_legacy_runtime_refs",
+  "checks_ops_no_legacy_runner_paths",
+  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_scripts_areas_or_xtask_refs",
+  "checks_ops_artifacts_gitignore_policy",
+  "checks_ops_makefile_routes_dev_atlas",
+  "checks_ops_workflow_routes_dev_atlas",
+]
+domains = ["ops"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "repo_fast"
+checks = []
+domains = ["repo"]
+tags_any = ["fast"]
+
