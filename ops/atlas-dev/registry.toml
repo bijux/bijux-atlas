@@ -510,6 +510,28 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
+id = "checks_make_ops_wrappers_delegate_dev_atlas"
+domain = "make"
+title = "ops make wrappers delegate through bijux dev atlas ops commands"
+docs = "makefiles/ops.mk"
+tags = ["internal", "slow"]
+suites = ["deep", "ops"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_ops_entrypoints_bijux_only"
+domain = "workflows"
+title = "ops workflow entrypoints use make or bijux dev atlas only"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep", "ops"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
 id = "checks_configs_required_surface_paths"
 domain = "configs"
 title = "configs control-plane contract files exist"
@@ -611,7 +633,10 @@ tags_any = []
 
 [[suites]]
 id = "ops"
-checks = []
+checks = [
+  "checks_make_ops_wrappers_delegate_dev_atlas",
+  "checks_workflows_ops_entrypoints_bijux_only",
+]
 domains = ["ops"]
 tags_any = []
 

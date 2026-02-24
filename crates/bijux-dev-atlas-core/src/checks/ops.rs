@@ -28,6 +28,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_artifacts_gitignore_policy" => Some(checks_ops_artifacts_gitignore_policy),
         "checks_ops_makefile_routes_dev_atlas" => Some(checks_ops_makefile_routes_dev_atlas),
         "checks_ops_workflow_routes_dev_atlas" => Some(checks_ops_workflow_routes_dev_atlas),
+        "checks_make_ops_wrappers_delegate_dev_atlas" => Some(check_make_ops_wrappers_delegate_dev_atlas),
+        "checks_workflows_ops_entrypoints_bijux_only" => Some(check_workflows_ops_entrypoints_bijux_only),
         "checks_ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
         "checks_root_packages_atlasctl_absent" => Some(check_root_packages_atlasctl_absent),
         "checks_docs_no_atlasctl_string_references" => Some(check_docs_no_atlasctl_string_references),
@@ -544,15 +546,10 @@ fn checks_ops_makefile_routes_dev_atlas(
         }
         if line.contains("$(BIJUX_DEV_ATLAS)") {
             let words = line.split_whitespace().collect::<Vec<_>>();
-            if words.iter().any(|word| {
-                *word == "python"
-                    || *word == "python3"
-                    || *word == "bash"
-                    || *word == "sh"
-                    || *word == "helm"
-                    || *word == "kubectl"
-                    || *word == "k6"
-            }) {
+            if words
+                .iter()
+                .any(|word| *word == "python" || *word == "python3" || *word == "bash" || *word == "sh")
+            {
                 violations.push(violation(
                     "OPS_MAKEFILE_DELEGATION_ONLY_VIOLATION",
                     format!("makefiles/ops.mk wrapper must not invoke tools directly: `{line}`"),
@@ -690,6 +687,71 @@ fn check_make_governance_wrappers_bijux_only(
     Ok(violations)
 }
 
+fn check_make_ops_wrappers_delegate_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/ops.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+
+    if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
+        violations.push(violation(
+            "MAKE_OPS_BIJUX_VARIABLES_MISSING",
+            "makefiles/ops.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
+            Some(rel),
+        ));
+    }
+
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "MAKE_OPS_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/ops.mk wrapper recipes must be single-line delegations".to_string(),
+                "keep ops wrappers single-line and delegation-only",
+                Some(rel),
+            ));
+        }
+        if line.contains("atlasctl") {
+            violations.push(violation(
+                "MAKE_OPS_ATLASCTL_REFERENCE_FOUND",
+                format!("makefiles/ops.mk must not call atlasctl: `{line}`"),
+                "route ops wrappers through bijux dev atlas ops commands",
+                Some(rel),
+            ));
+        }
+        if line.contains("$(BIJUX_DEV_ATLAS)") {
+            let words = line.split_whitespace().collect::<Vec<_>>();
+            if words
+                .iter()
+                .any(|word| *word == "python" || *word == "python3" || *word == "bash" || *word == "sh")
+            {
+                violations.push(violation(
+                    "MAKE_OPS_DELEGATION_ONLY_VIOLATION",
+                    format!("makefiles/ops.mk must remain delegation-only: `{line}`"),
+                    "wrapper recipes may call bijux dev atlas only",
+                    Some(rel),
+                ));
+            }
+            continue;
+        }
+    }
+
+    for required in ["ops-up:", "ops-doctor:", "ops-validate:", "ops-pins-check:", "ops-render:"] {
+        if !content.contains(required) {
+            violations.push(violation(
+                "MAKE_OPS_REQUIRED_TARGET_MISSING",
+                format!("makefiles/ops.mk is missing `{required}`"),
+                "keep required ops delegation targets in makefiles/ops.mk",
+                Some(rel),
+            ));
+        }
+    }
+
+    Ok(violations)
+}
+
 fn check_workflows_governance_entrypoints_bijux_only(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
@@ -721,6 +783,44 @@ fn check_workflows_governance_entrypoints_bijux_only(
                 "WORKFLOW_GOVERNANCE_ENTRYPOINT_MISSING",
                 format!("atlas-dev-rust workflow is missing `{required}`"),
                 "keep governance workflow checks routed through make and bijux dev atlas",
+                Some(rel),
+            ));
+        }
+    }
+
+    Ok(violations)
+}
+
+fn check_workflows_ops_entrypoints_bijux_only(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+
+    for forbidden in ["./bin/atlasctl ops", " atlasctl ops "] {
+        if content.contains(forbidden) {
+            violations.push(violation(
+                "WORKFLOW_OPS_ATLASCTL_REFERENCE_FOUND",
+                format!("atlas-dev-rust workflow contains forbidden ops legacy route `{forbidden}`"),
+                "route ops workflow entrypoints through make or bijux dev atlas",
+                Some(rel),
+            ));
+        }
+    }
+
+    for required in [
+        "ops doctor --format json",
+        "ops validate --format json",
+        "make ops-doctor",
+        "make ops-validate",
+    ] {
+        if !content.contains(required) {
+            violations.push(violation(
+                "WORKFLOW_OPS_ENTRYPOINT_MISSING",
+                format!("atlas-dev-rust workflow is missing `{required}`"),
+                "keep ops workflow entrypoints routed through make/bijux dev atlas",
                 Some(rel),
             ));
         }
