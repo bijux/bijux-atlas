@@ -295,6 +295,9 @@ mod tests {
     #[test]
     fn policies_subcommands_parse() {
         let commands = [
+            vec!["bijux-dev-atlas", "policies", "list"],
+            vec!["bijux-dev-atlas", "policies", "explain", "repo"],
+            vec!["bijux-dev-atlas", "policies", "report"],
             vec!["bijux-dev-atlas", "policies", "print"],
             vec![
                 "bijux-dev-atlas",

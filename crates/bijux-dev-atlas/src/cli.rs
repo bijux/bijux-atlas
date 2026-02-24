@@ -199,6 +199,31 @@ pub enum WorkflowsCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum PoliciesCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        policy_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Report {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
     Print {
         #[arg(long)]
         repo_root: Option<PathBuf>,
