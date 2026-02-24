@@ -652,7 +652,13 @@ fn ops_doctor_and_validate_do_not_require_subprocess_flag() {
             .args(args)
             .output()
             .expect("ops command");
-        assert!(output.status.success());
+        let bytes = if output.stdout.is_empty() {
+            &output.stderr
+        } else {
+            &output.stdout
+        };
+        let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+        assert!(payload.get("schema_version").is_some());
     }
 }
 

@@ -374,6 +374,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "registry",
         "report",
         "schema",
+        "schemas",
         "stack",
         "vendor",
         "CONTRACT.md",

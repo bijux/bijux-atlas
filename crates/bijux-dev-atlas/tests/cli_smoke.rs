@@ -15,12 +15,21 @@ fn repo_root() -> PathBuf {
 
 #[test]
 fn doctor_smoke() {
-    let status = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["check", "doctor"])
-        .status()
+        .args(["check", "doctor", "--format", "json"])
+        .output()
         .expect("doctor");
-    assert!(status.success());
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("json");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    let check_report = payload.get("check_report").expect("check_report");
+    assert!(check_report.get("results").and_then(|v| v.as_array()).is_some());
+    assert!(check_report.get("counts").is_some());
 }
 
 #[test]

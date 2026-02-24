@@ -3,8 +3,8 @@ help
 ops
 docs
 configs
-build
 docker
+build
 policies
 workflows
 gates

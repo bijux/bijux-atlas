@@ -33,12 +33,16 @@ fn error_code_enum_is_defined_only_in_core_generated_module() {
         .filter(|e| e.path().extension().and_then(|x| x.to_str()) == Some("rs"))
     {
         let path = entry.path();
+        let path_str = path.to_string_lossy();
+        if !path_str.contains("/crates/bijux-atlas-") {
+            continue;
+        }
         if path.components().any(|c| c.as_os_str() == "tests") {
             continue;
         }
         let text = std::fs::read_to_string(path).expect("read rust file");
         if text.contains("enum ErrorCode") {
-            definitions.push(path.to_string_lossy().to_string());
+            definitions.push(path_str.to_string());
         }
     }
 
