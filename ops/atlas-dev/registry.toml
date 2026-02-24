@@ -212,6 +212,116 @@ effects_required = ["fs_read", "git"]
 budget_ms = 4000
 visibility = "internal"
 
+[[checks]]
+id = "checks_root_packages_atlasctl_absent"
+domain = "root"
+title = "legacy atlasctl package directory is absent"
+docs = "docs/development/tooling/atlasctl.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_atlasctl_string_references"
+domain = "docs"
+title = "docs avoid legacy atlasctl string references"
+docs = "docs/development/tooling/atlasctl.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_no_atlasctl_string_references"
+domain = "workflows"
+title = "workflows avoid legacy atlasctl string references"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_no_atlasctl_string_references"
+domain = "make"
+title = "make wrappers avoid legacy atlasctl string references"
+docs = "makefiles/root.mk"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_no_direct_ops_script_execution"
+domain = "workflows"
+title = "workflows avoid direct ops script execution"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_no_direct_ops_script_execution"
+domain = "make"
+title = "make wrappers avoid direct ops script execution"
+docs = "makefiles/ops.mk"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_no_scripts_areas_presence_or_references"
+domain = "root"
+title = "repository avoids scripts areas presence and references"
+docs = "docs/development/scripts.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch"
+domain = "crates"
+title = "bijux atlas cli exclusively owns umbrella dispatch metadata"
+docs = "docs/contracts/plugin/spec.md"
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "public"
+
+[[checks]]
+id = "checks_crates_bijux_atlas_help_excludes_dev_commands"
+domain = "crates"
+title = "bijux atlas help does not expose dev command surfaces"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "public"
+
+[[checks]]
+id = "checks_crates_bijux_dev_atlas_help_dispatch_present"
+domain = "crates"
+title = "bijux atlas routes dev control plane to bijux dev atlas help"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["fast"]
+suites = ["ci", "ci_fast", "local", "deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "public"
+
 [[suites]]
 id = "all_fast"
 checks = []

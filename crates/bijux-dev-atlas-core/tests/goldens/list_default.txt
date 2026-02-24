@@ -1,3 +1,6 @@
+checks_crates_bijux_atlas_cli_owns_umbrella_dispatch	bijux atlas cli exclusively owns umbrella dispatch metadata
+checks_crates_bijux_atlas_help_excludes_dev_commands	bijux atlas help does not expose dev command surfaces
+checks_crates_bijux_dev_atlas_help_dispatch_present	bijux atlas routes dev control plane to bijux dev atlas help
 checks_docs_index_links	docs index links must resolve
 checks_make_wrapper_commands	make wrapper commands stay canonical
 checks_ops_artifacts_gitignore_policy	artifacts root remains gitignored
