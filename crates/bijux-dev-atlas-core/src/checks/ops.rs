@@ -22,6 +22,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
         "ops_no_python_legacy_runtime_refs" => Some(checks_ops_no_python_legacy_runtime_refs),
         "ops_no_legacy_runner_paths" => Some(checks_ops_no_legacy_runner_paths),
+        "ops_no_atlasctl_invocations" => Some(checks_ops_no_atlasctl_invocations),
+        "ops_no_scripts_areas_or_xtask_refs" => Some(checks_ops_no_scripts_areas_or_xtask_refs),
+        "ops_artifacts_gitignore_policy" => Some(checks_ops_artifacts_gitignore_policy),
         "ops_makefile_routes_dev_atlas" => Some(checks_ops_makefile_routes_dev_atlas),
         "ops_workflow_routes_dev_atlas" => Some(checks_ops_workflow_routes_dev_atlas),
         "ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
@@ -355,6 +358,9 @@ fn checks_ops_no_python_legacy_runtime_refs(
                 continue;
             };
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+            if rel.components().any(|c| c.as_os_str() == "tests") || rel.to_string_lossy().ends_with("_tests.rs") {
+                continue;
+            }
             if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
                 continue;
             }
@@ -403,6 +409,9 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
                 continue;
             };
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+            if rel == Path::new("crates/bijux-dev-atlas-core/src/lib_tests.rs") {
+                continue;
+            }
             if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
                 continue;
             }
@@ -520,6 +529,100 @@ fn checks_ops_makefile_routes_dev_atlas(
     }
 
     Ok(violations)
+}
+
+fn checks_ops_no_atlasctl_invocations(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let targets = [
+        Path::new("makefiles/ops.mk"),
+        Path::new(".github/workflows/atlas-dev-rust.yml"),
+        Path::new("ops/README.md"),
+        Path::new("ops/INDEX.md"),
+    ];
+    let mut violations = Vec::new();
+    for rel in targets {
+        let path = ctx.repo_root.join(rel);
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+        for line in content.lines() {
+            let trimmed = line.trim();
+            let is_command_like = trimmed.contains("./bin/atlasctl")
+                || trimmed.contains(" atlasctl ")
+                || trimmed.starts_with("atlasctl ");
+            if is_command_like {
+                violations.push(violation(
+                    "OPS_ATLASCTL_REFERENCE_FOUND",
+                    format!(
+                        "forbidden atlasctl invocation found in {}: `{trimmed}`",
+                        rel.display()
+                    ),
+                    "route ops control-plane invocations through bijux dev atlas",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+    Ok(violations)
+}
+
+fn checks_ops_no_scripts_areas_or_xtask_refs(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let targets = [
+        Path::new("makefiles/ops.mk"),
+        Path::new(".github/workflows/atlas-dev-rust.yml"),
+        Path::new("ops/README.md"),
+        Path::new("ops/INDEX.md"),
+    ];
+    let needles = ["scripts/areas", "xtask"];
+    let mut violations = Vec::new();
+    for rel in targets {
+        let path = ctx.repo_root.join(rel);
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+        for line in content.lines() {
+            let trimmed = line.trim();
+            if trimmed.starts_with('!') && trimmed.contains("rg -n") {
+                continue;
+            }
+            for needle in needles {
+                if !trimmed.contains(needle) {
+                    continue;
+                }
+                violations.push(violation(
+                    "OPS_LEGACY_REFERENCE_FOUND",
+                    format!(
+                        "forbidden legacy reference `{needle}` found in {}: `{trimmed}`",
+                        rel.display()
+                    ),
+                    "remove scripts/areas and xtask references from ops-owned surfaces",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+    Ok(violations)
+}
+
+fn checks_ops_artifacts_gitignore_policy(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new(".gitignore");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    if content.lines().any(|line| line.trim() == "artifacts/" || line.trim() == "/artifacts/") {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "OPS_ARTIFACTS_GITIGNORE_MISSING",
+            "artifacts/ must be ignored in .gitignore".to_string(),
+            "add `artifacts/` to .gitignore",
+            Some(rel),
+        )])
+    }
 }
 
 fn checks_ops_workflow_routes_dev_atlas(

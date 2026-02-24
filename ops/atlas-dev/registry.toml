@@ -114,6 +114,39 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "ops_no_atlasctl_invocations"
+domain = "ops"
+title = "ops owned surfaces avoid atlasctl command invocations"
+docs = "makefiles/ops.mk"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_no_scripts_areas_or_xtask_refs"
+domain = "ops"
+title = "ops owned surfaces avoid scripts areas and xtask references"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_artifacts_gitignore_policy"
+domain = "ops"
+title = "artifacts root remains gitignored"
+docs = ".gitignore"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
 id = "ops_makefile_routes_dev_atlas"
 domain = "ops"
 title = "ops makefile routes through dev atlas command surface"
@@ -198,6 +231,9 @@ checks = [
   "ops_artifacts_not_tracked",
   "ops_no_python_legacy_runtime_refs",
   "ops_no_legacy_runner_paths",
+  "ops_no_atlasctl_invocations",
+  "ops_no_scripts_areas_or_xtask_refs",
+  "ops_artifacts_gitignore_policy",
   "ops_makefile_routes_dev_atlas",
   "ops_workflow_routes_dev_atlas",
 ]
@@ -239,6 +275,9 @@ checks = [
   "ops_manifest_integrity",
   "ops_surface_inventory",
   "ops_artifacts_not_tracked",
+  "ops_no_atlasctl_invocations",
+  "ops_no_scripts_areas_or_xtask_refs",
+  "ops_artifacts_gitignore_policy",
   "ops_makefile_routes_dev_atlas",
   "ops_workflow_routes_dev_atlas",
 ]
@@ -256,6 +295,9 @@ checks = [
   "ops_manifest_integrity",
   "ops_surface_inventory",
   "ops_artifacts_not_tracked",
+  "ops_no_atlasctl_invocations",
+  "ops_no_scripts_areas_or_xtask_refs",
+  "ops_artifacts_gitignore_policy",
   "ops_makefile_routes_dev_atlas",
   "ops_workflow_routes_dev_atlas",
   "repo_import_boundary",

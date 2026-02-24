@@ -29,13 +29,16 @@ fn suite_expansion_is_stable() {
     assert_eq!(
         ids,
         vec![
+            "ops_artifacts_gitignore_policy".to_string(),
             "ops_artifacts_not_tracked".to_string(),
             "ops_generated_readonly_markers".to_string(),
             "ops_makefile_routes_dev_atlas".to_string(),
             "ops_manifest_integrity".to_string(),
+            "ops_no_atlasctl_invocations".to_string(),
             "ops_no_legacy_runner_paths".to_string(),
             "ops_no_legacy_tooling_refs".to_string(),
             "ops_no_python_legacy_runtime_refs".to_string(),
+            "ops_no_scripts_areas_or_xtask_refs".to_string(),
             "ops_schema_presence".to_string(),
             "ops_surface_inventory".to_string(),
             "ops_surface_manifest".to_string(),
@@ -157,7 +160,7 @@ fn selector_by_suite_works() {
         },
     )
     .expect("selected");
-    assert_eq!(selected.len(), 12);
+    assert_eq!(selected.len(), 15);
     assert!(selected
         .iter()
         .any(|row| row.id.as_str() == "ops_surface_manifest"));
