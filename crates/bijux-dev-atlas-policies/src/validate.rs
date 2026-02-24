@@ -1,4 +1,4 @@
-use crate::schema::{DevAtlasPolicySetDocument, PolicySchemaVersion};
+use crate::schema::{DevAtlasPolicySetDocument, PolicySchemaVersion, POLICY_REGISTRY};
 use serde_json::{Map, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -42,9 +42,95 @@ pub fn load_policy_from_workspace(
 
     validate_schema_version_match(&config_val, &schema_val)?;
     validate_documented_defaults(&config_val)?;
+    validate_policy_registry_ids(&config_val)?;
 
     serde_json::from_value(config_val)
         .map_err(|e| PolicyValidationError(format!("decode dev policy config failed: {e}")))
+}
+
+pub fn validate_relaxation_expiry(
+    config: &Value,
+    today_ymd: &str,
+) -> Result<(), PolicyValidationError> {
+    let Some(relaxations) = config.get("relaxations").and_then(Value::as_array) else {
+        return Ok(());
+    };
+    for item in relaxations {
+        let policy_id = item
+            .get("policy_id")
+            .and_then(Value::as_str)
+            .ok_or_else(|| PolicyValidationError("relaxations.policy_id must be string".to_string()))?;
+        let expires_on = item
+            .get("expires_on")
+            .and_then(Value::as_str)
+            .ok_or_else(|| PolicyValidationError("relaxations.expires_on must be string".to_string()))?;
+        if !is_ymd(expires_on) {
+            return Err(PolicyValidationError(format!(
+                "relaxation for `{policy_id}` has invalid expires_on `{expires_on}`"
+            )));
+        }
+        if expires_on < today_ymd {
+            return Err(PolicyValidationError(format!(
+                "relaxation for `{policy_id}` expired on `{expires_on}`"
+            )));
+        }
+    }
+    Ok(())
+}
+
+pub fn validate_policy_registry_ids(config: &Value) -> Result<(), PolicyValidationError> {
+    let registered = POLICY_REGISTRY
+        .iter()
+        .map(|p| p.id)
+        .collect::<std::collections::BTreeSet<_>>();
+    if let Some(defaults) = config.get("documented_defaults").and_then(Value::as_array) {
+        for item in defaults {
+            let field = item.get("field").and_then(Value::as_str).ok_or_else(|| {
+                PolicyValidationError("documented_defaults.field must be string".to_string())
+            })?;
+            if !registered.contains(field) {
+                return Err(PolicyValidationError(format!(
+                    "documented default references unknown policy id `{field}`"
+                )));
+            }
+        }
+    }
+    if let Some(ratchets) = config.get("ratchets").and_then(Value::as_array) {
+        for item in ratchets {
+            let id = item.get("id").and_then(Value::as_str).ok_or_else(|| {
+                PolicyValidationError("ratchets.id must be string".to_string())
+            })?;
+            if !registered.contains(id) {
+                return Err(PolicyValidationError(format!(
+                    "ratchet references unknown policy id `{id}`"
+                )));
+            }
+        }
+    }
+    if let Some(relaxations) = config.get("relaxations").and_then(Value::as_array) {
+        for item in relaxations {
+            let policy_id = item.get("policy_id").and_then(Value::as_str).ok_or_else(|| {
+                PolicyValidationError("relaxations.policy_id must be string".to_string())
+            })?;
+            if !registered.contains(policy_id) {
+                return Err(PolicyValidationError(format!(
+                    "relaxation references unknown policy id `{policy_id}`"
+                )));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn is_ymd(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    if bytes.len() != 10 || bytes[4] != b'-' || bytes[7] != b'-' {
+        return false;
+    }
+    bytes
+        .iter()
+        .enumerate()
+        .all(|(i, b)| i == 4 || i == 7 || b.is_ascii_digit())
 }
 
 pub fn canonical_policy_json(
