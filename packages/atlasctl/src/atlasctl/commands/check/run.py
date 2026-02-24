@@ -550,7 +550,7 @@ def run(ctx, ns: argparse.Namespace) -> int:
             ["python3", "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_workflow_calls_atlasctl.py"],
         )
     if sub == "ci-surface-documented":
-        from ...checks.tools.docs_domain.check_ci_surface_documented import main as run_ci_surface_documented
+        from ...checks.tools.docs_ci_surface_documented import main as run_ci_surface_documented
 
         return run_ci_surface_documented()
     if sub == "ops-mk-contract":
