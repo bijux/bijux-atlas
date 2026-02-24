@@ -7,6 +7,7 @@ import argparse
 import os
 from pathlib import Path
 
+from atlasctl.contracts.validate import validate
 from atlasctl.core.context import RunContext
 from atlasctl.commands.policies.gates import command as gates_command
 from tests.helpers import ROOT, golden_path
@@ -29,6 +30,9 @@ def test_gates_list_json() -> None:
     proc = _run_cli("--quiet", "gate", "list", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
+    schema_name = payload.get("schema_name")
+    if isinstance(schema_name, str) and schema_name:
+        validate(schema_name, payload)
     assert payload["status"] == "pass"
     assert any(lane["id"] == "lane-cargo" for lane in payload["lanes"])
 
@@ -37,6 +41,9 @@ def test_gates_run_unknown_lane_fails() -> None:
     proc = _run_cli("--quiet", "gate", "run", "--lane", "lane-missing", "--report", "json")
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
+    schema_name = payload.get("schema_name")
+    if isinstance(schema_name, str) and schema_name:
+        validate(schema_name, payload)
     assert payload["status"] == "fail"
 
 
@@ -70,5 +77,8 @@ def test_gate_list_output_stable() -> None:
     proc = _run_cli("--quiet", "gate", "list", "--report", "json")
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
+    schema_name = payload.get("schema_name")
+    if isinstance(schema_name, str) and schema_name:
+        validate(schema_name, payload)
     golden = json.loads(golden_path("list/gate-list.json.golden").read_text(encoding="utf-8"))
     assert payload == golden

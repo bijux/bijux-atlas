@@ -8,6 +8,7 @@ from atlasctl.checks.model import CheckContext, CheckDef
 from atlasctl.checks.policy import Capabilities
 from atlasctl.checks.report import build_report_payload
 from atlasctl.checks.runner import run_checks
+from atlasctl.contracts.validate import validate
 from tests.helpers import golden_text
 
 
@@ -43,6 +44,9 @@ def test_runner_fail_fast_matches_golden(monkeypatch, tmp_path: Path) -> None:
     ctx = CheckContext(repo_root=tmp_path.resolve(), fs=FS(repo_root=tmp_path.resolve(), allowed_roots=("artifacts/evidence",)))
     report = run_checks(ctx, fail_fast=True, capabilities=Capabilities(allow_network=True))
     payload = _normalized(build_report_payload(report, run_id="golden"))
+    schema_name = payload.get("schema_name")
+    if isinstance(schema_name, str) and schema_name:
+        validate(schema_name, payload)
     assert json.dumps(payload, sort_keys=True) == golden_text("check/runner-fail-fast.json.golden")
 
 
@@ -55,4 +59,7 @@ def test_runner_effect_denied_skip_matches_golden(monkeypatch, tmp_path: Path) -
     ctx = CheckContext(repo_root=tmp_path.resolve(), fs=FS(repo_root=tmp_path.resolve(), allowed_roots=("artifacts/evidence",)))
     report = run_checks(ctx, fail_fast=False, capabilities=Capabilities(allow_network=False))
     payload = _normalized(build_report_payload(report, run_id="golden"))
+    schema_name = payload.get("schema_name")
+    if isinstance(schema_name, str) and schema_name:
+        validate(schema_name, payload)
     assert json.dumps(payload, sort_keys=True) == golden_text("check/runner-effect-denied-skip.json.golden")
