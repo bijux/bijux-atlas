@@ -11,7 +11,15 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[6]
+def _repo_root() -> Path:
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / ".git").exists() and (parent / "Makefile").exists():
+            return parent
+    raise RuntimeError("unable to resolve repository root from check_ops_pins.py")
+
+
+ROOT = _repo_root()
 PINS_PATH = ROOT / "configs/ops/pins.json"
 TOOLS_LOCK_PATH = ROOT / "configs/ops/tool-versions.json"
 STACK_VERSION_MANIFEST = ROOT / "ops/stack/version-manifest.json"
