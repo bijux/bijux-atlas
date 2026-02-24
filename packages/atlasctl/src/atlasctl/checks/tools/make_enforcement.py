@@ -1136,7 +1136,6 @@ def check_policies_bypass_entry_paths_exist(repo_root: Path) -> tuple[int, list[
 
 def check_policies_bypass_entry_matches_nothing(repo_root: Path) -> tuple[int, list[str]]:
     payload = collect_bypass_inventory(repo_root)
-    files = [p.relative_to(repo_root).as_posix() for p in repo_root.rglob("*") if p.is_file()]
     errors: list[str] = []
     for row in payload.get("entries", []):
         if not isinstance(row, dict):
@@ -1145,14 +1144,17 @@ def check_policies_bypass_entry_matches_nothing(repo_root: Path) -> tuple[int, l
         src = str(row.get("source", "")).strip()
         if not any(ch in key for ch in "*?[]"):
             continue
-        if not any(fnmatch.fnmatch(path, key) for path in files):
+        try:
+            matched = any(path.is_file() for path in repo_root.glob(key))
+        except Exception:
+            matched = False
+        if not matched:
             errors.append(f"{src}:{key}: wildcard bypass matches no files")
     return _res(errors)
 
 
 def check_policies_bypass_entry_matches_too_broad(repo_root: Path) -> tuple[int, list[str]]:
     payload = collect_bypass_inventory(repo_root)
-    files = [p.relative_to(repo_root).as_posix() for p in repo_root.rglob("*") if p.is_file()]
     errors: list[str] = []
     for row in payload.get("entries", []):
         if not isinstance(row, dict):
@@ -1161,9 +1163,17 @@ def check_policies_bypass_entry_matches_too_broad(repo_root: Path) -> tuple[int,
         src = str(row.get("source", "")).strip()
         if not any(ch in key for ch in "*?[]"):
             continue
-        matches = [path for path in files if fnmatch.fnmatch(path, key)]
-        if len(matches) > 50:
-            errors.append(f"{src}:{key}: wildcard bypass matches too broadly ({len(matches)} files)")
+        count = 0
+        try:
+            for candidate in repo_root.glob(key):
+                if candidate.is_file():
+                    count += 1
+                    if count > 50:
+                        break
+        except Exception:
+            count = 0
+        if count > 50:
+            errors.append(f"{src}:{key}: wildcard bypass matches too broadly ({count} files)")
     return _res(errors)
 
 
