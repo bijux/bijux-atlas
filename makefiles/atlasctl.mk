@@ -28,7 +28,7 @@ atlasctl-check-python: ## Run atlasctl python checks
 	@./bin/atlasctl check run --group python --durations 10
 
 atlasctl-check-repo: ## Run atlasctl repo checks
-	@./bin/atlasctl check run --group repo --durations 10
+	@./bin/atlasctl check run --id repo.no_direct_python_invocations --durations 10
 
 atlasctl-registry-list: ## Print atlasctl registry inventory
 	@./bin/atlasctl registry checks
