@@ -9,12 +9,6 @@ from typing import Any
 
 from ..model import CheckCategory, CheckDef, CheckId, DomainId, Severity
 from ..effects import CheckEffect, normalize_effect
-from ..domains.configs import CHECKS as CHECKS_CONFIGS
-from ..domains.docs import CHECKS as CHECKS_DOCS
-from ..domains.internal import CHECKS as CHECKS_INTERNAL
-from ..domains.ops import CHECKS as CHECKS_OPS
-from ..domains.policies import CHECKS as CHECKS_POLICIES
-from ..domains.repo import CHECKS as CHECKS_REPO
 from ...core.meta.owners import load_owner_catalog
 from ...core.runtime.paths import write_text_file
 
@@ -629,13 +623,20 @@ def write_registry_toml(repo_root: Path, rows: list[dict[str, Any]]) -> Path:
 
 
 def legacy_checks() -> tuple[CheckDef, ...]:
+    from ..domains.configs import CHECKS as checks_configs
+    from ..domains.docs import CHECKS as checks_docs
+    from ..domains.internal import CHECKS as checks_internal
+    from ..domains.ops import CHECKS as checks_ops
+    from ..domains.policies import CHECKS as checks_policies
+    from ..domains.repo import CHECKS as checks_repo
+
     return (
-        *CHECKS_REPO,
-        *CHECKS_DOCS,
-        *CHECKS_OPS,
-        *CHECKS_CONFIGS,
-        *CHECKS_POLICIES,
-        *CHECKS_INTERNAL,
+        *checks_repo,
+        *checks_docs,
+        *checks_ops,
+        *checks_configs,
+        *checks_policies,
+        *checks_internal,
     )
 
 

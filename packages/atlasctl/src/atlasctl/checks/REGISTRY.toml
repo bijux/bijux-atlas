@@ -154,6 +154,31 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_checks_forbidden_imports"
+domain = "checks"
+area = "forbidden"
+gate = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.domains.internal"
+callable = "check_checks_forbidden_imports"
+description = "forbid checks imports from ops test/fixture surfaces"
+severity = "error"
+category = "check"
+intent = "forbid checks imports from ops test/fixture surfaces"
+remediation_short = "Review check output and apply the documented fix."
+remediation_link = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
+result_code = "CHECK_GENERIC"
+fix_hint = "Remove checks imports from test/fixture surfaces and keep checks dependent on runtime contracts only."
+legacy_id = "checks.forbidden_imports"
+groups = ["checks", "fast", "required"]
+effects = ["fs_read"]
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_checks_generated_no_timestamp_dirs"
 domain = "checks"
 area = "generated"
@@ -172,6 +197,31 @@ remediation_link = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
 result_code = "CHECK_GENERIC"
 fix_hint = "Use deterministic, stable generated directory names without timestamps."
 legacy_id = "checks.generated_no_timestamp_dirs"
+groups = ["checks", "fast", "required"]
+effects = ["fs_read"]
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_checks_import_cycles"
+domain = "checks"
+area = "import"
+gate = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 700
+module = "atlasctl.checks.domains.internal"
+callable = "check_checks_import_cycles"
+description = "forbid import cycles across atlasctl checks modules"
+severity = "error"
+category = "check"
+intent = "forbid import cycles across atlasctl checks modules"
+remediation_short = "Review check output and apply the documented fix."
+remediation_link = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
+result_code = "CHECK_GENERIC"
+fix_hint = "Break circular imports across atlasctl checks modules by extracting shared contracts/tools."
+legacy_id = "checks.import_cycles"
 groups = ["checks", "fast", "required"]
 effects = ["fs_read"]
 external_tools = []

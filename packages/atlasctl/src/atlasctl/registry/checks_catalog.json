@@ -279,6 +279,52 @@
       "title": "forbid tracked evidence outputs under artifacts/atlasctl/checks"
     },
     {
+      "area": "forbidden",
+      "default_enabled": true,
+      "description": "forbid checks imports from ops test/fixture surfaces",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_forbidden_imports",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_forbidden_imports",
+      "impl_ref": {
+        "callable": "check_checks_forbidden_imports",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Remove checks imports from test/fixture surfaces and keep checks dependent on runtime contracts only.",
+        "intent": "forbid checks imports from ops test/fixture surfaces",
+        "legacy_id": "checks.forbidden_imports",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid checks imports from ops test/fixture surfaces"
+    },
+    {
       "area": "generated",
       "default_enabled": true,
       "description": "forbid timestamp-like directory names under generated roots",
@@ -323,6 +369,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid timestamp-like directory names under generated roots"
+    },
+    {
+      "area": "import",
+      "default_enabled": true,
+      "description": "forbid import cycles across atlasctl checks modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_import_cycles",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_import_cycles",
+      "impl_ref": {
+        "callable": "check_checks_import_cycles",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Break circular imports across atlasctl checks modules by extracting shared contracts/tools.",
+        "intent": "forbid import cycles across atlasctl checks modules",
+        "legacy_id": "checks.import_cycles",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid import cycles across atlasctl checks modules"
     },
     {
       "area": "module",

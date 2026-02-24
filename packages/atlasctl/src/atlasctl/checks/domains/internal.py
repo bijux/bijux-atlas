@@ -5,6 +5,7 @@ import json
 import os
 import re
 from pathlib import Path
+from typing import Iterable
 
 from ...core.process import run_command
 from ..model import CheckCategory, CheckDef
@@ -501,6 +502,134 @@ def _forbidden_imports(
     return violations
 
 
+def _check_modules(checks_root: Path) -> dict[str, Path]:
+    modules: dict[str, Path] = {}
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(checks_root)
+        if rel.name == "__init__.py":
+            parts = rel.parts[:-1]
+        else:
+            parts = rel.with_suffix("").parts
+        if not parts:
+            module_name = "atlasctl.checks"
+        else:
+            module_name = "atlasctl.checks." + ".".join(parts)
+        modules[module_name] = path
+    return modules
+
+
+def _resolve_imported_modules(current_module: str, node: ast.AST) -> Iterable[str]:
+    if isinstance(node, ast.Import):
+        for alias in node.names:
+            name = str(alias.name).strip()
+            if name:
+                yield name
+        return
+    if not isinstance(node, ast.ImportFrom):
+        return
+    module = str(node.module or "").strip()
+    if node.level <= 0:
+        if module:
+            yield module
+            for alias in node.names:
+                name = str(alias.name).strip()
+                if name and name != "*":
+                    yield f"{module}.{name}"
+        return
+    current_parts = current_module.split(".")
+    base_parts = current_parts[:-1]
+    if node.level > len(base_parts):
+        return
+    target_parts = base_parts[: len(base_parts) - node.level + 1]
+    if module:
+        target_parts = [*target_parts, *module.split(".")]
+    if target_parts:
+        base = ".".join(target_parts)
+        yield base
+        for alias in node.names:
+            name = str(alias.name).strip()
+            if name and name != "*":
+                yield f"{base}.{name}"
+
+
+def _cycle_paths(graph: dict[str, set[str]]) -> list[list[str]]:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    stack: list[str] = []
+    cycles: list[list[str]] = []
+
+    def _visit(node: str) -> None:
+        if node in visited:
+            return
+        if node in visiting:
+            if node in stack:
+                start = stack.index(node)
+                cycle = stack[start:] + [node]
+                cycles.append(cycle)
+            return
+        visiting.add(node)
+        stack.append(node)
+        for nxt in sorted(graph.get(node, ())):
+            _visit(nxt)
+        stack.pop()
+        visiting.remove(node)
+        visited.add(node)
+
+    for mod in sorted(graph):
+        _visit(mod)
+    return cycles
+
+
+def check_checks_import_cycles(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    modules = _check_modules(checks_root)
+    graph: dict[str, set[str]] = {module: set() for module in modules}
+    for module, path in modules.items():
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except SyntaxError as exc:
+            rel = path.relative_to(repo_root).as_posix()
+            return 1, [f"{rel}: syntax error while parsing imports: {exc.msg}"]
+        for node in tree.body:
+            for imported in _resolve_imported_modules(module, node):
+                if imported in modules and imported != module:
+                    graph[module].add(imported)
+    cycles = _cycle_paths(graph)
+    if not cycles:
+        return 0, []
+    errors = [f"import cycle in atlasctl.checks: {' -> '.join(cycle)}" for cycle in cycles[:10]]
+    if len(cycles) > 10:
+        errors.append(f"additional cycles omitted: {len(cycles) - 10}")
+    return 1, errors
+
+
+def check_checks_forbidden_imports(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    modules = _check_modules(checks_root)
+    forbidden_tokens = (".tests", ".fixtures", "atlasctl.commands.ops.tests")
+    errors: list[str] = []
+    for module, path in modules.items():
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except SyntaxError as exc:
+            rel = path.relative_to(repo_root).as_posix()
+            errors.append(f"{rel}: syntax error while parsing imports: {exc.msg}")
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        for node in ast.walk(tree):
+            for imported in _resolve_imported_modules(module, node):
+                dotted = f".{imported}"
+                if any(token in imported or token in dotted for token in forbidden_tokens):
+                    errors.append(f"{rel}:{getattr(node, 'lineno', 0)}: forbidden import `{imported}`")
+    return (1, errors) if errors else (0, [])
+
+
 def check_commands_no_domains_import(repo_root: Path) -> tuple[int, list[str]]:
     commands_root = repo_root / "packages/atlasctl/src/atlasctl/commands"
     if not commands_root.exists():
@@ -886,6 +1015,28 @@ CHECKS = (
         check_no_generated_timestamp_dirs,
         category=CheckCategory.HYGIENE,
         fix_hint="Use deterministic, stable generated directory names without timestamps.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.import_cycles",
+        "checks",
+        "forbid import cycles across atlasctl checks modules",
+        700,
+        check_checks_import_cycles,
+        category=CheckCategory.POLICY,
+        fix_hint="Break circular imports across atlasctl checks modules by extracting shared contracts/tools.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.forbidden_imports",
+        "checks",
+        "forbid checks imports from ops test/fixture surfaces",
+        500,
+        check_checks_forbidden_imports,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove checks imports from test/fixture surfaces and keep checks dependent on runtime contracts only.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
