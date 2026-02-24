@@ -222,7 +222,11 @@ pub enum GatesCommand {
         artifacts_root: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>", default_value = "ci_fast")]
+        #[arg(
+            long,
+            value_name = "ci-fast|ci|local|deep|<suite_id>",
+            default_value = "ci_fast"
+        )]
         suite: String,
         #[arg(long, default_value_t = false)]
         include_internal: bool,

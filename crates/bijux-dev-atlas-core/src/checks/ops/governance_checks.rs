@@ -334,7 +334,9 @@ pub(super) fn check_artifacts_bin_binaries_executable_and_version_printable(
                     "ARTIFACTS_BIN_NOT_EXECUTABLE",
                     format!("binary is not executable: {}", path.display()),
                     "chmod +x generated binaries in artifacts/bin",
-                    path.strip_prefix(ctx.repo_root).ok().map_or(Some(Path::new("artifacts/bin")), |p| Some(p)),
+                    path.strip_prefix(ctx.repo_root)
+                        .ok()
+                        .map_or(Some(Path::new("artifacts/bin")), |p| Some(p)),
                 ));
                 continue;
             }
@@ -348,7 +350,10 @@ pub(super) fn check_artifacts_bin_binaries_executable_and_version_printable(
         if exit != 0 {
             violations.push(violation(
                 "ARTIFACTS_BIN_VERSION_FAILED",
-                format!("binary did not print version successfully: {}", path.display()),
+                format!(
+                    "binary did not print version successfully: {}",
+                    path.display()
+                ),
                 "ensure copied binaries support `--version` and remain runnable",
                 path.strip_prefix(ctx.repo_root).ok(),
             ));

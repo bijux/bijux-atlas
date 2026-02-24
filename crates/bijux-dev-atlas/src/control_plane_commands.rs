@@ -1,5 +1,5 @@
-use crate::*;
 use crate::cli::{DockerCommand, DockerCommonArgs, PoliciesCommand};
+use crate::*;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
