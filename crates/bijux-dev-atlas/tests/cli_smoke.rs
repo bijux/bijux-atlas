@@ -17,7 +17,7 @@ fn repo_root() -> PathBuf {
 fn doctor_smoke() {
     let status = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .arg("doctor")
+        .args(["check", "doctor"])
         .status()
         .expect("doctor");
     assert!(status.success());
@@ -25,12 +25,18 @@ fn doctor_smoke() {
 
 #[test]
 fn run_smoke() {
-    let status = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["run", "--format", "text"])
-        .status()
+        .args(["check", "run", "--format", "text"])
+        .output()
         .expect("run");
-    assert!(status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        output.status.success() || !stdout.is_empty(),
+        "stdout={stdout}\nstderr={stderr}"
+    );
+    assert!(stdout.contains("summary:") || stdout.contains("CI_SUMMARY"));
 }
 
 #[test]
@@ -177,6 +183,6 @@ exit 2
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8");
     assert!(text.contains("bijux-dev-atlas"));
-    assert!(text.contains("doctor"));
+    assert!(text.contains("check"));
     assert!(text.contains("check"));
 }

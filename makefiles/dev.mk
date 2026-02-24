@@ -40,7 +40,7 @@ test-all: ## Rust tests full variant (includes ignored)
 	@cargo nextest run --workspace --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
 
 dev-doctor: ## Run dev control-plane doctor suite
-	@$(DEV_ATLAS) doctor --format text
+	@$(DEV_ATLAS) check doctor --format text
 
 dev-check-ci: ## Run dev control-plane ci suite
 	@$(DEV_ATLAS) check run --suite ci --format text

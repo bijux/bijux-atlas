@@ -15,7 +15,7 @@ fn repo_root() -> PathBuf {
 fn list_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["list", "--format", "json"])
+        .args(["check", "list", "--format", "json"])
         .output()
         .expect("list json");
     assert!(output.status.success());
@@ -70,7 +70,7 @@ fn plugin_metadata_matches_umbrella_contract_shape() {
 fn explain_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["explain", "checks_ops_surface_manifest", "--format", "json"])
+        .args(["check", "explain", "checks_ops_surface_manifest", "--format", "json"])
         .output()
         .expect("explain json");
     assert!(output.status.success());
@@ -86,7 +86,7 @@ fn explain_supports_json_format() {
 fn doctor_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["doctor", "--format", "json"])
+        .args(["check", "doctor", "--format", "json"])
         .output()
         .expect("doctor json");
     assert!(output.status.success());
@@ -124,7 +124,7 @@ fn print_policies_outputs_stable_json() {
 fn list_rejects_jsonl_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["list", "--format", "jsonl"])
+        .args(["check", "list", "--format", "jsonl"])
         .output()
         .expect("list jsonl");
     assert!(!output.status.success());
@@ -141,6 +141,7 @@ fn list_supports_out_file() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
+            "check",
             "list",
             "--format",
             "json",
@@ -160,7 +161,7 @@ fn repo_root_discovery_works_from_nested_directory() {
     let nested = repo_root().join("crates/bijux-dev-atlas/src");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(nested)
-        .arg("doctor")
+        .args(["check", "doctor"])
         .output()
         .expect("doctor nested cwd");
     assert!(output.status.success());
