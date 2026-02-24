@@ -2,6 +2,15 @@ name: ops-integration-kind
 
 on:
   workflow_dispatch:
+    inputs:
+      allow_network:
+        description: "Allow networked integration calls"
+        required: true
+        default: "true"
+      run_conformance:
+        description: "Run k8s conformance checks"
+        required: true
+        default: "true"
   schedule:
     - cron: "17 3 * * *"
 
@@ -22,8 +31,8 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ops-kind
-      CARGO_TARGET_DIR: artifacts/isolates/ops-kind/target
-      CARGO_HOME: artifacts/isolates/ops-kind/cargo-home
+      CARGO_TARGET_DIR: .cache/cargo/target/ops-kind
+      CARGO_HOME: .cache/cargo/home/ops-kind
       TMPDIR: artifacts/isolates/ops-kind/tmp
       TMP: artifacts/isolates/ops-kind/tmp
       TEMP: artifacts/isolates/ops-kind/tmp
@@ -35,16 +44,36 @@ jobs:
       - uses: helm/kind-action@v1
         with:
           cluster_name: normal
+      - name: Restore cargo cache
+        id: cache-target
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/cargo/target/ops-kind
+          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run kind integration lane
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts/ci/reports
-          make ops-kind-up > artifacts/ci/reports/ops-kind-up-${RUN_ID}.json
-          make ops-k8s > artifacts/ci/reports/ops-k8s-${RUN_ID}.json
-          make ops-kind-down > artifacts/ci/reports/ops-kind-down-${RUN_ID}.json
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ops-kind"
+          mkdir -p "${report_root}" "${logs_root}"
+          make ops-kind-up > "${report_root}/ops-kind-up.json" 2> "${logs_root}/ops-kind-up.stderr.log"
+          if [ "${{ github.event.inputs.run_conformance || 'true' }}" = "true" ]; then
+            make ops-k8s > "${report_root}/ops-k8s.json" 2> "${logs_root}/ops-k8s.stderr.log"
+          fi
+          make ops-kind-down > "${report_root}/ops-kind-down.json" 2> "${logs_root}/ops-kind-down.stderr.log"
+          printf "- lane: ops-kind\n- report root: %s\n- cache target hit: %s\n" \
+            "${report_root}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/cargo/target/ops-kind
+          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ops-kind-report-${{ env.RUN_ID }}
-          path: artifacts/ci/reports/*-${{ env.RUN_ID }}.json
+          name: ops-kind-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 14

@@ -27,8 +27,8 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ops-validate
-      CARGO_TARGET_DIR: artifacts/isolates/ops-validate/target
-      CARGO_HOME: artifacts/isolates/ops-validate/cargo-home
+      CARGO_TARGET_DIR: .cache/cargo/target/ops-validate
+      CARGO_HOME: .cache/cargo/home/ops-validate
       TMPDIR: artifacts/isolates/ops-validate/tmp
       TMP: artifacts/isolates/ops-validate/tmp
       TEMP: artifacts/isolates/ops-validate/tmp
@@ -37,14 +37,32 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
+      - name: Restore cargo cache
+        id: cache-target
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/cargo/target/ops-validate
+          key: cargo-target-pr-ops-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run ops validate lane
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts/ci/reports
-          make ops-validate > artifacts/ci/reports/ops-validate-${RUN_ID}.json
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ops-validate"
+          mkdir -p "${report_root}" "${logs_root}"
+          make ops-validate > "${report_root}/ops-validate.json" 2> "${logs_root}/ops-validate.stderr.log"
+          printf "- lane: ops-validate\n- report: %s\n- cache target hit: %s\n" \
+            "${report_root}/ops-validate.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/cargo/target/ops-validate
+          key: cargo-target-pr-ops-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ops-validate-report-${{ env.RUN_ID }}
-          path: artifacts/ci/reports/ops-validate-${{ env.RUN_ID }}.json
+          name: ops-validate-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 5

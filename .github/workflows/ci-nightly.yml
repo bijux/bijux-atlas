@@ -23,8 +23,9 @@ jobs:
     env:
       NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/ci-nightly
-      CARGO_TARGET_DIR: artifacts/isolates/ci-nightly/target
-      CARGO_HOME: artifacts/isolates/ci-nightly/cargo-home
+      CARGO_TARGET_DIR: .cache/cargo/target/ci-nightly
+      CARGO_HOME: .cache/cargo/home/ci-nightly
+      NEXTEST_CACHE_DIR: .cache/cargo/nextest/ci-nightly
       TMPDIR: artifacts/isolates/ci-nightly/tmp
       TMP: artifacts/isolates/ci-nightly/tmp
       TEMP: artifacts/isolates/ci-nightly/tmp
@@ -33,15 +34,49 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
+      - name: Restore cargo registry cache
+        id: cache-registry
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-nightly/registry
+            .cache/cargo/home/ci-nightly/git
+          key: cargo-registry-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Restore cargo target cache
+        id: cache-target
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/cargo/target/ci-nightly
+          key: cargo-target-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Run nightly lane
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts/ci/reports
-          make ci-nightly > artifacts/ci/reports/ci-nightly-${RUN_ID}.json
-          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" artifacts/ci/reports/ci-nightly-${RUN_ID}.json
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ci-nightly"
+          mkdir -p "${report_root}" "${logs_root}"
+          make ci-nightly > "${report_root}/ci-nightly.json" 2> "${logs_root}/ci-nightly.stderr.log"
+          ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-nightly.json"
+          printf "- lane: ci-nightly\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/ci-nightly.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo registry cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .cache/cargo/home/ci-nightly/registry
+            .cache/cargo/home/ci-nightly/git
+          key: cargo-registry-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Save cargo target cache
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/cargo/target/ci-nightly
+          key: cargo-target-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ci-nightly-report-${{ env.RUN_ID }}
-          path: artifacts/ci/reports/ci-nightly-${{ env.RUN_ID }}.json
+          name: ci-nightly-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 21
