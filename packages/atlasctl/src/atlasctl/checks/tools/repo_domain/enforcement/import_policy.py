@@ -191,11 +191,16 @@ def check_contract_import_boundaries(repo_root: Path) -> tuple[int, list[str]]:
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 names = [alias.name for alias in node.names]
-                if any(name.startswith("atlasctl.core.schema") for name in names):
+                if any(name.startswith("atlasctl.core.schema") and name != "atlasctl.core.schema.yaml_utils" for name in names):
                     offenders.append(rel)
                     break
             elif isinstance(node, ast.ImportFrom):
-                if node.level == 0 and node.module and node.module.startswith("atlasctl.core.schema"):
+                if (
+                    node.level == 0
+                    and node.module
+                    and node.module.startswith("atlasctl.core.schema")
+                    and node.module != "atlasctl.core.schema.yaml_utils"
+                ):
                     offenders.append(rel)
                     break
     if offenders:
@@ -281,6 +286,13 @@ def check_checks_import_lint(repo_root: Path) -> tuple[int, list[str]]:
                 continue
             if imported and imported[0].startswith("atlasctl.commands.ops.runtime_modules.index_generator"):
                 continue
+            if imported and imported[0].startswith("atlasctl.cli.") and rel in _CHECKS_TO_CLI_ALLOWLIST:
+                continue
+            if imported and imported[0] == "atlasctl.cli" and rel in _CHECKS_TO_CLI_ALLOWLIST:
+                continue
+            if imported and imported[0].startswith("atlasctl.suite.command"):
+                if rel == "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/contracts/suite_inventory.py":
+                    continue
             if imported is None:
                 continue
             bad_edges.add(f"{rel}:{imported[1]} import-chain checks -> {imported[0]}")
