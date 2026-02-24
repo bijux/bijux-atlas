@@ -3,7 +3,8 @@ use crate::{
     plugin_metadata_json, run_capabilities_command, run_check_doctor, run_check_explain,
     run_check_list, run_check_registry_doctor, run_check_run, run_configs_command,
     run_docker_command, run_docs_command, run_gates_command, run_help_inventory_command,
-    run_ops_command, run_policies_command, run_version_command, run_workflows_command,
+    run_ops_command, run_policies_command, run_print_boundaries_command, run_version_command,
+    run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions, FormatArg};
 
@@ -26,9 +27,25 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
         };
     }
+    if cli.print_boundaries {
+        return match run_print_boundaries_command() {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas --print-boundaries failed: {err}");
+                1
+            }
+        };
+    }
 
     let Some(command) = cli.command else {
-        eprintln!("bijux-dev-atlas requires a subcommand unless --print-policies is provided");
+        eprintln!(
+            "bijux-dev-atlas requires a subcommand unless --print-policies or --print-boundaries is provided"
+        );
         return 2;
     };
 

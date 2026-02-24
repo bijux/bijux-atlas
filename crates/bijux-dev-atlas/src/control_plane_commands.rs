@@ -1,5 +1,6 @@
 use crate::cli::{DockerCommand, DockerCommonArgs, PoliciesCommand};
 use crate::*;
+use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
@@ -124,6 +125,24 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             1
         }
     }
+}
+
+pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
+    let payload = serde_json::json!({
+        "schema_version": CONTRACT_SCHEMA_VERSION,
+        "effects": [
+            {"id": "fs_read", "default_allowed": true, "description": "read repository files"},
+            {"id": "fs_write", "default_allowed": false, "description": "write files under artifacts only"},
+            {"id": "subprocess", "default_allowed": false, "description": "execute external processes"},
+            {"id": "git", "default_allowed": false, "description": "invoke git commands"},
+            {"id": "network", "default_allowed": false, "description": "perform network requests"}
+        ],
+        "text": "effect boundaries printed"
+    });
+    Ok((
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+        0,
+    ))
 }
 
 pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), String> {
