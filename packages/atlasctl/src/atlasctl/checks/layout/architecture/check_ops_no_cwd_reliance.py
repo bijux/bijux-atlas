@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[7]
 OPS_CMDS = ROOT / "packages/atlasctl/src/atlasctl/commands/ops"
-FORBIDDEN_TOKENS = ("os.chdir(", "cwd='.'", 'cwd="."', "cwd=Path('.')", 'cwd=Path(".")')
+FORBIDDEN_TOKENS = ("os.chdir(", "cwd='.'", 'cwd="."', "cwd=Path(")
 
 
 def main() -> int:
