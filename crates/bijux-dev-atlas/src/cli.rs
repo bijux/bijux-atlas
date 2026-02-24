@@ -9,9 +9,13 @@ pub struct Cli {
     #[arg(long, default_value_t = false)]
     pub quiet: bool,
     #[arg(long, default_value_t = false)]
+    pub json: bool,
+    #[arg(long, default_value_t = false)]
     pub verbose: bool,
     #[arg(long, default_value_t = false)]
     pub debug: bool,
+    #[arg(long = "fail-fast", default_value_t = false)]
+    pub fail_fast: bool,
     #[arg(long, default_value_t = false)]
     pub print_policies: bool,
     #[arg(long = "print-boundaries", default_value_t = false)]
@@ -28,12 +32,14 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
+    #[command(hide = true)]
     Version {
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
         #[arg(long)]
         out: Option<PathBuf>,
     },
+    #[command(hide = true)]
     Help {
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
@@ -52,10 +58,12 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigsCommand,
     },
+    #[command(hide = true)]
     Docker {
         #[command(subcommand)]
         command: DockerCommand,
     },
+    #[command(hide = true)]
     Build {
         #[command(subcommand)]
         command: BuildCommand,
@@ -64,14 +72,17 @@ pub enum Command {
         #[command(subcommand)]
         command: PoliciesCommand,
     },
+    #[command(hide = true)]
     Workflows {
         #[command(subcommand)]
         command: WorkflowsCommand,
     },
+    #[command(hide = true)]
     Gates {
         #[command(subcommand)]
         command: GatesCommand,
     },
+    #[command(hide = true)]
     Capabilities {
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,

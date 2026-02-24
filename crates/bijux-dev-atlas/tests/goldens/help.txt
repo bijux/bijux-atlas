@@ -3,23 +3,18 @@ Bijux Atlas development control-plane
 Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
 
 Commands:
-  version       
-  help          
-  ops           
-  docs          
-  configs       
-  docker        
-  build         
-  policies      
-  workflows     
-  gates         
-  capabilities  
-  check         
+  ops      
+  docs     
+  configs  
+  policies 
+  check    
 
 Options:
       --quiet                                
+      --json                                 
       --verbose                              
       --debug                                
+      --fail-fast                            
       --print-policies                       
       --print-boundaries                     
       --bijux-plugin-metadata                
