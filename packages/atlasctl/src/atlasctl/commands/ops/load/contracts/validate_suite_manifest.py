@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -103,11 +104,30 @@ redis_suite = by_name.get("redis-optional")
 if redis_suite and not redis_suite.get("requires", {}).get("redis_experiment", False):
     errors.append("redis-optional: requires.redis_experiment must be true")
 
-from atlasctl.checks.domains.ops.contracts import check_ops_load_pinned_queries_lock_native
-
-lock_code, lock_errors = check_ops_load_pinned_queries_lock_native(ROOT)
-if lock_code != 0:
-    errors.extend(lock_errors)
+src = ROOT / "ops" / "load" / "queries" / "pinned-v1.json"
+lock_path = ROOT / "ops" / "load" / "queries" / "pinned-v1.lock"
+lock_schema_path = ROOT / "ops" / "schema" / "load" / "pinned-queries-lock.schema.json"
+queries = json.loads(src.read_text(encoding="utf-8"))
+lock_payload = json.loads(lock_path.read_text(encoding="utf-8"))
+lock_schema = json.loads(lock_schema_path.read_text(encoding="utf-8"))
+if not isinstance(lock_payload, dict):
+    errors.append("pinned query lock must be object")
+else:
+    for key in lock_schema.get("required", []):
+        if key not in lock_payload:
+            errors.append(f"pinned query lock missing required key: {key}")
+    expected_hash = hashlib.sha256(src.read_bytes()).hexdigest()
+    if lock_payload.get("file_sha256") != expected_hash:
+        errors.append("pinned query lock drift: file hash mismatch")
+    expected_queries: dict[str, str] = {}
+    for group in ("cheap", "heavy"):
+        for query in queries.get(group, []):
+            expected_queries[query] = hashlib.sha256(query.encode()).hexdigest()
+    if lock_payload.get("query_hashes") != expected_queries:
+        errors.append("pinned query lock drift: query hash mismatch")
+    query_set = str(manifest.get("query_set", "")).strip()
+    if Path(query_set).name != "pinned-v1.json":
+        errors.append(f"load suites manifest query_set must reference pinned-v1.json (got `{query_set}`)")
 
 scenarios_dir = ROOT / manifest["scenarios_dir"]
 registered = {
