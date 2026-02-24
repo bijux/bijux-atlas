@@ -5,6 +5,8 @@
 ## What
 
 Canonical operational filesystem surface and SSOT entrypoint for ops workflows.
+`bijux dev atlas ops ...` is the runtime control plane for validation, rendering,
+install/status flows, and deterministic ops generation.
 
 Reference contract: `ops/CONTRACT.md`.
 Runbook index: `ops/INDEX.md`.
@@ -29,9 +31,22 @@ Runbook index: `ops/INDEX.md`.
 
 - `cargo run -p bijux-dev-atlas -- ops doctor --format json`
 - `cargo run -p bijux-dev-atlas -- ops validate --format json`
+- `cargo run -p bijux-dev-atlas -- ops list-tools --allow-subprocess --format json`
+- `cargo run -p bijux-dev-atlas -- ops verify-tools --allow-subprocess --format json`
 - `cargo run -p bijux-dev-atlas -- ops render --target kind --check --format json`
 - `cargo run -p bijux-dev-atlas -- ops install --kind --plan --allow-subprocess --allow-write`
 - `cargo run -p bijux-dev-atlas -- ops status --target pods --allow-subprocess --format json`
+- `cargo run -p bijux-dev-atlas -- ops generate pins-index --allow-write --format json`
 - `make ops-kind-up`
 - `make ops-kind-down`
 - `make ops-status`
+
+## SSOT Files
+
+These files are treated as frozen ops inventory inputs and are validated by
+`bijux dev atlas ops doctor` / `ops validate`:
+
+- `ops/stack/version-manifest.json`
+- `ops/inventory/pins.yaml`
+- `ops/inventory/toolchain.json`
+- `ops/stack/profiles.json`

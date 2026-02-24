@@ -30,3 +30,10 @@ Human entry for the ops specification surface.
 - `make ops-install-plan` -> `bijux dev atlas ops install --kind --apply --plan --profile $(PROFILE) --allow-subprocess --allow-write --format json`
 - `make ops-status` -> `bijux dev atlas ops status --target pods --profile $(PROFILE) --allow-subprocess --format json`
 - `make ops-tools-verify` -> `bijux dev atlas ops verify-tools --allow-subprocess --format json`
+
+## Generation Surface
+
+Deterministic ops generation is owned by `bijux dev atlas ops generate ...`.
+
+- `ops generate pins-index` writes a stable artifact index under `artifacts/atlas-dev/...`
+- inventory inputs remain under `ops/` and are validated as SSOT by `ops doctor` / `ops validate`
