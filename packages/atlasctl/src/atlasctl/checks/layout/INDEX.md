@@ -19,7 +19,7 @@ Canonical layout check domains:
 
 Legacy subgroup `contracts/` remains during migration and is being flattened into first-class domains.
 
-- moved: checks/tools/root_shape_whitelist.json
+- moved: checks/tools/root_policy.json
 - check_artifacts_allowlist.sh
 - check_artifacts_policy.sh
 - check_cargo_dev_metadata.py
@@ -115,7 +115,7 @@ Legacy subgroup `contracts/` remains during migration and is being flattened int
 - public_make_targets.py
 - public_surface.py
 - render_public_help.py
-- moved: checks/tools/root_shape_whitelist.json
+- moved: checks/tools/root_policy.json
 - run_gate.py
 - update_ops_pins.py
 - validate_ops_contracts.py

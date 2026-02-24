@@ -14919,14 +14919,14 @@
       "area": "root",
       "callable": "run",
       "category": "check",
-      "description": "enforce repository root shape contract from root_whitelist.json",
+      "description": "enforce repository root shape contract from root_policy.json",
       "domain": "repo",
       "effects": [
         "fs_read"
       ],
       "evidence": [],
       "external_tools": [],
-      "fix_hint": "Align root entries with checks/tools/root_shape_whitelist.json.",
+      "fix_hint": "Align root entries with checks/tools/root_policy.json.",
       "gate": "repo",
       "groups": [
         "fast",
@@ -14934,7 +14934,7 @@
         "required"
       ],
       "id": "checks_repo_root_shape",
-      "intent": "enforce repository root shape contract from root_whitelist.json",
+      "intent": "enforce repository root shape contract from root_policy.json",
       "legacy_id": "repo.root_shape",
       "module": "atlasctl.checks.tools.repo_root.check_root_shape",
       "owner": "platform",

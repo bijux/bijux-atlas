@@ -32,7 +32,7 @@ Target ownership:
 ### Reusable Tools (shared helpers)
 
 - `checks/tools/reachability.py` (migrated from `checks/repo/reachability.py`)
-- Root shape policy data: `checks/tools/root_shape_whitelist.json`
+- Root shape policy data: `checks/tools/root_policy.json`
 
 Potential additional tool extraction candidates:
 

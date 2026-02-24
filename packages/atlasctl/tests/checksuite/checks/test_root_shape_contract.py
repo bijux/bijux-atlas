@@ -4,7 +4,7 @@ from pathlib import Path
 
 from atlasctl.checks.tools.repo_root.check_root_shape import run
 
-_WHITELIST_SRC = Path("packages/atlasctl/src/atlasctl/checks/tools/root_shape_whitelist.json")
+_WHITELIST_SRC = Path("packages/atlasctl/src/atlasctl/checks/tools/root_policy.json")
 
 
 def _touch(path: Path) -> None:
@@ -17,7 +17,7 @@ def _mkdir(path: Path) -> None:
 
 
 def _seed_required(root: Path) -> None:
-    target_whitelist = root / "packages/atlasctl/src/atlasctl/checks/tools/root_shape_whitelist.json"
+    target_whitelist = root / "packages/atlasctl/src/atlasctl/checks/tools/root_policy.json"
     target_whitelist.parent.mkdir(parents=True, exist_ok=True)
     target_whitelist.write_text(_WHITELIST_SRC.read_text(encoding="utf-8"), encoding="utf-8")
     _mkdir(root / ".cargo")

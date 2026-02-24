@@ -20928,7 +20928,7 @@
     {
       "area": "root",
       "default_enabled": true,
-      "description": "enforce repository root shape contract from root_whitelist.json",
+      "description": "enforce repository root shape contract from root_policy.json",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_root_shape",
       "domain": "repo",
       "gate": "repo",
@@ -20946,8 +20946,8 @@
         ],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Align root entries with checks/tools/root_shape_whitelist.json.",
-        "intent": "enforce repository root shape contract from root_whitelist.json",
+        "fix_hint": "Align root entries with checks/tools/root_policy.json.",
+        "intent": "enforce repository root shape contract from root_policy.json",
         "legacy_id": "repo.root_shape",
         "module": "atlasctl.checks.tools.repo_root.check_root_shape",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
@@ -20969,7 +20969,7 @@
         "platform"
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "title": "enforce repository root shape contract from root_whitelist.json"
+      "title": "enforce repository root shape contract from root_policy.json"
     },
     {
       "area": "runcontext",
