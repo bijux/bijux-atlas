@@ -13,6 +13,3 @@ Generated from check registry (`src/atlasctl/checks/registry.py`).
 - `repo` (161)
 
 Use `atlasctl check list --json` for machine-readable inventory.
-Use `atlasctl check list --domains|--tags|--suites` for quick inventory slices.
-
-See `packages/atlasctl/docs/checks/developer-guide.md` for check authoring and registration workflow.
