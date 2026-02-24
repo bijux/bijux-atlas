@@ -1,4 +1,7 @@
-use bijux_atlas_query::{parse_gene_query_request, plan_gene_query, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits};
+use bijux_atlas_query::{
+    parse_gene_query_request, plan_gene_query, GeneFields, GeneFilter, GeneQueryRequest,
+    QueryLimits,
+};
 
 #[test]
 fn ast_normalization_is_stable_across_filter_order() {

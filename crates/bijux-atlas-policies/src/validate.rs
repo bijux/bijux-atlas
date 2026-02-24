@@ -1,11 +1,13 @@
-use crate::limits::{MAX_SCHEMA_BUMP_STEP, MIN_POLICY_SCHEMA_VERSION};
 use crate::adapters::load_policy_set_from_workspace;
+use crate::limits::{MAX_SCHEMA_BUMP_STEP, MIN_POLICY_SCHEMA_VERSION};
 use crate::policy_set::{
     canonical_policy_set_json, resolve_mode_profile as resolve_mode_profile_impl,
     validate_policy_change_requires_version_bump as validate_policy_change_requires_version_bump_impl,
     validate_policy_set,
 };
-use crate::schema::{PolicyConfig, PolicyMode, PolicyModeProfile, PolicySchema, PolicySchemaVersion};
+use crate::schema::{
+    PolicyConfig, PolicyMode, PolicyModeProfile, PolicySchema, PolicySchemaVersion,
+};
 use serde_json::{Map, Value};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -19,7 +21,9 @@ impl std::fmt::Display for PolicyValidationError {
 
 impl std::error::Error for PolicyValidationError {}
 
-pub fn load_policy_from_workspace(root: &std::path::Path) -> Result<PolicyConfig, PolicyValidationError> {
+pub fn load_policy_from_workspace(
+    root: &std::path::Path,
+) -> Result<PolicyConfig, PolicyValidationError> {
     load_policy_set_from_workspace(root)
 }
 

@@ -1,12 +1,12 @@
-use bijux_atlas_model::ReleaseGeneIndexEntry;
+use bijux_atlas_model::{GeneId, ReleaseGeneIndexEntry, SeqId};
 use criterion::{criterion_group, criterion_main, Criterion};
 
 fn build_entries(prefix: &str, n: usize, changed_every: usize) -> Vec<ReleaseGeneIndexEntry> {
     let mut out = Vec::with_capacity(n);
     for i in 0..n {
         out.push(ReleaseGeneIndexEntry::new(
-            format!("{prefix}{i:07}"),
-            "chr1".to_string(),
+            GeneId::parse(&format!("{prefix}{i:07}")).expect("gene id"),
+            SeqId::parse("chr1").expect("seqid"),
             (i as u64) * 10 + 1,
             (i as u64) * 10 + 5,
             format!("sig-{}", i / changed_every),

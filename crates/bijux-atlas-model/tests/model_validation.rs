@@ -1,6 +1,6 @@
 use bijux_atlas_model::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, DiffPage, DiffScope, DiffStatus, DiffRecord,
-    GeneId, ManifestStats, SeqId, parse_assembly, parse_release, parse_species,
+    parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, DatasetId,
+    DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, ManifestStats, SeqId,
 };
 
 #[test]

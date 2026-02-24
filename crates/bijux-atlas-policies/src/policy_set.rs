@@ -6,7 +6,10 @@ use crate::validate::{
 };
 use serde_json::Value;
 
-pub fn parse_policy_set_json(config_raw: &str, schema_raw: &str) -> Result<PolicySet, PolicyValidationError> {
+pub fn parse_policy_set_json(
+    config_raw: &str,
+    schema_raw: &str,
+) -> Result<PolicySet, PolicyValidationError> {
     let config_val: Value = serde_json::from_str(config_raw)
         .map_err(|e| PolicyValidationError(format!("parse policy config failed: {e}")))?;
     let schema_val: Value = serde_json::from_str(schema_raw)
@@ -19,7 +22,10 @@ pub fn parse_policy_set_json(config_raw: &str, schema_raw: &str) -> Result<Polic
     let schema: PolicySchema = decode_schema_version(&schema_val)?;
 
     validate_policy_set(&cfg)?;
-    validate_schema_version_transition(schema.schema_version.as_str(), cfg.schema_version.as_str())?;
+    validate_schema_version_transition(
+        schema.schema_version.as_str(),
+        cfg.schema_version.as_str(),
+    )?;
 
     Ok(cfg)
 }
@@ -30,7 +36,10 @@ pub fn validate_policy_set(cfg: &PolicySet) -> Result<(), PolicyValidationError>
         .into_iter()
         .find(|v| matches!(v.severity, PolicySeverity::Error))
     {
-        return Err(PolicyValidationError(format!("{}: {} ({})", v.id, v.message, v.evidence)));
+        return Err(PolicyValidationError(format!(
+            "{}: {} ({})",
+            v.id, v.message, v.evidence
+        )));
     }
 
     validate_documented_defaults_on_config(cfg)
@@ -148,11 +157,10 @@ fn validate_documented_defaults_on_config(cfg: &PolicySet) -> Result<(), PolicyV
     Ok(())
 }
 
-#[must_use]
 pub fn canonical_policy_set_json(cfg: &PolicySet) -> Result<String, PolicyValidationError> {
     let value = serde_json::to_value(cfg)
         .map_err(|e| PolicyValidationError(format!("encode config failed: {e}")))?;
     let normalized = normalize_json(value);
     serde_json::to_string_pretty(&normalized)
-        .map_err(|e| PolicyValidationError(format!("print config failed: {e}")) )
+        .map_err(|e| PolicyValidationError(format!("print config failed: {e}")))
 }

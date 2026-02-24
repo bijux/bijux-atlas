@@ -3,7 +3,9 @@ use super::{
     validate_qc_thresholds, validate_shard_catalog_and_indexes, BuildReleaseDiffArgs, OutputMode,
 };
 use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{Catalog, CatalogEntry, DatasetId, ShardCatalog, ShardEntry};
+use bijux_atlas_model::{
+    Catalog, CatalogEntry, DatasetId, SeqId, ShardCatalog, ShardEntry, ShardId,
+};
 use serde_json::json;
 use std::fs;
 use std::path::PathBuf;
@@ -389,8 +391,8 @@ fn shard_catalog_validation_rejects_missing_or_bad_shards() {
         ds,
         "contig".to_string(),
         vec![ShardEntry::new(
-            "shard-000".to_string(),
-            vec!["chr1".to_string()],
+            ShardId::parse("shard-000").expect("shard id"),
+            vec![SeqId::parse("chr1").expect("seqid")],
             "missing.sqlite".to_string(),
             "a".repeat(64),
         )],

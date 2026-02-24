@@ -146,7 +146,9 @@ impl GeneSummary {
 
     pub fn validate(&self) -> Result<(), ParseError> {
         if self.start == 0 || self.end == 0 {
-            return Err(ParseError::InvalidFormat("gene summary start/end must be >= 1"));
+            return Err(ParseError::InvalidFormat(
+                "gene summary start/end must be >= 1",
+            ));
         }
         if self.start > self.end {
             return Err(ParseError::InvalidFormat(
@@ -214,16 +216,12 @@ impl Region {
     }
 
     pub fn parse(input: &str) -> Result<Self, ParseError> {
-        let (seqid_raw, rest) = input
-            .split_once(':')
-            .ok_or(ParseError::InvalidFormat(
-                "region must be in seqid:start-end format",
-            ))?;
-        let (start_raw, end_raw) = rest
-            .split_once('-')
-            .ok_or(ParseError::InvalidFormat(
-                "region must be in seqid:start-end format",
-            ))?;
+        let (seqid_raw, rest) = input.split_once(':').ok_or(ParseError::InvalidFormat(
+            "region must be in seqid:start-end format",
+        ))?;
+        let (start_raw, end_raw) = rest.split_once('-').ok_or(ParseError::InvalidFormat(
+            "region must be in seqid:start-end format",
+        ))?;
         let seqid = SeqId::parse(seqid_raw)?;
         let start = start_raw
             .parse::<u64>()

@@ -1,6 +1,6 @@
 use bijux_atlas_query::{
-    parse_gene_query_request, plan_gene_query, query_genes, GeneFields, GeneFilter, GeneQueryRequest,
-    QueryLimits, RegionFilter,
+    parse_gene_query_request, plan_gene_query, query_genes, GeneFields, GeneFilter,
+    GeneQueryRequest, QueryLimits, RegionFilter,
 };
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rusqlite::Connection;
@@ -78,7 +78,15 @@ fn bench_parse_plan_execute(c: &mut Criterion) {
     });
 
     c.bench_function("query_execute_stage", |b| {
-        b.iter(|| query_genes(black_box(&conn), black_box(&req), black_box(&limits), b"bench").expect("execute"))
+        b.iter(|| {
+            query_genes(
+                black_box(&conn),
+                black_box(&req),
+                black_box(&limits),
+                b"bench",
+            )
+            .expect("execute")
+        })
     });
 }
 

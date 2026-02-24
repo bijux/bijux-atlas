@@ -12,9 +12,7 @@ fn bench_stable_sort_by_key(c: &mut Criterion) {
     ];
 
     c.bench_function("stable_sort_by_key_selector", |b| {
-        b.iter(|| {
-            canonical::stable_sort_by_key(black_box(data.clone()), |item| item.0)
-        })
+        b.iter(|| canonical::stable_sort_by_key(black_box(data.clone()), |item| item.0))
     });
 }
 

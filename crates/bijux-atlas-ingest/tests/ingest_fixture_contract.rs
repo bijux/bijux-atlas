@@ -35,9 +35,21 @@ fn fixture_ingest_produces_expected_artifacts_and_hashes() {
         serde_json::from_slice(&manifest_bytes).expect("manifest json");
 
     assert_eq!(manifest.checksums.sqlite_sha256, sha256_hex(&sqlite_bytes));
-    assert_eq!(manifest.input_hashes.gff3_sha256, sha256_hex(&std::fs::read(&opts.gff3_path).expect("gff")));
-    assert_eq!(manifest.input_hashes.fasta_sha256, sha256_hex(&std::fs::read(&opts.fasta_path).expect("fasta")));
-    assert_eq!(manifest.input_hashes.fai_sha256, sha256_hex(&std::fs::read(&opts.fai_path).expect("fai")));
+    assert_eq!(
+        manifest.input_hashes.gff3_sha256,
+        sha256_hex(&std::fs::read(&opts.gff3_path).expect("gff"))
+    );
+    assert_eq!(
+        manifest.input_hashes.fasta_sha256,
+        sha256_hex(&std::fs::read(&opts.fasta_path).expect("fasta"))
+    );
+    assert_eq!(
+        manifest.input_hashes.fai_sha256,
+        sha256_hex(&std::fs::read(&opts.fai_path).expect("fai"))
+    );
 
-    assert!(!events.is_empty(), "structured ingest events must be recorded");
+    assert!(
+        !events.is_empty(),
+        "structured ingest events must be recorded"
+    );
 }

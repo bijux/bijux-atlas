@@ -51,8 +51,14 @@ pub(crate) fn build_release_diff(
         if left.seqid != right.seqid || left.start != right.start || left.end != right.end {
             genes_changed_coords.push(key.clone());
         }
-        let left_biotype = from_biotype.get(&left.gene_id).cloned().unwrap_or_default();
-        let right_biotype = to_biotype.get(&right.gene_id).cloned().unwrap_or_default();
+        let left_biotype = from_biotype
+            .get(left.gene_id.as_str())
+            .cloned()
+            .unwrap_or_default();
+        let right_biotype = to_biotype
+            .get(right.gene_id.as_str())
+            .cloned()
+            .unwrap_or_default();
         if left_biotype != right_biotype {
             genes_changed_biotype.push(key.clone());
         }
@@ -190,10 +196,10 @@ fn index_by_identity(
 }
 
 fn stable_gene_identity(entry: &bijux_atlas_model::ReleaseGeneIndexEntry) -> String {
-    if !entry.gene_id.trim().is_empty() {
-        return entry.gene_id.clone();
+    if !entry.gene_id.as_str().trim().is_empty() {
+        return entry.gene_id.as_str().to_string();
     }
-    format!("{}:{}-{}", entry.seqid, entry.start, entry.end)
+    format!("{}:{}-{}", entry.seqid.as_str(), entry.start, entry.end)
 }
 
 fn sorted_strings(mut values: Vec<String>) -> Vec<String> {

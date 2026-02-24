@@ -16,9 +16,7 @@ use cursor::{
     decode_cursor as decode_cursor_inner, encode_cursor as encode_cursor_inner,
     CursorPayload as CursorPayloadInner,
 };
-use db::{
-    assert_index_usage, order_mode_for, parse_row_from_sql, query_gene_id_name_json_minimal,
-};
+use db::{assert_index_usage, order_mode_for, parse_row_from_sql, query_gene_id_name_json_minimal};
 use normalize::normalized_query_hash;
 use parser::parse_gene_query;
 use planner::{plan_query, validate_request};
@@ -41,7 +39,9 @@ pub use filters::{
 };
 pub use limits::QueryLimits as QueryLimitsExport;
 pub use normalize::normalized_query_hash as normalized_query_hash_ssot;
-pub use parser::{parse_gene_query as parse_gene_query_request, GeneQueryAst, ParseError, Predicate};
+pub use parser::{
+    parse_gene_query as parse_gene_query_request, GeneQueryAst, ParseError, Predicate,
+};
 pub use planner::{
     classify_query, estimate_query_cost, estimate_work_units, plan_query as plan_gene_query,
     select_shards_for_request, BudgetHook, PlanError, PlanNode, QueryClass, QueryCost, QueryPlan,

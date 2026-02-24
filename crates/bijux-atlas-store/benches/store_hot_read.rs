@@ -1,5 +1,7 @@
 use bijux_atlas_core::sha256_hex;
-use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats};
+use bijux_atlas_model::{
+    ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
+};
 use bijux_atlas_store::{canonical_catalog_json, ArtifactStore, LocalFsStore};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use tempfile::tempdir;

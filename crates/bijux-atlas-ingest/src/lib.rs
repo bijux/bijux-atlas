@@ -1,7 +1,7 @@
 #![forbid(unsafe_code)]
 
-mod diff_index;
 mod decode;
+mod diff_index;
 mod extract;
 mod fai;
 mod gff3;
@@ -19,9 +19,9 @@ use bijux_atlas_model::{
     SeqidNormalizationPolicy, ShardCatalog, ShardingPlan, StrictnessMode, TranscriptIdPolicy,
     TranscriptTypePolicy, UnknownFeaturePolicy,
 };
+use sqlite::explain_plan_for_region_query;
 #[cfg(test)]
 use sqlite::{explain_plan_for_gene_id_query, explain_plan_for_name_query};
-use sqlite::explain_plan_for_region_query;
 use std::fmt::{Display, Formatter};
 use std::path::{Path, PathBuf};
 

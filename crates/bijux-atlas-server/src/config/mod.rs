@@ -186,9 +186,11 @@ mod tests {
     #[test]
     fn startup_config_validation_rejects_invalid_watermark_order() {
         let api = ApiConfig::default();
-        let mut cache = crate::DatasetCacheConfig::default();
-        cache.disk_high_watermark_pct = 70;
-        cache.disk_low_watermark_pct = 75;
+        let cache = crate::DatasetCacheConfig {
+            disk_high_watermark_pct: 70,
+            disk_low_watermark_pct: 75,
+            ..crate::DatasetCacheConfig::default()
+        };
         let err = validate_startup_config_contract(&api, &cache).expect_err("invalid watermarks");
         assert!(err.contains("high > low"));
     }

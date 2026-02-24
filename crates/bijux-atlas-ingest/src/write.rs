@@ -1,6 +1,8 @@
 use std::fs;
 
-use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, ManifestStats, ShardCatalog, ShardingPlan};
+use bijux_atlas_model::{
+    ArtifactChecksums, ArtifactManifest, ManifestStats, ShardCatalog, ShardingPlan,
+};
 
 use crate::diff_index::build_and_write_release_gene_index;
 use crate::hashing::compute_input_hashes;
@@ -14,7 +16,10 @@ use crate::{IngestError, IngestResult};
 
 use crate::decode::DecodedIngest;
 
-pub fn write_ingest_outputs(job: &IngestJob, decoded: DecodedIngest) -> Result<IngestResult, IngestError> {
+pub fn write_ingest_outputs(
+    job: &IngestJob,
+    decoded: DecodedIngest,
+) -> Result<IngestResult, IngestError> {
     let opts = &job.options;
     let paths = &job.output_layout;
 
@@ -35,7 +40,12 @@ pub fn write_ingest_outputs(job: &IngestJob, decoded: DecodedIngest) -> Result<I
             ArtifactChecksums::new(String::new(), String::new(), String::new(), String::new()),
             ManifestStats::new(
                 decoded.extract.gene_rows.len() as u64,
-                decoded.extract.gene_rows.iter().map(|x| x.transcript_count).sum::<u64>(),
+                decoded
+                    .extract
+                    .gene_rows
+                    .iter()
+                    .map(|x| x.transcript_count)
+                    .sum::<u64>(),
                 decoded.extract.contig_distribution.len() as u64,
             ),
         );
@@ -143,7 +153,11 @@ pub fn write_ingest_outputs(job: &IngestJob, decoded: DecodedIngest) -> Result<I
     })?;
 
     if opts.compute_gene_signatures {
-        build_and_write_release_gene_index(&opts.dataset, &paths.release_gene_index, &decoded.extract.gene_rows)?;
+        build_and_write_release_gene_index(
+            &opts.dataset,
+            &paths.release_gene_index,
+            &decoded.extract.gene_rows,
+        )?;
     }
 
     Ok(IngestResult {

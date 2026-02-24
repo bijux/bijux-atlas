@@ -184,12 +184,6 @@ impl CliError {
         }
     }
 
-    fn dependency(message: String) -> Self {
-        Self {
-            exit_code: bijux_atlas_core::ExitCode::DependencyFailure,
-            machine: MachineError::new("dependency_failure", &message),
-        }
-    }
 }
 
 fn emit_error(error: &CliError, machine_json: bool) {

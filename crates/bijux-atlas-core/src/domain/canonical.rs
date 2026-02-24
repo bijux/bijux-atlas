@@ -2,9 +2,9 @@ use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use base64::Engine;
 use sha2::{Digest, Sha256};
 
-use crate::errors::Result;
 #[cfg(feature = "serde")]
 use crate::errors::Error;
+use crate::errors::Result;
 
 #[cfg(feature = "serde")]
 use serde::Serialize;
@@ -118,10 +118,10 @@ pub fn encode_cursor_payload<T: Serialize>(payload: &T) -> Result<String> {
 
 #[cfg(feature = "serde")]
 pub fn decode_cursor_payload(token: &str) -> Result<Value> {
-    let bytes = URL_SAFE_NO_PAD.decode(token).map_err(|e| {
-        Error::DecodeCursorBase64(e.to_string())
-    })?;
-    Ok(serde_json::from_slice::<Value>(&bytes).map_err(|e| Error::DecodeCursorJson(e.to_string()))?)
+    let bytes = URL_SAFE_NO_PAD
+        .decode(token)
+        .map_err(|e| Error::DecodeCursorBase64(e.to_string()))?;
+    serde_json::from_slice::<Value>(&bytes).map_err(|e| Error::DecodeCursorJson(e.to_string()))
 }
 
 #[cfg(feature = "serde")]

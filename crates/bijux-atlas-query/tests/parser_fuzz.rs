@@ -1,4 +1,6 @@
-use bijux_atlas_query::{parse_gene_query_request, GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
+use bijux_atlas_query::{
+    parse_gene_query_request, GeneFields, GeneFilter, GeneQueryRequest, RegionFilter,
+};
 use proptest::prelude::*;
 
 proptest! {

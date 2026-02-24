@@ -4,7 +4,6 @@ fn run_atlas_command(
     output_mode: OutputMode,
 ) -> Result<(), CliError> {
     match command {
-        AtlasCommand::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
         AtlasCommand::Validate {
             root,
             release,

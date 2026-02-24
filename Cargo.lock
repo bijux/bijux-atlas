@@ -259,7 +259,6 @@ name = "bijux-atlas-cli"
 version = "0.1.0"
 dependencies = [
  "assert_cmd",
- "bijux-atlas-api",
  "bijux-atlas-core",
  "bijux-atlas-ingest",
  "bijux-atlas-model",
