@@ -50,6 +50,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_root_artifacts_reports_atlasctl_absent" => {
             Some(check_root_artifacts_reports_atlasctl_absent)
         }
+        "checks_root_python_toolchain_toml_absent" => Some(check_root_python_toolchain_toml_absent),
+        "checks_root_uv_lock_absent" => Some(check_root_uv_lock_absent),
         "checks_docs_no_atlasctl_string_references" => {
             Some(check_docs_no_atlasctl_string_references)
         }

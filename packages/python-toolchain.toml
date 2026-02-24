@@ -1,4 +1,0 @@
-[toolchain]
-channel = "3.11.9"
-manager = "pip-tools"
-lockfile = "packages/atlasctl/requirements.lock.txt"
