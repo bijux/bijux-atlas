@@ -536,7 +536,9 @@ fn checks_ops_no_atlasctl_invocations(
 ) -> Result<Vec<Violation>, CheckError> {
     let targets = [
         Path::new("makefiles/ops.mk"),
+        Path::new("makefiles/CONTRACT.md"),
         Path::new(".github/workflows/atlas-dev-rust.yml"),
+        Path::new("ops/CONTRACT.md"),
         Path::new("ops/README.md"),
         Path::new("ops/INDEX.md"),
     ];
