@@ -103,6 +103,60 @@ def check_ops_manifests_schema(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_ops_surface_manifest_native(repo_root: Path) -> tuple[int, list[str]]:
+    manifest = repo_root / "configs" / "ops" / "ops-surface-manifest.json"
+    surface = repo_root / "ops" / "inventory" / "surfaces.json"
+    ops_command = "packages/atlasctl/src/atlasctl/commands/ops/command.py"
+    errors: list[str] = []
+    try:
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return 1, [f"configs/ops/ops-surface-manifest.json: {exc}"]
+    areas = payload.get("areas", {})
+    if int(payload.get("schema_version", 0) or 0) != 1:
+        errors.append("configs/ops/ops-surface-manifest.json: schema_version must be 1")
+    if not isinstance(areas, dict):
+        errors.append("configs/ops/ops-surface-manifest.json: areas must be object")
+        areas = {}
+    if not surface.exists():
+        errors.append("missing ops/inventory/surfaces.json")
+    else:
+        try:
+            surface_payload = json.loads(surface.read_text(encoding="utf-8"))
+        except Exception as exc:
+            errors.append(f"ops/inventory/surfaces.json: {exc}")
+            surface_payload = {}
+        actions = surface_payload.get("actions", []) if isinstance(surface_payload, dict) else []
+        if not isinstance(actions, list) or not actions:
+            errors.append("ops/inventory/surfaces.json: actions must be non-empty list")
+        else:
+            for row in actions:
+                if not isinstance(row, dict):
+                    errors.append("ops/inventory/surfaces.json: action rows must be objects")
+                    continue
+                aid = str(row.get("id", "")).strip()
+                cmd = row.get("command", [])
+                if not aid.startswith("ops."):
+                    errors.append(f"invalid action id `{aid}` in ops/inventory/surfaces.json")
+                if not isinstance(cmd, list) or cmd[:2] != ["atlasctl", "ops"]:
+                    errors.append(f"action `{aid}` must map to atlasctl ops command")
+    for area, row in sorted(areas.items()):
+        if not isinstance(row, dict):
+            errors.append(f"{area}: entry must be object")
+            continue
+        entry = str(row.get("entrypoint", "")).strip()
+        runtime = str(row.get("runtime", "")).strip() if row.get("runtime") else ""
+        if not entry:
+            errors.append(f"{area}: missing entrypoint")
+        if entry and not (repo_root / entry).exists():
+            errors.append(f"{area}: missing entrypoint file {entry}")
+        if runtime and not (repo_root / runtime).exists():
+            errors.append(f"{area}: missing runtime file {runtime}")
+        if entry != ops_command:
+            errors.append(f"{area}: public ops area entrypoint must be {ops_command}")
+    return (0 if not errors else 1), errors
+
+
 def check_ops_no_direct_script_entrypoints(repo_root: Path) -> tuple[int, list[str]]:
     command_patterns = (
         re.compile(r"(?:^|\s)(?:\./)?ops/(?!run/)[A-Za-z0-9_./-]+\.(?:sh|py)\b"),
@@ -775,6 +829,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.no_tracked_timestamps", "ops", "forbid tracked timestamped paths", 1000, check_tracked_timestamp_paths, fix_hint="Remove timestamped tracked paths.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.committed_generated_hygiene", "ops", "validate deterministic committed generated assets", 1000, check_committed_generated_hygiene, fix_hint="Regenerate committed outputs deterministically.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.manifests_schema", "ops", "validate ops manifests against atlas.ops.manifest.v1 schema", 1000, check_ops_manifests_schema, fix_hint="Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1."),
+    CheckDef("ops.surface_manifest", "ops", "validate ops surface manifest consistency", 1000, check_ops_surface_manifest_native, fix_hint="Fix configs/ops/ops-surface-manifest.json and ops/inventory/surfaces.json contracts."),
     CheckDef("ops.no_direct_script_entrypoints", "ops", "forbid direct ops script entrypoints in docs/workflows/makefiles", 1000, check_ops_no_direct_script_entrypoints, fix_hint="Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths."),
     CheckDef("ops.scripts_are_data_only", "ops", "enforce ops/manifests data-only file policy", 1000, check_ops_scripts_are_data_only, fix_hint="Keep ops/manifests to json/yaml data only."),
     CheckDef("ops.shell_policy", "ops", "enforce shell runtime guard requirements for ops/run wrappers", 1000, check_ops_shell_policy, fix_hint="Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh."),
