@@ -96,3 +96,72 @@ fn repo_root_discovery_works_from_nested_directory() {
         .expect("doctor nested cwd");
     assert!(output.status.success());
 }
+
+#[test]
+fn ops_list_profiles_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "list-profiles", "--format", "json"])
+        .output()
+        .expect("ops list-profiles json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("rows array");
+    assert!(!rows.is_empty());
+}
+
+#[test]
+fn ops_explain_profile_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "explain-profile", "kind", "--format", "json"])
+        .output()
+        .expect("ops explain-profile json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let first = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .and_then(|v| v.first())
+        .expect("first row");
+    assert_eq!(first.get("name").and_then(|v| v.as_str()), Some("kind"));
+}
+
+#[test]
+fn ops_list_actions_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "list-actions", "--format", "json"])
+        .output()
+        .expect("ops list-actions json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("rows array");
+    assert!(!rows.is_empty());
+}
+
+#[test]
+fn ops_status_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "status", "--format", "json"])
+        .output()
+        .expect("ops status json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("rows array");
+    assert_eq!(rows.len(), 1);
+}
