@@ -2,7 +2,7 @@
 
 use std::path::PathBuf;
 
-use bijux_atlas_dev_adapters::StdProcessAdapter;
+use bijux_atlas_dev_adapters::{Capabilities, RealProcessRunner};
 use bijux_atlas_dev_core::{
     explain_output, list_output, load_registry, registry_doctor, run_checks, select_checks,
     RunRequest, Selectors,
@@ -37,6 +37,14 @@ enum Command {
         id_glob: Option<String>,
         #[arg(long, default_value_t = false)]
         include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        allow_fs_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
     },
     Doctor {
         #[arg(long)]
@@ -91,6 +99,10 @@ fn main() {
             tag,
             id_glob,
             include_internal,
+            allow_fs_write,
+            allow_subprocess,
+            allow_git,
+            allow_network,
         } => {
             let root = repo_root
                 .or_else(|| std::env::current_dir().ok())
@@ -138,8 +150,14 @@ fn main() {
                             let request = RunRequest {
                                 repo_root: root,
                                 domain: selectors.domain,
+                                capabilities: Capabilities::from_cli_flags(
+                                    allow_fs_write,
+                                    allow_subprocess,
+                                    allow_git,
+                                    allow_network,
+                                ),
                             };
-                            let adapter = StdProcessAdapter;
+                            let adapter = RealProcessRunner;
                             match run_checks(&adapter, &request) {
                                 Ok(results) => {
                                     println!(
