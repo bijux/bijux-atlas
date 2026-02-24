@@ -414,14 +414,14 @@ fn shard_selection_targets_region_seqid_and_defaults_global() {
         "per-seqid".to_string(),
         vec![
             bijux_atlas_model::ShardEntry::new(
-                "chr1".to_string(),
-                vec!["chr1".to_string()],
+                bijux_atlas_model::ShardId::parse("chr1").expect("shard id"),
+                vec![bijux_atlas_model::SeqId::parse("chr1").expect("seqid")],
                 "gene_summary.chr1.sqlite".to_string(),
                 "abc".to_string(),
             ),
             bijux_atlas_model::ShardEntry::new(
-                "chr2".to_string(),
-                vec!["chr2".to_string()],
+                bijux_atlas_model::ShardId::parse("chr2").expect("shard id"),
+                vec![bijux_atlas_model::SeqId::parse("chr2").expect("seqid")],
                 "gene_summary.chr2.sqlite".to_string(),
                 "def".to_string(),
             ),

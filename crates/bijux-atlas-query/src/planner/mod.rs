@@ -1,10 +1,13 @@
 use crate::cost::estimate_prefix_match_cost;
 use crate::filters::GeneQueryRequest;
 use crate::limits::QueryLimits;
+use crate::normalize::normalized_ast_format;
+use crate::parser::{GeneQueryAst, Predicate, SortKey};
 use bijux_atlas_model::ShardCatalog;
 use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 #[non_exhaustive]
 pub enum QueryClass {
     Cheap,
@@ -27,6 +30,50 @@ impl QueryCost {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PlanNode {
+    PointLookup,
+    NameLookup,
+    PrefixSearch,
+    RegionScan,
+    FilteredScan,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BudgetHook {
+    MaxWorkUnits,
+    MaxRegionSpan,
+    MaxPrefixCostUnits,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct QueryPlan {
+    pub node: PlanNode,
+    pub class: QueryClass,
+    pub cost: QueryCost,
+    pub normalized: String,
+    pub budget_hooks: Vec<BudgetHook>,
+    pub sort_key: SortKey,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum PlanError {
+    Validation(String),
+}
+
+impl std::fmt::Display for PlanError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Validation(msg) => f.write_str(msg),
+        }
+    }
+}
+
+impl std::error::Error for PlanError {}
+
 #[must_use]
 pub fn classify_query(req: &GeneQueryRequest) -> QueryClass {
     if req.filter.gene_id.is_some() {
@@ -36,6 +83,109 @@ pub fn classify_query(req: &GeneQueryRequest) -> QueryClass {
     } else {
         QueryClass::Medium
     }
+}
+
+#[must_use]
+pub fn classify_ast(ast: &GeneQueryAst) -> QueryClass {
+    if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::GeneId(_)))
+    {
+        QueryClass::Cheap
+    } else if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::Region { .. } | Predicate::NamePrefix(_)))
+    {
+        QueryClass::Heavy
+    } else {
+        QueryClass::Medium
+    }
+}
+
+#[must_use]
+pub fn estimate_ast_cost(ast: &GeneQueryAst) -> QueryCost {
+    let base = match classify_ast(ast) {
+        QueryClass::Cheap => 20_u64,
+        QueryClass::Medium => 200_u64,
+        QueryClass::Heavy => 1200_u64,
+    };
+    let region_cost = ast
+        .predicates
+        .iter()
+        .find_map(|p| match p {
+            Predicate::Region { start, end, .. } => Some((end.saturating_sub(*start) + 1) / 10_000),
+            _ => None,
+        })
+        .unwrap_or(0);
+    QueryCost::new(base + (ast.limit as u64) + region_cost)
+}
+
+pub fn plan_query(ast: &GeneQueryAst, limits: &QueryLimits) -> Result<QueryPlan, PlanError> {
+    if ast.limit > limits.max_limit {
+        return Err(PlanError::Validation(format!(
+            "limit must be between 1 and {}",
+            limits.max_limit
+        )));
+    }
+
+    let class = classify_ast(ast);
+    let cost = estimate_ast_cost(ast);
+    if !ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::GeneId(_)))
+        && cost.work_units > limits.max_work_units
+    {
+        return Err(PlanError::Validation(format!(
+            "estimated query cost {} exceeds max_work_units {}",
+            cost.work_units, limits.max_work_units
+        )));
+    }
+
+    let node = if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::GeneId(_)))
+    {
+        PlanNode::PointLookup
+    } else if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::NamePrefix(_)))
+    {
+        PlanNode::PrefixSearch
+    } else if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::Region { .. }))
+    {
+        PlanNode::RegionScan
+    } else if ast
+        .predicates
+        .iter()
+        .any(|p| matches!(p, Predicate::NameEquals(_)))
+    {
+        PlanNode::NameLookup
+    } else {
+        PlanNode::FilteredScan
+    };
+
+    let budget_hooks = vec![
+        BudgetHook::MaxWorkUnits,
+        BudgetHook::MaxRegionSpan,
+        BudgetHook::MaxPrefixCostUnits,
+    ];
+
+    Ok(QueryPlan {
+        node,
+        class,
+        cost,
+        normalized: normalized_ast_format(ast),
+        budget_hooks,
+        sort_key: ast.sort_key,
+    })
 }
 
 #[must_use]
@@ -122,7 +272,7 @@ pub fn select_shards_for_request(req: &GeneQueryRequest, catalog: &ShardCatalog)
     if let Some(region) = &req.filter.region {
         let mut selected = BTreeSet::new();
         for shard in &catalog.shards {
-            if shard.seqids.iter().any(|x| x == &region.seqid) {
+            if shard.seqids.iter().any(|x| x.as_str() == region.seqid) {
                 selected.insert(shard.sqlite_path.clone());
             }
         }
