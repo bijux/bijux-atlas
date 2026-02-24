@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "atlasctl is deprecated in this repository." >&2
+if [[ "${1:-}" == "ops" ]]; then
+  echo "Ops command surface moved to: bijux dev atlas ops <subcommand>" >&2
+  echo "Example: bijux dev atlas ops doctor --format json" >&2
+else
+  echo "Use: bijux dev atlas <command>" >&2
+  echo "Example: bijux dev atlas check doctor --format json" >&2
+fi
+exit 2
