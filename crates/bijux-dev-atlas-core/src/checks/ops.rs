@@ -137,7 +137,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_crates_command_namespace_ownership_unique" => {
             Some(check_crates_command_namespace_ownership_unique)
         }
-        "checks_crates_plugin_conformance_binaries" => Some(check_crates_plugin_conformance_binaries),
+        "checks_crates_plugin_conformance_binaries" => {
+            Some(check_crates_plugin_conformance_binaries)
+        }
         "checks_root_artifacts_bin_binaries_executable_and_version_printable" => {
             Some(check_artifacts_bin_binaries_executable_and_version_printable)
         }

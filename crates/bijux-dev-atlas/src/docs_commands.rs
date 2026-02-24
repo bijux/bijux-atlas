@@ -523,7 +523,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     "duration_ms": started.elapsed().as_millis() as u64,
                     "error_code": if errors == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) }
                 });
-                Ok((emit_payload(common.format, common.out, &payload)?, if errors == 0 { 0 } else { 1 }))
+                Ok((
+                    emit_payload(common.format, common.out, &payload)?,
+                    if errors == 0 { 0 } else { 1 },
+                ))
             }
             DocsCommand::Validate(common) => {
                 let ctx = docs_context(&common)?;

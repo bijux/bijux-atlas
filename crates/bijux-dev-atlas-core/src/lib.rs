@@ -477,9 +477,7 @@ pub fn registry_doctor(repo_root: &Path) -> RegistryDoctorReport {
                 ));
             }
             for floating in implemented_ids.difference(&registered_ids) {
-                errors.push(format!(
-                    "check implementation not registered `{floating}`"
-                ));
+                errors.push(format!("check implementation not registered `{floating}`"));
             }
             errors.sort();
             errors.dedup();

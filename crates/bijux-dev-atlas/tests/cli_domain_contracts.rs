@@ -116,7 +116,10 @@ fn ops_report_writes_structured_report_under_artifacts() {
     assert!(target.exists(), "expected report file {}", target.display());
     let written = fs::read_to_string(target).expect("read report");
     let report: serde_json::Value = serde_json::from_str(&written).expect("report json");
-    assert_eq!(report.get("kind").and_then(|v| v.as_str()), Some("ops_report"));
+    assert_eq!(
+        report.get("kind").and_then(|v| v.as_str()),
+        Some("ops_report")
+    );
     assert_eq!(report.get("run_id").and_then(|v| v.as_str()), Some(run_id));
 }
 
@@ -178,11 +181,17 @@ fn ops_generate_pins_index_check_passes_after_generation() {
         ])
         .output()
         .expect("pins-index check");
-    assert!(check.status.success(), "stderr={}", String::from_utf8_lossy(&check.stderr));
-    let payload: serde_json::Value =
-        serde_json::from_slice(&check.stdout).expect("valid json");
+    assert!(
+        check.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&check.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&check.stdout).expect("valid json");
     assert_eq!(
-        payload.get("summary").and_then(|v| v.get("errors")).and_then(|v| v.as_u64()),
+        payload
+            .get("summary")
+            .and_then(|v| v.get("errors"))
+            .and_then(|v| v.as_u64()),
         Some(0)
     );
 }
@@ -636,4 +645,3 @@ fn ops_pins_update_requires_allow_write() {
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("pins update requires --allow-write"));
 }
-

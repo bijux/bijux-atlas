@@ -136,7 +136,9 @@ fn doctor_detects_missing_implementation_for_registered_check() {
         .collect();
     let implemented_ids = crate::check_runner::builtin_check_ids();
     for missing in registered_ids.difference(&implemented_ids) {
-        errors.push(format!("registered check missing implementation `{missing}`"));
+        errors.push(format!(
+            "registered check missing implementation `{missing}`"
+        ));
     }
     assert!(errors.iter().any(|err| {
         err == "registered check missing implementation `checks_ops_sample_unimplemented`"

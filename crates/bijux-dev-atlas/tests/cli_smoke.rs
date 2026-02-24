@@ -146,11 +146,12 @@ fn dev_atlas_help_command_list_order_matches_doc_snapshot() {
     let help = String::from_utf8(output.stdout).expect("utf8");
     let observed = parse_commands_from_help(&help);
 
-    let expected = fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"))
-        .expect("dev command list")
-        .lines()
-        .map(ToString::to_string)
-        .collect::<Vec<_>>();
+    let expected =
+        fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"))
+            .expect("dev command list")
+            .lines()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
     assert_eq!(observed, expected);
 }
 

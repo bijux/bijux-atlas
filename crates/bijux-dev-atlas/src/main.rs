@@ -368,10 +368,7 @@ pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), S
     Ok((rendered, exit_code_for_report(&report)))
 }
 
-pub(crate) fn run_workflows_command(
-    quiet: bool,
-    command: WorkflowsCommand,
-) -> i32 {
+pub(crate) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i32 {
     match command {
         WorkflowsCommand::Validate {
             repo_root,
@@ -673,7 +670,11 @@ pub(crate) fn run_check_registry_doctor(
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
     let report = registry_doctor(&root);
-    let status = if report.errors.is_empty() { "ok" } else { "failed" };
+    let status = if report.errors.is_empty() {
+        "ok"
+    } else {
+        "failed"
+    };
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": status,
