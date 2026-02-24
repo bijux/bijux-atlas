@@ -1,0 +1,14 @@
+{
+  "node": "region_scan",
+  "class": "heavy",
+  "cost": {
+    "work_units": 1207
+  },
+  "normalized": "{\"predicates\":[{\"region\":{\"seqid\":\"chr1\",\"start\":10,\"end\":10000}}],\"limit\":7,\"dataset_key\":null,\"allow_full_scan\":false,\"has_cursor\":false,\"sort_key\":\"region\"}",
+  "budget_hooks": [
+    "max_work_units",
+    "max_region_span",
+    "max_prefix_cost_units"
+  ],
+  "sort_key": "region"
+}

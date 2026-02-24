@@ -20,6 +20,7 @@ unicode-normalization = "0.1"
 
 [dev-dependencies]
 criterion = "0.5"
+proptest = "1"
 tempfile = "=3.13.0"
 
 [[bench]]
@@ -28,6 +29,10 @@ harness = false
 
 [[bench]]
 name = "query_concurrency"
+harness = false
+
+[[bench]]
+name = "query_stages"
 harness = false
 
 [lib]
