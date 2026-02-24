@@ -1,0 +1,83 @@
+{
+  "rows": [
+    {
+      "charts": 1,
+      "components": 7,
+      "inventory_errors": [],
+      "mirror_entries": 2,
+      "profiles": [
+        {
+          "cluster_config": "ops/stack/kind/cluster-small.yaml",
+          "kind_profile": "small",
+          "name": "small"
+        },
+        {
+          "cluster_config": "ops/stack/kind/cluster.yaml",
+          "kind_profile": "normal",
+          "name": "kind"
+        },
+        {
+          "cluster_config": "ops/stack/kind/cluster-perf.yaml",
+          "kind_profile": "perf",
+          "name": "perf"
+        },
+        {
+          "cluster_config": "ops/stack/kind/cluster-small.yaml",
+          "kind_profile": "small",
+          "name": "ci"
+        },
+        {
+          "cluster_config": "ops/stack/kind/cluster.yaml",
+          "kind_profile": "normal",
+          "name": "developer"
+        }
+      ],
+      "scenarios": [
+        "load.run",
+        "e2e.run",
+        "obs.drill.run",
+        "obs.verify"
+      ],
+      "schema_versions": {
+        "contracts": 1,
+        "mirror_policy": 1,
+        "stack_profiles": 1,
+        "stack_version_manifest": 1,
+        "surfaces": 2,
+        "toolchain": 1
+      },
+      "schemas": [
+        "ops/stack/profiles.json",
+        "ops/stack/version-manifest.json",
+        "ops/inventory/toolchain.json",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/contracts.json"
+      ],
+      "stack_profiles": 5,
+      "suites": [
+        "load",
+        "e2e",
+        "k8s",
+        "obs"
+      ],
+      "surface_actions": 89,
+      "toolchain_images": 7,
+      "tools": [
+        "curl",
+        "helm",
+        "k6",
+        "kind",
+        "kubeconform",
+        "kubectl"
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "status": "ok",
+  "summary": {
+    "errors": 0,
+    "total": 1,
+    "warnings": 0
+  },
+  "text": "ops inventory: status=ok"
+}

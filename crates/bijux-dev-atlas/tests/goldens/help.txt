@@ -3,11 +3,11 @@ Bijux Atlas development control-plane
 Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
 
 Commands:
-  ops      
-  docs     
-  configs  
-  policies 
-  check    
+  ops       
+  docs      
+  configs   
+  policies  
+  check     
 
 Options:
       --quiet                                
