@@ -1,30 +1,25 @@
 # bijux-atlas-core
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+Deterministic domain primitives and boundary contracts shared across bijux-atlas crates.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Stability
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+This crate defines low-level contracts. Public API changes require deliberate versioning and contract test updates.
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+## Public entrypoints
 
-## Telemetry
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
+- `canonical` module and hashing helpers (`sha256`, `sha256_hex`, `Hash256`)
+- canonical errors (`Error`, `Result<T>`, machine errors, exit codes)
+- invariant identifiers (`DatasetId`, `ShardId`, `RunId`)
+- effect boundary traits (`FsPort`, `ClockPort`, `NetPort`, `ProcessPort`)
 
-## Tests
-- [tests/](tests/)
+## Do Not
 
-## Benches
-- [benches/](benches/)
+- add runtime effects to pure domain logic
+- leak raw `String` identifiers where a newtype exists
+- introduce alternate top-level error types
+- expand public API without updating `docs/public-api.md` and contract tests
 
-## Docs index
-- [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)
+## Architecture
+
+See `docs/ARCHITECTURE.md`.
