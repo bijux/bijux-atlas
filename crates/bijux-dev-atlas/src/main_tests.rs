@@ -162,6 +162,7 @@ mod tests {
         let commands = [
             vec!["bijux-dev-atlas", "docs", "doctor"],
             vec!["bijux-dev-atlas", "docs", "check", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "docs", "verify-contracts"],
             vec!["bijux-dev-atlas", "docs", "validate"],
             vec!["bijux-dev-atlas", "docs", "clean", "--allow-write"],
             vec!["bijux-dev-atlas", "docs", "lint"],
@@ -181,6 +182,7 @@ mod tests {
                 "docs",
                 "serve",
                 "--allow-subprocess",
+                "--allow-network",
                 "--include-drafts",
             ],
         ];

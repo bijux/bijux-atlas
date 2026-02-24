@@ -328,6 +328,67 @@ pub(crate) fn docs_links_payload(
     }))
 }
 
+fn docs_verify_contracts_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
+    let mut errors = Vec::<String>::new();
+    let mut warnings = Vec::<String>::new();
+    let mut scanned_files = 0usize;
+    let mut runtime_examples = 0usize;
+    let mut dev_examples = 0usize;
+    let forbidden = ["atlasctl", "xtask", "scripts/areas"];
+
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
+        scanned_files += 1;
+        let rel = file
+            .strip_prefix(&ctx.repo_root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        runtime_examples += text.matches("bijux atlas ").count();
+        dev_examples += text.matches("bijux dev atlas ").count();
+        for needle in forbidden {
+            if text.contains(needle) {
+                errors.push(format!(
+                    "DOCS_CONTRACT_ERROR: forbidden `{needle}` reference in `{rel}`"
+                ));
+            }
+        }
+    }
+    if runtime_examples == 0 {
+        warnings.push("DOCS_CONTRACT_ERROR: no `bijux atlas ...` examples found in docs/".to_string());
+    }
+    if dev_examples == 0 {
+        warnings.push(
+            "DOCS_CONTRACT_ERROR: no `bijux dev atlas ...` examples found in docs/".to_string(),
+        );
+    }
+    if common.strict {
+        errors.append(&mut warnings);
+    }
+    let text = if errors.is_empty() {
+        "docs verify-contracts passed".to_string()
+    } else {
+        "docs verify-contracts failed".to_string()
+    };
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": text,
+        "errors": errors,
+        "warnings": warnings,
+        "summary": {
+            "files_scanned": scanned_files,
+            "runtime_examples": runtime_examples,
+            "dev_examples": dev_examples
+        },
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts}
+    }))
+}
+
 pub(crate) fn docs_lint_payload(
     ctx: &DocsContext,
     common: &DocsCommonArgs,
@@ -502,10 +563,12 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 let ctx = docs_context(&common)?;
                 let validate = docs_validate_payload(&ctx, &common)?;
                 let links = docs_links_payload(&ctx, &common)?;
+                let lint = docs_lint_payload(&ctx, &common)?;
                 let (build_payload, build_code) =
                     docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
                 let errors = validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
+                    + lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + usize::from(build_code != 0);
                 let payload = serde_json::json!({
                     "schema_version":1,
@@ -514,9 +577,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     "rows":[
                         {"name":"validate","errors": validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)},
                         {"name":"links","errors": links["errors"].as_array().map(|v| v.len()).unwrap_or(0)},
+                        {"name":"lint","errors": lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)},
                         {"name":"build","exit_code": build_code}
                     ],
-                    "checks": {"validate": validate, "links": links, "build": build_payload},
+                    "checks": {"validate": validate, "links": links, "lint": lint, "build": build_payload},
                     "counts":{"errors": errors},
                     "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "options":{"strict": common.strict, "include_drafts": common.include_drafts},
@@ -527,6 +591,20 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     emit_payload(common.format, common.out, &payload)?,
                     if errors == 0 { 0 } else { 1 },
                 ))
+            }
+            DocsCommand::VerifyContracts(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_verify_contracts_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                if code != 0 {
+                    payload["error_code"] = serde_json::json!("DOCS_CONTRACT_ERROR");
+                }
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Validate(common) => {
                 let ctx = docs_context(&common)?;
@@ -589,6 +667,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 Ok((emit_payload(common.format, common.out, &payload)?, code))
             }
             DocsCommand::Serve(args) => {
+                if !args.common.allow_network {
+                    return Err("docs serve requires --allow-network".to_string());
+                }
                 let (mut payload, code) = docs_build_or_serve_subprocess(
                     &[
                         "serve".to_string(),

@@ -264,6 +264,18 @@ fn docs_check_requires_allow_subprocess() {
 }
 
 #[test]
+fn docs_serve_requires_allow_network() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["docs", "serve", "--allow-subprocess", "--format", "json"])
+        .output()
+        .expect("docs serve");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("docs serve requires --allow-network"));
+}
+
+#[test]
 fn docs_clean_requires_allow_write() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -287,6 +299,26 @@ fn docs_inventory_supports_json_format() {
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert!(payload.get("pages").and_then(|v| v.as_array()).is_some());
     assert!(payload.get("nav").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn docs_verify_contracts_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["docs", "verify-contracts", "--format", "json"])
+        .output()
+        .expect("docs verify-contracts json");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
+    assert!(payload.get("summary").is_some());
 }
 
 #[test]
