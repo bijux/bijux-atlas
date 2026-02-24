@@ -12,6 +12,5 @@
 - `ops.mk`
 - `product.mk`
 - `env.mk`
-- `atlasctl.mk`
 - `verification.mk`
 - `policies.mk` (optional single-wrapper file; not included by default in root surface)
