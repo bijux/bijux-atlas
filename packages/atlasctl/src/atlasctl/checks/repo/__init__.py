@@ -43,7 +43,6 @@ from .native import (
     check_tracked_timestamp_paths,
     check_makefiles_no_deep_config_paths,
 )
-import atlasctl.checks.repo.native.runtime as _native_runtime  # noqa: F401
 from ..model import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
 from ...commands.policies.runtime.culprits import (
