@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 BIJUX ?= bijux
-BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
+BIJUX_DEV_ATLAS ?= cargo run -q -p bijux-dev-atlas --
 
 configs: ## Canonical configs gate
 	@$(BIJUX_DEV_ATLAS) configs doctor --format text
@@ -14,4 +14,7 @@ configs-validate: ## Run configs validation checks
 configs-lint: ## Run configs lint checks
 	@$(BIJUX_DEV_ATLAS) configs lint --format json
 
-.PHONY: configs configs-doctor configs-validate configs-lint
+configs-inventory: ## List configs inventory (verification smoke target)
+	@$(BIJUX_DEV_ATLAS) configs inventory --format json
+
+.PHONY: configs configs-doctor configs-validate configs-lint configs-inventory
