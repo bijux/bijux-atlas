@@ -40,15 +40,27 @@ enum Command {
         include_internal: bool,
         #[arg(long, default_value_t = false)]
         include_slow: bool,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
     },
     Explain {
         check_id: String,
         #[arg(long)]
         repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
     },
     Doctor {
         #[arg(long)]
         repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
     },
     Run {
         #[arg(long)]
@@ -119,13 +131,16 @@ impl From<DomainArg> for DomainId {
 fn discover_repo_root(start: &Path) -> Result<PathBuf, String> {
     let mut current = start.canonicalize().map_err(|err| err.to_string())?;
     loop {
-        if current.join("Cargo.toml").exists() || current.join(".git").exists() {
+        if current.join("ops/atlas-dev/registry.toml").exists() {
             return Ok(current);
         }
         if let Some(parent) = current.parent() {
             current = parent.to_path_buf();
         } else {
-            return Err("could not discover repo root (no Cargo.toml or .git found)".to_string());
+            return Err(
+                "could not discover repo root (no ops/atlas-dev/registry.toml found)"
+                    .to_string(),
+            );
         }
     }
 }
@@ -166,6 +181,61 @@ fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(),
     Ok(())
 }
 
+fn render_list_output(checks_text: String, format: FormatArg) -> Result<String, String> {
+    match format {
+        FormatArg::Text => Ok(checks_text),
+        FormatArg::Json => {
+            let rows: Vec<serde_json::Value> = checks_text
+                .lines()
+                .filter_map(|line| {
+                    let (id, title) = line.split_once('\t')?;
+                    Some(serde_json::json!({"id": id, "title": title}))
+                })
+                .collect();
+            serde_json::to_string_pretty(&serde_json::json!({"checks": rows}))
+                .map_err(|err| err.to_string())
+        }
+        FormatArg::Jsonl => Err("jsonl output is not supported for list".to_string()),
+    }
+}
+
+fn render_explain_output(explain_text: String, format: FormatArg) -> Result<String, String> {
+    match format {
+        FormatArg::Text => Ok(explain_text),
+        FormatArg::Json => {
+            let mut map = serde_json::Map::new();
+            for line in explain_text.lines() {
+                if let Some((key, value)) = line.split_once(": ") {
+                    map.insert(key.to_string(), serde_json::Value::String(value.to_string()));
+                }
+            }
+            serde_json::to_string_pretty(&serde_json::Value::Object(map)).map_err(|err| err.to_string())
+        }
+        FormatArg::Jsonl => Err("jsonl output is not supported for explain".to_string()),
+    }
+}
+
+fn render_doctor_output(
+    report: &bijux_dev_atlas_core::RegistryDoctorReport,
+    format: FormatArg,
+) -> Result<String, String> {
+    match format {
+        FormatArg::Text => {
+            if report.errors.is_empty() {
+                Ok(String::new())
+            } else {
+                Ok(report.errors.join("\n"))
+            }
+        }
+        FormatArg::Json => serde_json::to_string_pretty(&serde_json::json!({
+            "status": if report.errors.is_empty() { "ok" } else { "failed" },
+            "errors": report.errors,
+        }))
+        .map_err(|err| err.to_string()),
+        FormatArg::Jsonl => Err("jsonl output is not supported for doctor".to_string()),
+    }
+}
+
 fn main() {
     let cli = Cli::parse();
     let exit = match cli.command {
@@ -177,16 +247,22 @@ fn main() {
             id,
             include_internal,
             include_slow,
+            format,
+            out,
         } => {
             match resolve_repo_root(repo_root).and_then(|root| {
                 let selectors =
                     parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
                 let registry = load_registry(&root)?;
                 let checks = select_checks(&registry, &selectors)?;
-                Ok(list_output(&checks))
+                let rendered = render_list_output(list_output(&checks), format)?;
+                write_output_if_requested(out, &rendered)?;
+                Ok(rendered)
             }) {
                 Ok(text) => {
-                    println!("{text}");
+                    if !cli.quiet && !text.is_empty() {
+                        println!("{text}");
+                    }
                     0
                 }
                 Err(err) => {
@@ -198,13 +274,19 @@ fn main() {
         Command::Explain {
             check_id,
             repo_root,
+            format,
+            out,
         } => match resolve_repo_root(repo_root).and_then(|root| {
             let registry = load_registry(&root)?;
             let id = CheckId::parse(&check_id)?;
-            explain_output(&registry, &id)
+            let rendered = render_explain_output(explain_output(&registry, &id)?, format)?;
+            write_output_if_requested(out, &rendered)?;
+            Ok(rendered)
         }) {
             Ok(text) => {
-                println!("{text}");
+                if !cli.quiet && !text.is_empty() {
+                    println!("{text}");
+                }
                 0
             }
             Err(err) => {
@@ -212,18 +294,31 @@ fn main() {
                 1
             }
         },
-        Command::Doctor { repo_root } => match resolve_repo_root(repo_root) {
+        Command::Doctor {
+            repo_root,
+            format,
+            out,
+        } => match resolve_repo_root(repo_root) {
             Ok(root) => {
                 let report = registry_doctor(&root);
-                if report.errors.is_empty() {
-                    println!("bijux-dev-atlas doctor: ok");
-                    0
-                } else {
-                    eprintln!("bijux-dev-atlas doctor failed:");
-                    for err in report.errors {
-                        eprintln!("{err}");
+                match render_doctor_output(&report, format).and_then(|rendered| {
+                    write_output_if_requested(out, &rendered)?;
+                    Ok(rendered)
+                }) {
+                    Ok(rendered) => {
+                        if !cli.quiet && !rendered.is_empty() {
+                            if report.errors.is_empty() {
+                                println!("{rendered}");
+                            } else {
+                                eprintln!("{rendered}");
+                            }
+                        }
+                        if report.errors.is_empty() { 0 } else { 1 }
                     }
-                    1
+                    Err(err) => {
+                        eprintln!("bijux-dev-atlas doctor failed: {err}");
+                        1
+                    }
                 }
             }
             Err(err) => {

@@ -692,8 +692,10 @@ pub fn run_checks(
 }
 
 pub fn exit_code_for_report(report: &RunReport) -> i32 {
-    if report.summary.failed > 0 || report.summary.errors > 0 {
-        1
+    if report.summary.errors > 0 {
+        3
+    } else if report.summary.failed > 0 {
+        2
     } else {
         0
     }
