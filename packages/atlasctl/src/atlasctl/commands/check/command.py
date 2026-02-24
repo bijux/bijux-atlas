@@ -14,6 +14,9 @@ from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.report import build_report_payload, render_json, render_jsonl, render_text, report_from_payload
 from ...checks.selectors import apply_selection_criteria, parse_selection_criteria
 from ...checks.registry import generate_registry_json
+from ...checks.engine import BudgetProfile, EngineOptions as CheckEngineOptions, run_checks as run_checks_engine
+from ...checks.model import CheckContext as ChecksRunContext
+from ...checks.adapters import FS
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
 from ...engine.runner import domains as check_domains
 from ...engine.runner import run_domain
@@ -24,7 +27,6 @@ from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file
 from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
-from ...engine.runner import RunnerOptions, run_checks_payload
 from ...checks.effects import CheckEffect, normalize_effect
 from .selection import split_group_values, split_marker_values
 
@@ -319,21 +321,39 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     max_failures = int(getattr(ns, "max_failures", 0) or getattr(ns, "maxfail", 0) or 0)
     if bool(getattr(ns, "failfast", False)):
         max_failures = 1
-    runner_rc, runner_payload = run_checks_payload(
-        ctx.repo_root,
-        check_defs=matched_checks,
-        run_id=ctx.run_id,
-        options=RunnerOptions(
-            fail_fast=bool(max_failures == 1 and jobs == 1 and not bool(getattr(ns, "keep_going", False))),
-            jobs=jobs,
-            timeout_ms=timeout_ms if timeout_ms > 0 else None,
-            output="json" if (ctx.output_format == "json" or ns.json) else ("verbose" if ns.run_verbose else ("quiet" if ns.run_quiet else "text")),
-            kind="check-run",
-            run_root=resolved_run_root,
+    check_ctx = ChecksRunContext(repo_root=ctx.repo_root, fs=FS(repo_root=ctx.repo_root, allowed_roots=("artifacts",)))
+    check_report = run_checks_engine(
+        registry=matched_checks,
+        selector=None,
+        context=check_ctx,
+        options=CheckEngineOptions(
+            fail_fast=bool(max_failures == 1 and not bool(getattr(ns, "keep_going", False))),
+            max_failures=max(0, int(max_failures)),
+            only_fast=False,
+            include_slow=True,
+            include_internal=True,
+            quiet=bool(live_print and ns.run_quiet),
+            output=("json" if (ctx.output_format == "json" or ns.json) else "text"),
         ),
-        on_event=_emit_live_row if live_print else None,
+        budget_profile=BudgetProfile(default_timeout_ms=max(0, timeout_ms or 0) or 2000),
     )
-    executed_by_id = {str(row["id"]): row for row in runner_payload.get("rows", []) if isinstance(row, dict)}
+    executed_by_id: dict[str, dict[str, object]] = {}
+    for row in check_report.rows:
+        if live_print:
+            _emit_live_row(row)
+        executed_by_id[str(row.id)] = {
+            "id": str(row.id),
+            "status": str(getattr(row.status, "value", row.status)).upper(),
+            "duration_ms": int(row.metrics.get("duration_ms", 0)),
+            "reason": "; ".join(item.message for item in row.violations) or "; ".join(row.errors),
+            "hints": [str(row.fix_hint)] if str(row.fix_hint).strip() else [],
+            "owners": list(row.owners),
+            "artifacts": list(row.evidence_paths),
+            "findings": [{"code": str(item.code), "message": item.message, "hint": item.hint} for item in row.violations],
+            "category": str(getattr(row.category, "value", row.category)),
+            "attachments": [{"path": str(item), "kind": "evidence"} for item in row.evidence_paths],
+        }
+    runner_payload: dict[str, object] = {"events": [], "attachments": []}
     rows: list[dict[str, object]] = []
     for check in report_checks:
         runner_row = executed_by_id.get(check.check_id)
