@@ -1,12 +1,5 @@
-version
-help
 ops
 docs
 configs
-docker
-build
 policies
-workflows
-gates
-capabilities
 check
