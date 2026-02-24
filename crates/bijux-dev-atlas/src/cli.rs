@@ -1,0 +1,340 @@
+use std::path::PathBuf;
+
+use clap::{Args, Parser, Subcommand, ValueEnum};
+
+#[derive(Parser, Debug)]
+#[command(name = "bijux-dev-atlas", version)]
+#[command(about = "Bijux Atlas development control-plane")]
+pub struct Cli {
+    #[arg(long, default_value_t = false)]
+    pub quiet: bool,
+    #[arg(long, default_value_t = false)]
+    pub verbose: bool,
+    #[arg(long, default_value_t = false)]
+    pub debug: bool,
+    #[arg(long, default_value_t = false)]
+    pub print_policies: bool,
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[command(subcommand)]
+    pub command: Option<Command>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum Command {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        check_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Doctor {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Run {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long = "allow-write", default_value_t = false)]
+        allow_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
+        #[arg(long, default_value_t = false)]
+        fail_fast: bool,
+        #[arg(long)]
+        max_failures: Option<usize>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = 0)]
+        durations: usize,
+    },
+    Ops {
+        #[command(subcommand)]
+        command: OpsCommand,
+    },
+    Check {
+        #[command(subcommand)]
+        command: CheckCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum CheckCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        check_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Doctor {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Run {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long = "allow-write", default_value_t = false)]
+        allow_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
+        #[arg(long, default_value_t = false)]
+        fail_fast: bool,
+        #[arg(long)]
+        max_failures: Option<usize>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = 0)]
+        durations: usize,
+    },
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum DomainArg {
+    Root,
+    Workflows,
+    Configs,
+    Docker,
+    Crates,
+    Ops,
+    Repo,
+    Docs,
+    Make,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum FormatArg {
+    Text,
+    Json,
+    Jsonl,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsCommand {
+    Doctor(OpsCommonArgs),
+    Validate(OpsCommonArgs),
+    Render(OpsRenderArgs),
+    Install(OpsInstallArgs),
+    Status(OpsStatusArgs),
+    ListProfiles(OpsCommonArgs),
+    ExplainProfile {
+        name: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+    ListTools(OpsCommonArgs),
+    VerifyTools(OpsCommonArgs),
+    ListActions(OpsCommonArgs),
+    Up(OpsCommonArgs),
+    Down(OpsCommonArgs),
+    Clean(OpsCommonArgs),
+    Reset(OpsResetArgs),
+    Pins {
+        #[command(subcommand)]
+        command: OpsPinsCommand,
+    },
+    Generate {
+        #[command(subcommand)]
+        command: OpsGenerateCommand,
+    },
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsRenderArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, value_enum, default_value_t = OpsRenderTarget::Helm)]
+    pub target: OpsRenderTarget,
+    #[arg(long, default_value_t = false)]
+    pub check: bool,
+    #[arg(long, default_value_t = false)]
+    pub write: bool,
+    #[arg(long, default_value_t = false)]
+    pub stdout: bool,
+    #[arg(long, default_value_t = false)]
+    pub diff: bool,
+    #[arg(long)]
+    pub helm_binary: Option<String>,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum OpsRenderTarget {
+    Helm,
+    Kustomize,
+    Kind,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsPinsCommand {
+    Check(OpsCommonArgs),
+    Update {
+        #[arg(long, default_value_t = false)]
+        i_know_what_im_doing: bool,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsGenerateCommand {
+    PinsIndex(OpsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub ops_root: Option<PathBuf>,
+    #[arg(long)]
+    pub profile: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub strict: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsInstallArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value_t = false)]
+    pub kind: bool,
+    #[arg(long, default_value_t = false)]
+    pub apply: bool,
+    #[arg(long, default_value_t = false)]
+    pub plan: bool,
+    #[arg(long, default_value = "none")]
+    pub dry_run: String,
+    #[arg(long, default_value_t = false)]
+    pub force: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsStatusArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, value_enum, default_value_t = OpsStatusTarget::Local)]
+    pub target: OpsStatusTarget,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum OpsStatusTarget {
+    Local,
+    K8s,
+    Pods,
+    Endpoints,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsResetArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long = "reset-run-id")]
+    pub reset_id: String,
+}
