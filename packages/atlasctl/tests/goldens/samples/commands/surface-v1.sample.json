@@ -1,9 +1,0 @@
-{
-  "commands": [],
-  "path_owners": {},
-  "run_id": "sample-surface",
-  "schema_name": "atlasctl.surface.v1",
-  "schema_version": 1,
-  "status": "ok",
-  "tool": "atlasctl"
-}
