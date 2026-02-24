@@ -6,8 +6,10 @@ pub const CRATE_NAME: &str = "bijux-atlas-api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
 pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
 
+pub mod compat;
 pub mod convert;
 pub mod dto;
+pub mod error_mapping;
 pub mod errors;
 mod generated;
 pub mod openapi;
