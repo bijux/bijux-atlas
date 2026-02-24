@@ -20,9 +20,10 @@ use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use clap::Parser;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use serde_yaml::Value as YamlValue;
 use sha2::{Digest, Sha256};
 use crate::cli::{
-    Cli, DomainArg, FormatArg, OpsCommand, OpsCommonArgs, OpsGenerateCommand,
+    Cli, DocsCommand, DocsCommonArgs, DomainArg, FormatArg, OpsCommand, OpsCommonArgs, OpsGenerateCommand,
     OpsPinsCommand, OpsRenderTarget, OpsStatusTarget,
 };
 
@@ -460,6 +461,20 @@ pub(crate) struct CheckRunOptions {
     durations: usize,
 }
 
+#[derive(Debug, Serialize)]
+struct DocsPageRow {
+    path: String,
+    in_nav: bool,
+}
+
+#[derive(Debug)]
+struct DocsContext {
+    repo_root: PathBuf,
+    docs_root: PathBuf,
+    artifacts_root: PathBuf,
+    run_id: RunId,
+}
+
 pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
     let root = resolve_repo_root(options.repo_root)?;
     let selectors = parse_selectors(
@@ -579,6 +594,387 @@ pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, 
     let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
     let rendered = canonical_policy_json(&policies.to_document()).map_err(|err| err.to_string())?;
     Ok((rendered, 0))
+}
+
+fn docs_context(common: &DocsCommonArgs) -> Result<DocsContext, String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let artifacts_root = common
+        .artifacts_root
+        .clone()
+        .unwrap_or_else(|| repo_root.join("artifacts"));
+    let run_id = common
+        .run_id
+        .as_ref()
+        .map(|v| RunId::parse(v))
+        .transpose()?
+        .unwrap_or_else(|| RunId::from_seed("docs_run"));
+    Ok(DocsContext {
+        docs_root: repo_root.join("docs"),
+        repo_root,
+        artifacts_root,
+        run_id,
+    })
+}
+
+fn slugify_anchor(text: &str) -> String {
+    let mut out = String::new();
+    let mut prev_dash = false;
+    for c in text.chars().flat_map(|c| c.to_lowercase()) {
+        if c.is_ascii_alphanumeric() {
+            out.push(c);
+            prev_dash = false;
+        } else if (c.is_whitespace() || c == '-' || c == '_') && !prev_dash {
+            out.push('-');
+            prev_dash = true;
+        }
+    }
+    out.trim_matches('-').to_string()
+}
+
+fn docs_markdown_files(docs_root: &Path) -> Vec<PathBuf> {
+    let mut files = Vec::new();
+    if docs_root.exists() {
+        for file in walk_files_local(docs_root) {
+            if file.extension().and_then(|v| v.to_str()) == Some("md") {
+                files.push(file);
+            }
+        }
+    }
+    files.sort();
+    files
+}
+
+fn walk_files_local(root: &Path) -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    let mut stack = vec![root.to_path_buf()];
+    while let Some(dir) = stack.pop() {
+        let Ok(entries) = fs::read_dir(&dir) else { continue };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+            } else if path.is_file() {
+                out.push(path);
+            }
+        }
+    }
+    out.sort();
+    out
+}
+
+fn parse_mkdocs_yaml(repo_root: &Path) -> Result<YamlValue, String> {
+    let path = repo_root.join("mkdocs.yml");
+    let text = fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
+    serde_yaml::from_str(&text).map_err(|e| format!("failed to parse {}: {e}", path.display()))
+}
+
+fn collect_nav_refs(node: &YamlValue, out: &mut Vec<(String, String)>) {
+    match node {
+        YamlValue::Sequence(seq) => {
+            for item in seq {
+                collect_nav_refs(item, out);
+            }
+        }
+        YamlValue::Mapping(map) => {
+            for (k, v) in map {
+                let title = k.as_str().unwrap_or_default().to_string();
+                if let Some(path) = v.as_str() {
+                    out.push((title, path.to_string()));
+                } else {
+                    collect_nav_refs(v, out);
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
+fn mkdocs_nav_refs(repo_root: &Path) -> Result<Vec<(String, String)>, String> {
+    let yaml = parse_mkdocs_yaml(repo_root)?;
+    let nav = yaml
+        .get("nav")
+        .ok_or_else(|| "mkdocs.yml missing `nav`".to_string())?;
+    let mut refs = Vec::new();
+    collect_nav_refs(nav, &mut refs);
+    refs.sort();
+    Ok(refs)
+}
+
+fn docs_inventory_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+    let nav_refs = mkdocs_nav_refs(&ctx.repo_root)?;
+    let nav_set = nav_refs.iter().map(|(_, p)| p.clone()).collect::<std::collections::BTreeSet<_>>();
+    let rows = docs_markdown_files(&ctx.docs_root)
+        .into_iter()
+        .filter_map(|p| p.strip_prefix(&ctx.docs_root).ok().map(|r| r.display().to_string()))
+        .map(|rel| DocsPageRow {
+            in_nav: nav_set.contains(&rel),
+            path: rel,
+        })
+        .collect::<Vec<_>>();
+    let orphan_pages = rows
+        .iter()
+        .filter(|r| !r.in_nav && !r.path.starts_with("_assets/") && !r.path.starts_with("_drafts/"))
+        .map(|r| r.path.clone())
+        .collect::<Vec<_>>();
+    let duplicate_titles = {
+        let mut seen = BTreeMap::<String, usize>::new();
+        for (title, _) in &nav_refs {
+            *seen.entry(title.clone()).or_default() += 1;
+        }
+        let mut d = seen.into_iter().filter(|(_, n)| *n > 1).map(|(k, _)| k).collect::<Vec<_>>();
+        d.sort();
+        d
+    };
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "nav": nav_refs.iter().map(|(title, path)| serde_json::json!({"title": title, "path": path})).collect::<Vec<_>>(),
+        "pages": rows,
+        "orphan_pages": orphan_pages,
+        "duplicate_nav_titles": duplicate_titles
+    }))
+}
+
+fn docs_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+    let yaml = parse_mkdocs_yaml(&ctx.repo_root)?;
+    let mut errors = Vec::<String>::new();
+    let docs_dir = yaml.get("docs_dir").and_then(|v| v.as_str()).unwrap_or_default();
+    if docs_dir != "docs" {
+        errors.push(format!("mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"));
+    }
+    for (_, rel) in mkdocs_nav_refs(&ctx.repo_root)? {
+        if !ctx.docs_root.join(&rel).exists() {
+            errors.push(format!("mkdocs nav references missing file `{rel}`"));
+        }
+    }
+    let inv = docs_inventory_payload(ctx)?;
+    for dup in inv["duplicate_nav_titles"].as_array().into_iter().flatten() {
+        if let Some(title) = dup.as_str() {
+            errors.push(format!("duplicate mkdocs nav title `{title}`"));
+        }
+    }
+    let text = if errors.is_empty() { "docs validate passed".to_string() } else { format!("docs validate failed ({} errors)", errors.len()) };
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": text,
+        "errors": errors,
+        "rows": inv["nav"].as_array().cloned().unwrap_or_default(),
+        "summary": {"total": inv["nav"].as_array().map(|v| v.len()).unwrap_or(0), "errors": inv["errors"].as_array().map(|v| v.len()).unwrap_or(0)}
+    }))
+}
+
+fn markdown_anchors(text: &str) -> std::collections::BTreeSet<String> {
+    let mut out = std::collections::BTreeSet::new();
+    for line in text.lines() {
+        let trimmed = line.trim_start();
+        if let Some(rest) = trimmed.strip_prefix('#') {
+            let heading = rest.trim_start_matches('#').trim();
+            if !heading.is_empty() {
+                out.insert(slugify_anchor(heading));
+            }
+        }
+    }
+    out
+}
+
+fn docs_links_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut errors = Vec::<String>::new();
+    let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    for file in docs_markdown_files(&ctx.docs_root) {
+        let rel = file.strip_prefix(&ctx.repo_root).unwrap_or(&file).display().to_string();
+        let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        let anchors = markdown_anchors(&text);
+        for (idx, line) in text.lines().enumerate() {
+            for cap in link_re.captures_iter(line) {
+                let target = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+                if target.starts_with("http://") || target.starts_with("https://") || target.starts_with("mailto:") {
+                    continue;
+                }
+                if let Some(anchor) = target.strip_prefix('#') {
+                    let ok = anchors.contains(anchor);
+                    if !ok {
+                        errors.push(format!("{rel}:{} missing same-file anchor `#{anchor}`", idx + 1));
+                    }
+                    rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}));
+                    continue;
+                }
+                let (path_part, anchor_part) = target.split_once('#').map_or((target, None), |(a, b)| (a, Some(b)));
+                if path_part.is_empty() || path_part.ends_with('/') {
+                    continue;
+                }
+                let resolved = file.parent().unwrap_or(&ctx.docs_root).join(path_part);
+                let exists = resolved.exists();
+                let mut ok = exists;
+                if exists {
+                    if let Some(anchor) = anchor_part {
+                        if resolved.extension().and_then(|v| v.to_str()) == Some("md") {
+                            let target_text = fs::read_to_string(&resolved).unwrap_or_default();
+                            ok = markdown_anchors(&target_text).contains(anchor);
+                        }
+                    }
+                }
+                if !ok {
+                    errors.push(format!("{rel}:{} unresolved link `{target}`", idx + 1));
+                }
+                rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}));
+            }
+        }
+    }
+    rows.sort_by(|a,b| a["file"].as_str().cmp(&b["file"].as_str()).then(a["line"].as_u64().cmp(&b["line"].as_u64())).then(a["target"].as_str().cmp(&b["target"].as_str())));
+    errors.sort();
+    errors.dedup();
+    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors.is_empty() {"docs links passed"} else {"docs links failed"},"rows":rows,"errors":errors}))
+}
+
+fn docs_lint_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
+    let mut errors = Vec::<String>::new();
+    for file in docs_markdown_files(&ctx.docs_root) {
+        let rel = file.strip_prefix(&ctx.docs_root).unwrap_or(&file).display().to_string();
+        if rel.contains(' ') {
+            errors.push(format!("docs filename must not contain spaces: `{rel}`"));
+        }
+        let name = file.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase()) {
+            errors.push(format!("docs filename should use lowercase intent-based naming: `{rel}`"));
+        }
+        let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        for (idx, line) in text.lines().enumerate() {
+            if line.ends_with(' ') || line.contains('\t') {
+                errors.push(format!("{rel}:{} formatting lint failure (tab/trailing-space)", idx + 1));
+            }
+        }
+    }
+    errors.sort();
+    errors.dedup();
+    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors.is_empty() {"docs lint passed"} else {"docs lint failed"},"rows":[],"errors":errors}))
+}
+
+fn docs_grep_payload(ctx: &DocsContext, pattern: &str) -> Result<serde_json::Value, String> {
+    let mut rows = Vec::<serde_json::Value>::new();
+    for file in docs_markdown_files(&ctx.docs_root) {
+        let rel = file.strip_prefix(&ctx.repo_root).unwrap_or(&file).display().to_string();
+        let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        for (idx, line) in text.lines().enumerate() {
+            if line.contains(pattern) {
+                rows.push(serde_json::json!({"file": rel, "line": idx + 1, "text": line.trim()}));
+            }
+        }
+    }
+    rows.sort_by(|a,b| a["file"].as_str().cmp(&b["file"].as_str()).then(a["line"].as_u64().cmp(&b["line"].as_u64())));
+    Ok(serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": format!("{} matches", rows.len()),"rows":rows}))
+}
+
+fn docs_build_or_serve_subprocess(args: &[String], common: &DocsCommonArgs, label: &str) -> Result<(serde_json::Value, i32), String> {
+    if !common.allow_subprocess {
+        return Err(format!("{label} requires --allow-subprocess"));
+    }
+    if label == "docs build" && !common.allow_write {
+        return Err("docs build requires --allow-write".to_string());
+    }
+    let ctx = docs_context(common)?;
+    let output_dir = ctx.artifacts_root.join("atlas-dev").join("docs").join(ctx.run_id.as_str()).join("site");
+    if label == "docs build" {
+        fs::create_dir_all(&output_dir).map_err(|e| format!("failed to create {}: {e}", output_dir.display()))?;
+    }
+    let mut cmd = ProcessCommand::new("mkdocs");
+    cmd.args(args).current_dir(&ctx.repo_root);
+    if label == "docs build" {
+        cmd.args(["--site-dir", output_dir.to_str().unwrap_or("artifacts/atlas-dev/docs/site")]);
+    }
+    let out = cmd.output().map_err(|e| format!("failed to run mkdocs: {e}"))?;
+    let stdout = String::from_utf8_lossy(&out.stdout).to_string();
+    let stderr = String::from_utf8_lossy(&out.stderr).to_string();
+    let code = out.status.code().unwrap_or(1);
+    Ok((serde_json::json!({
+        "schema_version":1,
+        "run_id": ctx.run_id.as_str(),
+        "text": format!("{label} {}", if code==0 {"ok"} else {"failed"}),
+        "rows":[{"command": args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string()}],
+        "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write}
+    }), code))
+}
+
+pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
+    let run = (|| -> Result<(String, i32), String> {
+        match command {
+            DocsCommand::Validate(common) => {
+                let ctx = docs_context(&common)?;
+                let payload = docs_validate_payload(&ctx)?;
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            DocsCommand::Inventory(common) => {
+                let ctx = docs_context(&common)?;
+                let payload = docs_inventory_payload(&ctx)?;
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
+            DocsCommand::Links(common) => {
+                let ctx = docs_context(&common)?;
+                let payload = docs_links_payload(&ctx)?;
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            DocsCommand::Lint(common) => {
+                let ctx = docs_context(&common)?;
+                let payload = docs_lint_payload(&ctx)?;
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            DocsCommand::Grep(args) => {
+                let ctx = docs_context(&args.common)?;
+                let payload = docs_grep_payload(&ctx, &args.pattern)?;
+                Ok((emit_payload(args.common.format, args.common.out, &payload)?, 0))
+            }
+            DocsCommand::Build(common) => {
+                let (payload, code) = docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            DocsCommand::Serve(args) => {
+                let (payload, code) = docs_build_or_serve_subprocess(
+                    &["serve".to_string(), "--dev-addr".to_string(), format!("{}:{}", args.host, args.port)],
+                    &args.common,
+                    "docs serve",
+                )?;
+                Ok((emit_payload(args.common.format, args.common.out, &payload)?, code))
+            }
+            DocsCommand::Doctor(common) => {
+                let ctx = docs_context(&common)?;
+                let validate = docs_validate_payload(&ctx)?;
+                let links = docs_links_payload(&ctx)?;
+                let lint = docs_lint_payload(&ctx)?;
+                let mut rows = Vec::<serde_json::Value>::new();
+                rows.push(serde_json::json!({"name":"validate","errors":validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
+                rows.push(serde_json::json!({"name":"links","errors":links["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
+                rows.push(serde_json::json!({"name":"lint","errors":lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)}));
+                let mut build_status = "skipped";
+                if common.allow_subprocess && common.allow_write {
+                    let (_payload, code) = docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
+                    build_status = if code == 0 { "ok" } else { "failed" };
+                }
+                rows.push(serde_json::json!({"name":"build","status":build_status}));
+                let errors = validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)
+                    + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
+                    + lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)
+                    + usize::from(build_status == "failed");
+                let payload = serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors==0 {"docs doctor passed"} else {"docs doctor failed"},"rows":rows,"counts":{"errors":errors},"capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write}});
+                Ok((emit_payload(common.format, common.out, &payload)?, if errors == 0 {0} else {1}))
+            }
+        }
+    })();
+    match run {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                if code == 0 { println!("{rendered}"); } else { eprintln!("{rendered}"); }
+            }
+            code
+        }
+        Err(err) => {
+            eprintln!("bijux-dev-atlas docs failed: {err}");
+            1
+        }
+    }
 }
 
 fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {
@@ -1879,6 +2275,27 @@ mod tests {
             match cli.command {
                 Some(super::cli::Command::Check { .. }) => {}
                 _ => panic!("expected check command"),
+            }
+        }
+    }
+
+    #[test]
+    fn docs_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "docs", "doctor"],
+            vec!["bijux-dev-atlas", "docs", "validate"],
+            vec!["bijux-dev-atlas", "docs", "lint"],
+            vec!["bijux-dev-atlas", "docs", "links"],
+            vec!["bijux-dev-atlas", "docs", "inventory"],
+            vec!["bijux-dev-atlas", "docs", "grep", "atlasctl"],
+            vec!["bijux-dev-atlas", "docs", "build", "--allow-subprocess", "--allow-write"],
+            vec!["bijux-dev-atlas", "docs", "serve", "--allow-subprocess"],
+        ];
+        for argv in commands {
+            let cli = super::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(super::cli::Command::Docs { .. }) => {}
+                _ => panic!("expected docs command"),
             }
         }
     }
