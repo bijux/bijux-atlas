@@ -316,6 +316,12 @@ pub enum FormatArg {
 
 #[derive(Subcommand, Debug)]
 pub enum OpsCommand {
+    List(OpsCommonArgs),
+    Explain {
+        action: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
     Doctor(OpsCommonArgs),
     Validate(OpsCommonArgs),
     Inventory(OpsCommonArgs),
@@ -337,6 +343,7 @@ pub enum OpsCommand {
     Up(OpsCommonArgs),
     Down(OpsCommonArgs),
     Clean(OpsCommonArgs),
+    Cleanup(OpsCommonArgs),
     Reset(OpsResetArgs),
     Pins {
         #[command(subcommand)]
