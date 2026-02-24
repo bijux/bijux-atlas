@@ -1,0 +1,35 @@
+[profiles.kind]
+kind_profile = "normal"
+cluster_config = "ops/stack/kind/cluster.yaml"
+namespace = "bijux-atlas"
+components = [
+  "ops/k8s/charts/bijux-atlas/Chart.yaml",
+  "ops/obs/pack/k8s/namespace.yaml",
+  "ops/stack/grafana/grafana.yaml",
+  "ops/stack/minio/minio.yaml",
+  "ops/stack/otel/otel-collector.yaml",
+  "ops/stack/prometheus/prometheus.yaml",
+  "ops/stack/redis/redis.yaml",
+]
+
+[profiles.local]
+kind_profile = "small"
+cluster_config = "ops/stack/kind/cluster-small.yaml"
+namespace = "bijux-atlas"
+components = [
+  "ops/k8s/charts/bijux-atlas/Chart.yaml",
+  "ops/obs/pack/k8s/namespace.yaml",
+  "ops/stack/minio/minio.yaml",
+  "ops/stack/redis/redis.yaml",
+]
+
+[profiles.ci]
+kind_profile = "small"
+cluster_config = "ops/stack/kind/cluster-small.yaml"
+namespace = "bijux-atlas"
+components = [
+  "ops/k8s/charts/bijux-atlas/Chart.yaml",
+  "ops/obs/pack/k8s/namespace.yaml",
+  "ops/stack/minio/minio.yaml",
+  "ops/stack/redis/redis.yaml",
+]

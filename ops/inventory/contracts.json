@@ -26,6 +26,10 @@
       "version": 1
     },
     {
+      "path": "ops/stack/stack.toml",
+      "version": 1
+    },
+    {
       "path": "ops/tools/tools.toml",
       "version": 1
     },
