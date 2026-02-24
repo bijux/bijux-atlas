@@ -32,6 +32,7 @@ pub struct RunRequest {
     pub capabilities: Capabilities,
     pub artifacts_root: Option<PathBuf>,
     pub run_id: Option<RunId>,
+    pub command: Option<String>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -125,6 +126,11 @@ struct RawSuite {
 
 fn parse_domain(raw: &str) -> Result<DomainId, String> {
     match raw.trim() {
+        "root" => Ok(DomainId::Root),
+        "workflows" => Ok(DomainId::Workflows),
+        "configs" => Ok(DomainId::Configs),
+        "docker" => Ok(DomainId::Docker),
+        "crates" => Ok(DomainId::Crates),
         "ops" => Ok(DomainId::Ops),
         "repo" => Ok(DomainId::Repo),
         "docs" => Ok(DomainId::Docs),
@@ -245,6 +251,7 @@ pub fn load_registry(repo_root: &Path) -> Result<Registry, String> {
 pub fn validate_registry(registry: &Registry) -> Vec<String> {
     let mut errors: Vec<String> = Vec::new();
     let mut seen = BTreeSet::new();
+    let mut purposes = BTreeMap::<String, String>::new();
     let known_ids: BTreeSet<String> = registry
         .checks
         .iter()
@@ -254,6 +261,18 @@ pub fn validate_registry(registry: &Registry) -> Vec<String> {
     for check in &registry.checks {
         if !seen.insert(check.id.as_str().to_string()) {
             errors.push(format!("duplicate check id `{}`", check.id));
+        }
+        let purpose_key = check
+            .title
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join(" ")
+            .to_ascii_lowercase();
+        if let Some(existing) = purposes.insert(purpose_key.clone(), check.id.as_str().to_string()) {
+            errors.push(format!(
+                "duplicate check purpose `{}` for ids `{}` and `{}`",
+                purpose_key, existing, check.id
+            ));
         }
         if check.budget_ms == 0 {
             errors.push(format!("{}: budget_ms must be > 0", check.id));
@@ -439,9 +458,9 @@ fn effect_allowed(effect: Effect, caps: Capabilities) -> bool {
 
 fn builtin_check_fn(check_id: &CheckId) -> Option<CheckFn> {
     checks::ops::builtin_ops_check_fn(check_id).or_else(|| match check_id.as_str() {
-        "repo_import_boundary" => Some(check_repo_import_boundary),
-        "docs_index_links" => Some(check_docs_index_links),
-        "make_wrapper_commands" => Some(check_make_wrapper_commands),
+        "checks_repo_import_boundary" => Some(check_repo_import_boundary),
+        "checks_docs_index_links" => Some(check_docs_index_links),
+        "checks_make_wrapper_commands" => Some(check_make_wrapper_commands),
         _ => None,
     })
 }
@@ -455,6 +474,22 @@ fn sorted_violations(mut violations: Vec<Violation>) -> Vec<Violation> {
             .then(a.line.cmp(&b.line))
     });
     violations
+}
+
+pub(crate) fn evidence_path_has_timestamp(path: &str) -> bool {
+    let bytes = path.as_bytes();
+    let mut run = 0usize;
+    for b in bytes {
+        if b.is_ascii_digit() {
+            run += 1;
+            if run >= 8 {
+                return true;
+            }
+        } else {
+            run = 0;
+        }
+    }
+    false
 }
 
 fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
@@ -651,6 +686,21 @@ pub fn run_checks(
         }
 
         result.duration_ms = start.elapsed().as_millis() as u64;
+        if result
+            .evidence
+            .iter()
+            .any(|ev| evidence_path_has_timestamp(&ev.path))
+        {
+            result.status = CheckStatus::Error;
+            result.violations.push(Violation {
+                code: "EVIDENCE_PATH_TIMESTAMP_FORBIDDEN".to_string(),
+                message: "evidence paths must not include timestamps".to_string(),
+                hint: Some("use stable run identifiers and deterministic file names".to_string()),
+                path: None,
+                line: None,
+                severity: Severity::Error,
+            });
+        }
         timings.insert(result.id.clone(), result.duration_ms);
 
         if matches!(result.status, CheckStatus::Fail | CheckStatus::Error) {
@@ -694,7 +744,37 @@ pub fn run_checks(
     Ok(RunReport {
         run_id: ctx.run_id,
         repo_root: request.repo_root.display().to_string(),
+        command: request
+            .command
+            .clone()
+            .unwrap_or_else(|| "check run".to_string()),
+        selections: BTreeMap::from([
+            (
+                "suite".to_string(),
+                effective_selectors
+                    .suite
+                    .as_ref()
+                    .map_or_else(String::new, |v| v.as_str().to_string()),
+            ),
+            (
+                "domain".to_string(),
+                effective_selectors.domain.map_or_else(String::new, |v| format!("{v:?}").to_lowercase()),
+            ),
+            (
+                "tag".to_string(),
+                effective_selectors
+                    .tag
+                    .as_ref()
+                    .map_or_else(String::new, |v| v.as_str().to_string()),
+            ),
+            (
+                "id_glob".to_string(),
+                effective_selectors.id_glob.clone().unwrap_or_default(),
+            ),
+        ]),
         results,
+        durations_ms: timings.clone(),
+        counts: summary.clone(),
         summary,
         timings_ms: timings,
     })
@@ -705,6 +785,8 @@ pub fn exit_code_for_report(report: &RunReport) -> i32 {
         3
     } else if report.summary.failed > 0 {
         2
+    } else if report.summary.skipped > 0 && report.summary.passed == 0 {
+        4
     } else {
         0
     }

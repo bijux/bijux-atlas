@@ -8,6 +8,16 @@ Rust control-plane tool for Atlas development checks and workflows.
 - Keep effect boundaries explicit through adapters.
 - Own `ops` control-plane behavior through `bijux dev atlas ...` routing.
 
+## Policy Domains
+- `root`
+- `workflows`
+- `make`
+- `ops`
+- `docs`
+- `configs`
+- `docker`
+- `crates`
+
 ## Non-goals
 - No direct dependency on `packages/atlasctl` runtime.
 - No shell-script check execution as SSOT.

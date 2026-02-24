@@ -4,7 +4,7 @@ schema_version = 1
 vocabulary = ["ops", "repo", "docs", "make", "lint", "internal", "fast", "slow"]
 
 [[checks]]
-id = "ops_surface_manifest"
+id = "checks_ops_surface_manifest"
 domain = "ops"
 title = "ops surface manifest consistency"
 docs = "ops/CONTRACT.md"
@@ -15,7 +15,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_tree_contract"
+id = "checks_ops_tree_contract"
 domain = "ops"
 title = "ops contract files are present"
 docs = "ops/CONTRACT.md"
@@ -26,7 +26,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_no_legacy_tooling_refs"
+id = "checks_ops_no_legacy_tooling_refs"
 domain = "ops"
 title = "ops does not reference legacy tooling paths"
 docs = "ops/CONTRACT.md"
@@ -37,7 +37,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_generated_readonly_markers"
+id = "checks_ops_generated_readonly_markers"
 domain = "ops"
 title = "ops generated files keep readonly generator markers"
 docs = "ops/_generated.example/MIRROR_POLICY.md"
@@ -48,7 +48,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_schema_presence"
+id = "checks_ops_schema_presence"
 domain = "ops"
 title = "ops schema baseline is present"
 docs = "ops/schema/README.md"
@@ -59,7 +59,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_manifest_integrity"
+id = "checks_ops_manifest_integrity"
 domain = "ops"
 title = "ops inventory manifests are valid json with required keys"
 docs = "ops/inventory/README.md"
@@ -70,7 +70,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_surface_inventory"
+id = "checks_ops_surface_inventory"
 domain = "ops"
 title = "ops index inventories top-level surfaces"
 docs = "ops/INDEX.md"
@@ -81,7 +81,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_artifacts_not_tracked"
+id = "checks_ops_artifacts_not_tracked"
 domain = "ops"
 title = "ops evidence paths stay empty in repository"
 docs = "ops/CONTRACT.md"
@@ -92,7 +92,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_no_python_legacy_runtime_refs"
+id = "checks_ops_no_python_legacy_runtime_refs"
 domain = "ops"
 title = "dev atlas crates do not reference python atlasctl runtime"
 docs = "docs/development/tooling/atlasctl.md"
@@ -103,7 +103,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_no_legacy_runner_paths"
+id = "checks_ops_no_legacy_runner_paths"
 domain = "ops"
 title = "dev atlas crates do not reference legacy runner path conventions"
 docs = "docs/development/scripts.md"
@@ -114,7 +114,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_no_atlasctl_invocations"
+id = "checks_ops_no_atlasctl_invocations"
 domain = "ops"
 title = "ops owned surfaces avoid atlasctl command invocations"
 docs = "makefiles/ops.mk"
@@ -125,7 +125,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_no_scripts_areas_or_xtask_refs"
+id = "checks_ops_no_scripts_areas_or_xtask_refs"
 domain = "ops"
 title = "ops owned surfaces avoid scripts areas and xtask references"
 docs = "ops/CONTRACT.md"
@@ -136,7 +136,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_artifacts_gitignore_policy"
+id = "checks_ops_artifacts_gitignore_policy"
 domain = "ops"
 title = "artifacts root remains gitignored"
 docs = ".gitignore"
@@ -147,7 +147,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_makefile_routes_dev_atlas"
+id = "checks_ops_makefile_routes_dev_atlas"
 domain = "ops"
 title = "ops makefile routes through dev atlas command surface"
 docs = "makefiles/ops.mk"
@@ -158,7 +158,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_workflow_routes_dev_atlas"
+id = "checks_ops_workflow_routes_dev_atlas"
 domain = "ops"
 title = "atlas dev workflow avoids atlasctl ops routes"
 docs = ".github/workflows/atlas-dev-rust.yml"
@@ -169,7 +169,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "repo_import_boundary"
+id = "checks_repo_import_boundary"
 domain = "repo"
 title = "repo import boundary contracts"
 docs = "docs/INDEX.md"
@@ -180,7 +180,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "docs_index_links"
+id = "checks_docs_index_links"
 domain = "docs"
 title = "docs index links must resolve"
 docs = "docs/INDEX.md"
@@ -191,7 +191,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "make_wrapper_commands"
+id = "checks_make_wrapper_commands"
 domain = "make"
 title = "make wrapper commands stay canonical"
 docs = "makefiles/CONTRACT.md"
@@ -202,7 +202,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_internal_registry_consistency"
+id = "checks_ops_internal_registry_consistency"
 domain = "ops"
 title = "ops internal registry consistency"
 docs = "ops/CONTRACT.md"
@@ -221,21 +221,21 @@ tags_any = ["fast"]
 [[suites]]
 id = "ops_fast"
 checks = [
-  "ops_surface_manifest",
-  "ops_tree_contract",
-  "ops_no_legacy_tooling_refs",
-  "ops_generated_readonly_markers",
-  "ops_schema_presence",
-  "ops_manifest_integrity",
-  "ops_surface_inventory",
-  "ops_artifacts_not_tracked",
-  "ops_no_python_legacy_runtime_refs",
-  "ops_no_legacy_runner_paths",
-  "ops_no_atlasctl_invocations",
-  "ops_no_scripts_areas_or_xtask_refs",
-  "ops_artifacts_gitignore_policy",
-  "ops_makefile_routes_dev_atlas",
-  "ops_workflow_routes_dev_atlas",
+  "checks_ops_surface_manifest",
+  "checks_ops_tree_contract",
+  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_generated_readonly_markers",
+  "checks_ops_schema_presence",
+  "checks_ops_manifest_integrity",
+  "checks_ops_surface_inventory",
+  "checks_ops_artifacts_not_tracked",
+  "checks_ops_no_python_legacy_runtime_refs",
+  "checks_ops_no_legacy_runner_paths",
+  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_scripts_areas_or_xtask_refs",
+  "checks_ops_artifacts_gitignore_policy",
+  "checks_ops_makefile_routes_dev_atlas",
+  "checks_ops_workflow_routes_dev_atlas",
 ]
 domains = ["ops"]
 tags_any = ["fast"]
@@ -267,19 +267,19 @@ tags_any = ["fast"]
 [[suites]]
 id = "ci"
 checks = [
-  "ops_surface_manifest",
-  "ops_tree_contract",
-  "ops_no_legacy_tooling_refs",
-  "ops_generated_readonly_markers",
-  "ops_schema_presence",
-  "ops_manifest_integrity",
-  "ops_surface_inventory",
-  "ops_artifacts_not_tracked",
-  "ops_no_atlasctl_invocations",
-  "ops_no_scripts_areas_or_xtask_refs",
-  "ops_artifacts_gitignore_policy",
-  "ops_makefile_routes_dev_atlas",
-  "ops_workflow_routes_dev_atlas",
+  "checks_ops_surface_manifest",
+  "checks_ops_tree_contract",
+  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_generated_readonly_markers",
+  "checks_ops_schema_presence",
+  "checks_ops_manifest_integrity",
+  "checks_ops_surface_inventory",
+  "checks_ops_artifacts_not_tracked",
+  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_scripts_areas_or_xtask_refs",
+  "checks_ops_artifacts_gitignore_policy",
+  "checks_ops_makefile_routes_dev_atlas",
+  "checks_ops_workflow_routes_dev_atlas",
 ]
 domains = []
 tags_any = []
@@ -287,22 +287,46 @@ tags_any = []
 [[suites]]
 id = "ci_fast"
 checks = [
-  "ops_surface_manifest",
-  "ops_tree_contract",
-  "ops_no_legacy_tooling_refs",
-  "ops_generated_readonly_markers",
-  "ops_schema_presence",
-  "ops_manifest_integrity",
-  "ops_surface_inventory",
-  "ops_artifacts_not_tracked",
-  "ops_no_atlasctl_invocations",
-  "ops_no_scripts_areas_or_xtask_refs",
-  "ops_artifacts_gitignore_policy",
-  "ops_makefile_routes_dev_atlas",
-  "ops_workflow_routes_dev_atlas",
-  "repo_import_boundary",
-  "docs_index_links",
-  "make_wrapper_commands",
+  "checks_ops_surface_manifest",
+  "checks_ops_tree_contract",
+  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_generated_readonly_markers",
+  "checks_ops_schema_presence",
+  "checks_ops_manifest_integrity",
+  "checks_ops_surface_inventory",
+  "checks_ops_artifacts_not_tracked",
+  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_scripts_areas_or_xtask_refs",
+  "checks_ops_artifacts_gitignore_policy",
+  "checks_ops_makefile_routes_dev_atlas",
+  "checks_ops_workflow_routes_dev_atlas",
+  "checks_repo_import_boundary",
+  "checks_docs_index_links",
+  "checks_make_wrapper_commands",
+]
+domains = []
+tags_any = []
+
+[[suites]]
+id = "local"
+checks = []
+domains = ["ops", "repo", "docs", "make"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "deep"
+checks = []
+domains = ["ops", "repo", "docs", "make"]
+tags_any = []
+
+[[suites]]
+id = "doctor"
+checks = [
+  "checks_ops_tree_contract",
+  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_surface_manifest",
+  "checks_ops_makefile_routes_dev_atlas",
+  "checks_ops_workflow_routes_dev_atlas",
 ]
 domains = []
 tags_any = []

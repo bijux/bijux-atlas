@@ -13,6 +13,14 @@ fn is_lower_snake(input: &str) -> bool {
             .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
 }
 
+fn is_canonical_check_id(raw: &str) -> bool {
+    let mut parts = raw.split('_');
+    match (parts.next(), parts.next(), parts.next(), parts.next()) {
+        (Some("checks"), Some(_domain), Some(_area), Some(_name)) => parts.all(|p| !p.is_empty()),
+        _ => false,
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct CheckId(String);
@@ -26,6 +34,11 @@ impl CheckId {
         if !is_lower_snake(raw) {
             return Err(format!(
                 "invalid check id `{raw}`: expected lowercase snake_case"
+            ));
+        }
+        if !is_canonical_check_id(raw) {
+            return Err(format!(
+                "invalid check id `{raw}`: expected checks_<domain>_<area>_<name>"
             ));
         }
         Ok(Self(raw.to_string()))
@@ -45,6 +58,11 @@ impl fmt::Display for CheckId {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DomainId {
+    Root,
+    Workflows,
+    Configs,
+    Docker,
+    Crates,
     Ops,
     Repo,
     Docs,
@@ -245,7 +263,11 @@ pub struct RunSummary {
 pub struct RunReport {
     pub run_id: RunId,
     pub repo_root: String,
+    pub command: String,
+    pub selections: BTreeMap<String, String>,
     pub results: Vec<CheckResult>,
+    pub durations_ms: BTreeMap<CheckId, u64>,
+    pub counts: RunSummary,
     pub summary: RunSummary,
     pub timings_ms: BTreeMap<CheckId, u64>,
 }
@@ -255,11 +277,15 @@ pub fn report_json_schema() -> Value {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "title": "bijux-dev-atlas run report",
         "type": "object",
-        "required": ["run_id", "repo_root", "results", "summary", "timings_ms"],
+        "required": ["run_id", "repo_root", "command", "selections", "results", "durations_ms", "counts", "summary", "timings_ms"],
         "properties": {
             "run_id": {"type": "string"},
             "repo_root": {"type": "string"},
+            "command": {"type": "string"},
+            "selections": {"type": "object", "additionalProperties": {"type": "string"}},
             "results": {"type": "array"},
+            "durations_ms": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+            "counts": {"type": "object"},
             "summary": {"type": "object"},
             "timings_ms": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
         }
@@ -272,7 +298,8 @@ mod tests {
 
     #[test]
     fn check_id_validation() {
-        assert!(CheckId::parse("ops_surface_manifest").is_ok());
+        assert!(CheckId::parse("checks_ops_surface_manifest").is_ok());
+        assert!(CheckId::parse("ops_surface_manifest").is_err());
         assert!(CheckId::parse("OPS_SURFACE").is_err());
         assert!(CheckId::parse("").is_err());
     }
@@ -306,5 +333,9 @@ mod tests {
         let required_text = required.map(Value::to_string).unwrap_or_default();
         assert!(required_text.contains("run_id"));
         assert!(required_text.contains("results"));
+        assert!(required_text.contains("command"));
+        assert!(required_text.contains("selections"));
+        assert!(required_text.contains("durations_ms"));
+        assert!(required_text.contains("counts"));
     }
 }

@@ -43,3 +43,39 @@ fn default_list_output_matches_golden() {
             .expect("golden");
     assert_eq!(rendered, golden);
 }
+
+#[test]
+fn registry_golden_files_have_single_writer() {
+    let root = repo_root();
+    let src_root = root.join("crates/bijux-dev-atlas-core");
+    let mut stack = vec![src_root.clone()];
+    let mut references = Vec::new();
+    while let Some(path) = stack.pop() {
+        for entry in fs::read_dir(path).expect("read_dir") {
+            let entry = entry.expect("entry");
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+                continue;
+            }
+            if path.extension().and_then(|v| v.to_str()) != Some("rs") {
+                continue;
+            }
+            let text = fs::read_to_string(&path).expect("read");
+            if text.contains("tests/goldens/list_default.txt")
+                || text.contains("tests/goldens/suite_ops_fast.txt")
+            {
+                references.push(path);
+            }
+        }
+    }
+    assert_eq!(
+        references.len(),
+        1,
+        "registry goldens must be referenced by a single writer test file"
+    );
+    assert!(
+        references[0].ends_with("tests/registry_golden.rs"),
+        "single writer must be registry_golden.rs"
+    );
+}
