@@ -1,19 +1,19 @@
 # Migration Status
 
-`atlasctl` is the single scripting control plane.  
-Use machine output from `atlasctl migration status --json` as the source for migration tracking.
+`bijux dev atlas` is the active development control plane for this repository.
+
+`atlasctl` migration work remains in progress until `packages/atlasctl/` is deleted and repo-wide references are removed. Track deletion readiness through the atlasctl deletion plan and repo checks.
 
 ## Commands
 
-- `atlasctl inventory legacy-scripts --format json --dry-run`
-- `atlasctl inventory commands --format json --dry-run`
-- `atlasctl migration status --json`
-- `atlasctl migration gate --json`
-- `atlasctl migration diff --json`
-- `atlasctl inventory touched-paths --command <name> --format json --dry-run`
+- `cargo run -p bijux-dev-atlas -- check doctor --format json`
+- `cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json`
+- `cargo run -p bijux-dev-atlas -- ops validate --format json`
+- `cargo run -p bijux-dev-atlas -- docs verify-contracts --format json`
+- `cargo run -p bijux-dev-atlas -- configs validate --format json`
 
 ## Policy
 
-- Migration gate enforces remaining-script budget using `configs/policy/migration_exceptions.json`.
-- Any expired migration exception fails the gate.
-- Docs and Makefiles must not reference legacy script-tree paths.
+- New control-plane automation must be implemented in Rust crates and exposed through `bijux dev atlas ...`.
+- Makefiles and workflows are thin wrappers and must delegate to `bijux dev atlas ...` or `cargo`.
+- New `atlasctl` references are forbidden outside explicit tombstones under `docs/tombstones/atlasctl/`.

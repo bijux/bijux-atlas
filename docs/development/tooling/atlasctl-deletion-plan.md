@@ -27,6 +27,7 @@ Remove the legacy Python control-plane package (`packages/atlasctl`) and all rep
 4. Delete `packages/atlasctl/`.
 5. Remove atlasctl historical docs or convert to explicit archival notes.
 6. Lock reintroduction with repo checks and tests.
+7. Use `atlasctl-deletion-pr-checklist.md` for final deletion PR verification.
 
 ## Historical Note Policy
 
