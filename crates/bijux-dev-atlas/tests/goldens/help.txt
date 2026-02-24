@@ -13,5 +13,6 @@ Commands:
 Options:
       --quiet    
       --verbose  
+      --debug    
   -h, --help     Print help
   -V, --version  Print version
