@@ -9,6 +9,7 @@ rust-version.workspace = true
 clap = { version = "4", features = ["derive"] }
 serde.workspace = true
 serde_json.workspace = true
+sha2 = "0.10"
 bijux-dev-atlas-core.workspace = true
 bijux-dev-atlas-model.workspace = true
 bijux-dev-atlas-adapters.workspace = true

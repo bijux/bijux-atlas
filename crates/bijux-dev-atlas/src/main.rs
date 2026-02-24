@@ -2,6 +2,7 @@
 
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
+use std::{fs, io::Write};
 
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::{
@@ -12,6 +13,7 @@ use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_in
 use bijux_dev_atlas_model::{CheckId, DomainId, RunId, SuiteId, Tag};
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
 #[derive(Parser, Debug)]
 #[command(name = "bijux-dev-atlas", version)]
@@ -129,7 +131,7 @@ enum FormatArg {
 enum OpsCommand {
     Doctor(OpsCommonArgs),
     Validate(OpsCommonArgs),
-    Render(OpsCommonArgs),
+    Render(OpsRenderArgs),
     Install(OpsCommonArgs),
     Status(OpsCommonArgs),
     ListProfiles(OpsCommonArgs),
@@ -148,6 +150,31 @@ enum OpsCommand {
         #[command(subcommand)]
         command: OpsPinsCommand,
     },
+}
+
+#[derive(Args, Debug, Clone)]
+struct OpsRenderArgs {
+    #[command(flatten)]
+    common: OpsCommonArgs,
+    #[arg(long, value_enum, default_value_t = OpsRenderTarget::Helm)]
+    target: OpsRenderTarget,
+    #[arg(long, default_value_t = false)]
+    check: bool,
+    #[arg(long, default_value_t = false)]
+    write: bool,
+    #[arg(long, default_value_t = false)]
+    stdout: bool,
+    #[arg(long, default_value_t = false)]
+    diff: bool,
+    #[arg(long)]
+    helm_binary: Option<String>,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+enum OpsRenderTarget {
+    Helm,
+    Kustomize,
+    Kind,
 }
 
 #[derive(Subcommand, Debug)]
@@ -305,6 +332,47 @@ impl OpsProcess {
                 "failed to probe tool `{name}`: {err}"
             ))),
         }
+    }
+
+    fn run_subprocess(
+        &self,
+        binary: &str,
+        args: &[String],
+        cwd: &Path,
+    ) -> Result<(String, serde_json::Value), OpsCommandError> {
+        if !self.allow_subprocess {
+            return Err(OpsCommandError::Effect(
+                "subprocess is denied; pass --allow-subprocess".to_string(),
+            ));
+        }
+        let mut cmd = ProcessCommand::new(binary);
+        cmd.args(args).current_dir(cwd);
+        cmd.env_clear();
+        for key in ["PATH", "HOME", "KUBECONFIG", "HELM_CACHE_HOME", "HELM_CONFIG_HOME", "HELM_DATA_HOME"] {
+            if let Ok(value) = std::env::var(key) {
+                cmd.env(key, value);
+            }
+        }
+        let output = cmd.output().map_err(|err| {
+            OpsCommandError::Tool(format!("failed to run `{binary}`: {err}"))
+        })?;
+        let stdout = String::from_utf8(output.stdout).map_err(|err| {
+            OpsCommandError::Tool(format!("`{binary}` emitted non-utf8 stdout: {err}"))
+        })?;
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+            return Err(OpsCommandError::Tool(format!(
+                "subprocess `{binary}` failed: status={} stderr={stderr}",
+                output.status
+            )));
+        }
+        let event = serde_json::json!({
+            "binary": binary,
+            "argv": args,
+            "cwd": cwd.display().to_string(),
+            "env_allowlist": ["PATH", "HOME", "KUBECONFIG", "HELM_CACHE_HOME", "HELM_CONFIG_HOME", "HELM_DATA_HOME"]
+        });
+        Ok((stdout, event))
     }
 }
 
@@ -496,6 +564,76 @@ fn emit_payload(format: FormatArg, out: Option<PathBuf>, payload: &serde_json::V
     Ok(rendered)
 }
 
+fn sha256_hex(content: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    format!("{:x}", hasher.finalize())
+}
+
+fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String> {
+    let mut errors = Vec::new();
+    let required_kinds = match target {
+        OpsRenderTarget::Helm => ["Namespace", "Deployment", "Service"].to_vec(),
+        OpsRenderTarget::Kind | OpsRenderTarget::Kustomize => Vec::new(),
+    };
+    for kind in required_kinds {
+        let needle = format!("kind: {kind}");
+        if !rendered.contains(&needle) {
+            errors.push(format!("missing required rendered resource `{needle}`"));
+        }
+    }
+    if rendered.contains("kind: ClusterRole") {
+        errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());
+    }
+    for line in rendered.lines() {
+        if line.trim_start().starts_with("image:") && line.contains(":latest") {
+            errors.push(format!("rendered image uses forbidden latest tag: {}", line.trim()));
+        }
+    }
+    for marker in ["generatedAt:", "timestamp:", "creationTimestamp:"] {
+        if rendered.contains(marker) {
+            errors.push(format!("render output contains forbidden timestamp marker `{marker}`"));
+        }
+    }
+    errors.sort();
+    errors.dedup();
+    errors
+}
+
+fn validate_helm_dependencies(ops_root: &Path) -> Vec<String> {
+    let mut errors = Vec::new();
+    let chart_dir = ops_root.join("k8s/charts/bijux-atlas");
+    let chart_yaml_path = chart_dir.join("Chart.yaml");
+    let chart_yaml = match fs::read_to_string(&chart_yaml_path) {
+        Ok(value) => value,
+        Err(err) => {
+            return vec![format!(
+                "failed to read {}: {err}",
+                chart_yaml_path.display()
+            )];
+        }
+    };
+    if chart_yaml.contains("\ndependencies:") {
+        let lock_path = chart_dir.join("Chart.lock");
+        if !lock_path.exists() {
+            errors.push(format!(
+                "helm dependencies are declared but {} is missing",
+                lock_path.display()
+            ));
+        }
+    }
+    errors
+}
+
+fn render_profile_artifact_base(profile: &str, target: OpsRenderTarget) -> String {
+    let target = match target {
+        OpsRenderTarget::Helm => "helm",
+        OpsRenderTarget::Kustomize => "kustomize",
+        OpsRenderTarget::Kind => "kind",
+    };
+    format!("render/{profile}/{target}")
+}
+
 fn run_ops_checks(common: &OpsCommonArgs, suite: &str, include_internal: bool, include_slow: bool) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let selectors = parse_selectors(
@@ -593,14 +731,9 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_all", true, true)?;
             render_ops_validation_output(&common, "validate", &inventory_errors, &checks_rendered, checks_exit, summary)
         }
-        OpsCommand::Render(common) => {
+        OpsCommand::Render(args) => {
+            let common = &args.common;
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            if !common.allow_subprocess {
-                return Err(OpsCommandError::Effect(
-                    "render requires --allow-subprocess".to_string(),
-                )
-                .to_stable_message());
-            }
             let ops_root =
                 resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
             let fs_adapter = OpsFs::new(repo_root.clone(), ops_root.clone());
@@ -609,21 +742,170 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             let profile = resolve_profile(common.profile.clone(), &profiles)
                 .map_err(|e| e.to_stable_message())?;
             let run_id = run_id_or_default(common.run_id.clone())?;
-            let payload = serde_json::json!({
-                "repo_root": repo_root.display().to_string(),
-                "ops_root": ops_root.display().to_string(),
-                "profile": profile.name,
-                "kind_profile": profile.kind_profile,
-                "cluster_config": profile.cluster_config,
-                "run_id": run_id.as_str(),
+            let process = OpsProcess::new(common.allow_subprocess);
+            let target_name = match args.target {
+                OpsRenderTarget::Helm => "helm",
+                OpsRenderTarget::Kustomize => "kustomize",
+                OpsRenderTarget::Kind => "kind",
+            };
+
+            let (rendered_manifest, subprocess_events): (String, Vec<serde_json::Value>) = match args.target {
+                OpsRenderTarget::Helm => {
+                    if !common.allow_subprocess {
+                        return Err(OpsCommandError::Effect(
+                            "helm render requires --allow-subprocess".to_string(),
+                        )
+                        .to_stable_message());
+                    }
+                    let helm_binary = args.helm_binary.clone().unwrap_or_else(|| "helm".to_string());
+                    let chart_path = ops_root.join("k8s/charts/bijux-atlas");
+                    let values_path = ops_root.join("k8s/charts/bijux-atlas/values.yaml");
+                    let cmd_args = vec![
+                        "template".to_string(),
+                        "bijux-atlas".to_string(),
+                        chart_path.display().to_string(),
+                        "--namespace".to_string(),
+                        "bijux-atlas".to_string(),
+                        "-f".to_string(),
+                        values_path.display().to_string(),
+                    ];
+                    let (stdout, event) = process
+                        .run_subprocess(&helm_binary, &cmd_args, &repo_root)
+                        .map_err(|e| e.to_stable_message())?;
+                    (stdout, vec![event])
+                }
+                OpsRenderTarget::Kind => {
+                    let cluster_config_path = repo_root.join(&profile.cluster_config);
+                    let content = fs::read_to_string(&cluster_config_path).map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to read cluster config {}: {err}",
+                            cluster_config_path.display()
+                        ))
+                        .to_stable_message()
+                    })?;
+                    (format!("# source: {}\n{content}", profile.cluster_config), Vec::new())
+                }
+                OpsRenderTarget::Kustomize => {
+                    return Err(
+                        OpsCommandError::Effect(
+                            "kustomize render is not enabled; use --target helm or --target kind".to_string(),
+                        )
+                        .to_stable_message(),
+                    )
+                }
+            };
+
+            let mut validation_errors = validate_render_output(&rendered_manifest, args.target);
+            if matches!(args.target, OpsRenderTarget::Helm) {
+                validation_errors.extend(validate_helm_dependencies(&ops_root));
+            }
+            validation_errors.sort();
+            validation_errors.dedup();
+
+            let write_enabled = args.write || (!args.check && !args.stdout);
+            let rel_base = render_profile_artifact_base(&profile.name, args.target);
+            let rel_yaml = format!("{rel_base}/render.yaml");
+            let rel_index = format!("{rel_base}/render.index.json");
+            let mut written_files = Vec::new();
+            let mut rows = Vec::new();
+
+            let render_sha = sha256_hex(&rendered_manifest);
+            let manifest_row = serde_json::json!({
+                "path": rel_yaml,
+                "sha256": render_sha,
+                "bytes": rendered_manifest.len(),
             });
-            let render_path = fs_adapter
-                .write_artifact_json(&run_id, "render/render.summary.json", &payload)
-                .map_err(|e| e.to_stable_message())?;
-            let text = format!("rendered ops profile `{}` to {}", payload["profile"].as_str().unwrap_or(""), render_path.display());
-            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
-            let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-            Ok((rendered, 0))
+            rows.push(manifest_row.clone());
+
+            if write_enabled {
+                let yaml_path = repo_root
+                    .join("artifacts/atlas-dev/ops")
+                    .join(run_id.as_str())
+                    .join(&rel_yaml);
+                if let Some(parent) = yaml_path.parent() {
+                    fs::create_dir_all(parent).map_err(|err| {
+                        OpsCommandError::Manifest(format!(
+                            "failed to create {}: {err}",
+                            parent.display()
+                        ))
+                        .to_stable_message()
+                    })?;
+                }
+                let mut file = fs::File::create(&yaml_path).map_err(|err| {
+                    OpsCommandError::Manifest(format!(
+                        "failed to create {}: {err}",
+                        yaml_path.display()
+                    ))
+                    .to_stable_message()
+                })?;
+                file.write_all(rendered_manifest.as_bytes()).map_err(|err| {
+                    OpsCommandError::Manifest(format!(
+                        "failed to write {}: {err}",
+                        yaml_path.display()
+                    ))
+                    .to_stable_message()
+                })?;
+                written_files.push(rel_yaml.clone());
+
+                let index_payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": run_id.as_str(),
+                    "profile": profile.name,
+                    "target": target_name,
+                    "files": rows
+                });
+                let index_path = fs_adapter
+                    .write_artifact_json(&run_id, &rel_index, &index_payload)
+                    .map_err(|e| e.to_stable_message())?;
+                written_files.push(
+                    index_path
+                        .strip_prefix(repo_root.join("artifacts/atlas-dev/ops").join(run_id.as_str()))
+                        .unwrap_or(index_path.as_path())
+                        .display()
+                        .to_string(),
+                );
+            }
+
+            let text = if args.stdout {
+                rendered_manifest.clone()
+            } else {
+                format!(
+                    "render target={target_name} profile={} run_id={} wrote={} validation_errors={}",
+                    profile.name,
+                    run_id.as_str(),
+                    write_enabled,
+                    validation_errors.len()
+                )
+            };
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "text": text,
+                "rows": [{
+                    "repo_root": repo_root.display().to_string(),
+                    "ops_root": ops_root.display().to_string(),
+                    "profile": profile.name,
+                    "kind_profile": profile.kind_profile,
+                    "cluster_config": profile.cluster_config,
+                    "run_id": run_id.as_str(),
+                    "target": target_name,
+                    "write_enabled": write_enabled,
+                    "check_only": args.check,
+                    "stdout_mode": args.stdout,
+                    "diff_mode": args.diff,
+                    "written_files": written_files,
+                    "render_index_files": rows,
+                    "validation_errors": validation_errors,
+                    "subprocess_events": subprocess_events
+                }],
+                "summary": {
+                    "total": 1,
+                    "errors": if validation_errors.is_empty() { 0 } else { validation_errors.len() },
+                    "warnings": 0
+                }
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            let exit = if validation_errors.is_empty() { 0 } else { 1 };
+            Ok((rendered, exit))
         }
         OpsCommand::Install(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
