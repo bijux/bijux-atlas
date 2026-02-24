@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
+import os
 from typing import Any
 
 from .adapters import FS
@@ -27,6 +28,7 @@ from .model import (
 from .policy import Capabilities, EffectPolicy, evaluate_effects
 from .registry import list_checks
 from .selectors import select_checks
+from .models import EvidenceRef
 
 
 @dataclass(frozen=True)
@@ -55,6 +57,25 @@ def _run_with_timeout(fn: Any, arg: Any, timeout_ms: int) -> Any:
     with ThreadPoolExecutor(max_workers=1) as pool:
         future = pool.submit(fn, arg)
         return future.result(timeout=max(0.001, timeout_ms / 1000.0))
+
+
+def resolve_run_id(run_id: str | None = None) -> str:
+    raw = str(run_id or os.environ.get("ATLASCTL_RUN_ID", "")).strip()
+    return raw or "run-deterministic"
+
+
+def create_check_context(repo_root: Path, *, artifacts_root: Path | None = None, env: dict[str, str] | None = None) -> CheckContext:
+    root = repo_root.resolve()
+    fs = FS(repo_root=root, allowed_roots=(DEFAULT_WRITE_ROOT,))
+    _ = artifacts_root or (root / "artifacts")
+    return CheckContext(repo_root=root, fs=fs, env=env or {})
+
+
+def write_evidence_ref(*, run_id: str, rel_path: str, description: str = "", content_type: str = "text/plain") -> EvidenceRef:
+    rid = resolve_run_id(run_id)
+    rel = str(rel_path).strip().lstrip("/")
+    path = f"artifacts/evidence/{rid}/{rel}"
+    return EvidenceRef(kind="artifact", path=path, description=description, content_type=content_type)
 
 
 def _call_check_function(check: CheckDef, ctx: CheckContext) -> tuple[int, list[str], tuple[Violation, ...]]:
@@ -266,9 +287,7 @@ def run_checks(
     capabilities: Capabilities | None = None,
 ) -> CheckRunReport:
     if isinstance(context, Path):
-        repo_root = context.resolve()
-        fs = FS(repo_root=repo_root, allowed_roots=(DEFAULT_WRITE_ROOT,))
-        ctx = CheckContext(repo_root=repo_root, fs=fs, env={})
+        ctx = create_check_context(context)
     else:
         ctx = context
 
@@ -301,6 +320,8 @@ def run_checks(
     started = time.perf_counter()
 
     for check in selected:
+        if opts.quiet:
+            print(f"running {check.id}")
         result = _run_single_check(check, ctx, effect_policy=effect_policy, budget_profile=budget)
         rows.append(result)
         if result.status in {CheckStatus.FAIL, CheckStatus.ERROR}:
@@ -349,10 +370,13 @@ def stable_exit_code(report: CheckRunReport) -> int:
 
 __all__ = [
     "BudgetProfile",
+    "create_check_context",
     "EngineOptions",
     "extract_failures",
     "group_failures_by_domain_area",
+    "resolve_run_id",
     "run_checks",
     "stable_exit_code",
     "top_n_slowest",
+    "write_evidence_ref",
 ]
