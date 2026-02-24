@@ -212,4 +212,59 @@ fn ops_render_kind_check_supports_json_format_without_subprocess() {
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    let row = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .and_then(|v| v.first())
+        .expect("row");
+    let actual = serde_json::json!({
+        "target": row.get("target").and_then(|v| v.as_str()).unwrap_or(""),
+        "write_enabled": row.get("write_enabled").and_then(|v| v.as_bool()).unwrap_or(false),
+        "check_only": row.get("check_only").and_then(|v| v.as_bool()).unwrap_or(false),
+        "stdout_mode": row.get("stdout_mode").and_then(|v| v.as_bool()).unwrap_or(false),
+    });
+    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_render_kind_contract.json");
+    let golden_text = fs::read_to_string(golden_path).expect("golden");
+    let golden: serde_json::Value = serde_json::from_str(&golden_text).expect("golden json");
+    assert_eq!(actual, golden);
+}
+
+#[test]
+fn ops_render_helm_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "render",
+            "--target",
+            "helm",
+            "--check",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops render helm");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("helm render requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_render_kustomize_is_forbidden() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "render",
+            "--target",
+            "kustomize",
+            "--check",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops render kustomize");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("kustomize render is not enabled"));
 }
