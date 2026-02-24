@@ -38,9 +38,9 @@ def run(repo_root: Path) -> tuple[int, list[str]]:
 
     errors: list[str] = []
     for name in sorted(required - seen):
-        errors.append(f"missing required root entry: {name}")
+        errors.append(f"ROOT_SHAPE_MISSING_REQUIRED|entry={name}|expected=required")
     for name in sorted(seen - all_allowed):
-        errors.append(f"unexpected root entry: {name}")
+        errors.append(f"ROOT_SHAPE_UNEXPECTED_ENTRY|entry={name}|expected=required_or_allowed_or_local_noise")
     # Local noise entries are tolerated and should not fail the root-shape contract.
 
     return (0 if not errors else 1), errors
