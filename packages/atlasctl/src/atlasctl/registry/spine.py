@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..checks.registry.ssot import REGISTRY_SCHEMA, load_registry_entries
+from ..checks.registry_legacy.ssot import REGISTRY_SCHEMA, load_registry_entries
 from ..cli.surface_registry import command_registry
 from ..core.meta.owners import load_owner_catalog
 import importlib

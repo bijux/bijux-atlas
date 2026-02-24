@@ -105,7 +105,7 @@ def check_cli_main_loc_budget(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_registry_generated_readonly(repo_root: Path) -> tuple[int, list[str]]:
     try:
-        from atlasctl.checks.registry.ssot import generate_registry_json
+        from atlasctl.checks.registry_legacy.ssot import generate_registry_json
     except Exception as exc:  # noqa: BLE001
         return 1, [f"unable to load registry generator: {exc}"]
     try:

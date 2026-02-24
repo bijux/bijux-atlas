@@ -11,7 +11,7 @@ from ...checks.registry import alias_expiry_violations, check_rename_aliases, ch
 from ...checks.report import build_failures_payload, build_triage_failures_payload, build_triage_slow_payload, resolve_last_run_report
 from ...checks.runner import report_from_payload
 from ...checks.effects import CheckEffect, normalize_effect
-from ...checks.registry.ssot import generate_registry_json
+from ...checks.registry_legacy.ssot import generate_registry_json
 from ...contracts.ids import CHECK_LIST, CHECK_TAXONOMY
 from ...contracts.validate_self import validate_self
 from ...core.exit_codes import ERR_CONTRACT, ERR_USER

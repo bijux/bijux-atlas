@@ -8,7 +8,7 @@ from typing import Callable, Iterable
 
 from ..checks.model import CheckDef
 from ..engine.execution import CommandCheckDef, run_command_checks, run_function_checks
-from ..checks.registry.catalog import list_domains, run_checks_for_domain
+from ..checks.registry_legacy.catalog import list_domains, run_checks_for_domain
 from ..contracts.ids import CHECK_RUN
 from ..contracts.validate_self import validate_self
 
