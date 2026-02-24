@@ -19,6 +19,8 @@ Canonical page: [`docs/contracts/plugin/spec.md`](spec.md)
 
 - Runtime plugin command list: `crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md`
 - Dev control-plane command list: `crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md`
+- Dev ops command list snapshot: `crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md`
+- Dev configs command list snapshot: `crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md`
 
 ## Metadata Handshake
 

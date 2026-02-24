@@ -1,0 +1,17 @@
+ops
+doctor
+validate
+render
+install
+status
+list-profiles
+explain-profile
+list-tools
+verify-tools
+list-actions
+up
+down
+clean
+reset
+pins
+generate
