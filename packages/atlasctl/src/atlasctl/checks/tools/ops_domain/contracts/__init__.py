@@ -285,7 +285,7 @@ def check_ops_load_runbook_suite_names_native(repo_root: Path) -> tuple[int, lis
     missing = [str(s.get("name")) for s in manifest.get("suites", []) if isinstance(s, dict) and s.get("name") and str(s.get("name")) not in runbook]
     if missing:
         return 1, [f"runbook missing suite name: {name}" for name in missing]
-    return 0, ["runbook suite-name coverage passed"]
+    return 0, []
 
 
 def check_ops_obs_endpoint_metrics_coverage_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -317,7 +317,7 @@ def check_ops_obs_endpoint_metrics_coverage_native(repo_root: Path) -> tuple[int
         for metric in entry.get("required_metrics", []):
             if metric not in known_metrics:
                 errors.append(f"unknown metric `{metric}` for endpoint {entry.get('method')} {entry.get('path')}")
-    return (0 if not errors else 1), (["endpoint metric coverage check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_obs_endpoint_trace_coverage_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -352,7 +352,7 @@ def check_ops_obs_endpoint_trace_coverage_native(repo_root: Path) -> tuple[int, 
         for span in entry.get("required_trace_spans", []):
             if span not in span_names:
                 errors.append(f"unknown trace span `{span}` for endpoint {entry.get('method')} {entry.get('path')}")
-    return (0 if not errors else 1), (["endpoint trace coverage check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_obs_budgets_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -369,7 +369,7 @@ def check_ops_obs_budgets_native(repo_root: Path) -> tuple[int, list[str]]:
         missing = sorted(set(labels) - spec_labels)
         if missing:
             errors.append(f"metric `{metric}` missing required labels from budget: {', '.join(missing)}")
-    return (0 if not errors else 1), (["observability budgets check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_obs_profile_goldens_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -396,7 +396,7 @@ def check_ops_obs_profile_goldens_native(repo_root: Path) -> tuple[int, list[str
                     json.loads(path.read_text(encoding="utf-8"))
                 except Exception as exc:
                     errors.append(f"profile {profile} invalid json in {rel}: {exc}")
-    return (0 if not errors else 1), (["obs profile goldens check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
