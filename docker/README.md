@@ -20,7 +20,7 @@ make docker-release
 
 - `docker/images/`: image definitions (`runtime/` is canonical).
 - `docker/contracts/`: policy contracts (allowlists, pinning, SBOM, size budget).
-- `docker/scripts/`: docker-focused helper scripts.
+- `docker/`: container build and runtime assets.
 
 ## Runtime Smoke
 

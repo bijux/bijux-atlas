@@ -42,8 +42,6 @@ This section does not duplicate full command reference details from each tooling
 - [command inventory](command-inventory.md)
 - [build outputs](build-outputs.md)
 - [ops command inventory](ops-command-inventory.md)
-- [atlasctl deletion PR checklist](atlasctl-deletion-pr-checklist.md)
-- [atlasctl migration map](atlasctl-migration-map.md)
 - [bijux-atlas-py roadmap](bijux-atlas-py.md)
 - [Python version policy](python-version-policy.md)
 - [Scripts air-gapped mode](scripts-air-gapped.md)

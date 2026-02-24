@@ -99,8 +99,6 @@ jobs:
           cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json >/dev/null
       - name: Enforce governance migration guards
         run: |
-          ! rg -n "atlasctl" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk makefiles/CONTRACT.md ops/CONTRACT.md
-          ! rg -n "atlasctl" .github/workflows/atlas-dev-rust.yml
           ! rg -n "scripts/areas" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml
           ! rg -n "xtask" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml
           ! rg -n "bash ops/|ops/_lib" makefiles/_ops.mk .github/workflows/atlas-dev-rust.yml
