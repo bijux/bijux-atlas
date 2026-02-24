@@ -210,3 +210,70 @@ pub(crate) fn run_capabilities_command(
     let rendered = emit_payload(format, out, &payload)?;
     Ok((rendered, 0))
 }
+
+pub(crate) fn run_version_command(
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "name": "bijux-dev-atlas",
+        "version": env!("CARGO_PKG_VERSION"),
+        "git_hash": option_env!("BIJUX_GIT_HASH"),
+    });
+    let rendered = match format {
+        FormatArg::Text => {
+            let version = payload
+                .get("version")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown");
+            let git_hash = payload
+                .get("git_hash")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown");
+            format!("bijux-dev-atlas {version}\ngit_hash: {git_hash}")
+        }
+        _ => emit_payload(format, out.clone(), &payload)?,
+    };
+    if matches!(format, FormatArg::Text) {
+        write_output_if_requested(out, &rendered)?;
+    }
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_help_inventory_command(
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "name": "bijux-dev-atlas",
+        "commands": [
+            {"name": "version", "kind": "leaf"},
+            {"name": "help", "kind": "leaf"},
+            {"name": "check", "kind": "group", "subcommands": ["registry", "list", "explain", "doctor", "run"]},
+            {"name": "ops", "kind": "group"},
+            {"name": "docs", "kind": "group"},
+            {"name": "configs", "kind": "group"},
+            {"name": "policies", "kind": "group"},
+            {"name": "docker", "kind": "group"},
+            {"name": "workflows", "kind": "group"},
+            {"name": "gates", "kind": "group"},
+            {"name": "capabilities", "kind": "leaf"}
+        ]
+    });
+    let rendered = match format {
+        FormatArg::Text => payload["commands"]
+            .as_array()
+            .unwrap_or(&Vec::new())
+            .iter()
+            .filter_map(|row| row.get("name").and_then(|v| v.as_str()))
+            .collect::<Vec<_>>()
+            .join("\n"),
+        _ => emit_payload(format, out.clone(), &payload)?,
+    };
+    if matches!(format, FormatArg::Text) {
+        write_output_if_requested(out, &rendered)?;
+    }
+    Ok((rendered, 0))
+}

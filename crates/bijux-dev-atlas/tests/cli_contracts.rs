@@ -56,6 +56,45 @@ fn capabilities_supports_json_format() {
 }
 
 #[test]
+fn version_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .arg("version")
+        .args(["--format", "json"])
+        .output()
+        .expect("version json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("name").and_then(|v| v.as_str()),
+        Some("bijux-dev-atlas")
+    );
+    assert!(payload.get("version").and_then(|v| v.as_str()).is_some());
+}
+
+#[test]
+fn help_inventory_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .arg("help")
+        .args(["--format", "json"])
+        .output()
+        .expect("help inventory json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let commands = payload
+        .get("commands")
+        .and_then(|v| v.as_array())
+        .expect("commands array");
+    assert!(commands.iter().any(|row| row.get("name").and_then(|v| v.as_str()) == Some("check")));
+    assert!(commands.iter().any(|row| row.get("name").and_then(|v| v.as_str()) == Some("ops")));
+    assert!(commands
+        .iter()
+        .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("policies")));
+}
+
+#[test]
 fn plugin_metadata_matches_umbrella_contract_shape() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .arg("--bijux-plugin-metadata")
