@@ -3,9 +3,7 @@
     {
       "charts": 1,
       "components": 7,
-      "inventory_errors": [
-        "unexpected ops top-level entry `ops/tools`"
-      ],
+      "inventory_errors": [],
       "mirror_entries": 2,
       "profiles": [
         {
@@ -76,11 +74,11 @@
     }
   ],
   "schema_version": 1,
-  "status": "failed",
+  "status": "ok",
   "summary": {
-    "errors": 1,
+    "errors": 0,
     "total": 1,
     "warnings": 0
   },
-  "text": "ops inventory: status=failed"
+  "text": "ops inventory: status=ok"
 }

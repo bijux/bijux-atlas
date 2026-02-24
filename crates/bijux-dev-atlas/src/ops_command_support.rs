@@ -240,7 +240,7 @@ pub(crate) fn validate_pins_completeness(
             if k == "schema_version" {
                 continue;
             }
-            if pins.images.get(k).is_none() {
+            if !pins.images.contains_key(k) {
                 errors.push(format!("pins missing image key `{k}`"));
             }
             if let Some(value) = v.as_str() {
@@ -441,6 +441,7 @@ pub(crate) mod ops_exit {
     pub const TOOL_MISSING: i32 = 4;
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn build_ops_run_report(
     command: &str,
     common: &OpsCommonArgs,
