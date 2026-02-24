@@ -4,11 +4,13 @@ import ast
 import json
 import os
 import re
+from datetime import date
 from pathlib import Path
 from typing import Iterable
 
 from ...core.process import run_command
 from ..model import CheckCategory, CheckDef
+from ..tools.root_policy import load_root_policy
 
 
 REGISTRY_PATH = "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"
@@ -911,6 +913,22 @@ def check_internal_adapters_module_quarantined(repo_root: Path) -> tuple[int, li
     return 0, []
 
 
+def check_root_policy_compat_shims_not_expired(repo_root: Path) -> tuple[int, list[str]]:
+    try:
+        policy = load_root_policy(repo_root)
+    except Exception as exc:
+        return 1, [f"root policy parse error: {exc}"]
+    errors: list[str] = []
+    for shim in sorted(policy.compat_shims):
+        expiry = policy.compat_shim_expiry.get(shim)
+        if expiry is None:
+            errors.append(f"compat shim `{shim}` missing expiry in checks/tools/root_policy.json::compat_shim_expiry")
+            continue
+        if date.today() > expiry:
+            errors.append(f"compat shim `{shim}` expired on {expiry.isoformat()}; remove shim or renew policy explicitly")
+    return (1, errors) if errors else (0, [])
+
+
 def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     registry_root = repo_root / "packages/atlasctl/src/atlasctl/checks/registry"
     if not registry_root.exists():
@@ -1479,6 +1497,17 @@ CHECKS = (
         check_internal_adapters_module_quarantined,
         category=CheckCategory.POLICY,
         fix_hint="Keep adapters module migration-only and mark it explicitly as compatibility adapter.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.root_policy_compat_shim_expiry",
+        "checks",
+        "require root-policy compatibility shims to declare expiry and stay within deprecation window",
+        500,
+        check_root_policy_compat_shims_not_expired,
+        category=CheckCategory.POLICY,
+        fix_hint="Add compat_shim_expiry metadata for each compat shim or remove expired shims from checks/tools/root_policy.json.",
         owners=("platform",),
         tags=("checks", "required"),
     ),

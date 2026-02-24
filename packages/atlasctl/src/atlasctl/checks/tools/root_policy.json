@@ -29,6 +29,10 @@
     "Dockerfile",
     "bin"
   ],
+  "compat_shim_expiry": {
+    "Dockerfile": "2026-06-30",
+    "bin": "2026-06-30"
+  },
   "local_noise": [
     ".idea",
     ".DS_Store",

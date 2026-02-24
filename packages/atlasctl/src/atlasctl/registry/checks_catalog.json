@@ -2338,6 +2338,52 @@
       "title": "enforce checks root entry budget"
     },
     {
+      "area": "root",
+      "default_enabled": true,
+      "description": "require root-policy compatibility shims to declare expiry and stay within deprecation window",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_root_policy_compat_shim_expiry",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_root_policy_compat_shim_expiry",
+      "impl_ref": {
+        "callable": "check_root_policy_compat_shims_not_expired",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add compat_shim_expiry metadata for each compat shim or remove expired shims from checks/tools/root_policy.json.",
+        "intent": "require root-policy compatibility shims to declare expiry and stay within deprecation window",
+        "legacy_id": "checks.root_policy_compat_shim_expiry",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require root-policy compatibility shims to declare expiry and stay within deprecation window"
+    },
+    {
       "area": "structured",
       "default_enabled": true,
       "description": "ratchet down legacy tuple check signatures in favor of structured results",
