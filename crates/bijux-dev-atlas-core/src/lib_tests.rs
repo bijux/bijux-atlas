@@ -227,6 +227,38 @@ fn run_checks_produces_summary() {
 }
 
 #[test]
+fn runner_results_are_stably_ordered_and_repeatable() {
+    let req = RunRequest {
+        repo_root: root(),
+        domain: None,
+        capabilities: Capabilities::deny_all(),
+        artifacts_root: None,
+        run_id: None,
+        command: None,
+    };
+    let selectors = Selectors::default();
+    let options = RunOptions::default();
+    let first = run_checks(&DeniedProcessRunner, &RealFs, &req, &selectors, &options)
+        .expect("first report");
+    let second = run_checks(&DeniedProcessRunner, &RealFs, &req, &selectors, &options)
+        .expect("second report");
+    let first_ids = first
+        .results
+        .iter()
+        .map(|row| row.id.as_str().to_string())
+        .collect::<Vec<_>>();
+    let second_ids = second
+        .results
+        .iter()
+        .map(|row| row.id.as_str().to_string())
+        .collect::<Vec<_>>();
+    let mut sorted = first_ids.clone();
+    sorted.sort();
+    assert_eq!(first_ids, sorted);
+    assert_eq!(first_ids, second_ids);
+}
+
+#[test]
 fn selector_by_suite_works() {
     let registry = load_registry(&root()).expect("registry");
     let selected = select_checks(
