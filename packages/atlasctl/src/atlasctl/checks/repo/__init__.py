@@ -217,7 +217,7 @@ from .contracts.test_guardrails import (
     check_test_taxonomy_layout,
     check_test_write_sandbox,
 )
-from ..domains.repo_root import (
+from ..tools.repo_root import (
     FORBIDDEN_ROOT_FILES_CHECK_ID,
     FORBIDDEN_ROOT_FILES_DESCRIPTION,
     FORBIDDEN_ROOT_NAMES_CHECK_ID,

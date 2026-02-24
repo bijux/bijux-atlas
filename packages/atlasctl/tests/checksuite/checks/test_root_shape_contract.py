@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.domains.repo_root.check_root_shape import run
+from atlasctl.checks.tools.repo_root.check_root_shape import run
 
 _WHITELIST_SRC = Path("packages/atlasctl/src/atlasctl/checks/tools/root_shape_whitelist.json")
 
