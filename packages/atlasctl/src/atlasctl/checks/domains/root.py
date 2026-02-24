@@ -64,6 +64,7 @@ CHECKS: tuple[CheckDef, ...] = (
         700,
         run_root_determinism,
         fix_hint="Stabilize generated root docs outputs and remove nondeterminism.",
+        effects=("subprocess",),
     ),
     CheckDef(
         "repo.root_shape",
