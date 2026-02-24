@@ -1,0 +1,20 @@
+[
+  {
+    "id": "policy.cache.dataset_count.exceeded",
+    "severity": "error",
+    "message": "dataset count exceeds cache policy budget",
+    "evidence": "dataset_count=99 max_dataset_count=8"
+  },
+  {
+    "id": "policy.cache.open_shards_per_pod.exceeded",
+    "severity": "error",
+    "message": "open shard count exceeds cache policy budget",
+    "evidence": "open_shards_per_pod=32 max_open_shards_per_pod=16"
+  },
+  {
+    "id": "policy.cache.disk_bytes.exceeded",
+    "severity": "warning",
+    "message": "disk usage exceeds cache policy budget",
+    "evidence": "disk_bytes=999999999999 max_disk_bytes=8589934592"
+  }
+]

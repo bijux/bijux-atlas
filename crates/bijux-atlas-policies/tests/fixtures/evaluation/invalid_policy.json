@@ -1,0 +1,20 @@
+[
+  {
+    "id": "policy.global.allow_override.forbidden",
+    "severity": "error",
+    "message": "allow_override must be false",
+    "evidence": "path=allow_override value=true"
+  },
+  {
+    "id": "policy.global.network_in_unit_tests.forbidden",
+    "severity": "error",
+    "message": "network_in_unit_tests must be false",
+    "evidence": "path=network_in_unit_tests value=true"
+  },
+  {
+    "id": "policy.telemetry.metrics.required",
+    "severity": "error",
+    "message": "telemetry.metrics_enabled must be true",
+    "evidence": "path=telemetry.metrics_enabled value=false"
+  }
+]
