@@ -33,3 +33,9 @@ def test_check_command_blocks_running_from_ops_cwd() -> None:
     command_py = Path("packages/atlasctl/src/atlasctl/commands/check/command.py")
     text = command_py.read_text(encoding="utf-8")
     assert "refusing to run checks from inside ops/" in text
+
+
+def test_check_command_supports_lint_suite_alias() -> None:
+    command_py = Path("packages/atlasctl/src/atlasctl/commands/check/command.py")
+    text = command_py.read_text(encoding="utf-8")
+    assert 'if suite_name == "lint"' in text
