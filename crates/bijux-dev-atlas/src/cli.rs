@@ -357,6 +357,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsObsCommand,
     },
+    Tools {
+        #[command(subcommand)]
+        command: OpsToolsCommand,
+    },
     Suite {
         #[command(subcommand)]
         command: OpsSuiteCommand,
@@ -430,6 +434,13 @@ pub enum OpsObsCommand {
 #[derive(Subcommand, Debug)]
 pub enum OpsObsDrillCommand {
     Run(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsToolsCommand {
+    List(OpsCommonArgs),
+    Verify(OpsCommonArgs),
+    Doctor(OpsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -514,6 +525,8 @@ pub struct OpsCommonArgs {
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
     pub allow_write: bool,
+    #[arg(long = "tool")]
+    pub tool_overrides: Vec<String>,
 }
 
 #[derive(Args, Debug, Clone)]
