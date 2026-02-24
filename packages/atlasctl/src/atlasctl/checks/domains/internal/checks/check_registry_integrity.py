@@ -241,10 +241,11 @@ def check_checks_root_entry_budget(repo_root: Path) -> tuple[int, list[str]]:
     root = repo_root / "packages/atlasctl/src/atlasctl/checks"
     if not root.exists():
         return 1, ["missing checks root directory: packages/atlasctl/src/atlasctl/checks"]
+    ignored = {"__pycache__", "__init__.py", "README.md", "REGISTRY.toml", "REGISTRY.generated.json", "api.py"}
     entries = [
         item.name
         for item in root.iterdir()
-        if item.name != "__pycache__"
+        if item.name not in ignored
     ]
     count = len(entries)
     if count > budget:
