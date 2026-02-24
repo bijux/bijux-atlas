@@ -18,7 +18,7 @@ Diagram sources in one location provide deterministic rendering and stable refer
 
 ## How to Verify
 ```bash
-atlasctl docs render-diagrams --report text
+bijux dev atlas docs render-diagrams --report text
 ```
 
 See also:

@@ -9,7 +9,7 @@ Consistent review criteria prevents drift and keeps contracts enforceable.
 ## Contracts
 - [ ] File names follow `kebab-case.md` or `INDEX.md`.
 - [ ] Page includes required depth sections from [`DEPTH_RUBRIC.md`](DEPTH_RUBRIC.md).
-- [ ] Examples are runnable and match atlasctl commands in repo.
+- [ ] Examples are runnable and match bijux dev atlas commands in repo.
 - [ ] Failure behavior is explicit and testable.
 - [ ] Verify section includes executable commands.
 - [ ] Terms align with glossary.

@@ -35,7 +35,7 @@ Documentation must be executable and reviewable. Surface-level text without cont
 
 ## How to Verify
 ```bash
-atlasctl docs check --report text
+bijux dev atlas docs check --report text
 ```
 
 See also:

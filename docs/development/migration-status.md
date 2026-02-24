@@ -2,7 +2,7 @@
 
 `bijux dev atlas` is the active development control plane for this repository.
 
-`atlasctl` migration work remains in progress until `packages/atlasctl/` is deleted and repo-wide references are removed. Track deletion readiness through the atlasctl deletion plan and repo checks.
+`control-plane migration is active and the Rust control plane is canonical. Legacy references are being removed without preserving compatibility bookkeeping.
 
 ## Commands
 

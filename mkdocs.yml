@@ -218,7 +218,6 @@ nav:
           - command inventory: development/tooling/command-inventory.md
           - build outputs: development/tooling/build-outputs.md
           - ops command inventory: development/tooling/ops-command-inventory.md
-          - bijux-atlas-py roadmap: development/tooling/bijux-atlas-py.md
           - naming policy: development/tooling/naming-policy.md
           - release packaging plan: development/tooling/release-packaging-plan.md
           - versioning alignment: development/tooling/versioning-alignment.md

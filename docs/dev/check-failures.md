@@ -5,14 +5,14 @@ Use this workflow to turn failing checks into tracked work:
 1. Run checks with JSON report output:
 
 ```bash
-./bin/atlasctl check run --group repo --json-report artifacts/evidence/checks/repo.json
+bijux dev atlas check run --group repo --json-report artifacts/evidence/checks/repo.json
 ```
 
 2. Summarize failures:
 
 ```bash
-./bin/atlasctl checks failures --last-run artifacts/evidence/checks/repo.json
-./bin/atlasctl checks failures --last-run artifacts/evidence/checks/repo.json --group repo --json
+bijux dev atlas checks failures --last-run artifacts/evidence/checks/repo.json
+bijux dev atlas checks failures --last-run artifacts/evidence/checks/repo.json --group repo --json
 ```
 
 3. Resolve in SSOT metadata:

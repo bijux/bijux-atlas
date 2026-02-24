@@ -26,4 +26,4 @@ Each crate `INDEX.md` must include and link:
 - `Tests`
 - `Benches`
 
-This contract is enforced by `atlasctl docs crate-docs-contract-check --report text` and checked in CI.
+This contract is enforced by `bijux dev atlas docs crate-docs-contract-check --report text` and checked in CI.

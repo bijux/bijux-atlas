@@ -26,4 +26,4 @@ Generated crate-level architecture map from workspace metadata.
 ## Notes
 
 - This file is generated; do not hand-edit.
-- Regenerate via `atlasctl docs generate-architecture-map`.
+- Regenerate via `bijux dev atlas docs generate-architecture-map`.

@@ -16,7 +16,7 @@ Defines local-only files/directories that are tolerated in developer workspaces.
 ## Enforcement
 
 - `.gitignore` includes all local-noise entries.
-- `./bin/atlasctl check run repo` fails if these are tracked.
+- `bijux dev atlas check run repo` fails if these are tracked.
 - In CI, root `target/` presence fails hygiene checks.
 
 ## Notes

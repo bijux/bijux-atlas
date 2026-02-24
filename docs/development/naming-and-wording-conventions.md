@@ -23,5 +23,5 @@ Policy config:
 
 ## Verification
 
-- Run `./bin/atlasctl policies forbidden-adjectives --report json`.
-- Report artifact: `artifacts/reports/atlasctl/forbidden-adjectives.json`.
+- Run `bijux dev atlas policies forbidden-adjectives --report json`.
+- Report artifact: `artifacts/reports/dev-atlas/forbidden-adjectives.json`.

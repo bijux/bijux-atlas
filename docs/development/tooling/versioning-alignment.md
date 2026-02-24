@@ -1,6 +1,6 @@
 # Versioning Alignment
 
-`atlasctl` version tracks repository versioning and commit lineage.
+`bijux dev atlas` version tracks repository versioning and commit lineage.
 
 Current rule:
 - CLI reports `0.1.0+<git_sha>` and is tied to the checked-out repo state.

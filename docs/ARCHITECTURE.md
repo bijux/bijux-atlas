@@ -2,11 +2,11 @@
 
 ## Target Layout v1
 
-Canonical package root is `packages/atlasctl/`.
+Canonical package root is `crates/bijux-dev-atlas/`.
 
 ### Package Root Contract
 
-Only these top-level items are allowed in `packages/atlasctl/`:
+Only these top-level items are allowed in `crates/bijux-dev-atlas/`:
 
 - `src/`
 - `tests/`
@@ -17,7 +17,7 @@ Only these top-level items are allowed in `packages/atlasctl/`:
 
 ### Source Tree Contract
 
-Canonical source tree is `packages/atlasctl/src/atlasctl/` with:
+Canonical source tree is `crates/bijux-dev-atlas/src/` with:
 
 - `core/`: runtime context, effect boundaries, fs/env/exec primitives.
 - `cli/`: argparse wiring, dispatch, output rendering.
@@ -29,9 +29,9 @@ Canonical source tree is `packages/atlasctl/src/atlasctl/` with:
 
 ### Command and Check SSOT
 
-- Canonical CLI entrypoints: `python -m atlasctl` and installed `atlasctl` script.
-- Canonical command system: `atlasctl.commands.*` modules with `configure()/run()`.
-- Canonical check system: `atlasctl.checks.*` registry-driven checks.
+- Canonical CLI entrypoints: `bijux dev atlas` and installed `bijux dev atlas` dispatch.
+- Canonical command system: `bijux-dev-atlas command modules` modules with `configure()/run()`.
+- Canonical check system: `bijux-dev-atlas-core checks registry` registry-driven checks.
 
 ### Boundary Choices
 

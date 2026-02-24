@@ -40,7 +40,7 @@ Does not define implementation internals outside this contract surface.
 - `POST /v1/query/validate` telemetry class: `query`
 - `GET /v1/releases/{release}/species/{species}/assemblies/{assembly}` telemetry class: `catalog`
 - `GET /v1/sequence/region` telemetry class: `sequence`
-- `GET /v1/transcripts/{tx_id}` telemetry class: `transcript`
+- `GET /v1/trantooling/{tx_id}` telemetry class: `transcript`
 - `GET /v1/version` telemetry class: `control`
 
 OpenAPI reference:
@@ -53,7 +53,7 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ## Examples
 
 ```bash
-$ ./bin/atlasctl contracts generate --generators openapi
+$ bijux dev atlas contracts generate --generators openapi
 ```
 
 Expected output: generator succeeds and endpoint drift checks pass.

@@ -10,6 +10,6 @@
 
 ## Commands
 
-- `ops/obs/scripts/bin/run_drill.sh overload-admission-control`
+- `bijux dev atlas ops obs drill run overload-admission-control`
 - `make observability-pack-drills`
 - `make ops-report`

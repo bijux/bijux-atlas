@@ -15,4 +15,4 @@ Runtime command surface remains separate:
 - runtime CLI: `bijux atlas ...`
 - control plane: `bijux dev atlas ...`
 
-Legacy `atlasctl` pages are historical references only and must not be used for new workflows.
+Legacy `bijux dev atlas` pages are historical references only and must not be used for new workflows.

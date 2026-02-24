@@ -13,7 +13,7 @@ Prevents filesystem-path drift and keeps interface stable through make targets.
 ## Contracts
 
 - Use `make` targets only in runbooks and operator docs.
-- Do not run `ops/*/scripts/*` directly in documented workflows.
+- Do not run `ops manifests and control-plane commands` directly in documented workflows.
 - Canonical workflows are `ops-*` targets from `make help` (for example `ops-full-pr`).
 
 ## Failure modes
@@ -24,7 +24,7 @@ Direct script/path usage causes drift when internals move.
 
 ```bash
 $ make no-direct-scripts
-$ make atlasctl-check-layout
+$ make check-gates
 ```
 
 Expected output: both targets pass.

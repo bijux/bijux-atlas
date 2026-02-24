@@ -20,8 +20,8 @@ Does not supersede required reviewer approval policy.
 
 ## Contracts
 
-- [ ] `atlasctl contracts check --checks drift` passes.
-- [ ] `atlasctl contracts generate --generators artifacts` run and committed.
+- [ ] `bijux dev atlas check run --suite ci_fast` passes.
+- [ ] `bijux dev atlas docs build` run and committed.
 - [ ] `make ssot-check` passes.
 - [ ] `check_breaking_contract_change.py` output reviewed.
 - [ ] Any new relaxation is explicitly registered in `configs/policy/policy-relaxations.json` with owner/justification/expiry and `ATLAS-EXC-*` reference tag in code.

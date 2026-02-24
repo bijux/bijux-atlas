@@ -1075,7 +1075,7 @@
           "type": "string"
         }
       ],
-      "path": "/v1/transcripts/{tx_id}",
+      "path": "/v1/trantooling/{tx_id}",
       "responses": [
         {
           "envelope": "none",

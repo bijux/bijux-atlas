@@ -2,7 +2,7 @@
 
 ## Top-level directories and why they exist
 
-- `packages/atlasctl/`: canonical repository tooling CLI and automation command surface.
+- `crates/bijux-dev-atlas/`: canonical repository tooling CLI and automation command surface.
 - `configs/`: source-of-truth configuration and policy inputs used by tooling and checks.
 - `ops/`: operational runbooks, scripts, schemas, and deployment/test harnesses.
 - `docs/`: human documentation and generated docs surfaces.
@@ -13,5 +13,5 @@
 
 ## Notes
 
-- `bijux dev atlas` is the Rust control-plane entrypoint for dev governance; package CLIs live under `packages/`.
+- `bijux dev atlas` is the Rust control-plane entrypoint for dev governance; package CLIs live under `crates/`.
 - `make` targets are orchestration shims, not business-logic hosts.

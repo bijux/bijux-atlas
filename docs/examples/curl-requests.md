@@ -22,8 +22,8 @@ Stale endpoint examples cause false troubleshooting paths.
 
 ## How to verify
 ```bash
-$ atlasctl docs extract-code --report text
-$ atlasctl docs run-blessed-snippets --report text
+$ bijux dev atlas docs extract-code --report text
+$ bijux dev atlas docs run-blessed-snippets --report text
 ```
 
 Expected output: all blessed snippets execute with zero failures.

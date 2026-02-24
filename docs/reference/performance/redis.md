@@ -37,7 +37,7 @@ Redis must never cache region queries unless there is an explicit bounded key-sp
 Run:
 
 ```bash
-./bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/load/run/compare_redis.py
+bijux dev atlas run ./crates/bijux-dev-atlas/src/commands/ops/load/run/compare_redis.py
 ```
 
 Output:

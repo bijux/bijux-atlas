@@ -23,7 +23,7 @@ Promotion must stop if any required target returns non-zero.
 
 ```bash
 $ make fmt lint test
-$ atlasctl dev audit
+$ make audit
 $ make ops-full-pr
 $ make ops-openapi-validate ops-values-validate ops-observability-validate
 ```

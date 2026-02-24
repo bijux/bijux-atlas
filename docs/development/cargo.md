@@ -4,8 +4,8 @@ All build/test/lint/audit commands must run inside an isolate runner.
 
 ## Required Runner
 
-- `atlasctl env isolate`: creates isolated runtime rooted at `artifacts/isolate/<tag>`.
-- `atlasctl env require-isolate`: validates the isolation contract.
+- `cargo build/test wrappers use isolated artifacts paths`: creates isolated runtime rooted at `artifacts/isolate/<tag>`.
+- `artifact isolation is enforced by dev-atlas wrappers`: validates the isolation contract.
 
 ## Environment Contract
 

@@ -14,6 +14,6 @@ Use durable names that describe behavior and contract intent.
 
 ## Enforced By
 
-- `./bin/atlasctl ops naming-check --report text`
-- `./bin/atlasctl ops no-direct-script-usage-check --report text`
-- `atlasctl docs durable-naming-check --report text`
+- `bijux dev atlas ops naming-check --report text`
+- `bijux dev atlas ops no-direct-script-usage-check --report text`
+- `bijux dev atlas docs durable-naming-check --report text`

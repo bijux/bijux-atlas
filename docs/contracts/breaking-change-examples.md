@@ -45,7 +45,7 @@ Expected output: breaking-change detector fails unless explicitly coordinated.
 ## How to verify
 
 ```bash
-$ ./bin/atlasctl contracts check --checks breakage
+$ bijux dev atlas contracts check --checks breakage
 ```
 
 Expected output: breaking changes are flagged.
