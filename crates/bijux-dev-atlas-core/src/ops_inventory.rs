@@ -2,7 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
 
@@ -18,15 +18,23 @@ const EXPECTED_SURFACES_SCHEMA: u64 = 2;
 const EXPECTED_MIRROR_SCHEMA: u64 = 1;
 const EXPECTED_CONTRACTS_SCHEMA: u64 = 1;
 const EXPECTED_STACK_PROFILES_SCHEMA: u64 = 1;
+const EXPECTED_STACK_VERSION_SCHEMA: u64 = 1;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct OpsInventory {
     pub stack_profiles: StackProfilesManifest,
-    pub stack_version_manifest: serde_json::Value,
+    pub stack_version_manifest: StackVersionManifest,
     pub toolchain: ToolchainManifest,
     pub surfaces: SurfacesManifest,
     pub mirror_policy: MirrorPolicyManifest,
     pub contracts: ContractsManifest,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct StackVersionManifest {
+    pub schema_version: u64,
+    #[serde(flatten)]
+    pub components: BTreeMap<String, String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -130,6 +138,12 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             inventory.stack_profiles.schema_version
         ));
     }
+    if inventory.stack_version_manifest.schema_version != EXPECTED_STACK_VERSION_SCHEMA {
+        errors.push(format!(
+            "{OPS_STACK_VERSION_MANIFEST_PATH}: expected schema_version={EXPECTED_STACK_VERSION_SCHEMA}, got {}",
+            inventory.stack_version_manifest.schema_version
+        ));
+    }
     if inventory.toolchain.schema_version != EXPECTED_TOOLCHAIN_SCHEMA {
         errors.push(format!(
             "{OPS_TOOLCHAIN_PATH}: expected schema_version={EXPECTED_TOOLCHAIN_SCHEMA}, got {}",
@@ -192,6 +206,32 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             ));
         }
     }
+    if inventory.stack_version_manifest.components.is_empty() {
+        errors.push(format!(
+            "{OPS_STACK_VERSION_MANIFEST_PATH}: components must not be empty"
+        ));
+    }
+    for (name, image) in &inventory.stack_version_manifest.components {
+        if image.contains(":latest") {
+            errors.push(format!(
+                "{OPS_STACK_VERSION_MANIFEST_PATH}: component `{name}` uses forbidden latest tag `{image}`"
+            ));
+        }
+    }
+    for name in inventory.stack_version_manifest.components.keys() {
+        if !inventory.toolchain.images.contains_key(name) {
+            errors.push(format!(
+                "pin coverage mismatch: `{name}` is present in {OPS_STACK_VERSION_MANIFEST_PATH} but missing in {OPS_TOOLCHAIN_PATH}"
+            ));
+        }
+    }
+    for name in inventory.toolchain.images.keys() {
+        if !inventory.stack_version_manifest.components.contains_key(name) {
+            errors.push(format!(
+                "pin coverage mismatch: `{name}` is present in {OPS_TOOLCHAIN_PATH} but missing in {OPS_STACK_VERSION_MANIFEST_PATH}"
+            ));
+        }
+    }
 
     let mut seen_action_ids = BTreeSet::new();
     for action in &inventory.surfaces.actions {
@@ -242,6 +282,89 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             ));
         }
     }
+    let sorted_mirror_keys = inventory
+        .mirror_policy
+        .mirrors
+        .iter()
+        .map(|entry| entry.committed.clone())
+        .collect::<Vec<_>>();
+    let mut dedup = sorted_mirror_keys.clone();
+    dedup.sort();
+    dedup.dedup();
+    if dedup.len() != sorted_mirror_keys.len() {
+        errors.push(format!(
+            "{OPS_MIRROR_POLICY_PATH}: mirror committed paths must be unique"
+        ));
+    }
+    if sorted_mirror_keys != dedup {
+        errors.push(format!(
+            "{OPS_MIRROR_POLICY_PATH}: mirror committed paths must be sorted for deterministic output"
+        ));
+    }
+
+    let allowed_top_level: BTreeSet<&str> = [
+        "_evidence",
+        "_examples",
+        "_generated",
+        "_generated.example",
+        "_meta",
+        "atlas-dev",
+        "datasets",
+        "docs",
+        "e2e",
+        "env",
+        "fixtures",
+        "helm",
+        "inventory",
+        "k8s",
+        "kind",
+        "load",
+        "manifests",
+        "obs",
+        "observe",
+        "registry",
+        "report",
+        "schema",
+        "stack",
+        "vendor",
+        "CONTRACT.md",
+        "ERRORS.md",
+        "INDEX.md",
+        "README.md",
+    ]
+    .into_iter()
+    .collect();
+    if let Ok(entries) = fs::read_dir(repo_root.join("ops")) {
+        for entry in entries.flatten() {
+            let name = entry.file_name();
+            let name = name.to_string_lossy();
+            if !allowed_top_level.contains(name.as_ref()) {
+                errors.push(format!("unexpected ops top-level entry `ops/{name}`"));
+            }
+        }
+    }
+
+    let bash_like = fs::read_dir(repo_root.join("ops"))
+        .ok()
+        .into_iter()
+        .flat_map(|entries| entries.flatten())
+        .flat_map(|entry| collect_files_recursive(entry.path()))
+        .filter(|path| {
+            path.extension()
+                .and_then(|v| v.to_str())
+                .is_some_and(|ext| ext == "sh" || ext == "bash")
+        })
+        .collect::<Vec<_>>();
+    for path in bash_like {
+        let rel = path
+            .strip_prefix(repo_root)
+            .unwrap_or(path.as_path())
+            .display()
+            .to_string();
+        errors.push(format!(
+            "forbidden bash helper outside rust control-plane: `{rel}`"
+        ));
+    }
 
     if repo_root.join("ops/_lib").exists() {
         errors.push("forbidden legacy path exists: ops/_lib".to_string());
@@ -259,12 +382,26 @@ pub fn ops_inventory_summary(repo_root: &Path) -> Result<serde_json::Value, Stri
         "surface_actions": inventory.surfaces.actions.len(),
         "toolchain_images": inventory.toolchain.images.len(),
         "mirror_entries": inventory.mirror_policy.mirrors.len(),
-        "schema_versions": {
-            "stack_profiles": inventory.stack_profiles.schema_version,
-            "toolchain": inventory.toolchain.schema_version,
-            "surfaces": inventory.surfaces.schema_version,
-            "mirror_policy": inventory.mirror_policy.schema_version,
+            "schema_versions": {
+                "stack_profiles": inventory.stack_profiles.schema_version,
+                "stack_version_manifest": inventory.stack_version_manifest.schema_version,
+                "toolchain": inventory.toolchain.schema_version,
+                "surfaces": inventory.surfaces.schema_version,
+                "mirror_policy": inventory.mirror_policy.schema_version,
             "contracts": inventory.contracts.schema_version
         }
     }))
+}
+
+fn collect_files_recursive(path: PathBuf) -> Vec<PathBuf> {
+    if path.is_file() {
+        return vec![path];
+    }
+    let mut out = Vec::new();
+    if let Ok(entries) = fs::read_dir(path) {
+        for entry in entries.flatten() {
+            out.extend(collect_files_recursive(entry.path()));
+        }
+    }
+    out
 }
