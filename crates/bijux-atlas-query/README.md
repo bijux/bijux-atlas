@@ -1,30 +1,31 @@
 # bijux-atlas-query
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+Deterministic query parsing, planning, and execution for atlas gene/transcript read paths.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Intended Use
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+- parse request payloads into typed AST
+- produce pure typed plans with explicit cost hooks
+- execute plans against SQLite-backed read models
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+## Supported Query Subset
 
-## Telemetry
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
+- exact `gene_id`
+- exact `name`
+- `name_prefix`
+- exact `biotype`
+- region overlap (`seqid/start/end`)
+- transcript filters (`parent_gene_id`, `biotype`, `transcript_type`, region)
 
-## Tests
-- [tests/](tests/)
+## Determinism Guarantees
 
-## Benches
-- [benches/](benches/)
+- stable AST normalization and formatting
+- stable planner outputs for identical semantic requests
+- stable ordering in query results and explain-plan normalization
 
-## Docs index
-- [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)
+## Docs
+
+- `docs/QUERY_LANGUAGE_SPEC.md`
+- `docs/ORDERING.md`
+- `docs/PAGINATION.md`
+- `docs/COST_ESTIMATOR.md`
