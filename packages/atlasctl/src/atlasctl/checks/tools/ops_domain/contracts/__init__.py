@@ -157,6 +157,29 @@ def check_ops_surface_manifest_native(repo_root: Path) -> tuple[int, list[str]]:
     return (0 if not errors else 1), errors
 
 
+def check_ops_external_tools_manifest_native(repo_root: Path) -> tuple[int, list[str]]:
+    manifest = repo_root / "configs" / "ops" / "external-tools-allowlist.json"
+    expected_areas = {"stack", "deploy", "k8s", "obs", "load", "e2e", "datasets", "pins", "reports"}
+    try:
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return 1, [f"configs/ops/external-tools-allowlist.json: {exc}"]
+    errors: list[str] = []
+    if int(payload.get("schema_version", 0) or 0) != 1:
+        errors.append("configs/ops/external-tools-allowlist.json: schema_version must be 1")
+    areas = payload.get("areas")
+    if not isinstance(areas, dict):
+        errors.append("configs/ops/external-tools-allowlist.json: areas must be an object")
+        areas = {}
+    missing = sorted(expected_areas - {str(key) for key in areas.keys()})
+    if missing:
+        errors.append(f"missing declared ops tool areas: {missing}")
+    for area, tools in sorted(areas.items()):
+        if not isinstance(tools, list) or not all(isinstance(item, str) and item for item in tools):
+            errors.append(f"area {area} tools must be non-empty string list")
+    return (0 if not errors else 1), errors
+
+
 def check_ops_no_direct_script_entrypoints(repo_root: Path) -> tuple[int, list[str]]:
     command_patterns = (
         re.compile(r"(?:^|\s)(?:\./)?ops/(?!run/)[A-Za-z0-9_./-]+\.(?:sh|py)\b"),
@@ -830,6 +853,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("ops.committed_generated_hygiene", "ops", "validate deterministic committed generated assets", 1000, check_committed_generated_hygiene, fix_hint="Regenerate committed outputs deterministically.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.manifests_schema", "ops", "validate ops manifests against atlas.ops.manifest.v1 schema", 1000, check_ops_manifests_schema, fix_hint="Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1."),
     CheckDef("ops.surface_manifest", "ops", "validate ops surface manifest consistency", 1000, check_ops_surface_manifest_native, fix_hint="Fix configs/ops/ops-surface-manifest.json and ops/inventory/surfaces.json contracts."),
+    CheckDef("ops.external_tools_manifest", "ops", "validate ops external tools allowlist manifest", 1000, check_ops_external_tools_manifest_native, fix_hint="Fix configs/ops/external-tools-allowlist.json area and schema contracts."),
     CheckDef("ops.no_direct_script_entrypoints", "ops", "forbid direct ops script entrypoints in docs/workflows/makefiles", 1000, check_ops_no_direct_script_entrypoints, fix_hint="Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths."),
     CheckDef("ops.scripts_are_data_only", "ops", "enforce ops/manifests data-only file policy", 1000, check_ops_scripts_are_data_only, fix_hint="Keep ops/manifests to json/yaml data only."),
     CheckDef("ops.shell_policy", "ops", "enforce shell runtime guard requirements for ops/run wrappers", 1000, check_ops_shell_policy, fix_hint="Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh."),
