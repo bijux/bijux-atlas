@@ -322,6 +322,28 @@ effects_required = ["fs_read"]
 budget_ms = 1200
 visibility = "public"
 
+[[checks]]
+id = "checks_ops_no_bash_lib_execution"
+domain = "ops"
+title = "ops surfaces avoid direct bash library execution"
+docs = "ops/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_legacy_shell_quarantine_empty"
+domain = "ops"
+title = "legacy ops shell quarantine remains empty"
+docs = "ops/quarantine/legacy-ops-shell/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
 [[suites]]
 id = "all_fast"
 checks = []

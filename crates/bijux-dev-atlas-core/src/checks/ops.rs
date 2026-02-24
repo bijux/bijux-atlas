@@ -52,6 +52,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_crates_bijux_dev_atlas_help_dispatch_present" => {
             Some(check_crates_bijux_dev_atlas_help_dispatch_present)
         }
+        "checks_ops_no_bash_lib_execution" => Some(check_ops_no_bash_lib_execution),
+        "checks_ops_legacy_shell_quarantine_empty" => Some(check_ops_legacy_shell_quarantine_empty),
         _ => None,
     }
 }
@@ -943,4 +945,75 @@ fn check_no_any_string_references_under(
         }
     }
     Ok(violations)
+}
+
+fn check_ops_no_bash_lib_execution(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for rel in ["makefiles", ".github/workflows"] {
+        let root = ctx.repo_root.join(rel);
+        if !root.exists() {
+            continue;
+        }
+        for file in walk_files(&root) {
+            let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
+            if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "yml" && ext != "yaml" {
+                continue;
+            }
+            let Ok(content) = fs::read_to_string(&file) else {
+                continue;
+            };
+            for line in content.lines() {
+                let trimmed = line.trim();
+                let invokes_ops_shell = trimmed.contains("bash ops/")
+                    || trimmed.contains("source ops/")
+                    || trimmed.starts_with(". ops/");
+                let sources_legacy_lib = trimmed.contains("source ops/_lib")
+                    || trimmed.contains(". ops/_lib")
+                    || trimmed.contains("bash ops/_lib");
+                if invokes_ops_shell || sources_legacy_lib {
+                    let path = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+                    violations.push(violation(
+                        "OPS_BASH_LIB_EXECUTION_REFERENCE_FOUND",
+                        format!(
+                            "forbidden bash lib execution reference in {}: `{}`",
+                            path.display(),
+                            trimmed
+                        ),
+                        "route ops behavior through bijux dev atlas rust commands",
+                        Some(path),
+                    ));
+                    break;
+                }
+            }
+        }
+    }
+    Ok(violations)
+}
+
+fn check_ops_legacy_shell_quarantine_empty(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("ops/quarantine/legacy-ops-shell");
+    let dir = ctx.repo_root.join(rel);
+    if !dir.exists() {
+        return Ok(Vec::new());
+    }
+    let mut non_marker = Vec::new();
+    for file in walk_files(&dir) {
+        let name = file.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if name != ".gitkeep" && name != "README.md" {
+            non_marker.push(file);
+        }
+    }
+    if non_marker.is_empty() {
+        Ok(Vec::new())
+    } else {
+        let first = non_marker[0].strip_prefix(ctx.repo_root).unwrap_or(&non_marker[0]);
+        Ok(vec![violation(
+            "OPS_LEGACY_SHELL_QUARANTINE_NOT_EMPTY",
+            format!("legacy ops shell quarantine must be empty; found `{}`", first.display()),
+            "delete legacy shell helpers and keep quarantine empty",
+            Some(rel),
+        )])
+    }
 }
