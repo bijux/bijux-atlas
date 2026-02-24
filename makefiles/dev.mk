@@ -26,10 +26,18 @@ lint: ## Rust lint lane
 	@cargo clippy --workspace --all-targets --all-features -- -D warnings
 
 test: ## Rust tests lane
-	@cargo test --workspace
+	@command -v cargo-nextest >/dev/null 2>&1 || { \
+		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
+		exit 1; \
+	}
+	@cargo nextest run --workspace --profile "$${NEXTEST_PROFILE:-default}"
 
 test-all: ## Rust tests full variant (includes ignored)
-	@cargo test --workspace -- --include-ignored
+	@command -v cargo-nextest >/dev/null 2>&1 || { \
+		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
+		exit 1; \
+	}
+	@cargo nextest run --workspace --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
 
 install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
 	@mkdir -p artifacts/bin
