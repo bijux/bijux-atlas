@@ -1,9 +1,8 @@
 # Xtask Removal Map
 
-`xtask` was removed. Use `atlasctl` commands:
+`xtask` was removed. Use `bijux dev atlas` commands (or thin `make` wrappers that delegate to them):
 
-- `xtask format-contracts` -> `./bin/atlasctl gen contracts`
-- `xtask generate-contracts` -> `./bin/atlasctl gen contracts`
-- `xtask check-contracts` -> `./bin/atlasctl check configs`
-- `xtask scan-relaxations` -> `./bin/atlasctl policies scan-rust-relaxations`
-
+- `xtask check-contracts` -> `cargo run -p bijux-dev-atlas -- configs validate`
+- `xtask scan-relaxations` -> `cargo run -p bijux-dev-atlas -- policies report --format json`
+- `xtask docs-lint` -> `cargo run -p bijux-dev-atlas -- docs lint --format json`
+- `xtask gates-fast` -> `cargo run -p bijux-dev-atlas -- check run --suite ci_fast`
