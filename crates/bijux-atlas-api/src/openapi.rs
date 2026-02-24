@@ -1,9 +1,12 @@
-use serde_json::{json, Value};
+use serde_json::{json, Map, Value};
+
+pub const OPENAPI_V1_PINNED_SHA256: &str =
+    "29ff6cb0c45b2b9eb5472a3395575514d7db2e4e098510256d2290af25d2a9c8";
 
 #[must_use]
 pub fn openapi_v1_spec() -> Value {
     let error_codes = crate::generated::error_codes::API_ERROR_CODES;
-    json!({
+    sort_json_keys(json!({
       "openapi": "3.0.3",
       "info": {
         "title": "bijux-atlas API",
@@ -388,5 +391,22 @@ pub fn openapi_v1_spec() -> Value {
           }
         }
       }
-    })
+    }))
+}
+
+fn sort_json_keys(value: Value) -> Value {
+    match value {
+        Value::Object(object) => {
+            let mut sorted = Map::new();
+            let mut keys = object.keys().cloned().collect::<Vec<_>>();
+            keys.sort();
+            for key in keys {
+                let nested = object.get(&key).cloned().expect("known key");
+                sorted.insert(key, sort_json_keys(nested));
+            }
+            Value::Object(sorted)
+        }
+        Value::Array(items) => Value::Array(items.into_iter().map(sort_json_keys).collect()),
+        other => other,
+    }
 }
