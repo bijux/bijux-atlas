@@ -7,6 +7,8 @@ _ALLOWED = {
     "packages/atlasctl/src/atlasctl/core/runtime/repo_root.py",
     "packages/atlasctl/src/atlasctl/checks/repo/enforcement/cwd_usage.py",
 }
+_PATH_DOT_DOUBLE = ('Path("', '.")')
+_PATH_DOT_SINGLE = ("Path('", ".')")
 
 
 def check_no_path_cwd_usage(repo_root: Path) -> tuple[int, list[str]]:
@@ -51,8 +53,8 @@ def check_no_path_dot_in_runtime(repo_root: Path) -> tuple[int, list[str]]:
         if "/checks/" not in rel and "/commands/check/" not in rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if 'Path(".")' in text or "Path('.')" in text:
-            offenders.append(f"{rel}: forbidden Path('.') usage; resolve through explicit repo_root")
+        if (_PATH_DOT_DOUBLE[0] + _PATH_DOT_DOUBLE[1]) in text or (_PATH_DOT_SINGLE[0] + _PATH_DOT_SINGLE[1]) in text:
+            offenders.append(f"{rel}: forbidden dot-path usage; resolve through explicit repo_root")
     return (0 if not offenders else 1), offenders
 
 

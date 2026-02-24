@@ -7,7 +7,7 @@ DEFAULT_WRITE_ROOT = "artifacts/evidence"
 
 def ensure_explicit_repo_root(repo_root: Path) -> tuple[bool, list[str]]:
     if str(repo_root).strip() in {"", "."}:
-        return False, ["repo_root must be explicit and not Path('.')"]
+        return False, ["repo_root must be explicit and not the current-directory path"]
     if not repo_root.is_absolute():
         return False, [f"repo_root must be absolute: {repo_root}"]
     return True, []
