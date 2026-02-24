@@ -358,7 +358,9 @@ fn checks_ops_no_python_legacy_runtime_refs(
                 continue;
             };
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-            if rel.components().any(|c| c.as_os_str() == "tests") || rel.to_string_lossy().ends_with("_tests.rs") {
+            if rel.components().any(|c| c.as_os_str() == "tests")
+                || rel.to_string_lossy().ends_with("_tests.rs")
+            {
                 continue;
             }
             if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
@@ -442,14 +444,15 @@ fn checks_ops_makefile_routes_dev_atlas(
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
 
     let mut violations = Vec::new();
-    let has_dev_route = content.contains("BIJUX_DEV_ATLAS")
-        || content.contains("bijux dev atlas");
-    let has_legacy_route =
-        content.contains("./bin/atlasctl") || content.contains(" atlasctl ") || content.contains("atlasctl ops");
+    let has_dev_route = content.contains("BIJUX_DEV_ATLAS") || content.contains("bijux dev atlas");
+    let has_legacy_route = content.contains("./bin/atlasctl")
+        || content.contains(" atlasctl ")
+        || content.contains("atlasctl ops");
     if !has_dev_route || has_legacy_route {
         violations.push(violation(
             "OPS_MAKEFILE_ROUTE_INVALID",
-            "makefiles/ops.mk must delegate to BIJUX_DEV_ATLAS and must not call atlasctl".to_string(),
+            "makefiles/ops.mk must delegate to BIJUX_DEV_ATLAS and must not call atlasctl"
+                .to_string(),
             "replace atlasctl calls with bijux dev atlas routing in makefiles/ops.mk",
             Some(rel),
         ));
@@ -471,7 +474,10 @@ fn checks_ops_makefile_routes_dev_atlas(
             continue;
         }
         let words = line.split_whitespace().collect::<Vec<_>>();
-        if words.iter().any(|word| *word == "kubectl" || *word == "helm" || *word == "kind" || *word == "k6") {
+        if words
+            .iter()
+            .any(|word| *word == "kubectl" || *word == "helm" || *word == "kind" || *word == "k6")
+        {
             violations.push(violation(
                 "OPS_MAKEFILE_DELEGATION_ONLY_VIOLATION",
                 format!("makefiles/ops.mk must not execute tool binary directly: `{line}`"),
@@ -615,7 +621,10 @@ fn checks_ops_artifacts_gitignore_policy(
     let rel = Path::new(".gitignore");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
-    if content.lines().any(|line| line.trim() == "artifacts/" || line.trim() == "/artifacts/") {
+    if content
+        .lines()
+        .any(|line| line.trim() == "artifacts/" || line.trim() == "/artifacts/")
+    {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(

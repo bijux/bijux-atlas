@@ -387,8 +387,12 @@ fn duration_output_is_deterministic_for_equal_durations() {
     };
     let rendered = render_text_with_durations(&report, 2);
     let lines: Vec<&str> = rendered.lines().collect();
-    assert!(lines.iter().any(|line| line.contains("duration: ops_surface_manifest 50ms")));
-    assert!(lines.iter().any(|line| line.contains("duration: ops_tree_contract 50ms")));
+    assert!(lines
+        .iter()
+        .any(|line| line.contains("duration: ops_surface_manifest 50ms")));
+    assert!(lines
+        .iter()
+        .any(|line| line.contains("duration: ops_tree_contract 50ms")));
     let first_duration = lines
         .iter()
         .find(|line| line.starts_with("duration:"))
@@ -405,14 +409,18 @@ fn ops_inventory_validation_is_clean_for_repo_ssot() {
 #[test]
 fn ops_inventory_summary_reports_counts() {
     let summary = ops_inventory::ops_inventory_summary(&root()).expect("summary");
-    assert!(summary
-        .get("stack_profiles")
-        .and_then(|value| value.as_u64())
-        .unwrap_or(0)
-        >= 1);
-    assert!(summary
-        .get("surface_actions")
-        .and_then(|value| value.as_u64())
-        .unwrap_or(0)
-        >= 1);
+    assert!(
+        summary
+            .get("stack_profiles")
+            .and_then(|value| value.as_u64())
+            .unwrap_or(0)
+            >= 1
+    );
+    assert!(
+        summary
+            .get("surface_actions")
+            .and_then(|value| value.as_u64())
+            .unwrap_or(0)
+            >= 1
+    );
 }

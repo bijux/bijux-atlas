@@ -34,7 +34,10 @@ fn explain_supports_json_format() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert_eq!(payload.get("id").and_then(|v| v.as_str()), Some("ops_surface_manifest"));
+    assert_eq!(
+        payload.get("id").and_then(|v| v.as_str()),
+        Some("ops_surface_manifest")
+    );
 }
 
 #[test]
@@ -204,20 +207,17 @@ fn ops_render_kind_check_supports_json_format_without_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
-            "ops",
-            "render",
-            "--target",
-            "kind",
-            "--check",
-            "--format",
-            "json",
+            "ops", "render", "--target", "kind", "--check", "--format", "json",
         ])
         .output()
         .expect("ops render kind check");
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     let row = payload
         .get("rows")
         .and_then(|v| v.as_array())
@@ -229,7 +229,8 @@ fn ops_render_kind_check_supports_json_format_without_subprocess() {
         "check_only": row.get("check_only").and_then(|v| v.as_bool()).unwrap_or(false),
         "stdout_mode": row.get("stdout_mode").and_then(|v| v.as_bool()).unwrap_or(false),
     });
-    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_render_kind_contract.json");
+    let golden_path =
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_render_kind_contract.json");
     let golden_text = fs::read_to_string(golden_path).expect("golden");
     let golden: serde_json::Value = serde_json::from_str(&golden_text).expect("golden json");
     assert_eq!(actual, golden);
@@ -240,13 +241,7 @@ fn ops_render_helm_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
-            "ops",
-            "render",
-            "--target",
-            "helm",
-            "--check",
-            "--format",
-            "json",
+            "ops", "render", "--target", "helm", "--check", "--format", "json",
         ])
         .output()
         .expect("ops render helm");
@@ -298,14 +293,7 @@ fn ops_install_apply_requires_allow_write() {
 fn ops_status_pods_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args([
-            "ops",
-            "status",
-            "--target",
-            "pods",
-            "--format",
-            "json",
-        ])
+        .args(["ops", "status", "--target", "pods", "--format", "json"])
         .output()
         .expect("ops status pods");
     assert!(!output.status.success());

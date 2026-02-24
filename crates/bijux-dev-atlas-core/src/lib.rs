@@ -702,6 +702,5 @@ pub fn exit_code_for_report(report: &RunReport) -> i32 {
     }
 }
 
-
 #[cfg(test)]
 mod lib_tests;
