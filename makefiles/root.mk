@@ -12,7 +12,6 @@ include makefiles/configs.mk
 include makefiles/docs.mk
 include makefiles/product.mk
 include makefiles/ops.mk
-include makefiles/policies.mk
 include makefiles/verification.mk
 
 check-scripts: ## Run atlasctl tooling lint/tests/contracts
@@ -78,6 +77,9 @@ explain: ## Explain whether TARGET is a public make target
 
 list: ## Print public make target set from SSOT with one-line descriptions
 	@./bin/atlasctl make list
+
+bypass-report: ## Emit consolidated policies bypass report
+	@./bin/atlasctl report bypass --json --out artifacts/reports/atlasctl/policies-bypass-report.json
 
 targets: ## Print generated target catalog from SSOT
 	@./bin/atlasctl make list
