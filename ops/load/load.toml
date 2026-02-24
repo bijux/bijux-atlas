@@ -1,0 +1,26 @@
+[suites.mixed]
+script = "ops/load/k6/suites/mixed-80-20.js"
+dataset = "ops/load/queries/pinned-v1.json"
+thresholds = "ops/load/thresholds/mixed.thresholds.json"
+
+[suites.mixed.env]
+ATLAS_BASE_URL = "http://127.0.0.1:8080"
+QUERY_FILE = "ops/load/queries/pinned-v1.json"
+
+[suites.diff_heavy]
+script = "ops/load/k6/suites/diff-heavy.js"
+dataset = "ops/load/queries/pinned-v1.json"
+thresholds = "ops/load/thresholds/diff-heavy.thresholds.json"
+
+[suites.diff_heavy.env]
+ATLAS_BASE_URL = "http://127.0.0.1:8080"
+QUERY_FILE = "ops/load/queries/pinned-v1.json"
+
+[suites.hpa_validation_short]
+script = "ops/load/k6/suites/hpa-validation-short.js"
+dataset = "ops/load/queries/pinned-v1.json"
+thresholds = "ops/load/thresholds/hpa-validation-short.thresholds.json"
+
+[suites.hpa_validation_short.env]
+ATLAS_BASE_URL = "http://127.0.0.1:8080"
+QUERY_FILE = "ops/load/queries/pinned-v1.json"

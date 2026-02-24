@@ -1,5 +1,5 @@
 # Scope: ops area wrappers only.
-# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-obs
+# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-obs
 SHELL := /bin/sh
 PROFILE ?= kind
 OPS_RESET_RUN_ID ?= ops_reset
@@ -53,7 +53,13 @@ ops-e2e: ## Run e2e scenario wrapper through grouped ops namespace
 	@$(DEV_ATLAS) ops e2e run --profile $(PROFILE) --format json
 
 ops-load: ## Run load wrapper through grouped ops namespace
-	@$(DEV_ATLAS) ops load run --profile $(PROFILE) --format json
+	@$(DEV_ATLAS) ops load plan mixed --profile $(PROFILE) --format json
+
+ops-load-plan: ## Resolve load suite into script and thresholds
+	@$(DEV_ATLAS) ops load plan $(or $(SUITE),mixed) --profile $(PROFILE) --format json
+
+ops-load-run: ## Execute load suite through canonical control plane
+	@$(DEV_ATLAS) ops load run $(or $(SUITE),mixed) --profile $(PROFILE) --allow-subprocess --allow-network --allow-write --format json
 
 ops-obs: ## Run observability verification wrapper through grouped ops namespace
 	@$(DEV_ATLAS) ops obs verify --profile $(PROFILE) --format json
@@ -67,4 +73,4 @@ ops-pins-check: ## Validate unified reproducibility pins
 ops-pins-update: ## Refresh unified reproducibility pins
 	@$(DEV_ATLAS) ops pins update --i-know-what-im-doing --allow-subprocess --format text
 
-.PHONY: ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-obs ops-tools-verify ops-pins-check ops-pins-update
+.PHONY: ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-obs ops-tools-verify ops-pins-check ops-pins-update
