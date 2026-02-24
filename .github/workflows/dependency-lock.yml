@@ -12,6 +12,7 @@ permissions:
 jobs:
   update-lockfile:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       ISO_ROOT: artifacts/isolates/dependency-lock
       CARGO_TARGET_DIR: artifacts/isolates/dependency-lock/target
@@ -26,7 +27,9 @@ jobs:
           toolchain: 1.84.1
       - run: make ci-dependency-lock-refresh
       - name: Verify only Cargo.lock changed
+        shell: bash
         run: |
+          set -euo pipefail
           changed="$(git diff --name-only | grep -v '^Cargo.lock$' || true)"
           if [ -n "$changed" ]; then
             echo "unexpected changed paths:"

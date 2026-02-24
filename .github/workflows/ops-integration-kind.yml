@@ -1,0 +1,50 @@
+name: ops-integration-kind
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ops-integration-kind-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: ops-kind-${{ github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  kind-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      NETWORK_ACCESS: required
+      ISO_ROOT: artifacts/isolates/ops-kind
+      CARGO_TARGET_DIR: artifacts/isolates/ops-kind/target
+      CARGO_HOME: artifacts/isolates/ops-kind/cargo-home
+      TMPDIR: artifacts/isolates/ops-kind/tmp
+      TMP: artifacts/isolates/ops-kind/tmp
+      TEMP: artifacts/isolates/ops-kind/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - uses: helm/kind-action@v1
+        with:
+          cluster_name: normal
+      - name: Run kind integration lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/ci/reports
+          make ops-kind-up > artifacts/ci/reports/ops-kind-up-${RUN_ID}.json
+          make ops-k8s > artifacts/ci/reports/ops-k8s-${RUN_ID}.json
+          make ops-kind-down > artifacts/ci/reports/ops-kind-down-${RUN_ID}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ops-kind-report-${{ env.RUN_ID }}
+          path: artifacts/ci/reports/*-${{ env.RUN_ID }}.json

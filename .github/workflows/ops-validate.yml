@@ -1,0 +1,50 @@
+name: ops-validate
+
+on:
+  pull_request:
+    paths:
+      - 'ops/**'
+      - 'crates/bijux-dev-atlas/**'
+      - 'crates/bijux-dev-atlas-core/**'
+      - 'crates/bijux-dev-atlas-policies/**'
+      - 'makefiles/_ops.mk'
+      - '.github/workflows/ops-validate.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ops-validate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: ops-validate-${{ github.event.pull_request.number || github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NETWORK_ACCESS: required
+      ISO_ROOT: artifacts/isolates/ops-validate
+      CARGO_TARGET_DIR: artifacts/isolates/ops-validate/target
+      CARGO_HOME: artifacts/isolates/ops-validate/cargo-home
+      TMPDIR: artifacts/isolates/ops-validate/tmp
+      TMP: artifacts/isolates/ops-validate/tmp
+      TEMP: artifacts/isolates/ops-validate/tmp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.84.1
+      - name: Run ops validate lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/ci/reports
+          make ops-validate > artifacts/ci/reports/ops-validate-${RUN_ID}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ops-validate-report-${{ env.RUN_ID }}
+          path: artifacts/ci/reports/ops-validate-${{ env.RUN_ID }}.json

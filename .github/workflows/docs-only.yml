@@ -13,10 +13,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: docs-only-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: docs-${{ github.event.pull_request.number || github.run_id }}-${{ github.run_attempt }}
+
 jobs:
-  docs-check:
+  docs:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
+      NETWORK_ACCESS: required
       ISO_ROOT: artifacts/isolates/docs-only
       CARGO_TARGET_DIR: artifacts/isolates/docs-only/target
       CARGO_HOME: artifacts/isolates/docs-only/cargo-home
@@ -28,15 +37,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
-      - run: make docs-doctor
-      - run: |
-          if command -v mkdocs >/dev/null 2>&1; then
-            cargo run -p bijux-dev-atlas -- docs check --allow-subprocess --allow-write --format json
-          else
-            echo "mkdocs not installed; skipping docs build check"
-          fi
+      - name: Run docs lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/ci/reports
+          make docs > artifacts/ci/reports/docs-${RUN_ID}.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: docs-site-pr
-          path: artifacts/dist/docs-site
+          name: docs-report-${{ env.RUN_ID }}
+          path: artifacts/ci/reports/docs-${{ env.RUN_ID }}.json
