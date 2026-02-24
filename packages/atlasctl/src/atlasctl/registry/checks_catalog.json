@@ -1,6 +1,144 @@
 {
   "checks": [
     {
+      "area": "all",
+      "default_enabled": true,
+      "description": "require every check to declare effects",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_all_checks_declare_effects",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_all_checks_declare_effects",
+      "impl_ref": {
+        "callable": "check_all_checks_declare_effects",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Declare effect metadata for every check definition.",
+        "intent": "require every check to declare effects",
+        "legacy_id": "checks.all_checks_declare_effects",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every check to declare effects"
+    },
+    {
+      "area": "all",
+      "default_enabled": true,
+      "description": "require every check to declare at least one owner",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_all_checks_have_owner",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_all_checks_have_owner",
+      "impl_ref": {
+        "callable": "check_all_checks_have_owner",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Populate owners for every check definition.",
+        "intent": "require every check to declare at least one owner",
+        "legacy_id": "checks.all_checks_have_owner",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every check to declare at least one owner"
+    },
+    {
+      "area": "all",
+      "default_enabled": true,
+      "description": "require every check to declare tags",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_all_checks_have_tags",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_all_checks_have_tags",
+      "impl_ref": {
+        "callable": "check_all_checks_have_tags",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Declare at least one policy tag for every check definition.",
+        "intent": "require every check to declare tags",
+        "legacy_id": "checks.all_checks_have_tags",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require every check to declare tags"
+    },
+    {
       "area": "commands",
       "default_enabled": true,
       "description": "forbid command modules from importing checks domain modules directly",
@@ -417,6 +555,52 @@
       "title": "forbid import cycles across atlasctl checks modules"
     },
     {
+      "area": "legacy",
+      "default_enabled": true,
+      "description": "require legacy checks/layout and checks/repo directories to be removed",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_legacy_directories_absent",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_legacy_directories_absent",
+      "impl_ref": {
+        "callable": "check_legacy_check_directories_absent",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Complete migration and delete checks/layout and checks/repo directories.",
+        "intent": "require legacy checks/layout and checks/repo directories to be removed",
+        "legacy_id": "checks.legacy_directories_absent",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require legacy checks/layout and checks/repo directories to be removed"
+    },
+    {
       "area": "module",
       "default_enabled": true,
       "description": "enforce checks module loc budget",
@@ -461,6 +645,99 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce checks module loc budget"
+    },
+    {
+      "area": "network",
+      "default_enabled": true,
+      "description": "require network usage in check modules to declare network effect",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_network_effect_declared",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_network_effect_declared",
+      "impl_ref": {
+        "callable": "check_no_network_usage_without_declared_effect",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add network effect declaration for checks that call network client libraries.",
+        "intent": "require network usage in check modules to declare network effect",
+        "legacy_id": "checks.network_effect_declared",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "network",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require network usage in check modules to declare network effect"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
+      "description": "require check implementations to live under checks/domains or checks/tools",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_checks_outside_domains_tools",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_checks_outside_domains_tools",
+      "impl_ref": {
+        "callable": "check_no_checks_outside_domains_tools",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Move check implementation modules under checks/domains or checks/tools and update registry callables.",
+        "intent": "require check implementations to live under checks/domains or checks/tools",
+        "legacy_id": "checks.no_checks_outside_domains_tools",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require check implementations to live under checks/domains or checks/tools"
     },
     {
       "area": "no",
@@ -991,6 +1268,52 @@
     {
       "area": "registry",
       "default_enabled": true,
+      "description": "require generated registry json to keep generated markers",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_generated_read_only",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_generated_read_only",
+      "impl_ref": {
+        "callable": "check_registry_generated_read_only",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Regenerate REGISTRY.generated.json via atlasctl registry generator and keep generated metadata markers.",
+        "intent": "require generated registry json to keep generated markers",
+        "legacy_id": "checks.registry_generated_read_only",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require generated registry json to keep generated markers"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
       "description": "forbid heavy imports in checks registry modules",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_import_hygiene",
       "domain": "checks",
@@ -1371,6 +1694,52 @@
     {
       "area": "registry",
       "default_enabled": true,
+      "description": "require REGISTRY.toml to be generated-only when present",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_toml_generated_contract",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_toml_generated_contract",
+      "impl_ref": {
+        "callable": "check_registry_toml_generated_contract",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Write REGISTRY.toml through atlasctl generator and include generated-only header.",
+        "intent": "require REGISTRY.toml to be generated-only when present",
+        "legacy_id": "checks.registry_toml_generated_contract",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require REGISTRY.toml to be generated-only when present"
+    },
+    {
+      "area": "registry",
+      "default_enabled": true,
       "description": "fail when check-id migration aliases remain after transition deadline",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_registry_transition_complete",
       "domain": "checks",
@@ -1553,6 +1922,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "ratchet down legacy tuple check signatures in favor of structured results"
+    },
+    {
+      "area": "subprocess",
+      "default_enabled": true,
+      "description": "require subprocess usage in check modules to declare subprocess effect",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_subprocess_effect_declared",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_subprocess_effect_declared",
+      "impl_ref": {
+        "callable": "check_no_subprocess_usage_without_declared_effect",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Add subprocess effect declaration for checks that call subprocess or run_command.",
+        "intent": "require subprocess usage in check modules to declare subprocess effect",
+        "legacy_id": "checks.subprocess_effect_declared",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 800,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require subprocess usage in check modules to declare subprocess effect"
     },
     {
       "area": "suites",
@@ -1741,6 +2156,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "enforce checks tools module budget"
+    },
+    {
+      "area": "write",
+      "default_enabled": true,
+      "description": "require check write roots to stay under managed evidence directories",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_write_roots_evidence_only",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_write_roots_evidence_only",
+      "impl_ref": {
+        "callable": "check_write_roots_are_evidence_only",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Restrict writes_allowed_roots to artifacts/evidence, artifacts/atlasctl/checks, or artifacts/runs.",
+        "intent": "require check write roots to stay under managed evidence directories",
+        "legacy_id": "checks.write_roots_evidence_only",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "require check write roots to stay under managed evidence directories"
     },
     {
       "area": "pyproject",

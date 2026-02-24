@@ -630,6 +630,134 @@ def check_checks_forbidden_imports(repo_root: Path) -> tuple[int, list[str]]:
     return (1, errors) if errors else (0, [])
 
 
+def check_no_checks_outside_domains_tools(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    allowed_prefixes = (
+        "atlasctl.checks.domains.",
+        "atlasctl.checks.tools.",
+        "atlasctl.checks.domains",
+        "atlasctl.checks.tools",
+    )
+    violations: list[str] = []
+    from ..registry.catalog import list_checks
+
+    for check in list_checks():
+        fn = getattr(check, "fn", None)
+        module = str(getattr(fn, "__module__", "")).strip()
+        if module and module.startswith("atlasctl.checks.") and not module.startswith(allowed_prefixes):
+            violations.append(f"{check.check_id}: implementation must live under checks/domains or checks/tools ({module})")
+    return (1, sorted(set(violations))) if violations else (0, [])
+
+
+def check_legacy_check_directories_absent(repo_root: Path) -> tuple[int, list[str]]:
+    legacy_dirs = (
+        repo_root / "packages/atlasctl/src/atlasctl/checks/layout",
+        repo_root / "packages/atlasctl/src/atlasctl/checks/repo",
+    )
+    violations = [f"legacy checks directory must be removed: {path.relative_to(repo_root).as_posix()}" for path in legacy_dirs if path.exists()]
+    return (1, violations) if violations else (0, [])
+
+
+def check_registry_generated_read_only(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"
+    if not path.exists():
+        return 1, ["missing generated registry file: packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"]
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        return 1, [f"generated registry json parse error: {exc}"]
+    if "schema_version" not in payload:
+        return 1, ["generated registry missing schema_version marker"]
+    if not isinstance(payload.get("checks", []), list):
+        return 1, ["generated registry missing checks list payload"]
+    return 0, []
+
+
+def check_registry_toml_generated_contract(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
+    if not path.exists():
+        return 0, []
+    header = path.read_text(encoding="utf-8", errors="ignore").splitlines()[:8]
+    combined = "\n".join(header).lower()
+    if "regenerate with:" in combined:
+        return 0, []
+    return 1, ["REGISTRY.toml must include generator marker header (`Regenerate with: ./bin/atlasctl gen checks-registry`)"]
+
+
+def check_all_checks_have_owner(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry.catalog import list_checks
+
+    violations = [f"{check.check_id}: owner is required" for check in list_checks() if not getattr(check, "owners", ())]
+    return (1, violations) if violations else (0, [])
+
+
+def check_all_checks_declare_effects(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry.catalog import list_checks
+
+    violations = [f"{check.check_id}: effects declaration is required" for check in list_checks() if not getattr(check, "effects", ())]
+    return (1, violations) if violations else (0, [])
+
+
+def check_all_checks_have_tags(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry.catalog import list_checks
+
+    violations = [f"{check.check_id}: tags declaration is required" for check in list_checks() if not getattr(check, "tags", ())]
+    return (1, violations) if violations else (0, [])
+
+
+def check_no_subprocess_usage_without_declared_effect(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry.catalog import list_checks
+
+    violations: list[str] = []
+    for check in list_checks():
+        fn = getattr(check, "fn", None)
+        file = Path(getattr(fn, "__code__", None).co_filename) if getattr(fn, "__code__", None) else None
+        if file is None or not file.exists():
+            continue
+        text = file.read_text(encoding="utf-8", errors="ignore")
+        subprocess_tokens = ("subprocess.run(", "subprocess.Popen(", "run_command(")
+        if any(token in text for token in subprocess_tokens) and "subprocess" not in {str(e) for e in getattr(check, "effects", ())}:
+            violations.append(f"{check.check_id}: subprocess usage requires effects to include subprocess")
+    return (1, sorted(set(violations))) if violations else (0, [])
+
+
+def check_no_network_usage_without_declared_effect(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry.catalog import list_checks
+
+    violations: list[str] = []
+    for check in list_checks():
+        fn = getattr(check, "fn", None)
+        file = Path(getattr(fn, "__code__", None).co_filename) if getattr(fn, "__code__", None) else None
+        if file is None or not file.exists():
+            continue
+        text = file.read_text(encoding="utf-8", errors="ignore")
+        network_tokens = ("requests.", "httpx.", "urllib.request", "socket.")
+        if any(token in text for token in network_tokens) and "network" not in {str(e) for e in getattr(check, "effects", ())}:
+            violations.append(f"{check.check_id}: network usage requires effects to include network")
+    return (1, sorted(set(violations))) if violations else (0, [])
+
+
+def check_write_roots_are_evidence_only(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry.catalog import list_checks
+
+    violations: list[str] = []
+    for check in list_checks():
+        roots = tuple(getattr(check, "writes_allowed_roots", ()))
+        for root in roots:
+            value = str(root).strip()
+            if not value:
+                continue
+            if not (
+                value.startswith("artifacts/evidence/")
+                or value.startswith("artifacts/atlasctl/checks/")
+                or value.startswith("artifacts/runs/")
+            ):
+                violations.append(f"{check.check_id}: write root must be under managed evidence roots ({value})")
+    return (1, sorted(set(violations))) if violations else (0, [])
+
+
 def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     registry_root = repo_root / "packages/atlasctl/src/atlasctl/checks/registry"
     if not registry_root.exists():
@@ -1088,6 +1216,116 @@ CHECKS = (
         check_no_generated_timestamp_dirs,
         category=CheckCategory.HYGIENE,
         fix_hint="Use deterministic, stable generated directory names without timestamps.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_checks_outside_domains_tools",
+        "checks",
+        "require check implementations to live under checks/domains or checks/tools",
+        700,
+        check_no_checks_outside_domains_tools,
+        category=CheckCategory.POLICY,
+        fix_hint="Move check implementation modules under checks/domains or checks/tools and update registry callables.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.legacy_directories_absent",
+        "checks",
+        "require legacy checks/layout and checks/repo directories to be removed",
+        500,
+        check_legacy_check_directories_absent,
+        category=CheckCategory.POLICY,
+        fix_hint="Complete migration and delete checks/layout and checks/repo directories.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_generated_read_only",
+        "checks",
+        "require generated registry json to keep generated markers",
+        500,
+        check_registry_generated_read_only,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Regenerate REGISTRY.generated.json via atlasctl registry generator and keep generated metadata markers.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_toml_generated_contract",
+        "checks",
+        "require REGISTRY.toml to be generated-only when present",
+        500,
+        check_registry_toml_generated_contract,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Write REGISTRY.toml through atlasctl generator and include generated-only header.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.all_checks_have_owner",
+        "checks",
+        "require every check to declare at least one owner",
+        500,
+        check_all_checks_have_owner,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Populate owners for every check definition.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.all_checks_declare_effects",
+        "checks",
+        "require every check to declare effects",
+        500,
+        check_all_checks_declare_effects,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Declare effect metadata for every check definition.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.all_checks_have_tags",
+        "checks",
+        "require every check to declare tags",
+        500,
+        check_all_checks_have_tags,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Declare at least one policy tag for every check definition.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.subprocess_effect_declared",
+        "checks",
+        "require subprocess usage in check modules to declare subprocess effect",
+        800,
+        check_no_subprocess_usage_without_declared_effect,
+        category=CheckCategory.POLICY,
+        fix_hint="Add subprocess effect declaration for checks that call subprocess or run_command.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.network_effect_declared",
+        "checks",
+        "require network usage in check modules to declare network effect",
+        800,
+        check_no_network_usage_without_declared_effect,
+        category=CheckCategory.POLICY,
+        fix_hint="Add network effect declaration for checks that call network client libraries.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.write_roots_evidence_only",
+        "checks",
+        "require check write roots to stay under managed evidence directories",
+        700,
+        check_write_roots_are_evidence_only,
+        category=CheckCategory.POLICY,
+        fix_hint="Restrict writes_allowed_roots to artifacts/evidence, artifacts/atlasctl/checks, or artifacts/runs.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
