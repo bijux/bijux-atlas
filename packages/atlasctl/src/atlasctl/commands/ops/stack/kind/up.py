@@ -7,7 +7,11 @@ from pathlib import Path
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[7]
+    cur = Path(__file__).resolve()
+    for parent in (cur, *cur.parents):
+        if (parent / ".git").exists() and (parent / "makefiles").is_dir() and (parent / "configs").is_dir():
+            return parent
+    raise RuntimeError("unable to resolve repository root")
 
 
 def _require_cmd(name: str) -> None:

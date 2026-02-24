@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from ....core.context import RunContext
+from ....core.runtime.paths import write_text_file
 from ..artifacts.command import artifacts_open as _artifacts_open_cmd, cleanup_gc as _cleanup_gc_cmd
 from ..contracts.command import contracts_snapshot as _contracts_snapshot_cmd
 from ..ports.command import ports_reserve as _ports_reserve_cmd, ports_show as _ports_show_cmd
