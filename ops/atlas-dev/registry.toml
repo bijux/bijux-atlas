@@ -244,3 +244,23 @@ checks = [
 ]
 domains = []
 tags_any = []
+
+[[suites]]
+id = "ci_fast"
+checks = [
+  "ops_surface_manifest",
+  "ops_tree_contract",
+  "ops_no_legacy_tooling_refs",
+  "ops_generated_readonly_markers",
+  "ops_schema_presence",
+  "ops_manifest_integrity",
+  "ops_surface_inventory",
+  "ops_artifacts_not_tracked",
+  "ops_makefile_routes_dev_atlas",
+  "ops_workflow_routes_dev_atlas",
+  "repo_import_boundary",
+  "docs_index_links",
+  "make_wrapper_commands",
+]
+domains = []
+tags_any = []
