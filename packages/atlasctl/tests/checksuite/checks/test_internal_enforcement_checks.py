@@ -8,6 +8,7 @@ from atlasctl.checks.domains.internal import (
     check_all_checks_have_tags,
     check_legacy_check_directories_absent,
     check_no_checks_outside_domains_tools,
+    check_root_policy_compat_shims_not_expired,
     check_registry_generated_read_only,
     check_write_roots_are_evidence_only,
 )
@@ -79,3 +80,20 @@ def test_write_roots_restricted(monkeypatch, tmp_path: Path) -> None:
     code, errors = check_write_roots_are_evidence_only(tmp_path)
     assert code == 1
     assert any("managed evidence roots" in line for line in errors)
+
+
+def test_root_policy_compat_shims_require_expiry(tmp_path: Path) -> None:
+    path = tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/root_policy.json"
+    _write(
+        path,
+        """{
+  "required": [],
+  "allowed": [],
+  "compat_shims": ["Dockerfile"],
+  "local_noise": []
+}
+""",
+    )
+    code, errors = check_root_policy_compat_shims_not_expired(tmp_path)
+    assert code == 1
+    assert any("missing expiry" in line for line in errors)
