@@ -123,3 +123,19 @@ jobs:
           cargo build --release -p bijux-atlas-cli -p bijux-dev-atlas
           test -x artifacts/target/release/bijux-atlas
           test -x artifacts/target/release/bijux-dev-atlas
+      - name: Verify build wrappers produce artifacts
+        run: |
+          make build
+          make dist
+          test -x artifacts/bin/bijux-atlas
+          test -x artifacts/bin/bijux-dev-atlas
+          artifacts/bin/bijux-atlas --version >/dev/null
+          artifacts/bin/bijux-dev-atlas --version >/dev/null
+          test -f artifacts/bin/manifest.json
+          test -f artifacts/dist/sha256sum.txt
+      - name: Upload build dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-atlas-build-dist
+          path: |
+            artifacts/dist/*
