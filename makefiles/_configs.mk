@@ -15,4 +15,7 @@ configs-lint: ## Run configs lint checks
 configs-inventory: ## List configs inventory (verification smoke target)
 	@$(DEV_ATLAS) configs inventory --format json
 
-.PHONY: configs configs-doctor configs-validate configs-lint configs-inventory
+configs-check: ## Back-compat alias to configs validation wrapper
+	@$(MAKE) -s configs-validate
+
+.PHONY: configs configs-doctor configs-validate configs-lint configs-inventory configs-check

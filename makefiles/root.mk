@@ -69,9 +69,6 @@ gates: ## Run governance gates via dev-atlas CI-fast suite
 check-list: ## List checks from the Rust control-plane registry
 	@$(DEV_ATLAS) check list --format text
 
-configs-check: ## Back-compat alias to configs validation wrapper
-	@$(MAKE) -s configs-validate
-
 clean: ## Clean scoped generated outputs via control-plane wrappers
 	@$(MAKE) -s ops-clean
 
@@ -80,4 +77,4 @@ make-gate-no-legacy-cli-refs: ## Fail if legacy Python control-plane token appea
 
 make-gate-no-legacy-cli-shim: ## Fail if legacy root control-plane shim exists
 	@legacy_cli_path=bin/atlas''ctl; test ! -e "$$legacy_cli_path"
-.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates configs-check clean make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
+.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates clean make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
