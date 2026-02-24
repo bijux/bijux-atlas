@@ -876,13 +876,29 @@ def check_checks_no_path_dot_usage(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_checks_no_cwd_reliance(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
-    forbidden = ("Path.cwd(", "os.getcwd(", "os.chdir(")
     for path in _check_python_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for idx, line in enumerate(text.splitlines(), start=1):
-            if any(token in line for token in forbidden):
-                errors.append(f"{rel}:{idx}: cwd reliance is forbidden; use explicit repo_root context")
+        try:
+            tree = ast.parse(text, filename=rel)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            lineno = getattr(node, "lineno", 1)
+            func = node.func
+            if isinstance(func, ast.Attribute):
+                if isinstance(func.value, ast.Name):
+                    if func.value.id == "Path" and func.attr == "cwd":
+                        errors.append(f"{rel}:{lineno}: cwd reliance is forbidden; use explicit repo_root context")
+                        continue
+                    if func.value.id == "os" and func.attr in {"getcwd", "chdir"}:
+                        errors.append(f"{rel}:{lineno}: cwd reliance is forbidden; use explicit repo_root context")
+                        continue
+                if isinstance(func.value, ast.Attribute) and isinstance(func.value.value, ast.Name):
+                    if func.value.value.id == "pathlib" and func.value.attr == "Path" and func.attr == "cwd":
+                        errors.append(f"{rel}:{lineno}: cwd reliance is forbidden; use explicit repo_root context")
     return (1, errors) if errors else (0, [])
 
 
