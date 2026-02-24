@@ -322,6 +322,14 @@ pub enum OpsCommand {
         #[command(flatten)]
         common: OpsCommonArgs,
     },
+    Stack {
+        #[command(subcommand)]
+        command: OpsStackCommand,
+    },
+    K8s {
+        #[command(subcommand)]
+        command: OpsK8sCommand,
+    },
     Doctor(OpsCommonArgs),
     Validate(OpsCommonArgs),
     Inventory(OpsCommonArgs),
@@ -353,6 +361,20 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsGenerateCommand,
     },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsStackCommand {
+    Up(OpsCommonArgs),
+    Down(OpsCommonArgs),
+    Status(OpsStatusArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsK8sCommand {
+    Render(OpsRenderArgs),
+    Test(OpsCommonArgs),
+    Status(OpsStatusArgs),
 }
 
 #[derive(Args, Debug, Clone)]

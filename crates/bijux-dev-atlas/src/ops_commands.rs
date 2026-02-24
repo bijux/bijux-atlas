@@ -8,6 +8,19 @@ use crate::ops_command_support::{
 };
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
+    let command = match command {
+        OpsCommand::Stack { command } => match command {
+            OpsStackCommand::Up(common) => OpsCommand::Up(common),
+            OpsStackCommand::Down(common) => OpsCommand::Down(common),
+            OpsStackCommand::Status(args) => OpsCommand::Status(args),
+        },
+        OpsCommand::K8s { command } => match command {
+            OpsK8sCommand::Render(args) => OpsCommand::Render(args),
+            OpsK8sCommand::Test(common) => OpsCommand::Conformance(common),
+            OpsK8sCommand::Status(args) => OpsCommand::Status(args),
+        },
+        other => other,
+    };
     let run: Result<(String, i32), String> = (|| match command {
         OpsCommand::List(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -671,6 +684,9 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 }
             }
         },
+        OpsCommand::Stack { .. } | OpsCommand::K8s { .. } => {
+            unreachable!("ops nested wrapper variants are normalized before execution")
+        }
     })();
 
     if debug {
@@ -697,3 +713,4 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
     }
 }
 use crate::*;
+use crate::cli::{OpsK8sCommand, OpsStackCommand};
