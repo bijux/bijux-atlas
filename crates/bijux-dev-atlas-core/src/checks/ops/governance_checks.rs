@@ -336,7 +336,7 @@ pub(super) fn check_artifacts_bin_binaries_executable_and_version_printable(
                     "chmod +x generated binaries in artifacts/bin",
                     path.strip_prefix(ctx.repo_root)
                         .ok()
-                        .map_or(Some(Path::new("artifacts/bin")), |p| Some(p)),
+                        .map_or(Some(Path::new("artifacts/bin")), Some),
                 ));
                 continue;
             }
