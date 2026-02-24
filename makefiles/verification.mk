@@ -1,5 +1,5 @@
 # Scope: verification orchestrator for running all targets in a module makefile.
-# Usage: make verification <module>  (example: make verification atlasctl)
+# Usage: make verification <module>  (example: make verification ops)
 SHELL := /bin/sh
 
 ifeq (verification,$(firstword $(MAKECMDGOALS)))
