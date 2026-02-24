@@ -58,6 +58,7 @@ def check_registry_change_requires_golden_update(repo_root: Path) -> tuple[int, 
     return _gate(repo_root, required=REQUIRED_GOLDENS, label="goldens")
 
 _CANONICAL_RE = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
+_LEGACY_DOTTED_ID_RE = re.compile(r"^[a-z0-9]+(?:\.[a-z0-9_]+)+$")
 _CATALOG_PATH = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
 _DOCS_META_PATH = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
 _COUNT_BUDGET_PATH = Path("configs/policy/checks-count-budget.json")
@@ -103,10 +104,14 @@ def _forbidden_terms(repo_root: Path) -> tuple[str, ...]:
 
 
 def check_registry_all_checks_have_canonical_id(repo_root: Path) -> tuple[int, list[str]]:
+    del repo_root
+    from ..registry import list_checks
+
     errors: list[str] = []
-    for entry in _entries(repo_root):
-        if _CANONICAL_RE.match(entry.id) is None:
-            errors.append(f"{entry.id}: invalid canonical id format")
+    for check in list_checks():
+        check_id = str(getattr(check, "canonical_id", "") or check.check_id)
+        if _CANONICAL_RE.match(check_id) is None and _LEGACY_DOTTED_ID_RE.match(check_id) is None:
+            errors.append(f"{check_id}: invalid id format; expected canonical checks_<domain>_<name> or legacy dotted id")
     return (1, errors) if errors else (0, [])
 
 
@@ -216,6 +221,7 @@ def check_registry_transition_complete(repo_root: Path) -> tuple[int, list[str]]
 
 
 def check_suites_inventory_ssot(repo_root: Path) -> tuple[int, list[str]]:
+    del repo_root
     from ...registry.suites import suite_manifest_specs
 
     specs = list(suite_manifest_specs())
@@ -1027,9 +1033,10 @@ def check_registry_toml_generated_contract(repo_root: Path) -> tuple[int, list[s
 
 
 def check_all_checks_have_owner(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry import list_checks
+    del repo_root
+    from ..registry import load_registry_entries
 
-    violations = [f"{check.check_id}: owner is required" for check in list_checks() if not getattr(check, "owners", ())]
+    violations = [f"{entry.id}: owner is required" for entry in load_registry_entries() if not entry.owner.strip()]
     return (1, violations) if violations else (0, [])
 
 
@@ -1125,9 +1132,10 @@ def check_all_checks_declare_effects(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_all_checks_have_tags(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry import list_checks
+    del repo_root
+    from ..registry import load_registry_entries
 
-    violations = [f"{check.check_id}: tags declaration is required" for check in list_checks() if not getattr(check, "tags", ())]
+    violations = [f"{entry.id}: tags declaration is required" for entry in load_registry_entries() if not entry.groups]
     return (1, violations) if violations else (0, [])
 
 
