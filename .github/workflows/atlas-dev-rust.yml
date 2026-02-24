@@ -46,6 +46,18 @@ jobs:
           cargo run -p bijux-atlas-cli -- --version >/dev/null
           cargo run -p bijux-dev-atlas -- --help >/dev/null
           cargo run -p bijux-dev-atlas -- --version >/dev/null
+      - name: Validate dev atlas plugin metadata JSON
+        run: |
+          cargo run -p bijux-dev-atlas -- --bijux-plugin-metadata > /tmp/dev-atlas-plugin-metadata.json
+          python3 - <<'PY'
+          import json
+          p = json.load(open("/tmp/dev-atlas-plugin-metadata.json"))
+          assert p["schema_version"] == "v1"
+          assert p["name"] == "bijux-dev-atlas"
+          assert "version" in p and p["version"]
+          assert "compatible_umbrella_min" in p and p["compatible_umbrella_min"]
+          assert "compatible_umbrella_max_exclusive" in p and p["compatible_umbrella_max_exclusive"]
+          PY
       - name: Verify canonical governance entrypoint
         run: |
           make dev-doctor >/dev/null
@@ -69,12 +81,26 @@ jobs:
       - name: Verify docs doctor entrypoint (no subprocess)
         run: |
           make docs-doctor >/dev/null
+      - name: Verify docs check entrypoint when mkdocs is available
+        run: |
+          if command -v mkdocs >/dev/null 2>&1; then
+            cargo run -p bijux-dev-atlas -- docs check --allow-subprocess --allow-write --format json >/dev/null
+          else
+            echo "mkdocs not installed; skipping docs check"
+          fi
       - name: Verify configs doctor entrypoint (no subprocess)
         run: |
           make configs-doctor >/dev/null
+      - name: Verify configs validate entrypoint
+        run: |
+          cargo run -p bijux-dev-atlas -- configs validate --format json >/dev/null
+      - name: Verify explicit ci-fast suite entrypoint
+        run: |
+          cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json >/dev/null
       - name: Enforce governance migration guards
         run: |
           ! rg -n "atlasctl" makefiles/ops.mk makefiles/dev.mk makefiles/ci.mk makefiles/CONTRACT.md ops/CONTRACT.md
+          ! rg -n "atlasctl" .github/workflows/atlas-dev-rust.yml
           ! rg -n "scripts/areas" makefiles/ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml
           ! rg -n "xtask" makefiles/ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml
           ! rg -n "bash ops/|ops/_lib" makefiles/ops.mk .github/workflows/atlas-dev-rust.yml
