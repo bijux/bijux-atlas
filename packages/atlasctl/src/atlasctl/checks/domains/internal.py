@@ -864,13 +864,34 @@ def check_checks_no_direct_env_reads(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_checks_no_path_dot_usage(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
-    pattern = re.compile(r"\b(?:Path|pathlib\.Path)\(\s*[\"']\.[\"']\s*\)")
     for path in _check_python_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for idx, line in enumerate(text.splitlines(), start=1):
-            if pattern.search(line):
-                errors.append(f"{rel}:{idx}: dot-path construction is forbidden; anchor paths to repo_root")
+        try:
+            tree = ast.parse(text, filename=rel)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
+                continue
+            if not node.args:
+                continue
+            first_arg = node.args[0]
+            if not isinstance(first_arg, ast.Constant) or first_arg.value != ".":
+                continue
+            is_path_ctor = False
+            if isinstance(node.func, ast.Name) and node.func.id == "Path":
+                is_path_ctor = True
+            if (
+                isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "pathlib"
+                and node.func.attr == "Path"
+            ):
+                is_path_ctor = True
+            if not is_path_ctor:
+                continue
+            errors.append(f"{rel}:{getattr(node, 'lineno', 1)}: dot-path construction is forbidden; anchor paths to repo_root")
     return (1, errors) if errors else (0, [])
 
 

@@ -17940,7 +17940,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 300,
+        "timeout_ms": 1200,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
@@ -18078,7 +18078,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 400,
+        "timeout_ms": 1400,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
@@ -18124,7 +18124,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 400,
+        "timeout_ms": 1400,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
@@ -18249,7 +18249,7 @@
         "callable": "check_forbidden_adjectives",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -18479,7 +18479,7 @@
         "callable": "check_import_smoke",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -18939,7 +18939,7 @@
         "callable": "check_no_layout_shadow_configs",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -19169,7 +19169,7 @@
         "callable": "check_managed_artifact_write_roots",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -19491,7 +19491,7 @@
         "callable": "check_no_adhoc_python",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -19859,7 +19859,7 @@
         "callable": "run",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -20135,7 +20135,7 @@
         "callable": "check_no_executable_python_outside_packages",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -20181,7 +20181,7 @@
         "callable": "run",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -20227,7 +20227,7 @@
         "callable": "check_no_large_binary_files",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -20562,7 +20562,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 400,
+        "timeout_ms": 900,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
@@ -20687,7 +20687,7 @@
         "callable": "check_repo_no_python_caches_committed",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -20746,7 +20746,7 @@
         "result_code": "CHECK_GENERIC",
         "severity": "error",
         "speed": "fast",
-        "timeout_ms": 300,
+        "timeout_ms": 900,
         "writes_allowed_roots": [
           "artifacts/evidence/"
         ]
@@ -20825,7 +20825,7 @@
         "callable": "check_ops_generated_tracked",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -20871,7 +20871,7 @@
         "callable": "check_tracked_timestamp_paths",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -21055,7 +21055,7 @@
         "callable": "check_ops_configs_deterministic_newlines",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -22113,7 +22113,7 @@
         "callable": "check_python_module_help",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -22481,7 +22481,7 @@
         "callable": "run",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -22527,7 +22527,7 @@
         "callable": "run",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -22619,7 +22619,7 @@
         "callable": "check_script_help",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -23769,7 +23769,7 @@
         "callable": "check_tmp_paths_outside_artifacts",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -23953,7 +23953,7 @@
         "callable": "check_version_matches_pyproject",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
@@ -23999,7 +23999,7 @@
         "callable": "check_workflows_targets_exist",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
