@@ -10,18 +10,34 @@ Curated make targets (Rust control plane):
   dev-ci
   dev-check-ci
   build
+  build-release
+  build-ci
+  build-meta
   dist
+  dist-verify
   clean-build
+  clean-dist
   build-doctor
   check
   check-gates
   check-list
   gates
+  gate-10
+  gate-20
   ci
   ci-fast
   ci-pr
   ci-nightly
   ci-docs
+  lanes
+  verify
+  lint-makefiles
+  lint-root
+  lint-policies
+  lint-docker
+  lint-ops
+  lint-configs
+  lint-docs
   policies
   docs
   docs-doctor
@@ -45,6 +61,11 @@ Curated make targets (Rust control plane):
   ops-clean
   ops-reset
   ops-status
+  ops-stack
+  ops-k8s
+  ops-e2e
+  ops-load
+  ops-obs
   ops-tools-verify
   ops-pins-check
   ops-pins-update
