@@ -19,6 +19,8 @@ pub struct RunRequest {
     pub repo_root: PathBuf,
     pub domain: Option<DomainId>,
     pub capabilities: Capabilities,
+    pub artifacts_root: Option<PathBuf>,
+    pub run_id: Option<RunId>,
 }
 
 #[derive(Debug, Clone)]
@@ -586,6 +588,22 @@ pub fn render_text_summary(report: &RunReport) -> String {
     )
 }
 
+pub fn render_text_with_durations(report: &RunReport, top_n: usize) -> String {
+    let mut lines = vec![render_text_summary(report)];
+    if top_n > 0 {
+        let mut rows = report
+            .results
+            .iter()
+            .map(|row| (row.id.as_str().to_string(), row.duration_ms))
+            .collect::<Vec<_>>();
+        rows.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
+        for (id, ms) in rows.into_iter().take(top_n) {
+            lines.push(format!("duration: {id} {ms}ms"));
+        }
+    }
+    lines.join("\n")
+}
+
 pub fn render_json(report: &RunReport) -> Result<String, String> {
     serde_json::to_string_pretty(report).map_err(|err| err.to_string())
 }
@@ -616,14 +634,17 @@ pub fn run_checks(
     };
     let selected = select_checks(&registry, &effective_selectors)?;
 
-    let run_id = RunId::from_seed("registry_run");
+    let run_id = request
+        .run_id
+        .clone()
+        .unwrap_or_else(|| RunId::from_seed("registry_run"));
+    let artifacts_root = request
+        .artifacts_root
+        .clone()
+        .unwrap_or_else(|| request.repo_root.join("artifacts").join("atlas-dev"));
     let ctx = CheckContext {
         repo_root: &request.repo_root,
-        artifacts_root: request
-            .repo_root
-            .join("artifacts")
-            .join("atlas-dev")
-            .join(run_id.as_str()),
+        artifacts_root: artifacts_root.join(run_id.as_str()),
         run_id,
         adapters: AdapterSet { fs, process },
         registry: &registry,
@@ -878,6 +899,8 @@ mod tests {
             repo_root: root(),
             domain: None,
             capabilities: Capabilities::deny_all(),
+            artifacts_root: None,
+            run_id: None,
         };
         let report = run_checks(
             &DeniedProcessRunner,
@@ -957,6 +980,8 @@ mod tests {
             repo_root: root(),
             domain: Some(DomainId::Ops),
             capabilities: Capabilities::deny_all(),
+            artifacts_root: None,
+            run_id: None,
         };
         let report = run_checks(
             &DeniedProcessRunner,
@@ -982,6 +1007,8 @@ mod tests {
             repo_root: root(),
             domain: Some(DomainId::Ops),
             capabilities: Capabilities::from_cli_flags(false, false, true, false),
+            artifacts_root: None,
+            run_id: None,
         };
         let report = run_checks(
             &DeniedProcessRunner,
@@ -1007,6 +1034,8 @@ mod tests {
             repo_root: root(),
             domain: None,
             capabilities: Capabilities::from_cli_flags(false, true, false, false),
+            artifacts_root: None,
+            run_id: None,
         };
         let a = run_checks(
             &DeniedProcessRunner,
