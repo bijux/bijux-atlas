@@ -58,6 +58,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_workflows_governance_entrypoints_bijux_only" => {
             Some(check_workflows_governance_entrypoints_bijux_only)
         }
+        "checks_make_governance_wrappers_no_direct_cargo" => {
+            Some(check_make_governance_wrappers_no_direct_cargo)
+        }
         _ => None,
     }
 }
@@ -692,6 +695,30 @@ fn check_workflows_governance_entrypoints_bijux_only(
         }
     }
 
+    Ok(violations)
+}
+
+fn check_make_governance_wrappers_no_direct_cargo(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for rel_text in ["makefiles/dev.mk", "makefiles/ci.mk", "makefiles/ops.mk"] {
+        let rel = Path::new(rel_text);
+        let path = ctx.repo_root.join(rel);
+        let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+        for line in content.lines().filter(|line| line.starts_with('\t')) {
+            let trimmed = line.trim();
+            if trimmed.contains(" cargo ") || trimmed.starts_with("@cargo ") || trimmed.starts_with("cargo ")
+            {
+                violations.push(violation(
+                    "MAKE_GOVERNANCE_DIRECT_CARGO_FORBIDDEN",
+                    format!("{rel_text} must not call cargo directly in governance wrappers: `{trimmed}`"),
+                    "route governance wrappers through make or bijux dev atlas entrypoints",
+                    Some(rel),
+                ));
+            }
+        }
+    }
     Ok(violations)
 }
 
