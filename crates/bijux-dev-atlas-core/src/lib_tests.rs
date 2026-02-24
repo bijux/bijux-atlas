@@ -29,21 +29,21 @@ fn suite_expansion_is_stable() {
     assert_eq!(
         ids,
         vec![
-            "ops_artifacts_gitignore_policy".to_string(),
-            "ops_artifacts_not_tracked".to_string(),
-            "ops_generated_readonly_markers".to_string(),
-            "ops_makefile_routes_dev_atlas".to_string(),
-            "ops_manifest_integrity".to_string(),
-            "ops_no_atlasctl_invocations".to_string(),
-            "ops_no_legacy_runner_paths".to_string(),
-            "ops_no_legacy_tooling_refs".to_string(),
-            "ops_no_python_legacy_runtime_refs".to_string(),
-            "ops_no_scripts_areas_or_xtask_refs".to_string(),
-            "ops_schema_presence".to_string(),
-            "ops_surface_inventory".to_string(),
-            "ops_surface_manifest".to_string(),
-            "ops_tree_contract".to_string(),
-            "ops_workflow_routes_dev_atlas".to_string(),
+            "checks_ops_artifacts_gitignore_policy".to_string(),
+            "checks_ops_artifacts_not_tracked".to_string(),
+            "checks_ops_generated_readonly_markers".to_string(),
+            "checks_ops_makefile_routes_dev_atlas".to_string(),
+            "checks_ops_manifest_integrity".to_string(),
+            "checks_ops_no_atlasctl_invocations".to_string(),
+            "checks_ops_no_legacy_runner_paths".to_string(),
+            "checks_ops_no_legacy_tooling_refs".to_string(),
+            "checks_ops_no_python_legacy_runtime_refs".to_string(),
+            "checks_ops_no_scripts_areas_or_xtask_refs".to_string(),
+            "checks_ops_schema_presence".to_string(),
+            "checks_ops_surface_inventory".to_string(),
+            "checks_ops_surface_manifest".to_string(),
+            "checks_ops_tree_contract".to_string(),
+            "checks_ops_workflow_routes_dev_atlas".to_string(),
         ]
     );
 }
@@ -79,7 +79,7 @@ fn explain_contains_docs() {
     let registry = load_registry(&root()).expect("registry");
     let text = explain_output(
         &registry,
-        &CheckId::parse("ops_surface_manifest").expect("id"),
+        &CheckId::parse("checks_ops_surface_manifest").expect("id"),
     )
     .expect("explain");
     assert!(text.contains("docs:"));
@@ -91,7 +91,7 @@ fn list_output_shape_is_stable() {
     let registry = load_registry(&root()).expect("registry");
     let selected = select_checks(&registry, &Selectors::default()).expect("select");
     let rendered = list_output(&selected);
-    assert!(rendered.contains("ops_surface_manifest\tops surface manifest consistency"));
+    assert!(rendered.contains("checks_ops_surface_manifest\tops surface manifest consistency"));
 }
 
 #[test]
@@ -106,14 +106,14 @@ fn glob_selector_filters_ids() {
     let selected = select_checks(
         &registry,
         &Selectors {
-            id_glob: Some("ops_*".to_string()),
+            id_glob: Some("checks_ops_*".to_string()),
             ..Selectors::default()
         },
     )
     .expect("select");
     assert!(selected
         .iter()
-        .all(|row| row.id.as_str().starts_with("ops_")));
+        .all(|row| row.id.as_str().starts_with("checks_ops_")));
 }
 
 #[test]
@@ -137,6 +137,7 @@ fn run_checks_produces_summary() {
         capabilities: Capabilities::deny_all(),
         artifacts_root: None,
         run_id: None,
+        command: None,
     };
     let report = run_checks(
         &DeniedProcessRunner,
@@ -163,7 +164,7 @@ fn selector_by_suite_works() {
     assert_eq!(selected.len(), 15);
     assert!(selected
         .iter()
-        .any(|row| row.id.as_str() == "ops_surface_manifest"));
+        .any(|row| row.id.as_str() == "checks_ops_surface_manifest"));
 }
 
 #[test]
@@ -193,7 +194,7 @@ fn selector_by_tag_works() {
     .expect("selected");
     assert!(selected
         .iter()
-        .any(|row| row.id.as_str() == "repo_import_boundary"));
+        .any(|row| row.id.as_str() == "checks_repo_import_boundary"));
 }
 
 #[test]
@@ -220,6 +221,7 @@ fn effect_denied_results_in_skip() {
         capabilities: Capabilities::deny_all(),
         artifacts_root: None,
         run_id: None,
+        command: None,
     };
     let report = run_checks(
         &DeniedProcessRunner,
@@ -247,6 +249,7 @@ fn fail_fast_stops_after_first_failure() {
         capabilities: Capabilities::from_cli_flags(false, false, true, false),
         artifacts_root: None,
         run_id: None,
+        command: None,
     };
     let report = run_checks(
         &DeniedProcessRunner,
@@ -275,6 +278,7 @@ fn deterministic_json_output() {
         capabilities: Capabilities::from_cli_flags(false, true, false, false),
         artifacts_root: None,
         run_id: None,
+        command: None,
     };
     let a = run_checks(
         &DeniedProcessRunner,
@@ -306,6 +310,12 @@ fn deterministic_json_output() {
     for value in b.timings_ms.values_mut() {
         *value = 0;
     }
+    for value in a.durations_ms.values_mut() {
+        *value = 0;
+    }
+    for value in b.durations_ms.values_mut() {
+        *value = 0;
+    }
     let a_text = render_json(&a).expect("json a");
     let b_text = render_json(&b).expect("json b");
     assert_eq!(a_text, b_text);
@@ -316,7 +326,17 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
     let pass_report = RunReport {
         run_id: RunId::from_seed("pass"),
         repo_root: ".".to_string(),
+        command: "check run".to_string(),
+        selections: BTreeMap::new(),
         results: Vec::new(),
+        durations_ms: BTreeMap::new(),
+        counts: RunSummary {
+            passed: 1,
+            failed: 0,
+            skipped: 0,
+            errors: 0,
+            total: 1,
+        },
         summary: RunSummary {
             passed: 1,
             failed: 0,
@@ -351,6 +371,18 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
         ..pass_report
     };
     assert_eq!(exit_code_for_report(&error_report), 3);
+
+    let skip_report = RunReport {
+        summary: RunSummary {
+            passed: 0,
+            failed: 0,
+            skipped: 2,
+            errors: 0,
+            total: 2,
+        },
+        ..error_report
+    };
+    assert_eq!(exit_code_for_report(&skip_report), 4);
 }
 
 #[test]
@@ -358,9 +390,11 @@ fn duration_output_is_deterministic_for_equal_durations() {
     let report = RunReport {
         run_id: RunId::from_seed("durations"),
         repo_root: ".".to_string(),
+        command: "check run".to_string(),
+        selections: BTreeMap::new(),
         results: vec![
             CheckResult {
-                id: CheckId::parse("ops_surface_manifest").expect("id"),
+                id: CheckId::parse("checks_ops_surface_manifest").expect("id"),
                 status: CheckStatus::Pass,
                 skip_reason: None,
                 violations: Vec::new(),
@@ -368,7 +402,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
                 evidence: Vec::new(),
             },
             CheckResult {
-                id: CheckId::parse("ops_tree_contract").expect("id"),
+                id: CheckId::parse("checks_ops_tree_contract").expect("id"),
                 status: CheckStatus::Pass,
                 skip_reason: None,
                 violations: Vec::new(),
@@ -383,21 +417,29 @@ fn duration_output_is_deterministic_for_equal_durations() {
             errors: 0,
             total: 2,
         },
+        durations_ms: BTreeMap::new(),
+        counts: RunSummary {
+            passed: 2,
+            failed: 0,
+            skipped: 0,
+            errors: 0,
+            total: 2,
+        },
         timings_ms: BTreeMap::new(),
     };
     let rendered = render_text_with_durations(&report, 2);
     let lines: Vec<&str> = rendered.lines().collect();
     assert!(lines
         .iter()
-        .any(|line| line.contains("duration: ops_surface_manifest 50ms")));
+        .any(|line| line.contains("duration: checks_ops_surface_manifest 50ms")));
     assert!(lines
         .iter()
-        .any(|line| line.contains("duration: ops_tree_contract 50ms")));
+        .any(|line| line.contains("duration: checks_ops_tree_contract 50ms")));
     let first_duration = lines
         .iter()
         .find(|line| line.starts_with("duration:"))
         .expect("first duration");
-    assert_eq!(*first_duration, "duration: ops_surface_manifest 50ms");
+    assert_eq!(*first_duration, "duration: checks_ops_surface_manifest 50ms");
 }
 
 #[test]
@@ -423,4 +465,14 @@ fn ops_inventory_summary_reports_counts() {
             .unwrap_or(0)
             >= 1
     );
+}
+
+#[test]
+fn evidence_paths_must_not_include_timestamps() {
+    assert!(evidence_path_has_timestamp(
+        "artifacts/atlas-dev/run_20260224/report.json"
+    ));
+    assert!(!evidence_path_has_timestamp(
+        "artifacts/atlas-dev/run_registry/report.json"
+    ));
 }

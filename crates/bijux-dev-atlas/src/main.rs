@@ -7,11 +7,11 @@ use std::{fs, io::Write};
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas_core::{
-    exit_code_for_report, explain_output, list_output, load_registry, registry_doctor, render_json,
+    exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
     render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
     Selectors,
 };
-use bijux_dev_atlas_model::{CheckId, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use serde::{Deserialize, Serialize};
@@ -40,7 +40,7 @@ enum Command {
     List {
         #[arg(long)]
         repo_root: Option<PathBuf>,
-        #[arg(long)]
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
@@ -81,7 +81,7 @@ enum Command {
         artifacts_root: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
-        #[arg(long)]
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
@@ -127,7 +127,7 @@ enum CheckCommand {
     List {
         #[arg(long)]
         repo_root: Option<PathBuf>,
-        #[arg(long)]
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
@@ -168,7 +168,7 @@ enum CheckCommand {
         artifacts_root: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
-        #[arg(long)]
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
@@ -203,6 +203,11 @@ enum CheckCommand {
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
 enum DomainArg {
+    Root,
+    Workflows,
+    Configs,
+    Docker,
+    Crates,
     Ops,
     Repo,
     Docs,
@@ -530,6 +535,11 @@ impl OpsProcess {
 impl From<DomainArg> for DomainId {
     fn from(value: DomainArg) -> Self {
         match value {
+            DomainArg::Root => Self::Root,
+            DomainArg::Workflows => Self::Workflows,
+            DomainArg::Configs => Self::Configs,
+            DomainArg::Docker => Self::Docker,
+            DomainArg::Crates => Self::Crates,
             DomainArg::Ops => Self::Ops,
             DomainArg::Repo => Self::Repo,
             DomainArg::Docs => Self::Docs,
@@ -572,14 +582,32 @@ fn parse_selectors(
     include_internal: bool,
     include_slow: bool,
 ) -> Result<Selectors, String> {
+    let normalized_suite = suite
+        .as_deref()
+        .map(normalize_suite_name)
+        .transpose()?
+        .map(std::string::ToString::to_string);
     Ok(Selectors {
-        suite: suite.map(|v| SuiteId::parse(&v)).transpose()?,
+        suite: normalized_suite
+            .as_ref()
+            .map(|v| SuiteId::parse(v))
+            .transpose()?,
         domain: domain.map(Into::into),
         tag: tag.map(|v| Tag::parse(&v)).transpose()?,
         id_glob: id,
         include_internal,
         include_slow,
     })
+}
+
+fn normalize_suite_name(raw: &str) -> Result<&str, String> {
+    match raw {
+        "ci-fast" => Ok("ci_fast"),
+        "ci" => Ok("ci"),
+        "local" => Ok("local"),
+        "deep" => Ok("deep"),
+        other => Ok(other),
+    }
 }
 
 fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
@@ -590,15 +618,50 @@ fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(),
     Ok(())
 }
 
-fn render_list_output(checks_text: String, format: FormatArg) -> Result<String, String> {
+fn render_list_output(checks: &[CheckSpec], format: FormatArg) -> Result<String, String> {
     match format {
-        FormatArg::Text => Ok(checks_text),
+        FormatArg::Text => {
+            let mut lines = Vec::new();
+            let mut current_domain = String::new();
+            for check in checks {
+                let domain = format!("{:?}", check.domain).to_ascii_lowercase();
+                if domain != current_domain {
+                    if !current_domain.is_empty() {
+                        lines.push(String::new());
+                    }
+                    lines.push(format!("[{domain}]"));
+                    current_domain = domain;
+                }
+                let tags = check
+                    .tags
+                    .iter()
+                    .map(|t| t.as_str())
+                    .collect::<Vec<_>>()
+                    .join(",");
+                let suites = check
+                    .suites
+                    .iter()
+                    .map(|s| s.as_str())
+                    .collect::<Vec<_>>()
+                    .join(",");
+                lines.push(format!(
+                    "{}\ttags={}\tsuites={}\t{}",
+                    check.id, tags, suites, check.title
+                ));
+            }
+            Ok(lines.join("\n"))
+        }
         FormatArg::Json => {
-            let rows: Vec<serde_json::Value> = checks_text
-                .lines()
-                .filter_map(|line| {
-                    let (id, title) = line.split_once('\t')?;
-                    Some(serde_json::json!({"id": id, "title": title}))
+            let rows: Vec<serde_json::Value> = checks
+                .iter()
+                .map(|check| {
+                    serde_json::json!({
+                        "id": check.id.as_str(),
+                        "domain": format!("{:?}", check.domain).to_ascii_lowercase(),
+                        "tags": check.tags.iter().map(|v| v.as_str()).collect::<Vec<_>>(),
+                        "suites": check.suites.iter().map(|v| v.as_str()).collect::<Vec<_>>(),
+                        "title": check.title,
+                    })
                 })
                 .collect();
             serde_json::to_string_pretty(&serde_json::json!({"checks": rows}))
@@ -652,7 +715,7 @@ fn run_check_list(options: CheckListOptions) -> Result<(String, i32), String> {
     )?;
     let registry = load_registry(&root)?;
     let checks = select_checks(&registry, &selectors)?;
-    let rendered = render_list_output(list_output(&checks), options.format)?;
+    let rendered = render_list_output(&checks, options.format)?;
     write_output_if_requested(options.out, &rendered)?;
     Ok((rendered, 0))
 }
@@ -715,6 +778,7 @@ fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), String> {
             .artifacts_root
             .or_else(|| Some(root.join("artifacts"))),
         run_id: options.run_id.map(|rid| RunId::parse(&rid)).transpose()?,
+        command: Some("bijux dev atlas check run".to_string()),
     };
     let run_options = RunOptions {
         fail_fast: options.fail_fast,
@@ -744,13 +808,14 @@ fn run_check_doctor(
     let root = resolve_repo_root(repo_root)?;
     let registry_report = registry_doctor(&root);
     let inventory_errors = validate_ops_inventory(&root);
-    let selectors = parse_selectors(Some("ci_fast".to_string()), None, None, None, false, false)?;
+    let selectors = parse_selectors(Some("doctor".to_string()), None, None, None, false, false)?;
     let request = RunRequest {
         repo_root: root.clone(),
         domain: None,
         capabilities: Capabilities::deny_all(),
         artifacts_root: Some(root.join("artifacts")),
         run_id: Some(RunId::from_seed("doctor_run")),
+        command: Some("bijux dev atlas doctor".to_string()),
     };
     let report = run_checks(
         &RealProcessRunner,
@@ -1041,6 +1106,7 @@ fn run_ops_checks(
         capabilities: Capabilities::deny_all(),
         artifacts_root: Some(repo_root.join("artifacts")),
         run_id: Some(run_id_or_default(common.run_id.clone())?),
+        command: Some(format!("bijux dev atlas ops {suite}")),
     };
     let report = run_checks(
         &RealProcessRunner,
@@ -2219,7 +2285,7 @@ mod tests {
                 "bijux-dev-atlas",
                 "check",
                 "explain",
-                "ops_surface_manifest",
+                "checks_ops_surface_manifest",
             ],
             vec!["bijux-dev-atlas", "check", "doctor"],
             vec!["bijux-dev-atlas", "check", "run", "--suite", "ci_fast"],

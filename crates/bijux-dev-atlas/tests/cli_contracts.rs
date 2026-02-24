@@ -28,7 +28,7 @@ fn list_supports_json_format() {
 fn explain_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["explain", "ops_surface_manifest", "--format", "json"])
+        .args(["explain", "checks_ops_surface_manifest", "--format", "json"])
         .output()
         .expect("explain json");
     assert!(output.status.success());
@@ -36,7 +36,7 @@ fn explain_supports_json_format() {
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert_eq!(
         payload.get("id").and_then(|v| v.as_str()),
-        Some("ops_surface_manifest")
+        Some("checks_ops_surface_manifest")
     );
 }
 

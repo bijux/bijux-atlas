@@ -25,7 +25,7 @@ fn ops_foundation_suite_passes_on_minimal_fixture() {
 vocabulary = ["ops", "fast"]
 
 [[checks]]
-id = "ops_tree_contract"
+id = "checks_ops_tree_contract"
 domain = "ops"
 title = "ops contract files are present"
 docs = "ops/CONTRACT.md"
@@ -36,7 +36,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_schema_presence"
+id = "checks_ops_schema_presence"
 domain = "ops"
 title = "ops schema baseline is present"
 docs = "ops/schema/README.md"
@@ -47,7 +47,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_manifest_integrity"
+id = "checks_ops_manifest_integrity"
 domain = "ops"
 title = "ops inventory manifests are valid json with required keys"
 docs = "ops/inventory/README.md"
@@ -58,7 +58,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_surface_inventory"
+id = "checks_ops_surface_inventory"
 domain = "ops"
 title = "ops index inventories top-level surfaces"
 docs = "ops/INDEX.md"
@@ -69,7 +69,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_surface_manifest"
+id = "checks_ops_surface_manifest"
 domain = "ops"
 title = "ops surface manifest consistency"
 docs = "ops/CONTRACT.md"
@@ -80,7 +80,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_generated_readonly_markers"
+id = "checks_ops_generated_readonly_markers"
 domain = "ops"
 title = "ops generated files keep readonly generator markers"
 docs = "ops/_generated.example/MIRROR_POLICY.md"
@@ -91,7 +91,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_artifacts_not_tracked"
+id = "checks_ops_artifacts_not_tracked"
 domain = "ops"
 title = "ops evidence paths stay empty in repository"
 docs = "ops/CONTRACT.md"
@@ -102,7 +102,7 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "ops_no_legacy_tooling_refs"
+id = "checks_ops_no_legacy_tooling_refs"
 domain = "ops"
 title = "ops does not reference legacy tooling paths"
 docs = "ops/CONTRACT.md"
@@ -171,6 +171,7 @@ tags_any = ["fast"]
         capabilities: Capabilities::deny_all(),
         artifacts_root: None,
         run_id: None,
+        command: None,
     };
     let selectors = Selectors {
         suite: Some(SuiteId::parse("ops_fast").expect("suite")),
