@@ -115,7 +115,7 @@
         "dev",
         "ci"
       ],
-      "area": "scripts"
+      "area": "tooling"
     },
     {
       "name": "clean-safe",
@@ -124,7 +124,7 @@
         "dev",
         "ci"
       ],
-      "area": "scripts"
+      "area": "tooling"
     },
     {
       "name": "configs/all",
@@ -269,7 +269,7 @@
         "dev",
         "ci"
       ],
-      "area": "scripts"
+      "area": "tooling"
     },
     {
       "name": "list",
@@ -465,18 +465,18 @@
       "area": "policies"
     },
     {
-      "name": "scripts/all",
+      "name": "tooling/all",
       "description": "Scripts lint/tests/audit lane",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "scripts"
+      "area": "tooling"
     },
     {
-      "name": "scripts/check",
+      "name": "tooling/check",
       "description": "Deterministic scripts checks",
-      "area": "scripts",
+      "area": "tooling",
       "lanes": [
         "dev",
         "ci"

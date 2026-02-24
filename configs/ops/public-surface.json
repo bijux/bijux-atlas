@@ -130,15 +130,15 @@
     "root-local",
     "root-local-fast",
     "root-local-summary",
-    "scripts-all",
-    "scripts-check",
+    "tooling-all",
+    "tooling-check",
     "verify-inventory"
   ],
   "ops_run_commands": [
-    "./bin/atlasctl ops prereqs --report text",
-    "./bin/atlasctl ops doctor --report text",
-    "atlasctl ops stack up",
-    "atlasctl ops stack down"
+    "bijux dev atlas ops prereqs --report text",
+    "bijux dev atlas ops doctor --report text",
+    "bijux dev atlas ops stack up",
+    "bijux dev atlas ops stack down"
   ],
   "core_targets": [
     "root",

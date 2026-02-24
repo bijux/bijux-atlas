@@ -1,7 +1,0 @@
-{
-  "approved": false,
-  "approval_id": "",
-  "expiry": "2026-05-31",
-  "owner": "platform",
-  "reason": "Set approved=true with non-empty approval_id when loosening atlasctl budget thresholds."
-}
