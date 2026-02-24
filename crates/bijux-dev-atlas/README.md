@@ -26,6 +26,7 @@ Rust control-plane tool for Atlas development checks and workflows.
 - `run` additionally supports `--format jsonl`.
 - `--out <path>` is supported on all commands.
 - Default output is deterministic and excludes timestamps.
+- `--print-policies` prints resolved dev governance policies as stable JSON.
 
 ## Root discovery and write policy
 - `--repo-root` is optional; when omitted the binary walks upward from cwd until it finds `Cargo.toml` or `.git`.
