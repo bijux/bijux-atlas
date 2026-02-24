@@ -135,7 +135,9 @@ mod tests {
     fn docs_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "docs", "doctor"],
+            vec!["bijux-dev-atlas", "docs", "check", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "docs", "validate"],
+            vec!["bijux-dev-atlas", "docs", "clean", "--allow-write"],
             vec!["bijux-dev-atlas", "docs", "lint"],
             vec!["bijux-dev-atlas", "docs", "links"],
             vec!["bijux-dev-atlas", "docs", "inventory"],
@@ -218,8 +220,10 @@ mod tests {
     fn configs_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "configs", "doctor"],
+            vec!["bijux-dev-atlas", "configs", "print"],
             vec!["bijux-dev-atlas", "configs", "validate", "--strict"],
             vec!["bijux-dev-atlas", "configs", "lint"],
+            vec!["bijux-dev-atlas", "configs", "fmt", "--check"],
             vec!["bijux-dev-atlas", "configs", "inventory"],
             vec!["bijux-dev-atlas", "configs", "compile", "--allow-write"],
             vec!["bijux-dev-atlas", "configs", "diff"],

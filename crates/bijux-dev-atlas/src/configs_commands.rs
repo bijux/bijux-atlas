@@ -241,6 +241,24 @@ fn configs_compile_payload(
     }))
 }
 
+fn configs_print_payload(
+    ctx: &ConfigsContext,
+    common: &ConfigsCommonArgs,
+) -> Result<serde_json::Value, String> {
+    let inventory = configs_inventory_payload(ctx, common)?;
+    let mut rows = inventory["rows"].as_array().cloned().unwrap_or_default();
+    rows.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": "configs print resolved inventory",
+        "rows": rows,
+        "orphans": inventory["orphans"].as_array().cloned().unwrap_or_default(),
+        "capabilities": {"fs_write": common.allow_write, "subprocess": common.allow_subprocess, "network": common.allow_network},
+        "options": {"strict": common.strict}
+    }))
+}
+
 pub(crate) fn configs_diff_payload(
     ctx: &ConfigsContext,
     common: &ConfigsCommonArgs,
@@ -283,6 +301,12 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
         match command {
+            ConfigsCommand::Print(common) => {
+                let ctx = configs_context(&common)?;
+                let mut payload = configs_print_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
             ConfigsCommand::Inventory(common) => {
                 let ctx = configs_context(&common)?;
                 let mut payload = configs_inventory_payload(&ctx, &common)?;
@@ -307,6 +331,32 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
                 let ctx = configs_context(&common)?;
                 let mut payload = configs_lint_payload(&ctx, &common)?;
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
+            ConfigsCommand::Fmt { check, common } => {
+                let ctx = configs_context(&common)?;
+                let mut payload = configs_lint_payload(&ctx, &common)?;
+                payload["text"] = serde_json::json!(if check {
+                    if payload["errors"].as_array().is_some_and(|v| v.is_empty()) {
+                        "configs fmt --check passed"
+                    } else {
+                        "configs fmt --check failed"
+                    }
+                } else if payload["errors"].as_array().is_some_and(|v| v.is_empty()) {
+                    "configs fmt passed"
+                } else {
+                    "configs fmt failed"
+                });
+                payload["mode"] = serde_json::json!(if check { "check" } else { "apply" });
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                if !check {
+                    return Err("configs fmt apply is not implemented; use --check".to_string());
+                }
                 let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                     1
                 } else {
