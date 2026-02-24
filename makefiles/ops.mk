@@ -16,7 +16,7 @@ ops-validate: ## Run ops validation checks
 	@$(DEV_ATLAS) ops validate --profile $(PROFILE) --format json
 
 ops-render: ## Render ops manifests for selected profile
-	@$(DEV_ATLAS) ops render --target helm --profile $(PROFILE) --allow-subprocess --format json
+	@$(DEV_ATLAS) ops render --target kind --check --profile $(PROFILE) --format json
 
 ops-install-plan: ## Print install plan without applying resources
 	@$(DEV_ATLAS) ops install --kind --apply --plan --profile $(PROFILE) --allow-subprocess --allow-write --format json
