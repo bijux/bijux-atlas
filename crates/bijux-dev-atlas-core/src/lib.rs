@@ -521,7 +521,7 @@ pub fn registry_doctor(repo_root: &Path) -> RegistryDoctorReport {
 
 #[cfg(test)]
 pub(crate) use check_runner::evidence_path_has_timestamp;
-pub use check_runner::run_checks;
+pub use check_runner::{run_checks, Check, CheckRunner};
 pub use report_rendering::{
     exit_code_for_report, render_ci_summary_line, render_json, render_jsonl, render_text_summary,
     render_text_with_durations,
