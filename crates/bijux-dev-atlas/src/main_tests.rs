@@ -41,6 +41,15 @@ mod tests {
         let commands = [
             vec!["bijux-dev-atlas", "ops", "doctor"],
             vec!["bijux-dev-atlas", "ops", "validate"],
+            vec!["bijux-dev-atlas", "ops", "inventory"],
+            vec!["bijux-dev-atlas", "ops", "docs"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "conformance",
+                "--allow-subprocess",
+            ],
+            vec!["bijux-dev-atlas", "ops", "report", "--allow-write"],
             vec!["bijux-dev-atlas", "ops", "render", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "ops", "install", "--plan"],
             vec!["bijux-dev-atlas", "ops", "status"],
