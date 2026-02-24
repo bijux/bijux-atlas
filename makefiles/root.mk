@@ -6,6 +6,7 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 include makefiles/env.mk
 include makefiles/dev-atlas.mk
 include makefiles/_cargo.mk
+include makefiles/build.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
 include makefiles/_docker.mk
@@ -19,6 +20,7 @@ CURATED_TARGETS := \
 	help list explain surface \
 	dev-atlas doctor ci-local \
 	dev-doctor dev-ci dev-check-ci \
+	build dist clean-build build-doctor \
 	check check-list gates \
 	ci ci-fast ci-pr ci-nightly ci-docs \
 	policies \

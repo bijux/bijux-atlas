@@ -1,7 +1,8 @@
 use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command};
 use crate::{
-    plugin_metadata_json, run_capabilities_command, run_check_doctor, run_check_explain,
-    run_check_list, run_check_registry_doctor, run_check_run, run_configs_command,
+    plugin_metadata_json, run_build_command, run_capabilities_command, run_check_doctor,
+    run_check_explain, run_check_list,
+    run_check_registry_doctor, run_check_run, run_configs_command,
     run_docker_command, run_docs_command, run_gates_command, run_help_inventory_command,
     run_ops_command, run_policies_command, run_print_boundaries_command, run_version_command,
     run_workflows_command,
@@ -77,6 +78,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
         Command::Docker { command } => run_docker_command(cli.quiet, command),
+        Command::Build { command } => run_build_command(cli.quiet, command),
         Command::Policies { command } => run_policies_command(cli.quiet, command),
         Command::Workflows { command } => run_workflows_command(cli.quiet, command),
         Command::Gates { command } => run_gates_command(cli.quiet, command),
