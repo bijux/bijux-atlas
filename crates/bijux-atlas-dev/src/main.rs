@@ -1,65 +1,92 @@
 #![forbid(unsafe_code)]
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use bijux_atlas_dev_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_atlas_dev_core::{
     exit_code_for_report, explain_output, list_output, load_registry, registry_doctor, render_json,
-    render_jsonl, render_text_summary, run_checks, select_checks, RunOptions, RunRequest,
+    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
     Selectors,
 };
-use bijux_atlas_dev_model::{CheckId, DomainId};
+use bijux_atlas_dev_model::{CheckId, DomainId, RunId, SuiteId, Tag};
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
 #[command(name = "bijux-atlas-dev", version)]
 #[command(about = "Bijux Atlas development control-plane")]
 struct Cli {
+    #[arg(long, default_value_t = false)]
+    quiet: bool,
+    #[arg(long, default_value_t = false)]
+    verbose: bool,
     #[command(subcommand)]
     command: Command,
 }
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    Check {
+    List {
         #[arg(long)]
         repo_root: Option<PathBuf>,
+        #[arg(long)]
+        suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
         #[arg(long)]
-        list: bool,
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+    },
+    Explain {
+        check_id: String,
         #[arg(long)]
-        explain: Option<String>,
+        repo_root: Option<PathBuf>,
+    },
+    Doctor {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+    },
+    Run {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
         #[arg(long)]
         suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
         #[arg(long)]
         tag: Option<String>,
-        #[arg(long)]
-        id_glob: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
         #[arg(long, default_value_t = false)]
         include_internal: bool,
         #[arg(long, default_value_t = false)]
         include_slow: bool,
         #[arg(long, default_value_t = false)]
-        allow_fs_write: bool,
-        #[arg(long, default_value_t = false)]
         allow_subprocess: bool,
         #[arg(long, default_value_t = false)]
         allow_git: bool,
+        #[arg(long = "allow-write", default_value_t = false)]
+        allow_write: bool,
         #[arg(long, default_value_t = false)]
         allow_network: bool,
         #[arg(long, default_value_t = false)]
         fail_fast: bool,
         #[arg(long)]
         max_failures: Option<usize>,
-        #[arg(long, value_enum, default_value_t = OutputArg::Text)]
-        output: OutputArg,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
         #[arg(long)]
-        out_file: Option<PathBuf>,
-    },
-    Doctor {
-        #[arg(long)]
-        repo_root: Option<PathBuf>,
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = 0)]
+        durations: usize,
     },
 }
 
@@ -72,7 +99,7 @@ enum DomainArg {
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
-enum OutputArg {
+enum FormatArg {
     Text,
     Json,
     Jsonl,
@@ -89,156 +116,189 @@ impl From<DomainArg> for DomainId {
     }
 }
 
+fn discover_repo_root(start: &Path) -> Result<PathBuf, String> {
+    let mut current = start.canonicalize().map_err(|err| err.to_string())?;
+    loop {
+        if current.join("Cargo.toml").exists() || current.join(".git").exists() {
+            return Ok(current);
+        }
+        if let Some(parent) = current.parent() {
+            current = parent.to_path_buf();
+        } else {
+            return Err("could not discover repo root (no Cargo.toml or .git found)".to_string());
+        }
+    }
+}
+
+fn resolve_repo_root(arg: Option<PathBuf>) -> Result<PathBuf, String> {
+    match arg {
+        Some(path) => discover_repo_root(&path),
+        None => {
+            let cwd = std::env::current_dir().map_err(|err| err.to_string())?;
+            discover_repo_root(&cwd)
+        }
+    }
+}
+
+fn parse_selectors(
+    suite: Option<String>,
+    domain: Option<DomainArg>,
+    tag: Option<String>,
+    id: Option<String>,
+    include_internal: bool,
+    include_slow: bool,
+) -> Result<Selectors, String> {
+    Ok(Selectors {
+        suite: suite.map(|v| SuiteId::parse(&v)).transpose()?,
+        domain: domain.map(Into::into),
+        tag: tag.map(|v| Tag::parse(&v)).transpose()?,
+        id_glob: id,
+        include_internal,
+        include_slow,
+    })
+}
+
+fn write_output_if_requested(out: Option<PathBuf>, rendered: &str) -> Result<(), String> {
+    if let Some(path) = out {
+        std::fs::write(&path, format!("{rendered}\n"))
+            .map_err(|err| format!("cannot write {}: {err}", path.display()))?;
+    }
+    Ok(())
+}
+
 fn main() {
     let cli = Cli::parse();
     let exit = match cli.command {
-        Command::Doctor { repo_root } => {
-            let root = repo_root
-                .or_else(|| std::env::current_dir().ok())
-                .unwrap_or_else(|| PathBuf::from("."));
-            let report = registry_doctor(&root);
-            if report.errors.is_empty() {
-                println!("bijux-atlas-dev doctor: ok");
-                0
-            } else {
-                eprintln!("bijux-atlas-dev doctor failed:");
-                for err in report.errors {
-                    eprintln!("{err}");
-                }
-                1
-            }
-        }
-        Command::Check {
+        Command::List {
             repo_root,
-            domain,
-            list,
-            explain,
             suite,
+            domain,
             tag,
-            id_glob,
+            id,
             include_internal,
             include_slow,
-            allow_fs_write,
+        } => {
+            match resolve_repo_root(repo_root).and_then(|root| {
+                let selectors =
+                    parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
+                let registry = load_registry(&root)?;
+                let checks = select_checks(&registry, &selectors)?;
+                Ok(list_output(&checks))
+            }) {
+                Ok(text) => {
+                    println!("{text}");
+                    0
+                }
+                Err(err) => {
+                    eprintln!("bijux-atlas-dev list failed: {err}");
+                    1
+                }
+            }
+        }
+        Command::Explain {
+            check_id,
+            repo_root,
+        } => match resolve_repo_root(repo_root).and_then(|root| {
+            let registry = load_registry(&root)?;
+            let id = CheckId::parse(&check_id)?;
+            explain_output(&registry, &id)
+        }) {
+            Ok(text) => {
+                println!("{text}");
+                0
+            }
+            Err(err) => {
+                eprintln!("bijux-atlas-dev explain failed: {err}");
+                1
+            }
+        },
+        Command::Doctor { repo_root } => match resolve_repo_root(repo_root) {
+            Ok(root) => {
+                let report = registry_doctor(&root);
+                if report.errors.is_empty() {
+                    println!("bijux-atlas-dev doctor: ok");
+                    0
+                } else {
+                    eprintln!("bijux-atlas-dev doctor failed:");
+                    for err in report.errors {
+                        eprintln!("{err}");
+                    }
+                    1
+                }
+            }
+            Err(err) => {
+                eprintln!("bijux-atlas-dev doctor failed: {err}");
+                1
+            }
+        },
+        Command::Run {
+            repo_root,
+            artifacts_root,
+            run_id,
+            suite,
+            domain,
+            tag,
+            id,
+            include_internal,
+            include_slow,
             allow_subprocess,
             allow_git,
+            allow_write,
             allow_network,
             fail_fast,
             max_failures,
-            output,
-            out_file,
+            format,
+            out,
+            durations,
         } => {
-            let root = repo_root
-                .or_else(|| std::env::current_dir().ok())
-                .unwrap_or_else(|| PathBuf::from("."));
-            match load_registry(&root) {
-                Ok(registry) => match (|| -> Result<Selectors, String> {
-                    Ok(Selectors {
-                        id_glob,
-                        domain: domain.map(Into::into),
-                        tag: tag
-                            .map(|v| bijux_atlas_dev_model::Tag::parse(&v))
-                            .transpose()?,
-                        suite: suite
-                            .map(|v| bijux_atlas_dev_model::SuiteId::parse(&v))
-                            .transpose()?,
-                        include_internal,
-                        include_slow,
-                    })
-                })() {
-                    Ok(selectors) => {
-                        if list {
-                            match select_checks(&registry, &selectors) {
-                                Ok(checks) => {
-                                    println!("{}", list_output(&checks));
-                                    0
-                                }
-                                Err(err) => {
-                                    eprintln!("bijux-atlas-dev check failed: {err}");
-                                    1
-                                }
-                            }
-                        } else if let Some(check_id) = explain {
-                            match CheckId::parse(&check_id)
-                                .and_then(|id| explain_output(&registry, &id))
-                            {
-                                Ok(text) => {
-                                    println!("{text}");
-                                    0
-                                }
-                                Err(err) => {
-                                    eprintln!("bijux-atlas-dev check failed: {err}");
-                                    1
-                                }
-                            }
-                        } else {
-                            let request = RunRequest {
-                                repo_root: root,
-                                domain: selectors.domain,
-                                capabilities: Capabilities::from_cli_flags(
-                                    allow_fs_write,
-                                    allow_subprocess,
-                                    allow_git,
-                                    allow_network,
-                                ),
-                            };
-                            let process = RealProcessRunner;
-                            let fs = RealFs;
-                            let options = RunOptions {
-                                fail_fast,
-                                max_failures,
-                            };
-                            match run_checks(&process, &fs, &request, &selectors, &options) {
-                                Ok(report) => {
-                                    let rendered = match output {
-                                        OutputArg::Text => Ok(render_text_summary(&report)),
-                                        OutputArg::Json => render_json(&report),
-                                        OutputArg::Jsonl => render_jsonl(&report),
-                                    };
-                                    match rendered {
-                                        Ok(text) => {
-                                            if let Some(path) = out_file {
-                                                if let Err(err) =
-                                                    std::fs::write(&path, format!("{text}\n"))
-                                                {
-                                                    eprintln!(
-                                                        "bijux-atlas-dev check failed: cannot write {}: {err}",
-                                                        path.display()
-                                                    );
-                                                    1
-                                                } else {
-                                                    println!("{text}");
-                                                    exit_code_for_report(&report)
-                                                }
-                                            } else {
-                                                println!("{text}");
-                                                exit_code_for_report(&report)
-                                            }
-                                        }
-                                        Err(err) => {
-                                            eprintln!("bijux-atlas-dev check failed: {err}");
-                                            1
-                                        }
-                                    }
-                                }
-                                Err(err) => {
-                                    eprintln!("bijux-atlas-dev check failed: {err}");
-                                    1
-                                }
-                            }
-                        }
+            let result = resolve_repo_root(repo_root).and_then(|root| {
+                let selectors =
+                    parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
+                let request = RunRequest {
+                    repo_root: root.clone(),
+                    domain: selectors.domain,
+                    capabilities: Capabilities::from_cli_flags(
+                        allow_write,
+                        allow_subprocess,
+                        allow_git,
+                        allow_network,
+                    ),
+                    artifacts_root: artifacts_root.or_else(|| Some(root.join("artifacts"))),
+                    run_id: run_id.map(|rid| RunId::parse(&rid)).transpose()?,
+                };
+                let options = RunOptions {
+                    fail_fast,
+                    max_failures,
+                };
+                let report =
+                    run_checks(&RealProcessRunner, &RealFs, &request, &selectors, &options)?;
+                let rendered = match format {
+                    FormatArg::Text => render_text_with_durations(&report, durations),
+                    FormatArg::Json => render_json(&report)?,
+                    FormatArg::Jsonl => render_jsonl(&report)?,
+                };
+                write_output_if_requested(out, &rendered)?;
+                Ok((rendered, exit_code_for_report(&report)))
+            });
+
+            match result {
+                Ok((rendered, code)) => {
+                    if !cli.quiet {
+                        println!("{rendered}");
                     }
-                    Err(err) => {
-                        eprintln!("bijux-atlas-dev check failed: {err}");
-                        1
-                    }
-                },
+                    code
+                }
                 Err(err) => {
-                    eprintln!("bijux-atlas-dev check failed: {err}");
+                    eprintln!("bijux-atlas-dev run failed: {err}");
                     1
                 }
             }
         }
     };
+
+    if cli.verbose {
+        eprintln!("bijux-atlas-dev exit={exit}");
+    }
     std::process::exit(exit);
 }
 

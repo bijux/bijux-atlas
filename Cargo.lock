@@ -293,6 +293,7 @@ dependencies = [
 name = "bijux-atlas-dev"
 version = "0.1.0"
 dependencies = [
+ "assert_cmd",
  "bijux-atlas-dev-adapters",
  "bijux-atlas-dev-core",
  "bijux-atlas-dev-model",

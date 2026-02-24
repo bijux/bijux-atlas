@@ -12,6 +12,9 @@ bijux-atlas-dev-core.workspace = true
 bijux-atlas-dev-model.workspace = true
 bijux-atlas-dev-adapters.workspace = true
 
+[dev-dependencies]
+assert_cmd = "2"
+
 [[bin]]
 name = "bijux-atlas-dev"
 path = "src/main.rs"
