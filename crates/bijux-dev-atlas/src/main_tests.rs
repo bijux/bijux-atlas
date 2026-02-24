@@ -39,6 +39,8 @@ mod tests {
     #[test]
     fn ops_subcommands_parse() {
         let commands = [
+            vec!["bijux-dev-atlas", "ops", "list"],
+            vec!["bijux-dev-atlas", "ops", "explain", "render"],
             vec!["bijux-dev-atlas", "ops", "doctor"],
             vec!["bijux-dev-atlas", "ops", "validate"],
             vec!["bijux-dev-atlas", "ops", "inventory"],
@@ -80,6 +82,7 @@ mod tests {
             ],
             vec!["bijux-dev-atlas", "ops", "down", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "ops", "clean"],
+            vec!["bijux-dev-atlas", "ops", "cleanup"],
             vec![
                 "bijux-dev-atlas",
                 "ops",

@@ -9,6 +9,68 @@ use crate::ops_command_support::{
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let run: Result<(String, i32), String> = (|| match command {
+        OpsCommand::List(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            let actions: SurfacesInventory = OpsFs::new(repo_root.clone(), ops_root.clone())
+                .read_ops_json("inventory/surfaces.json")
+                .map_err(|e| e.to_stable_message())?;
+            let mut action_ids = actions
+                .actions
+                .iter()
+                .map(|a| a.id.clone())
+                .collect::<Vec<_>>();
+            action_ids.sort();
+            let rows = vec![
+                serde_json::json!({"kind":"capability","name":"inventory","subprocess":false,"write":false}),
+                serde_json::json!({"kind":"capability","name":"validate","subprocess":false,"write":false}),
+                serde_json::json!({"kind":"capability","name":"render","subprocess":true,"write":"flag_gated"}),
+                serde_json::json!({"kind":"capability","name":"install","subprocess":true,"write":"flag_gated"}),
+                serde_json::json!({"kind":"capability","name":"status","subprocess":"target_gated","write":false}),
+                serde_json::json!({"kind":"capability","name":"cleanup","subprocess":"profile_dependent","write":false}),
+                serde_json::json!({"kind":"profiles","count": profiles.len()}),
+                serde_json::json!({"kind":"actions","count": action_ids.len(), "action_ids": action_ids}),
+            ];
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "text": "ops list capabilities and actions",
+                "rows": rows,
+                "summary": {"total": 8, "errors": 0, "warnings": 0}
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, 0))
+        }
+        OpsCommand::Explain { action, common } => {
+            let action_lc = action.trim().to_ascii_lowercase();
+            let row = match action_lc.as_str() {
+                "inventory" => serde_json::json!({"action":"inventory","purpose":"list ops manifests and inventory validity","effects_required":[]}),
+                "validate" => serde_json::json!({"action":"validate","purpose":"validate ops SSOT inputs and checks","effects_required":[]}),
+                "render" | "k8s-render" => serde_json::json!({"action":"render","purpose":"render deterministic ops manifests","effects_required":["subprocess"],"flags":["--allow-subprocess","--allow-write (optional)"]}),
+                "install" | "stack-up" => serde_json::json!({"action":"install","purpose":"plan/apply ops stack to local cluster","effects_required":["subprocess","fs_write"],"flags":["--allow-subprocess","--allow-write","--apply"]}),
+                "down" | "stack-down" => serde_json::json!({"action":"down","purpose":"teardown local ops stack resources","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
+                "status" | "stack-status" => serde_json::json!({"action":"status","purpose":"collect local/k8s status rows","effects_required":["subprocess (for k8s/pods/endpoints)"]}),
+                "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
+                "load-run" => serde_json::json!({"action":"load-run","purpose":"reserved for k6 orchestration under ops load","status":"not_implemented"}),
+                "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
+                "cleanup" => serde_json::json!({"action":"cleanup","purpose":"remove scoped artifacts and local ops resources","effects_required":["subprocess (optional)"]}),
+                _ => {
+                    return Err(format!(
+                        "unknown ops action `{}` (try inventory|validate|render|install|down|status|conformance|cleanup)",
+                        action
+                    ))
+                }
+            };
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "text": format!("ops explain {}", action_lc),
+                "rows": [row],
+                "summary": {"total": 1, "errors": 0, "warnings": 0}
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, 0))
+        }
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
@@ -441,6 +503,36 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
             )?;
             Ok((rendered, 0))
+        }
+        OpsCommand::Cleanup(common) => {
+            let cleanup_common = common.clone();
+            let (down_detail, down_code) = if cleanup_common.allow_subprocess {
+                let down_common = cleanup_common.clone();
+                match run_ops_command(true, debug, OpsCommand::Down(down_common)) {
+                    0 => ("down ok".to_string(), 0),
+                    code => (format!("down exit={code}"), code),
+                }
+            } else {
+                ("down skipped (subprocess disabled)".to_string(), 0)
+            };
+            let clean_code = run_ops_command(true, debug, OpsCommand::Clean(cleanup_common.clone()));
+            let clean_detail = if clean_code == 0 {
+                "clean ok".to_string()
+            } else {
+                format!("clean exit={clean_code}")
+            };
+            let errors = usize::from(down_code != 0) + usize::from(clean_code != 0);
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "text": if errors == 0 { "ops cleanup passed" } else { "ops cleanup failed" },
+                "rows": [
+                    {"action":"down","status": if down_code == 0 { "ok" } else { "failed" }, "detail": down_detail},
+                    {"action":"clean","status": if clean_code == 0 { "ok" } else { "failed" }, "detail": clean_detail}
+                ],
+                "summary": {"total": 2, "errors": errors, "warnings": 0}
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, if errors == 0 { 0 } else { 1 }))
         }
         OpsCommand::Reset(args) => {
             let common = &args.common;

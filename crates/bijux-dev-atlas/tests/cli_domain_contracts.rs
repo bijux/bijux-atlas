@@ -46,6 +46,50 @@ fn ops_inventory_supports_json_format() {
 }
 
 #[test]
+fn ops_list_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "list", "--format", "json"])
+        .output()
+        .expect("ops list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn ops_explain_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "explain", "render", "--format", "json"])
+        .output()
+        .expect("ops explain");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("rows");
+    assert_eq!(rows.len(), 1);
+    assert_eq!(rows[0].get("action").and_then(|v| v.as_str()), Some("render"));
+}
+
+#[test]
+fn ops_cleanup_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "cleanup", "--format", "json"])
+        .output()
+        .expect("ops cleanup");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+}
+
+#[test]
 fn ops_docs_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
