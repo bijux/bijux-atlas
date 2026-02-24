@@ -56,6 +56,13 @@
     },
     {
       "kind": "json",
+      "path": "configs/policy/json-dumps-determinism-allowlist.json",
+      "requires_metadata": false,
+      "schema": "configs/policy/bypass.schema.json",
+      "type": "allowlist"
+    },
+    {
+      "kind": "json",
       "path": "configs/policy/layer-live-diff-allowlist.json",
       "requires_metadata": false,
       "schema": "configs/schema/layer-live-diff-allowlist.schema.json",
@@ -95,6 +102,19 @@
       "requires_metadata": true,
       "schema": "configs/schema/policy-relaxations.schema.json",
       "type": "policy"
+    },
+    {
+      "kind": "json",
+      "path": "configs/policy/runtime-access-legacy-allowlist.json",
+      "requires_metadata": false,
+      "schema": "configs/policy/bypass.schema.json",
+      "type": "allowlist"
+    },
+    {
+      "kind": "txt",
+      "path": "configs/policy/shell-location-allowlist.txt",
+      "requires_metadata": false,
+      "type": "tools"
     },
     {
       "kind": "txt",
