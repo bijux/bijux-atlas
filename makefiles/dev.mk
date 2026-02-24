@@ -34,13 +34,6 @@ test: ## Rust tests lane
 	}
 	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}"
 
-test-all: ## Rust tests full variant (includes ignored)
-	@command -v cargo-nextest >/dev/null 2>&1 || { \
-		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
-		exit 1; \
-	}
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
-
 dev-doctor: ## Run dev control-plane doctor suite
 	@$(DEV_ATLAS) check doctor --format text
 
@@ -62,4 +55,4 @@ install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts
 	@echo "installed artifacts/bin/bijux-atlas"
 	@echo "installed artifacts/bin/bijux-dev-atlas"
 
-.PHONY: audit cargo-check coverage fmt lint test test-all dev-doctor dev-check-ci dev-check dev-ci install-local
+.PHONY: audit cargo-check coverage fmt lint test dev-doctor dev-check-ci dev-check dev-ci install-local
