@@ -46,6 +46,10 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         }
         "checks_ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
         "checks_root_packages_atlasctl_absent" => Some(check_root_packages_atlasctl_absent),
+        "checks_root_bin_atlasctl_absent" => Some(check_root_bin_atlasctl_absent),
+        "checks_root_artifacts_reports_atlasctl_absent" => {
+            Some(check_root_artifacts_reports_atlasctl_absent)
+        }
         "checks_docs_no_atlasctl_string_references" => {
             Some(check_docs_no_atlasctl_string_references)
         }

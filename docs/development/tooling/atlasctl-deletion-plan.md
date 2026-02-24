@@ -1,0 +1,30 @@
+# atlasctl Deletion Plan
+
+## Scope
+
+Remove the legacy Python control-plane package (`packages/atlasctl`) and all repository call-sites, then lock reintroduction behind repo checks.
+
+## Exit Criteria
+
+- `packages/atlasctl/` is deleted.
+- No `./bin/atlasctl` shim exists.
+- No `atlasctl` references remain in:
+  - `.github/workflows/`
+  - `makefiles/`
+  - `docs/` (except historical notes explicitly marked)
+  - `configs/`
+- No `artifacts/reports/atlasctl/` paths are created by CI or local workflows.
+- CI lanes use `cargo run -q -p bijux-dev-atlas -- ...` or `make` wrappers that delegate to `DEV_ATLAS`.
+
+## Ordered Work
+
+1. Cut over Makefile wrappers to `DEV_ATLAS`.
+2. Cut over CI/workflow governance lanes to `make` or `bijux-dev-atlas`.
+3. Add hard checks for package/shim/artifact absence.
+4. Delete `packages/atlasctl/`.
+5. Remove atlasctl historical docs or convert to explicit archival notes.
+6. Lock reintroduction with repo checks and tests.
+
+## Historical Note Policy
+
+If a document must retain the term `atlasctl` temporarily, mark it as historical and exclude it from public operator guidance. The default policy is deletion, not permanent deprecation docs.
