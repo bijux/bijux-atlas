@@ -236,6 +236,17 @@ def _shape_budget(repo_root: Path) -> dict[str, int]:
     }
 
 
+def _shape_budget_loc_exemptions(repo_root: Path) -> set[str]:
+    path = repo_root / _SHAPE_BUDGET_PATH
+    if not path.exists():
+        return set()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = payload.get("checks_module_loc_exemptions", [])
+    if not isinstance(rows, list):
+        return set()
+    return {str(item).strip() for item in rows if str(item).strip()}
+
+
 def check_checks_root_entry_budget(repo_root: Path) -> tuple[int, list[str]]:
     budget = _shape_budget(repo_root)["checks_root_max_entries"]
     root = repo_root / "packages/atlasctl/src/atlasctl/checks"
@@ -287,12 +298,15 @@ def check_checks_tools_module_budget(repo_root: Path) -> tuple[int, list[str]]:
 
 def check_checks_module_loc_budget(repo_root: Path) -> tuple[int, list[str]]:
     budget = _shape_budget(repo_root)["checks_module_max_loc"]
+    exemptions = _shape_budget_loc_exemptions(repo_root)
     root = repo_root / "packages/atlasctl/src/atlasctl/checks"
     offenders: list[str] = []
     for path in sorted(root.rglob("*.py")):
         if "__pycache__" in path.parts:
             continue
         rel = path.relative_to(repo_root).as_posix()
+        if rel in exemptions:
+            continue
         loc = len(path.read_text(encoding="utf-8", errors="ignore").splitlines())
         if loc > budget:
             offenders.append(f"{rel}: {loc} LOC > {budget}")

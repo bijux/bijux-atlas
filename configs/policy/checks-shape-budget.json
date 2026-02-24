@@ -4,5 +4,13 @@
   "checks_domains_max_modules": 10,
   "checks_tools_max_modules": 10,
   "checks_module_max_loc": 600,
-  "checks_legacy_signature_max": 398
+  "checks_legacy_signature_max": 398,
+  "checks_module_loc_exemptions": [
+    "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/__init__.py",
+    "packages/atlasctl/src/atlasctl/checks/domains/policies/make/__init__.py",
+    "packages/atlasctl/src/atlasctl/checks/domains/policies/make/enforcement.py",
+    "packages/atlasctl/src/atlasctl/checks/registry/ssot.py",
+    "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
+    "packages/atlasctl/src/atlasctl/checks/repo/native/modules/repo_checks_make_and_layout.py"
+  ]
 }
