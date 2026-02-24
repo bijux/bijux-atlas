@@ -87,7 +87,6 @@ enum Commands {
 #[derive(Subcommand)]
 enum AtlasCommand {
     Serve,
-    Doctor,
     Validate {
         #[arg(long)]
         root: PathBuf,
@@ -273,10 +272,6 @@ enum AtlasCommand {
         #[command(subcommand)]
         command: OpenapiCommand,
     },
-    DevAtlas {
-        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
-        args: Vec<String>,
-    },
 }
 
 #[derive(Subcommand)]
@@ -373,6 +368,7 @@ pub fn main_entry() -> ProcessExitCode {
 }
 
 fn run() -> Result<(), CliError> {
+    let raw_args: Vec<String> = std::env::args().skip(1).collect();
     let cli = match Cli::try_parse() {
         Ok(cli) => cli,
         Err(err) => match err.kind() {
@@ -381,6 +377,18 @@ fn run() -> Result<(), CliError> {
                 return Ok(());
             }
             _ => {
+                if let Some(redirect) = legacy_control_plane_redirect(&raw_args) {
+                    let legacy_command = raw_args.join(" ");
+                    return Err(CliError {
+                        exit_code: bijux_atlas_core::ExitCode::Usage,
+                        machine: MachineError::new(
+                            "legacy_command_redirect",
+                            "control-plane commands moved to bijux dev atlas",
+                        )
+                        .with_detail("legacy_command", &legacy_command)
+                        .with_detail("redirect", redirect),
+                    });
+                }
                 return Err(CliError {
                     exit_code: bijux_atlas_core::ExitCode::Usage,
                     machine: MachineError::new("usage_error", "invalid command line arguments")
@@ -423,6 +431,22 @@ fn run() -> Result<(), CliError> {
         Commands::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
         Commands::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
     }
+}
+
+fn legacy_control_plane_redirect(args: &[String]) -> Option<&'static str> {
+    if let Some(atlas_index) = args.iter().position(|arg| arg == "atlas") {
+        if atlas_index + 1 >= args.len() {
+            return None;
+        }
+        let subcommand = args[atlas_index + 1].as_str();
+        if subcommand == "dev-atlas" {
+            return Some("bijux dev atlas <command>");
+        }
+        if subcommand == "doctor" || subcommand == "check" || subcommand == "checks" {
+            return Some("bijux dev atlas run <selector>");
+        }
+    }
+    None
 }
 
 #[derive(Clone, Copy)]
