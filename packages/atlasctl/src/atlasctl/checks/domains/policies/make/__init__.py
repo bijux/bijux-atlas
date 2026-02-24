@@ -7,7 +7,7 @@ import os
 import re
 from pathlib import Path
 
-from .enforcement import (
+from ....tools.make_enforcement import (
     check_ci_pr_lane_fast_only,
     check_make_ci_entrypoints_contract,
     check_make_index_drift_contract,

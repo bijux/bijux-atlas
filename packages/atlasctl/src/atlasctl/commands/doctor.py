@@ -11,7 +11,7 @@ from pathlib import Path
 from ..core.context import RunContext
 from ..core.fs import ensure_evidence_path
 from ..commands.policies.runtime.culprits import budget_suite
-from ..checks.domains.policies.make.enforcement import collect_bypass_inventory
+from ..checks.tools.make_enforcement import collect_bypass_inventory
 from ..checks.registry import alias_expiry_violations
 
 

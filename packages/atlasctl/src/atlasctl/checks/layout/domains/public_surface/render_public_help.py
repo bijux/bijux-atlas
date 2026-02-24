@@ -16,7 +16,7 @@ _THIS_DIR = Path(__file__).resolve().parent
 if str(_THIS_DIR) not in sys.path:
     sys.path.insert(0, str(_THIS_DIR))
 
-from public_make_targets import public_entries
+from atlasctl.checks.tools.make_public_targets import public_entries
 
 def _repo_root() -> Path:
     cur = Path(__file__).resolve()

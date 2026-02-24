@@ -9,7 +9,7 @@ _THIS_DIR = Path(__file__).resolve().parent
 if str(_THIS_DIR) not in sys.path:
     sys.path.insert(0, str(_THIS_DIR))
 
-from public_make_targets import public_names
+from atlasctl.checks.tools.make_public_targets import public_names
 
 
 def main() -> int:

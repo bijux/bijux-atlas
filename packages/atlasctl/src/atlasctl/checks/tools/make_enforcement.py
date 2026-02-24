@@ -8,8 +8,8 @@ import fnmatch
 from pathlib import Path
 from typing import Iterable
 
-from .....commands.dev.make.public_targets import public_names
-from ....repo.native import (
+from ...commands.dev.make.public_targets import public_names
+from ..repo.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
 )
@@ -227,7 +227,7 @@ def check_make_public_targets_documented(repo_root: Path) -> tuple[int, list[str
 
 
 def check_make_target_ownership_complete(repo_root: Path) -> tuple[int, list[str]]:
-    from .public_make_targets import ALLOWED_AREAS, entry_map, load_ownership
+    from .make_public_targets import ALLOWED_AREAS, entry_map, load_ownership
 
     entries = entry_map()
     ownership = load_ownership()
@@ -542,7 +542,7 @@ def _workflow_texts(repo_root: Path) -> Iterable[tuple[str, str]]:
 
 
 def check_workflows_reference_known_suites(repo_root: Path) -> tuple[int, list[str]]:
-    from .....registry.suites import suite_manifest_specs
+    from ...registry.suites import suite_manifest_specs
 
     known = {spec.name for spec in suite_manifest_specs()}
     ops_suites_path = repo_root / "configs" / "ops" / "suites.json"
@@ -582,8 +582,8 @@ def check_workflows_no_adhoc_check_run(repo_root: Path) -> tuple[int, list[str]]
 
 
 def check_ci_pr_lane_fast_only(repo_root: Path) -> tuple[int, list[str]]:
-    from .....checks.registry import get_check
-    from .....registry.suites import resolve_check_ids, suite_manifest_specs
+    from ..registry import get_check
+    from ...registry.suites import resolve_check_ids, suite_manifest_specs
 
     allowlist_path = repo_root / "configs/policy/ci-pr-slow-allowlist.json"
     allowlist: set[str] = set()

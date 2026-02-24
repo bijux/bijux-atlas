@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 from ....checks.repo.domains.forbidden_adjectives import check_forbidden_adjectives
-from ....checks.domains.policies.make.enforcement import collect_bypass_inventory, render_text_report
+from ....checks.tools.make_enforcement import collect_bypass_inventory, render_text_report
 from ....core.context import RunContext
 from ....core.exec import run
 from ....core.fs import ensure_evidence_path
