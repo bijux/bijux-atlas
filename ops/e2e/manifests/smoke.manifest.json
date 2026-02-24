@@ -1,5 +1,5 @@
 {
-  "schema_name": "atlasctl.ops.manifest.v1",
+  "schema_name": "dev-atlas.ops.manifest.v1",
   "schema_version": 1,
   "name": "ops-smoke",
   "description": "Minimal manifest-driven ops smoke run",
@@ -7,14 +7,11 @@
     {
       "id": "ops-help",
       "command": [
-        "python3",
-        "-m",
-        "atlasctl.cli",
-        "--quiet",
+        "bijux",
+        "dev",
+        "atlas",
         "ops",
-        "help",
-        "--report",
-        "text"
+        "help"
       ]
     }
   ]
