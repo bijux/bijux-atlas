@@ -1,4 +1,6 @@
 use crate::dataset::{DatasetId, ValidationError};
+use crate::serde_helpers;
+use crate::ModelVersion;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
@@ -82,6 +84,8 @@ impl ManifestStats {
 #[non_exhaustive]
 pub struct ArtifactManifest {
     #[serde(default)]
+    pub model_version: ModelVersion,
+    #[serde(default)]
     pub artifact_version: String,
     #[serde(default)]
     pub schema_version: String,
@@ -107,6 +111,7 @@ pub struct ArtifactManifest {
     #[serde(default)]
     pub toolchain_hash: String,
     #[serde(default)]
+    #[serde(with = "serde_helpers::timestamp_string")]
     pub created_at: String,
     #[serde(default)]
     pub qc_report_path: String,
@@ -118,9 +123,12 @@ pub struct ArtifactManifest {
     pub source_fai_filename: String,
     #[serde(default = "default_sharding_plan")]
     pub sharding_plan: ShardingPlan,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "serde_helpers::map_is_empty")]
     pub contig_normalization_aliases: BTreeMap<String, String>,
-    #[serde(default = "default_derived_column_origins")]
+    #[serde(
+        default = "default_derived_column_origins",
+        skip_serializing_if = "serde_helpers::map_is_empty"
+    )]
     pub derived_column_origins: BTreeMap<String, String>,
 }
 
@@ -134,6 +142,7 @@ impl ArtifactManifest {
         stats: ManifestStats,
     ) -> Self {
         Self {
+            model_version: ModelVersion::V1,
             manifest_version,
             db_schema_version,
             dataset,
@@ -332,13 +341,18 @@ pub fn artifact_paths(root: &Path, dataset: &DatasetId) -> ArtifactPaths {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct Catalog {
+    #[serde(default)]
+    pub model_version: ModelVersion,
     pub datasets: Vec<CatalogEntry>,
 }
 
 impl Catalog {
     #[must_use]
     pub fn new(datasets: Vec<CatalogEntry>) -> Self {
-        Self { datasets }
+        Self {
+            model_version: ModelVersion::V1,
+            datasets,
+        }
     }
 }
 
@@ -357,6 +371,8 @@ pub struct CatalogEntry {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct ShardCatalog {
+    #[serde(default)]
+    pub model_version: ModelVersion,
     pub dataset: DatasetId,
     pub mode: String,
     pub shards: Vec<ShardEntry>,
@@ -393,6 +409,7 @@ impl ShardCatalog {
     #[must_use]
     pub fn new(dataset: DatasetId, mode: String, shards: Vec<ShardEntry>) -> Self {
         Self {
+            model_version: ModelVersion::V1,
             dataset,
             mode,
             shards,
@@ -471,6 +488,8 @@ impl Catalog {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct IngestAnomalyReport {
+    #[serde(default)]
+    pub model_version: ModelVersion,
     pub missing_parents: Vec<String>,
     #[serde(default)]
     pub missing_transcript_parents: Vec<String>,
