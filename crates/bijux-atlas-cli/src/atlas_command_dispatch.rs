@@ -5,7 +5,6 @@ fn run_atlas_command(
 ) -> Result<(), CliError> {
     match command {
         AtlasCommand::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
-        AtlasCommand::Doctor => doctor(output_mode).map_err(CliError::internal),
         AtlasCommand::Validate {
             root,
             release,
@@ -375,8 +374,5 @@ fn run_atlas_command(
             }
         }
         .map_err(CliError::dependency),
-        AtlasCommand::DevAtlas { args } => {
-            run_dev_atlas(args, output_mode).map_err(CliError::dependency)
-        }
     }
 }

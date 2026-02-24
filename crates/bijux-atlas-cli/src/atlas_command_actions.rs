@@ -184,38 +184,6 @@ fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String>
     }
 }
 
-fn run_dev_atlas(args: Vec<String>, output_mode: OutputMode) -> Result<(), String> {
-    let current_exe =
-        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
-    let bin_dir = current_exe
-        .parent()
-        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
-    let local_bin = bin_dir.join("bijux-dev-atlas");
-
-    let mut cmd = if local_bin.exists() {
-        let mut command = Command::new(local_bin);
-        command.args(&args);
-        command
-    } else {
-        let mut command = Command::new("bijux-dev-atlas");
-        command.args(&args);
-        command
-    };
-
-    let status = cmd
-        .status()
-        .map_err(|e| format!("failed to start bijux-dev-atlas: {e}"))?;
-    if status.success() {
-        command_output_adapters::emit_ok(
-            output_mode,
-            json!({"command":"atlas dev-atlas","status":"ok","args":args}),
-        )?;
-        Ok(())
-    } else {
-        Err(format!("bijux-dev-atlas exited with status {status}"))
-    }
-}
-
 fn plugin_metadata_payload() -> Value {
     json!({
         "schema_version": "v1",
@@ -280,55 +248,6 @@ fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), Stri
         serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?
     };
     println!("{text}");
-    Ok(())
-}
-
-fn doctor(output_mode: OutputMode) -> Result<(), String> {
-    let mut checks = Vec::<Value>::new();
-
-    let cache_dir = resolve_bijux_cache_dir();
-    let cache_path = std::path::PathBuf::from(&cache_dir);
-    let cache_exists = cache_path.exists();
-    let cache_writable = if cache_exists {
-        fs::metadata(&cache_path)
-            .map(|m| !m.permissions().readonly())
-            .unwrap_or(false)
-    } else {
-        false
-    };
-    checks.push(json!({
-        "check":"cache_dir",
-        "path": cache_dir,
-        "ok": cache_exists && cache_writable
-    }));
-
-    let workspace_config = resolve_bijux_config_path(ConfigPathScope::Workspace);
-    let user_config = resolve_bijux_config_path(ConfigPathScope::User);
-    checks.push(json!({
-        "check":"config_paths",
-        "workspace_config": workspace_config,
-        "user_config": user_config,
-        "ok": true
-    }));
-
-    let store_root = std::env::var("ATLAS_STORE_ROOT").ok();
-    let store_ok = store_root
-        .as_ref()
-        .map(|p| std::path::Path::new(p).exists())
-        .unwrap_or(true);
-    checks.push(json!({
-        "check":"store_access",
-        "atlas_store_root": store_root,
-        "ok": store_ok
-    }));
-
-    let all_ok = checks
-        .iter()
-        .all(|c| c.get("ok").and_then(Value::as_bool).unwrap_or(false));
-    command_output_adapters::emit_ok(
-        output_mode,
-        json!({"command":"atlas doctor","status": if all_ok {"ok"} else {"degraded"}, "checks": checks}),
-    )?;
     Ok(())
 }
 
