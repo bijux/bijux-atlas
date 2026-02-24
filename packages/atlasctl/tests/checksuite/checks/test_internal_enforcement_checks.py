@@ -8,6 +8,9 @@ from atlasctl.checks.domains.internal import (
     check_all_checks_have_tags,
     check_legacy_check_directories_absent,
     check_no_checks_outside_domains_tools,
+    check_internal_no_checks_logic_in_commands,
+    check_internal_no_command_logic_in_checks,
+    check_internal_registry_ssot_only,
     check_root_policy_compat_shims_not_expired,
     check_registry_generated_read_only,
     check_write_roots_are_evidence_only,
@@ -97,3 +100,27 @@ def test_root_policy_compat_shims_require_expiry(tmp_path: Path) -> None:
     code, errors = check_root_policy_compat_shims_not_expired(tmp_path)
     assert code == 1
     assert any("missing expiry" in line for line in errors)
+
+
+def test_internal_command_checks_import_boundaries(tmp_path: Path) -> None:
+    checks_file = tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/example.py"
+    _write(checks_file, "from atlasctl.commands.check.command import run_check_command\n")
+    code, errors = check_internal_no_command_logic_in_checks(tmp_path)
+    assert code == 1
+    assert errors
+
+
+def test_internal_checks_commands_boundary(tmp_path: Path) -> None:
+    commands_file = tmp_path / "packages/atlasctl/src/atlasctl/commands/demo.py"
+    _write(commands_file, "from atlasctl.checks.domains.repo import CHECKS\n")
+    code, errors = check_internal_no_checks_logic_in_commands(tmp_path)
+    assert code == 1
+    assert errors
+
+
+def test_internal_registry_ssot_only_detects_scattered_legacy_import(tmp_path: Path) -> None:
+    path = tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/example.py"
+    _write(path, "from atlasctl.checks.registry_legacy.ssot import load_registry_entries\n")
+    code, errors = check_internal_registry_ssot_only(tmp_path)
+    assert code == 1
+    assert any("registry legacy import must be isolated" in line for line in errors)

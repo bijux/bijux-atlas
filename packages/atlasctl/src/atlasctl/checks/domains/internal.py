@@ -946,6 +946,10 @@ def check_internal_checks_tree_policy(repo_root: Path) -> tuple[int, list[str]]:
     return (1, errors) if errors else (0, [])
 
 
+def check_internal_no_layout_repo_registry_dirs(repo_root: Path) -> tuple[int, list[str]]:
+    return check_internal_checks_tree_policy(repo_root)
+
+
 def check_internal_checks_root_budget(repo_root: Path) -> tuple[int, list[str]]:
     checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
     if not checks_root.exists():
@@ -955,6 +959,10 @@ def check_internal_checks_root_budget(repo_root: Path) -> tuple[int, list[str]]:
     if len(entries) > budget:
         return 1, [f"checks root entry budget exceeded: {len(entries)} > {budget}"]
     return 0, []
+
+
+def check_internal_root_budget(repo_root: Path) -> tuple[int, list[str]]:
+    return check_internal_checks_root_budget(repo_root)
 
 
 def check_internal_domains_flat_modules_only(repo_root: Path) -> tuple[int, list[str]]:
@@ -970,6 +978,23 @@ def check_internal_domains_flat_modules_only(repo_root: Path) -> tuple[int, list
         if path.is_dir():
             # Allow package dirs that are currently active only as a migration exception.
             errors.append(f"domains must be flat modules only: {path.relative_to(repo_root).as_posix()}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_domains_flat(repo_root: Path) -> tuple[int, list[str]]:
+    return check_internal_domains_flat_modules_only(repo_root)
+
+
+def check_internal_no_file_per_check_explosion(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    budget = 15
+    errors: list[str] = []
+    for directory in sorted(path for path in checks_root.rglob("*") if path.is_dir() and "__pycache__" not in path.parts):
+        py_files = [row for row in directory.glob("*.py")]
+        if len(py_files) > budget:
+            errors.append(
+                f"python file explosion under checks tree: {directory.relative_to(repo_root).as_posix()} has {len(py_files)} files > {budget}"
+            )
     return (1, errors) if errors else (0, [])
 
 
@@ -1052,6 +1077,14 @@ def check_internal_single_runner_surface(repo_root: Path) -> tuple[int, list[str
     return (1, violations) if violations else (0, [])
 
 
+def check_internal_no_command_logic_in_checks(repo_root: Path) -> tuple[int, list[str]]:
+    return check_checks_no_commands_import(repo_root)
+
+
+def check_internal_no_checks_logic_in_commands(repo_root: Path) -> tuple[int, list[str]]:
+    return check_commands_no_domains_import(repo_root)
+
+
 def check_internal_adapters_module_quarantined(repo_root: Path) -> tuple[int, list[str]]:
     path = repo_root / "packages/atlasctl/src/atlasctl/checks/adapters.py"
     if not path.exists():
@@ -1080,9 +1113,9 @@ def check_root_policy_compat_shims_not_expired(repo_root: Path) -> tuple[int, li
 
 
 def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
-    registry_root = repo_root / "packages/atlasctl/src/atlasctl/checks/registry"
-    if not registry_root.exists():
-        return 1, ["missing checks registry package: packages/atlasctl/src/atlasctl/checks/registry"]
+    registry_file = repo_root / "packages/atlasctl/src/atlasctl/checks/registry.py"
+    if not registry_file.exists():
+        return 1, ["missing checks registry module: packages/atlasctl/src/atlasctl/checks/registry.py"]
     banned_roots = {
         "numpy",
         "pandas",
@@ -1094,7 +1127,7 @@ def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
         "scipy",
     }
     errors: list[str] = []
-    for path in sorted(registry_root.glob("*.py")):
+    for path in (registry_file,):
         rel = path.relative_to(repo_root).as_posix()
         try:
             tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -1107,6 +1140,27 @@ def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
                 root = imported.split(".", 1)[0]
                 if root in banned_roots:
                     errors.append(f"{rel}:{getattr(node, 'lineno', 0)}: forbidden heavy import `{imported}`")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_registry_ssot_only(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    allowed_importers = {
+        "packages/atlasctl/src/atlasctl/checks/registry.py",
+        "packages/atlasctl/src/atlasctl/checks/domains/internal.py",
+        "packages/atlasctl/src/atlasctl/checks/gen_registry.py",
+        "packages/atlasctl/src/atlasctl/checks/registry_legacy/__init__.py",
+        "packages/atlasctl/src/atlasctl/checks/registry_legacy/catalog.py",
+        "packages/atlasctl/src/atlasctl/checks/registry_legacy/ssot.py",
+    }
+    errors: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "registry_legacy" in text and rel not in allowed_importers:
+            errors.append(f"registry legacy import must be isolated to SSOT bridge modules: {rel}")
     return (1, errors) if errors else (0, [])
 
 
@@ -1563,6 +1617,17 @@ CHECKS = (
         tags=("checks", "required"),
     ),
     CheckDef(
+        "checks.internal_no_layout_repo_registry_dirs",
+        "checks",
+        "forbid checks layout/repo/registry legacy trees",
+        500,
+        check_internal_no_layout_repo_registry_dirs,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove legacy checks/layout, checks/repo, and checks/registry package trees after migration.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
         "checks.internal_checks_root_budget",
         "checks",
         "enforce checks package root entry budget",
@@ -1574,6 +1639,17 @@ CHECKS = (
         tags=("checks", "required"),
     ),
     CheckDef(
+        "checks.internal_root_budget",
+        "checks",
+        "enforce checks root entry budget alias contract",
+        500,
+        check_internal_root_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Reduce checks root entries to budget.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
         "checks.internal_domains_flat_modules_only",
         "checks",
         "enforce flat modules under checks/domains",
@@ -1581,6 +1657,28 @@ CHECKS = (
         check_internal_domains_flat_modules_only,
         category=CheckCategory.POLICY,
         fix_hint="Flatten nested checks/domains packages into top-level domain modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_domains_flat",
+        "checks",
+        "enforce flat checks domains tree",
+        500,
+        check_internal_domains_flat,
+        category=CheckCategory.POLICY,
+        fix_hint="Flatten checks/domains to top-level modules only.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_file_per_check_explosion",
+        "checks",
+        "enforce python file-count budget per checks directory",
+        600,
+        check_internal_no_file_per_check_explosion,
+        category=CheckCategory.POLICY,
+        fix_hint="Group per-check files into intent modules and keep per-directory python file count below budget.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
@@ -1636,6 +1734,28 @@ CHECKS = (
         check_internal_single_runner_surface,
         category=CheckCategory.POLICY,
         fix_hint="Replace engine.runner imports in command modules with checks.runner APIs.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_command_logic_in_checks",
+        "checks",
+        "forbid command-layer imports inside checks modules",
+        500,
+        check_internal_no_command_logic_in_checks,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks modules independent from commands imports.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_checks_logic_in_commands",
+        "checks",
+        "forbid commands from importing checks domain implementations directly",
+        500,
+        check_internal_no_checks_logic_in_commands,
+        category=CheckCategory.POLICY,
+        fix_hint="Use checks registry/runner surface from commands.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
@@ -1790,6 +1910,17 @@ CHECKS = (
         check_scattered_registry_caches,
         category=CheckCategory.POLICY,
         fix_hint="Scope caches to registry/catalog index and remove scattered cache decorators.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_registry_ssot_only",
+        "checks",
+        "isolate legacy registry bridge usage to SSOT bridge modules",
+        500,
+        check_internal_registry_ssot_only,
+        category=CheckCategory.POLICY,
+        fix_hint="Route registry access through checks.registry and confine registry_legacy imports to bridge modules.",
         owners=("platform",),
         tags=("checks", "required"),
     ),

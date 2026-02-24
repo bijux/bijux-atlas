@@ -146,3 +146,78 @@ def test_apply_selection_matches_dotted_and_canonical_id_forms() -> None:
     criteria = parse_selection_criteria(ns, Path(".").resolve())
     selected = apply_selection_criteria(checks, criteria)
     assert [item.check_id for item in selected] == ["repo.root_shape"]
+
+
+def test_apply_selection_by_domain() -> None:
+    checks = [
+        CheckDef("checks_repo_alpha_contract", "repo", "repo alpha", 100, _noop, tags=("required",), owners=("platform",)),
+        CheckDef("checks_docs_beta_contract", "docs", "docs beta", 100, _noop, tags=("required",), owners=("platform",)),
+    ]
+    ns = SimpleNamespace(
+        domain_filter="docs",
+        id="",
+        select="",
+        check_target="",
+        marker=[],
+        tag=[],
+        exclude_marker=[],
+        exclude_tag=[],
+        owner=[],
+        include_internal=True,
+        only_slow=False,
+        only_fast=False,
+        changed_only=False,
+        k="",
+    )
+    selected = apply_selection_criteria(checks, parse_selection_criteria(ns, Path(".").resolve()))
+    assert [item.check_id for item in selected] == ["checks_docs_beta_contract"]
+
+
+def test_apply_selection_by_tag() -> None:
+    checks = [
+        CheckDef("checks_repo_alpha_contract", "repo", "repo alpha", 100, _noop, tags=("ci",), owners=("platform",)),
+        CheckDef("checks_repo_beta_contract", "repo", "repo beta", 100, _noop, tags=("dev",), owners=("platform",)),
+    ]
+    ns = SimpleNamespace(
+        domain_filter="",
+        id="",
+        select="",
+        check_target="",
+        marker=[],
+        tag=["ci"],
+        exclude_marker=[],
+        exclude_tag=[],
+        owner=[],
+        include_internal=True,
+        only_slow=False,
+        only_fast=False,
+        changed_only=False,
+        k="",
+    )
+    selected = apply_selection_criteria(checks, parse_selection_criteria(ns, Path(".").resolve()))
+    assert [item.check_id for item in selected] == ["checks_repo_alpha_contract"]
+
+
+def test_internal_checks_hidden_by_default() -> None:
+    checks = [
+        CheckDef("checks_repo_internal_contract", "repo", "internal", 100, _noop, tags=("internal",), owners=("platform",)),
+        CheckDef("checks_repo_public_contract", "repo", "public", 100, _noop, tags=("required",), owners=("platform",)),
+    ]
+    ns = SimpleNamespace(
+        domain_filter="",
+        id="",
+        select="",
+        check_target="",
+        marker=[],
+        tag=[],
+        exclude_marker=[],
+        exclude_tag=[],
+        owner=[],
+        include_internal=False,
+        only_slow=False,
+        only_fast=False,
+        changed_only=False,
+        k="",
+    )
+    selected = apply_selection_criteria(checks, parse_selection_criteria(ns, Path(".").resolve()))
+    assert [item.check_id for item in selected] == ["checks_repo_public_contract"]
