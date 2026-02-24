@@ -92,6 +92,7 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 - [Check Domain Model](checks/domains.md)
 - [Check Effects Vocabulary](checks/effects.md)
 - [Check ID Migration Rules](checks/check-id-migration-rules.md)
+- [Check Developer Guide](checks/developer-guide.md)
 - [Layout Domain Migration Map](checks/layout-domain-migration-map.md)
 - [Repo Module Migration Inventory](checks/repo-module-migration-inventory.md)
 - [Check Result Codes](checks/result-codes.md)
