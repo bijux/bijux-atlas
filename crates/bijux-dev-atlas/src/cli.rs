@@ -14,6 +14,10 @@ pub struct Cli {
     pub debug: bool,
     #[arg(long, default_value_t = false)]
     pub print_policies: bool,
+    #[arg(long = "bijux-plugin-metadata", default_value_t = false)]
+    pub bijux_plugin_metadata: bool,
+    #[arg(long = "umbrella-version")]
+    pub umbrella_version: Option<String>,
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
     #[command(subcommand)]
