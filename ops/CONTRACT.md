@@ -7,7 +7,14 @@
 ## Purpose
 
 `ops/` is the source of truth for operational inventory, schemas, environment overlays, observability configuration, load profiles, and end-to-end manifests.
-`atlasctl` executes generation, validation, and orchestration against this contract.
+`bijux-dev-atlas` executes generation, validation, and orchestration against this contract.
+
+## Ownership
+
+- `ops/` stores specifications and contracts only.
+- Operational behavior is owned by `bijux-dev-atlas` and routed through `bijux dev atlas ...`.
+- New shell or bash execution logic under `ops/` is forbidden.
+- `makefiles/ops.mk` is a thin delegator to `bijux dev atlas ...` commands.
 
 ## Canonical Tree
 
