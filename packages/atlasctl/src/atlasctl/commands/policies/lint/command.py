@@ -6,6 +6,7 @@ from ....core.context import RunContext
 from ...check.command import run_check_command
 
 _LINT_DOMAIN_MAP = {
+    "all": "",
     "ops": "ops",
     "make": "make",
     "docs": "docs",
@@ -17,6 +18,7 @@ def configure_lint_parser(sub: argparse._SubParsersAction[argparse.ArgumentParse
     p.add_argument("suite", choices=tuple(sorted(_LINT_DOMAIN_MAP.keys())))
     p.add_argument("--fail-fast", action="store_true")
     p.add_argument("--all", action="store_true", help="include slow lint checks")
+    p.add_argument("--list-selected", action="store_true", help="print resolved lint checks and exit")
     p.add_argument("--json", action="store_true", help="emit JSON output")
 
 def run_lint_command(ctx: RunContext, ns: argparse.Namespace) -> int:
@@ -55,14 +57,16 @@ def run_lint_command(ctx: RunContext, ns: argparse.Namespace) -> int:
         only_fast=False,
         exclude_slow=False,
         suite=None,
-        marker=[],
+        marker=["lint"],
+        tag=["lint"],
         exclude_marker=[],
-        list_selected=False,
+        exclude_tag=[],
+        list_selected=bool(getattr(ns, "list_selected", False)),
         from_registry=True,
         require_markers=[],
         select=None,
         check_target=None,
         json=bool(getattr(ns, "json", False)),
-        category="lint",
+        category=None,
     )
     return run_check_command(ctx, alias_ns)
