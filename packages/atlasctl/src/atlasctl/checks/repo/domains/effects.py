@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
-from .legacy_native import check_effects_lint, check_script_write_roots
+from ..native.runtime_modules.repo_native_runtime_core import check_script_write_roots
+from ..native.runtime_modules.repo_native_runtime_policies import check_effects_lint
 
 __all__ = ["check_effects_lint", "check_script_write_roots"]
