@@ -409,6 +409,7 @@ pub enum OpsObsCommand {
         #[command(subcommand)]
         command: OpsObsDrillCommand,
     },
+    Verify(OpsCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
