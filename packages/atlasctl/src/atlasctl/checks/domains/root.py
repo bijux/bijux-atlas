@@ -74,6 +74,7 @@ CHECKS: tuple[CheckDef, ...] = (
         500,
         run_root_shape,
         fix_hint="Update repository root entries to match root policy contract.",
+        effects=("subprocess",),
     ),
     CheckDef(
         "repo.atlasctl_package_root_shape",
