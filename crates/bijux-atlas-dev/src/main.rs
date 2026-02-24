@@ -2,10 +2,11 @@
 
 use std::path::PathBuf;
 
-use bijux_atlas_dev_adapters::{Capabilities, RealProcessRunner};
+use bijux_atlas_dev_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_atlas_dev_core::{
-    explain_output, list_output, load_registry, registry_doctor, run_checks, select_checks,
-    RunRequest, Selectors,
+    exit_code_for_report, explain_output, list_output, load_registry, registry_doctor, render_json,
+    render_jsonl, render_text_summary, run_checks, select_checks, RunOptions, RunRequest,
+    Selectors,
 };
 use bijux_atlas_dev_model::{CheckId, DomainId};
 use clap::{Parser, Subcommand, ValueEnum};
@@ -38,6 +39,8 @@ enum Command {
         #[arg(long, default_value_t = false)]
         include_internal: bool,
         #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, default_value_t = false)]
         allow_fs_write: bool,
         #[arg(long, default_value_t = false)]
         allow_subprocess: bool,
@@ -45,6 +48,14 @@ enum Command {
         allow_git: bool,
         #[arg(long, default_value_t = false)]
         allow_network: bool,
+        #[arg(long, default_value_t = false)]
+        fail_fast: bool,
+        #[arg(long)]
+        max_failures: Option<usize>,
+        #[arg(long, value_enum, default_value_t = OutputArg::Text)]
+        output: OutputArg,
+        #[arg(long)]
+        out_file: Option<PathBuf>,
     },
     Doctor {
         #[arg(long)]
@@ -58,6 +69,13 @@ enum DomainArg {
     Repo,
     Docs,
     Make,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+enum OutputArg {
+    Text,
+    Json,
+    Jsonl,
 }
 
 impl From<DomainArg> for DomainId {
@@ -99,10 +117,15 @@ fn main() {
             tag,
             id_glob,
             include_internal,
+            include_slow,
             allow_fs_write,
             allow_subprocess,
             allow_git,
             allow_network,
+            fail_fast,
+            max_failures,
+            output,
+            out_file,
         } => {
             let root = repo_root
                 .or_else(|| std::env::current_dir().ok())
@@ -119,6 +142,7 @@ fn main() {
                             .map(|v| bijux_atlas_dev_model::SuiteId::parse(&v))
                             .transpose()?,
                         include_internal,
+                        include_slow,
                     })
                 })() {
                     Ok(selectors) => {
@@ -157,15 +181,44 @@ fn main() {
                                     allow_network,
                                 ),
                             };
-                            let adapter = RealProcessRunner;
-                            match run_checks(&adapter, &request) {
-                                Ok(results) => {
-                                    println!(
-                                        "{}",
-                                        serde_json::to_string_pretty(&results)
-                                            .unwrap_or_else(|_| "{}".to_string())
-                                    );
-                                    0
+                            let process = RealProcessRunner;
+                            let fs = RealFs;
+                            let options = RunOptions {
+                                fail_fast,
+                                max_failures,
+                            };
+                            match run_checks(&process, &fs, &request, &selectors, &options) {
+                                Ok(report) => {
+                                    let rendered = match output {
+                                        OutputArg::Text => Ok(render_text_summary(&report)),
+                                        OutputArg::Json => render_json(&report),
+                                        OutputArg::Jsonl => render_jsonl(&report),
+                                    };
+                                    match rendered {
+                                        Ok(text) => {
+                                            if let Some(path) = out_file {
+                                                if let Err(err) =
+                                                    std::fs::write(&path, format!("{text}\n"))
+                                                {
+                                                    eprintln!(
+                                                        "bijux-atlas-dev check failed: cannot write {}: {err}",
+                                                        path.display()
+                                                    );
+                                                    1
+                                                } else {
+                                                    println!("{text}");
+                                                    exit_code_for_report(&report)
+                                                }
+                                            } else {
+                                                println!("{text}");
+                                                exit_code_for_report(&report)
+                                            }
+                                        }
+                                        Err(err) => {
+                                            eprintln!("bijux-atlas-dev check failed: {err}");
+                                            1
+                                        }
+                                    }
                                 }
                                 Err(err) => {
                                     eprintln!("bijux-atlas-dev check failed: {err}");
