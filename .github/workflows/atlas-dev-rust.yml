@@ -62,6 +62,9 @@ jobs:
         run: |
           cargo run -p bijux-dev-atlas -- ops doctor --format json >/dev/null
           cargo run -p bijux-dev-atlas -- ops validate --format json >/dev/null
+      - name: Verify docs doctor entrypoint (no subprocess)
+        run: |
+          cargo run -p bijux-dev-atlas -- docs doctor --format json >/dev/null
       - name: Enforce governance migration guards
         run: |
           ! rg -n "atlasctl" makefiles/ops.mk makefiles/dev.mk makefiles/ci.mk makefiles/CONTRACT.md ops/CONTRACT.md

@@ -228,6 +228,7 @@ nav:
       - Scripts Governance: development/scripts.md
       - Tooling:
           - Index: development/tooling/INDEX.md
+          - dev atlas docs: development/tooling/dev-atlas-docs.md
           - atlasctl: development/tooling/atlasctl.md
           - bijux-atlas-py roadmap: development/tooling/bijux-atlas-py.md
           - naming policy: development/tooling/naming-policy.md

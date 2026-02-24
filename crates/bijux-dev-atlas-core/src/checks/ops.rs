@@ -77,6 +77,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_no_legacy_scripts_strings" => Some(check_docs_no_legacy_scripts_strings),
         "checks_docs_command_surface_docs_exist" => Some(check_docs_command_surface_docs_exist),
         "checks_docs_no_legacy_make_targets" => Some(check_docs_no_legacy_make_targets),
+        "checks_make_docs_wrappers_delegate_dev_atlas" => Some(check_make_docs_wrappers_delegate_dev_atlas),
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
             Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
         }
@@ -1117,6 +1118,51 @@ fn check_docs_no_legacy_make_targets(ctx: &CheckContext<'_>) -> Result<Vec<Viola
             needle,
             "DOCS_LEGACY_MAKE_TARGET_REFERENCE_FOUND",
         )?);
+    }
+    Ok(violations)
+}
+
+fn check_make_docs_wrappers_delegate_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/docs.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
+        violations.push(violation(
+            "MAKE_DOCS_BIJUX_VARIABLES_MISSING",
+            "makefiles/docs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
+            Some(rel),
+        ));
+    }
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.contains("atlasctl") {
+            violations.push(violation(
+                "MAKE_DOCS_ATLASCTL_REFERENCE_FOUND",
+                format!("makefiles/docs.mk must not call atlasctl: `{line}`"),
+                "route docs wrappers through bijux dev atlas docs commands",
+                Some(rel),
+            ));
+        }
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "MAKE_DOCS_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/docs.mk wrapper recipes must be single-line delegations".to_string(),
+                "keep docs wrappers single-line and delegation-only",
+                Some(rel),
+            ));
+        }
+        let words = line.split_whitespace().collect::<Vec<_>>();
+        if words.iter().any(|w| *w == "python" || *w == "python3" || *w == "bash" || *w == "helm" || *w == "kubectl" || *w == "k6") {
+            violations.push(violation(
+                "MAKE_DOCS_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/docs.mk must stay delegation-only: `{line}`"),
+                "docs wrappers may call make or bijux dev atlas only",
+                Some(rel),
+            ));
+        }
     }
     Ok(violations)
 }
