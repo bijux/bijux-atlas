@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from atlasctl.checks.adapters import FS
-from atlasctl.checks.engine import EngineOptions, run_checks
+from atlasctl.checks.engine import EngineOptions, create_check_context, resolve_run_id, run_checks, write_evidence_ref
 from atlasctl.checks.model import CheckContext, CheckDef, CheckSelector, CheckStatus
 
 
@@ -86,3 +86,15 @@ def test_engine_max_failures(tmp_path: Path) -> None:
     )
     report = run_checks(checks, None, _ctx(tmp_path), options=EngineOptions(max_failures=2, only_fast=False, include_slow=True))
     assert len(report.rows) == 2
+
+
+def test_engine_run_id_and_evidence_ref_helpers() -> None:
+    assert resolve_run_id("") == "run-deterministic"
+    ev = write_evidence_ref(run_id="run-123", rel_path="checks/out.json", content_type="application/json")
+    assert ev.path == "artifacts/evidence/run-123/checks/out.json"
+    assert ev.content_type == "application/json"
+
+
+def test_engine_create_context_single_path(tmp_path: Path) -> None:
+    ctx = create_check_context(tmp_path)
+    assert ctx.repo_root == tmp_path.resolve()
