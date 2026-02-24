@@ -89,8 +89,14 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 ## Checks
 
 - [Check Domains](checks/index.md)
+- [Check Domain Model](checks/domains.md)
+- [Check Effects Vocabulary](checks/effects.md)
 - [Check ID Migration Rules](checks/check-id-migration-rules.md)
+- [Layout Domain Migration Map](checks/layout-domain-migration-map.md)
+- [Repo Module Migration Inventory](checks/repo-module-migration-inventory.md)
+- [Check Result Codes](checks/result-codes.md)
 - [Shell Check Migration Inventory](checks/shell-check-migration.md)
+- [Check Runner Usage](checks/usage.md)
 
 ## Schemas
 
@@ -113,3 +119,4 @@ This is the single documentation entrypoint for `packages/atlasctl`.
 
 - [Atlasctl Release Process](release-process.md)
 - [Atlasctl Release Notes](release-notes.md)
+- [Report Consumer Guide](report-consumer.md)
