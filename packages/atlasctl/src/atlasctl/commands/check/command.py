@@ -181,10 +181,14 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     if suite_name:
         spec = next((item for item in suite_manifest_specs() if item.name == suite_name), None)
         if spec is None:
-            print(f"unknown suite: {suite_name}")
-            return ERR_USER
-        suite_ids = set(resolve_check_ids(spec))
-        checks = [check for check in checks if check.check_id in suite_ids]
+            if suite_name == "lint":
+                checks = [check for check in checks if "lint" in set(check_tags(check))]
+            else:
+                print(f"unknown suite: {suite_name}")
+                return ERR_USER
+        else:
+            suite_ids = set(resolve_check_ids(spec))
+            checks = [check for check in checks if check.check_id in suite_ids]
     setattr(ns, "domain_filter", selected_domain or domain_value or str(getattr(ns, "domain_filter", "") or "").strip())
     if bool(getattr(ns, "only_slow", False)) and bool(getattr(ns, "only_fast", False)):
         print("invalid selection: --slow and --fast cannot be used together")
