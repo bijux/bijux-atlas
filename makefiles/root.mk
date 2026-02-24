@@ -16,12 +16,12 @@ CURATED_TARGETS := \
 	help list explain surface \
 	dev-atlas doctor ci-local \
 	dev-doctor dev-ci dev-check-ci \
-	check check-list \
+	check check-list check-scripts gates \
 	ci ci-fast ci-nightly ci-docs \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
 	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-tools-verify ops-pins-check ops-pins-update \
-	make-gate-no-legacy-cli-refs make-gate-no-bin-atlasctl cargo-check
+	make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim cargo-check
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "Curated make targets (Rust control plane):"; \
@@ -61,12 +61,18 @@ check: ## Run Rust control-plane CI-fast check suite
 check-list: ## List checks from the Rust control-plane registry
 	@$(DEV_ATLAS) check list --format text
 
+check-scripts: ## Compatibility alias to CI-fast dev-atlas suite
+	@$(MAKE) -s check
+
+gates: ## Run governance gates via dev-atlas CI-fast suite
+	@$(DEV_ATLAS) check run --suite ci_fast --format text
+
 configs-check: ## Back-compat alias to configs validation wrapper
 	@$(MAKE) -s configs-validate
 
-make-gate-no-legacy-cli-refs: ## Fail if atlasctl appears in makefiles
-	@! rg -n "atlasctl" makefiles -g'*.mk' | rg -v 'make-gate-no-legacy-cli-refs|make-gate-no-bin-atlasctl|rg -n "atlasctl"|test ! -e bin/atlasctl'
+make-gate-no-legacy-cli-refs: ## Fail if legacy Python control-plane token appears in makefiles
+	@legacy_cli_token='atlas''ctl'; ! rg -n "$$legacy_cli_token" makefiles -g'*.mk'
 
-make-gate-no-bin-atlasctl: ## Fail if legacy root atlasctl shim exists
-	@test ! -e bin/atlasctl
-.PHONY: help list explain surface ci-local dev-atlas doctor check check-list configs-check make-gate-no-legacy-cli-refs make-gate-no-bin-atlasctl
+make-gate-no-legacy-cli-shim: ## Fail if legacy root control-plane shim exists
+	@legacy_cli_path=bin/atlas''ctl; test ! -e "$$legacy_cli_path"
+.PHONY: help list explain surface ci-local dev-atlas doctor check check-list check-scripts gates configs-check make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
