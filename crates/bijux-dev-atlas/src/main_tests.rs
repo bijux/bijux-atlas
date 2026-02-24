@@ -223,6 +223,34 @@ mod tests {
     }
 
     #[test]
+    fn workflows_subcommands_parse() {
+        let commands = [vec!["bijux-dev-atlas", "workflows", "validate"]];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Workflows { .. }) => {}
+                _ => panic!("expected workflows command"),
+            }
+        }
+    }
+
+    #[test]
+    fn gates_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "gates", "list"],
+            vec!["bijux-dev-atlas", "gates", "run"],
+            vec!["bijux-dev-atlas", "gates", "run", "--suite", "deep"],
+        ];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Gates { .. }) => {}
+                _ => panic!("expected gates command"),
+            }
+        }
+    }
+
+    #[test]
     fn parse_config_file_supports_json_yaml_toml() {
         let dir = tempfile::tempdir().expect("tempdir");
         let json = dir.path().join("a.json");
