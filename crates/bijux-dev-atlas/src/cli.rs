@@ -371,6 +371,12 @@ pub struct DocsCommonArgs {
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
     pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub strict: bool,
+    #[arg(long, default_value_t = false)]
+    pub include_drafts: bool,
 }
 
 #[derive(Args, Debug, Clone)]
