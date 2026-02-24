@@ -9,7 +9,12 @@ Curated make targets (Rust control plane):
   dev-doctor
   dev-ci
   dev-check-ci
+  build
+  dist
+  clean-build
+  build-doctor
   check
+  check-gates
   check-list
   gates
   ci
@@ -45,4 +50,3 @@ Curated make targets (Rust control plane):
   ops-pins-update
   make-gate-no-legacy-cli-refs
   make-gate-no-legacy-cli-shim
-  cargo-check
