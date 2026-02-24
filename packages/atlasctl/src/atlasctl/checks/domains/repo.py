@@ -15,4 +15,9 @@ _ROOT_OWNED_CHECK_IDS = {
 
 CHECKS: tuple[CheckDef, ...] = tuple(check for check in REPO_CHECKS if str(check.check_id) not in _ROOT_OWNED_CHECK_IDS)
 
-__all__ = ["CHECKS"]
+
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]

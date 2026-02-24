@@ -5,4 +5,9 @@ from ..tools.ops_domain import CHECKS as OPS_CHECKS
 
 CHECKS: tuple[CheckDef, ...] = tuple(OPS_CHECKS)
 
-__all__ = ["CHECKS"]
+
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]

@@ -5,4 +5,9 @@ from ..tools.policies_domain.make import CHECKS as POLICIES_MAKE_CHECKS
 
 CHECKS: tuple[CheckDef, ...] = tuple(check for check in POLICIES_MAKE_CHECKS if str(check.domain) == "make")
 
-__all__ = ["CHECKS"]
+
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]

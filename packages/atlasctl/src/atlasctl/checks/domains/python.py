@@ -5,4 +5,9 @@ from ..tools.repo_domain import CHECKS as REPO_CHECKS
 
 CHECKS: tuple[CheckDef, ...] = tuple(check for check in REPO_CHECKS if str(check.domain) == "python")
 
-__all__ = ["CHECKS"]
+
+def register() -> tuple[CheckDef, ...]:
+    return CHECKS
+
+
+__all__ = ["CHECKS", "register"]
