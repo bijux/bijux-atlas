@@ -408,7 +408,18 @@ pub(crate) fn docs_lint_payload(
             .file_name()
             .and_then(|v| v.to_str())
             .unwrap_or_default();
-        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase())
+        let stem = name.strip_suffix(".md").unwrap_or(name);
+        let is_canonical_upper_doc = !stem.is_empty()
+            && stem
+                .chars()
+                .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_' || c == '-');
+        let is_adr_filename = Regex::new(r"^ADR-\d{4}-[a-z0-9-]+\.md$")
+            .map_err(|e| e.to_string())?
+            .is_match(name);
+        if !matches!(name, "README.md" | "INDEX.md")
+            && !is_canonical_upper_doc
+            && !is_adr_filename
+            && name.chars().any(|c| c.is_ascii_uppercase())
         {
             errors.push(format!(
                 "docs filename should use lowercase intent-based naming: `{rel}`"
