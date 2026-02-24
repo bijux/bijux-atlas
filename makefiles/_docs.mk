@@ -1,7 +1,7 @@
 SHELL := /bin/sh
 
 docs: ## Canonical docs gate
-	@$(DEV_ATLAS) docs doctor --format text
+	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
 
 docs-doctor: ## Run docs doctor checks
 	@$(DEV_ATLAS) docs doctor --format json
