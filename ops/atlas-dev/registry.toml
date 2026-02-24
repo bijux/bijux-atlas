@@ -565,6 +565,17 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
+id = "checks_make_configs_wrappers_delegate_dev_atlas"
+domain = "make"
+title = "configs make wrappers delegate through bijux dev atlas configs commands"
+docs = "makefiles/configs.mk"
+tags = ["internal", "slow"]
+suites = ["deep", "configs"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
 domain = "crates"
 title = "umbrella runtime tests reserve dev verb ownership"
