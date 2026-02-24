@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..model import CheckDef
-from ..tools.repo_domain import CHECKS as REPO_CHECKS
+from ..tools.repo import CHECKS as REPO_CHECKS
 
 _ROOT_OWNED_CHECK_IDS = {
     "repo.forbidden_top_dirs",

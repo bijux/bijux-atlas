@@ -20,7 +20,7 @@ from ..tools.docs_integrity import (
     check_no_package_root_markdown_except_readme,
     check_stable_command_examples_in_group_docs,
 )
-from ..tools.repo_domain.native import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
+from ..tools.repo import check_docs_no_ops_generated_run_paths, check_docs_scripts_references
 
 CHECKS: tuple[CheckDef, ...] = (
     CheckDef("docs.no_scripts_path_refs", "docs", "forbid scripts/ path references in docs", 800, check_docs_scripts_references, fix_hint="Update docs references to atlasctl commands."),

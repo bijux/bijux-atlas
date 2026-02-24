@@ -20,8 +20,7 @@ from ...checks.adapters import FS
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
 from ...engine.runner import domains as check_domains
 from ...engine.runner import run_domain
-from ...checks.tools.repo_domain.enforcement.package_shape import check_module_size
-from ...checks.tools.repo_domain.native.modules.repo_checks_make_and_layout import check_layout_contract
+from ...checks.tools.repo import check_layout_contract, check_module_size
 from ...core.context import RunContext
 from ...core.fs import ensure_evidence_path
 from ...core.runtime.paths import write_text_file

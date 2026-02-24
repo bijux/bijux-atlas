@@ -1,27 +1,19 @@
 from __future__ import annotations
 
 from ..model import CheckDef
-from ..tools.repo_domain.enforcement.package_shape import check_atlasctl_package_root_shape
-from ..tools.repo_domain.native import check_forbidden_top_dirs
-from ..tools.repo_domain.root_determinism import (
-    DESCRIPTION as ROOT_DETERMINISM_DESCRIPTION,
-    run as run_root_determinism,
-)
-from ..tools.repo_domain.root_forbidden_files import (
-    DESCRIPTION as FORBIDDEN_ROOT_FILES_DESCRIPTION,
-    run as run_forbidden_root_files,
-)
-from ..tools.repo_domain.root_forbidden_names import (
-    DESCRIPTION as FORBIDDEN_ROOT_NAMES_DESCRIPTION,
-    run as run_forbidden_root_names,
-)
-from ..tools.repo_domain.root_forbidden_paths import (
-    DESCRIPTION as FORBIDDEN_PATHS_DESCRIPTION,
-    run as run_forbidden_paths,
-)
-from ..tools.repo_domain.root_shape import (
-    DESCRIPTION as ROOT_SHAPE_DESCRIPTION,
-    run as run_root_shape,
+from ..tools.repo import (
+    FORBIDDEN_PATHS_DESCRIPTION,
+    FORBIDDEN_ROOT_FILES_DESCRIPTION,
+    FORBIDDEN_ROOT_NAMES_DESCRIPTION,
+    ROOT_DETERMINISM_DESCRIPTION,
+    ROOT_SHAPE_DESCRIPTION,
+    check_atlasctl_package_root_shape,
+    check_forbidden_top_dirs,
+    run_forbidden_paths,
+    run_forbidden_root_files,
+    run_forbidden_root_names,
+    run_root_determinism,
+    run_root_shape,
 )
 
 CHECKS: tuple[CheckDef, ...] = (
