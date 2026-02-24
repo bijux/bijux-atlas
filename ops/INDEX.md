@@ -18,3 +18,15 @@ Human entry for the ops specification surface.
 - `ops/e2e/`
 - `ops/datasets/`
 - `ops/report/`
+
+## Make Surface
+
+`makefiles/ops.mk` is delegation-only and routes to `bijux dev atlas ops ...`.
+
+- `make ops-help` -> `bijux dev atlas ops --help`
+- `make ops-doctor` -> `bijux dev atlas ops doctor --profile $(PROFILE) --format json`
+- `make ops-validate` -> `bijux dev atlas ops validate --profile $(PROFILE) --format json`
+- `make ops-render` -> `bijux dev atlas ops render --target helm --profile $(PROFILE) --allow-subprocess --format json`
+- `make ops-install-plan` -> `bijux dev atlas ops install --kind --apply --plan --profile $(PROFILE) --allow-subprocess --allow-write --format json`
+- `make ops-status` -> `bijux dev atlas ops status --target pods --profile $(PROFILE) --allow-subprocess --format json`
+- `make ops-tools-verify` -> `bijux dev atlas ops verify-tools --allow-subprocess --format json`
