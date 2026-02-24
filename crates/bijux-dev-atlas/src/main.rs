@@ -6,9 +6,9 @@ use std::process::Command as ProcessCommand;
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::{
     exit_code_for_report, explain_output, list_output, load_registry, registry_doctor, render_json,
-    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
-    Selectors,
+    render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest, Selectors,
 };
+use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas_model::{CheckId, DomainId, RunId, SuiteId, Tag};
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use serde::{Deserialize, Serialize};
@@ -529,10 +529,70 @@ fn run_ops_checks(common: &OpsCommonArgs, suite: &str, include_internal: bool, i
     Ok((rendered, exit_code_for_report(&report)))
 }
 
+fn render_ops_validation_output(
+    common: &OpsCommonArgs,
+    mode: &str,
+    inventory_errors: &[String],
+    checks_rendered: &str,
+    checks_exit: i32,
+    summary: serde_json::Value,
+) -> Result<(String, i32), String> {
+    let inventory_error_count = inventory_errors.len();
+    let checks_error_count = if checks_exit == 0 { 0 } else { 1 };
+    let error_count = inventory_error_count + checks_error_count;
+    let status = if error_count == 0 { "ok" } else { "failed" };
+    let strict_failed = common.strict && error_count > 0;
+    let exit = if strict_failed {
+        1
+    } else if checks_exit != 0 || inventory_error_count > 0 {
+        1
+    } else {
+        0
+    };
+    let text = format!(
+        "ops {mode}: status={status} inventory_errors={inventory_error_count} checks_exit={checks_exit}"
+    );
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "mode": mode,
+        "status": status,
+        "text": text,
+        "rows": [{
+            "inventory_errors": inventory_errors,
+            "checks_exit": checks_exit,
+            "checks_output": checks_rendered,
+            "inventory_summary": summary
+        }],
+        "summary": {
+            "total": 1,
+            "errors": error_count,
+            "warnings": 0
+        }
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, exit))
+}
+
 fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let run: Result<(String, i32), String> = (|| match command {
-        OpsCommand::Doctor(common) => run_ops_checks(&common, "ops_fast", false, false),
-        OpsCommand::Validate(common) => run_ops_checks(&common, "ops_all", true, true),
+        OpsCommand::Doctor(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let inventory_errors = validate_ops_inventory(&repo_root);
+            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(|err| {
+                serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")})
+            });
+            let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_fast", false, false)?;
+            render_ops_validation_output(&common, "doctor", &inventory_errors, &checks_rendered, checks_exit, summary)
+        }
+        OpsCommand::Validate(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let inventory_errors = validate_ops_inventory(&repo_root);
+            let summary = ops_inventory_summary(&repo_root).unwrap_or_else(|err| {
+                serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")})
+            });
+            let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_all", true, true)?;
+            render_ops_validation_output(&common, "validate", &inventory_errors, &checks_rendered, checks_exit, summary)
+        }
         OpsCommand::Render(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             if !common.allow_subprocess {
