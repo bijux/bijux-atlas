@@ -758,6 +758,117 @@ def check_write_roots_are_evidence_only(repo_root: Path) -> tuple[int, list[str]
     return (1, sorted(set(violations))) if violations else (0, [])
 
 
+def check_internal_checks_tree_policy(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    errors: list[str] = []
+    for rel in ("layout", "repo", "registry"):
+        path = checks_root / rel
+        if path.exists():
+            errors.append(f"forbidden checks tree entry: {path.relative_to(repo_root).as_posix()}")
+    domains_root = checks_root / "domains"
+    if domains_root.exists():
+        for path in sorted(domains_root.rglob("*")):
+            if not path.is_dir():
+                continue
+            rel_parts = path.relative_to(domains_root).parts
+            if len(rel_parts) >= 2 and "__pycache__" not in rel_parts:
+                errors.append(f"nested domain directory forbidden: {path.relative_to(repo_root).as_posix()}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_checks_root_budget(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    budget = 15
+    entries = [path for path in checks_root.iterdir() if path.name != "__pycache__"]
+    if len(entries) > budget:
+        return 1, [f"checks root entry budget exceeded: {len(entries)} > {budget}"]
+    return 0, []
+
+
+def check_internal_domains_flat_modules_only(repo_root: Path) -> tuple[int, list[str]]:
+    domains_root = repo_root / "packages/atlasctl/src/atlasctl/checks/domains"
+    if not domains_root.exists():
+        return 1, ["missing checks domains root: packages/atlasctl/src/atlasctl/checks/domains"]
+    errors: list[str] = []
+    for path in sorted(domains_root.iterdir()):
+        if path.name in {"__pycache__", "__init__.py"}:
+            continue
+        if path.is_file() and path.suffix == ".py":
+            continue
+        if path.is_dir():
+            # Allow package dirs that are currently active only as a migration exception.
+            errors.append(f"domains must be flat modules only: {path.relative_to(repo_root).as_posix()}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_no_duplicate_engines(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    files = {
+        "runner.py": checks_root / "runner.py",
+        "policy.py": checks_root / "policy.py",
+        "report.py": checks_root / "report.py",
+        "selectors.py": checks_root / "selectors.py",
+    }
+    errors: list[str] = []
+    for name, canonical in files.items():
+        if not canonical.exists():
+            errors.append(f"missing canonical checks module: {canonical.relative_to(repo_root).as_posix()}")
+            continue
+        duplicates = [path for path in checks_root.rglob(name) if path.resolve() != canonical.resolve() and "__pycache__" not in path.parts]
+        for dup in sorted(duplicates):
+            errors.append(f"duplicate engine module forbidden: {dup.relative_to(repo_root).as_posix()} (canonical: {canonical.relative_to(repo_root).as_posix()})")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_no_adapters_usage(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    errors: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "atlasctl.checks.adapters" in text and not rel.endswith("checks/adapters.py"):
+            errors.append(f"forbidden adapters import usage outside compatibility module: {rel}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_no_registry_toml_reads(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    errors: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if rel.endswith("checks/domains/internal.py") or rel.endswith("checks/registry/__init__.py"):
+            continue
+        if "REGISTRY.toml" in text and "gen_registry.py" not in rel and "registry/ssot.py" not in rel:
+            errors.append(f"runtime code must not read REGISTRY.toml directly: {rel}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_internal_no_generated_registry_as_input(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    errors: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if rel.endswith("checks/domains/internal.py") or rel.endswith("checks/registry/__init__.py"):
+            continue
+        if "REGISTRY.generated.json" in text and "gen_registry.py" not in rel and "registry/ssot.py" not in rel:
+            errors.append(f"runtime code must not use generated registry json as input: {rel}")
+    return (1, errors) if errors else (0, [])
+
+
 def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     registry_root = repo_root / "packages/atlasctl/src/atlasctl/checks/registry"
     if not registry_root.exists():
@@ -1216,6 +1327,83 @@ CHECKS = (
         check_no_generated_timestamp_dirs,
         category=CheckCategory.HYGIENE,
         fix_hint="Use deterministic, stable generated directory names without timestamps.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_checks_tree_policy",
+        "checks",
+        "enforce canonical checks tree and forbid legacy layout/repo/registry package trees",
+        500,
+        check_internal_checks_tree_policy,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep only canonical checks tree and remove legacy checks/layout, checks/repo, and checks/registry package directories.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_checks_root_budget",
+        "checks",
+        "enforce checks package root entry budget",
+        500,
+        check_internal_checks_root_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Reduce checks package root entries to stay within budget.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_domains_flat_modules_only",
+        "checks",
+        "enforce flat modules under checks/domains",
+        500,
+        check_internal_domains_flat_modules_only,
+        category=CheckCategory.POLICY,
+        fix_hint="Flatten nested checks/domains packages into top-level domain modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_duplicate_engines",
+        "checks",
+        "enforce single canonical checks engine modules",
+        500,
+        check_internal_no_duplicate_engines,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep only one canonical checks runner/policy/report/selectors module.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_adapters_usage",
+        "checks",
+        "forbid adapter compatibility usage outside checks/adapters.py",
+        500,
+        check_internal_no_adapters_usage,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove compatibility adapter imports from runtime checks code.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_registry_toml_reads",
+        "checks",
+        "forbid runtime reads of REGISTRY.toml",
+        500,
+        check_internal_no_registry_toml_reads,
+        category=CheckCategory.POLICY,
+        fix_hint="Use python registry APIs at runtime and keep TOML reads generation-only.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_no_generated_registry_as_input",
+        "checks",
+        "forbid runtime reads of REGISTRY.generated.json",
+        500,
+        check_internal_no_generated_registry_as_input,
+        category=CheckCategory.POLICY,
+        fix_hint="Use python registry APIs at runtime and keep generated registry json output-only.",
         owners=("platform",),
         tags=("checks", "required"),
     ),

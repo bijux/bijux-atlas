@@ -555,6 +555,328 @@
       "title": "forbid import cycles across atlasctl checks modules"
     },
     {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "enforce checks package root entry budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_checks_root_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_checks_root_budget",
+      "impl_ref": {
+        "callable": "check_internal_checks_root_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Reduce checks package root entries to stay within budget.",
+        "intent": "enforce checks package root entry budget",
+        "legacy_id": "checks.internal_checks_root_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks package root entry budget"
+    },
+    {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "enforce canonical checks tree and forbid legacy layout/repo/registry package trees",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_checks_tree_policy",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_checks_tree_policy",
+      "impl_ref": {
+        "callable": "check_internal_checks_tree_policy",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep only canonical checks tree and remove legacy checks/layout, checks/repo, and checks/registry package directories.",
+        "intent": "enforce canonical checks tree and forbid legacy layout/repo/registry package trees",
+        "legacy_id": "checks.internal_checks_tree_policy",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce canonical checks tree and forbid legacy layout/repo/registry package trees"
+    },
+    {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "enforce flat modules under checks/domains",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_domains_flat_modules_only",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_domains_flat_modules_only",
+      "impl_ref": {
+        "callable": "check_internal_domains_flat_modules_only",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Flatten nested checks/domains packages into top-level domain modules.",
+        "intent": "enforce flat modules under checks/domains",
+        "legacy_id": "checks.internal_domains_flat_modules_only",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce flat modules under checks/domains"
+    },
+    {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "forbid adapter compatibility usage outside checks/adapters.py",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_no_adapters_usage",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_adapters_usage",
+      "impl_ref": {
+        "callable": "check_internal_no_adapters_usage",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Remove compatibility adapter imports from runtime checks code.",
+        "intent": "forbid adapter compatibility usage outside checks/adapters.py",
+        "legacy_id": "checks.internal_no_adapters_usage",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid adapter compatibility usage outside checks/adapters.py"
+    },
+    {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "enforce single canonical checks engine modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_no_duplicate_engines",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_duplicate_engines",
+      "impl_ref": {
+        "callable": "check_internal_no_duplicate_engines",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep only one canonical checks runner/policy/report/selectors module.",
+        "intent": "enforce single canonical checks engine modules",
+        "legacy_id": "checks.internal_no_duplicate_engines",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce single canonical checks engine modules"
+    },
+    {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "forbid runtime reads of REGISTRY.generated.json",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_no_generated_registry_as_input",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_generated_registry_as_input",
+      "impl_ref": {
+        "callable": "check_internal_no_generated_registry_as_input",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use python registry APIs at runtime and keep generated registry json output-only.",
+        "intent": "forbid runtime reads of REGISTRY.generated.json",
+        "legacy_id": "checks.internal_no_generated_registry_as_input",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid runtime reads of REGISTRY.generated.json"
+    },
+    {
+      "area": "internal",
+      "default_enabled": true,
+      "description": "forbid runtime reads of REGISTRY.toml",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_internal_no_registry_toml_reads",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_registry_toml_reads",
+      "impl_ref": {
+        "callable": "check_internal_no_registry_toml_reads",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use python registry APIs at runtime and keep TOML reads generation-only.",
+        "intent": "forbid runtime reads of REGISTRY.toml",
+        "legacy_id": "checks.internal_no_registry_toml_reads",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid runtime reads of REGISTRY.toml"
+    },
+    {
       "area": "legacy",
       "default_enabled": true,
       "description": "require legacy checks/layout and checks/repo directories to be removed",
