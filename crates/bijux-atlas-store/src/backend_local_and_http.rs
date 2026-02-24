@@ -1,6 +1,10 @@
 use crate::catalog::validate_catalog_strict;
 use crate::manifest::{verify_expected_sha256, ManifestLock};
-use crate::paths::{dataset_artifact_paths, manifest_lock_path, publish_lock_path};
+use crate::paths::{
+    dataset_artifact_paths, dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key,
+    dataset_sqlite_key, manifest_lock_path, publish_lock_path, CATALOG_FILE,
+};
+use crate::retry::{BackoffPolicy, RetryPolicy};
 use bijux_atlas_core::ErrorCode;
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
 use reqwest::blocking::{Client, Response};
@@ -225,7 +229,7 @@ impl LocalFsStore {
 
 impl ArtifactStore for LocalFsStore {
     fn list_datasets(&self) -> Result<Vec<DatasetId>, StoreError> {
-        let catalog_path = self.root.join("catalog.json");
+        let catalog_path = self.root.join(CATALOG_FILE);
         if !catalog_path.exists() {
             return Ok(Vec::new());
         }
@@ -395,7 +399,7 @@ impl HttpReadonlyStore {
     }
 
     fn url_for(&self, dataset: &DatasetId, file: &str) -> String {
-        let id = dataset.canonical_string();
+        let id = dataset_key_prefix(dataset);
         format!("{}/{}/{}", self.base_url.trim_end_matches('/'), id, file)
     }
 
@@ -521,8 +525,8 @@ impl ArtifactStore for HttpReadonlyStore {
     }
 
     fn get_manifest(&self, dataset: &DatasetId) -> Result<ArtifactManifest, StoreError> {
-        let key = format!("{}/manifest.json", dataset.canonical_string());
-        let lock_key = format!("{}/manifest.lock", dataset.canonical_string());
+        let key = dataset_manifest_key(dataset);
+        let lock_key = dataset_manifest_lock_key(dataset);
         let bytes = self.fetch_bytes(&key, &self.url_for(dataset, "manifest.json"))?;
         let lock_bytes = self.fetch_bytes(&lock_key, &self.url_for(dataset, "manifest.lock"))?;
         let lock: ManifestLock = serde_json::from_slice(&lock_bytes)
@@ -538,7 +542,7 @@ impl ArtifactStore for HttpReadonlyStore {
     }
 
     fn get_sqlite_bytes(&self, dataset: &DatasetId) -> Result<Vec<u8>, StoreError> {
-        let key = format!("{}/gene_summary.sqlite", dataset.canonical_string());
+        let key = dataset_sqlite_key(dataset);
         self.fetch_bytes(&key, &self.url_for(dataset, "gene_summary.sqlite"))
     }
 
@@ -570,10 +574,4 @@ impl ArtifactStore for HttpReadonlyStore {
             "http readonly backend cannot lock",
         ))
     }
-}
-
-#[derive(Clone)]
-pub struct RetryPolicy {
-    pub max_attempts: usize,
-    pub base_backoff_ms: u64,
 }
