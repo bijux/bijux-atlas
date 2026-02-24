@@ -2,7 +2,10 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet, PolicySchemaVersion};
+use bijux_dev_atlas_policies::{
+    canonical_policy_json, validate_policy_change_requires_version_bump, DevAtlasPolicySet,
+    PolicySchemaVersion,
+};
 
 fn workspace_root() -> PathBuf {
     let output = Command::new("cargo")
@@ -69,6 +72,16 @@ fn stable_policy_json_matches_golden() {
     let json = canonical_policy_json(&policy.to_document()).expect("canonical");
     let golden = include_str!("goldens/dev_atlas_policy_resolved.json");
     assert_eq!(json.trim(), golden.trim());
+}
+
+#[test]
+fn policy_changes_require_schema_bump() {
+    let root = workspace_root();
+    let old = DevAtlasPolicySet::load(&root).expect("load old");
+    let mut changed = old.to_document();
+    changed.repo.max_loc_hard += 1;
+    let old_doc = old.to_document();
+    assert!(validate_policy_change_requires_version_bump(&old_doc, &changed).is_err());
 }
 
 #[test]
