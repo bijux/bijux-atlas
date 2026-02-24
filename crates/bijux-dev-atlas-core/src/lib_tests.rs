@@ -392,3 +392,24 @@ fn duration_output_is_deterministic_for_equal_durations() {
         .expect("first duration");
     assert_eq!(*first_duration, "duration: ops_surface_manifest 50ms");
 }
+
+#[test]
+fn ops_inventory_validation_is_clean_for_repo_ssot() {
+    let errors = ops_inventory::validate_ops_inventory(&root());
+    assert!(errors.is_empty(), "ops inventory errors: {errors:?}");
+}
+
+#[test]
+fn ops_inventory_summary_reports_counts() {
+    let summary = ops_inventory::ops_inventory_summary(&root()).expect("summary");
+    assert!(summary
+        .get("stack_profiles")
+        .and_then(|value| value.as_u64())
+        .unwrap_or(0)
+        >= 1);
+    assert!(summary
+        .get("surface_actions")
+        .and_then(|value| value.as_u64())
+        .unwrap_or(0)
+        >= 1);
+}

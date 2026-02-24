@@ -13,6 +13,7 @@ use bijux_dev_atlas_model::{
 use serde::Deserialize;
 
 pub mod checks;
+pub mod ops_inventory;
 
 pub const DEFAULT_REGISTRY_PATH: &str = "ops/atlas-dev/registry.toml";
 
