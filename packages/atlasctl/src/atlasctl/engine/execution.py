@@ -17,7 +17,7 @@ from typing import Callable
 
 from ..checks.model import CheckDef, CheckResult
 from ..checks.effects import CheckEffect, normalize_effect
-from ..checks.registry_legacy.catalog import check_tags
+from ..checks.registry import check_tags
 from ..core.process import run_command
 
 
