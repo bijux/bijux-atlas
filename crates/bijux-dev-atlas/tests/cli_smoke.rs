@@ -104,6 +104,51 @@ fn dev_atlas_help_command_list_matches_doc() {
 }
 
 #[test]
+fn dev_atlas_help_command_list_order_matches_doc_snapshot() {
+    fn parse_commands_from_help(text: &str) -> Vec<String> {
+        let mut out = Vec::new();
+        let mut in_commands = false;
+        for line in text.lines() {
+            if line.trim() == "Commands:" {
+                in_commands = true;
+                continue;
+            }
+            if in_commands {
+                let trimmed = line.trim();
+                if trimmed.is_empty() || trimmed.starts_with("Options:") {
+                    break;
+                }
+                let cmd = trimmed
+                    .split_whitespace()
+                    .next()
+                    .unwrap_or_default()
+                    .to_string();
+                if !cmd.is_empty() && cmd != "help" {
+                    out.push(cmd);
+                }
+            }
+        }
+        out
+    }
+
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .arg("--help")
+        .output()
+        .expect("dev help");
+    assert!(output.status.success());
+    let help = String::from_utf8(output.stdout).expect("utf8");
+    let observed = parse_commands_from_help(&help);
+
+    let expected = fs::read_to_string(repo_root().join("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md"))
+        .expect("dev command list")
+        .lines()
+        .map(ToString::to_string)
+        .collect::<Vec<_>>();
+    assert_eq!(observed, expected);
+}
+
+#[test]
 fn umbrella_dispatches_dev_atlas_help() {
     let temp = TempDir::new().expect("tempdir");
     let plugin_path = temp.path().join("bijux-dev-atlas");

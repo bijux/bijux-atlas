@@ -1,9 +1,9 @@
+list
+explain
+doctor
+run
+ops
+docs
+configs
 capabilities
 check
-configs
-docs
-doctor
-explain
-list
-ops
-run
