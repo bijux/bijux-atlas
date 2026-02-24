@@ -169,7 +169,7 @@ def check_ops_lint_check_surfaces_native(repo_root: Path) -> tuple[int, list[str
             unknown.append(f"unknown root entry: {name}")
     missing = [f"missing canonical surface: {name}" for name in sorted(canonical) if not (repo_root / name).exists()]
     errors = [*unknown, *missing]
-    return (0 if not errors else 1), (["repo surface check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_lint_layer_contract_drift_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -203,7 +203,7 @@ def check_ops_load_abuse_scenarios_required_native(repo_root: Path) -> tuple[int
                 errors.append(f"response-size-abuse must run in {profile} profile")
         if not abuse.get("must_pass", False):
             errors.append("response-size-abuse must have must_pass=true")
-    return (0 if not errors else 1), (["abuse scenario contract passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_load_perf_baselines_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -246,7 +246,7 @@ def check_ops_load_perf_baselines_native(repo_root: Path) -> tuple[int, list[str
             got = str(tv.get(key, ""))
             if expected and got and expected != got:
                 errors.append(f"{ctx}: tool version mismatch {key}: baseline={got} expected={expected}")
-    return (0 if not errors else 1), (["perf baseline contract check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -276,7 +276,7 @@ def check_ops_load_pinned_queries_lock_native(repo_root: Path) -> tuple[int, lis
     query_set = str(suites_manifest.get("query_set", "")).strip()
     if Path(query_set).name != "pinned-v1.json":
         errors.append(f"load suites manifest query_set must reference pinned-v1.json (got `{query_set}`)")
-    return (0 if not errors else 1), (["pinned query lock check passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_ops_load_runbook_suite_names_native(repo_root: Path) -> tuple[int, list[str]]:
@@ -403,7 +403,7 @@ def check_ops_shell_policy(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     run_dir = repo_root / "ops" / "run"
     if not run_dir.exists():
-        return 0, ["ops run shell policy check passed (ops/run retired)"]
+        return 0, []
     for path in sorted(run_dir.glob("*.sh")):
         rel = path.relative_to(repo_root).as_posix()
         text = path.read_text(encoding="utf-8", errors="ignore")
