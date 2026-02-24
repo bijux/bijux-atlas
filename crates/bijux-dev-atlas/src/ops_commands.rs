@@ -986,6 +986,40 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 std::fs::remove_dir_all(&target)
                     .map_err(|err| format!("failed to remove {}: {err}", target.display()))?;
             }
+            let mut rows = vec![serde_json::json!({
+                "kind": "artifacts",
+                "status": "ok",
+                "path": target.display().to_string()
+            })];
+            if common.allow_subprocess {
+                let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                    .map_err(|e| e.to_stable_message())?;
+                let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+                profiles.sort_by(|a, b| a.name.cmp(&b.name));
+                let profile = resolve_profile(common.profile.clone(), &profiles)
+                    .map_err(|e| e.to_stable_message())?;
+                let process = OpsProcess::new(true);
+                let namespace_delete_args = vec![
+                    "delete".to_string(),
+                    "namespace".to_string(),
+                    "bijux-atlas".to_string(),
+                    "--ignore-not-found=true".to_string(),
+                ];
+                let _ = process.run_subprocess("kubectl", &namespace_delete_args, &repo_root);
+                let kind_delete_args = vec![
+                    "delete".to_string(),
+                    "cluster".to_string(),
+                    "--name".to_string(),
+                    profile.kind_profile.clone(),
+                ];
+                let _ = process.run_subprocess("kind", &kind_delete_args, &repo_root);
+                rows.push(serde_json::json!({
+                    "kind": "known_resources",
+                    "status": "attempted",
+                    "namespace": "bijux-atlas",
+                    "kind_profile": profile.kind_profile
+                }));
+            }
             let text = format!(
                 "reset artifacts for run_id={} at {}",
                 run_id.as_str(),
@@ -994,7 +1028,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let rendered = emit_payload(
                 common.format,
                 common.out.clone(),
-                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+                &serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": 1, "errors": 0, "warnings": 0}}),
             )?;
             Ok((rendered, 0))
         }
