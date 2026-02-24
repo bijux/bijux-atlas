@@ -1,6 +1,4 @@
-use crate::cli::{
-    DockerCommand, DockerCommonArgs, DockerPolicyCommand, PoliciesCommand,
-};
+use crate::cli::{DockerCommand, DockerCommonArgs, DockerPolicyCommand, PoliciesCommand};
 use crate::*;
 use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
