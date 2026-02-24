@@ -21,6 +21,8 @@ struct Cli {
     quiet: bool,
     #[arg(long, default_value_t = false)]
     verbose: bool,
+    #[arg(long, default_value_t = false)]
+    debug: bool,
     #[command(subcommand)]
     command: Command,
 }
@@ -173,6 +175,10 @@ struct OpsCommonArgs {
     out: Option<PathBuf>,
     #[arg(long)]
     run_id: Option<String>,
+    #[arg(long, default_value_t = false)]
+    strict: bool,
+    #[arg(long, default_value_t = false)]
+    allow_subprocess: bool,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -198,6 +204,108 @@ struct SurfaceAction {
     domain: String,
     command: Vec<String>,
     argv: Vec<String>,
+}
+
+#[derive(Debug)]
+enum OpsCommandError {
+    Manifest(String),
+    Schema(String),
+    Tool(String),
+    Profile(String),
+    Effect(String),
+}
+
+impl OpsCommandError {
+    fn code(&self) -> &'static str {
+        match self {
+            Self::Manifest(_) => "OPS_MANIFEST_ERROR",
+            Self::Schema(_) => "OPS_SCHEMA_ERROR",
+            Self::Tool(_) => "OPS_TOOL_ERROR",
+            Self::Profile(_) => "OPS_PROFILE_ERROR",
+            Self::Effect(_) => "OPS_EFFECT_ERROR",
+        }
+    }
+
+    fn to_stable_message(&self) -> String {
+        let detail = match self {
+            Self::Manifest(v)
+            | Self::Schema(v)
+            | Self::Tool(v)
+            | Self::Profile(v)
+            | Self::Effect(v) => v,
+        };
+        format!("{}: {}", self.code(), detail)
+    }
+}
+
+struct OpsFs {
+    repo_root: PathBuf,
+    ops_root: PathBuf,
+}
+
+impl OpsFs {
+    fn new(repo_root: PathBuf, ops_root: PathBuf) -> Self {
+        Self { repo_root, ops_root }
+    }
+
+    fn read_ops_json<T: for<'de> Deserialize<'de>>(&self, rel: &str) -> Result<T, OpsCommandError> {
+        let path = self.ops_root.join(rel);
+        let text = std::fs::read_to_string(&path).map_err(|err| {
+            OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
+        })?;
+        serde_json::from_str(&text)
+            .map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display())))
+    }
+
+    fn write_artifact_json(&self, run_id: &RunId, rel: &str, payload: &serde_json::Value) -> Result<PathBuf, OpsCommandError> {
+        let path = self
+            .repo_root
+            .join("artifacts/atlas-dev/ops")
+            .join(run_id.as_str())
+            .join(rel);
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).map_err(|err| {
+                OpsCommandError::Manifest(format!("failed to create {}: {err}", parent.display()))
+            })?;
+        }
+        let content = serde_json::to_string_pretty(payload)
+            .map_err(|err| OpsCommandError::Schema(format!("failed to serialize json: {err}")))?;
+        std::fs::write(&path, content)
+            .map_err(|err| OpsCommandError::Manifest(format!("failed to write {}: {err}", path.display())))?;
+        Ok(path)
+    }
+}
+
+struct OpsProcess {
+    allow_subprocess: bool,
+}
+
+impl OpsProcess {
+    fn new(allow_subprocess: bool) -> Self {
+        Self { allow_subprocess }
+    }
+
+    fn probe_tool(&self, name: &str) -> Result<serde_json::Value, OpsCommandError> {
+        if !self.allow_subprocess {
+            return Err(OpsCommandError::Effect(
+                "subprocess is denied; pass --allow-subprocess".to_string(),
+            ));
+        }
+        match ProcessCommand::new(name).arg("--version").output() {
+            Ok(out) if out.status.success() => {
+                let text = String::from_utf8_lossy(&out.stdout);
+                let version = text.lines().next().unwrap_or("").trim().to_string();
+                Ok(serde_json::json!({"name": name, "installed": true, "version": version}))
+            }
+            Ok(_) => Ok(serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null})),
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+                Ok(serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}))
+            }
+            Err(err) => Err(OpsCommandError::Tool(format!(
+                "failed to probe tool `{name}`: {err}"
+            ))),
+        }
+    }
 }
 
 impl From<DomainArg> for DomainId {
@@ -322,55 +430,46 @@ fn render_doctor_output(
 const REQUIRED_OPS_TOOLS: &[&str] = &["kind", "kubectl", "helm", "curl"];
 const OPTIONAL_OPS_TOOLS: &[&str] = &["k6", "kubeconform"];
 
-fn resolve_ops_root(repo_root: &Path, ops_root: Option<PathBuf>) -> Result<PathBuf, String> {
+fn resolve_ops_root(repo_root: &Path, ops_root: Option<PathBuf>) -> Result<PathBuf, OpsCommandError> {
     let path = ops_root.unwrap_or_else(|| repo_root.join("ops"));
     path.canonicalize()
-        .map_err(|err| format!("cannot resolve ops root {}: {err}", path.display()))
+        .map_err(|err| OpsCommandError::Manifest(format!("cannot resolve ops root {}: {err}", path.display())))
 }
 
-fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, String> {
+fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCommandError> {
     let path = ops_root.join("stack/profiles.json");
     let text =
-        std::fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+        std::fs::read_to_string(&path).map_err(|err| OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display())))?;
     let payload: StackProfiles =
-        serde_json::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+        serde_json::from_str(&text).map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display())))?;
     Ok(payload.profiles)
 }
 
-fn resolve_profile(requested: Option<String>, profiles: &[StackProfile]) -> Result<StackProfile, String> {
+fn resolve_profile(requested: Option<String>, profiles: &[StackProfile]) -> Result<StackProfile, OpsCommandError> {
     if profiles.is_empty() {
-        return Err("no profiles declared in ops/stack/profiles.json".to_string());
+        return Err(OpsCommandError::Profile(
+            "no profiles declared in ops/stack/profiles.json".to_string(),
+        ));
     }
     if let Some(name) = requested {
         return profiles
             .iter()
             .find(|p| p.name == name)
             .cloned()
-            .ok_or_else(|| format!("unknown profile `{name}`"));
+            .ok_or_else(|| OpsCommandError::Profile(format!("unknown profile `{name}`")));
     }
     profiles
         .iter()
         .find(|p| p.name == "developer")
         .cloned()
         .or_else(|| profiles.first().cloned())
-        .ok_or_else(|| "no default profile available".to_string())
+        .ok_or_else(|| OpsCommandError::Profile("no default profile available".to_string()))
 }
 
 fn run_id_or_default(raw: Option<String>) -> Result<RunId, String> {
     raw.map(|v| RunId::parse(&v))
         .transpose()?
         .map_or_else(|| Ok(RunId::from_seed("ops_run")), Ok)
-}
-
-fn tool_probe(name: &str) -> serde_json::Value {
-    match ProcessCommand::new(name).arg("--version").output() {
-        Ok(out) if out.status.success() => {
-            let text = String::from_utf8_lossy(&out.stdout);
-            let version = text.lines().next().unwrap_or("").trim().to_string();
-            serde_json::json!({"name": name, "installed": true, "version": version})
-        }
-        _ => serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}),
-    }
 }
 
 fn emit_payload(format: FormatArg, out: Option<PathBuf>, payload: &serde_json::Value) -> Result<String, String> {
@@ -430,19 +529,26 @@ fn run_ops_checks(common: &OpsCommonArgs, suite: &str, include_internal: bool, i
     Ok((rendered, exit_code_for_report(&report)))
 }
 
-fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
+fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let run: Result<(String, i32), String> = (|| match command {
         OpsCommand::Doctor(common) => run_ops_checks(&common, "ops_fast", false, false),
         OpsCommand::Validate(common) => run_ops_checks(&common, "ops_all", true, true),
         OpsCommand::Render(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())?;
-            let profiles = load_profiles(&ops_root)?;
-            let profile = resolve_profile(common.profile.clone(), &profiles)?;
+            if !common.allow_subprocess {
+                return Err(OpsCommandError::Effect(
+                    "render requires --allow-subprocess".to_string(),
+                )
+                .to_stable_message());
+            }
+            let ops_root =
+                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let fs_adapter = OpsFs::new(repo_root.clone(), ops_root.clone());
+            let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            profiles.sort_by(|a, b| a.name.cmp(&b.name));
+            let profile = resolve_profile(common.profile.clone(), &profiles)
+                .map_err(|e| e.to_stable_message())?;
             let run_id = run_id_or_default(common.run_id.clone())?;
-            let out_dir = repo_root.join("artifacts/atlas-dev/ops").join(run_id.as_str()).join("render");
-            std::fs::create_dir_all(&out_dir).map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
-            let render_path = out_dir.join("render.summary.json");
             let payload = serde_json::json!({
                 "repo_root": repo_root.display().to_string(),
                 "ops_root": ops_root.display().to_string(),
@@ -450,23 +556,30 @@ fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
                 "kind_profile": profile.kind_profile,
                 "cluster_config": profile.cluster_config,
                 "run_id": run_id.as_str(),
-                "render_output": render_path.display().to_string(),
             });
-            std::fs::write(&render_path, serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?)
-                .map_err(|err| format!("failed to write {}: {err}", render_path.display()))?;
+            let render_path = fs_adapter
+                .write_artifact_json(&run_id, "render/render.summary.json", &payload)
+                .map_err(|e| e.to_stable_message())?;
             let text = format!("rendered ops profile `{}` to {}", payload["profile"].as_str().unwrap_or(""), render_path.display());
-            let envelope = serde_json::json!({"text": text, "rows": [payload]});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::Install(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())?;
-            let profiles = load_profiles(&ops_root)?;
-            let profile = resolve_profile(common.profile.clone(), &profiles)?;
+            if !common.allow_subprocess {
+                return Err(OpsCommandError::Effect(
+                    "install requires --allow-subprocess".to_string(),
+                )
+                .to_stable_message());
+            }
+            let ops_root =
+                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            profiles.sort_by(|a, b| a.name.cmp(&b.name));
+            let profile = resolve_profile(common.profile.clone(), &profiles)
+                .map_err(|e| e.to_stable_message())?;
             let run_id = run_id_or_default(common.run_id.clone())?;
-            let out_dir = repo_root.join("artifacts/atlas-dev/ops").join(run_id.as_str()).join("install");
-            std::fs::create_dir_all(&out_dir).map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
             let payload = serde_json::json!({
                 "mode": "validate-only",
                 "profile": profile.name,
@@ -477,23 +590,29 @@ fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
                 ],
             });
             let text = format!("install is validate-only for profile `{}`; see next_steps", payload["profile"].as_str().unwrap_or(""));
-            let envelope = serde_json::json!({"text": text, "rows": [payload]});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::Status(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())?;
-            let profiles = load_profiles(&ops_root)?;
-            let profile = resolve_profile(common.profile.clone(), &profiles)?;
-            let required = REQUIRED_OPS_TOOLS.iter().map(|t| tool_probe(t)).collect::<Vec<_>>();
-            let optional = OPTIONAL_OPS_TOOLS.iter().map(|t| tool_probe(t)).collect::<Vec<_>>();
+            let ops_root =
+                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            profiles.sort_by(|a, b| a.name.cmp(&b.name));
+            let profile = resolve_profile(common.profile.clone(), &profiles)
+                .map_err(|e| e.to_stable_message())?;
+            let toolchain_path = ops_root.join("inventory/toolchain.json");
+            let toolchain = std::fs::read_to_string(&toolchain_path)
+                .map_err(|err| OpsCommandError::Manifest(format!("failed to read {}: {err}", toolchain_path.display())).to_stable_message())?;
+            let toolchain_json: serde_json::Value =
+                serde_json::from_str(&toolchain).map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", toolchain_path.display())).to_stable_message())?;
             let payload = serde_json::json!({
+                "schema_version": 1,
                 "repo_root": repo_root.display().to_string(),
                 "ops_root": ops_root.display().to_string(),
                 "profile": profile,
-                "required_tools": required,
-                "optional_tools": optional,
+                "toolchain": toolchain_json,
             });
             let text = format!(
                 "ops status: profile={} repo_root={} ops_root={}",
@@ -501,101 +620,150 @@ fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
                 payload["repo_root"].as_str().unwrap_or(""),
                 payload["ops_root"].as_str().unwrap_or(""),
             );
-            let envelope = serde_json::json!({"text": text, "rows": [payload]});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::ListProfiles(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())?;
-            let profiles = load_profiles(&ops_root)?;
+            let ops_root =
+                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            profiles.sort_by(|a, b| a.name.cmp(&b.name));
             let rows = profiles
                 .iter()
                 .map(|p| serde_json::json!({"name": p.name, "kind_profile": p.kind_profile, "cluster_config": p.cluster_config}))
                 .collect::<Vec<_>>();
             let text = profiles.iter().map(|p| p.name.clone()).collect::<Vec<_>>().join("\n");
-            let envelope = serde_json::json!({"text": text, "rows": rows});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": profiles.len(), "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::ExplainProfile { name, common } => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())?;
-            let profiles = load_profiles(&ops_root)?;
-            let profile = resolve_profile(Some(name), &profiles)?;
+            let ops_root =
+                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            profiles.sort_by(|a, b| a.name.cmp(&b.name));
+            let profile = resolve_profile(Some(name), &profiles).map_err(|e| e.to_stable_message())?;
             let text = format!(
                 "profile={} kind_profile={} cluster_config={}",
                 profile.name, profile.kind_profile, profile.cluster_config
             );
-            let envelope = serde_json::json!({"text": text, "rows": [profile]});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": [profile], "summary": {"total": 1, "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::ListTools(common) => {
+            let process = OpsProcess::new(common.allow_subprocess);
             let mut rows = Vec::new();
             for name in REQUIRED_OPS_TOOLS {
-                let mut row = tool_probe(name);
+                let mut row = process
+                    .probe_tool(name)
+                    .map_err(|e| e.to_stable_message())?;
                 row["required"] = serde_json::Value::Bool(true);
                 rows.push(row);
             }
             for name in OPTIONAL_OPS_TOOLS {
-                let mut row = tool_probe(name);
+                let mut row = process
+                    .probe_tool(name)
+                    .map_err(|e| e.to_stable_message())?;
                 row["required"] = serde_json::Value::Bool(false);
                 rows.push(row);
             }
+            rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
             let text = rows
                 .iter()
                 .map(|r| format!("{} required={} installed={}", r["name"].as_str().unwrap_or(""), r["required"], r["installed"]))
                 .collect::<Vec<_>>()
                 .join("\n");
-            let envelope = serde_json::json!({"text": text, "rows": rows});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": rows.len(), "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::VerifyTools(common) => {
+            let process = OpsProcess::new(common.allow_subprocess);
             let mut rows = Vec::new();
             let mut missing = Vec::new();
+            let mut warnings = Vec::new();
             for name in REQUIRED_OPS_TOOLS {
-                let row = tool_probe(name);
+                let row = process
+                    .probe_tool(name)
+                    .map_err(|e| e.to_stable_message())?;
                 if row["installed"] == serde_json::Value::Bool(false) {
                     missing.push((*name).to_string());
                 }
                 rows.push(row);
             }
+            for name in OPTIONAL_OPS_TOOLS {
+                let row = process
+                    .probe_tool(name)
+                    .map_err(|e| e.to_stable_message())?;
+                if row["installed"] == serde_json::Value::Bool(false) {
+                    warnings.push((*name).to_string());
+                }
+                rows.push(row);
+            }
+            rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
             let text = if missing.is_empty() {
                 "all required ops tools are installed".to_string()
             } else {
                 format!("missing required ops tools: {}", missing.join(", "))
             };
-            let envelope = serde_json::json!({"text": text, "rows": rows, "missing": missing});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "missing": missing, "warnings": warnings, "summary": {"total": rows.len(), "errors": missing.len(), "warnings": warnings.len()}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
-            Ok((rendered, if envelope["missing"].as_array().map(|v| v.is_empty()).unwrap_or(false) { 0 } else { 1 }))
+            let has_errors = !envelope["missing"]
+                .as_array()
+                .map(|v| v.is_empty())
+                .unwrap_or(true);
+            let has_warnings = !envelope["warnings"]
+                .as_array()
+                .map(|v| v.is_empty())
+                .unwrap_or(true);
+            let code = if has_errors || (common.strict && has_warnings) {
+                1
+            } else {
+                0
+            };
+            Ok((rendered, code))
         }
         OpsCommand::ListActions(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())?;
-            let path = ops_root.join("inventory/surfaces.json");
-            let text = std::fs::read_to_string(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
-            let payload: SurfacesInventory = serde_json::from_str(&text)
-                .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
-            let rows = payload
-                .actions
-                .iter()
+            let ops_root =
+                resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+            let fs_adapter = OpsFs::new(repo_root, ops_root);
+            let mut payload: SurfacesInventory = fs_adapter
+                .read_ops_json("inventory/surfaces.json")
+                .map_err(|e| e.to_stable_message())?;
+            payload.actions.sort_by(|a, b| a.id.cmp(&b.id));
+            let rows = payload.actions.iter()
                 .map(|a| serde_json::json!({"id": a.id, "domain": a.domain, "command": a.command, "argv": a.argv}))
                 .collect::<Vec<_>>();
             let text = payload.actions.iter().map(|a| a.id.clone()).collect::<Vec<_>>().join("\n");
-            let envelope = serde_json::json!({"text": text, "rows": rows});
+            let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": payload.actions.len(), "errors": 0, "warnings": 0}});
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
         OpsCommand::Up(common) => {
             let text = "ops up not yet implemented in rust control-plane; use render/status while migration completes".to_string();
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"text": text, "rows": []}))?;
+            if !common.allow_subprocess {
+                return Err(OpsCommandError::Effect(
+                    "up requires --allow-subprocess".to_string(),
+                )
+                .to_stable_message());
+            }
+            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}))?;
             Ok((rendered, 0))
         }
         OpsCommand::Down(common) => {
             let text = "ops down not yet implemented in rust control-plane; no resources were changed".to_string();
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"text": text, "rows": []}))?;
+            if !common.allow_subprocess {
+                return Err(OpsCommandError::Effect(
+                    "down requires --allow-subprocess".to_string(),
+                )
+                .to_stable_message());
+            }
+            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}))?;
             Ok((rendered, 0))
         }
         OpsCommand::Clean(common) => {
@@ -605,7 +773,7 @@ fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
                 std::fs::remove_dir_all(&path).map_err(|err| format!("failed to remove {}: {err}", path.display()))?;
             }
             let text = format!("cleaned {}", path.display());
-            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"text": text, "rows": []}))?;
+            let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}))?;
             Ok((rendered, 0))
         }
         OpsCommand::Pins { command } => match command {
@@ -618,7 +786,7 @@ fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
                 } else {
                     format!("pins check failed: missing {}", path.display())
                 };
-                let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"text": text, "rows": []}))?;
+                let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": if ok {0} else {1}, "warnings": 0}}))?;
                 Ok((rendered, if ok { 0 } else { 1 }))
             }
             OpsPinsCommand::Update {
@@ -627,14 +795,29 @@ fn run_ops_command(quiet: bool, command: OpsCommand) -> i32 {
             } => {
                 if !i_know_what_im_doing {
                     Err("ops pins update requires --i-know-what-im-doing".to_string())
+                } else if !common.allow_subprocess {
+                    Err(OpsCommandError::Effect(
+                        "pins update requires --allow-subprocess".to_string(),
+                    )
+                    .to_stable_message())
                 } else {
                     let text = "ops pins update is migration-gated; no mutation performed".to_string();
-                    let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"text": text, "rows": []}))?;
+                    let rendered = emit_payload(common.format, common.out.clone(), &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}))?;
                     Ok((rendered, 0))
                 }
             }
         },
     })();
+
+    if debug {
+        eprintln!(
+            "{}",
+            serde_json::json!({
+                "event": "ops.command.completed",
+                "ok": run.is_ok(),
+            })
+        );
+    }
 
     match run {
         Ok((rendered, code)) => {
@@ -803,7 +986,7 @@ fn main() {
                 }
             }
         }
-        Command::Ops { command } => run_ops_command(cli.quiet, command),
+        Command::Ops { command } => run_ops_command(cli.quiet, cli.debug, command),
     };
 
     if cli.verbose {
@@ -814,6 +997,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
+    use clap::Parser;
     use std::fs;
     use std::path::PathBuf;
 
@@ -845,6 +1029,41 @@ mod tests {
                     "new rust dev tool must not invoke atlasctl binary wrapper: {}",
                     path.display()
                 );
+            }
+        }
+    }
+
+    #[test]
+    fn ops_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "ops", "doctor"],
+            vec!["bijux-dev-atlas", "ops", "validate"],
+            vec!["bijux-dev-atlas", "ops", "render", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "install", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "status"],
+            vec!["bijux-dev-atlas", "ops", "list-profiles"],
+            vec!["bijux-dev-atlas", "ops", "explain-profile", "kind"],
+            vec!["bijux-dev-atlas", "ops", "list-tools", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "verify-tools", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "list-actions"],
+            vec!["bijux-dev-atlas", "ops", "up", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "down", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "clean"],
+            vec!["bijux-dev-atlas", "ops", "pins", "check"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "pins",
+                "update",
+                "--allow-subprocess",
+                "--i-know-what-im-doing",
+            ],
+        ];
+        for argv in commands {
+            let cli = super::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                super::Command::Ops { .. } => {}
+                _ => panic!("expected ops command"),
             }
         }
     }
