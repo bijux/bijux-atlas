@@ -48,6 +48,25 @@ fn capabilities_supports_json_format() {
 }
 
 #[test]
+fn plugin_metadata_matches_umbrella_contract_shape() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .arg("--bijux-plugin-metadata")
+        .output()
+        .expect("plugin metadata");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid plugin metadata json");
+    assert_eq!(payload["schema_version"].as_str(), Some("v1"));
+    assert_eq!(payload["name"].as_str(), Some("bijux-dev-atlas"));
+    assert!(payload["version"].as_str().is_some());
+    assert!(payload["compatible_umbrella"].as_str().is_some());
+    assert!(payload["compatible_umbrella_min"].as_str().is_some());
+    assert!(payload["compatible_umbrella_max_exclusive"]
+        .as_str()
+        .is_some());
+}
+
+#[test]
 fn explain_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

@@ -1,11 +1,15 @@
 use crate::cli::{CheckCommand, Cli, Command};
 use crate::{
-    run_capabilities_command, run_check_doctor, run_check_explain, run_check_list, run_check_run,
-    run_configs_command, run_docs_command, run_ops_command,
+    plugin_metadata_json, run_capabilities_command, run_check_doctor, run_check_explain,
+    run_check_list, run_check_run, run_configs_command, run_docs_command, run_ops_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 
 pub(crate) fn run_cli(cli: Cli) -> i32 {
+    if cli.bijux_plugin_metadata {
+        println!("{}", plugin_metadata_json());
+        return 0;
+    }
     if cli.print_policies {
         return match run_print_policies(cli.repo_root.clone()) {
             Ok((rendered, code)) => {

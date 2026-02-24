@@ -51,6 +51,9 @@ use serde::{Deserialize, Serialize};
 use serde_yaml::Value as YamlValue;
 use sha2::{Digest, Sha256};
 
+const UMBRELLA_MIN_VERSION: &str = "0.1.0";
+const UMBRELLA_MAX_EXCLUSIVE_VERSION: &str = "0.2.0";
+
 impl From<DomainArg> for DomainId {
     fn from(value: DomainArg) -> Self {
         match value {
@@ -91,6 +94,19 @@ fn resolve_repo_root(arg: Option<PathBuf>) -> Result<PathBuf, String> {
             discover_repo_root(&cwd)
         }
     }
+}
+
+pub(crate) fn plugin_metadata_json() -> String {
+    serde_json::json!({
+        "schema_version": "v1",
+        "name": "bijux-dev-atlas",
+        "version": env!("CARGO_PKG_VERSION"),
+        "build_hash": "dev",
+        "compatible_umbrella": format!(">={UMBRELLA_MIN_VERSION},<{UMBRELLA_MAX_EXCLUSIVE_VERSION}"),
+        "compatible_umbrella_min": UMBRELLA_MIN_VERSION,
+        "compatible_umbrella_max_exclusive": UMBRELLA_MAX_EXCLUSIVE_VERSION,
+    })
+    .to_string()
 }
 
 fn parse_selectors(
