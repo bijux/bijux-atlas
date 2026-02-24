@@ -14,8 +14,11 @@ See `makefiles/CONTRACT.md` for normative rules.
 ## Canonical wrapper files
 - `makefiles/dev.mk`
 - `makefiles/ci.mk`
-- `makefiles/docs.mk`
-- `makefiles/ops.mk`
+- `makefiles/_docs.mk`
+- `makefiles/_ops.mk`
+- `makefiles/_configs.mk`
+- `makefiles/_docker.mk`
+- `makefiles/_policies.mk`
 
 ## Minimal public UX
 - `make help`
@@ -33,6 +36,7 @@ See `makefiles/CONTRACT.md` for normative rules.
 - `make docs`
 - `make configs`
 - `make ops`
+- `make policies`
 - `make doctor`
 
 ## Verification

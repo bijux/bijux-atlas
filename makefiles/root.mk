@@ -9,6 +9,7 @@ include makefiles/_cargo.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
 include makefiles/_docker.mk
+include makefiles/_policies.mk
 include makefiles/_configs.mk
 include makefiles/_docs.mk
 include makefiles/_ops.mk
@@ -20,6 +21,7 @@ CURATED_TARGETS := \
 	dev-doctor dev-ci dev-check-ci \
 	check check-list check-scripts gates \
 	ci ci-fast ci-nightly ci-docs \
+	policies \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
 	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-tools-verify ops-pins-check ops-pins-update \
