@@ -182,16 +182,13 @@ jobs:
       - name: Control plane conformance checks
         run: |
           ./bin/atlasctl check doctor --json
-          ./bin/atlasctl check run --profile fast
-          ./bin/atlasctl check run --tag lint
-          ./bin/atlasctl check run --tag ci
-          ./bin/atlasctl check run --id checks_internal_no_layout_repo_registry_dirs
-          ./bin/atlasctl check run make
-          ./bin/atlasctl check run contracts
-          ./bin/atlasctl check run docs
+          ./bin/atlasctl suite run checks-fast --report json > /tmp/checks-fast.json
+          ./bin/atlasctl suite run lint-fast --report json > /tmp/lint-fast.json
+          ./bin/atlasctl suite run ci-pr --report json > /tmp/ci-pr.json
+          ./bin/atlasctl suite run control-plane-gates --report json > /tmp/control-plane-gates.json
       - name: Registry/docs/help/bypass/adjective gates
         run: |
-          ./bin/atlasctl suite run control-plane-gates --report json > /tmp/control-plane-gates.json
+          ./bin/atlasctl suite run control-plane-gates --report json > /tmp/control-plane-gates-registry.json
       - name: Optional hard bypass gate
         if: env.ATLASCTL_BYPASS_HARD_FAIL == '1'
         run: |
