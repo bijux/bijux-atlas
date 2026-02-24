@@ -1,0 +1,256 @@
+{
+  "capabilities": {
+    "fs_write": false,
+    "git": false,
+    "network": false,
+    "subprocess": false
+  },
+  "command": "check run",
+  "counts": {
+    "errors": 0,
+    "failed": 1,
+    "passed": 20,
+    "skipped": 0,
+    "total": 21
+  },
+  "durations_ms": {
+    "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
+    "checks_crates_bijux_atlas_help_excludes_dev_commands": 0,
+    "checks_crates_bijux_dev_atlas_help_dispatch_present": 0,
+    "checks_docs_index_links": 0,
+    "checks_make_wrapper_commands": 0,
+    "checks_ops_artifacts_gitignore_policy": 0,
+    "checks_ops_artifacts_not_tracked": 0,
+    "checks_ops_generated_readonly_markers": 0,
+    "checks_ops_makefile_routes_dev_atlas": 0,
+    "checks_ops_manifest_integrity": 0,
+    "checks_ops_no_atlasctl_invocations": 0,
+    "checks_ops_no_legacy_runner_paths": 0,
+    "checks_ops_no_legacy_tooling_refs": 0,
+    "checks_ops_no_python_legacy_runtime_refs": 0,
+    "checks_ops_no_scripts_areas_or_xtask_refs": 0,
+    "checks_ops_schema_presence": 0,
+    "checks_ops_surface_inventory": 0,
+    "checks_ops_surface_manifest": 0,
+    "checks_ops_tree_contract": 0,
+    "checks_ops_workflow_routes_dev_atlas": 0,
+    "checks_repo_import_boundary": 0
+  },
+  "repo_root": "<repo_root>",
+  "results": [
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch",
+      "skip_reason": null,
+      "status": "fail",
+      "violations": [
+        {
+          "code": "CRATES_UMBRELLA_DISPATCH_OWNER_INVALID",
+          "hint": "keep bijux-atlas-cli as the only owner of umbrella dispatch metadata flags",
+          "line": null,
+          "message": "umbrella dispatch ownership must be bijux-atlas-cli only; found {\"bijux-atlas-cli\", \"bijux-dev-atlas\"}",
+          "path": "crates",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_crates_bijux_atlas_help_excludes_dev_commands",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_crates_bijux_dev_atlas_help_dispatch_present",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_docs_index_links",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_make_wrapper_commands",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_artifacts_gitignore_policy",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_artifacts_not_tracked",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_generated_readonly_markers",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_makefile_routes_dev_atlas",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_manifest_integrity",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_no_atlasctl_invocations",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_no_legacy_runner_paths",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_no_legacy_tooling_refs",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_no_python_legacy_runtime_refs",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_no_scripts_areas_or_xtask_refs",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_schema_presence",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_surface_inventory",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_surface_manifest",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_tree_contract",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_workflow_routes_dev_atlas",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_repo_import_boundary",
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    }
+  ],
+  "run_id": "registry_run",
+  "selections": {
+    "domain": "",
+    "id_glob": "",
+    "suite": "",
+    "tag": ""
+  },
+  "summary": {
+    "errors": 0,
+    "failed": 1,
+    "passed": 20,
+    "skipped": 0,
+    "total": 21
+  },
+  "timings_ms": {
+    "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
+    "checks_crates_bijux_atlas_help_excludes_dev_commands": 0,
+    "checks_crates_bijux_dev_atlas_help_dispatch_present": 0,
+    "checks_docs_index_links": 0,
+    "checks_make_wrapper_commands": 0,
+    "checks_ops_artifacts_gitignore_policy": 0,
+    "checks_ops_artifacts_not_tracked": 0,
+    "checks_ops_generated_readonly_markers": 0,
+    "checks_ops_makefile_routes_dev_atlas": 0,
+    "checks_ops_manifest_integrity": 0,
+    "checks_ops_no_atlasctl_invocations": 0,
+    "checks_ops_no_legacy_runner_paths": 0,
+    "checks_ops_no_legacy_tooling_refs": 0,
+    "checks_ops_no_python_legacy_runtime_refs": 0,
+    "checks_ops_no_scripts_areas_or_xtask_refs": 0,
+    "checks_ops_schema_presence": 0,
+    "checks_ops_surface_inventory": 0,
+    "checks_ops_surface_manifest": 0,
+    "checks_ops_tree_contract": 0,
+    "checks_ops_workflow_routes_dev_atlas": 0,
+    "checks_repo_import_boundary": 0
+  }
+}
