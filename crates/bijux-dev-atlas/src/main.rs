@@ -1723,6 +1723,27 @@ fn render_ops_validation_output(
     Ok((rendered, exit))
 }
 
+fn ops_pins_check_payload(common: &OpsCommonArgs, repo_root: &Path) -> Result<(serde_json::Value, i32), String> {
+    let ops_root = resolve_ops_root(repo_root, common.ops_root.clone())
+        .map_err(|e| e.to_stable_message())?;
+    let mut errors = Vec::new();
+    if let Err(err) = bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(&ops_root) {
+        errors.push(err);
+    }
+    let status = if errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "text": if errors.is_empty() { "ops pins check passed" } else { "ops pins check failed" },
+        "rows": [{
+            "pins_path": "ops/inventory/pins.yaml",
+            "errors": errors
+        }],
+        "summary": {"total": 1, "errors": if status == "ok" {0} else {1}, "warnings": 0}
+    });
+    Ok((payload, if status == "ok" { 0 } else { 1 }))
+}
+
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let run: Result<(String, i32), String> = (|| match command {
         OpsCommand::Doctor(common) => {
@@ -1858,7 +1879,13 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             validation_errors.sort();
             validation_errors.dedup();
 
-            let write_enabled = args.write || (!args.check && !args.stdout);
+            if args.write && !common.allow_write {
+                return Err(OpsCommandError::Effect(
+                    "ops render --write requires --allow-write".to_string(),
+                )
+                .to_stable_message());
+            }
+            let write_enabled = args.write;
             let rel_base = render_profile_artifact_base(&profile.name, args.target);
             let rel_yaml = format!("{rel_base}/render.yaml");
             let rel_index = format!("{rel_base}/render.index.json");
@@ -2451,19 +2478,9 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         OpsCommand::Pins { command } => match command {
             OpsPinsCommand::Check(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let path = repo_root.join("ops/inventory/toolchain.json");
-                let ok = path.exists();
-                let text = if ok {
-                    format!("pins check passed: {}", path.display())
-                } else {
-                    format!("pins check failed: missing {}", path.display())
-                };
-                let rendered = emit_payload(
-                    common.format,
-                    common.out.clone(),
-                    &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": if ok {0} else {1}, "warnings": 0}}),
-                )?;
-                Ok((rendered, if ok { 0 } else { 1 }))
+                let (payload, code) = ops_pins_check_payload(&common, &repo_root)?;
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, code))
             }
             OpsPinsCommand::Update {
                 i_know_what_im_doing,
@@ -2476,13 +2493,20 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                         "pins update requires --allow-subprocess".to_string(),
                     )
                     .to_stable_message())
+                } else if !common.allow_write {
+                    Err(OpsCommandError::Effect(
+                        "pins update requires --allow-write".to_string(),
+                    )
+                    .to_stable_message())
                 } else {
+                    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                    let target = repo_root.join("ops/inventory/pins.yaml");
                     let text =
                         "ops pins update is migration-gated; no mutation performed".to_string();
                     let rendered = emit_payload(
                         common.format,
                         common.out.clone(),
-                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [{"target_path": target.display().to_string()}], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
                     )?;
                     Ok((rendered, 0))
                 }

@@ -410,6 +410,34 @@ fn ops_render_helm_requires_allow_subprocess() {
 }
 
 #[test]
+fn ops_render_write_requires_allow_write() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops", "render", "--target", "kind", "--write", "--format", "json",
+        ])
+        .output()
+        .expect("ops render kind write");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("ops render --write requires --allow-write"));
+}
+
+#[test]
+fn ops_render_kind_default_does_not_write_without_explicit_flag() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "render", "--target", "kind", "--format", "json"])
+        .output()
+        .expect("ops render kind default");
+    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let row = payload["rows"].as_array().and_then(|rows| rows.first()).expect("row");
+    assert_eq!(row["write_enabled"].as_bool(), Some(false));
+}
+
+#[test]
 fn ops_render_kustomize_is_forbidden() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -458,6 +486,26 @@ fn ops_status_pods_requires_allow_subprocess() {
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("status pods requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_pins_update_requires_allow_write() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "pins",
+            "update",
+            "--i-know-what-im-doing",
+            "--allow-subprocess",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops pins update");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("pins update requires --allow-write"));
 }
 
 #[test]
