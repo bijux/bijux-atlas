@@ -341,9 +341,11 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     for row in check_report.rows:
         if live_print:
             _emit_live_row(row)
+        raw_status = str(getattr(row.status, "value", row.status)).upper()
+        normalized_status = raw_status if raw_status in {"PASS", "SKIP"} else "FAIL"
         executed_by_id[str(row.id)] = {
             "id": str(row.id),
-            "status": str(getattr(row.status, "value", row.status)).upper(),
+            "status": normalized_status,
             "duration_ms": int(row.metrics.get("duration_ms", 0)),
             "reason": "; ".join(item.message for item in row.violations) or "; ".join(row.errors),
             "hints": [str(row.fix_hint)] if str(row.fix_hint).strip() else [],
