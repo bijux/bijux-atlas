@@ -20,7 +20,7 @@ _CHECKS_TO_COMMANDS_ALLOWLIST = {
     "packages/atlasctl/src/atlasctl/checks/domains/policies/make/enforcement.py",
     "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_indexes_generated.py",
     "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
-    "packages/atlasctl/src/atlasctl/checks/repo/reachability.py",
+    "packages/atlasctl/src/atlasctl/checks/tools/reachability.py",
 }
 _COMMANDS_TO_CHECKS_ALLOWLIST = {
     "packages/atlasctl/src/atlasctl/commands/check/run.py",

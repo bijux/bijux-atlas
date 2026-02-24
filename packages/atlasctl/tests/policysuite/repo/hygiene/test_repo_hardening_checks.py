@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.dependencies import check_dependency_declarations
-from atlasctl.checks.repo.reachability import check_repo_check_modules_registered
-from atlasctl.checks.checks_repo_type_coverage import check_type_coverage
+from atlasctl.checks.repo.contracts.dependencies import check_dependency_declarations
+from atlasctl.checks.tools.reachability import check_repo_check_modules_registered
+from atlasctl.checks.repo.contracts.type_coverage import check_type_coverage
 
 
 def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
+    return Path(__file__).resolve().parents[6]
 
 
 def test_type_coverage_check_passes_current_repo() -> None:
