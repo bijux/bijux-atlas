@@ -20,13 +20,13 @@ CURATED_TARGETS := \
 	dev-atlas doctor ci-local \
 	dev-doctor dev-ci dev-check-ci \
 	build dist clean-build build-doctor \
-	check check-list gates \
+	check check-gates check-list gates \
 	ci ci-fast ci-pr ci-nightly ci-docs \
 	policies \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
 	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-tools-verify ops-pins-check ops-pins-update \
-	make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim cargo-check
+	make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "Curated make targets (Rust control plane):"; \
@@ -60,14 +60,14 @@ dev-atlas: ## Print canonical dev-atlas invocation and examples
 doctor: ## Run Rust control-plane doctor suite
 	@$(MAKE) -s dev-doctor
 
-check: ## Run Rust control-plane CI-fast check suite
+check-gates: ## Run Rust control-plane CI-fast check suite
 	@$(DEV_ATLAS) check run --suite ci_fast --format text
+
+gates: ## Run governance gates via dev-atlas CI-fast suite
+	@$(MAKE) -s check-gates
 
 check-list: ## List checks from the Rust control-plane registry
 	@$(DEV_ATLAS) check list --format text
-
-gates: ## Run governance gates via dev-atlas CI-fast suite
-	@$(DEV_ATLAS) check run --suite ci_fast --format text
 
 configs-check: ## Back-compat alias to configs validation wrapper
 	@$(MAKE) -s configs-validate
