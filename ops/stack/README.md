@@ -4,10 +4,13 @@
 Own local and CI infrastructure dependencies: kind, store backend, redis, telemetry stack, and fault primitives.
 
 ## Entry points
-- `make ops-stack-up PROFILE=kind`
-- `make ops-stack-down`
-- `make ops-stack-smoke`
-- `make ops-stack-health-report`
+- `bijux dev atlas ops stack plan --profile kind`
+- `bijux dev atlas ops stack up --profile kind --allow-subprocess --allow-write --allow-network`
+- `bijux dev atlas ops stack down --profile kind --allow-subprocess --allow-write --allow-network`
+- `bijux dev atlas ops stack status --profile kind --allow-subprocess --format json`
+- `bijux dev atlas ops stack reset --reset-run-id <run_id>`
+
+Stack lifecycle is controlled only through `bijux dev atlas ops stack ...`.
 
 ## Contracts
 - `ops/stack/CONTRACT.md`
