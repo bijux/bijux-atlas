@@ -1,0 +1,14 @@
+{
+  "schema_name": "atlasctl.list-suites.v1",
+  "schema_version": 1,
+  "kind": "list-suites",
+  "tool": "atlasctl",
+  "status": "ok",
+  "items": [
+    {
+      "name": "checks-fast",
+      "kind": "check-suite",
+      "item_count": 3
+    }
+  ]
+}

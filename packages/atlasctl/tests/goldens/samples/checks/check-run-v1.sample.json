@@ -3,6 +3,7 @@
   "rows": [
     {
       "artifacts": [],
+      "category": "check",
       "domain": "checks",
       "duration_ms": 12,
       "hints": [

@@ -1,0 +1,15 @@
+{
+  "schema_name": "atlasctl.list-checks.v1",
+  "schema_version": 1,
+  "kind": "list-checks",
+  "tool": "atlasctl",
+  "status": "ok",
+  "items": [
+    {
+      "id": "checks_checks_registry_integrity",
+      "domain": "checks",
+      "tags": ["registry"],
+      "owners": ["platform"]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema_name": "atlasctl.list-commands.v1",
+  "schema_version": 1,
+  "kind": "list-commands",
+  "tool": "atlasctl",
+  "status": "ok",
+  "items": [
+    {
+      "name": "check",
+      "owner": "platform",
+      "tags": ["core"]
+    }
+  ]
+}
