@@ -7,11 +7,11 @@ Patch releases must remain backward compatible for:
 - JSON output schemas with required core fields.
 
 ## Two-Phase Removal Policy
-- `deprecate`: add shim entry to `configs/layout/script-shim-expiries.json` with owner, issue, replacement, migration doc, and expiry.
+- `deprecate`: add shim entry to `configs/layout/script-shim-expiries.json` with owner, issue, replacement, transition doc, and expiry.
 - `remove`: delete shim and remove exceptions/allowlists once expiry date is reached.
 
 ## Shim Rules
-- Shims must print a deprecation warning and migration doc link.
+- Shims must print a deprecation warning and transition doc link.
 - Shims must `exec` the replacement command and pass through exit codes.
 - Shims must not write artifacts or mutate repo files.
 - Shims must be POSIX `sh` compatible and deterministic.
@@ -21,4 +21,4 @@ Patch releases must remain backward compatible for:
 - Commands that mutate production infra state outside audited runbooks.
 - Commands whose replacement changes authentication/authorization semantics.
 
-Breaking interface changes require a major version bump and migration guidance.
+Breaking interface changes require a major version bump and transition guidance.

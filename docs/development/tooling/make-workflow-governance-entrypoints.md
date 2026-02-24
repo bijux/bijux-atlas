@@ -1,7 +1,7 @@
 # Make And Workflow Governance Entrypoints
 
 This document inventories governance-oriented Make and workflow entrypoints during
-the migration from `bijux dev atlas` to `bijux dev atlas`.
+the transition from `bijux dev atlas` to `bijux dev atlas`.
 
 ## Canonical Governance Entrypoints
 

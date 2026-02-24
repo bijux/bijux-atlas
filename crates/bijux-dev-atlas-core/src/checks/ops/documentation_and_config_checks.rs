@@ -190,7 +190,7 @@ pub(super) fn check_docs_file_naming_conventions(
     Ok(violations)
 }
 
-pub(super) fn check_docs_no_legacy_scripts_strings(
+pub(super) fn check_docs_no_retired_scripts_strings(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
@@ -227,11 +227,15 @@ pub(super) fn check_docs_command_surface_docs_exist(
     Ok(violations)
 }
 
-pub(super) fn check_docs_no_legacy_make_targets(
+pub(super) fn check_docs_no_retired_make_targets(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
-    for needle in ["make atlasctl", "atlasctl/internal", "atlasctl-check"] {
+    for needle in [
+        "make retired_control_plane_token",
+        "retired_control_plane_token/internal",
+        "retired_control_plane_token-check",
+    ] {
         violations.extend(super::check_no_string_references_under(
             ctx,
             "docs",
@@ -258,10 +262,10 @@ pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
         ));
     }
     for line in content.lines().filter(|line| line.starts_with('\t')) {
-        if line.contains("atlasctl") {
+        if line.contains("retired_control_plane_token") {
             violations.push(violation(
                 "MAKE_DOCS_ATLASCTL_REFERENCE_FOUND",
-                format!("makefiles/docs.mk must not call atlasctl: `{line}`"),
+                format!("makefiles/docs.mk must not call retired_control_plane_token: `{line}`"),
                 "route docs wrappers through bijux dev atlas docs commands",
                 Some(rel),
             ));
@@ -336,13 +340,13 @@ pub(super) fn check_configs_schema_paths_present(
     Ok(violations)
 }
 
-pub(super) fn check_configs_no_atlasctl_string_references(
+pub(super) fn check_configs_no_retired_control_plane_token_string_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     super::check_no_string_references_under(
         ctx,
         "configs",
-        "atlasctl",
+        "retired_control_plane_token",
         "CONFIGS_LEGACY_ATLASCTL_REFERENCE",
     )
 }
@@ -371,10 +375,10 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
                 Some(rel),
             ));
         }
-        if line.contains("atlasctl") {
+        if line.contains("retired_control_plane_token") {
             violations.push(violation(
                 "MAKE_CONFIGS_ATLASCTL_REFERENCE_FOUND",
-                format!("makefiles/configs.mk must not call atlasctl: `{line}`"),
+                format!("makefiles/configs.mk must not call retired_control_plane_token: `{line}`"),
                 "route configs wrappers through bijux dev atlas configs commands",
                 Some(rel),
             ));
@@ -462,24 +466,24 @@ pub(super) fn check_control_plane_naming_contract_docs(
     Ok(violations)
 }
 
-pub(super) fn check_atlasctl_deletion_cutoff_rules(
+pub(super) fn check_retired_control_plane_token_deletion_cutoff_rules(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/development/tooling/atlasctl-deletion/README.md");
+    let rel = Path::new("docs/development/tooling/control-plane-reference-policy/README.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     for required in [
         "Cutoff date:",
-        "docs/development/tooling/atlasctl-deletion/",
-        "No new `atlasctl` references",
-        "Any PR introducing a new `atlasctl` reference",
+        "docs/development/tooling/control-plane-reference-policy/",
+        "No new `retired_control_plane_token` references",
+        "Any PR introducing a new `retired_control_plane_token` reference",
     ] {
         if !text.contains(required) {
             violations.push(violation(
                 "ATLASCTL_DELETION_POLICY_INCOMPLETE",
-                format!("atlasctl deletion plan is missing `{required}`"),
-                "lock cutoff date and the single allowed atlasctl docs directory in the deletion policy",
+                format!("retired_control_plane_token deletion plan is missing `{required}`"),
+                "lock cutoff date and the single allowed retired_control_plane_token docs directory in the deletion policy",
                 Some(rel),
             ));
         }
@@ -487,19 +491,23 @@ pub(super) fn check_atlasctl_deletion_cutoff_rules(
     Ok(violations)
 }
 
-pub(super) fn check_atlasctl_tombstone_directory_contract(
+pub(super) fn check_retired_control_plane_token_tombstone_directory_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/development/tooling/atlasctl-deletion/CONTRACT.md");
+    let rel = Path::new("docs/development/tooling/control-plane-reference-policy/CONTRACT.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
-    for required in ["only allowed location", "atlasctl", "historical notes only"] {
+    for required in [
+        "only allowed location",
+        "retired_control_plane_token",
+        "historical notes only",
+    ] {
         if !text.contains(required) {
             violations.push(violation(
                 "ATLASCTL_TOMBSTONE_DIR_INVALID",
-                format!("atlasctl tombstone README is missing `{required}`"),
-                "keep docs/development/tooling/atlasctl-deletion/CONTRACT.md as the explicit atlasctl mention boundary marker",
+                format!("retired_control_plane_token tombstone README is missing `{required}`"),
+                "keep docs/development/tooling/control-plane-reference-policy/CONTRACT.md as the explicit retired_control_plane_token mention boundary marker",
                 Some(rel),
             ));
         }

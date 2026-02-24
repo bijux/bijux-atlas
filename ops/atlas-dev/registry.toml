@@ -15,9 +15,9 @@ budget_ms = 600
 visibility = "internal"
 
 [[checks]]
-id = "checks_configs_no_atlasctl_string_references"
+id = "checks_configs_no_retired_control_plane_string_references"
 domain = "configs"
-title = "configs files do not reference legacy control-plane strings"
+title = "configs files do not reference retired control-plane strings"
 docs = "configs/CONTRACT.md"
 tags = ["internal", "slow"]
 suites = ["deep", "configs"]
@@ -158,28 +158,6 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
-id = "checks_docs_atlasctl_deletion_cutoff_rules"
-domain = "docs"
-title = "control-plane removal plan defines cutoff rules"
-docs = "docs/development/tooling/atlasctl-deletion/README.md"
-tags = ["docs", "internal"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_atlasctl_tombstone_directory_contract"
-domain = "docs"
-title = "legacy tombstone directory contract exists"
-docs = "docs/development/tooling/atlasctl-deletion/CONTRACT.md"
-tags = ["docs", "internal"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
 id = "checks_docs_command_surface_docs_exist"
 domain = "docs"
 title = "runtime and dev command surface docs are present"
@@ -206,6 +184,28 @@ id = "checks_docs_control_plane_naming_contract"
 domain = "docs"
 title = "dev control plane contract freezes runtime and control-plane naming"
 docs = "crates/bijux-dev-atlas/docs/CONTRACT.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_control_plane_reference_boundary_contract"
+domain = "docs"
+title = "retired tombstone directory contract exists"
+docs = "docs/development/tooling/control-plane-reference-policy/CONTRACT.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_control_plane_reference_cutoff_rules"
+domain = "docs"
+title = "control-plane removal plan defines cutoff rules"
+docs = "docs/development/tooling/control-plane-reference-policy/README.md"
 tags = ["docs", "internal"]
 suites = ["deep"]
 effects_required = ["fs_read"]
@@ -268,17 +268,6 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
-id = "checks_docs_no_atlasctl_string_references"
-domain = "docs"
-title = "docs avoid legacy control-plane string references"
-docs = "docs/development/tooling/control-plane.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 3000
-visibility = "internal"
-
-[[checks]]
 id = "checks_docs_no_duplicate_nav_titles"
 domain = "docs"
 title = "mkdocs nav titles remain globally unique"
@@ -290,28 +279,6 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
-id = "checks_docs_no_legacy_make_targets"
-domain = "docs"
-title = "docs avoid legacy control-plane make target references"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_no_legacy_scripts_strings"
-domain = "docs"
-title = "docs avoid legacy scripts and xtask references"
-docs = "docs/CONTRACT.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
 id = "checks_docs_no_orphan_markdown_pages"
 domain = "docs"
 title = "docs markdown pages are referenced by mkdocs nav"
@@ -320,6 +287,39 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 4000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_retired_control_plane_string_references"
+domain = "docs"
+title = "docs avoid retired control-plane string references"
+docs = "docs/development/tooling/control-plane.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_retired_make_targets"
+domain = "docs"
+title = "docs avoid retired control-plane make target references"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_retired_scripts_strings"
+domain = "docs"
+title = "docs avoid retired scripts and xtask references"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
@@ -411,17 +411,6 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
-id = "checks_make_no_atlasctl_string_references"
-domain = "make"
-title = "make wrappers avoid legacy control-plane string references"
-docs = "makefiles/root.mk"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
-visibility = "internal"
-
-[[checks]]
 id = "checks_make_no_direct_ops_script_execution"
 domain = "make"
 title = "make wrappers avoid direct ops script execution"
@@ -430,6 +419,17 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_make_no_retired_control_plane_string_references"
+domain = "make"
+title = "make wrappers avoid retired control-plane string references"
+docs = "makefiles/root.mk"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
@@ -565,17 +565,6 @@ budget_ms = 4000
 visibility = "internal"
 
 [[checks]]
-id = "checks_ops_legacy_shell_quarantine_empty"
-domain = "ops"
-title = "legacy ops shell quarantine remains empty"
-docs = "ops/quarantine/legacy-ops-shell/README.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
 id = "checks_ops_makefile_routes_dev_atlas"
 domain = "ops"
 title = "ops makefile routes through dev atlas command surface"
@@ -593,17 +582,6 @@ title = "ops inventory manifests are valid json with required keys"
 docs = "ops/inventory/README.md"
 tags = ["ops", "fast"]
 suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_atlasctl_invocations"
-domain = "ops"
-title = "ops owned surfaces avoid legacy command invocations"
-docs = "makefiles/ops.mk"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
 effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "public"
@@ -642,9 +620,31 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
-id = "checks_ops_no_legacy_runner_paths"
+id = "checks_ops_no_python_retired_runtime_refs"
 domain = "ops"
-title = "dev atlas crates do not reference legacy runner path conventions"
+title = "dev atlas crates do not reference removed python runtime"
+docs = "docs/development/tooling/control-plane.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_retired_control_plane_invocations"
+domain = "ops"
+title = "ops owned surfaces avoid retired command invocations"
+docs = "makefiles/ops.mk"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_no_retired_runner_paths"
+domain = "ops"
+title = "dev atlas crates do not reference retired runner path conventions"
 docs = "docs/development/scripts.md"
 tags = ["ops", "fast"]
 suites = ["ops_fast", "all_fast", "ci"]
@@ -653,21 +653,10 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
-id = "checks_ops_no_legacy_tooling_refs"
+id = "checks_ops_no_retired_tooling_refs"
 domain = "ops"
-title = "ops does not reference legacy tooling paths"
+title = "ops does not reference retired tooling paths"
 docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast", "ci"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
-[[checks]]
-id = "checks_ops_no_python_legacy_runtime_refs"
-domain = "ops"
-title = "dev atlas crates do not reference removed python runtime"
-docs = "docs/development/tooling/control-plane.md"
 tags = ["ops", "fast"]
 suites = ["ops_fast", "all_fast", "ci"]
 effects_required = ["fs_read"]
@@ -684,6 +673,17 @@ suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
 effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "public"
+
+[[checks]]
+id = "checks_ops_retired_shell_quarantine_empty"
+domain = "ops"
+title = "retired ops shell quarantine remains empty"
+docs = "ops/quarantine/retired-ops-shell/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
 
 [[checks]]
 id = "checks_ops_schema_presence"
@@ -743,7 +743,7 @@ visibility = "public"
 [[checks]]
 id = "checks_ops_workflow_routes_dev_atlas"
 domain = "ops"
-title = "atlas dev workflow avoids legacy ops routes"
+title = "atlas dev workflow avoids retired ops routes"
 docs = ".github/workflows/atlas-dev-rust.yml"
 tags = ["ops", "fast"]
 suites = ["ops_fast", "all_fast", "ci"]
@@ -774,9 +774,9 @@ budget_ms = 8000
 visibility = "internal"
 
 [[checks]]
-id = "checks_root_artifacts_reports_atlasctl_absent"
+id = "checks_root_artifacts_reports_retired_control_plane_absent"
 domain = "root"
-title = "legacy report artifact directory is absent"
+title = "retired report artifact directory is absent"
 docs = "docs/development/tooling/control-plane.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -785,9 +785,9 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
-id = "checks_root_bin_atlasctl_absent"
+id = "checks_root_bin_retired_control_plane_absent"
 domain = "root"
-title = "legacy root shim is absent"
+title = "retired root shim is absent"
 docs = "docs/development/tooling/control-plane.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -840,9 +840,9 @@ budget_ms = 800
 visibility = "internal"
 
 [[checks]]
-id = "checks_root_forbidden_legacy_directories_absent"
+id = "checks_root_forbidden_retired_directories_absent"
 domain = "root"
-title = "legacy top-level directories are absent"
+title = "retired top-level directories are absent"
 docs = "docs/development/tooling/control-plane.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -873,9 +873,9 @@ budget_ms = 3000
 visibility = "internal"
 
 [[checks]]
-id = "checks_root_packages_atlasctl_absent"
+id = "checks_root_packages_retired_control_plane_absent"
 domain = "root"
-title = "legacy package directory is absent"
+title = "retired package directory is absent"
 docs = "docs/development/tooling/control-plane.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -886,7 +886,7 @@ visibility = "internal"
 [[checks]]
 id = "checks_root_python_toolchain_toml_absent"
 domain = "root"
-title = "legacy python toolchain ssot file is absent"
+title = "retired python toolchain ssot file is absent"
 docs = "docs/development/tooling/control-plane.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -930,7 +930,7 @@ visibility = "internal"
 [[checks]]
 id = "checks_root_uv_lock_absent"
 domain = "root"
-title = "legacy root uv lockfile is absent"
+title = "retired root uv lockfile is absent"
 docs = "docs/development/tooling/control-plane.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -947,17 +947,6 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1500
-visibility = "internal"
-
-[[checks]]
-id = "checks_workflows_no_atlasctl_string_references"
-domain = "workflows"
-title = "workflows avoid legacy control-plane string references"
-docs = ".github/workflows/atlas-dev-rust.yml"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
@@ -980,6 +969,17 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_no_retired_control_plane_string_references"
+domain = "workflows"
+title = "workflows avoid retired control-plane string references"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
@@ -1015,13 +1015,13 @@ id = "ci"
 checks = [
   "checks_ops_surface_manifest",
   "checks_ops_tree_contract",
-  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_no_retired_tooling_refs",
   "checks_ops_generated_readonly_markers",
   "checks_ops_schema_presence",
   "checks_ops_manifest_integrity",
   "checks_ops_surface_inventory",
   "checks_ops_artifacts_not_tracked",
-  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_retired_control_plane_invocations",
   "checks_ops_no_scripts_areas_or_xtask_refs",
   "checks_ops_artifacts_gitignore_policy",
   "checks_ops_makefile_routes_dev_atlas",
@@ -1035,13 +1035,13 @@ id = "ci_fast"
 checks = [
   "checks_ops_surface_manifest",
   "checks_ops_tree_contract",
-  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_no_retired_tooling_refs",
   "checks_ops_generated_readonly_markers",
   "checks_ops_schema_presence",
   "checks_ops_manifest_integrity",
   "checks_ops_surface_inventory",
   "checks_ops_artifacts_not_tracked",
-  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_retired_control_plane_invocations",
   "checks_ops_no_scripts_areas_or_xtask_refs",
   "checks_ops_artifacts_gitignore_policy",
   "checks_ops_makefile_routes_dev_atlas",
@@ -1081,7 +1081,7 @@ tags_any = ["fast"]
 id = "doctor"
 checks = [
   "checks_ops_tree_contract",
-  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_retired_control_plane_invocations",
   "checks_ops_surface_manifest",
   "checks_ops_makefile_routes_dev_atlas",
   "checks_ops_workflow_routes_dev_atlas",
@@ -1120,15 +1120,15 @@ id = "ops_fast"
 checks = [
   "checks_ops_surface_manifest",
   "checks_ops_tree_contract",
-  "checks_ops_no_legacy_tooling_refs",
+  "checks_ops_no_retired_tooling_refs",
   "checks_ops_generated_readonly_markers",
   "checks_ops_schema_presence",
   "checks_ops_manifest_integrity",
   "checks_ops_surface_inventory",
   "checks_ops_artifacts_not_tracked",
-  "checks_ops_no_python_legacy_runtime_refs",
-  "checks_ops_no_legacy_runner_paths",
-  "checks_ops_no_atlasctl_invocations",
+  "checks_ops_no_python_retired_runtime_refs",
+  "checks_ops_no_retired_runner_paths",
+  "checks_ops_no_retired_control_plane_invocations",
   "checks_ops_no_scripts_areas_or_xtask_refs",
   "checks_ops_artifacts_gitignore_policy",
   "checks_ops_makefile_routes_dev_atlas",

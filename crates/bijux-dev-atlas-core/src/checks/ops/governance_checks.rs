@@ -2,7 +2,7 @@
 
 use super::*;
 
-pub(super) fn checks_ops_no_atlasctl_invocations(
+pub(super) fn checks_ops_no_retired_control_plane_invocations(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let targets = [
@@ -21,14 +21,14 @@ pub(super) fn checks_ops_no_atlasctl_invocations(
         };
         for line in content.lines() {
             let trimmed = line.trim();
-            let is_command_like = trimmed.contains("./bin/atlasctl")
-                || trimmed.contains(" atlasctl ")
-                || trimmed.starts_with("atlasctl ");
+            let is_command_like = trimmed.contains("./bin/retired_control_plane_token")
+                || trimmed.contains(" retired_control_plane_token ")
+                || trimmed.starts_with("retired_control_plane_token ");
             if is_command_like {
                 violations.push(violation(
                     "OPS_ATLASCTL_REFERENCE_FOUND",
                     format!(
-                        "forbidden atlasctl invocation found in {}: `{trimmed}`",
+                        "forbidden retired_control_plane_token invocation found in {}: `{trimmed}`",
                         rel.display()
                     ),
                     "route ops control-plane invocations through bijux dev atlas",
@@ -66,7 +66,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
                     violations.push(violation(
                         "OPS_LEGACY_REFERENCE_FOUND",
                         format!(
-                            "forbidden legacy reference `{needle}` found in {}: `{trimmed}`",
+                            "forbidden retired reference `{needle}` found in {}: `{trimmed}`",
                             rel.display()
                         ),
                         "remove scripts/areas and xtask references from ops-owned surfaces",
@@ -106,12 +106,12 @@ pub(super) fn checks_ops_workflow_routes_dev_atlas(
     let rel = Path::new(".github/workflows/ci-pr.yml");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
-    let has_legacy_ops_route =
-        content.contains("./bin/atlasctl ops") || content.contains(" atlasctl ops ");
-    if has_legacy_ops_route {
+    let has_retired_ops_route = content.contains("./bin/retired_control_plane_token ops")
+        || content.contains(" retired_control_plane_token ops ");
+    if has_retired_ops_route {
         Ok(vec![violation(
             "OPS_WORKFLOW_ROUTE_INVALID",
-            "ci-pr workflow must not call atlasctl ops commands".to_string(),
+            "ci-pr workflow must not call retired_control_plane_token ops commands".to_string(),
             "route ops checks through bijux-dev-atlas commands",
             Some(rel),
         )])
@@ -149,18 +149,18 @@ pub(super) fn check_ops_internal_registry_consistency(
     }
 }
 
-pub(super) fn check_root_packages_atlasctl_absent(
+pub(super) fn check_root_packages_retired_control_plane_token_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("packages").join("atlasctl");
+    let rel = Path::new("packages").join("retired_control_plane_token");
     if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![Violation {
             schema_version: bijux_dev_atlas_model::schema_version(),
-            code: bijux_dev_atlas_model::ViolationId::parse("root_packages_atlasctl_still_present")
+            code: bijux_dev_atlas_model::ViolationId::parse("root_packages_retired_control_plane_token_still_present")
                 .expect("valid id"),
-            message: "legacy package-tree atlasctl directory still exists".to_string(),
+            message: "retired package-tree retired_control_plane_token directory still exists".to_string(),
             hint: Some(
-                "remove the legacy atlasctl package tree after migration closure".to_string(),
+                "remove the retired retired_control_plane_token package tree after transition closure".to_string(),
             ),
             path: Some(
                 bijux_dev_atlas_model::ArtifactPath::parse(&rel.display().to_string())
@@ -174,15 +174,15 @@ pub(super) fn check_root_packages_atlasctl_absent(
     }
 }
 
-pub(super) fn check_root_bin_atlasctl_absent(
+pub(super) fn check_root_bin_retired_control_plane_token_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("bin/atlasctl");
+    let rel = Path::new("bin/retired_control_plane_token");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![violation(
             "ROOT_BIN_ATLASCTL_SHIM_PRESENT",
-            "legacy root atlasctl shim still exists".to_string(),
-            "delete bin/atlasctl; use cargo run -p bijux-dev-atlas or bijux dev atlas",
+            "retired root retired_control_plane_token shim still exists".to_string(),
+            "delete bin/retired_control_plane_token; use cargo run -p bijux-dev-atlas or bijux dev atlas",
             Some(rel),
         )])
     } else {
@@ -190,15 +190,15 @@ pub(super) fn check_root_bin_atlasctl_absent(
     }
 }
 
-pub(super) fn check_root_artifacts_reports_atlasctl_absent(
+pub(super) fn check_root_artifacts_reports_retired_control_plane_token_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("artifacts/reports/atlasctl");
+    let rel = Path::new("artifacts/reports/retired_control_plane_token");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![violation(
             "ROOT_ARTIFACTS_REPORTS_ATLASCTL_PRESENT",
-            "legacy atlasctl report artifact directory exists".to_string(),
-            "remove artifacts/reports/atlasctl and migrate report writers to artifacts/atlas-dev",
+            "retired retired_control_plane_token report artifact directory exists".to_string(),
+            "remove artifacts/reports/retired_control_plane_token and migrate report writers to artifacts/atlas-dev",
             Some(rel),
         )])
     } else {
@@ -213,8 +213,8 @@ pub(super) fn check_root_python_toolchain_toml_absent(
     if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![violation(
             "ROOT_PYTHON_TOOLCHAIN_TOML_PRESENT",
-            "legacy python toolchain SSOT file still exists".to_string(),
-            "delete the legacy python toolchain file after control-plane migration",
+            "retired python toolchain SSOT file still exists".to_string(),
+            "delete the retired python toolchain file after control-plane transition",
             Some(&rel),
         )])
     } else {
@@ -229,8 +229,8 @@ pub(super) fn check_root_uv_lock_absent(
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![violation(
             "ROOT_UV_LOCK_PRESENT",
-            "legacy root uv.lock exists".to_string(),
-            "remove uv.lock if it is only used for atlasctl tooling",
+            "retired root uv.lock exists".to_string(),
+            "remove uv.lock if it is only used for retired_control_plane_token tooling",
             Some(rel),
         )])
     } else {
@@ -238,18 +238,18 @@ pub(super) fn check_root_uv_lock_absent(
     }
 }
 
-pub(super) fn check_docs_no_atlasctl_string_references(
+pub(super) fn check_docs_no_retired_control_plane_token_string_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let root = ctx.repo_root.join("docs");
     if !root.exists() {
         return Ok(Vec::new());
     }
-    let allowed_prefix = Path::new("docs/development/tooling/atlasctl-deletion");
+    let allowed_prefix = Path::new("docs/development/tooling/control-plane-reference-policy");
     let mut violations = Vec::new();
     for file in walk_files(&root) {
         if let Ok(content) = fs::read_to_string(&file) {
-            if !content.contains("atlasctl") {
+            if !content.contains("retired_control_plane_token") {
                 continue;
             }
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
@@ -258,31 +258,31 @@ pub(super) fn check_docs_no_atlasctl_string_references(
             }
             violations.push(violation(
                 "DOCS_ATLASCTL_REFERENCE_FOUND",
-                format!("docs file contains forbidden `atlasctl` reference: {}", rel.display()),
-                "move legacy mention under docs/development/tooling/atlasctl-deletion/ or remove it",
+                format!("docs file contains forbidden `retired_control_plane_token` reference: {}", rel.display()),
+                "move retired mention under docs/development/tooling/control-plane-reference-policy/ or remove it",
                 Some(rel),
             ));
         }
     }
     Ok(violations)
 }
-pub(super) fn check_workflows_no_atlasctl_string_references(
+pub(super) fn check_workflows_no_retired_control_plane_token_string_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     check_no_string_references_under(
         ctx,
         ".github/workflows",
-        "atlasctl",
+        "retired_control_plane_token",
         "WORKFLOW_ATLASCTL_REFERENCE_FOUND",
     )
 }
-pub(super) fn check_make_no_atlasctl_string_references(
+pub(super) fn check_make_no_retired_control_plane_token_string_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     check_no_string_references_under(
         ctx,
         "makefiles",
-        "atlasctl",
+        "retired_control_plane_token",
         "MAKE_ATLASCTL_REFERENCE_FOUND",
     )
 }

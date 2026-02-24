@@ -69,5 +69,5 @@ Curated make targets (Rust control plane):
   ops-tools-verify
   ops-pins-check
   ops-pins-update
-  make-gate-no-legacy-cli-refs
-  make-gate-no-legacy-cli-shim
+  make-gate-no-retired-cli-refs
+  make-gate-no-retired-cli-shim

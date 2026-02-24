@@ -8,7 +8,7 @@
 - `makefiles/_ops.mk` is delegation-only and must route to `bijux dev atlas ops ...`.
 - CI workflows must call `make` wrappers or `bijux dev atlas ops ...`, not `bijux dev atlas ops ...`.
 - Runtime artifacts are written only under `artifacts/atlas-dev/ops/...`.
-- Governance control-plane ownership is Rust-only (`bijux-atlas-cli` + `bijux-dev-atlas`); Python runtime governance entrypoints are legacy and must not be reintroduced.
+- Governance control-plane ownership is Rust-only (`bijux-atlas-cli` + `bijux-dev-atlas`); Python runtime governance entrypoints are retired and must not be reintroduced.
 
 ## Canonical Entry Points
 
