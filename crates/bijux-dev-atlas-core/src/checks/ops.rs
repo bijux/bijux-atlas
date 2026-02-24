@@ -432,21 +432,94 @@ fn checks_ops_makefile_routes_dev_atlas(
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
 
-    let has_dev_route = content.contains("bijux dev atlas")
-        || content.contains("cargo run -p bijux-dev-atlas --");
+    let mut violations = Vec::new();
+    let has_dev_route = content.contains("BIJUX_DEV_ATLAS")
+        || content.contains("bijux dev atlas");
     let has_legacy_route =
         content.contains("./bin/atlasctl") || content.contains(" atlasctl ") || content.contains("atlasctl ops");
-
     if !has_dev_route || has_legacy_route {
-        return Ok(vec![violation(
+        violations.push(violation(
             "OPS_MAKEFILE_ROUTE_INVALID",
-            "makefiles/ops.mk must delegate to bijux dev atlas and must not call atlasctl".to_string(),
+            "makefiles/ops.mk must delegate to BIJUX_DEV_ATLAS and must not call atlasctl".to_string(),
             "replace atlasctl calls with bijux dev atlas routing in makefiles/ops.mk",
             Some(rel),
-        )]);
+        ));
     }
 
-    Ok(Vec::new())
+    let forbidden_tokens = ["bash ops/", "scripts/areas"];
+    for token in forbidden_tokens {
+        if content.contains(token) {
+            violations.push(violation(
+                "OPS_MAKEFILE_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/ops.mk contains forbidden token `{token}`"),
+                "keep ops.mk as thin delegation-only wrappers",
+                Some(rel),
+            ));
+        }
+    }
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.contains("$(BIJUX_DEV_ATLAS)") {
+            continue;
+        }
+        let words = line.split_whitespace().collect::<Vec<_>>();
+        if words.iter().any(|word| *word == "kubectl" || *word == "helm" || *word == "kind" || *word == "k6") {
+            violations.push(violation(
+                "OPS_MAKEFILE_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/ops.mk must not execute tool binary directly: `{line}`"),
+                "delegate to bijux dev atlas ops commands instead of direct tool execution",
+                Some(rel),
+            ));
+        }
+    }
+
+    let target_lines = content
+        .lines()
+        .filter(|line| line.ends_with(':') || line.contains(": ##"))
+        .filter(|line| !line.starts_with('.') && !line.starts_with('#'))
+        .count();
+    if target_lines > 20 {
+        violations.push(violation(
+            "OPS_MAKEFILE_TARGET_BUDGET_EXCEEDED",
+            format!("makefiles/ops.mk defines {target_lines} targets; budget is 20"),
+            "reduce ops.mk target count or move behavior into rust commands",
+            Some(rel),
+        ));
+    }
+
+    if !content.contains("PROFILE ?= kind") {
+        violations.push(violation(
+            "OPS_MAKEFILE_PROFILE_DEFAULT_MISSING",
+            "makefiles/ops.mk must declare `PROFILE ?= kind`".to_string(),
+            "add deterministic profile default in makefiles/ops.mk",
+            Some(rel),
+        ));
+    }
+
+    if !content.contains("ops-help:") {
+        violations.push(violation(
+            "OPS_MAKEFILE_HELP_TARGET_MISSING",
+            "makefiles/ops.mk must expose `ops-help` target".to_string(),
+            "add ops-help target delegating to bijux dev atlas ops --help",
+            Some(rel),
+        ));
+    }
+
+    if !content.contains("ops-doctor:")
+        || !content.contains("ops-validate:")
+        || !content.contains("ops-render:")
+        || !content.contains("ops-install-plan:")
+        || !content.contains("ops-status:")
+        || !content.contains("ops-tools-verify:")
+    {
+        violations.push(violation(
+            "OPS_MAKEFILE_REQUIRED_TARGETS_MISSING",
+            "makefiles/ops.mk is missing required delegation targets".to_string(),
+            "add ops-doctor, ops-validate, ops-render, ops-install-plan, ops-status, ops-tools-verify",
+            Some(rel),
+        ));
+    }
+
+    Ok(violations)
 }
 
 fn checks_ops_workflow_routes_dev_atlas(
