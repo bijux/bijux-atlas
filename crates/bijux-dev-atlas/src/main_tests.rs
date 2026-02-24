@@ -145,11 +145,13 @@ mod tests {
             vec!["bijux-dev-atlas", "version", "--format", "json"],
             vec!["bijux-dev-atlas", "help"],
             vec!["bijux-dev-atlas", "help", "--format", "json"],
+            vec!["bijux-dev-atlas", "--print-boundaries"],
         ] {
             let cli = crate::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
                 Some(crate::cli::Command::Version { .. })
                 | Some(crate::cli::Command::Help { .. }) => {}
+                None => {}
                 _ => panic!("expected top-level version/help command"),
             }
         }

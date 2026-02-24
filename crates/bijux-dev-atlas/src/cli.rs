@@ -14,6 +14,8 @@ pub struct Cli {
     pub debug: bool,
     #[arg(long, default_value_t = false)]
     pub print_policies: bool,
+    #[arg(long = "print-boundaries", default_value_t = false)]
+    pub print_boundaries: bool,
     #[arg(long = "bijux-plugin-metadata", default_value_t = false)]
     pub bijux_plugin_metadata: bool,
     #[arg(long = "umbrella-version")]

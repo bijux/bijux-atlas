@@ -181,6 +181,29 @@ fn print_policies_outputs_stable_json() {
 }
 
 #[test]
+fn print_boundaries_outputs_stable_json() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .arg("--print-boundaries")
+        .output()
+        .expect("print boundaries");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
+    let effects = payload
+        .get("effects")
+        .and_then(|v| v.as_array())
+        .expect("effects array");
+    assert!(effects
+        .iter()
+        .any(|row| row.get("id").and_then(|v| v.as_str()) == Some("network")));
+}
+
+#[test]
 fn list_rejects_jsonl_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
