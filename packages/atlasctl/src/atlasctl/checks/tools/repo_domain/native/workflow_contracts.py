@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from ....core.process import run_command
+from .....core.process import run_command
 
 _TARGET_RE = re.compile(r"^([A-Za-z0-9_./-]+):")
 _WORKFLOW_MAKE_RE = re.compile(r"\bmake(?:\s+-[A-Za-z0-9_-]+)*\s+([A-Za-z0-9_./-]+)")

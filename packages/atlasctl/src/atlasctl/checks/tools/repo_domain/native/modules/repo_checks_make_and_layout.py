@@ -91,10 +91,10 @@ def check_no_xtask_refs(repo_root: Path) -> tuple[int, list[str]]:
         "makefiles/ci.mk",
         "docs/development/task-runner-removal-map.md",
         "packages/atlasctl/src/atlasctl/checks/runner.py",
-        "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
-        "packages/atlasctl/src/atlasctl/checks/repo/paths.py",
-        "packages/atlasctl/src/atlasctl/checks/repo/domains/paths.py",
-        "packages/atlasctl/src/atlasctl/checks/repo/native/modules/repo_checks_scripts_and_docker.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/__init__.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/paths.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/domains/paths.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/native/modules/repo_checks_scripts_and_docker.py",
         "packages/atlasctl/tests/checksuite/checks/test_check_native.py",
         "packages/atlasctl/tests/checksuite/checks/test_check_registry_features.py",
         "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
@@ -440,7 +440,7 @@ def check_no_os_getcwd_outside_runtime_context(repo_root: Path) -> tuple[int, li
     )
     errors: list[str] = []
     for rel, lines in _iter_atlasctl_py(repo_root):
-        if rel.endswith("checks/repo/native/modules/repo_checks_make_and_layout.py"):
+        if rel.endswith("checks/tools/repo_domain/native/modules/repo_checks_make_and_layout.py"):
             continue
         if rel.startswith(hard_allowed_prefixes):
             continue
@@ -462,7 +462,7 @@ def check_no_direct_env_reads_outside_runtime_env(repo_root: Path) -> tuple[int,
     }
     errors: list[str] = []
     for rel, lines in _iter_atlasctl_py(repo_root):
-        if rel.endswith("checks/repo/native/modules/repo_checks_make_and_layout.py"):
+        if rel.endswith("checks/tools/repo_domain/native/modules/repo_checks_make_and_layout.py"):
             continue
         if rel in hard_allowed:
             continue
@@ -485,7 +485,7 @@ def check_no_repo_root_path_literals(repo_root: Path) -> tuple[int, list[str]]:
     tokens = ('Path("packages/', 'Path("configs/', 'Path("ops/', 'Path("docs/', 'Path("makefiles/', 'Path("crates/', 'Path("artifacts/')
     errors: list[str] = []
     for rel, lines in _iter_atlasctl_py(repo_root):
-        if rel.endswith("checks/repo/native/modules/repo_checks_make_and_layout.py"):
+        if rel.endswith("checks/tools/repo_domain/native/modules/repo_checks_make_and_layout.py"):
             continue
         if rel.startswith(hard_allowed_prefixes):
             continue

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.contracts.dependencies import check_dependency_declarations
+from atlasctl.checks.tools.repo_domain.contracts.dependencies import check_dependency_declarations
 from atlasctl.checks.tools.reachability import check_repo_check_modules_registered
-from atlasctl.checks.repo.contracts.type_coverage import check_type_coverage
+from atlasctl.checks.tools.repo_domain.contracts.type_coverage import check_type_coverage
 
 
 def _repo_root() -> Path:

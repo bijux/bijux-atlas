@@ -3,10 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ....cli.surface_registry import command_registry
-from ....core.meta.owners import load_owner_catalog
-from ....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects, resolve_network_mode
-from ....contracts.ids import RUNTIME_CONTRACTS
+from .....cli.surface_registry import command_registry
+from .....core.meta.owners import load_owner_catalog
+from .....core.effects import all_command_effects, command_effects, command_group, group_allowed_effects, resolve_network_mode
+from .....contracts.ids import RUNTIME_CONTRACTS
 
 _PUBLIC_UNSTABLE_ALLOWLIST: set[str] = set()
 _ALLOWED_EFFECT_LEVELS = {"pure", "effectful"}

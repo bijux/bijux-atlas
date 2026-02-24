@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.enforcement.structure.check_structure import (
+from atlasctl.checks.tools.repo_domain.enforcement.structure.check_structure import (
     check_checks_canonical_location,
     check_cli_main_loc_budget,
     check_main_entrypoint_calls_app_main,

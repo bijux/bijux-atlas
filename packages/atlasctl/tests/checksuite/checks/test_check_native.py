@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from atlasctl.checks.repo.native import (
+from atlasctl.checks.tools.repo_domain.native import (
     check_cli_help_output_deterministic,
     check_committed_generated_hygiene,
     check_generated_dirs_policy,
@@ -81,7 +81,7 @@ def test_check_make_no_direct_python_script_invocations_flags_direct_calls(tmp_p
 
 def test_check_ops_generated_tracked_flags_tracked_entries(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: ["ops/_generated/run-1/report.json"],
     )
     code, errors = check_ops_generated_tracked(tmp_path)
@@ -91,7 +91,7 @@ def test_check_ops_generated_tracked_flags_tracked_entries(monkeypatch, tmp_path
 
 def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: ["artifacts/evidence/2026-02-20/report.json", "docs/index.md"],
     )
     code, errors = check_tracked_timestamp_paths(tmp_path)
@@ -101,7 +101,7 @@ def test_check_tracked_timestamp_paths_flags_timestamp_segments(monkeypatch, tmp
 
 def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: [
             "docs/_generated/2026-02-20/index.md",
             "ops/_generated.example/run.log",
@@ -114,7 +114,7 @@ def test_check_committed_generated_hygiene_flags_logs_and_timestamps(monkeypatch
 
 def test_check_repo_no_python_caches_committed_flags_python_cache_artifacts(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: [
             "packages/atlasctl/tests/__pycache__/conftest.cpython-311.pyc",
             "packages/atlasctl/.pytest_cache/README.md",
@@ -128,7 +128,7 @@ def test_check_repo_no_python_caches_committed_flags_python_cache_artifacts(monk
 
 def test_check_repo_no_python_caches_committed_passes_when_none_found(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: ["packages/atlasctl/src/atlasctl/__init__.py"],
     )
     code, errors = check_repo_no_python_caches_committed(tmp_path)
@@ -138,7 +138,7 @@ def test_check_repo_no_python_caches_committed_passes_when_none_found(monkeypatc
 
 def test_check_tmp_paths_outside_artifacts_flags_tracked_tmp(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: ["tmp/cache.txt", "artifacts/tmp/cache.txt", "configs/app.toml"],
     )
     code, errors = check_tmp_paths_outside_artifacts(tmp_path)
@@ -159,7 +159,7 @@ def test_check_ops_configs_deterministic_newlines_flags_crlf_and_trailing_ws(mon
     path.parent.mkdir(parents=True)
     path.write_bytes(b"ok  \r\nnext\r\n")
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: ["ops/example.txt"],
     )
     code, errors = check_ops_configs_deterministic_newlines(tmp_path)
@@ -173,7 +173,7 @@ def test_check_no_large_binary_files_flags_large_binary(monkeypatch, tmp_path: P
     blob.parent.mkdir(parents=True)
     blob.write_bytes(b"\0" * (5 * 1024 * 1024 + 10))
     monkeypatch.setattr(
-        "atlasctl.checks.repo.native.modules.repo_checks_make_and_layout._git_ls_files",
+        "atlasctl.checks.tools.repo_domain.native.modules.repo_checks_make_and_layout._git_ls_files",
         lambda _repo_root, _spec: ["ops/blob.bin"],
     )
     code, errors = check_no_large_binary_files(tmp_path)

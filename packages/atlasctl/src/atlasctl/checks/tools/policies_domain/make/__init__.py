@@ -87,8 +87,8 @@ from ....tools.make_enforcement import (
     check_policies_bypass_readme_sorted,
     collect_bypass_inventory,
 )
-from ....repo.domains.forbidden_adjectives import check_forbidden_adjectives
-from ....repo.native import (
+from ...repo_domain.domains.forbidden_adjectives import check_forbidden_adjectives
+from ...repo_domain.native import (
     check_make_command_allowlist,
     check_make_forbidden_paths,
     check_make_help,

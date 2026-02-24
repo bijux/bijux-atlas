@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.contracts.test_guardrails import check_output_format_stability
+from atlasctl.checks.tools.repo_domain.contracts.test_guardrails import check_output_format_stability
 
 
 def test_output_format_stability_check_passes() -> None:

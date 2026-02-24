@@ -5,7 +5,7 @@ from pathlib import Path
 
 _ALLOWED = {
     "packages/atlasctl/src/atlasctl/core/runtime/repo_root.py",
-    "packages/atlasctl/src/atlasctl/checks/repo/enforcement/cwd_usage.py",
+    "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/enforcement/cwd_usage.py",
 }
 _PATH_DOT_DOUBLE = ('Path("', '.")')
 _PATH_DOT_SINGLE = ("Path('", ".')")

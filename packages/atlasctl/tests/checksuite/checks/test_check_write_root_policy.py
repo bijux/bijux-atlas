@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 from atlasctl.checks.model import CheckDef
 from atlasctl.checks.effects import CheckEffect
-from atlasctl.checks.report import resolve_last_run_report
+from atlasctl.checks.tools.repo_domainrt import resolve_last_run_report
 from atlasctl.commands.check import command as check_command
 from atlasctl.core.exit_codes import ERR_USER
 

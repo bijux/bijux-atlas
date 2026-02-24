@@ -175,7 +175,7 @@ def dispatch_command(
         return run_surface(ns.json, ns.out_file, ctx)
     if ns.cmd == "commands":
         if ns.commands_cmd == "lint":
-            lint = import_attr("atlasctl.checks.repo.contracts.command_contracts", "command_lint_payload")
+            lint = import_attr("atlasctl.checks.tools.repo_domain.contracts.command_contracts", "command_lint_payload")
             payload = lint(ctx.repo_root)
             code = 0 if payload["status"] == "ok" else ERR_CONFIG
             print(dumps_json(payload, pretty=not ns.json))

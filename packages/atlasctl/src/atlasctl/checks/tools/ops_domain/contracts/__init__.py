@@ -14,7 +14,7 @@ from ....tools.ops_pins import (
     check_ops_pins_no_unpinned_versions,
     check_ops_pins_update_is_deterministic,
 )
-from ....repo.native import (
+from ...repo_domain.native import (
     check_committed_generated_hygiene,
     check_ops_generated_tracked,
     check_tracked_timestamp_paths,

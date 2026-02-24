@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Iterable
 
 from ...commands.dev.make.public_targets import public_names
-from ..repo.native import (
+from .repo_domain.native import (
     check_make_no_direct_python_script_invocations,
     check_make_scripts_references,
 )
