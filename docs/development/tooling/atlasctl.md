@@ -1,6 +1,14 @@
 # atlasctl
 
-`bijux-atlas` is the canonical Python tooling CLI surface for repository checks and report helpers.
+`atlasctl` is deprecated for control-plane checks in this repository.
+
+Canonical control-plane route is:
+- `bijux dev atlas <...>` -> `bijux-dev-atlas`
+
+Runtime route remains:
+- `bijux atlas <...>` -> `bijux-atlas`
+
+This page is retained only as a migration and removal reference while `packages/atlasctl` is being deleted.
 
 ## Module Architecture
 - `core`: run context, logging, filesystem write policy, schema helpers.
