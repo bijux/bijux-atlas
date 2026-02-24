@@ -110,6 +110,89 @@ enum Command {
         #[command(subcommand)]
         command: OpsCommand,
     },
+    Check {
+        #[command(subcommand)]
+        command: CheckCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+enum CheckCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        check_id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Doctor {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Run {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
+        #[arg(long)]
+        suite: Option<String>,
+        #[arg(long, value_enum)]
+        domain: Option<DomainArg>,
+        #[arg(long)]
+        tag: Option<String>,
+        #[arg(long, value_name = "GLOB")]
+        id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long = "allow-write", default_value_t = false)]
+        allow_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
+        #[arg(long, default_value_t = false)]
+        fail_fast: bool,
+        #[arg(long)]
+        max_failures: Option<usize>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = 0)]
+        durations: usize,
+    },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
@@ -517,25 +600,159 @@ fn render_explain_output(explain_text: String, format: FormatArg) -> Result<Stri
     }
 }
 
-fn render_doctor_output(
-    report: &bijux_dev_atlas_core::RegistryDoctorReport,
+fn run_check_list(
+    repo_root: Option<PathBuf>,
+    suite: Option<String>,
+    domain: Option<DomainArg>,
+    tag: Option<String>,
+    id: Option<String>,
+    include_internal: bool,
+    include_slow: bool,
     format: FormatArg,
-) -> Result<String, String> {
-    match format {
-        FormatArg::Text => {
-            if report.errors.is_empty() {
-                Ok(String::new())
-            } else {
-                Ok(report.errors.join("\n"))
-            }
-        }
-        FormatArg::Json => serde_json::to_string_pretty(&serde_json::json!({
-            "status": if report.errors.is_empty() { "ok" } else { "failed" },
-            "errors": report.errors,
-        }))
-        .map_err(|err| err.to_string()),
-        FormatArg::Jsonl => Err("jsonl output is not supported for doctor".to_string()),
-    }
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let selectors = parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
+    let registry = load_registry(&root)?;
+    let checks = select_checks(&registry, &selectors)?;
+    let rendered = render_list_output(list_output(&checks), format)?;
+    write_output_if_requested(out, &rendered)?;
+    Ok((rendered, 0))
+}
+
+fn run_check_explain(
+    check_id: String,
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let registry = load_registry(&root)?;
+    let id = CheckId::parse(&check_id)?;
+    let rendered = render_explain_output(explain_output(&registry, &id)?, format)?;
+    write_output_if_requested(out, &rendered)?;
+    Ok((rendered, 0))
+}
+
+fn run_check_run(
+    repo_root: Option<PathBuf>,
+    artifacts_root: Option<PathBuf>,
+    run_id: Option<String>,
+    suite: Option<String>,
+    domain: Option<DomainArg>,
+    tag: Option<String>,
+    id: Option<String>,
+    include_internal: bool,
+    include_slow: bool,
+    allow_subprocess: bool,
+    allow_git: bool,
+    allow_write: bool,
+    allow_network: bool,
+    fail_fast: bool,
+    max_failures: Option<usize>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+    durations: usize,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let selectors = parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
+    let request = RunRequest {
+        repo_root: root.clone(),
+        domain: selectors.domain,
+        capabilities: Capabilities::from_cli_flags(
+            allow_write,
+            allow_subprocess,
+            allow_git,
+            allow_network,
+        ),
+        artifacts_root: artifacts_root.or_else(|| Some(root.join("artifacts"))),
+        run_id: run_id.map(|rid| RunId::parse(&rid)).transpose()?,
+    };
+    let options = RunOptions {
+        fail_fast,
+        max_failures,
+    };
+    let report = run_checks(&RealProcessRunner, &RealFs, &request, &selectors, &options)?;
+    let rendered = match format {
+        FormatArg::Text => render_text_with_durations(&report, durations),
+        FormatArg::Json => render_json(&report)?,
+        FormatArg::Jsonl => render_jsonl(&report)?,
+    };
+    write_output_if_requested(out, &rendered)?;
+    Ok((rendered, exit_code_for_report(&report)))
+}
+
+fn run_check_doctor(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let registry_report = registry_doctor(&root);
+    let inventory_errors = validate_ops_inventory(&root);
+    let selectors = parse_selectors(
+        Some("ci_fast".to_string()),
+        None,
+        None,
+        None,
+        false,
+        false,
+    )?;
+    let request = RunRequest {
+        repo_root: root.clone(),
+        domain: None,
+        capabilities: Capabilities::deny_all(),
+        artifacts_root: Some(root.join("artifacts")),
+        run_id: Some(RunId::from_seed("doctor_run")),
+    };
+    let report = run_checks(
+        &RealProcessRunner,
+        &RealFs,
+        &request,
+        &selectors,
+        &RunOptions::default(),
+    )?;
+    let check_exit = exit_code_for_report(&report);
+    let status = if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
+        "ok"
+    } else {
+        "failed"
+    };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "registry_errors": registry_report.errors,
+        "inventory_errors": inventory_errors,
+        "check_report": report,
+    });
+
+    let evidence_dir = root.join("artifacts/atlas-dev/doctor");
+    fs::create_dir_all(&evidence_dir).map_err(|err| format!("failed to create {}: {err}", evidence_dir.display()))?;
+    let evidence_path = evidence_dir.join("doctor.report.json");
+    fs::write(
+        &evidence_path,
+        serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+    )
+    .map_err(|err| format!("failed to write {}: {err}", evidence_path.display()))?;
+
+    let rendered = match format {
+        FormatArg::Text => format!(
+            "status: {status}\nregistry_errors: {}\ninventory_errors: {}\ncheck_summary: passed={} failed={} skipped={} errors={} total={}\nevidence: {}",
+            payload["registry_errors"].as_array().map_or(0, Vec::len),
+            payload["inventory_errors"].as_array().map_or(0, Vec::len),
+            report.summary.passed,
+            report.summary.failed,
+            report.summary.skipped,
+            report.summary.errors,
+            report.summary.total,
+            evidence_path.display(),
+        ),
+        FormatArg::Json => serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+        FormatArg::Jsonl => serde_json::to_string(&payload).map_err(|err| err.to_string())?,
+    };
+    write_output_if_requested(out, &rendered)?;
+    let exit = if status == "ok" { 0 } else { 1 };
+    Ok((rendered, exit))
 }
 
 const REQUIRED_OPS_TOOLS: &[&str] = &["kind", "kubectl", "helm", "curl"];
@@ -1485,45 +1702,39 @@ fn main() {
             include_slow,
             format,
             out,
-        } => {
-            match resolve_repo_root(repo_root).and_then(|root| {
-                let selectors =
-                    parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
-                let registry = load_registry(&root)?;
-                let checks = select_checks(&registry, &selectors)?;
-                let rendered = render_list_output(list_output(&checks), format)?;
-                write_output_if_requested(out, &rendered)?;
-                Ok(rendered)
-            }) {
-                Ok(text) => {
-                    if !cli.quiet && !text.is_empty() {
-                        println!("{text}");
-                    }
-                    0
+        } => match run_check_list(
+            repo_root,
+            suite,
+            domain,
+            tag,
+            id,
+            include_internal,
+            include_slow,
+            format,
+            out,
+        ) {
+            Ok((text, code)) => {
+                if !cli.quiet && !text.is_empty() {
+                    println!("{text}");
                 }
-                Err(err) => {
-                    eprintln!("bijux-dev-atlas list failed: {err}");
-                    1
-                }
+                code
             }
-        }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas list failed: {err}");
+                1
+            }
+        },
         Command::Explain {
             check_id,
             repo_root,
             format,
             out,
-        } => match resolve_repo_root(repo_root).and_then(|root| {
-            let registry = load_registry(&root)?;
-            let id = CheckId::parse(&check_id)?;
-            let rendered = render_explain_output(explain_output(&registry, &id)?, format)?;
-            write_output_if_requested(out, &rendered)?;
-            Ok(rendered)
-        }) {
-            Ok(text) => {
+        } => match run_check_explain(check_id, repo_root, format, out) {
+            Ok((text, code)) => {
                 if !cli.quiet && !text.is_empty() {
                     println!("{text}");
                 }
-                0
+                code
             }
             Err(err) => {
                 eprintln!("bijux-dev-atlas explain failed: {err}");
@@ -1534,28 +1745,16 @@ fn main() {
             repo_root,
             format,
             out,
-        } => match resolve_repo_root(repo_root) {
-            Ok(root) => {
-                let report = registry_doctor(&root);
-                match render_doctor_output(&report, format).and_then(|rendered| {
-                    write_output_if_requested(out, &rendered)?;
-                    Ok(rendered)
-                }) {
-                    Ok(rendered) => {
-                        if !cli.quiet && !rendered.is_empty() {
-                            if report.errors.is_empty() {
-                                println!("{rendered}");
-                            } else {
-                                eprintln!("{rendered}");
-                            }
-                        }
-                        if report.errors.is_empty() { 0 } else { 1 }
-                    }
-                    Err(err) => {
-                        eprintln!("bijux-dev-atlas doctor failed: {err}");
-                        1
+        } => match run_check_doctor(repo_root, format, out) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        println!("{rendered}");
+                    } else {
+                        eprintln!("{rendered}");
                     }
                 }
+                code
             }
             Err(err) => {
                 eprintln!("bijux-dev-atlas doctor failed: {err}");
@@ -1581,46 +1780,120 @@ fn main() {
             format,
             out,
             durations,
-        } => {
-            let result = resolve_repo_root(repo_root).and_then(|root| {
-                let selectors =
-                    parse_selectors(suite, domain, tag, id, include_internal, include_slow)?;
-                let request = RunRequest {
-                    repo_root: root.clone(),
-                    domain: selectors.domain,
-                    capabilities: Capabilities::from_cli_flags(
-                        allow_write,
-                        allow_subprocess,
-                        allow_git,
-                        allow_network,
-                    ),
-                    artifacts_root: artifacts_root.or_else(|| Some(root.join("artifacts"))),
-                    run_id: run_id.map(|rid| RunId::parse(&rid)).transpose()?,
-                };
-                let options = RunOptions {
+        } => match run_check_run(
+            repo_root,
+            artifacts_root,
+            run_id,
+            suite,
+            domain,
+            tag,
+            id,
+            include_internal,
+            include_slow,
+            allow_subprocess,
+            allow_git,
+            allow_write,
+            allow_network,
+            fail_fast,
+            max_failures,
+            format,
+            out,
+            durations,
+        ) {
+            Ok((rendered, code)) => {
+                if !cli.quiet {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas run failed: {err}");
+                1
+            }
+        },
+        Command::Check { command } => {
+            let result = match command {
+                CheckCommand::List {
+                    repo_root,
+                    suite,
+                    domain,
+                    tag,
+                    id,
+                    include_internal,
+                    include_slow,
+                    format,
+                    out,
+                } => run_check_list(
+                    repo_root,
+                    suite,
+                    domain,
+                    tag,
+                    id,
+                    include_internal,
+                    include_slow,
+                    format,
+                    out,
+                ),
+                CheckCommand::Explain {
+                    check_id,
+                    repo_root,
+                    format,
+                    out,
+                } => run_check_explain(check_id, repo_root, format, out),
+                CheckCommand::Doctor {
+                    repo_root,
+                    format,
+                    out,
+                } => run_check_doctor(repo_root, format, out),
+                CheckCommand::Run {
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    suite,
+                    domain,
+                    tag,
+                    id,
+                    include_internal,
+                    include_slow,
+                    allow_subprocess,
+                    allow_git,
+                    allow_write,
+                    allow_network,
                     fail_fast,
                     max_failures,
-                };
-                let report =
-                    run_checks(&RealProcessRunner, &RealFs, &request, &selectors, &options)?;
-                let rendered = match format {
-                    FormatArg::Text => render_text_with_durations(&report, durations),
-                    FormatArg::Json => render_json(&report)?,
-                    FormatArg::Jsonl => render_jsonl(&report)?,
-                };
-                write_output_if_requested(out, &rendered)?;
-                Ok((rendered, exit_code_for_report(&report)))
-            });
-
+                    format,
+                    out,
+                    durations,
+                } => run_check_run(
+                    repo_root,
+                    artifacts_root,
+                    run_id,
+                    suite,
+                    domain,
+                    tag,
+                    id,
+                    include_internal,
+                    include_slow,
+                    allow_subprocess,
+                    allow_git,
+                    allow_write,
+                    allow_network,
+                    fail_fast,
+                    max_failures,
+                    format,
+                    out,
+                    durations,
+                ),
+            };
             match result {
                 Ok((rendered, code)) => {
-                    if !cli.quiet {
+                    if !cli.quiet && !rendered.is_empty() {
                         println!("{rendered}");
                     }
                     code
                 }
                 Err(err) => {
-                    eprintln!("bijux-dev-atlas run failed: {err}");
+                    eprintln!("bijux-dev-atlas check failed: {err}");
                     1
                 }
             }
@@ -1705,6 +1978,23 @@ mod tests {
             match cli.command {
                 super::Command::Ops { .. } => {}
                 _ => panic!("expected ops command"),
+            }
+        }
+    }
+
+    #[test]
+    fn check_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "check", "list"],
+            vec!["bijux-dev-atlas", "check", "explain", "ops_surface_manifest"],
+            vec!["bijux-dev-atlas", "check", "doctor"],
+            vec!["bijux-dev-atlas", "check", "run", "--suite", "ci_fast"],
+        ];
+        for argv in commands {
+            let cli = super::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                super::Command::Check { .. } => {}
+                _ => panic!("expected check command"),
             }
         }
     }
