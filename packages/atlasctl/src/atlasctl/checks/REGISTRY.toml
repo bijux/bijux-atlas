@@ -304,6 +304,31 @@ evidence = []
 writes_allowed_roots = ["artifacts/evidence/"]
 
 [[checks]]
+id = "checks_checks_internal_adapters_module_quarantined"
+domain = "checks"
+area = "internal"
+gate = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 300
+module = "atlasctl.checks.domains.internal"
+callable = "check_internal_adapters_module_quarantined"
+description = "require explicit compatibility marker for checks adapters module"
+severity = "error"
+category = "check"
+intent = "require explicit compatibility marker for checks adapters module"
+remediation_short = "Review check output and apply the documented fix."
+remediation_link = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
+result_code = "CHECK_GENERIC"
+fix_hint = "Keep adapters module migration-only and mark it explicitly as compatibility adapter."
+legacy_id = "checks.internal_adapters_module_quarantined"
+groups = ["checks", "fast", "required"]
+effects = ["fs_read"]
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
 id = "checks_checks_internal_checks_root_budget"
 domain = "checks"
 area = "internal"
@@ -472,6 +497,31 @@ remediation_link = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
 result_code = "CHECK_GENERIC"
 fix_hint = "Use python registry APIs at runtime and keep TOML reads generation-only."
 legacy_id = "checks.internal_no_registry_toml_reads"
+groups = ["checks", "fast", "required"]
+effects = ["fs_read"]
+external_tools = []
+evidence = []
+writes_allowed_roots = ["artifacts/evidence/"]
+
+[[checks]]
+id = "checks_checks_internal_single_runner_surface"
+domain = "checks"
+area = "internal"
+gate = "checks"
+owner = "platform"
+speed = "fast"
+timeout_ms = 500
+module = "atlasctl.checks.domains.internal"
+callable = "check_internal_single_runner_surface"
+description = "require command layer to use checks runner surface only"
+severity = "error"
+category = "check"
+intent = "require command layer to use checks runner surface only"
+remediation_short = "Review check output and apply the documented fix."
+remediation_link = "packages/atlasctl/docs/checks/check-id-migration-rules.md"
+result_code = "CHECK_GENERIC"
+fix_hint = "Replace engine.runner imports in command modules with checks.runner APIs."
+legacy_id = "checks.internal_single_runner_surface"
 groups = ["checks", "fast", "required"]
 effects = ["fs_read"]
 external_tools = []

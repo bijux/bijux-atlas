@@ -399,6 +399,39 @@
     },
     {
       "area": "internal",
+      "callable": "check_internal_adapters_module_quarantined",
+      "category": "check",
+      "description": "require explicit compatibility marker for checks adapters module",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep adapters module migration-only and mark it explicitly as compatibility adapter.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_adapters_module_quarantined",
+      "intent": "require explicit compatibility marker for checks adapters module",
+      "legacy_id": "checks.internal_adapters_module_quarantined",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 300,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
       "callable": "check_internal_checks_root_budget",
       "category": "check",
       "description": "enforce checks package root entry budget",
@@ -616,6 +649,39 @@
       "id": "checks_checks_internal_no_registry_toml_reads",
       "intent": "forbid runtime reads of REGISTRY.toml",
       "legacy_id": "checks.internal_no_registry_toml_reads",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
+      "callable": "check_internal_single_runner_surface",
+      "category": "check",
+      "description": "require command layer to use checks runner surface only",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Replace engine.runner imports in command modules with checks.runner APIs.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_single_runner_surface",
+      "intent": "require command layer to use checks runner surface only",
+      "legacy_id": "checks.internal_single_runner_surface",
       "module": "atlasctl.checks.domains.internal",
       "owner": "platform",
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",

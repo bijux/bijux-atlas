@@ -869,6 +869,32 @@ def check_internal_no_generated_registry_as_input(repo_root: Path) -> tuple[int,
     return (1, errors) if errors else (0, [])
 
 
+def check_internal_single_runner_surface(repo_root: Path) -> tuple[int, list[str]]:
+    commands_root = repo_root / "packages/atlasctl/src/atlasctl/commands"
+    if not commands_root.exists():
+        return 1, ["missing commands root: packages/atlasctl/src/atlasctl/commands"]
+    violations: list[str] = []
+    for path in sorted(commands_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "atlasctl.engine.runner" in text or "from ...engine.runner" in text or "from ..engine.runner" in text:
+            violations.append(f"commands must use checks.runner surface only (found engine.runner import): {rel}")
+    return (1, violations) if violations else (0, [])
+
+
+def check_internal_adapters_module_quarantined(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "packages/atlasctl/src/atlasctl/checks/adapters.py"
+    if not path.exists():
+        return 0, []
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    marker = "compatibility adapter"
+    if marker not in text.lower():
+        return 1, ["checks/adapters.py must be explicitly marked as compatibility adapter while migration is active"]
+    return 0, []
+
+
 def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
     registry_root = repo_root / "packages/atlasctl/src/atlasctl/checks/registry"
     if not registry_root.exists():
@@ -1404,6 +1430,28 @@ CHECKS = (
         check_internal_no_generated_registry_as_input,
         category=CheckCategory.POLICY,
         fix_hint="Use python registry APIs at runtime and keep generated registry json output-only.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_single_runner_surface",
+        "checks",
+        "require command layer to use checks runner surface only",
+        500,
+        check_internal_single_runner_surface,
+        category=CheckCategory.POLICY,
+        fix_hint="Replace engine.runner imports in command modules with checks.runner APIs.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.internal_adapters_module_quarantined",
+        "checks",
+        "require explicit compatibility marker for checks adapters module",
+        300,
+        check_internal_adapters_module_quarantined,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep adapters module migration-only and mark it explicitly as compatibility adapter.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
