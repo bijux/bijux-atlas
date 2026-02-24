@@ -29,15 +29,6 @@ Thumbs.db
 # Atlas isolated runner outputs (kept out of git by policy)
 # -----------------------------------------------------------------------------
 /artifacts/
-artifacts/evidence/**
-artifacts/atlasctl/**
-!artifacts/atlasctl/
-artifacts/atlasctl/cache/
-artifacts/atlasctl/pycache/
-artifacts/atlasctl/mypy/
-artifacts/atlasctl/ruff/
-artifacts/atlasctl/pytest/
-artifacts/atlasctl/pip/
 ops/_artifacts/
 ops/_evidence/
 ops/_generated/**
@@ -52,9 +43,6 @@ ops/openapi/v1/openapi.generated.json
 *.gcno
 *.lcov
 coverage/
-!configs/coverage/
-!configs/coverage/thresholds.toml
-!configs/coverage/README.md
 flamegraph.svg
 perf.data
 perf.data.old
