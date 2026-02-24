@@ -61,6 +61,21 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_make_governance_wrappers_no_direct_cargo" => {
             Some(check_make_governance_wrappers_no_direct_cargo)
         }
+        "checks_docs_runtime_command_list_matches_contract" => {
+            Some(check_docs_runtime_command_list_matches_contract)
+        }
+        "checks_docs_dev_command_list_matches_contract" => {
+            Some(check_docs_dev_command_list_matches_contract)
+        }
+        "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
+            Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
+        }
+        "checks_crates_bijux_dev_atlas_not_umbrella_binary" => {
+            Some(check_crates_bijux_dev_atlas_not_umbrella_binary)
+        }
+        "checks_crates_command_namespace_ownership_unique" => {
+            Some(check_crates_command_namespace_ownership_unique)
+        }
         _ => None,
     }
 }
@@ -720,6 +735,167 @@ fn check_make_governance_wrappers_no_direct_cargo(
         }
     }
     Ok(violations)
+}
+
+fn check_docs_runtime_command_list_matches_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md");
+    let contract = Path::new("docs/contracts/CLI_COMMANDS.json");
+    let current = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let raw = fs::read_to_string(ctx.repo_root.join(contract))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let payload: serde_json::Value =
+        serde_json::from_str(&raw).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let commands = payload
+        .get("commands")
+        .and_then(|v| v.as_array())
+        .ok_or_else(|| CheckError::Failed("docs/contracts/CLI_COMMANDS.json missing commands".to_string()))?;
+    let expected = commands
+        .iter()
+        .filter_map(|v| v.as_str())
+        .collect::<Vec<_>>()
+        .join("\n");
+    if current.trim() == expected.trim() {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "DOCS_RUNTIME_COMMAND_LIST_MISMATCH",
+            "runtime command list doc does not match canonical command contract".to_string(),
+            "regenerate or edit crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md to match docs/contracts/CLI_COMMANDS.json",
+            Some(rel),
+        )])
+    }
+}
+
+fn check_docs_dev_command_list_matches_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md");
+    let help_golden = Path::new("crates/bijux-dev-atlas/tests/goldens/help.txt");
+    let current = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let help = fs::read_to_string(ctx.repo_root.join(help_golden))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+
+    let mut commands = Vec::new();
+    let mut in_commands = false;
+    for line in help.lines() {
+        if line.trim() == "Commands:" {
+            in_commands = true;
+            continue;
+        }
+        if in_commands {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with("Options:") {
+                break;
+            }
+            let cmd = trimmed.split_whitespace().next().unwrap_or_default();
+            if !cmd.is_empty() && cmd != "help" {
+                commands.push(cmd.to_string());
+            }
+        }
+    }
+    let expected = commands.join("\n");
+    if current.trim() == expected.trim() {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "DOCS_DEV_COMMAND_LIST_MISMATCH",
+            "dev command list doc does not match dev help golden command list".to_string(),
+            "update crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md to match help snapshot commands",
+            Some(rel),
+        )])
+    }
+}
+
+fn check_crates_bijux_atlas_reserved_verbs_exclude_dev(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-atlas-cli/tests/lib_contracts.rs");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let required = ["\" plugin\"", "\" plugins\"", "\" dev\""];
+    let mut violations = Vec::new();
+    for needle in required {
+        if !text.contains(needle) {
+            violations.push(violation(
+                "CRATES_RESERVED_VERB_TEST_COVERAGE_MISSING",
+                format!("reserved verb coverage in lib_contracts.rs is missing `{needle}`"),
+                "extend top-level reserved verb test to include dev-reserved umbrella verbs",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_crates_bijux_dev_atlas_not_umbrella_binary(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/Cargo.toml");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    if !text.contains("name = \"bijux-dev-atlas\"") {
+        violations.push(violation(
+            "CRATES_DEV_ATLAS_BINARY_NAME_MISSING",
+            "bijux-dev-atlas Cargo.toml must define bin name `bijux-dev-atlas`".to_string(),
+            "keep dev control-plane binary separate from umbrella binary name",
+            Some(rel),
+        ));
+    }
+    if text.contains("name = \"bijux\"") {
+        violations.push(violation(
+            "CRATES_DEV_ATLAS_UMBRELLA_BINARY_FORBIDDEN",
+            "bijux-dev-atlas crate must not define umbrella binary `bijux`".to_string(),
+            "reserve `bijux` binary name for umbrella owner only",
+            Some(rel),
+        ));
+    }
+    Ok(violations)
+}
+
+fn check_crates_command_namespace_ownership_unique(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let runtime_rel = Path::new("crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md");
+    let dev_rel = Path::new("crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md");
+    let runtime = fs::read_to_string(ctx.repo_root.join(runtime_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let dev = fs::read_to_string(ctx.repo_root.join(dev_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+
+    let runtime_first = runtime
+        .lines()
+        .filter_map(|line| line.split_whitespace().next())
+        .map(str::to_string)
+        .collect::<BTreeSet<_>>();
+    let dev_first = dev
+        .lines()
+        .filter_map(|line| line.split_whitespace().next())
+        .map(str::to_string)
+        .collect::<BTreeSet<_>>();
+
+    let overlap = runtime_first
+        .intersection(&dev_first)
+        .filter(|v| **v != "version")
+        .cloned()
+        .collect::<Vec<_>>();
+    if overlap.is_empty() {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "CRATES_COMMAND_NAMESPACE_OWNERSHIP_DUPLICATE",
+            format!(
+                "runtime and dev command surfaces have duplicate namespace ownership: {}",
+                overlap.join(", ")
+            ),
+            "keep runtime and dev command surface ownership disjoint (except shared global version semantics)",
+            Some(dev_rel),
+        )])
+    }
 }
 
 fn checks_ops_no_atlasctl_invocations(
