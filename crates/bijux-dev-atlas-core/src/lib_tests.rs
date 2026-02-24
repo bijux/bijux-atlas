@@ -1,5 +1,7 @@
 use super::*;
 use bijux_dev_atlas_adapters::{DeniedProcessRunner, RealFs};
+use std::fs;
+use tempfile::TempDir;
 
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -483,4 +485,59 @@ fn evidence_paths_must_not_include_timestamps() {
     assert!(!evidence_path_has_timestamp(
         "artifacts/atlas-dev/run_registry/report.json"
     ));
+}
+
+fn write_temp_registry(temp: &TempDir, body: &str) -> PathBuf {
+    let path = temp.path().join("ops/atlas-dev");
+    fs::create_dir_all(&path).expect("mkdir");
+    let registry = path.join("registry.toml");
+    fs::write(&registry, body).expect("write registry");
+    registry
+}
+
+#[test]
+fn registry_parse_errors_are_stable_and_readable() {
+    let temp = TempDir::new().expect("tempdir");
+    write_temp_registry(
+        &temp,
+        r#"
+[[checks]]
+id = "checks_ops_example"
+domain = "ops"
+"#,
+    );
+    let err = load_registry(temp.path()).expect_err("must fail");
+    assert!(err.contains("failed to parse"));
+    assert!(err.contains("ops/atlas-dev/registry.toml"));
+}
+
+#[test]
+fn suite_unknown_check_errors_are_stable_and_readable() {
+    let temp = TempDir::new().expect("tempdir");
+    write_temp_registry(
+        &temp,
+        r#"
+[tags]
+vocabulary = ["ci", "lint"]
+
+[[checks]]
+id = "checks_ops_sample_example"
+domain = "ops"
+title = "example check"
+docs = "ops/CONTRACT.md"
+tags = ["ci"]
+suites = ["ci_fast"]
+effects_required = ["fs_read"]
+budget_ms = 100
+visibility = "public"
+
+[[suites]]
+id = "ci_fast"
+checks = ["checks_ops_sample_missing_impl"]
+domains = []
+tags_any = []
+"#,
+    );
+    let err = load_registry(temp.path()).expect_err("must fail");
+    assert!(err.contains("suite ci_fast references unknown check checks_ops_sample_missing_impl"));
 }
