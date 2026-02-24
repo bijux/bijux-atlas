@@ -51,13 +51,13 @@ def main() -> int:
         'ops/stack/prometheus/prometheus.yaml',
         'ops/stack/grafana/grafana.yaml',
     ]:
-        _run(['kubectl', 'apply', '-f', str(root / rel)], root)
+        _run(['kubectl', '-n', stack_ns, 'apply', '-f', str(root / rel)], root)
     if enable_redis == '1':
-        _run(['kubectl', 'apply', '-f', str(root / 'ops/stack/redis/redis.yaml')], root)
+        _run(['kubectl', '-n', stack_ns, 'apply', '-f', str(root / 'ops/stack/redis/redis.yaml')], root)
     if enable_otel == '1':
-        _run(['kubectl', 'apply', '-f', str(root / 'ops/stack/otel/otel-collector.yaml')], root)
+        _run(['kubectl', '-n', stack_ns, 'apply', '-f', str(root / 'ops/stack/otel/otel-collector.yaml')], root)
     if enable_toxiproxy == '1':
-        _run(['kubectl', 'apply', '-f', str(root / 'ops/stack/toxiproxy/toxiproxy.yaml')], root)
+        _run(['kubectl', '-n', stack_ns, 'apply', '-f', str(root / 'ops/stack/toxiproxy/toxiproxy.yaml')], root)
         _run(['python3', str(root / 'packages/atlasctl/src/atlasctl/commands/ops/stack/toxiproxy/bootstrap.py')], root)
 
     env = dict(os.environ)
