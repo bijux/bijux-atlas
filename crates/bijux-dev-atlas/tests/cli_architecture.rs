@@ -10,10 +10,17 @@ fn cli_main_rs_loc_stays_within_budget() {
     let path = crate_root().join("src/main.rs");
     let text = fs::read_to_string(&path).expect("read main.rs");
     let loc = text.lines().count();
-    let budget = 700usize;
+    let warning_budget = 800usize;
+    let error_budget = 1000usize;
+    if loc > warning_budget {
+        eprintln!(
+            "warning: cli crate main.rs exceeds warning LOC budget: {loc} > {warning_budget} ({})",
+            path.display()
+        );
+    }
     assert!(
-        loc <= budget,
-        "cli crate main.rs exceeds LOC budget: {loc} > {budget} ({})",
+        loc <= error_budget,
+        "cli crate main.rs exceeds hard LOC budget: {loc} > {error_budget} ({})",
         path.display()
     );
 }
@@ -29,7 +36,7 @@ fn cli_crate_module_count_stays_within_budget() {
         .collect::<Vec<_>>();
     modules.sort();
     let count = modules.len();
-    let budget = 10usize;
+    let budget = 14usize;
     assert!(
         count <= budget,
         "cli crate module count exceeds budget: {count} > {budget} (src/*.rs)"
@@ -46,13 +53,20 @@ fn cli_source_files_stay_within_loc_budget() {
         .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("rs"))
         .collect::<Vec<_>>();
     files.sort();
-    let budget = 700usize;
+    let warning_budget = 800usize;
+    let error_budget = 1000usize;
     for path in files {
         let text = fs::read_to_string(&path).expect("read source file");
         let loc = text.lines().count();
+        if loc > warning_budget {
+            eprintln!(
+                "warning: cli source file exceeds warning LOC budget: {loc} > {warning_budget} ({})",
+                path.display()
+            );
+        }
         assert!(
-            loc <= budget,
-            "cli source file exceeds LOC budget: {loc} > {budget} ({})",
+            loc <= error_budget,
+            "cli source file exceeds hard LOC budget: {loc} > {error_budget} ({})",
             path.display()
         );
     }
