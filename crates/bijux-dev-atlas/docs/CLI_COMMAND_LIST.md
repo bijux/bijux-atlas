@@ -1,3 +1,5 @@
+version
+help
 ops
 docs
 configs
