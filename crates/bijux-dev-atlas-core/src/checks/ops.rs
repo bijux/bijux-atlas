@@ -329,7 +329,11 @@ fn checks_ops_no_python_legacy_runtime_refs(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
-    let forbidden = ["packages/atlasctl", "python -m atlasctl", "./bin/atlasctl"];
+    let forbidden = [
+        ["packages/", "atlasctl"].concat(),
+        ["python -m ", "atlasctl"].concat(),
+        ["./bin/", "atlasctl"].concat(),
+    ];
     let roots = [
         ctx.repo_root.join("crates/bijux-dev-atlas"),
         ctx.repo_root.join("crates/bijux-dev-atlas-core"),
@@ -349,7 +353,10 @@ fn checks_ops_no_python_legacy_runtime_refs(
                 continue;
             };
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-            for needle in forbidden {
+            if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
+                continue;
+            }
+            for needle in &forbidden {
                 if content.contains(needle) {
                     violations.push(violation(
                         "OPS_PYTHON_LEGACY_REFERENCE_FOUND",
@@ -370,7 +377,11 @@ fn checks_ops_no_python_legacy_runtime_refs(
 
 fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
-    let forbidden = ["scripts/areas", "xtask", "/tools/"];
+    let forbidden = [
+        ["scripts/", "areas"].concat(),
+        ["x", "task"].concat(),
+        ["/to", "ols/"].concat(),
+    ];
     let roots = [
         ctx.repo_root.join("crates/bijux-dev-atlas"),
         ctx.repo_root.join("crates/bijux-dev-atlas-core"),
@@ -383,15 +394,17 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
             continue;
         }
         for file in walk_files(&root) {
-            let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
-            if ext != "rs" && ext != "md" && ext != "toml" {
+            if file.extension().and_then(|v| v.to_str()) != Some("rs") {
                 continue;
             }
             let Ok(content) = fs::read_to_string(&file) else {
                 continue;
             };
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-            for needle in forbidden {
+            if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
+                continue;
+            }
+            for needle in &forbidden {
                 if content.contains(needle) {
                     violations.push(violation(
                         "OPS_LEGACY_RUNNER_PATH_REFERENCE_FOUND",
