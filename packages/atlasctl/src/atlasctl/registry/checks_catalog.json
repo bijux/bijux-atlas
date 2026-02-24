@@ -1,6 +1,52 @@
 {
   "checks": [
     {
+      "area": "commands",
+      "default_enabled": true,
+      "description": "forbid command modules from importing checks domain modules directly",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_commands_no_domains_import",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_commands_no_domains_import",
+      "impl_ref": {
+        "callable": "check_commands_no_domains_import",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use checks.registry APIs from command code; do not import checks.domains modules directly.",
+        "intent": "forbid command modules from importing checks domain modules directly",
+        "legacy_id": "checks.commands_no_domains_import",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid command modules from importing checks domain modules directly"
+    },
+    {
       "area": "count",
       "default_enabled": true,
       "description": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
@@ -24,7 +70,7 @@
         "fix_hint": "Reduce checks count or intentionally raise budget in configs/policy/checks-count-budget.json.",
         "intent": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
         "legacy_id": "checks.count_budget",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -71,7 +117,7 @@
         "fix_hint": "Regenerate/update packages/atlasctl/docs/checks/index.md with full canonical inventory.",
         "intent": "require checks docs index to include canonical check ids",
         "legacy_id": "checks.docs_index_complete",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -93,6 +139,190 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require checks docs index to include canonical check ids"
+    },
+    {
+      "area": "domains",
+      "default_enabled": true,
+      "description": "forbid nested directories under canonical domain contract modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_domains_contracts_no_nested_dirs",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_domains_contracts_no_nested_dirs",
+      "impl_ref": {
+        "callable": "check_domains_contracts_no_nested_dirs",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep domain contracts flat: avoid nested directories under checks/domains/ops/contracts and checks/domains/policies/make.",
+        "intent": "forbid nested directories under canonical domain contract modules",
+        "legacy_id": "checks.domains_contracts_no_nested_dirs",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid nested directories under canonical domain contract modules"
+    },
+    {
+      "area": "domains",
+      "default_enabled": true,
+      "description": "enforce checks domains module budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_domains_module_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_domains_module_budget",
+      "impl_ref": {
+        "callable": "check_checks_domains_module_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep checks domain module count within budget or adjust policy budget intentionally.",
+        "intent": "enforce checks domains module budget",
+        "legacy_id": "checks.domains_module_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks domains module budget"
+    },
+    {
+      "area": "module",
+      "default_enabled": true,
+      "description": "enforce checks module loc budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_module_loc_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_module_loc_budget",
+      "impl_ref": {
+        "callable": "check_checks_module_loc_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Split oversized checks modules into intent-focused modules.",
+        "intent": "enforce checks module loc budget",
+        "legacy_id": "checks.module_loc_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 600,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks module loc budget"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
+      "description": "forbid checks modules from importing command modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_commands_import",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_commands_import",
+      "impl_ref": {
+        "callable": "check_checks_no_commands_import",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep checks implementation independent from command layer imports.",
+        "intent": "forbid checks modules from importing command modules",
+        "legacy_id": "checks.checks_no_commands_import",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid checks modules from importing command modules"
     },
     {
       "area": "owners",
@@ -118,7 +348,7 @@
         "fix_hint": "Set owners for every check in REGISTRY.toml.",
         "intent": "require every check entry to have an owner in SSOT registry",
         "legacy_id": "checks.owners_ssot",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -165,7 +395,7 @@
         "fix_hint": "Update REGISTRY.toml ids to checks_<domain>_<area>_<name>.",
         "intent": "require every registered check to expose a canonical checks_* id",
         "legacy_id": "checks.registry_all_checks_have_canonical_id",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -213,7 +443,7 @@
         "fix_hint": "Align check module paths with canonical check id segments.",
         "intent": "require canonical id domain/area segments to match implementation module path",
         "legacy_id": "checks.registry_canonical_id_matches_module_path",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -262,7 +492,7 @@
         "fix_hint": "Update docs/checks/registry.md when REGISTRY.toml changes.",
         "intent": "require docs update when checks registry changes",
         "legacy_id": "checks.registry_change_docs_gate",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_change_gates",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -312,7 +542,7 @@
         "fix_hint": "Refresh check list/tree/owners goldens when REGISTRY.toml changes.",
         "intent": "require checks list/tree/owners goldens update when registry changes",
         "legacy_id": "checks.registry_change_goldens_gate",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_change_gates",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -362,7 +592,7 @@
         "fix_hint": "Update configs/make/ownership.json when REGISTRY.toml changes.",
         "intent": "require ownership metadata update when checks registry changes",
         "legacy_id": "checks.registry_change_owners_gate",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_change_gates",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -411,7 +641,7 @@
         "fix_hint": "Set docs_link to an existing documentation page in checks catalog generation.",
         "intent": "require docs_link metadata for every registry check entry",
         "legacy_id": "checks.registry_docs_link_required",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -459,7 +689,7 @@
         "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit docs/_meta/checks-registry.txt.",
         "intent": "require generated docs _meta checks registry file to match runtime registry",
         "legacy_id": "checks.registry_docs_meta_runtime_drift",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -507,7 +737,7 @@
         "fix_hint": "Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json.",
         "intent": "validate checks registry TOML/JSON integrity and drift",
         "legacy_id": "checks.registry_integrity",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -554,7 +784,7 @@
         "fix_hint": "Rename check ids to remove policy-listed adjectives.",
         "intent": "forbid policy-listed adjectives in canonical check ids",
         "legacy_id": "checks.registry_no_banned_adjectives_in_ids",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -601,7 +831,7 @@
         "fix_hint": "Deduplicate conflicting ids in REGISTRY.toml.",
         "intent": "forbid duplicate canonical check ids in registry",
         "legacy_id": "checks.registry_no_duplicate_canonical_id",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -649,7 +879,7 @@
         "fix_hint": "Add owner field to registry entries.",
         "intent": "require every registry entry to declare an owner",
         "legacy_id": "checks.registry_owners_required",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -697,7 +927,7 @@
         "fix_hint": "Set remediation_link to an existing remediation playbook page.",
         "intent": "require remediation_link metadata for every registry check entry",
         "legacy_id": "checks.registry_remediation_link_required",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -745,7 +975,7 @@
         "fix_hint": "Set speed to fast, slow, or nightly in REGISTRY.toml.",
         "intent": "require speed classification for every registry entry (fast|slow|nightly)",
         "legacy_id": "checks.registry_speed_required",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -793,7 +1023,7 @@
         "fix_hint": "Add unassigned checks to at least one suite in registry/suites_catalog.json.",
         "intent": "require every registry check to be selected by at least one suite manifest",
         "legacy_id": "checks.registry_suite_membership_required",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -841,7 +1071,7 @@
         "fix_hint": "Clear configs/policy/check-id-migration.json aliases after deadline or extend with explicit policy.",
         "intent": "fail when check-id migration aliases remain after transition deadline",
         "legacy_id": "checks.registry_transition_complete",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -888,7 +1118,7 @@
         "fix_hint": "Set remediation_link for every check in checks catalog generation.",
         "intent": "require every check entry to have remediation documentation link",
         "legacy_id": "checks.remediation_ssot",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -909,6 +1139,98 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "require every check entry to have remediation documentation link"
+    },
+    {
+      "area": "root",
+      "default_enabled": true,
+      "description": "enforce checks root entry budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_root_entry_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_root_entry_budget",
+      "impl_ref": {
+        "callable": "check_checks_root_entry_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Reduce top-level entries under packages/atlasctl/src/atlasctl/checks or adjust policy budget intentionally.",
+        "intent": "enforce checks root entry budget",
+        "legacy_id": "checks.root_entry_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks root entry budget"
+    },
+    {
+      "area": "structured",
+      "default_enabled": true,
+      "description": "ratchet down legacy tuple check signatures in favor of structured results",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_structured_results_legacy_signature_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_structured_results_legacy_signature_budget",
+      "impl_ref": {
+        "callable": "check_structured_results_legacy_signature_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Migrate tuple[int, list[str]] check signatures to structured Violation/CheckOutcome results.",
+        "intent": "ratchet down legacy tuple check signatures in favor of structured results",
+        "legacy_id": "checks.structured_results_legacy_signature_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 600,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "ratchet down legacy tuple check signatures in favor of structured results"
     },
     {
       "area": "suites",
@@ -935,7 +1257,7 @@
         "fix_hint": "Sort suite names and remove duplicates in registry/suites_catalog.json.",
         "intent": "require deterministic suite inventory in suite registry SSOT",
         "legacy_id": "checks.suites_inventory_ssot",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -983,7 +1305,7 @@
         "fix_hint": "Add orphan checks to suite registry manifests.",
         "intent": "require every registered check to belong to at least one suite",
         "legacy_id": "checks.suites_no_orphans",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -1030,7 +1352,7 @@
         "fix_hint": "Rename atlasctl source/docs files and directories to remove banned adjectives.",
         "intent": "forbid policy-listed adjectives in atlasctl module/docs path names",
         "legacy_id": "checks.surfaces_no_banned_adjectives_in_paths",
-        "module": "atlasctl.checks.domains.internal.checks.check_registry_integrity",
+        "module": "atlasctl.checks.domains.internal",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -1051,6 +1373,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid policy-listed adjectives in atlasctl module/docs path names"
+    },
+    {
+      "area": "tools",
+      "default_enabled": true,
+      "description": "enforce checks tools module budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_tools_module_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_tools_module_budget",
+      "impl_ref": {
+        "callable": "check_checks_tools_module_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep checks tools module count within budget or adjust policy budget intentionally.",
+        "intent": "enforce checks tools module budget",
+        "legacy_id": "checks.tools_module_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks tools module budget"
     },
     {
       "area": "pyproject",
@@ -5126,7 +5494,7 @@
         "fix_hint": "Register new ops check scripts in atlasctl checks (or migrate to atlasctl-native implementation).",
         "intent": "require all ops check scripts to be registered in atlasctl checks",
         "legacy_id": "ops.all_check_scripts_registered",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5173,7 +5541,7 @@
         "fix_hint": "Keep Chart.yaml version and appVersion present, semver, and aligned.",
         "intent": "enforce chart/app version contract for bijux-atlas chart",
         "legacy_id": "ops.chart_version_contract",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5220,7 +5588,7 @@
         "fix_hint": "Restrict ops clean to ops/_generated child deletion only.",
         "intent": "ensure ops clean only targets allowed generated roots",
         "legacy_id": "ops.clean_allowed_roots_only",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5314,7 +5682,7 @@
         "fix_hint": "Keep ops commands behind runtime/effects layers and avoid importing cli parser modules.",
         "intent": "forbid ops command layer imports from CLI parser modules",
         "legacy_id": "ops.effect_boundary_imports",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5361,7 +5729,7 @@
         "fix_hint": "Use ops env validate/print with configs/ops/env.schema.json as default.",
         "intent": "ensure ops env schema is the single interface for env validate/print",
         "legacy_id": "ops.env_schema_is_used",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5408,7 +5776,7 @@
         "fix_hint": "Keep generated outputs untracked or move to committed generated roots.",
         "intent": "forbid tracked generated ops outputs unless explicitly allowlisted",
         "legacy_id": "ops.generated_not_tracked_unless_allowed",
-        "module": "atlasctl.checks.domains.ops.ops_checks.ops_generated",
+        "module": "atlasctl.checks.domains.ops.contracts.ops_generated",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5455,7 +5823,7 @@
         "fix_hint": "Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1.",
         "intent": "validate ops manifests against atlas.ops.manifest.v1 schema",
         "legacy_id": "ops.manifests_schema",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5502,7 +5870,7 @@
         "fix_hint": "Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths.",
         "intent": "forbid direct ops script entrypoints in docs/workflows/makefiles",
         "legacy_id": "ops.no_direct_script_entrypoints",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5549,7 +5917,7 @@
         "fix_hint": "Keep ops/run scripts allowlisted only via valid non-expired temp approvals, or migrate/delete them.",
         "intent": "forbid new ops/run scripts without valid temporary approval and expiry",
         "legacy_id": "ops.no_new_run_scripts_without_approval_and_expiry",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5683,14 +6051,14 @@
         "callable": "check_ops_obs_drift_goldens",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Regenerate/fix observability goldens and contracts.",
         "intent": "fail on observability golden drift (generated vs golden)",
         "legacy_id": "ops.obs_drift_goldens",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5737,7 +6105,7 @@
         "fix_hint": "Pin tools/images/helm versions and image digests.",
         "intent": "forbid floating/unpinned versions in ops pins",
         "legacy_id": "ops.pins_no_unpinned_versions",
-        "module": "atlasctl.checks.domains.ops.ops_checks.ops_pins",
+        "module": "atlasctl.checks.domains.ops.contracts.ops_pins",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5784,7 +6152,7 @@
         "fix_hint": "Keep configs/ops/pins.json canonical and stable.",
         "intent": "require deterministic canonical ops pins payload",
         "legacy_id": "ops.pins_update_is_deterministic",
-        "module": "atlasctl.checks.domains.ops.ops_checks.ops_pins",
+        "module": "atlasctl.checks.domains.ops.contracts.ops_pins",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5824,14 +6192,14 @@
         "callable": "check_ops_product_task_scripts_zero",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Move product task scripts into atlasctl commands/product or atlasctl ops area modules and keep configs/ops/product-task-scripts-baseline.json at zero.",
         "intent": "forbid product task scripts under ops and enforce zero-count baseline",
         "legacy_id": "ops.product_task_scripts_zero",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5878,7 +6246,7 @@
         "fix_hint": "Remove executable bits from ops/run scripts after migration, or update allowlist intentionally.",
         "intent": "ops/run scripts must be non-executable except allowlisted",
         "legacy_id": "ops.run_non_executable_unless_allowlisted",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5925,7 +6293,7 @@
         "fix_hint": "Migrate behavior into atlasctl and delete ops/run scripts or extend transitional allowlist intentionally.",
         "intent": "ops/run contains no scripts except explicitly allowed fixtures",
         "legacy_id": "ops.run_only_allowlisted_scripts",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -5972,7 +6340,7 @@
         "fix_hint": "Keep configs/policy/ops-run-temp-script-approvals.json entries valid, justified, and unexpired.",
         "intent": "temporary ops/run migration script approvals must be valid and unexpired",
         "legacy_id": "ops.run_temp_script_approvals",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6012,14 +6380,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_budget_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_budget_check.py`",
         "legacy_id": "ops.script.ops_datasets_scripts_py_cache_budget_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6059,14 +6427,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_datasets_cache_threshold_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/datasets/cache_threshold_check.py`",
         "legacy_id": "ops.script.ops_datasets_scripts_py_cache_threshold_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6106,14 +6474,14 @@
         "callable": "check_ops_lint_layer_contract_drift_native",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Regenerate ops/inventory/layers.json and commit deterministic output.",
         "intent": "run ops script check `ops/_lint/check_layer_contract_drift.py`",
         "legacy_id": "ops.script.ops_lint_check_layer_contract_drift_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6160,7 +6528,7 @@
         "fix_hint": "Fix repo surface violations in configs/repo/surfaces.json or root entries.",
         "intent": "run ops script check `ops/_lint/check-surfaces.py`",
         "legacy_id": "ops.script.ops_lint_check_surfaces_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6200,14 +6568,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`",
         "legacy_id": "ops.script.ops_lint_lane_budget_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6247,14 +6615,14 @@
         "callable": "check_ops_lint_layer_contract_drift_native",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Regenerate ops/inventory/layers.json and commit deterministic output.",
         "intent": "run ops script check `ops/_lint/layout/check_layer_contract_drift.py`",
         "legacy_id": "ops.script.ops_lint_layout_check_layer_contract_drift_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6294,14 +6662,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`",
         "legacy_id": "ops.script.ops_lint_ops_smoke_budget_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6341,14 +6709,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_lane_budget_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/lane_budget_check.py`",
         "legacy_id": "ops.script.ops_lint_policy_lane_budget_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6388,14 +6756,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_lint_policy_ops_smoke_budget_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/lint/policy/ops_smoke_budget_check.py`",
         "legacy_id": "ops.script.ops_lint_policy_ops_smoke_budget_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6442,7 +6810,7 @@
         "fix_hint": "Keep required load abuse suites in ops/load/suites/suites.json with nightly+must_pass contracts.",
         "intent": "run ops script check `ops/load/scripts/check_abuse_scenarios_required.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_abuse_scenarios_required_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6482,14 +6850,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_baseline_update_policy_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_baseline_update_policy.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_baseline_update_policy_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6536,7 +6904,7 @@
         "fix_hint": "Fix perf baseline metadata, freshness, dataset lock hash, and tool-version alignment.",
         "intent": "run ops script check `ops/load/scripts/check_perf_baselines.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_perf_baselines_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6583,7 +6951,7 @@
         "fix_hint": "Regenerate pinned query lock so file/query hashes match SSOT.",
         "intent": "run ops script check `ops/load/scripts/check_pinned_queries_lock.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_pinned_queries_lock_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6623,14 +6991,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_prereqs_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_prereqs.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_prereqs_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6670,14 +7038,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_checks_check_regression_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_regression.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_regression_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6724,7 +7092,7 @@
         "fix_hint": "Update load runbook to include all suite names from ops/load/suites/suites.json.",
         "intent": "run ops script check `ops/load/scripts/check_runbook_suite_names.py`",
         "legacy_id": "ops.script.ops_load_scripts_check_runbook_suite_names_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6764,14 +7132,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_load_baseline_regression_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/load/baseline/regression_check.py`",
         "legacy_id": "ops.script.ops_load_scripts_regression_check_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6811,14 +7179,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_metric_cardinality_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/observability/check_metric_cardinality.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_metric_cardinality.py`",
         "legacy_id": "ops.script.ops_obs_scripts_check_metric_cardinality_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6858,14 +7226,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_upgrade_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_upgrade.py`",
         "legacy_id": "ops.script.ops_obs_scripts_check_pack_upgrade_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6905,14 +7273,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_observability_check_pack_versions_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/observability/check_pack_versions.py`",
         "legacy_id": "ops.script.ops_obs_scripts_check_pack_versions_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6952,14 +7320,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_alerts_contract_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_alerts_contract.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_alerts_contract.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_alerts_contract_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -6999,14 +7367,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_contract_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_contract.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_contract.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_dashboard_contract_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7046,14 +7414,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_dashboard_metric_compat_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_metric_compat.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_dashboard_metric_compat.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_dashboard_metric_compat_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7100,7 +7468,7 @@
         "fix_hint": "Fix endpoint observability metric coverage contract entries and metric references.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_endpoint_metrics_coverage.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_endpoint_metrics_coverage_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7147,7 +7515,7 @@
         "fix_hint": "Fix endpoint trace coverage contract entries and TRACE_SPANS attribute/span references.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_endpoint_trace_coverage.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_endpoint_trace_coverage_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7187,14 +7555,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_contract_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_contract.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_contract.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_contract_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7234,14 +7602,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_coverage_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_coverage.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_coverage.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_coverage_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7281,14 +7649,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_drift_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_drift.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_drift.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_drift_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7328,14 +7696,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_metrics_golden_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_golden.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_metrics_golden.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_metrics_golden_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7382,7 +7750,7 @@
         "fix_hint": "Align observability budgets required labels with metrics contract specs.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_obs_budgets.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_obs_budgets_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7422,14 +7790,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_observability_lag_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_observability_lag.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_observability_lag.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_observability_lag_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7469,14 +7837,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_overload_behavior_contract_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_overload_behavior_contract.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_overload_behavior_contract.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_overload_behavior_contract_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7523,7 +7891,7 @@
         "fix_hint": "Fix profile goldens registry and referenced golden files.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_profile_goldens.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_profile_goldens_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7563,14 +7931,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_runtime_metrics_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_runtime_metrics.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_runtime_metrics.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_runtime_metrics_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7610,14 +7978,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_coverage_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_coverage.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_coverage.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_trace_coverage_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7657,14 +8025,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_trace_golden_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_golden.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_trace_golden.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_trace_golden_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7704,14 +8072,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_obs_contracts_check_tracing_contract_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_tracing_contract.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/obs/contracts/check_tracing_contract.py`",
         "legacy_id": "ops.script.ops_obs_scripts_contracts_check_tracing_contract_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7751,14 +8119,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_commands_ops_stack_idempotency_check_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/commands/ops/stack/idempotency_check.py`",
         "legacy_id": "ops.script.ops_stack_scripts_idempotency_check_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7798,14 +8166,14 @@
         "callable": "check_ops_stack_tests_check_live_layer_snapshot_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `ops/stack/tests/check_live_layer_snapshot.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `ops/stack/tests/check_live_layer_snapshot.py`",
         "legacy_id": "ops.script.ops_stack_tests_check_live_layer_snapshot_py",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7845,14 +8213,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_allowlist_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_allowlist.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_allowlist.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_artifacts_allowlist_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7892,14 +8260,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_artifacts_policy_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_policy.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_artifacts_policy.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_artifacts_policy_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7939,14 +8307,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_validation_check_kind_cluster_contract_drift_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_kind_cluster_contract_drift.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_kind_cluster_contract_drift_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -7986,14 +8354,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_no_root_dumping_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_no_root_dumping.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_no_root_dumping.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_no_root_dumping_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8033,14 +8401,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_canonical_shims_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_canonical_shims.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_canonical_shims.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_canonical_shims_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8080,14 +8448,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_runtime_check_ops_lib_canonical_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_lib_canonical.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/runtime/check_ops_lib_canonical.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_lib_canonical_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8127,14 +8495,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_script_targets_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_script_targets.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_script_targets.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_script_targets_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8174,14 +8542,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_stack_order_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_stack_order.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_stack_order.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_stack_order_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8221,14 +8589,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_ops_workspace_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_workspace.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_ops_workspace.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_ops_workspace_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8268,14 +8636,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_governance_check_repo_hygiene_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_repo_hygiene.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/governance/check_repo_hygiene.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_repo_hygiene_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8315,14 +8683,14 @@
         "callable": "check_packages_atlasctl_src_atlasctl_checks_layout_ops_surface_check_stack_manifest_consolidation_py",
         "category": "check",
         "effects": [
-          "fs_read"
+          "subprocess"
         ],
         "evidence": [],
         "external_tools": [],
         "fix_hint": "Fix failures in `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_stack_manifest_consolidation.py` or replace it with atlasctl-native check logic.",
         "intent": "run ops script check `packages/atlasctl/src/atlasctl/checks/layout/ops/surface/check_stack_manifest_consolidation.py`",
         "legacy_id": "ops.script.ops_vendor_layout_checks_check_stack_manifest_consolidation_sh",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8369,7 +8737,7 @@
         "fix_hint": "Keep ops/manifests to json/yaml data only.",
         "intent": "enforce ops/manifests data-only file policy",
         "legacy_id": "ops.scripts_are_data_only",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8416,7 +8784,7 @@
         "fix_hint": "Reduce ops scripts count or intentionally update baseline in one reviewed change.",
         "intent": "enforce migration gate: ops scripts count must not increase",
         "legacy_id": "ops.scripts_count_nonincreasing",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8463,7 +8831,7 @@
         "fix_hint": "Source common.sh and call ops_entrypoint_start + ops_version_guard in ops/run/*.sh.",
         "intent": "enforce shell runtime guard requirements for ops/run wrappers",
         "legacy_id": "ops.shell_policy",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -8510,7 +8878,7 @@
         "fix_hint": "Regenerate ops/stack/versions.json from configs/ops/tool-versions.json.",
         "intent": "require stack versions report to match tool versions SSOT",
         "legacy_id": "ops.stack_versions_report_valid",
-        "module": "atlasctl.checks.domains.ops.ops_checks",
+        "module": "atlasctl.checks.domains.ops.contracts",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -12186,6 +12554,52 @@
     {
       "area": "checks",
       "default_enabled": true,
+      "description": "forbid checks modules from importing commands/check modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_no_commands_check_imports",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_checks_no_commands_check_imports",
+      "impl_ref": {
+        "callable": "check_checks_no_commands_check_imports",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep checks independent from command adapters; use shared runtime or registry modules.",
+        "intent": "forbid checks modules from importing commands/check modules",
+        "legacy_id": "repo.checks_no_commands_check_imports",
+        "module": "atlasctl.checks.repo.enforcement.import_policy",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 300,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid checks modules from importing commands/check modules"
+    },
+    {
+      "area": "checks",
+      "default_enabled": true,
       "description": "enforce checks root contract (single python root file and module cap)",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_checks_root_contract",
       "domain": "repo",
@@ -13014,6 +13428,52 @@
     {
       "area": "commands",
       "default_enabled": true,
+      "description": "forbid commands/check modules from importing domain checks directly",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_commands_check_no_domain_imports",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_commands_check_no_domain_imports",
+      "impl_ref": {
+        "callable": "check_commands_check_no_domain_imports",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Resolve checks through checks.registry and selectors, not checks.domains modules.",
+        "intent": "forbid commands/check modules from importing domain checks directly",
+        "legacy_id": "repo.commands_check_no_domain_imports",
+        "module": "atlasctl.checks.repo.enforcement.import_policy",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 300,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid commands/check modules from importing domain checks directly"
+    },
+    {
+      "area": "commands",
+      "default_enabled": true,
       "description": "check command help/docs drift",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_commands_help_docs_drift",
       "domain": "repo",
@@ -13679,7 +14139,7 @@
         "fix_hint": "Update configs/policy/dead-modules-allowlist.json with intended exceptions.",
         "intent": "enforce dead module candidates are explicitly allowlisted",
         "legacy_id": "repo.dead_module_reachability",
-        "module": "atlasctl.checks.repo.reachability",
+        "module": "atlasctl.checks.tools.reachability",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -13725,7 +14185,7 @@
         "fix_hint": "Keep policies/dead_modules.py runnable and deterministic.",
         "intent": "ensure dead modules analyzer runs and returns canonical payload",
         "legacy_id": "repo.dead_modules",
-        "module": "atlasctl.checks.repo.reachability",
+        "module": "atlasctl.checks.tools.reachability",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -15657,7 +16117,7 @@
         "fix_hint": "Remove imports/references to atlasctl.legacy.",
         "intent": "require zero importers of removed atlasctl legacy namespace",
         "legacy_id": "repo.legacy_zero_importers",
-        "module": "atlasctl.checks.repo.reachability",
+        "module": "atlasctl.checks.tools.reachability",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -16071,7 +16531,7 @@
         "fix_hint": "Import new repo check modules in checks/repo/__init__.py.",
         "intent": "ensure repo check modules are imported and reachable via registry",
         "legacy_id": "repo.check_module_reachability",
-        "module": "atlasctl.checks.repo.reachability",
+        "module": "atlasctl.checks.tools.reachability",
         "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
         "remediation_short": "Review check output and apply the documented fix.",
         "result_code": "CHECK_GENERIC",
@@ -16741,6 +17201,52 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "forbid os.environ mutation in checks runtime",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_environ_mutation",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_no_environ_mutation",
+      "impl_ref": {
+        "callable": "check_no_environ_mutation",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Pass environment values through context/capabilities and avoid mutating process env.",
+        "intent": "forbid os.environ mutation in checks runtime",
+        "legacy_id": "repo.no_environ_mutation",
+        "module": "atlasctl.checks.repo.enforcement.cwd_usage",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 400,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid os.environ mutation in checks runtime"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid executable python outside package boundaries",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_exec_python_outside_packages",
       "domain": "repo",
@@ -17197,6 +17703,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid Path.cwd usage outside core.runtime.repo_root.py"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
+      "description": "forbid dot-path usage in checks runtime",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_repo_no_path_dot_runtime",
+      "domain": "repo",
+      "gate": "repo",
+      "groups": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "id": "checks_repo_no_path_dot_runtime",
+      "impl_ref": {
+        "callable": "check_no_path_dot_in_runtime",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Resolve paths from explicit repo_root context instead of current-directory dot paths.",
+        "intent": "forbid dot-path usage in checks runtime",
+        "legacy_id": "repo.no_path_dot_runtime",
+        "module": "atlasctl.checks.repo.enforcement.cwd_usage",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 400,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "fast",
+        "repo",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid dot-path usage in checks runtime"
     },
     {
       "area": "no",
@@ -19151,7 +19703,7 @@
         ],
         "evidence": [],
         "external_tools": [],
-        "fix_hint": "Align root entries with checks/layout/root_whitelist.json.",
+        "fix_hint": "Align root entries with checks/tools/root_shape_whitelist.json.",
         "intent": "enforce repository root shape contract from root_whitelist.json",
         "legacy_id": "repo.root_shape",
         "module": "atlasctl.checks.layout.root.check_root_shape",
