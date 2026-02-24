@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "run_id": "registry_run",
+  "repo_root": "/repo",
+  "command": "check run",
+  "selections": {
+    "suite": "ops_fast"
+  },
+  "capabilities": {
+    "fs_write": false,
+    "subprocess": false,
+    "git": false,
+    "network": false
+  },
+  "results": [
+    {
+      "schema_version": 1,
+      "id": "checks_ops_surface_manifest",
+      "status": "fail",
+      "skip_reason": null,
+      "violations": [
+        {
+          "schema_version": 1,
+          "code": "ops_contract_missing",
+          "message": "missing contract",
+          "hint": "restore file",
+          "path": "ops/CONTRACT.md",
+          "line": 1,
+          "severity": "error"
+        }
+      ],
+      "duration_ms": 12,
+      "evidence": [
+        {
+          "schema_version": 1,
+          "kind": "text",
+          "path": "artifacts/atlas-dev/registry_run/report.json",
+          "content_type": "application/json",
+          "description": "report output"
+        }
+      ]
+    }
+  ],
+  "durations_ms": {
+    "checks_ops_surface_manifest": 12
+  },
+  "counts": {
+    "schema_version": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "errors": 0,
+    "total": 1
+  },
+  "summary": {
+    "schema_version": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "errors": 0,
+    "total": 1
+  },
+  "timings_ms": {
+    "checks_ops_surface_manifest": 12
+  }
+}
