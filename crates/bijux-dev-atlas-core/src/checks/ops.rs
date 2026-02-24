@@ -22,6 +22,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
         "ops_no_python_legacy_runtime_refs" => Some(checks_ops_no_python_legacy_runtime_refs),
         "ops_no_legacy_runner_paths" => Some(checks_ops_no_legacy_runner_paths),
+        "ops_makefile_routes_dev_atlas" => Some(checks_ops_makefile_routes_dev_atlas),
+        "ops_workflow_routes_dev_atlas" => Some(checks_ops_workflow_routes_dev_atlas),
         "ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
         _ => None,
     }
@@ -421,6 +423,51 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
     }
 
     Ok(violations)
+}
+
+fn checks_ops_makefile_routes_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/ops.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+
+    let has_dev_route = content.contains("bijux dev atlas")
+        || content.contains("cargo run -p bijux-dev-atlas --");
+    let has_legacy_route =
+        content.contains("./bin/atlasctl") || content.contains(" atlasctl ") || content.contains("atlasctl ops");
+
+    if !has_dev_route || has_legacy_route {
+        return Ok(vec![violation(
+            "OPS_MAKEFILE_ROUTE_INVALID",
+            "makefiles/ops.mk must delegate to bijux dev atlas and must not call atlasctl".to_string(),
+            "replace atlasctl calls with bijux dev atlas routing in makefiles/ops.mk",
+            Some(rel),
+        )]);
+    }
+
+    Ok(Vec::new())
+}
+
+fn checks_ops_workflow_routes_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+
+    let has_legacy_ops_route =
+        content.contains("./bin/atlasctl ops") || content.contains(" atlasctl ops ");
+    if has_legacy_ops_route {
+        return Ok(vec![violation(
+            "OPS_WORKFLOW_ROUTE_INVALID",
+            "atlas-dev-rust workflow must not call atlasctl ops commands".to_string(),
+            "route ops checks through bijux-dev-atlas commands",
+            Some(rel),
+        )]);
+    }
+
+    Ok(Vec::new())
 }
 
 fn check_ops_internal_registry_consistency(
