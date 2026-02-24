@@ -1,13 +1,12 @@
 use crate::limits::{MAX_SCHEMA_BUMP_STEP, MIN_POLICY_SCHEMA_VERSION};
-use crate::schema::{
-    PolicyConfig, PolicyMode, PolicyModeProfile, PolicySchema, PolicySchemaVersion,
+use crate::adapters::load_policy_set_from_workspace;
+use crate::policy_set::{
+    canonical_policy_set_json, resolve_mode_profile as resolve_mode_profile_impl,
+    validate_policy_change_requires_version_bump as validate_policy_change_requires_version_bump_impl,
+    validate_policy_set,
 };
+use crate::schema::{PolicyConfig, PolicyMode, PolicyModeProfile, PolicySchema, PolicySchemaVersion};
 use serde_json::{Map, Value};
-use std::fs;
-use std::path::{Path, PathBuf};
-
-const POLICY_CONFIG_PATH: &str = "configs/policy/policy.json";
-const POLICY_SCHEMA_PATH: &str = "configs/policy/policy.schema.json";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PolicyValidationError(pub String);
@@ -20,285 +19,30 @@ impl std::fmt::Display for PolicyValidationError {
 
 impl std::error::Error for PolicyValidationError {}
 
-#[must_use]
-pub fn policy_config_path(root: &Path) -> PathBuf {
-    root.join(POLICY_CONFIG_PATH)
-}
-
-#[must_use]
-pub fn policy_schema_path(root: &Path) -> PathBuf {
-    root.join(POLICY_SCHEMA_PATH)
-}
-
-pub fn load_policy_from_workspace(root: &Path) -> Result<PolicyConfig, PolicyValidationError> {
-    let config_raw = fs::read_to_string(policy_config_path(root))
-        .map_err(|e| PolicyValidationError(format!("read policy config failed: {e}")))?;
-    let schema_raw = fs::read_to_string(policy_schema_path(root))
-        .map_err(|e| PolicyValidationError(format!("read policy schema failed: {e}")))?;
-
-    let config_val: Value = serde_json::from_str(&config_raw)
-        .map_err(|e| PolicyValidationError(format!("parse policy config failed: {e}")))?;
-    let schema_val: Value = serde_json::from_str(&schema_raw)
-        .map_err(|e| PolicyValidationError(format!("parse policy schema failed: {e}")))?;
-
-    validate_strict_unknown_keys(&config_val)?;
-    validate_defaults_policy(&config_val)?;
-
-    let cfg: PolicyConfig = serde_json::from_value(config_val)
-        .map_err(|e| PolicyValidationError(format!("decode policy config failed: {e}")))?;
-    let schema: PolicySchema = decode_schema_version(&schema_val)?;
-
-    validate_policy_config(&cfg)?;
-    validate_schema_version_transition(
-        schema.schema_version.as_str(),
-        cfg.schema_version.as_str(),
-    )?;
-
-    Ok(cfg)
+pub fn load_policy_from_workspace(root: &std::path::Path) -> Result<PolicyConfig, PolicyValidationError> {
+    load_policy_set_from_workspace(root)
 }
 
 pub fn validate_policy_config(cfg: &PolicyConfig) -> Result<(), PolicyValidationError> {
-    if cfg.allow_override {
-        return Err(PolicyValidationError(
-            "allow_override must be false".to_string(),
-        ));
-    }
-    if cfg.network_in_unit_tests {
-        return Err(PolicyValidationError(
-            "network_in_unit_tests must be false".to_string(),
-        ));
-    }
-    let active = resolve_mode_profile(cfg, cfg.mode)?;
-    if active.max_page_size == 0 || active.max_region_span == 0 || active.max_response_bytes == 0 {
-        return Err(PolicyValidationError(
-            "policy mode cap table values must be > 0".to_string(),
-        ));
-    }
-    if cfg.modes.strict.allow_override {
-        return Err(PolicyValidationError(
-            "strict mode must keep allow_override=false".to_string(),
-        ));
-    }
-    if cfg.modes.dev.allow_override {
-        return Err(PolicyValidationError(
-            "dev mode must keep allow_override=false; override flags are compat-only".to_string(),
-        ));
-    }
-
-    if cfg.query_budget.cheap.max_limit == 0
-        || cfg.query_budget.medium.max_limit == 0
-        || cfg.query_budget.heavy.max_limit == 0
-    {
-        return Err(PolicyValidationError(
-            "query_budget.{cheap,medium,heavy}.max_limit must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.cheap.max_region_span == 0
-        || cfg.query_budget.medium.max_region_span == 0
-        || cfg.query_budget.heavy.max_region_span == 0
-    {
-        return Err(PolicyValidationError(
-            "query_budget.{cheap,medium,heavy}.max_region_span must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.cheap.max_region_estimated_rows == 0
-        || cfg.query_budget.medium.max_region_estimated_rows == 0
-        || cfg.query_budget.heavy.max_region_estimated_rows == 0
-    {
-        return Err(PolicyValidationError(
-            "query_budget.{cheap,medium,heavy}.max_region_estimated_rows must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.cheap.max_prefix_cost_units == 0
-        || cfg.query_budget.medium.max_prefix_cost_units == 0
-        || cfg.query_budget.heavy.max_prefix_cost_units == 0
-    {
-        return Err(PolicyValidationError(
-            "query_budget.{cheap,medium,heavy}.max_prefix_cost_units must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.max_limit == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_limit must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.max_transcript_limit == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_transcript_limit must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.heavy_projection_limit == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.heavy_projection_limit must be > 0".to_string(),
-        ));
-    }
-    if cfg.response_budget.max_serialization_bytes == 0 {
-        return Err(PolicyValidationError(
-            "response_budget.max_serialization_bytes must be > 0".to_string(),
-        ));
-    }
-    if cfg.response_budget.cheap_max_bytes == 0
-        || cfg.response_budget.medium_max_bytes == 0
-        || cfg.response_budget.heavy_max_bytes == 0
-    {
-        return Err(PolicyValidationError(
-            "response_budget class max bytes must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.max_prefix_length == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_prefix_length must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.max_sequence_bases == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.max_sequence_bases must be > 0".to_string(),
-        ));
-    }
-    if cfg.query_budget.sequence_api_key_required_bases == 0 {
-        return Err(PolicyValidationError(
-            "query_budget.sequence_api_key_required_bases must be > 0".to_string(),
-        ));
-    }
-
-    if cfg.cache_budget.max_disk_bytes == 0 {
-        return Err(PolicyValidationError(
-            "cache_budget.max_disk_bytes must be > 0".to_string(),
-        ));
-    }
-    if cfg.cache_budget.max_dataset_count == 0 {
-        return Err(PolicyValidationError(
-            "cache_budget.max_dataset_count must be > 0".to_string(),
-        ));
-    }
-    if cfg.cache_budget.shard_count_policy_max == 0 {
-        return Err(PolicyValidationError(
-            "cache_budget.shard_count_policy_max must be > 0".to_string(),
-        ));
-    }
-    if cfg.cache_budget.max_open_shards_per_pod == 0 {
-        return Err(PolicyValidationError(
-            "cache_budget.max_open_shards_per_pod must be > 0".to_string(),
-        ));
-    }
-    if cfg.store_resilience.retry_budget == 0
-        || cfg.store_resilience.retry_attempts == 0
-        || cfg.store_resilience.retry_base_backoff_ms == 0
-        || cfg.store_resilience.breaker_failure_threshold == 0
-        || cfg.store_resilience.breaker_open_ms == 0
-    {
-        return Err(PolicyValidationError(
-            "store_resilience values must be > 0".to_string(),
-        ));
-    }
-
-    if cfg.rate_limit.per_ip_rps == 0
-        || cfg.rate_limit.per_api_key_rps == 0
-        || cfg.rate_limit.sequence_per_ip_rps == 0
-    {
-        return Err(PolicyValidationError(
-            "rate_limit values must be > 0".to_string(),
-        ));
-    }
-
-    if cfg.concurrency_bulkheads.cheap == 0
-        || cfg.concurrency_bulkheads.medium == 0
-        || cfg.concurrency_bulkheads.heavy == 0
-    {
-        return Err(PolicyValidationError(
-            "concurrency bulkheads must be > 0".to_string(),
-        ));
-    }
-
-    if !cfg.telemetry.metrics_enabled {
-        return Err(PolicyValidationError(
-            "telemetry.metrics_enabled must be true".to_string(),
-        ));
-    }
-    if !cfg.telemetry.tracing_enabled {
-        return Err(PolicyValidationError(
-            "telemetry.tracing_enabled must be true".to_string(),
-        ));
-    }
-    if !cfg.telemetry.request_id_required {
-        return Err(PolicyValidationError(
-            "telemetry.request_id_required must be true".to_string(),
-        ));
-    }
-    if cfg.telemetry.required_metric_labels.is_empty() {
-        return Err(PolicyValidationError(
-            "telemetry.required_metric_labels must not be empty".to_string(),
-        ));
-    }
-    if cfg.telemetry.trace_sampling_per_10k == 0 {
-        return Err(PolicyValidationError(
-            "telemetry.trace_sampling_per_10k must be > 0".to_string(),
-        ));
-    }
-    if cfg.publish_gates.required_indexes.is_empty() {
-        return Err(PolicyValidationError(
-            "publish_gates.required_indexes must not be empty".to_string(),
-        ));
-    }
-    if cfg.publish_gates.min_gene_count == 0 {
-        return Err(PolicyValidationError(
-            "publish_gates.min_gene_count must be > 0".to_string(),
-        ));
-    }
-
-    validate_documented_defaults_on_config(cfg)?;
-
-    Ok(())
+    validate_policy_set(cfg)
 }
 
 pub fn resolve_mode_profile(
     cfg: &PolicyConfig,
     mode: PolicyMode,
 ) -> Result<PolicyModeProfile, PolicyValidationError> {
-    let p = match mode {
-        PolicyMode::Strict => cfg.modes.strict.clone(),
-        PolicyMode::Compat => cfg.modes.compat.clone(),
-        PolicyMode::Dev => cfg.modes.dev.clone(),
-    };
-    if p.max_page_size == 0 || p.max_region_span == 0 || p.max_response_bytes == 0 {
-        return Err(PolicyValidationError(format!(
-            "mode {} has zero cap values",
-            mode.as_str()
-        )));
-    }
-    Ok(p)
+    resolve_mode_profile_impl(cfg, mode)
 }
 
-fn validate_documented_defaults_on_config(cfg: &PolicyConfig) -> Result<(), PolicyValidationError> {
-    let root = serde_json::to_value(cfg)
-        .map_err(|e| PolicyValidationError(format!("encode config failed: {e}")))?;
-    let mut seen = std::collections::BTreeSet::<String>::new();
-    for item in &cfg.documented_defaults {
-        let field = item.field.trim();
-        let reason = item.reason.trim();
-        if field.is_empty() || reason.is_empty() {
-            return Err(PolicyValidationError(
-                "documented_defaults.field/reason must be non-empty".to_string(),
-            ));
-        }
-        if !seen.insert(field.to_string()) {
-            return Err(PolicyValidationError(format!(
-                "documented_defaults.field duplicated: {field}"
-            )));
-        }
-        if field == "documented_defaults" || field.starts_with("documented_defaults.") {
-            return Err(PolicyValidationError(
-                "documented_defaults entries cannot describe documented_defaults itself"
-                    .to_string(),
-            ));
-        }
-        if !field_path_exists(&root, field) {
-            return Err(PolicyValidationError(format!(
-                "documented_defaults.field does not exist in policy: {field}"
-            )));
-        }
-    }
-    Ok(())
+pub fn validate_policy_change_requires_version_bump(
+    old_cfg: &PolicyConfig,
+    new_cfg: &PolicyConfig,
+) -> Result<(), PolicyValidationError> {
+    validate_policy_change_requires_version_bump_impl(old_cfg, new_cfg)
+}
+
+pub fn canonical_config_json(cfg: &PolicyConfig) -> Result<String, PolicyValidationError> {
+    canonical_policy_set_json(cfg)
 }
 
 pub fn validate_schema_version_transition(
@@ -333,109 +77,7 @@ pub fn validate_schema_version_transition(
     Ok(())
 }
 
-pub fn validate_policy_change_requires_version_bump(
-    old_cfg: &PolicyConfig,
-    new_cfg: &PolicyConfig,
-) -> Result<(), PolicyValidationError> {
-    let old_json = canonical_config_json(old_cfg)?;
-    let new_json = canonical_config_json(new_cfg)?;
-    if old_json != new_json && old_cfg.schema_version == new_cfg.schema_version {
-        return Err(PolicyValidationError(
-            "policy content changed without schema_version bump".to_string(),
-        ));
-    }
-    Ok(())
-}
-
-pub fn canonical_config_json(cfg: &PolicyConfig) -> Result<String, PolicyValidationError> {
-    let value = serde_json::to_value(cfg)
-        .map_err(|e| PolicyValidationError(format!("encode config failed: {e}")))?;
-    let normalized = normalize_json(value);
-    serde_json::to_string_pretty(&normalized)
-        .map_err(|e| PolicyValidationError(format!("print config failed: {e}")))
-}
-
-fn validate_strict_unknown_keys(value: &Value) -> Result<(), PolicyValidationError> {
-    let obj = value
-        .as_object()
-        .ok_or_else(|| PolicyValidationError("policy config must be object".to_string()))?;
-
-    let allowed: [&str; 14] = [
-        "schema_version",
-        "mode",
-        "allow_override",
-        "network_in_unit_tests",
-        "modes",
-        "query_budget",
-        "response_budget",
-        "cache_budget",
-        "store_resilience",
-        "rate_limit",
-        "concurrency_bulkheads",
-        "telemetry",
-        "publish_gates",
-        "documented_defaults",
-    ];
-
-    for key in obj.keys() {
-        if !allowed.contains(&key.as_str()) {
-            return Err(PolicyValidationError(format!(
-                "unknown top-level policy key: {key}"
-            )));
-        }
-    }
-    Ok(())
-}
-
-fn validate_defaults_policy(value: &Value) -> Result<(), PolicyValidationError> {
-    let obj = value
-        .as_object()
-        .ok_or_else(|| PolicyValidationError("policy config must be object".to_string()))?;
-    let defaults = obj
-        .get("documented_defaults")
-        .ok_or_else(|| PolicyValidationError("documented_defaults is required".to_string()))?;
-    let arr = defaults
-        .as_array()
-        .ok_or_else(|| PolicyValidationError("documented_defaults must be an array".to_string()))?;
-
-    let mut seen = std::collections::BTreeSet::<String>::new();
-    for item in arr {
-        let obj = item.as_object().ok_or_else(|| {
-            PolicyValidationError("documented_defaults entries must be objects".to_string())
-        })?;
-        let field = obj.get("field").and_then(Value::as_str).ok_or_else(|| {
-            PolicyValidationError("documented_defaults.field must be a string".to_string())
-        })?;
-        let reason = obj.get("reason").and_then(Value::as_str).ok_or_else(|| {
-            PolicyValidationError("documented_defaults.reason must be a string".to_string())
-        })?;
-        if field.trim().is_empty() || reason.trim().is_empty() {
-            return Err(PolicyValidationError(
-                "documented_defaults.field/reason must be non-empty".to_string(),
-            ));
-        }
-        if !seen.insert(field.to_string()) {
-            return Err(PolicyValidationError(format!(
-                "documented_defaults.field duplicated: {field}"
-            )));
-        }
-        if field == "documented_defaults" || field.starts_with("documented_defaults.") {
-            return Err(PolicyValidationError(
-                "documented_defaults entries cannot describe documented_defaults itself"
-                    .to_string(),
-            ));
-        }
-        if !field_path_exists(value, field) {
-            return Err(PolicyValidationError(format!(
-                "documented_defaults.field does not exist in policy: {field}"
-            )));
-        }
-    }
-
-    Ok(())
-}
-
-fn field_path_exists(root: &Value, path: &str) -> bool {
+pub(crate) fn field_path_exists(root: &Value, path: &str) -> bool {
     let mut cur = root;
     for seg in path.split('.') {
         if seg.is_empty() {
@@ -452,7 +94,7 @@ fn field_path_exists(root: &Value, path: &str) -> bool {
     true
 }
 
-fn decode_schema_version(schema: &Value) -> Result<PolicySchema, PolicyValidationError> {
+pub(crate) fn decode_schema_version(schema: &Value) -> Result<PolicySchema, PolicyValidationError> {
     let root = schema
         .as_object()
         .ok_or_else(|| PolicyValidationError("policy schema must be object".to_string()))?;
@@ -482,7 +124,7 @@ fn decode_schema_version(schema: &Value) -> Result<PolicySchema, PolicyValidatio
     })
 }
 
-fn normalize_json(value: Value) -> Value {
+pub(crate) fn normalize_json(value: Value) -> Value {
     match value {
         Value::Object(map) => {
             let mut entries: Vec<(String, Value)> = map
@@ -498,57 +140,5 @@ fn normalize_json(value: Value) -> Value {
         }
         Value::Array(items) => Value::Array(items.into_iter().map(normalize_json).collect()),
         other => other,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::schema::PolicyMode;
-
-    fn workspace_root() -> std::path::PathBuf {
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .and_then(|p| p.parent())
-            .expect("workspace root")
-            .to_path_buf()
-    }
-
-    #[test]
-    fn mode_profiles_resolve_deterministically() {
-        let cfg = load_policy_from_workspace(&workspace_root()).expect("load policy");
-        let strict = resolve_mode_profile(&cfg, PolicyMode::Strict).expect("strict");
-        let compat = resolve_mode_profile(&cfg, PolicyMode::Compat).expect("compat");
-        let dev = resolve_mode_profile(&cfg, PolicyMode::Dev).expect("dev");
-        let payload = serde_json::json!({
-            "strict": strict,
-            "compat": compat,
-            "dev": dev
-        });
-        let encoded = serde_json::to_string(&payload).expect("json");
-        assert_eq!(
-            encoded,
-            "{\"compat\":{\"allow_override\":true,\"max_page_size\":200,\"max_region_span\":25000000,\"max_response_bytes\":2097152},\"dev\":{\"allow_override\":false,\"max_page_size\":500,\"max_region_span\":50000000,\"max_response_bytes\":4194304},\"strict\":{\"allow_override\":false,\"max_page_size\":100,\"max_region_span\":10000000,\"max_response_bytes\":1048576}}"
-        );
-    }
-
-    #[test]
-    fn strict_caps_are_tighter_than_compat_caps() {
-        let cfg = load_policy_from_workspace(&workspace_root()).expect("load policy");
-        let strict = resolve_mode_profile(&cfg, PolicyMode::Strict).expect("strict");
-        let compat = resolve_mode_profile(&cfg, PolicyMode::Compat).expect("compat");
-        assert!(strict.max_page_size < compat.max_page_size);
-        assert!(strict.max_region_span < compat.max_region_span);
-        assert!(strict.max_response_bytes < compat.max_response_bytes);
-        assert!(!strict.allow_override);
-    }
-
-    #[test]
-    fn compat_and_dev_modes_still_keep_hard_invariants() {
-        let cfg = load_policy_from_workspace(&workspace_root()).expect("load policy");
-        assert!(cfg.telemetry.metrics_enabled);
-        assert!(cfg.telemetry.tracing_enabled);
-        assert!(cfg.telemetry.request_id_required);
-        assert!(!cfg.network_in_unit_tests);
     }
 }
