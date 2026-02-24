@@ -9,7 +9,6 @@ $(eval $(VERIFICATION_MODULE):;@:)
 endif
 endif
 
-VERIFICATION_TARGETS_configs ?= configs configs-doctor configs-validate configs-lint configs-inventory
 VERIFICATION_ACCEPT_CODES ?= 0
 VERIFICATION_ACCEPT_CODES_configs ?= 0 2
 
