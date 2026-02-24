@@ -15,6 +15,7 @@ use std::borrow::Cow;
 
 mod check_runner;
 pub mod checks;
+pub mod logging;
 pub mod ops_inventory;
 mod report_rendering;
 

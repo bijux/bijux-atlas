@@ -7,6 +7,8 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+pub const CONTRACT_SCHEMA_VERSION: u64 = 1;
+
 fn is_lower_snake(input: &str) -> bool {
     !input.is_empty()
         && input
@@ -170,6 +172,18 @@ pub enum CheckStatus {
     Error,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ErrorCode {
+    PolicyFail,
+    UsageError,
+    IoError,
+    SchemaError,
+    ToolError,
+    EffectDenied,
+    CheckExecutionError,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EvidenceRef {
     pub kind: String,
@@ -249,6 +263,19 @@ impl RunId {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    pub fn generate(timestamp_unix_secs: u64, git_short_hash: Option<&str>, entropy: u32) -> Self {
+        let ts = format!("t{timestamp_unix_secs}");
+        let git = git_short_hash
+            .unwrap_or("nogit")
+            .chars()
+            .filter(|c| c.is_ascii_alphanumeric())
+            .take(8)
+            .collect::<String>()
+            .to_ascii_lowercase();
+        let rand = format!("r{entropy:08x}");
+        Self::from_seed(&format!("{ts}_{git}_{rand}"))
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -313,6 +340,7 @@ pub fn report_json_schema() -> Value {
         "type": "object",
         "required": ["run_id", "repo_root", "command", "selections", "capabilities", "results", "durations_ms", "counts", "summary", "timings_ms"],
         "properties": {
+            "schema_version": {"type": "integer", "const": CONTRACT_SCHEMA_VERSION},
             "run_id": {"type": "string"},
             "repo_root": {"type": "string"},
             "command": {"type": "string"},
@@ -358,6 +386,14 @@ mod tests {
         assert!(RunId::parse("stable-run").is_err());
         let seeded = RunId::from_seed("Ops: Daily Run 001");
         assert_eq!(seeded.as_str(), "ops_daily_run_001");
+    }
+
+    #[test]
+    fn run_id_generate_is_deterministic_for_same_inputs() {
+        let one = RunId::generate(1_700_000_000, Some("abc123de"), 0x10);
+        let two = RunId::generate(1_700_000_000, Some("abc123de"), 0x10);
+        assert_eq!(one, two);
+        assert!(one.as_str().contains("abc123de"));
     }
 
     #[test]
