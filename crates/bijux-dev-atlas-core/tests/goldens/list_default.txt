@@ -3,7 +3,9 @@ make_wrapper_commands	make wrapper commands stay canonical
 ops_artifacts_not_tracked	ops evidence paths stay empty in repository
 ops_generated_readonly_markers	ops generated files keep readonly generator markers
 ops_manifest_integrity	ops inventory manifests are valid json with required keys
+ops_no_legacy_runner_paths	dev atlas crates do not reference legacy runner path conventions
 ops_no_legacy_tooling_refs	ops does not reference legacy tooling paths
+ops_no_python_legacy_runtime_refs	dev atlas crates do not reference python atlasctl runtime
 ops_schema_presence	ops schema baseline is present
 ops_surface_inventory	ops index inventories top-level surfaces
 ops_surface_manifest	ops surface manifest consistency

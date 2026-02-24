@@ -92,6 +92,28 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "ops_no_python_legacy_runtime_refs"
+domain = "ops"
+title = "dev atlas crates do not reference python atlasctl runtime"
+docs = "docs/development/tooling/atlasctl.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_no_legacy_runner_paths"
+domain = "ops"
+title = "dev atlas crates do not reference legacy runner path conventions"
+docs = "docs/development/scripts.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
 id = "repo_import_boundary"
 domain = "repo"
 title = "repo import boundary contracts"
@@ -152,6 +174,8 @@ checks = [
   "ops_manifest_integrity",
   "ops_surface_inventory",
   "ops_artifacts_not_tracked",
+  "ops_no_python_legacy_runtime_refs",
+  "ops_no_legacy_runner_paths",
 ]
 domains = ["ops"]
 tags_any = ["fast"]
