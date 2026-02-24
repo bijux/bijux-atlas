@@ -1,0 +1,23 @@
+[[tools]]
+name = "helm"
+required = true
+version_regex = "(\\d+\\.\\d+\\.\\d+)"
+probe_argv = ["version", "--short"]
+
+[[tools]]
+name = "kubectl"
+required = true
+version_regex = "(\\d+\\.\\d+\\.\\d+)"
+probe_argv = ["version", "--client", "--short"]
+
+[[tools]]
+name = "kind"
+required = true
+version_regex = "(\\d+\\.\\d+\\.\\d+)"
+probe_argv = ["--version"]
+
+[[tools]]
+name = "k6"
+required = false
+version_regex = "(\\d+\\.\\d+\\.\\d+)"
+probe_argv = ["version"]
