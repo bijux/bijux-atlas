@@ -1,6 +1,4 @@
-use crate::schema::{
-    DevAtlasPolicySetDocument, PolicySchemaVersion,
-};
+use crate::schema::{DevAtlasPolicySetDocument, PolicySchemaVersion};
 use serde_json::{Map, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -49,7 +47,9 @@ pub fn load_policy_from_workspace(
         .map_err(|e| PolicyValidationError(format!("decode dev policy config failed: {e}")))
 }
 
-pub fn canonical_policy_json(policy: &DevAtlasPolicySetDocument) -> Result<String, PolicyValidationError> {
+pub fn canonical_policy_json(
+    policy: &DevAtlasPolicySetDocument,
+) -> Result<String, PolicyValidationError> {
     let value = serde_json::to_value(policy)
         .map_err(|e| PolicyValidationError(format!("encode dev policy failed: {e}")))?;
     let normalized = normalize_json(value);
@@ -71,11 +71,16 @@ pub fn validate_policy_change_requires_version_bump(
     Ok(())
 }
 
-fn validate_schema_version_match(config: &Value, schema: &Value) -> Result<(), PolicyValidationError> {
+fn validate_schema_version_match(
+    config: &Value,
+    schema: &Value,
+) -> Result<(), PolicyValidationError> {
     let cfg_ver = config
         .get("schema_version")
         .and_then(Value::as_str)
-        .ok_or_else(|| PolicyValidationError("schema_version is required in dev policy".to_string()))?;
+        .ok_or_else(|| {
+            PolicyValidationError("schema_version is required in dev policy".to_string())
+        })?;
 
     let schema_ver = schema
         .as_object()
@@ -117,18 +122,12 @@ fn validate_documented_defaults(config: &Value) -> Result<(), PolicyValidationEr
 
     let mut seen = std::collections::BTreeSet::<String>::new();
     for item in defaults {
-        let field = item
-            .get("field")
-            .and_then(Value::as_str)
-            .ok_or_else(|| {
-                PolicyValidationError("documented_defaults.field must be string".to_string())
-            })?;
-        let reason = item
-            .get("reason")
-            .and_then(Value::as_str)
-            .ok_or_else(|| {
-                PolicyValidationError("documented_defaults.reason must be string".to_string())
-            })?;
+        let field = item.get("field").and_then(Value::as_str).ok_or_else(|| {
+            PolicyValidationError("documented_defaults.field must be string".to_string())
+        })?;
+        let reason = item.get("reason").and_then(Value::as_str).ok_or_else(|| {
+            PolicyValidationError("documented_defaults.reason must be string".to_string())
+        })?;
 
         if field.trim().is_empty() || reason.trim().is_empty() {
             return Err(PolicyValidationError(

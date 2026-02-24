@@ -3,11 +3,12 @@ use std::path::PathBuf;
 use std::process::Command;
 
 use bijux_atlas_policies::{
-    canonical_config_json, load_policy_from_workspace, validate_policy_change_requires_version_bump,
-    validate_policy_config, validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads,
-    DocumentedDefault, EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile,
-    PolicyModes, PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy,
-    ResponseBudgetPolicy, StoreResiliencePolicy, TelemetryPolicy,
+    canonical_config_json, load_policy_from_workspace,
+    validate_policy_change_requires_version_bump, validate_policy_config,
+    validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads, DocumentedDefault,
+    EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile, PolicyModes,
+    PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy, ResponseBudgetPolicy,
+    StoreResiliencePolicy, TelemetryPolicy,
 };
 
 fn workspace_root() -> PathBuf {

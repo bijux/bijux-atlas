@@ -34,7 +34,10 @@ fn capabilities_supports_json_format() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     assert_eq!(
         payload
             .get("defaults")
@@ -209,7 +212,10 @@ fn docs_validate_supports_json_format() {
         &output.stdout
     };
     let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     assert!(payload.get("errors").and_then(|v| v.as_array()).is_some());
 }
 
@@ -246,7 +252,10 @@ fn docs_inventory_respects_include_drafts_flag() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    let pages = payload.get("pages").and_then(|v| v.as_array()).expect("pages");
+    let pages = payload
+        .get("pages")
+        .and_then(|v| v.as_array())
+        .expect("pages");
     assert!(pages.iter().any(|row| {
         row.get("path")
             .and_then(|v| v.as_str())
@@ -261,10 +270,17 @@ fn docs_validate_strict_escalates_warnings_to_errors() {
         .args(["docs", "validate", "--strict", "--format", "json"])
         .output()
         .expect("docs validate strict");
-    let bytes = if output.stdout.is_empty() { &output.stderr } else { &output.stdout };
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
     let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
     assert_eq!(
-        payload.get("options").and_then(|v| v.get("strict")).and_then(|v| v.as_bool()),
+        payload
+            .get("options")
+            .and_then(|v| v.get("strict"))
+            .and_then(|v| v.as_bool()),
         Some(true)
     );
     assert!(payload.get("error_code").is_some());
@@ -287,12 +303,17 @@ fn docs_doctor_fixture_json_matches_golden() {
         ])
         .output()
         .expect("docs doctor fixture");
-    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let mut payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     payload["duration_ms"] = serde_json::json!(0);
     let actual = serde_json::to_string_pretty(&payload).expect("json");
-    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/docs_doctor_fixture.json");
+    let golden_path =
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/docs_doctor_fixture.json");
     let golden = fs::read_to_string(golden_path).expect("golden");
     assert_eq!(actual.trim(), golden.trim());
 }
@@ -327,12 +348,17 @@ fn configs_doctor_fixture_json_matches_golden() {
         ])
         .output()
         .expect("configs doctor fixture");
-    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let mut payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     payload["duration_ms"] = serde_json::json!(0);
     let actual = serde_json::to_string_pretty(&payload).expect("json");
-    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/configs_doctor_fixture.json");
+    let golden_path =
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/configs_doctor_fixture.json");
     let golden = fs::read_to_string(golden_path).expect("golden");
     assert_eq!(actual.trim(), golden.trim());
 }
@@ -450,10 +476,17 @@ fn ops_render_kind_default_does_not_write_without_explicit_flag() {
         .args(["ops", "render", "--target", "kind", "--format", "json"])
         .output()
         .expect("ops render kind default");
-    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    let row = payload["rows"].as_array().and_then(|rows| rows.first()).expect("row");
+    let row = payload["rows"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .expect("row");
     assert_eq!(row["write_enabled"].as_bool(), Some(false));
 }
 
@@ -556,10 +589,22 @@ fn check_doctor_supports_json_format() {
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert!(payload.get("status").and_then(|v| v.as_str()).is_some());
-    assert!(payload.get("ops_doctor").and_then(|v| v.as_object()).is_some());
-    assert!(payload.get("docs_doctor").and_then(|v| v.as_object()).is_some());
-    assert!(payload.get("configs_doctor").and_then(|v| v.as_object()).is_some());
-    assert!(payload.get("control_plane_doctor").and_then(|v| v.as_object()).is_some());
+    assert!(payload
+        .get("ops_doctor")
+        .and_then(|v| v.as_object())
+        .is_some());
+    assert!(payload
+        .get("docs_doctor")
+        .and_then(|v| v.as_object())
+        .is_some());
+    assert!(payload
+        .get("configs_doctor")
+        .and_then(|v| v.as_object())
+        .is_some());
+    assert!(payload
+        .get("control_plane_doctor")
+        .and_then(|v| v.as_object())
+        .is_some());
 }
 
 #[test]

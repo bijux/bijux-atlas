@@ -92,7 +92,9 @@ pub(super) fn check_docs_no_orphan_markdown_pages(
         .collect::<BTreeSet<_>>();
     let mut violations = Vec::new();
     for path in docs_markdown_paths(ctx) {
-        let rel = path.strip_prefix(ctx.repo_root.join("docs")).unwrap_or(&path);
+        let rel = path
+            .strip_prefix(ctx.repo_root.join("docs"))
+            .unwrap_or(&path);
         let rels = rel.display().to_string();
         if rels.starts_with("_assets/") || rels.starts_with("_drafts/") {
             continue;
@@ -133,7 +135,12 @@ pub(super) fn check_docs_no_duplicate_nav_titles(
 pub(super) fn check_docs_readme_index_contract_presence(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let required = ["docs/INDEX.md", "docs/contracts/INDEX.md", "ops/CONTRACT.md", "ops/INDEX.md"];
+    let required = [
+        "docs/INDEX.md",
+        "docs/contracts/INDEX.md",
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+    ];
     let mut violations = Vec::new();
     for rel in required {
         let p = Path::new(rel);
@@ -155,7 +162,10 @@ pub(super) fn check_docs_file_naming_conventions(
     let mut violations = Vec::new();
     for path in docs_markdown_paths(ctx) {
         let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
-        let name = path.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        let name = path
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
         if rel.to_string_lossy().contains(' ') {
             violations.push(violation(
                 "DOCS_FILE_NAME_SPACES_FORBIDDEN",
@@ -165,7 +175,8 @@ pub(super) fn check_docs_file_naming_conventions(
             ));
             continue;
         }
-        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase()) {
+        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase())
+        {
             violations.push(violation(
                 "DOCS_FILE_NAME_CASE_FORBIDDEN",
                 format!("docs file should use lowercase naming: `{}`", rel.display()),
@@ -263,7 +274,12 @@ pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
         }
         let words = line.split_whitespace().collect::<Vec<_>>();
         if words.iter().any(|w| {
-            *w == "python" || *w == "python3" || *w == "bash" || *w == "helm" || *w == "kubectl" || *w == "k6"
+            *w == "python"
+                || *w == "python3"
+                || *w == "bash"
+                || *w == "helm"
+                || *w == "kubectl"
+                || *w == "k6"
         }) {
             violations.push(violation(
                 "MAKE_DOCS_DELEGATION_ONLY_VIOLATION",
@@ -279,7 +295,11 @@ pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
 pub(super) fn check_configs_required_surface_paths(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let required = ["configs/README.md", "configs/INDEX.md", "configs/CONTRACT.md"];
+    let required = [
+        "configs/README.md",
+        "configs/INDEX.md",
+        "configs/CONTRACT.md",
+    ];
     let mut violations = Vec::new();
     for path in required {
         let rel = Path::new(path);
@@ -359,7 +379,13 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
         }
         let words = line.split_whitespace().collect::<Vec<_>>();
         if words.iter().any(|w| {
-            *w == "python" || *w == "python3" || *w == "bash" || *w == "sh" || *w == "kubectl" || *w == "helm" || *w == "k6"
+            *w == "python"
+                || *w == "python3"
+                || *w == "bash"
+                || *w == "sh"
+                || *w == "kubectl"
+                || *w == "helm"
+                || *w == "k6"
         }) {
             violations.push(violation(
                 "MAKE_CONFIGS_DELEGATION_ONLY_VIOLATION",
@@ -417,10 +443,28 @@ pub(super) fn check_docs_ops_command_list_matches_snapshot(
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected = [
-        "ops","doctor","validate","render","install","status","list-profiles","explain-profile",
-        "list-tools","verify-tools","list-actions","up","down","clean","reset","pins","generate",
-    ].join("\n");
-    if current.trim() == expected.trim() { Ok(Vec::new()) } else {
+        "ops",
+        "doctor",
+        "validate",
+        "render",
+        "install",
+        "status",
+        "list-profiles",
+        "explain-profile",
+        "list-tools",
+        "verify-tools",
+        "list-actions",
+        "up",
+        "down",
+        "clean",
+        "reset",
+        "pins",
+        "generate",
+    ]
+    .join("\n");
+    if current.trim() == expected.trim() {
+        Ok(Vec::new())
+    } else {
         Ok(vec![violation(
             "DOCS_OPS_COMMAND_LIST_MISMATCH",
             "ops command list doc does not match canonical ops help snapshot".to_string(),
@@ -436,8 +480,19 @@ pub(super) fn check_docs_configs_command_list_matches_snapshot(
     let rel = Path::new("crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md");
     let current = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let expected = ["configs","doctor","validate","lint","inventory","compile","diff"].join("\n");
-    if current.trim() == expected.trim() { Ok(Vec::new()) } else {
+    let expected = [
+        "configs",
+        "doctor",
+        "validate",
+        "lint",
+        "inventory",
+        "compile",
+        "diff",
+    ]
+    .join("\n");
+    if current.trim() == expected.trim() {
+        Ok(Vec::new())
+    } else {
         Ok(vec![violation(
             "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
             "configs command list doc does not match canonical configs help snapshot".to_string(),
@@ -451,8 +506,12 @@ pub(super) fn check_ops_ssot_manifests_schema_versions(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let manifests = [
-        "ops/stack/profiles.json","ops/stack/version-manifest.json","ops/inventory/toolchain.json",
-        "ops/inventory/surfaces.json","ops/inventory/contracts.json","ops/inventory/generated-committed-mirror.json",
+        "ops/stack/profiles.json",
+        "ops/stack/version-manifest.json",
+        "ops/inventory/toolchain.json",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/contracts.json",
+        "ops/inventory/generated-committed-mirror.json",
     ];
     let mut violations = Vec::new();
     for path in manifests {
