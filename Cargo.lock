@@ -313,6 +313,7 @@ dependencies = [
  "bijux-atlas-dev-model",
  "serde",
  "serde_json",
+ "tempfile",
  "toml",
 ]
 
