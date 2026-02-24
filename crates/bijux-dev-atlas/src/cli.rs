@@ -105,6 +105,10 @@ pub enum Command {
         #[command(subcommand)]
         command: DocsCommand,
     },
+    Configs {
+        #[command(subcommand)]
+        command: ConfigsCommand,
+    },
     Check {
         #[command(subcommand)]
         command: CheckCommand,
@@ -394,4 +398,36 @@ pub struct DocsGrepArgs {
     #[command(flatten)]
     pub common: DocsCommonArgs,
     pub pattern: String,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ConfigsCommand {
+    Doctor(ConfigsCommonArgs),
+    Validate(ConfigsCommonArgs),
+    Lint(ConfigsCommonArgs),
+    Inventory(ConfigsCommonArgs),
+    Compile(ConfigsCommonArgs),
+    Diff(ConfigsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ConfigsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub strict: bool,
 }
