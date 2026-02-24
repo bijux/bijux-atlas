@@ -1,0 +1,17 @@
+[package]
+name = "bijux-atlas-dev"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde_json.workspace = true
+bijux-atlas-dev-core.workspace = true
+bijux-atlas-dev-model.workspace = true
+bijux-atlas-dev-adapters.workspace = true
+
+[[bin]]
+name = "bijux-atlas-dev"
+path = "src/main.rs"
