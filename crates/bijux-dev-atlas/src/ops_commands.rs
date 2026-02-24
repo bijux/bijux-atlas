@@ -549,7 +549,8 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             } else {
                 ("down skipped (subprocess disabled)".to_string(), 0)
             };
-            let clean_code = run_ops_command(true, debug, OpsCommand::Clean(cleanup_common.clone()));
+            let clean_code =
+                run_ops_command(true, debug, OpsCommand::Clean(cleanup_common.clone()));
             let clean_detail = if clean_code == 0 {
                 "clean ok".to_string()
             } else {
@@ -737,8 +738,8 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         }
     }
 }
-use crate::*;
 use crate::cli::{
     OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,
     OpsStackCommand,
 };
+use crate::*;

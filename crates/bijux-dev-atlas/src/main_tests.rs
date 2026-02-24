@@ -92,8 +92,20 @@ mod tests {
                 "--allow-subprocess",
                 "--allow-write",
             ],
-            vec!["bijux-dev-atlas", "ops", "stack", "down", "--allow-subprocess"],
-            vec!["bijux-dev-atlas", "ops", "k8s", "render", "--allow-subprocess"],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "stack",
+                "down",
+                "--allow-subprocess",
+            ],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "k8s",
+                "render",
+                "--allow-subprocess",
+            ],
             vec![
                 "bijux-dev-atlas",
                 "ops",

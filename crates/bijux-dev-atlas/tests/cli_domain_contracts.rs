@@ -73,7 +73,10 @@ fn ops_explain_supports_json_format() {
         .and_then(|v| v.as_array())
         .expect("rows");
     assert_eq!(rows.len(), 1);
-    assert_eq!(rows[0].get("action").and_then(|v| v.as_str()), Some("render"));
+    assert_eq!(
+        rows[0].get("action").and_then(|v| v.as_str()),
+        Some("render")
+    );
 }
 
 #[test]
@@ -86,7 +89,10 @@ fn ops_cleanup_supports_json_format() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
 }
 
 #[test]
@@ -128,7 +134,10 @@ fn ops_load_run_supports_json_format() {
         .get("rows")
         .and_then(|v| v.as_array())
         .expect("rows");
-    assert_eq!(rows[0].get("action").and_then(|v| v.as_str()), Some("load-run"));
+    assert_eq!(
+        rows[0].get("action").and_then(|v| v.as_str()),
+        Some("load-run")
+    );
 }
 
 #[test]
@@ -548,7 +557,10 @@ fn configs_inventory_writes_artifact_when_allow_write_enabled() {
         .and_then(|v| v.get("inventory"))
         .and_then(|v| v.as_str())
         .expect("inventory artifact path");
-    assert!(std::path::Path::new(path).exists(), "artifact file must exist");
+    assert!(
+        std::path::Path::new(path).exists(),
+        "artifact file must exist"
+    );
 }
 
 #[test]
