@@ -1,7 +1,9 @@
+capabilities
 check
+configs
+docs
 doctor
 explain
 list
 ops
 run
-version
