@@ -6,3 +6,11 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+bijux-dev-atlas-core.workspace = true
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "file_walk"
+harness = false

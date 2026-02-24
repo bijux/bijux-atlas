@@ -418,12 +418,15 @@ dependencies = [
 [[package]]
 name = "bijux-dev-atlas-adapters"
 version = "0.1.0"
+dependencies = [
+ "bijux-dev-atlas-core",
+ "criterion",
+]
 
 [[package]]
 name = "bijux-dev-atlas-core"
 version = "0.1.0"
 dependencies = [
- "bijux-dev-atlas-adapters",
  "bijux-dev-atlas-model",
  "bijux-dev-atlas-policies",
  "criterion",
