@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from datetime import date
 import json
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Mapping
 
 from .domains import register_all
 from .model import CheckDef, CheckId, DomainId, Tag
