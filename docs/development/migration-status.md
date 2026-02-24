@@ -16,4 +16,4 @@
 
 - New control-plane automation must be implemented in Rust crates and exposed through `bijux dev atlas ...`.
 - Makefiles and workflows are thin wrappers and must delegate to `bijux dev atlas ...` or `cargo`.
-- New `atlasctl` references are forbidden outside explicit tombstones under `docs/tombstones/atlasctl/`.
+- New legacy control-plane references are forbidden.

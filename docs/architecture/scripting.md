@@ -41,7 +41,7 @@ Legacy implementations mapped these through `atlasctl` namespaces. Active contro
 
 - Legacy atlasctl Python toolchain contracts are being removed with `packages/atlasctl`.
 - Active dev governance control-plane commands are Rust-native (`bijux-dev-atlas`).
-- Python tooling documents are historical-only and should be moved under `docs/tombstones/atlasctl/` during cleanup.
+- Python tooling documents are removed from the active docs surface.
 
 ## How to verify
 
