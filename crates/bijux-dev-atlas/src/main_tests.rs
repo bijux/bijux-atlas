@@ -329,6 +329,35 @@ mod tests {
     }
 
     #[test]
+    fn build_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "build", "bin"],
+            vec![
+                "bijux-dev-atlas",
+                "build",
+                "dist",
+                "--allow-subprocess",
+                "--allow-write",
+            ],
+            vec!["bijux-dev-atlas", "build", "doctor", "--format", "json"],
+            vec!["bijux-dev-atlas", "build", "clean", "--allow-write"],
+            vec![
+                "bijux-dev-atlas",
+                "build",
+                "clean",
+                "--allow-write",
+                "--include-bin",
+            ],
+        ];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Build { .. }) => {}
+                _ => panic!("expected build command"),
+            }
+        }
+    }
+    #[test]
     fn policies_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "policies", "list"],

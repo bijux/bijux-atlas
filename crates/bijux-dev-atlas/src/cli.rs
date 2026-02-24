@@ -56,6 +56,10 @@ pub enum Command {
         #[command(subcommand)]
         command: DockerCommand,
     },
+    Build {
+        #[command(subcommand)]
+        command: BuildCommand,
+    },
     Policies {
         #[command(subcommand)]
         command: PoliciesCommand,
@@ -600,6 +604,38 @@ pub enum DockerCommand {
     Check(DockerCommonArgs),
     Push(DockerReleaseArgs),
     Release(DockerReleaseArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum BuildCommand {
+    Bin(BuildCommonArgs),
+    Dist(BuildCommonArgs),
+    Clean(BuildCleanArgs),
+    Doctor(BuildCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct BuildCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct BuildCleanArgs {
+    #[command(flatten)]
+    pub common: BuildCommonArgs,
+    #[arg(long, default_value_t = false)]
+    pub include_bin: bool,
 }
 
 #[derive(Args, Debug, Clone)]

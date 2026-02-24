@@ -1,4 +1,6 @@
-use crate::cli::{DockerCommand, DockerCommonArgs, PoliciesCommand};
+use crate::cli::{
+    BuildCleanArgs, BuildCommand, BuildCommonArgs, DockerCommand, DockerCommonArgs, PoliciesCommand,
+};
 use crate::*;
 use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
@@ -258,6 +260,112 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             1
         }
     }
+}
+
+pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
+    let run = (|| -> Result<(String, i32), String> {
+        let started = std::time::Instant::now();
+        match command {
+            BuildCommand::Bin(common) => build_emit(
+                &common,
+                started,
+                "bin",
+                "build bin wrapper is defined (artifacts/bin)",
+                vec!["bijux", "bijux-atlas", "bijux-dev-atlas"],
+            ),
+            BuildCommand::Dist(common) => build_emit(
+                &common,
+                started,
+                "dist",
+                "build dist wrapper is defined (artifacts/dist)",
+                vec!["bijux-atlas", "bijux-dev-atlas"],
+            ),
+            BuildCommand::Doctor(common) => build_emit(
+                &common,
+                started,
+                "doctor",
+                "build doctor wrapper is defined",
+                Vec::new(),
+            ),
+            BuildCommand::Clean(args) => run_build_clean(args, started),
+        }
+    })();
+    match run {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                println!("{rendered}");
+            }
+            code
+        }
+        Err(err) => {
+            eprintln!("bijux-dev-atlas build failed: {err}");
+            1
+        }
+    }
+}
+
+fn build_emit(
+    common: &BuildCommonArgs,
+    started: std::time::Instant,
+    action: &str,
+    text: &str,
+    binaries: Vec<&str>,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = common
+        .run_id
+        .as_ref()
+        .map(|v| RunId::parse(v))
+        .transpose()?
+        .unwrap_or_else(|| RunId::from_seed(&format!("build_{action}")));
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": action,
+        "text": text,
+        "repo_root": repo_root.display().to_string(),
+        "run_id": run_id.as_str(),
+        "artifacts": {
+            "bin_dir": repo_root.join("artifacts/bin").display().to_string(),
+            "dist_dir": repo_root.join("artifacts/dist").display().to_string(),
+            "build_dir": repo_root.join("artifacts/build/cargo").display().to_string()
+        },
+        "binaries": binaries,
+        "capabilities": {
+            "subprocess": common.allow_subprocess,
+            "fs_write": common.allow_write
+        },
+        "duration_ms": started.elapsed().as_millis() as u64
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_build_clean(
+    args: BuildCleanArgs,
+    started: std::time::Instant,
+) -> Result<(String, i32), String> {
+    if !args.common.allow_write {
+        return Err("build clean requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+    let mut removed = vec![repo_root.join("artifacts/build/cargo")];
+    if args.include_bin {
+        removed.push(repo_root.join("artifacts/bin"));
+    }
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "clean",
+        "text": "build clean wrapper is defined (scoped artifacts only)",
+        "repo_root": repo_root.display().to_string(),
+        "removed_paths": removed.iter().map(|p| p.display().to_string()).collect::<Vec<_>>(),
+        "capabilities": {
+            "subprocess": args.common.allow_subprocess,
+            "fs_write": args.common.allow_write
+        },
+        "duration_ms": started.elapsed().as_millis() as u64
+    });
+    let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
+    Ok((rendered, 0))
 }
 
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
