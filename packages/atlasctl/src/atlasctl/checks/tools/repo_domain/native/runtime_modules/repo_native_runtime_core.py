@@ -301,7 +301,7 @@ def check_scripts_surface_docs_drift(repo_root: Path) -> tuple[int, list[str]]:
 def check_script_errors(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     for path in sorted((repo_root / "scripts/bin").glob("bijux-atlas-*")):
-        if not path.is_file() or path.name == "bijux-atlas-dev":
+        if not path.is_file() or path.name == "bijux-dev-atlas":
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         if "python3 -m atlasctl.cli" in text:

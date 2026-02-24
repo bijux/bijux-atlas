@@ -78,9 +78,9 @@
   ],
   "bin_commands": [
     {
-      "command": "bijux-atlas-dev",
+      "command": "bijux-dev-atlas",
       "mapped_cli": "atlasctl dev",
-      "script": "scripts/bin/bijux-atlas-dev"
+      "script": "scripts/bin/bijux-dev-atlas"
     },
     {
       "command": "bijux-atlas-ops",
@@ -3387,7 +3387,7 @@
     {
       "extension": "",
       "is_executable": true,
-      "path": "scripts/bin/bijux-atlas-dev",
+      "path": "scripts/bin/bijux-dev-atlas",
       "tags": []
     },
     {
