@@ -483,8 +483,25 @@ pub fn write_sharded_sqlite_catalog(
             fai_sha256: "",
         })?;
         shards.push(ShardEntry::new(
-            bucket,
-            seqids,
+            bijux_atlas_model::ShardId::parse(
+                &bucket
+                    .chars()
+                    .map(|c| {
+                        if c.is_ascii_alphanumeric() {
+                            c.to_ascii_lowercase()
+                        } else if c == '-' || c == '_' {
+                            c
+                        } else {
+                            '_'
+                        }
+                    })
+                    .collect::<String>(),
+            )
+            .map_err(|e| IngestError(e.to_string()))?,
+            seqids
+                .iter()
+                .map(|s| bijux_atlas_model::SeqId::parse(s).map_err(|e| IngestError(e.to_string())))
+                .collect::<Result<Vec<_>, _>>()?,
             file_name,
             sha256_hex(&fs::read(&sqlite_path).map_err(|e| IngestError(e.to_string()))?),
         ));
