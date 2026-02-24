@@ -61,6 +61,24 @@ fn doctor_supports_json_format() {
 }
 
 #[test]
+fn print_policies_outputs_stable_json() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .arg("--print-policies")
+        .output()
+        .expect("print policies");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_str()),
+        Some("1")
+    );
+    assert!(payload.get("repo").is_some());
+    assert!(payload.get("ops").is_some());
+}
+
+#[test]
 fn list_rejects_jsonl_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

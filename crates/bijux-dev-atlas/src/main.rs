@@ -12,6 +12,7 @@ use bijux_dev_atlas_core::{
     Selectors,
 };
 use bijux_dev_atlas_model::{CheckId, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -26,8 +27,12 @@ struct Cli {
     verbose: bool,
     #[arg(long, default_value_t = false)]
     debug: bool,
+    #[arg(long, default_value_t = false)]
+    print_policies: bool,
+    #[arg(long)]
+    repo_root: Option<PathBuf>,
     #[command(subcommand)]
-    command: Command,
+    command: Option<Command>,
 }
 
 #[derive(Subcommand, Debug)]
@@ -797,6 +802,13 @@ fn run_check_doctor(
     write_output_if_requested(out, &rendered)?;
     let exit = if status == "ok" { 0 } else { 1 };
     Ok((rendered, exit))
+}
+
+fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
+    let rendered = canonical_policy_json(&policies.to_document()).map_err(|err| err.to_string())?;
+    Ok((rendered, 0))
 }
 
 const REQUIRED_OPS_TOOLS: &[&str] = &["kind", "kubectl", "helm", "curl"];
@@ -1861,7 +1873,30 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
 
 fn main() {
     let cli = Cli::parse();
-    let exit = match cli.command {
+    if cli.print_policies {
+        let exit = match run_print_policies(cli.repo_root.clone()) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas --print-policies failed: {err}");
+                1
+            }
+        };
+        std::process::exit(exit);
+    }
+
+    let Some(command) = cli.command else {
+        eprintln!(
+            "bijux-dev-atlas requires a subcommand unless --print-policies is provided"
+        );
+        std::process::exit(2);
+    };
+
+    let exit = match command {
         Command::List {
             repo_root,
             suite,
@@ -2170,7 +2205,7 @@ mod tests {
         for argv in commands {
             let cli = super::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                super::Command::Ops { .. } => {}
+                Some(super::Command::Ops { .. }) => {}
                 _ => panic!("expected ops command"),
             }
         }
@@ -2192,7 +2227,7 @@ mod tests {
         for argv in commands {
             let cli = super::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                super::Command::Check { .. } => {}
+                Some(super::Command::Check { .. }) => {}
                 _ => panic!("expected check command"),
             }
         }
