@@ -12,7 +12,8 @@ fn repo_root() -> PathBuf {
 
 #[test]
 fn makefiles_are_free_of_legacy_atlasctl_token() {
-    let root = repo_root().join("makefiles");
+    let repo = repo_root();
+    let root = repo.join("makefiles");
     let mut stack = vec![root.clone()];
     let mut violations = Vec::new();
     while let Some(dir) = stack.pop() {
@@ -26,7 +27,7 @@ fn makefiles_are_free_of_legacy_atlasctl_token() {
             if path.extension().and_then(|v| v.to_str()) != Some("mk") {
                 continue;
             }
-            let rel = path.strip_prefix(repo_root()).unwrap_or(&path);
+            let rel = path.strip_prefix(&repo).unwrap_or(&path);
             let text = fs::read_to_string(&path).expect("read makefile");
             if text.contains("atlasctl") {
                 violations.push(rel.display().to_string());
@@ -36,5 +37,22 @@ fn makefiles_are_free_of_legacy_atlasctl_token() {
     assert!(
         violations.is_empty(),
         "legacy atlasctl token must not appear in makefiles: {violations:?}"
+    );
+}
+
+#[test]
+fn root_makefile_and_removed_macros_file_are_free_of_legacy_atlasctl_token() {
+    let repo = repo_root();
+    let root_makefile = repo.join("Makefile");
+    let root_text = fs::read_to_string(&root_makefile).expect("read root Makefile");
+    assert!(
+        !root_text.contains("atlasctl"),
+        "legacy atlasctl token must not appear in root Makefile"
+    );
+
+    let removed_macros = repo.join("makefiles/_macros.mk");
+    assert!(
+        !removed_macros.exists(),
+        "legacy makefiles/_macros.mk should remain deleted"
     );
 }
