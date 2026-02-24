@@ -150,11 +150,11 @@ pub(super) fn check_ops_internal_registry_consistency(
 pub(super) fn check_root_packages_atlasctl_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("packages/atlasctl");
+    let rel = Path::new("packages").join("atlasctl");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![Violation {
             code: "ROOT_PACKAGES_ATLASCTL_STILL_PRESENT".to_string(),
-            message: "legacy packages/atlasctl directory still exists".to_string(),
+            message: "legacy package-tree atlasctl directory still exists".to_string(),
             hint: Some("remove packages/atlasctl after migration closure".to_string()),
             path: Some(rel.display().to_string()),
             line: None,
@@ -200,12 +200,12 @@ pub(super) fn check_root_artifacts_reports_atlasctl_absent(
 pub(super) fn check_root_python_toolchain_toml_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("packages/python-toolchain.toml");
+    let rel = Path::new("packages").join("python-toolchain.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(vec![violation(
             "ROOT_PYTHON_TOOLCHAIN_TOML_PRESENT",
             "legacy python toolchain SSOT file still exists".to_string(),
-            "delete packages/python-toolchain.toml after atlasctl removal",
+            "delete the legacy python toolchain file after control-plane migration",
             Some(rel),
         )])
     } else {
