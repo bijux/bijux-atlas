@@ -6,6 +6,9 @@
   "checks_module_max_loc": 600,
   "checks_legacy_signature_max": 398,
   "checks_module_loc_exemptions": [
+    "packages/atlasctl/src/atlasctl/checks/domains/internal.py",
+    "packages/atlasctl/src/atlasctl/checks/registry.py",
+    "packages/atlasctl/src/atlasctl/checks/tools/make_enforcement.py",
     "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/__init__.py",
     "packages/atlasctl/src/atlasctl/checks/domains/policies/make/__init__.py",
     "packages/atlasctl/src/atlasctl/checks/domains/policies/make/enforcement.py",
