@@ -9,8 +9,8 @@ import subprocess
 from pathlib import Path
 
 from .check_ops_manifests_schema import run as run_ops_manifests_schema_check
-from .ops_generated import check_ops_generated_not_tracked_unless_allowed
-from .ops_pins import (
+from ....tools.ops_generated import check_ops_generated_not_tracked_unless_allowed
+from ....tools.ops_pins import (
     check_ops_pins_no_unpinned_versions,
     check_ops_pins_update_is_deterministic,
 )
