@@ -25,6 +25,7 @@ See `makefiles/CONTRACT.md` for normative rules.
 - `make list`
 - `make dev-atlas`
 - `make ci`
+- `make ci-pr`
 - `make fmt`
 - `make lint`
 - `make test`
@@ -38,6 +39,7 @@ See `makefiles/CONTRACT.md` for normative rules.
 - `make ops`
 - `make policies`
 - `make doctor`
+- `make clean`
 
 ## Verification
 ```bash
