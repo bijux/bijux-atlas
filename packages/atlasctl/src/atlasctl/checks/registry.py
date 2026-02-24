@@ -8,12 +8,7 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from .domains.configs import CHECKS as CONFIGS_CHECKS
-from .domains.docs import CHECKS as DOCS_CHECKS
-from .domains.internal import CHECKS as INTERNAL_CHECKS
-from .domains.ops import CHECKS as OPS_CHECKS
-from .domains.policies import CHECKS as POLICIES_CHECKS
-from .domains.repo import CHECKS as REPO_CHECKS
+from .domains import register_all
 from .model import CheckDef, CheckId, DomainId, Tag
 from .models import RegistryError, RegistryRecord, SuiteId, validate_tag
 from ..core.runtime.paths import write_text_file
@@ -29,19 +24,7 @@ REGISTRY_SCHEMA = Path("packages/atlasctl/src/atlasctl/contracts/schema/schemas/
 SUITES_CATALOG_JSON = Path("packages/atlasctl/src/atlasctl/registry/suites_catalog.json")
 CHECK_ID_MIGRATION_JSON = Path("configs/policy/check-id-migration.json")
 
-ALL_CHECKS: tuple[CheckDef, ...] = tuple(
-    sorted(
-        (
-            *REPO_CHECKS,
-            *OPS_CHECKS,
-            *POLICIES_CHECKS,
-            *DOCS_CHECKS,
-            *CONFIGS_CHECKS,
-            *INTERNAL_CHECKS,
-        ),
-        key=lambda check: str(check.check_id),
-    )
-)
+ALL_CHECKS: tuple[CheckDef, ...] = register_all()
 
 RUNTIME_REGISTRY_SOURCE = "python"
 GENERATED_REGISTRY_ARTIFACTS: tuple[str, ...] = (
