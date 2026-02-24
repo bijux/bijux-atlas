@@ -165,3 +165,30 @@ fn ops_status_supports_json_format() {
         .expect("rows array");
     assert_eq!(rows.len(), 1);
 }
+
+#[test]
+fn ops_doctor_and_validate_do_not_require_subprocess_flag() {
+    for args in [
+        ["ops", "doctor", "--format", "json"],
+        ["ops", "validate", "--format", "json"],
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+            .current_dir(repo_root())
+            .args(args)
+            .output()
+            .expect("ops command");
+        assert!(output.status.success());
+    }
+}
+
+#[test]
+fn ops_list_tools_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "list-tools", "--format", "json"])
+        .output()
+        .expect("ops list-tools");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("subprocess is denied"));
+}
