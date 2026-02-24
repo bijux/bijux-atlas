@@ -4,6 +4,7 @@ use crate::cli::{
 use crate::*;
 use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
+use sha2::{Digest, Sha256};
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -267,20 +268,8 @@ pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
         let started = std::time::Instant::now();
         match command {
             BuildCommand::Bin(common) => run_build_bin(&common, started),
-            BuildCommand::Dist(common) => build_emit(
-                &common,
-                started,
-                "dist",
-                "build dist wrapper is defined (artifacts/dist)",
-                vec!["bijux-atlas", "bijux-dev-atlas"],
-            ),
-            BuildCommand::Doctor(common) => build_emit(
-                &common,
-                started,
-                "doctor",
-                "build doctor wrapper is defined",
-                Vec::new(),
-            ),
+            BuildCommand::Dist(common) => run_build_dist(&common, started),
+            BuildCommand::Doctor(common) => run_build_doctor(&common, started),
             BuildCommand::Clean(args) => run_build_clean(args, started),
         }
     })();
@@ -296,42 +285,6 @@ pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
             1
         }
     }
-}
-
-fn build_emit(
-    common: &BuildCommonArgs,
-    started: std::time::Instant,
-    action: &str,
-    text: &str,
-    binaries: Vec<&str>,
-) -> Result<(String, i32), String> {
-    let repo_root = resolve_repo_root(common.repo_root.clone())?;
-    let run_id = common
-        .run_id
-        .as_ref()
-        .map(|v| RunId::parse(v))
-        .transpose()?
-        .unwrap_or_else(|| RunId::from_seed(&format!("build_{action}")));
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "action": action,
-        "text": text,
-        "repo_root": repo_root.display().to_string(),
-        "run_id": run_id.as_str(),
-        "artifacts": {
-            "bin_dir": repo_root.join("artifacts/bin").display().to_string(),
-            "dist_dir": repo_root.join("artifacts/dist").display().to_string(),
-            "build_dir": repo_root.join("artifacts/build/cargo").display().to_string()
-        },
-        "binaries": binaries,
-        "capabilities": {
-            "subprocess": common.allow_subprocess,
-            "fs_write": common.allow_write
-        },
-        "duration_ms": started.elapsed().as_millis() as u64
-    });
-    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-    Ok((rendered, 0))
 }
 
 fn run_build_bin(
@@ -481,6 +434,112 @@ fn binary_with_ext(name: &str) -> String {
     }
 }
 
+fn run_build_dist(
+    common: &BuildCommonArgs,
+    started: std::time::Instant,
+) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("build dist requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("build dist requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let artifacts_bin = repo_root.join("artifacts/bin");
+    let bin_manifest = artifacts_bin.join("manifest.json");
+    if !bin_manifest.exists() {
+        let nested = BuildCommonArgs {
+            repo_root: Some(repo_root.clone()),
+            format: FormatArg::Json,
+            out: None,
+            run_id: common.run_id.clone(),
+            allow_write: true,
+            allow_subprocess: true,
+        };
+        let _ = run_build_bin(&nested, std::time::Instant::now())?;
+    }
+    let dist_dir = repo_root.join("artifacts/dist");
+    fs::create_dir_all(&dist_dir)
+        .map_err(|e| format!("cannot create {}: {e}", dist_dir.display()))?;
+    let archive_name = format!(
+        "bijux-atlas-dev-tools_{}_{}_{}.tar.gz",
+        env!("CARGO_PKG_VERSION"),
+        std::env::consts::OS,
+        std::env::consts::ARCH
+    );
+    let archive_path = dist_dir.join(archive_name);
+    let status = ProcessCommand::new("tar")
+        .current_dir(&repo_root)
+        .args([
+            "-czf",
+            archive_path.to_string_lossy().as_ref(),
+            "artifacts/bin",
+            "README.md",
+        ])
+        .status()
+        .map_err(|e| format!("failed to run tar for dist bundle: {e}"))?;
+    if !status.success() {
+        return Err("tar failed while creating build dist bundle".to_string());
+    }
+    let bytes = fs::read(&archive_path)
+        .map_err(|e| format!("cannot read {}: {e}", archive_path.display()))?;
+    let mut hasher = Sha256::new();
+    hasher.update(&bytes);
+    let checksum = format!("{:x}", hasher.finalize());
+    let checksum_path = dist_dir.join("sha256sum.txt");
+    let checksum_line = format!("{}  {}\n", checksum, archive_path.file_name().unwrap().to_string_lossy());
+    fs::write(&checksum_path, checksum_line)
+        .map_err(|e| format!("cannot write {}: {e}", checksum_path.display()))?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "dist",
+        "text": "created release bundle under artifacts/dist",
+        "repo_root": repo_root.display().to_string(),
+        "archive": archive_path.display().to_string(),
+        "sha256sum": checksum_path.display().to_string(),
+        "checksum": checksum,
+        "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "duration_ms": started.elapsed().as_millis() as u64
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
+fn run_build_doctor(
+    common: &BuildCommonArgs,
+    started: std::time::Instant,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let mut rows = Vec::new();
+    for tool in ["cargo", "tar"] {
+        let found = ProcessCommand::new("sh")
+            .arg("-c")
+            .arg(format!("command -v {tool} >/dev/null 2>&1"))
+            .status()
+            .map(|s| s.success())
+            .unwrap_or(false);
+        rows.push(serde_json::json!({"kind":"tool","name":tool,"found":found}));
+    }
+    rows.push(serde_json::json!({"kind":"path","name":"artifacts_bin","path": repo_root.join("artifacts/bin").display().to_string()}));
+    rows.push(serde_json::json!({"kind":"path","name":"artifacts_dist","path": repo_root.join("artifacts/dist").display().to_string()}));
+    let errors = rows
+        .iter()
+        .filter(|row| row.get("kind").and_then(|v| v.as_str()) == Some("tool") && row.get("found").and_then(|v| v.as_bool()) == Some(false))
+        .count();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "doctor",
+        "status": if errors == 0 { "ok" } else { "failed" },
+        "text": "build doctor toolchain checks",
+        "rows": rows,
+        "summary": {"total": 4, "errors": errors, "warnings": 0},
+        "capabilities": {"subprocess": true, "fs_write": false},
+        "duration_ms": started.elapsed().as_millis() as u64
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, if errors == 0 { 0 } else { 1 }))
+}
+
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
     let payload = serde_json::json!({
         "schema_version": CONTRACT_SCHEMA_VERSION,
@@ -628,6 +687,7 @@ pub(crate) fn run_help_inventory_command(
             {"name": "ops", "kind": "group"},
             {"name": "docs", "kind": "group"},
             {"name": "configs", "kind": "group"},
+            {"name": "build", "kind": "group"},
             {"name": "policies", "kind": "group"},
             {"name": "docker", "kind": "group"},
             {"name": "workflows", "kind": "group"},
