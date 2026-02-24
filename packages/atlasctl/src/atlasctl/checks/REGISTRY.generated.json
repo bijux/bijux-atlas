@@ -861,6 +861,171 @@
     },
     {
       "area": "no",
+      "callable": "check_checks_no_cwd_reliance",
+      "category": "check",
+      "description": "forbid cwd-dependent path calls in checks package modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use explicit repo_root context and avoid Path.cwd/os.getcwd/os.chdir in checks modules.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_cwd_reliance",
+      "intent": "forbid cwd-dependent path calls in checks package modules",
+      "legacy_id": "checks.no_cwd_reliance",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
+      "callable": "check_checks_no_direct_env_reads",
+      "category": "check",
+      "description": "forbid direct environment reads in checks package modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Read environment via CheckContext.env rather than os.environ/os.getenv inside checks modules.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_direct_env_reads",
+      "intent": "forbid direct environment reads in checks package modules",
+      "legacy_id": "checks.no_direct_env_reads",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
+      "callable": "check_no_duplicate_model_definitions",
+      "category": "check",
+      "description": "forbid duplicate model class definitions outside checks/model.py",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep model contracts in checks/model.py and remove duplicate class definitions from other modules.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_duplicate_model_definitions",
+      "intent": "forbid duplicate model class definitions outside checks/model.py",
+      "legacy_id": "checks.no_duplicate_model_definitions",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
+      "callable": "check_checks_no_path_dot_usage",
+      "category": "check",
+      "description": "forbid Path('.') usage in checks package modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Resolve paths from explicit repo_root and avoid dot-path construction.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_path_dot_usage",
+      "intent": "forbid Path('.') usage in checks package modules",
+      "legacy_id": "checks.no_path_dot_usage",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
+      "callable": "check_checks_no_print_calls",
+      "category": "check",
+      "description": "forbid print calls inside checks package modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove print calls from checks code and emit structured violations/results instead.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_print_calls",
+      "intent": "forbid print calls inside checks package modules",
+      "legacy_id": "checks.no_print_calls",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
       "callable": "check_no_raw_string_check_id_usage",
       "category": "check",
       "description": "forbid raw string check_id/domain annotations outside model module",
@@ -880,6 +1045,39 @@
       "id": "checks_checks_no_raw_string_check_id_usage",
       "intent": "forbid raw string check_id/domain annotations outside model module",
       "legacy_id": "checks.no_raw_string_check_id_usage",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "no",
+      "callable": "check_checks_no_sys_exit_calls",
+      "category": "check",
+      "description": "forbid sys.exit calls inside checks package modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Replace sys.exit usage with structured check results and propagated command exit codes.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_sys_exit_calls",
+      "intent": "forbid sys.exit calls inside checks package modules",
+      "legacy_id": "checks.no_sys_exit_calls",
       "module": "atlasctl.checks.domains.internal",
       "owner": "platform",
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
@@ -1637,6 +1835,39 @@
     },
     {
       "area": "root",
+      "callable": "check_checks_root_allowed_entries_only",
+      "category": "check",
+      "description": "require checks root to contain only canonical modules and directories",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep only canonical files and directories in packages/atlasctl/src/atlasctl/checks root.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_root_allowed_entries_only",
+      "intent": "require checks root to contain only canonical modules and directories",
+      "legacy_id": "checks.root_allowed_entries_only",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "root",
       "callable": "check_checks_root_entry_budget",
       "category": "check",
       "description": "enforce checks root entry budget",
@@ -1897,6 +2128,39 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "write",
+      "callable": "check_write_effect_declared_for_writing_checks",
+      "category": "check",
+      "description": "require fs_write effect declaration for checks that perform file writes",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Declare fs_write effect for checks that write files.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_write_effect_declared",
+      "intent": "require fs_write effect declaration for checks that perform file writes",
+      "legacy_id": "checks.write_effect_declared",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 700,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
