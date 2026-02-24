@@ -32,7 +32,9 @@ fn suite_expansion_is_stable() {
             "ops_artifacts_not_tracked".to_string(),
             "ops_generated_readonly_markers".to_string(),
             "ops_manifest_integrity".to_string(),
+            "ops_no_legacy_runner_paths".to_string(),
             "ops_no_legacy_tooling_refs".to_string(),
+            "ops_no_python_legacy_runtime_refs".to_string(),
             "ops_schema_presence".to_string(),
             "ops_surface_inventory".to_string(),
             "ops_surface_manifest".to_string(),
@@ -153,7 +155,7 @@ fn selector_by_suite_works() {
         },
     )
     .expect("selected");
-    assert_eq!(selected.len(), 8);
+    assert_eq!(selected.len(), 10);
     assert!(selected
         .iter()
         .any(|row| row.id.as_str() == "ops_surface_manifest"));

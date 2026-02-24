@@ -20,6 +20,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "ops_manifest_integrity" => Some(checks_ops_manifest_integrity),
         "ops_surface_inventory" => Some(checks_ops_surface_inventory),
         "ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
+        "ops_no_python_legacy_runtime_refs" => Some(checks_ops_no_python_legacy_runtime_refs),
+        "ops_no_legacy_runner_paths" => Some(checks_ops_no_legacy_runner_paths),
         "ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
         _ => None,
     }
@@ -321,6 +323,91 @@ fn checks_ops_artifacts_not_tracked(ctx: &CheckContext<'_>) -> Result<Vec<Violat
             Some(Path::new("ops/_evidence")),
         )])
     }
+}
+
+fn checks_ops_no_python_legacy_runtime_refs(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let forbidden = ["packages/atlasctl", "python -m atlasctl", "./bin/atlasctl"];
+    let roots = [
+        ctx.repo_root.join("crates/bijux-dev-atlas"),
+        ctx.repo_root.join("crates/bijux-dev-atlas-core"),
+        ctx.repo_root.join("crates/bijux-dev-atlas-adapters"),
+        ctx.repo_root.join("crates/bijux-dev-atlas-model"),
+    ];
+
+    for root in roots {
+        if !root.exists() {
+            continue;
+        }
+        for file in walk_files(&root) {
+            if file.extension().and_then(|v| v.to_str()) != Some("rs") {
+                continue;
+            }
+            let Ok(content) = fs::read_to_string(&file) else {
+                continue;
+            };
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+            for needle in forbidden {
+                if content.contains(needle) {
+                    violations.push(violation(
+                        "OPS_PYTHON_LEGACY_REFERENCE_FOUND",
+                        format!(
+                            "forbidden legacy runtime reference `{needle}` found in {}",
+                            rel.display()
+                        ),
+                        "remove python atlasctl coupling from bijux-dev-atlas crates",
+                        Some(rel),
+                    ));
+                }
+            }
+        }
+    }
+
+    Ok(violations)
+}
+
+fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let forbidden = ["scripts/areas", "xtask", "/tools/"];
+    let roots = [
+        ctx.repo_root.join("crates/bijux-dev-atlas"),
+        ctx.repo_root.join("crates/bijux-dev-atlas-core"),
+        ctx.repo_root.join("crates/bijux-dev-atlas-adapters"),
+        ctx.repo_root.join("crates/bijux-dev-atlas-model"),
+    ];
+
+    for root in roots {
+        if !root.exists() {
+            continue;
+        }
+        for file in walk_files(&root) {
+            let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
+            if ext != "rs" && ext != "md" && ext != "toml" {
+                continue;
+            }
+            let Ok(content) = fs::read_to_string(&file) else {
+                continue;
+            };
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+            for needle in forbidden {
+                if content.contains(needle) {
+                    violations.push(violation(
+                        "OPS_LEGACY_RUNNER_PATH_REFERENCE_FOUND",
+                        format!(
+                            "forbidden legacy runner path reference `{needle}` found in {}",
+                            rel.display()
+                        ),
+                        "remove legacy runner path references from dev-atlas crates",
+                        Some(rel),
+                    ));
+                }
+            }
+        }
+    }
+
+    Ok(violations)
 }
 
 fn check_ops_internal_registry_consistency(
