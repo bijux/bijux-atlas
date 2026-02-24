@@ -3,6 +3,8 @@ use std::fmt;
 
 pub use crate::generated::error_codes::{ErrorCode, ERROR_CODES};
 
+pub type Result<T> = std::result::Result<T, Error>;
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
@@ -38,6 +40,60 @@ impl fmt::Display for ErrorCode {
 pub enum ConfigPathScope {
     User,
     Workspace,
+}
+
+#[derive(Debug)]
+#[non_exhaustive]
+pub enum Error {
+    #[cfg(feature = "serde")]
+    SerdeJson(serde_json::Error),
+    #[cfg(feature = "serde")]
+    DecodeCursorBase64(String),
+    #[cfg(feature = "serde")]
+    DecodeCursorJson(String),
+    InvalidIdentifier {
+        kind: &'static str,
+        value: String,
+        reason: &'static str,
+    },
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            #[cfg(feature = "serde")]
+            Self::SerdeJson(err) => write!(f, "serde json error: {err}"),
+            #[cfg(feature = "serde")]
+            Self::DecodeCursorBase64(message) => write!(f, "cursor base64 decode failed: {message}"),
+            #[cfg(feature = "serde")]
+            Self::DecodeCursorJson(message) => write!(f, "cursor json decode failed: {message}"),
+            Self::InvalidIdentifier {
+                kind,
+                value,
+                reason,
+            } => write!(f, "invalid {kind} `{value}`: {reason}"),
+        }
+    }
+}
+
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            #[cfg(feature = "serde")]
+            Self::SerdeJson(err) => Some(err),
+            #[cfg(feature = "serde")]
+            Self::DecodeCursorBase64(_) | Self::DecodeCursorJson(_) | Self::InvalidIdentifier { .. } => None,
+            #[cfg(not(feature = "serde"))]
+            Self::InvalidIdentifier { .. } => None,
+        }
+    }
+}
+
+#[cfg(feature = "serde")]
+impl From<serde_json::Error> for Error {
+    fn from(value: serde_json::Error) -> Self {
+        Self::SerdeJson(value)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
