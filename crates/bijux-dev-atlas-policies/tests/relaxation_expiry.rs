@@ -12,9 +12,7 @@ fn relaxation_expiry_is_enforced() {
       ]
     });
     let err = validate_relaxation_expiry(&expired, "2026-02-24").expect_err("must fail");
-    assert!(err
-        .to_string()
-        .contains("expired on `2020-01-01`"));
+    assert!(err.to_string().contains("expired on `2020-01-01`"));
 
     let valid = serde_json::json!({
       "relaxations": [

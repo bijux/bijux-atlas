@@ -31,7 +31,10 @@ fn sample_report() -> RunReport {
         evidence: vec![evidence],
     };
     let mut timings = BTreeMap::new();
-    timings.insert(CheckId::parse("checks_ops_surface_manifest").expect("id"), 12);
+    timings.insert(
+        CheckId::parse("checks_ops_surface_manifest").expect("id"),
+        12,
+    );
     let summary = RunSummary {
         schema_version: schema_version(),
         passed: 0,

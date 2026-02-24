@@ -192,7 +192,10 @@ pub fn evaluate_policy_set_pure(
             violations.push(PolicyViolation {
                 policy_id: "repo.max_loc_hard".to_string(),
                 category: PolicyCategory::Repo,
-                message: format!("file exceeds max_loc_hard ({lines} > {})", policy.repo_policy.max_loc_hard),
+                message: format!(
+                    "file exceeds max_loc_hard ({lines} > {})",
+                    policy.repo_policy.max_loc_hard
+                ),
                 evidence: path.clone(),
             });
         }

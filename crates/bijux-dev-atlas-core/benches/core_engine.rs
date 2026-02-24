@@ -1,5 +1,7 @@
 use bijux_dev_atlas_core::ops_inventory::load_ops_inventory_cached;
-use bijux_dev_atlas_core::{run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors};
+use bijux_dev_atlas_core::{
+    run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors,
+};
 use criterion::{criterion_group, criterion_main, Criterion};
 use std::path::{Path, PathBuf};
 use std::{fs, io};
@@ -15,8 +17,16 @@ fn repo_root() -> PathBuf {
 
 struct BenchFs;
 impl Fs for BenchFs {
-    fn read_text(&self, repo_root: &Path, path: &Path) -> Result<String, bijux_dev_atlas_core::ports::AdapterError> {
-        let target = if path.is_absolute() { path.to_path_buf() } else { repo_root.join(path) };
+    fn read_text(
+        &self,
+        repo_root: &Path,
+        path: &Path,
+    ) -> Result<String, bijux_dev_atlas_core::ports::AdapterError> {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
         fs::read_to_string(target).map_err(|err| bijux_dev_atlas_core::ports::AdapterError::Io {
             op: "read_to_string",
             path: repo_root.join(path),
@@ -24,22 +34,41 @@ impl Fs for BenchFs {
         })
     }
     fn exists(&self, repo_root: &Path, path: &Path) -> bool {
-        let target = if path.is_absolute() { path.to_path_buf() } else { repo_root.join(path) };
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
         target.exists()
     }
-    fn canonicalize(&self, repo_root: &Path, path: &Path) -> Result<PathBuf, bijux_dev_atlas_core::ports::AdapterError> {
-        let target = if path.is_absolute() { path.to_path_buf() } else { repo_root.join(path) };
-        target.canonicalize().map_err(|err| bijux_dev_atlas_core::ports::AdapterError::Io {
-            op: "canonicalize",
-            path: target,
-            detail: err.to_string(),
-        })
+    fn canonicalize(
+        &self,
+        repo_root: &Path,
+        path: &Path,
+    ) -> Result<PathBuf, bijux_dev_atlas_core::ports::AdapterError> {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
+        target
+            .canonicalize()
+            .map_err(|err| bijux_dev_atlas_core::ports::AdapterError::Io {
+                op: "canonicalize",
+                path: target,
+                detail: err.to_string(),
+            })
     }
 }
 
 struct DeniedProcessRunner;
 impl ProcessRunner for DeniedProcessRunner {
-    fn run(&self, _program: &str, _args: &[String], _repo_root: &Path) -> Result<i32, bijux_dev_atlas_core::ports::AdapterError> {
+    fn run(
+        &self,
+        _program: &str,
+        _args: &[String],
+        _repo_root: &Path,
+    ) -> Result<i32, bijux_dev_atlas_core::ports::AdapterError> {
         Err(bijux_dev_atlas_core::ports::AdapterError::EffectDenied {
             effect: "subprocess",
             detail: io::Error::other("disabled in bench").to_string(),

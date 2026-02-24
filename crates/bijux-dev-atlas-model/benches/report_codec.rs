@@ -9,7 +9,8 @@ fn large_report(size: usize) -> RunReport {
     let mut results = Vec::with_capacity(size);
     let mut timings = BTreeMap::new();
     for idx in 0..size {
-        let check_id = CheckId::parse(&format!("checks_ops_surface_manifest_{idx}")).unwrap_or_else(|_| CheckId::parse("checks_ops_surface_manifest").expect("id"));
+        let check_id = CheckId::parse(&format!("checks_ops_surface_manifest_{idx}"))
+            .unwrap_or_else(|_| CheckId::parse("checks_ops_surface_manifest").expect("id"));
         let violation = Violation {
             schema_version: schema_version(),
             code: ViolationId::parse("ops_contract_missing").expect("code"),
@@ -22,7 +23,8 @@ fn large_report(size: usize) -> RunReport {
         let evidence = EvidenceRef {
             schema_version: schema_version(),
             kind: "text".to_string(),
-            path: ArtifactPath::parse("artifacts/atlas-dev/registry_run/report.json").expect("path"),
+            path: ArtifactPath::parse("artifacts/atlas-dev/registry_run/report.json")
+                .expect("path"),
             content_type: "application/json".to_string(),
             description: "report output".to_string(),
         };

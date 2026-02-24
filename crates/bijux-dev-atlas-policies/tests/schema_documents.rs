@@ -17,11 +17,11 @@ fn policy_document_matches_declared_schema_shape() {
     let document_path = root.join("ops/atlas-dev/policies/dev-atlas-policy.json");
 
     let schema: serde_json::Value =
-        serde_json::from_str(&fs::read_to_string(schema_path).expect("schema text")).expect("schema json");
-    let document: serde_json::Value = serde_json::from_str(
-        &fs::read_to_string(document_path).expect("document text"),
-    )
-    .expect("document json");
+        serde_json::from_str(&fs::read_to_string(schema_path).expect("schema text"))
+            .expect("schema json");
+    let document: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(document_path).expect("document text"))
+            .expect("document json");
 
     let required = schema
         .get("required")
