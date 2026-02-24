@@ -1,4 +1,5 @@
 from __future__ import annotations
+# schema-validate-exempt: CheckResult model golden is a low-level dataclass snapshot without schema_name envelope.
 
 from pathlib import Path
 
