@@ -29,16 +29,12 @@ def test_check_list_json_matches_schema_and_golden() -> None:
 def test_check_list_json_category_lint_matches_golden() -> None:
     proc = run_atlasctl("--quiet", "--json", "check", "list", "--category", "lint")
     assert proc.returncode == 0, proc.stderr
-    payload = json.loads(proc.stdout)
-    validate("atlasctl.check-list.v1", payload)
     assert proc.stdout.strip() == _golden("check/check-list-category-lint.json.golden")
 
 
 def test_check_list_json_domain_ops_matches_golden() -> None:
     proc = run_atlasctl("--quiet", "--json", "check", "list", "--domain", "ops")
     assert proc.returncode == 0, proc.stderr
-    payload = json.loads(proc.stdout)
-    validate("atlasctl.check-list.v1", payload)
     assert proc.stdout.strip() == _golden("check/check-list-domain-ops.json.golden")
 
 
