@@ -60,6 +60,10 @@ fn force_json_ops(command: &mut OpsCommand) {
                 common.format = FormatArg::Json
             }
         },
+        OpsCommand::Suite { command } => match command {
+            crate::cli::OpsSuiteCommand::List(common)
+            | crate::cli::OpsSuiteCommand::Run { common, .. } => common.format = FormatArg::Json,
+        },
         OpsCommand::Stack { .. }
         | OpsCommand::K8s { .. }
         | OpsCommand::Load { .. }
@@ -189,6 +193,12 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             },
             OpsCommand::Generate { command } => match command {
                 crate::cli::OpsGenerateCommand::PinsIndex { common, .. } => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Suite { command } => match command {
+                crate::cli::OpsSuiteCommand::List(common)
+                | crate::cli::OpsSuiteCommand::Run { common, .. } => {
                     common.repo_root = Some(root.clone())
                 }
             },

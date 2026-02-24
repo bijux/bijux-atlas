@@ -357,6 +357,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsObsCommand,
     },
+    Suite {
+        #[command(subcommand)]
+        command: OpsSuiteCommand,
+    },
     Doctor(OpsCommonArgs),
     Validate(OpsCommonArgs),
     Inventory(OpsCommonArgs),
@@ -428,6 +432,16 @@ pub enum OpsObsDrillCommand {
     Run(OpsCommonArgs),
 }
 
+#[derive(Subcommand, Debug)]
+pub enum OpsSuiteCommand {
+    List(OpsCommonArgs),
+    Run {
+        suite: String,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct OpsRenderArgs {
     #[command(flatten)]
@@ -481,6 +495,8 @@ pub struct OpsCommonArgs {
     #[arg(long)]
     pub ops_root: Option<PathBuf>,
     #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
+    #[arg(long)]
     pub profile: Option<String>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
@@ -490,6 +506,10 @@ pub struct OpsCommonArgs {
     pub run_id: Option<String>,
     #[arg(long, default_value_t = false)]
     pub strict: bool,
+    #[arg(long, default_value_t = false)]
+    pub fail_fast: bool,
+    #[arg(long)]
+    pub max_failures: Option<usize>,
     #[arg(long, default_value_t = false)]
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
