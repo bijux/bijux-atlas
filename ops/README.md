@@ -17,8 +17,8 @@ Runbook index: `ops/INDEX.md`.
 - `ops/load/`: k6 suites, scenarios, contracts, baselines.
 - `ops/datasets/`: dataset manifest, pinning, QC, promotion.
 - `ops/e2e/`: composition-only scenarios over stack/obs/load/datasets.
-- `atlasctl ops ...` and `make` wrappers: operator entrypoints (no direct `ops/run/` surface).
-- atlasctl shell helper assets: `packages/atlasctl/src/atlasctl/commands/ops/runtime_modules/assets/lib/`.
+- `bijux dev atlas ops ...` and `make` wrappers: operator entrypoints (no direct script surface).
+- canonical local workflow runs through `bijux-dev-atlas` (`ops render`, `ops install`, `ops status`).
 - `ops/_meta/`: ownership/surface/contracts metadata.
 - `ops/schema/`: ops JSON schemas.
 - `ops/_generated.example/`: deterministic generated ops outputs committed to git.
@@ -27,12 +27,11 @@ Runbook index: `ops/INDEX.md`.
 
 ## Run
 
-- `make ops-help`
-- `make ops-surface`
-- `make ops-layout-lint`
-- `make ops-full`
-
-Modes:
-- `OPS_MODE=fast make ops-full`
-- `OPS_MODE=full make ops-full`
-- `OPS_DRY_RUN=1 make ops-full`
+- `cargo run -p bijux-dev-atlas -- ops doctor --format json`
+- `cargo run -p bijux-dev-atlas -- ops validate --format json`
+- `cargo run -p bijux-dev-atlas -- ops render --target kind --check --format json`
+- `cargo run -p bijux-dev-atlas -- ops install --kind --plan --allow-subprocess --allow-write`
+- `cargo run -p bijux-dev-atlas -- ops status --target pods --allow-subprocess --format json`
+- `make ops-kind-up`
+- `make ops-kind-down`
+- `make ops-status`
