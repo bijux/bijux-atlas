@@ -1,11 +1,11 @@
 # Scope: ops area wrappers only.
-# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update
+# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-obs
 SHELL := /bin/sh
 PROFILE ?= kind
 OPS_RESET_RUN_ID ?= ops_reset
 
 ops: ## Canonical ops gate
-	@$(DEV_ATLAS) ops validate --profile $(PROFILE) --format text
+	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format text
 
 ops-help: ## Show ops control-plane command surface
 	@$(DEV_ATLAS) ops --help
@@ -43,6 +43,21 @@ ops-kind-down: ## Delete local kind cluster for selected profile
 ops-status: ## Query local cluster pod status
 	@$(DEV_ATLAS) ops status --target pods --profile $(PROFILE) --allow-subprocess --format json
 
+ops-stack: ## Show stack status through grouped ops namespace
+	@$(DEV_ATLAS) ops stack status --target pods --profile $(PROFILE) --allow-subprocess --format json
+
+ops-k8s: ## Run k8s conformance wrapper through grouped ops namespace
+	@$(DEV_ATLAS) ops k8s test --profile $(PROFILE) --allow-subprocess --format json
+
+ops-e2e: ## Run e2e scenario wrapper through grouped ops namespace
+	@$(DEV_ATLAS) ops e2e run --profile $(PROFILE) --format json
+
+ops-load: ## Run load wrapper through grouped ops namespace
+	@$(DEV_ATLAS) ops load run --profile $(PROFILE) --format json
+
+ops-obs: ## Run observability drill wrapper through grouped ops namespace
+	@$(DEV_ATLAS) ops obs drill run --profile $(PROFILE) --format json
+
 ops-tools-verify: ## Verify required ops external tools
 	@$(DEV_ATLAS) ops verify-tools --allow-subprocess --format json
 
@@ -52,4 +67,4 @@ ops-pins-check: ## Validate unified reproducibility pins
 ops-pins-update: ## Refresh unified reproducibility pins
 	@$(DEV_ATLAS) ops pins update --i-know-what-im-doing --allow-subprocess --format text
 
-.PHONY: ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-tools-verify ops-pins-check ops-pins-update
+.PHONY: ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-obs ops-tools-verify ops-pins-check ops-pins-update

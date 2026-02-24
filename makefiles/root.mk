@@ -27,7 +27,7 @@ CURATED_TARGETS := \
 	policies \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
-	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-tools-verify ops-pins-check ops-pins-update \
+	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-stack ops-k8s ops-e2e ops-load ops-obs ops-tools-verify ops-pins-check ops-pins-update \
 	make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
