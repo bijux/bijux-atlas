@@ -578,6 +578,64 @@ pub(super) fn check_workflows_no_direct_docker_build_execution(
     )
 }
 
+pub(super) fn check_ops_no_executable_bit_files(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let ops_root = ctx.repo_root.join("ops");
+    if !ops_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    for file in walk_files(&ops_root) {
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mode = fs::metadata(&file)
+                .map_err(|err| CheckError::Failed(err.to_string()))?
+                .permissions()
+                .mode();
+            if mode & 0o111 != 0 {
+                let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+                violations.push(violation(
+                    "OPS_EXECUTABLE_FILE_PRESENT",
+                    format!("ops file has executable bit set: {}", rel.display()),
+                    "ops/ stores data and contracts only; remove executable bits from committed files",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_ops_no_behavior_source_files(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let ops_root = ctx.repo_root.join("ops");
+    if !ops_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    for file in walk_files(&ops_root) {
+        let ext = file.extension().and_then(|e| e.to_str()).unwrap_or_default();
+        if ext != "sh" && ext != "py" {
+            continue;
+        }
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+        let allowlisted_fixture = rel.starts_with("ops/stack/tests/");
+        if allowlisted_fixture {
+            continue;
+        }
+        violations.push(violation(
+            "OPS_BEHAVIOR_SOURCE_FILE_PRESENT",
+            format!("ops contains behavior source file outside fixture allowlist: {}", rel.display()),
+            "move behavior into crates/bijux-dev-atlas; keep ops/ for manifests, schemas, fixtures, and docs",
+            Some(rel),
+        ));
+    }
+    Ok(violations)
+}
+
 pub(super) fn check_root_no_scripts_areas_presence_or_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

@@ -13,7 +13,8 @@
 
 - `ops/` stores specifications and contracts only.
 - Operational behavior is owned by `bijux-dev-atlas` and routed through `bijux dev atlas ops ...`.
-- New shell or bash execution logic under `ops/` is forbidden.
+- New shell, python, or executable behavior under `ops/` is forbidden.
+- Fixture-like test helpers are allowed only as non-executable data under explicit test fixture paths.
 - `makefiles/ops.mk` is a thin delegator to `bijux dev atlas ...` commands.
 - CI workflows must invoke ops behavior through `make` wrappers or `bijux dev atlas ops ...` commands only.
 
@@ -37,6 +38,8 @@
 - Committed generated outputs are written only under `ops/_generated.example/`.
 - Runtime evidence and artifacts are written under `artifacts/`.
 - Symlinked directories under `ops/` are forbidden unless explicitly allowlisted.
+- Executable-bit files under `ops/` are forbidden.
+- `.sh` and `.py` files under `ops/` are forbidden except explicit fixture allowlist paths.
 
 ## Stable vs Generated
 
