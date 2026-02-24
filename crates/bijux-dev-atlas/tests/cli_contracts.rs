@@ -192,3 +192,24 @@ fn ops_list_tools_requires_allow_subprocess() {
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("subprocess is denied"));
 }
+
+#[test]
+fn ops_render_kind_check_supports_json_format_without_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "render",
+            "--target",
+            "kind",
+            "--check",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops render kind check");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+}
