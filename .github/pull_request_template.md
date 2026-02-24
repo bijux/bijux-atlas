@@ -5,15 +5,15 @@
 - [ ] `make dev-fmt`
 - [ ] `make dev-lint`
 - [ ] `make dev-test`
-- [ ] `atlasctl dev audit`
+- [ ] `make dev-audit`
 
 ## Contract / SSOT Checklist
 - [ ] Any API/CLI/metrics/error/chart/trace/config/artifact surface change updates `docs/contracts/*` first.
-- [ ] Generated artifacts were refreshed (`scripts/areas/contracts/generate_contract_artifacts.py`).
+- [ ] Generated artifacts were refreshed using `make ssot-generate`.
 - [ ] `make ssot-check` is green.
 - [ ] OpenAPI drift reviewed (`make openapi-drift`).
-- [ ] No new bypass entries were introduced (attach `artifacts/reports/atlasctl/policies-bypass-report.json` or link CI artifact).
-- [ ] No new ops scripts were added; use `atlasctl` commands/modules instead.
+- [ ] No new bypass entries were introduced (attach `artifacts/atlas-dev/check/policies-bypass-report.json` or link CI artifact).
+- [ ] No new ops scripts were added; use `bijux dev atlas` command families instead.
 
 ## Risk
 - [ ] Breaking change: explain in PR body and update compatibility docs.

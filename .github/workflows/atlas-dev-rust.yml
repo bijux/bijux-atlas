@@ -51,15 +51,11 @@ jobs:
       - name: Validate dev atlas plugin metadata JSON
         run: |
           cargo run -p bijux-dev-atlas -- --bijux-plugin-metadata > /tmp/dev-atlas-plugin-metadata.json
-          python3 - <<'PY'
-          import json
-          p = json.load(open("/tmp/dev-atlas-plugin-metadata.json"))
-          assert p["schema_version"] == "v1"
-          assert p["name"] == "bijux-dev-atlas"
-          assert "version" in p and p["version"]
-          assert "compatible_umbrella_min" in p and p["compatible_umbrella_min"]
-          assert "compatible_umbrella_max_exclusive" in p and p["compatible_umbrella_max_exclusive"]
-          PY
+          jq -e '.schema_version == "v1"' /tmp/dev-atlas-plugin-metadata.json >/dev/null
+          jq -e '.name == "bijux-dev-atlas"' /tmp/dev-atlas-plugin-metadata.json >/dev/null
+          jq -e '.version | type == "string" and length > 0' /tmp/dev-atlas-plugin-metadata.json >/dev/null
+          jq -e '.compatible_umbrella_min | type == "string" and length > 0' /tmp/dev-atlas-plugin-metadata.json >/dev/null
+          jq -e '.compatible_umbrella_max_exclusive | type == "string" and length > 0' /tmp/dev-atlas-plugin-metadata.json >/dev/null
       - name: Verify canonical governance entrypoint
         run: |
           make dev-doctor >/dev/null
@@ -104,9 +100,24 @@ jobs:
           cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json >/dev/null
       - name: Enforce governance migration guards
         run: |
-          ! rg -n "scripts/areas" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml
           ! rg -n "xtask" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml
           ! rg -n "bash ops/|ops/_lib" makefiles/_ops.mk .github/workflows/atlas-dev-rust.yml
+  zero-legacy-github:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail on legacy control-plane token references in .github
+        run: |
+          legacy_token="$(printf 'atlas%s' 'ctl')"
+          ! rg -n "${legacy_token}|\\./bin/${legacy_token}|packages/${legacy_token}" .github
+
+  zero-workflow-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail on direct script entrypoints in workflows
+        run: |
+          ! rg -n "bash +scripts/|python(3)? +scripts/" .github/workflows
       - name: Verify ops make wrappers in CI mode
         env:
           BIJUX: bijux

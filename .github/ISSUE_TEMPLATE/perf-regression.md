@@ -36,7 +36,7 @@ Describe the regression and affected suite(s).
 
 ```bash
 make ops-load-nightly
-python3 scripts/perf/score_k6.py
+make ops-load-run
 ```
 
 Expected output shape: violating suite names and threshold deltas.
