@@ -114,6 +114,28 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "ops_makefile_routes_dev_atlas"
+domain = "ops"
+title = "ops makefile routes through dev atlas command surface"
+docs = "makefiles/ops.mk"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_workflow_routes_dev_atlas"
+domain = "ops"
+title = "atlas dev workflow avoids atlasctl ops routes"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
 id = "repo_import_boundary"
 domain = "repo"
 title = "repo import boundary contracts"
@@ -176,6 +198,8 @@ checks = [
   "ops_artifacts_not_tracked",
   "ops_no_python_legacy_runtime_refs",
   "ops_no_legacy_runner_paths",
+  "ops_makefile_routes_dev_atlas",
+  "ops_workflow_routes_dev_atlas",
 ]
 domains = ["ops"]
 tags_any = ["fast"]
@@ -215,6 +239,8 @@ checks = [
   "ops_manifest_integrity",
   "ops_surface_inventory",
   "ops_artifacts_not_tracked",
+  "ops_makefile_routes_dev_atlas",
+  "ops_workflow_routes_dev_atlas",
 ]
 domains = []
 tags_any = []

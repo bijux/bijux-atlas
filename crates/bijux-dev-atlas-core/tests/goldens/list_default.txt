@@ -2,6 +2,7 @@ docs_index_links	docs index links must resolve
 make_wrapper_commands	make wrapper commands stay canonical
 ops_artifacts_not_tracked	ops evidence paths stay empty in repository
 ops_generated_readonly_markers	ops generated files keep readonly generator markers
+ops_makefile_routes_dev_atlas	ops makefile routes through dev atlas command surface
 ops_manifest_integrity	ops inventory manifests are valid json with required keys
 ops_no_legacy_runner_paths	dev atlas crates do not reference legacy runner path conventions
 ops_no_legacy_tooling_refs	ops does not reference legacy tooling paths
@@ -10,4 +11,5 @@ ops_schema_presence	ops schema baseline is present
 ops_surface_inventory	ops index inventories top-level surfaces
 ops_surface_manifest	ops surface manifest consistency
 ops_tree_contract	ops contract files are present
+ops_workflow_routes_dev_atlas	atlas dev workflow avoids atlasctl ops routes
 repo_import_boundary	repo import boundary contracts

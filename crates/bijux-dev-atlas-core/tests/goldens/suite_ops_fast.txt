@@ -1,5 +1,6 @@
 ops_artifacts_not_tracked
 ops_generated_readonly_markers
+ops_makefile_routes_dev_atlas
 ops_manifest_integrity
 ops_no_legacy_runner_paths
 ops_no_legacy_tooling_refs
@@ -8,3 +9,4 @@ ops_schema_presence
 ops_surface_inventory
 ops_surface_manifest
 ops_tree_contract
+ops_workflow_routes_dev_atlas

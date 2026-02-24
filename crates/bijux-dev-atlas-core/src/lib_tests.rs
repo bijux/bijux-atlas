@@ -31,6 +31,7 @@ fn suite_expansion_is_stable() {
         vec![
             "ops_artifacts_not_tracked".to_string(),
             "ops_generated_readonly_markers".to_string(),
+            "ops_makefile_routes_dev_atlas".to_string(),
             "ops_manifest_integrity".to_string(),
             "ops_no_legacy_runner_paths".to_string(),
             "ops_no_legacy_tooling_refs".to_string(),
@@ -39,6 +40,7 @@ fn suite_expansion_is_stable() {
             "ops_surface_inventory".to_string(),
             "ops_surface_manifest".to_string(),
             "ops_tree_contract".to_string(),
+            "ops_workflow_routes_dev_atlas".to_string(),
         ]
     );
 }
@@ -155,7 +157,7 @@ fn selector_by_suite_works() {
         },
     )
     .expect("selected");
-    assert_eq!(selected.len(), 10);
+    assert_eq!(selected.len(), 12);
     assert!(selected
         .iter()
         .any(|row| row.id.as_str() == "ops_surface_manifest"));
