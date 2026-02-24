@@ -153,12 +153,19 @@ pub(super) fn check_root_packages_atlasctl_absent(
     let rel = Path::new("packages").join("atlasctl");
     if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![Violation {
-            code: "ROOT_PACKAGES_ATLASCTL_STILL_PRESENT".to_string(),
+            schema_version: bijux_dev_atlas_model::schema_version(),
+            code: bijux_dev_atlas_model::ViolationId::parse(
+                "root_packages_atlasctl_still_present",
+            )
+            .expect("valid id"),
             message: "legacy package-tree atlasctl directory still exists".to_string(),
             hint: Some(
                 "remove the legacy atlasctl package tree after migration closure".to_string(),
             ),
-            path: Some(rel.display().to_string()),
+            path: Some(
+                bijux_dev_atlas_model::ArtifactPath::parse(&rel.display().to_string())
+                    .expect("valid path"),
+            ),
             line: None,
             severity: Severity::Warn,
         }])
