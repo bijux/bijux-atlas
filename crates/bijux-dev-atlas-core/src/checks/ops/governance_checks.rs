@@ -151,7 +151,7 @@ pub(super) fn check_root_packages_atlasctl_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("packages").join("atlasctl");
-    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+    if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![Violation {
             code: "ROOT_PACKAGES_ATLASCTL_STILL_PRESENT".to_string(),
             message: "legacy package-tree atlasctl directory still exists".to_string(),
@@ -169,12 +169,12 @@ pub(super) fn check_root_bin_atlasctl_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("bin/atlasctl");
-    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+    if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![violation(
             "ROOT_BIN_ATLASCTL_SHIM_PRESENT",
             "legacy root atlasctl shim still exists".to_string(),
             "delete bin/atlasctl; use cargo run -p bijux-dev-atlas or bijux dev atlas",
-            Some(rel),
+            Some(&rel),
         )])
     } else {
         Ok(Vec::new())
@@ -185,12 +185,12 @@ pub(super) fn check_root_artifacts_reports_atlasctl_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("artifacts/reports/atlasctl");
-    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+    if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![violation(
             "ROOT_ARTIFACTS_REPORTS_ATLASCTL_PRESENT",
             "legacy atlasctl report artifact directory exists".to_string(),
             "remove artifacts/reports/atlasctl and migrate report writers to artifacts/atlas-dev",
-            Some(rel),
+            Some(&rel),
         )])
     } else {
         Ok(Vec::new())
@@ -201,12 +201,12 @@ pub(super) fn check_root_python_toolchain_toml_absent(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("packages").join("python-toolchain.toml");
-    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+    if ctx.adapters.fs.exists(ctx.repo_root, &rel) {
         Ok(vec![violation(
             "ROOT_PYTHON_TOOLCHAIN_TOML_PRESENT",
             "legacy python toolchain SSOT file still exists".to_string(),
             "delete the legacy python toolchain file after control-plane migration",
-            Some(rel),
+            Some(&rel),
         )])
     } else {
         Ok(Vec::new())
@@ -232,7 +232,30 @@ pub(super) fn check_root_uv_lock_absent(
 pub(super) fn check_docs_no_atlasctl_string_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    check_no_string_references_under(ctx, "docs", "atlasctl", "DOCS_ATLASCTL_REFERENCE_FOUND")
+    let root = ctx.repo_root.join("docs");
+    if !root.exists() {
+        return Ok(Vec::new());
+    }
+    let allowed_prefix = Path::new("docs/development/tooling/atlasctl-deletion");
+    let mut violations = Vec::new();
+    for file in walk_files(&root) {
+        if let Ok(content) = fs::read_to_string(&file) {
+            if !content.contains("atlasctl") {
+                continue;
+            }
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+            if rel.starts_with(allowed_prefix) {
+                continue;
+            }
+            violations.push(violation(
+                "DOCS_ATLASCTL_REFERENCE_FOUND",
+                format!("docs file contains forbidden `atlasctl` reference: {}", rel.display()),
+                "move legacy mention under docs/development/tooling/atlasctl-deletion/ or remove it",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
 }
 pub(super) fn check_workflows_no_atlasctl_string_references(
     ctx: &CheckContext<'_>,

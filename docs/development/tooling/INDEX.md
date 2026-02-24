@@ -48,3 +48,4 @@ This section does not duplicate full command reference details from each tooling
 - [tooling compatibility matrix](compat-matrix.md)
 - [tooling compatibility policy](scripts-compat-policy.md)
 - [tooling directory intent map](tools.md)
+- [atlasctl deletion policy](atlasctl-deletion/README.md)

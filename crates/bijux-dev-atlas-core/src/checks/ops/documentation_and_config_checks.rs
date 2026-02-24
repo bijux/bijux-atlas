@@ -463,13 +463,13 @@ pub(super) fn check_control_plane_naming_contract_docs(
 pub(super) fn check_atlasctl_deletion_cutoff_rules(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/development/tooling/atlasctl-deletion-plan.md");
+    let rel = Path::new("docs/development/tooling/atlasctl-deletion/README.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     for required in [
         "Cutoff date:",
-        "docs/tombstones/atlasctl/",
+        "docs/development/tooling/atlasctl-deletion/",
         "No new `atlasctl` references",
         "Any PR introducing a new `atlasctl` reference",
     ] {
@@ -477,7 +477,7 @@ pub(super) fn check_atlasctl_deletion_cutoff_rules(
             violations.push(violation(
                 "ATLASCTL_DELETION_POLICY_INCOMPLETE",
                 format!("atlasctl deletion plan is missing `{required}`"),
-                "lock atlasctl cutoff date and tombstone-only rules in the deletion plan",
+                "lock cutoff date and the single allowed atlasctl docs directory in the deletion policy",
                 Some(rel),
             ));
         }
@@ -488,16 +488,16 @@ pub(super) fn check_atlasctl_deletion_cutoff_rules(
 pub(super) fn check_atlasctl_tombstone_directory_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("docs/tombstones/atlasctl/README.md");
+    let rel = Path::new("docs/development/tooling/atlasctl-deletion/CONTRACT.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
-    for required in ["only allowed location", "atlasctl", "archival notes only"] {
+    for required in ["only allowed location", "atlasctl", "historical notes only"] {
         if !text.contains(required) {
             violations.push(violation(
                 "ATLASCTL_TOMBSTONE_DIR_INVALID",
                 format!("atlasctl tombstone README is missing `{required}`"),
-                "keep docs/tombstones/atlasctl/README.md as the explicit tombstone policy marker",
+                "keep docs/development/tooling/atlasctl-deletion/CONTRACT.md as the explicit atlasctl mention boundary marker",
                 Some(rel),
             ));
         }
