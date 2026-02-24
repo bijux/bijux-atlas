@@ -12,6 +12,8 @@ use bijux_atlas_dev_model::{
 };
 use serde::Deserialize;
 
+pub mod checks;
+
 pub const DEFAULT_REGISTRY_PATH: &str = "ops/atlas-dev/registry.toml";
 
 #[derive(Debug, Clone)]
@@ -449,14 +451,12 @@ fn effect_allowed(effect: Effect, caps: Capabilities) -> bool {
 }
 
 fn builtin_check_fn(check_id: &CheckId) -> Option<CheckFn> {
-    match check_id.as_str() {
-        "ops_surface_manifest" => Some(check_ops_surface_manifest),
+    checks::ops::builtin_ops_check_fn(check_id).or_else(|| match check_id.as_str() {
         "repo_import_boundary" => Some(check_repo_import_boundary),
         "docs_index_links" => Some(check_docs_index_links),
         "make_wrapper_commands" => Some(check_make_wrapper_commands),
-        "ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
         _ => None,
-    }
+    })
 }
 
 fn sorted_violations(mut violations: Vec<Violation>) -> Vec<Violation> {
@@ -468,33 +468,6 @@ fn sorted_violations(mut violations: Vec<Violation>) -> Vec<Violation> {
             .then(a.line.cmp(&b.line))
     });
     violations
-}
-
-fn check_ops_surface_manifest(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let manifest = Path::new("configs/ops/ops-surface-manifest.json");
-    let surface = Path::new("ops/inventory/surfaces.json");
-    let mut violations = Vec::new();
-    if !ctx.adapters.fs.exists(ctx.repo_root, manifest) {
-        violations.push(Violation {
-            code: "OPS_SURFACE_MANIFEST_MISSING".to_string(),
-            message: "missing configs/ops/ops-surface-manifest.json".to_string(),
-            hint: Some("restore ops surface manifest".to_string()),
-            path: Some(manifest.display().to_string()),
-            line: None,
-            severity: Severity::Error,
-        });
-    }
-    if !ctx.adapters.fs.exists(ctx.repo_root, surface) {
-        violations.push(Violation {
-            code: "OPS_SURFACE_INVENTORY_MISSING".to_string(),
-            message: "missing ops/inventory/surfaces.json".to_string(),
-            hint: Some("regenerate inventory surfaces".to_string()),
-            path: Some(surface.display().to_string()),
-            line: None,
-            severity: Severity::Error,
-        });
-    }
-    Ok(violations)
 }
 
 fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
@@ -541,37 +514,6 @@ fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>,
             path: Some(target.display().to_string()),
             line: None,
             severity: Severity::Error,
-        }])
-    }
-}
-
-fn check_ops_internal_registry_consistency(
-    ctx: &CheckContext<'_>,
-) -> Result<Vec<Violation>, CheckError> {
-    let path = ctx.repo_root.join(DEFAULT_REGISTRY_PATH);
-    let output = ctx
-        .adapters
-        .process
-        .run(
-            "git",
-            &[
-                "status".to_string(),
-                "--short".to_string(),
-                path.display().to_string(),
-            ],
-            ctx.repo_root,
-        )
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if output == 0 {
-        Ok(Vec::new())
-    } else {
-        Ok(vec![Violation {
-            code: "OPS_INTERNAL_REGISTRY_GIT_STATUS_FAILED".to_string(),
-            message: "unable to query git status for registry".to_string(),
-            hint: Some("ensure git is available and repository is valid".to_string()),
-            path: Some(DEFAULT_REGISTRY_PATH.to_string()),
-            line: None,
-            severity: Severity::Warn,
         }])
     }
 }
@@ -809,7 +751,19 @@ mod tests {
             .into_iter()
             .map(|c| c.id.to_string())
             .collect::<Vec<_>>();
-        assert_eq!(ids, vec!["ops_surface_manifest".to_string()]);
+        assert_eq!(
+            ids,
+            vec![
+                "ops_artifacts_not_tracked".to_string(),
+                "ops_generated_readonly_markers".to_string(),
+                "ops_manifest_integrity".to_string(),
+                "ops_no_legacy_tooling_refs".to_string(),
+                "ops_schema_presence".to_string(),
+                "ops_surface_inventory".to_string(),
+                "ops_surface_manifest".to_string(),
+                "ops_tree_contract".to_string(),
+            ]
+        );
     }
 
     #[test]
@@ -924,8 +878,10 @@ mod tests {
             },
         )
         .expect("selected");
-        assert_eq!(selected.len(), 1);
-        assert_eq!(selected[0].id.as_str(), "ops_surface_manifest");
+        assert_eq!(selected.len(), 8);
+        assert!(selected
+            .iter()
+            .any(|row| row.id.as_str() == "ops_surface_manifest"));
     }
 
     #[test]
@@ -1025,7 +981,8 @@ mod tests {
             },
         )
         .expect("report");
-        assert!(report.results.len() <= 1);
+        assert!(report.summary.failed + report.summary.errors >= 1);
+        assert!(report.summary.total < 9);
     }
 
     #[test]
@@ -1053,6 +1010,20 @@ mod tests {
             &RunOptions::default(),
         )
         .expect("report b");
+        let mut a = a;
+        let mut b = b;
+        for row in &mut a.results {
+            row.duration_ms = 0;
+        }
+        for row in &mut b.results {
+            row.duration_ms = 0;
+        }
+        for value in a.timings_ms.values_mut() {
+            *value = 0;
+        }
+        for value in b.timings_ms.values_mut() {
+            *value = 0;
+        }
         let a_text = render_json(&a).expect("json a");
         let b_text = render_json(&b).expect("json b");
         assert_eq!(a_text, b_text);
