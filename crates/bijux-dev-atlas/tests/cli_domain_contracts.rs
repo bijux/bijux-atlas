@@ -420,6 +420,52 @@ fn configs_inventory_supports_json_format() {
 }
 
 #[test]
+fn configs_list_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["configs", "list", "--format", "json"])
+        .output()
+        .expect("configs list json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn configs_inventory_writes_artifact_when_allow_write_enabled() {
+    let artifact_root = repo_root().join("artifacts/tests/configs_inventory_write");
+    if artifact_root.exists() {
+        let _ = std::fs::remove_dir_all(&artifact_root);
+    }
+    std::fs::create_dir_all(&artifact_root).expect("mkdir");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "configs",
+            "inventory",
+            "--allow-write",
+            "--artifacts-root",
+            artifact_root.to_str().expect("artifact root"),
+            "--run-id",
+            "configs_inventory_test",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("configs inventory write");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let path = payload
+        .get("artifacts")
+        .and_then(|v| v.get("inventory"))
+        .and_then(|v| v.as_str())
+        .expect("inventory artifact path");
+    assert!(std::path::Path::new(path).exists(), "artifact file must exist");
+}
+
+#[test]
 fn configs_print_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

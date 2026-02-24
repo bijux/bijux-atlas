@@ -515,6 +515,7 @@ pub struct DocsGrepArgs {
 #[derive(Subcommand, Debug)]
 pub enum ConfigsCommand {
     Print(ConfigsCommonArgs),
+    List(ConfigsCommonArgs),
     Doctor(ConfigsCommonArgs),
     Validate(ConfigsCommonArgs),
     Lint(ConfigsCommonArgs),

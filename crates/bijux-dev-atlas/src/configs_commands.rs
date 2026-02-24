@@ -76,14 +76,36 @@ fn configs_inventory_payload(
             orphans.push(format!("missing required config surface `{required}`"));
         }
     }
-    Ok(serde_json::json!({
+    let payload = serde_json::json!({
         "schema_version": 1,
         "run_id": ctx.run_id.as_str(),
         "rows": rows,
         "orphans": orphans,
         "capabilities": {"fs_write": common.allow_write, "subprocess": common.allow_subprocess, "network": common.allow_network},
         "options": {"strict": common.strict}
-    }))
+    });
+    if common.allow_write {
+        let out_dir = ctx
+            .artifacts_root
+            .join("atlas-dev")
+            .join("configs")
+            .join(ctx.run_id.as_str());
+        fs::create_dir_all(&out_dir)
+            .map_err(|e| format!("failed to create {}: {e}", out_dir.display()))?;
+        let inventory_path = out_dir.join("inventory.json");
+        fs::write(
+            &inventory_path,
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| format!("failed to write {}: {e}", inventory_path.display()))?;
+        let mut with_artifact = payload;
+        with_artifact["artifacts"] = serde_json::json!({
+            "inventory": inventory_path.display().to_string()
+        });
+        Ok(with_artifact)
+    } else {
+        Ok(payload)
+    }
 }
 
 pub(crate) fn configs_validate_payload(
@@ -304,6 +326,13 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
             ConfigsCommand::Print(common) => {
                 let ctx = configs_context(&common)?;
                 let mut payload = configs_print_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
+            }
+            ConfigsCommand::List(common) => {
+                let ctx = configs_context(&common)?;
+                let mut payload = configs_inventory_payload(&ctx, &common)?;
+                payload["text"] = serde_json::json!("configs list inventory");
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }

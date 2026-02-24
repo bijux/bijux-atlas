@@ -249,6 +249,7 @@ mod tests {
         let commands = [
             vec!["bijux-dev-atlas", "configs", "doctor"],
             vec!["bijux-dev-atlas", "configs", "print"],
+            vec!["bijux-dev-atlas", "configs", "list"],
             vec!["bijux-dev-atlas", "configs", "validate", "--strict"],
             vec!["bijux-dev-atlas", "configs", "lint"],
             vec!["bijux-dev-atlas", "configs", "fmt", "--check"],
