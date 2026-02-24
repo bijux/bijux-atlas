@@ -23,7 +23,7 @@ Target topology for `packages/atlasctl/src/atlasctl` is:
 - `core/`: effect boundaries and runtime primitives.
 - `registry/`: declarative inventories only; no runtime orchestration.
 - `reporting/`: canonical report/artifact formatting and writing.
-- deterministic test orchestration lives under internal atlasctl command modules.
+- deterministic test orchestration lives under internal command modules in atlasctl.
 
 ## Migration Status
 
