@@ -289,6 +289,16 @@ pub(crate) fn validate_pins_completeness(
                     ));
                 }
             }
+            if text.contains("kubectl apply") && !text.contains("bijux dev atlas ops k8s apply") {
+                let rel = path
+                    .strip_prefix(repo_root)
+                    .unwrap_or(path.as_path())
+                    .display()
+                    .to_string();
+                errors.push(format!(
+                    "direct kubectl apply forbidden in {rel}; use `bijux dev atlas ops k8s apply`"
+                ));
+            }
         }
     }
     errors.sort();

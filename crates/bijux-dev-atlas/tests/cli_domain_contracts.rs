@@ -133,6 +133,79 @@ fn ops_k8s_test_requires_allow_subprocess() {
 }
 
 #[test]
+fn ops_k8s_apply_requires_explicit_apply_flag() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "k8s",
+            "apply",
+            "--allow-subprocess",
+            "--allow-write",
+            "--run-id",
+            "ops_render_kind_golden",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops k8s apply");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("requires explicit --apply"));
+}
+
+#[test]
+fn ops_k8s_dry_run_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "k8s",
+            "dry-run",
+            "--run-id",
+            "ops_render_kind_golden",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops k8s dry-run");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_k8s_logs_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "k8s", "logs", "--format", "json"])
+        .output()
+        .expect("ops k8s logs");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("k8s logs requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_k8s_port_forward_requires_allow_network() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "k8s",
+            "port-forward",
+            "--allow-subprocess",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops k8s port-forward");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("k8s port-forward requires --allow-network"));
+}
+
+#[test]
 fn ops_load_run_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
