@@ -399,6 +399,7 @@ dependencies = [
  "bijux-dev-atlas-adapters",
  "bijux-dev-atlas-core",
  "bijux-dev-atlas-model",
+ "bijux-dev-atlas-policies",
  "clap",
  "serde",
  "serde_json",
