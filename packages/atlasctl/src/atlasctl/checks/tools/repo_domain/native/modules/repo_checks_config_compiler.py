@@ -110,7 +110,7 @@ def check_ops_inventory_schema_coverage(repo_root: Path) -> tuple[int, list[str]
         schema = mapped[rel]
         if schema in {"none", ""} and rel not in _OPS_INVENTORY_SCHEMA_NONE_ALLOWLIST and path.suffix in {".json", ".yaml", ".yml"} and "fragments" not in rel and "/contracts/" not in rel:
             errors.append(f"ops inventory file should have schema coverage: {rel}")
-    return (0 if not errors else 1), (["ops inventory schema coverage passed"] if not errors else errors)
+    return (0 if not errors else 1), errors
 
 
 def check_config_lock_discipline(repo_root: Path) -> tuple[int, list[str]]:
