@@ -333,6 +333,25 @@ def check_structured_results_legacy_signature_budget(repo_root: Path) -> tuple[i
     return 0, []
 
 
+def check_domains_contracts_no_nested_dirs(repo_root: Path) -> tuple[int, list[str]]:
+    targets = (
+        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts",
+        "packages/atlasctl/src/atlasctl/checks/domains/policies/make",
+    )
+    errors: list[str] = []
+    for rel_root in targets:
+        root = repo_root / rel_root
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*")):
+            if not path.is_dir() or path == root:
+                continue
+            depth = len(path.relative_to(root).parts)
+            if depth > 1 and path.name != "__pycache__":
+                errors.append(f"nested domain directory forbidden: {path.relative_to(repo_root).as_posix()}")
+    return (1, errors) if errors else (0, [])
+
+
 def check_registry_no_banned_adjectives_in_ids(repo_root: Path) -> tuple[int, list[str]]:
     terms = _forbidden_terms(repo_root)
     if not terms:
