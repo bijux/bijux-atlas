@@ -1,1 +1,0 @@
-"""Atlasctl test package."""

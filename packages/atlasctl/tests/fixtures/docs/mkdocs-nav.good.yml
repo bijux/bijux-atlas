@@ -1,6 +1,0 @@
-site_name: Test
-nav:
-  - Home: index.md
-  - Operations:
-    - Ops Root: operations/index.md
-    - Runbooks: operations/runbooks.md
