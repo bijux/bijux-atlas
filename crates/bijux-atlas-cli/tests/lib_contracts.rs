@@ -178,7 +178,7 @@ fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
         .expect("run help");
     assert!(output.status.success());
     let rendered = String::from_utf8(output.stdout).expect("utf8 help");
-    for reserved in [" plugin", " plugins"] {
+    for reserved in [" plugin", " plugins", " dev"] {
         assert!(
             !rendered.contains(reserved),
             "reserved verb exposed: {reserved}"
@@ -210,6 +210,23 @@ fn completion_generation_contains_atlas_namespace() {
         .expect("run completion");
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8 completion");
+    assert!(text.contains("atlas"));
+}
+
+#[test]
+fn atlas_namespace_completion_generation_is_deterministic() {
+    let one = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["atlas", "completion", "bash"])
+        .output()
+        .expect("run atlas completion #1");
+    let two = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["atlas", "completion", "bash"])
+        .output()
+        .expect("run atlas completion #2");
+    assert!(one.status.success());
+    assert!(two.status.success());
+    assert_eq!(one.stdout, two.stdout);
+    let text = String::from_utf8(one.stdout).expect("utf8 atlas completion");
     assert!(text.contains("atlas"));
 }
 

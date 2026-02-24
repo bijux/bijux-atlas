@@ -13,6 +13,12 @@ Canonical page: [`docs/contracts/plugin/spec.md`](spec.md)
 - Canonical plugin binary: `bijux-atlas`.
 - Umbrella dispatch path: `bijux atlas <atlas-command...>` -> `bijux-atlas <atlas-command...>`.
 - Atlas namespace path: `bijux-atlas atlas <atlas-command...>`.
+- Dev control-plane dispatch path: `bijux dev atlas <dev-command...>` -> `bijux-dev-atlas <dev-command...>`.
+
+## Canonical Command Surface Lists
+
+- Runtime plugin command list: `crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md`
+- Dev control-plane command list: `crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md`
 
 ## Metadata Handshake
 
