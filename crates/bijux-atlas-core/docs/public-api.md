@@ -11,9 +11,19 @@ Stable exported items (0.1.x contract):
 - `ExitCode`
 - `ConfigPathScope`
 - `MachineError`
+- `Error`
+- `Result<T>`
 - `ErrorCode`
 - `ERROR_CODES`
 - `Hash256`
+- `DatasetId`
+- `ShardId`
+- `RunId`
+- `FsPort`
+- `ClockPort`
+- `NetPort`
+- `ProcessPort`
+- `ProcessResult`
 - `ErrorContext`
 - `ResultExt`
 - `canonical` module

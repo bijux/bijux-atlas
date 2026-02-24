@@ -13,7 +13,7 @@ What core must never do:
 - No wall-clock dependent behavior in deterministic paths.
 
 Documentation map:
-- [Architecture](architecture.md)
+- [Architecture](ARCHITECTURE.md)
 - [Public API](public-api.md)
 - [Effects policy](effects.md)
 - [Canonicalization rules](CANONICALIZATION.md)
@@ -43,4 +43,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-

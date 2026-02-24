@@ -27,3 +27,7 @@ path = "src/lib.rs"
 [[bench]]
 name = "canonical_hash"
 harness = false
+
+[[bench]]
+name = "stable_selector"
+harness = false
