@@ -4,7 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use bijux_atlas_dev_adapters::ProcessAdapter;
+use bijux_atlas_dev_adapters::{Capabilities, ProcessRunner};
 use bijux_atlas_dev_model::{
     CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId, RunReport, RunSummary,
     SuiteId, Tag, Visibility,
@@ -17,6 +17,7 @@ pub const DEFAULT_REGISTRY_PATH: &str = "ops/atlas-dev/registry.toml";
 pub struct RunRequest {
     pub repo_root: PathBuf,
     pub domain: Option<DomainId>,
+    pub capabilities: Capabilities,
 }
 
 #[derive(Debug, Clone)]
@@ -394,10 +395,7 @@ pub fn registry_doctor(repo_root: &Path) -> RegistryDoctorReport {
     }
 }
 
-pub fn run_checks(
-    _adapter: &dyn ProcessAdapter,
-    request: &RunRequest,
-) -> Result<RunReport, String> {
+pub fn run_checks(_adapter: &dyn ProcessRunner, request: &RunRequest) -> Result<RunReport, String> {
     let registry = load_registry(&request.repo_root)?;
     let selectors = Selectors {
         domain: request.domain,
@@ -557,8 +555,9 @@ mod tests {
         let req = RunRequest {
             repo_root: root(),
             domain: None,
+            capabilities: Capabilities::deny_all(),
         };
-        let adapter = bijux_atlas_dev_adapters::StdProcessAdapter;
+        let adapter = bijux_atlas_dev_adapters::DeniedProcessRunner;
         let report = run_checks(&adapter, &req).expect("report");
         assert!(report.summary.total >= 1);
         assert_eq!(report.summary.failed, 0);
