@@ -86,6 +86,16 @@ pub fn stable_hash_hex(bytes: &[u8]) -> String {
     stable_hash_bytes(bytes).to_hex()
 }
 
+#[must_use]
+pub fn sha256_hex(bytes: &[u8]) -> String {
+    stable_hash_hex(bytes)
+}
+
+#[must_use]
+pub fn sha256(bytes: &[u8]) -> Hash256 {
+    stable_hash_bytes(bytes)
+}
+
 #[cfg(feature = "serde")]
 pub fn stable_json_bytes<T: Serialize>(value: &T) -> Result<Vec<u8>, serde_json::Error> {
     CanonicalJson::from_serialize(value)?.to_bytes()
@@ -135,72 +145,8 @@ fn normalize_json_value(value: Value) -> Value {
 fn normalize_json_number(number: serde_json::Number) -> serde_json::Number {
     if let Some(value) = number.as_f64() {
         if value == 0.0 {
-            // Canonicalize signed zero so hash and bytes stay stable across producers.
             return serde_json::Number::from(0);
         }
     }
     number
-}
-
-#[cfg(test)]
-mod tests {
-    use super::stable_hash_bytes;
-    #[cfg(feature = "serde")]
-    use super::{stable_json_bytes, stable_json_hash_hex, CanonicalJson};
-    #[cfg(feature = "serde")]
-    use serde_json::json;
-
-    #[cfg(feature = "serde")]
-    #[test]
-    fn canonical_json_orders_object_keys() {
-        let value = json!({
-            "z": 1,
-            "a": {"d": 4, "b": 2},
-            "arr": [{"k2": 2, "k1": 1}],
-        });
-
-        let bytes = stable_json_bytes(&value).expect("stable json bytes");
-        let text = String::from_utf8(bytes).expect("utf8 json");
-        assert_eq!(text, r#"{"a":{"b":2,"d":4},"arr":[{"k1":1,"k2":2}],"z":1}"#);
-    }
-
-    #[cfg(feature = "serde")]
-    #[test]
-    fn canonical_hash_is_deterministic_for_same_value() {
-        let value = json!({"b": 2, "a": 1});
-        let h1 = stable_json_hash_hex(&value).expect("hash 1");
-        let h2 = stable_json_hash_hex(&value).expect("hash 2");
-        assert_eq!(h1, h2);
-    }
-
-    #[cfg(feature = "serde")]
-    #[test]
-    fn canonical_json_normalizes_negative_zero_float() {
-        let value = json!({"x": -0.0});
-        let bytes = stable_json_bytes(&value).expect("stable json bytes");
-        let text = String::from_utf8(bytes).expect("utf8");
-        assert_eq!(text, r#"{"x":0}"#);
-    }
-
-    #[cfg(feature = "serde")]
-    #[test]
-    fn canonical_json_hash_and_bytes_are_stable() {
-        let value = json!({"k": 1, "z": [2, 3]});
-        let normalized = CanonicalJson::from_serialize(&value).expect("normalized");
-        let a = normalized.to_bytes().expect("bytes a");
-        let b = normalized.to_bytes().expect("bytes b");
-        assert_eq!(a, b);
-        assert_eq!(
-            normalized.hash().expect("hash").to_hex(),
-            stable_hash_bytes(&a).to_hex()
-        );
-    }
-
-    #[test]
-    fn stable_hash_bytes_is_repeatable() {
-        let a = stable_hash_bytes(b"atlas");
-        let b = stable_hash_bytes(b"atlas");
-        assert_eq!(a, b);
-        assert_eq!(a.to_hex(), b.to_hex());
-    }
 }

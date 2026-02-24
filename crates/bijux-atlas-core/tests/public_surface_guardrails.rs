@@ -2,9 +2,10 @@ use std::path::PathBuf;
 
 #[test]
 fn hash256_public_api_avoids_raw_fixed_array_types() {
-    let src =
-        std::fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/canonical.rs"))
-            .expect("read canonical.rs");
+    let src = std::fs::read_to_string(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/domain/canonical.rs"),
+    )
+    .expect("read domain/canonical.rs");
 
     // Public API should not expose raw fixed hash arrays; use Hash256 newtype.
     assert!(

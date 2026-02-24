@@ -35,20 +35,20 @@ fn public_api_doc_lists_only_exported_symbols() {
     }
 
     for token in [
-        "pub mod canonical;",
-        "pub mod time;",
+        "pub mod domain;",
+        "pub mod effects;",
+        "pub mod errors;",
+        "pub mod ports;",
+        "pub mod types;",
         "pub const CRATE_NAME",
         "pub const ENV_BIJUX_LOG_LEVEL",
         "pub const ENV_BIJUX_CACHE_DIR",
         "pub const NO_RANDOMNESS_POLICY",
-        "pub fn sha256_hex",
-        "pub fn sha256",
         "pub const fn no_randomness_policy",
-        "pub fn resolve_bijux_cache_dir",
-        "pub fn resolve_bijux_config_path",
-        "pub use crate::canonical::Hash256",
-        "pub use crate::error::{ConfigPathScope, ErrorCode, ExitCode, MachineError, ERROR_CODES}",
-        "pub use crate::result_ext::{ErrorContext, ResultExt}",
+        "pub use crate::domain::canonical",
+        "pub use crate::domain::time",
+        "pub use crate::domain::{resolve_bijux_cache_dir, resolve_bijux_config_path, sha256, sha256_hex, Hash256}",
+        "pub use crate::errors::{",
     ] {
         assert!(
             lib_rs.contains(token),
