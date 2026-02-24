@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use crate::ModelVersion;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -70,6 +71,8 @@ impl ReleaseGeneIndexEntry {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct ReleaseGeneIndex {
+    #[serde(default)]
+    pub model_version: ModelVersion,
     pub schema_version: String,
     pub dataset: crate::DatasetId,
     pub entries: Vec<ReleaseGeneIndexEntry>,
@@ -83,6 +86,7 @@ impl ReleaseGeneIndex {
         entries: Vec<ReleaseGeneIndexEntry>,
     ) -> Self {
         Self {
+            model_version: ModelVersion::V1,
             schema_version,
             dataset,
             entries,
@@ -141,6 +145,8 @@ impl DiffRecord {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct DiffPage {
+    #[serde(default)]
+    pub model_version: ModelVersion,
     pub from_release: String,
     pub to_release: String,
     pub species: String,
@@ -162,6 +168,7 @@ impl DiffPage {
         next_cursor: Option<String>,
     ) -> Self {
         Self {
+            model_version: ModelVersion::V1,
             from_release,
             to_release,
             species,

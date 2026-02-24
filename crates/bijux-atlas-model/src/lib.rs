@@ -18,6 +18,8 @@ mod diff;
 mod gene;
 mod manifest;
 mod policy;
+pub mod serde_helpers;
+mod version;
 
 pub use dataset::{
     normalize_assembly, normalize_release, normalize_species, parse_assembly, parse_dataset_key,
@@ -41,5 +43,6 @@ pub use manifest::{
     NO_IMPLICIT_DEFAULT_DATASET_POLICY,
 };
 pub use policy::{GeneIdentifierPolicy, StrictnessMode};
+pub use version::ModelVersion;
 
 pub const CRATE_NAME: &str = "bijux-atlas-model";
