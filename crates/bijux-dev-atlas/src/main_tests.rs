@@ -316,11 +316,23 @@ mod tests {
         let commands = [
             vec!["bijux-dev-atlas", "docker", "build", "--allow-subprocess"],
             vec!["bijux-dev-atlas", "docker", "check", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "docker", "smoke", "--allow-subprocess"],
+            vec![
+                "bijux-dev-atlas",
+                "docker",
+                "scan",
+                "--allow-subprocess",
+                "--allow-network",
+            ],
+            vec!["bijux-dev-atlas", "docker", "sbom", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "docker", "policy", "check"],
+            vec!["bijux-dev-atlas", "docker", "lock", "--allow-write"],
             vec![
                 "bijux-dev-atlas",
                 "docker",
                 "push",
                 "--allow-subprocess",
+                "--allow-network",
                 "--i-know-what-im-doing",
             ],
             vec![
@@ -328,6 +340,7 @@ mod tests {
                 "docker",
                 "release",
                 "--allow-subprocess",
+                "--allow-network",
                 "--i-know-what-im-doing",
             ],
         ];

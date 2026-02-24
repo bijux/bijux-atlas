@@ -602,8 +602,21 @@ pub enum ConfigsCommand {
 pub enum DockerCommand {
     Build(DockerCommonArgs),
     Check(DockerCommonArgs),
+    Smoke(DockerCommonArgs),
+    Scan(DockerCommonArgs),
+    Sbom(DockerCommonArgs),
+    Lock(DockerCommonArgs),
+    Policy {
+        #[command(subcommand)]
+        command: DockerPolicyCommand,
+    },
     Push(DockerReleaseArgs),
     Release(DockerReleaseArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DockerPolicyCommand {
+    Check(DockerCommonArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -656,6 +669,8 @@ pub struct DockerCommonArgs {
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
     pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
 }
 
 #[derive(Args, Debug, Clone)]

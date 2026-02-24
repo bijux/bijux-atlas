@@ -1,10 +1,12 @@
 use crate::cli::{
-    BuildCleanArgs, BuildCommand, BuildCommonArgs, DockerCommand, DockerCommonArgs, PoliciesCommand,
+    BuildCleanArgs, BuildCommand, BuildCommonArgs, DockerCommand, DockerCommonArgs,
+    DockerPolicyCommand, PoliciesCommand,
 };
 use crate::*;
 use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use sha2::{Digest, Sha256};
+use std::collections::VecDeque;
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -47,6 +49,29 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
             1
         }
     }
+}
+
+fn walk_files(root: &Path) -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    if !root.exists() {
+        return out;
+    }
+    let mut queue = VecDeque::from([root.to_path_buf()]);
+    while let Some(dir) = queue.pop_front() {
+        let Ok(entries) = fs::read_dir(&dir) else {
+            continue;
+        };
+        let mut paths = entries.filter_map(Result::ok).map(|e| e.path()).collect::<Vec<_>>();
+        paths.sort();
+        for path in paths {
+            if path.is_dir() {
+                queue.push_back(path);
+            } else if path.is_file() {
+                out.push(path);
+            }
+        }
+    }
+    out
 }
 
 fn policies_inventory_rows(
@@ -211,6 +236,114 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 });
                 emit(&common, payload, 0)
             }
+            DockerCommand::Smoke(common) => {
+                if !common.allow_subprocess {
+                    return Err("docker smoke requires --allow-subprocess".to_string());
+                }
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker smoke wrapper is defined (subprocess-gated)",
+                    "rows": [{"action":"smoke","repo_root": repo_root.display().to_string()}],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Scan(common) => {
+                if !common.allow_subprocess {
+                    return Err("docker scan requires --allow-subprocess".to_string());
+                }
+                if !common.allow_network {
+                    return Err("docker scan requires --allow-network".to_string());
+                }
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker scan wrapper is defined (subprocess and network gated)",
+                    "rows": [{"action":"scan","repo_root": repo_root.display().to_string(),"scanner":"trivy_or_grype"}],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Sbom(common) => {
+                if !common.allow_subprocess {
+                    return Err("docker sbom requires --allow-subprocess".to_string());
+                }
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker sbom wrapper is defined (subprocess-gated)",
+                    "rows": [{"action":"sbom","repo_root": repo_root.display().to_string(),"tool":"syft"}],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Lock(common) => {
+                if !common.allow_write {
+                    return Err("docker lock requires --allow-write".to_string());
+                }
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let lock_path = repo_root.join("ops/inventory/image-digests.lock.json");
+                if let Some(parent) = lock_path.parent() {
+                    fs::create_dir_all(parent)
+                        .map_err(|e| format!("cannot create {}: {e}", parent.display()))?;
+                }
+                let lock_payload = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "docker_image_lock",
+                    "images": [],
+                    "timestamp_policy": "forbidden_by_default"
+                });
+                fs::write(
+                    &lock_path,
+                    serde_json::to_string_pretty(&lock_payload).map_err(|e| e.to_string())? + "\n",
+                )
+                .map_err(|e| format!("cannot write {}: {e}", lock_path.display()))?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker lockfile written under ops/inventory",
+                    "rows": [{"action":"lock","path": lock_path.display().to_string()}],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Policy { command } => match command {
+                DockerPolicyCommand::Check(common) => {
+                    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                    let docker_root = repo_root.join("docker");
+                    let mut rows = Vec::new();
+                    let mut errors = 0usize;
+                    if docker_root.exists() {
+                        for file in walk_files(&docker_root) {
+                            if let Ok(text) = fs::read_to_string(&file) {
+                                let rel = file.strip_prefix(&repo_root).unwrap_or(&file);
+                                for line in text.lines() {
+                                    let trimmed = line.trim();
+                                    if trimmed.contains(":latest") {
+                                        errors += 1;
+                                        rows.push(serde_json::json!({"path": rel.display().to_string(), "violation": "floating_latest_tag", "line": trimmed}));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    let payload = serde_json::json!({
+                        "schema_version": 1,
+                        "action": "policy_check",
+                        "status": if errors == 0 { "ok" } else { "failed" },
+                        "text": "docker policy check for floating tags",
+                        "rows": rows,
+                        "summary": {"errors": errors, "warnings": 0},
+                        "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                        "duration_ms": started.elapsed().as_millis() as u64
+                    });
+                    emit(&common, payload, if errors == 0 { 0 } else { 1 })
+                }
+            },
             DockerCommand::Push(args) => {
                 if !args.i_know_what_im_doing {
                     return Err("docker push requires --i-know-what-im-doing".to_string());
@@ -218,12 +351,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 if !args.common.allow_subprocess {
                     return Err("docker push requires --allow-subprocess".to_string());
                 }
+                if !args.common.allow_network {
+                    return Err("docker push requires --allow-network".to_string());
+                }
                 let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "text": "docker push wrapper is defined (explicit release gate)",
                     "rows": [{"action":"push","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write},
+                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write, "network": args.common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
                 emit(&args.common, payload, 0)
@@ -235,12 +371,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 if !args.common.allow_subprocess {
                     return Err("docker release requires --allow-subprocess".to_string());
                 }
+                if !args.common.allow_network {
+                    return Err("docker release requires --allow-network".to_string());
+                }
                 let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "text": "docker release wrapper is defined (explicit release gate)",
                     "rows": [{"action":"release","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write},
+                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write, "network": args.common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
                 emit(&args.common, payload, 0)
