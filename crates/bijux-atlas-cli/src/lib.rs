@@ -273,6 +273,10 @@ enum AtlasCommand {
         #[command(subcommand)]
         command: OpenapiCommand,
     },
+    DevAtlas {
+        #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
+        args: Vec<String>,
+    },
 }
 
 #[derive(Subcommand)]
