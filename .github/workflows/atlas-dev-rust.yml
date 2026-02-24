@@ -46,6 +46,9 @@ jobs:
           cargo run -p bijux-atlas-cli -- --version >/dev/null
           cargo run -p bijux-dev-atlas -- --help >/dev/null
           cargo run -p bijux-dev-atlas -- --version >/dev/null
+      - name: Verify canonical governance entrypoint
+        run: |
+          cargo run -p bijux-dev-atlas -- doctor --format json >/dev/null
       - name: Verify release binaries are produced
         run: |
           cargo build --release -p bijux-atlas-cli -p bijux-dev-atlas
