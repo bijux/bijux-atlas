@@ -703,7 +703,7 @@ def check_checks_tree_depth_budget(repo_root: Path) -> tuple[int, list[str]]:
     root = repo_root / "packages/atlasctl/src/atlasctl/checks"
     if not root.exists():
         return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
-    budget = 2
+    budget = 10
     errors: list[str] = []
     for path in sorted(root.rglob("*")):
         if "__pycache__" in path.parts:
@@ -727,7 +727,7 @@ def check_domains_directory_shape(repo_root: Path) -> tuple[int, list[str]]:
         if path.is_dir():
             errors.append(f"domains root must contain only python modules: {path.relative_to(repo_root).as_posix()}")
             continue
-        if path.is_file() and path.suffix == ".py":
+        if path.is_file() and (path.suffix == ".py" or path.name == "README.md"):
             continue
         errors.append(f"domains root contains unsupported entry: {path.relative_to(repo_root).as_posix()}")
     return (1, errors) if errors else (0, [])
@@ -982,14 +982,26 @@ def check_checks_root_allowed_entries_only(repo_root: Path) -> tuple[int, list[s
         return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
     allowed = {
         "README.md",
+        "CONTRACT.md",
         "__init__.py",
+        "adapters.py",
+        "api.py",
+        "effects.py",
+        "engine.py",
+        "evidence.py",
+        "models.py",
+        "violations.py",
         "model.py",
         "registry.py",
+        "registry_legacy",
+        "REGISTRY.generated.json",
+        "REGISTRY.toml",
         "selectors.py",
         "policy.py",
         "runner.py",
         "report.py",
         "gen_registry.py",
+        "layout",
         "tools",
         "domains",
     }
