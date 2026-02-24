@@ -153,6 +153,10 @@ pub fn build_router(state: AppState) -> Router {
             get(http::handlers::registry_health_handler),
         )
         .route("/v1/_debug/echo", get(http::handlers::debug_echo_handler))
+        .layer(from_fn_with_state(
+            state.clone(),
+            crate::middleware::request_tracing::request_tracing_middleware,
+        ))
         .layer(from_fn_with_state(state.clone(), cors_middleware))
         .layer(from_fn_with_state(state.clone(), security_middleware))
         .layer(from_fn_with_state(state.clone(), resilience_middleware))
