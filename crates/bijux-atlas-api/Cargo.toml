@@ -12,9 +12,16 @@ bijux-atlas-query.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 
+[dev-dependencies]
+criterion = "0.5"
+
 [lib]
 path = "src/lib.rs"
 
 [[bin]]
 name = "atlas-openapi"
 path = "src/bin/openapi.rs"
+
+[[bench]]
+name = "openapi_generation"
+harness = false
