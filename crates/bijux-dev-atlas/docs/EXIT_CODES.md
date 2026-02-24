@@ -3,8 +3,9 @@
 ## Process Exit Codes
 
 - `0`: success
-- `1`: command execution error / contract failure / internal error
-- `2`: usage error (argument parsing) or wrapped make target policy failure when invoked through `make`
+- `1`: policy failure / check failure (command completed and found violations)
+- `2`: usage error (argument parsing / invalid invocation)
+- `3`: command execution error / contract error / tool execution failure / internal error
 
 ## Check Report Exit Mapping (check engine)
 
@@ -17,4 +18,4 @@
 
 - Command-level JSON payloads may also include domain-specific `error_code` values (for example docs/configs/ops contracts).
 - Prefer machine-readable payload `status` and `error_code` fields over shell exit codes when integrating in CI dashboards.
-
+- Make wrappers may translate underlying process failures into `make`-specific exit codes; the wrapped `bijux dev atlas` process exit codes above remain the contract.
