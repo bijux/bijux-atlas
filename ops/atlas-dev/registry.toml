@@ -1,0 +1,95 @@
+schema_version = 1
+
+[tags]
+vocabulary = ["ops", "repo", "docs", "make", "lint", "internal", "fast", "slow"]
+
+[[checks]]
+id = "ops_surface_manifest"
+domain = "ops"
+title = "ops surface manifest consistency"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "repo_import_boundary"
+domain = "repo"
+title = "repo import boundary contracts"
+docs = "docs/INDEX.md"
+tags = ["repo", "lint", "fast"]
+suites = ["repo_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "docs_index_links"
+domain = "docs"
+title = "docs index links must resolve"
+docs = "docs/INDEX.md"
+tags = ["docs", "fast"]
+suites = ["docs_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "make_wrapper_commands"
+domain = "make"
+title = "make wrapper commands stay canonical"
+docs = "makefiles/CONTRACT.md"
+tags = ["make", "fast"]
+suites = ["make_fast", "all_fast"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_internal_registry_consistency"
+domain = "ops"
+title = "ops internal registry consistency"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "internal", "slow"]
+suites = ["ops_all"]
+effects_required = ["fs_read", "git"]
+budget_ms = 4000
+visibility = "internal"
+
+[[suites]]
+id = "all_fast"
+checks = []
+domains = ["ops", "repo", "docs", "make"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "ops_fast"
+checks = ["ops_surface_manifest"]
+domains = ["ops"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "ops_all"
+checks = []
+domains = ["ops"]
+tags_any = []
+
+[[suites]]
+id = "repo_fast"
+checks = []
+domains = ["repo"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "docs_fast"
+checks = []
+domains = ["docs"]
+tags_any = ["fast"]
+
+[[suites]]
+id = "make_fast"
+checks = []
+domains = ["make"]
+tags_any = ["fast"]
