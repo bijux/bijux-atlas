@@ -85,6 +85,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_configs_no_atlasctl_string_references" => {
             Some(check_configs_no_atlasctl_string_references)
         }
+        "checks_make_configs_wrappers_delegate_dev_atlas" => {
+            Some(check_make_configs_wrappers_delegate_dev_atlas)
+        }
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
             Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
         }
@@ -1319,6 +1322,69 @@ fn check_configs_no_atlasctl_string_references(
         "atlasctl",
         "CONFIGS_LEGACY_ATLASCTL_REFERENCE",
     )
+}
+
+fn check_make_configs_wrappers_delegate_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/configs.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
+        violations.push(violation(
+            "MAKE_CONFIGS_BIJUX_VARIABLES_MISSING",
+            "makefiles/configs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
+            Some(rel),
+        ));
+    }
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "MAKE_CONFIGS_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/configs.mk wrapper recipes must be single-line delegations".to_string(),
+                "keep configs wrappers single-line and delegation-only",
+                Some(rel),
+            ));
+        }
+        if line.contains("atlasctl") {
+            violations.push(violation(
+                "MAKE_CONFIGS_ATLASCTL_REFERENCE_FOUND",
+                format!("makefiles/configs.mk must not call atlasctl: `{line}`"),
+                "route configs wrappers through bijux dev atlas configs commands",
+                Some(rel),
+            ));
+        }
+        let words = line.split_whitespace().collect::<Vec<_>>();
+        if words.iter().any(|w| {
+            *w == "python"
+                || *w == "python3"
+                || *w == "bash"
+                || *w == "sh"
+                || *w == "kubectl"
+                || *w == "helm"
+                || *w == "k6"
+        }) {
+            violations.push(violation(
+                "MAKE_CONFIGS_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/configs.mk must remain delegation-only: `{line}`"),
+                "wrapper recipes may call bijux dev atlas only",
+                Some(rel),
+            ));
+        }
+    }
+    for required in ["configs-doctor:", "configs-validate:", "configs-lint:"] {
+        if !content.contains(required) {
+            violations.push(violation(
+                "MAKE_CONFIGS_REQUIRED_TARGET_MISSING",
+                format!("makefiles/configs.mk is missing `{required}`"),
+                "keep required configs delegation targets in makefiles/configs.mk",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
 }
 
 fn checks_ops_no_atlasctl_invocations(

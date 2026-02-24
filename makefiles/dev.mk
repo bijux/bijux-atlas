@@ -48,6 +48,9 @@ dev-check-ci: ## Run dev control-plane ci suite
 dev-check: ## Alias for dev-check-ci
 	@$(MAKE) -s dev-check-ci
 
+dev-ci: ## Alias for dev-check-ci
+	@$(MAKE) -s dev-check-ci
+
 install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
 	@mkdir -p artifacts/bin
 	@cargo build -p bijux-atlas-cli -p bijux-dev-atlas
@@ -60,4 +63,4 @@ install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts
 BIJUX ?= bijux
 BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
-.PHONY: audit check coverage fmt lint test test-all dev-doctor dev-check-ci dev-check install-local
+.PHONY: audit check coverage fmt lint test test-all dev-doctor dev-check-ci dev-check dev-ci install-local
