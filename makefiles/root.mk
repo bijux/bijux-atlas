@@ -19,7 +19,7 @@ CURATED_TARGETS := \
 	help list explain surface \
 	dev-atlas doctor ci-local \
 	dev-doctor dev-ci dev-check-ci \
-	build dist clean-build build-doctor \
+	build build-release build-ci build-meta dist dist-verify clean-build clean-dist build-doctor \
 	check check-gates check-list gates \
 	ci ci-fast ci-pr ci-nightly ci-docs \
 	policies \
