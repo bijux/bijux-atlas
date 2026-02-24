@@ -81,9 +81,24 @@ pub enum CheckError {
 
 pub type CheckFn = fn(&CheckContext<'_>) -> Result<Vec<Violation>, CheckError>;
 
+pub trait EffectsBoundary {
+    fn filesystem(&self) -> &dyn Fs;
+    fn process_runner(&self) -> &dyn ProcessRunner;
+}
+
 pub struct AdapterSet<'a> {
     pub fs: &'a dyn Fs,
     pub process: &'a dyn ProcessRunner,
+}
+
+impl EffectsBoundary for AdapterSet<'_> {
+    fn filesystem(&self) -> &dyn Fs {
+        self.fs
+    }
+
+    fn process_runner(&self) -> &dyn ProcessRunner {
+        self.process
+    }
 }
 
 pub struct CheckContext<'a> {
