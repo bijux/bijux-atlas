@@ -27,7 +27,7 @@ def _write(path: Path, content: str) -> None:
 def test_checks_outside_domains_tools_fails_for_non_domain_module(monkeypatch, tmp_path: Path) -> None:
     check = CheckDef("checks_repo_sample_contract", "repo", "sample", 100, _ok, owners=("platform",))
     setattr(check.fn, "__module__", "atlasctl.checks.layout.sample")
-    monkeypatch.setattr("atlasctl.checks.registry.catalog.list_checks", lambda: (check,))
+    monkeypatch.setattr("atlasctl.checks.registry_legacy.catalog.list_checks", lambda: (check,))
     code, errors = check_no_checks_outside_domains_tools(tmp_path)
     assert code == 1
     assert errors
@@ -61,7 +61,7 @@ def test_check_metadata_requirements(monkeypatch, tmp_path: Path) -> None:
     no_owner = CheckDef("checks_repo_a_contract", "repo", "a", 100, _ok, owners=())
     no_tags = CheckDef("checks_repo_b_contract", "repo", "b", 100, _ok, tags=(), owners=("platform",))
     no_effects = CheckDef("checks_repo_c_contract", "repo", "c", 100, _ok, effects=(), owners=("platform",))
-    monkeypatch.setattr("atlasctl.checks.registry.catalog.list_checks", lambda: (no_owner, no_tags, no_effects))
+    monkeypatch.setattr("atlasctl.checks.registry_legacy.catalog.list_checks", lambda: (no_owner, no_tags, no_effects))
 
     owner_code, owner_errors = check_all_checks_have_owner(tmp_path)
     tags_code, tags_errors = check_all_checks_have_tags(tmp_path)
@@ -84,7 +84,7 @@ def test_write_roots_restricted(monkeypatch, tmp_path: Path) -> None:
         writes_allowed_roots=("tmp/output",),
         owners=("platform",),
     )
-    monkeypatch.setattr("atlasctl.checks.registry.catalog.list_checks", lambda: (bad,))
+    monkeypatch.setattr("atlasctl.checks.registry_legacy.catalog.list_checks", lambda: (bad,))
     code, errors = check_write_roots_are_evidence_only(tmp_path)
     assert code == 1
     assert any("managed evidence roots" in line for line in errors)

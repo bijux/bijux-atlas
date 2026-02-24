@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[7]
 
 
 def main() -> int:
-    from atlasctl.checks.registry.ssot import generate_registry_json
+    from atlasctl.checks.registry_legacy.ssot import generate_registry_json
 
     try:
         _out, changed = generate_registry_json(ROOT, check_only=True)

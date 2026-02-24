@@ -63,7 +63,7 @@ _FORBIDDEN_ADJECTIVES_CONFIG = Path("configs/policy/forbidden-adjectives.json")
 
 
 def check_registry_integrity(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.ssot import generate_registry_json
+    from ..registry_legacy.ssot import generate_registry_json
 
     try:
         _out, changed = generate_registry_json(repo_root, check_only=True)
@@ -81,7 +81,7 @@ def _catalog_rows(repo_root: Path) -> list[dict[str, object]]:
 
 
 def _entries(repo_root: Path):
-    from ..registry.ssot import load_registry_entries
+    from ..registry_legacy.ssot import load_registry_entries
 
     return load_registry_entries(repo_root)
 
@@ -193,7 +193,7 @@ def check_registry_docs_meta_matches_runtime(repo_root: Path) -> tuple[int, list
 
 
 def check_registry_transition_complete(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.ssot import check_id_alias_expiry, check_id_renames
+    from ..registry_legacy.ssot import check_id_alias_expiry, check_id_renames
     from datetime import date
 
     renames = check_id_renames(repo_root)
@@ -641,7 +641,7 @@ def check_no_checks_outside_domains_tools(repo_root: Path) -> tuple[int, list[st
         "atlasctl.checks.tools",
     )
     violations: list[str] = []
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     for check in list_checks():
         fn = getattr(check, "fn", None)
@@ -687,28 +687,28 @@ def check_registry_toml_generated_contract(repo_root: Path) -> tuple[int, list[s
 
 
 def check_all_checks_have_owner(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     violations = [f"{check.check_id}: owner is required" for check in list_checks() if not getattr(check, "owners", ())]
     return (1, violations) if violations else (0, [])
 
 
 def check_all_checks_declare_effects(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     violations = [f"{check.check_id}: effects declaration is required" for check in list_checks() if not getattr(check, "effects", ())]
     return (1, violations) if violations else (0, [])
 
 
 def check_all_checks_have_tags(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     violations = [f"{check.check_id}: tags declaration is required" for check in list_checks() if not getattr(check, "tags", ())]
     return (1, violations) if violations else (0, [])
 
 
 def check_no_subprocess_usage_without_declared_effect(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     violations: list[str] = []
     for check in list_checks():
@@ -724,7 +724,7 @@ def check_no_subprocess_usage_without_declared_effect(repo_root: Path) -> tuple[
 
 
 def check_no_network_usage_without_declared_effect(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     violations: list[str] = []
     for check in list_checks():
@@ -740,7 +740,7 @@ def check_no_network_usage_without_declared_effect(repo_root: Path) -> tuple[int
 
 
 def check_write_roots_are_evidence_only(repo_root: Path) -> tuple[int, list[str]]:
-    from ..registry.catalog import list_checks
+    from ..registry_legacy.catalog import list_checks
 
     violations: list[str] = []
     for check in list_checks():

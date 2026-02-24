@@ -9,7 +9,7 @@ from atlasctl.checks.adapters import FS
 from atlasctl.checks.model import CheckContext, CheckDef, CheckId, CheckSelector, DomainId, OwnerId, ResultCode, Tag
 from atlasctl.checks.policy import Capabilities
 from atlasctl.checks.registry import TAGS_VOCAB, list_checks, resolve_aliases
-from atlasctl.checks.registry.ssot import generate_registry_json
+from atlasctl.checks.registry_legacy.ssot import generate_registry_json
 from atlasctl.checks.report import build_report_payload, render_explain, render_text
 from atlasctl.checks.runner import run_checks
 from atlasctl.checks.selectors import apply_selection_criteria, parse_selection_criteria, select_checks

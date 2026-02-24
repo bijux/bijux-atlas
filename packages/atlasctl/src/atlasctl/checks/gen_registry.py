@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from .registry import check_tags, list_checks
-from .registry.ssot import generate_registry_json, toml_entry_from_check, write_registry_toml
+from .registry_legacy.ssot import generate_registry_json, toml_entry_from_check, write_registry_toml
 
 
 def generate_registry(repo_root: Path, *, check_only: bool = False) -> tuple[Path, bool]:

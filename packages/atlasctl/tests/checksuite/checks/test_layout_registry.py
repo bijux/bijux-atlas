@@ -4,7 +4,7 @@ import ast
 from pathlib import Path
 
 import atlasctl
-from atlasctl.checks.registry.layout_catalog import list_layout_checks
+from atlasctl.checks.registry_legacy.layout_catalog import list_layout_checks
 
 
 SRC_ROOT = Path(atlasctl.__file__).resolve().parents[1]

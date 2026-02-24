@@ -3,8 +3,8 @@ from __future__ import annotations
 import types
 
 from atlasctl.checks.api import check
-from atlasctl.checks.registry.catalog import _from_entry
-from atlasctl.checks.registry.ssot import RegistryEntry
+from atlasctl.checks.registry_legacy.catalog import _from_entry
+from atlasctl.checks.registry_legacy.ssot import RegistryEntry
 
 
 def test_loader_resolves_check_from_multi_check_module(monkeypatch) -> None:  # type: ignore[no-untyped-def]
@@ -31,7 +31,12 @@ def test_loader_resolves_check_from_multi_check_module(monkeypatch) -> None:  # 
         description="multi loader",
         category="check",
     )
-    loaded = _from_entry(entry)
+    loaded = _from_entry(
+        entry,
+        module_callable_index={(entry.module, demo.__name__): demo},
+        module_check_id_index={(entry.module, entry.id): demo},
+        legacy_by_id={},
+    )
     code, errors = loaded.fn(None)  # type: ignore[arg-type]
     assert code == 0
     assert errors == []
