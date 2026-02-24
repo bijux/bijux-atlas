@@ -2,8 +2,8 @@ use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command};
 use crate::{
     plugin_metadata_json, run_capabilities_command, run_check_doctor, run_check_explain,
     run_check_list, run_check_registry_doctor, run_check_run, run_configs_command,
-    run_docker_command, run_docs_command, run_gates_command, run_ops_command, run_policies_command,
-    run_workflows_command,
+    run_docker_command, run_docs_command, run_gates_command, run_help_inventory_command,
+    run_ops_command, run_policies_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 
@@ -33,6 +33,30 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
     };
 
     let exit = match command {
+        Command::Version { format, out } => match run_version_command(format, out) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas version failed: {err}");
+                1
+            }
+        },
+        Command::Help { format, out } => match run_help_inventory_command(format, out) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas help failed: {err}");
+                1
+            }
+        },
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
         Command::Docker { command } => run_docker_command(cli.quiet, command),

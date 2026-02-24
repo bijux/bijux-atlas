@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
-#[command(name = "bijux-dev-atlas", version)]
+#[command(name = "bijux-dev-atlas", version, disable_help_subcommand = true)]
 #[command(about = "Bijux Atlas development control-plane")]
 pub struct Cli {
     #[arg(long, default_value_t = false)]
@@ -26,6 +26,18 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
+    Version {
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Help {
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
     Ops {
         #[command(subcommand)]
         command: OpsCommand,

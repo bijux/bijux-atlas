@@ -138,6 +138,22 @@ mod tests {
     }
 
     #[test]
+    fn top_level_version_and_help_inventory_parse() {
+        for argv in [
+            vec!["bijux-dev-atlas", "version"],
+            vec!["bijux-dev-atlas", "version", "--format", "json"],
+            vec!["bijux-dev-atlas", "help"],
+            vec!["bijux-dev-atlas", "help", "--format", "json"],
+        ] {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Version { .. }) | Some(crate::cli::Command::Help { .. }) => {}
+                _ => panic!("expected top-level version/help command"),
+            }
+        }
+    }
+
+    #[test]
     fn docs_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "docs", "doctor"],

@@ -81,7 +81,7 @@ fn dev_atlas_help_command_list_matches_doc() {
                     .next()
                     .unwrap_or_default()
                     .to_string();
-                if !cmd.is_empty() && cmd != "help" {
+                if !cmd.is_empty() {
                     out.push(cmd);
                 }
             }
@@ -129,7 +129,7 @@ fn dev_atlas_help_command_list_order_matches_doc_snapshot() {
                     .next()
                     .unwrap_or_default()
                     .to_string();
-                if !cmd.is_empty() && cmd != "help" {
+                if !cmd.is_empty() {
                     out.push(cmd);
                 }
             }
