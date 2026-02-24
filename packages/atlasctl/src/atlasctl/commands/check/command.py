@@ -107,10 +107,14 @@ def _match_selected(check_id: str, title: str, domain: str, selected_domain: str
         return False
     if not selector:
         return True
+    canonical_alias = check_id if check_id.startswith("checks_") else f"checks_{check_id.replace('.', '_')}"
     return (
         selector == check_id
+        or selector == canonical_alias
         or fnmatch(check_id, selector)
+        or fnmatch(canonical_alias, selector)
         or selector in check_id
+        or selector in canonical_alias
         or selector in title
     )
 
@@ -209,6 +213,11 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         checks = [check for check in checks if not set(check_tags(check)).intersection(excluded_markers)]
     matched_checks = [check for check in checks if _match_selected(check.check_id, check.title, check.domain, selected_domain, selector)]
     matched_checks = sorted(matched_checks, key=lambda item: item.check_id)
+    explicit_selector = bool(id_value)
+    if explicit_selector and not matched_checks:
+        query = select_value or id_value or k_value or target_value or match_pattern
+        print(f"no checks matched selector: {query}")
+        return ERR_USER
     report_checks = matched_checks if selector else checks
     report_checks = sorted(report_checks, key=lambda item: item.check_id)
     if bool(getattr(ns, "list_selected", False)):

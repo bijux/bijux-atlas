@@ -113,3 +113,36 @@ def test_parse_selection_criteria_ignores_unset_check_target() -> None:
     )
     criteria = parse_selection_criteria(ns, Path(".").resolve())
     assert criteria.id_globs == ()
+
+
+def test_apply_selection_matches_dotted_and_canonical_id_forms() -> None:
+    checks = [
+        CheckDef(
+            check_id="repo.root_shape",
+            domain="repo",
+            description="root shape",
+            budget_ms=100,
+            fn=_noop,
+            tags=("required",),
+            owners=("platform",),
+        )
+    ]
+    ns = SimpleNamespace(
+        domain_filter="repo",
+        id="checks_repo_root_shape",
+        select="",
+        check_target="",
+        marker=[],
+        tag=[],
+        exclude_marker=[],
+        exclude_tag=[],
+        owner=[],
+        include_internal=True,
+        only_slow=False,
+        only_fast=False,
+        changed_only=False,
+        k="",
+    )
+    criteria = parse_selection_criteria(ns, Path(".").resolve())
+    selected = apply_selection_criteria(checks, criteria)
+    assert [item.check_id for item in selected] == ["repo.root_shape"]
