@@ -21,7 +21,7 @@ Does not freeze internal implementation details.
 ## Contracts
 
 - Stable make targets: [`makefiles/surface.md`](makefiles/surface.md)
-- Script interfaces: [Scripts Overview](scripts.md)
+- Control-plane command interfaces: [Control Plane Commands](tooling/control-plane.md)
 - SSOT contracts: [`../contracts/INDEX.md`](../contracts/INDEX.md)
 - Root layout SSOT:
   - Allowlist source: `crates/bijux-dev-atlas/src/checks/layout/root_whitelist.json`.
@@ -62,5 +62,5 @@ Expected output: all checks pass.
 
 - [Development Index](INDEX.md)
 - [Repository Layout](repo-layout.md)
-- [Scripts Overview](scripts.md)
+- [Control Plane Commands](tooling/control-plane.md)
 - [Contracts Index](../contracts/INDEX.md)
