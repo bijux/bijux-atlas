@@ -405,6 +405,94 @@ pub(super) fn check_make_no_direct_ops_script_execution(
     )
 }
 
+pub(super) fn check_root_dockerignore_context_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new(".dockerignore");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let required = [".git", "artifacts", "**/target"];
+    let mut violations = Vec::new();
+    for entry in required {
+        if !text.lines().any(|line| line.trim() == entry) {
+            violations.push(violation(
+                "ROOT_DOCKERIGNORE_ENTRY_MISSING",
+                format!(".dockerignore is missing required context exclusion `{entry}`"),
+                "exclude repository noise and local build outputs from docker build context",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_root_dockerfile_pointer_only(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("Dockerfile");
+    if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        return Ok(Vec::new());
+    }
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let non_comment_lines = text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter(|line| !line.starts_with('#'))
+        .collect::<Vec<_>>();
+    let looks_like_pointer = non_comment_lines.len() <= 3
+        && non_comment_lines.iter().any(|line| line.contains("docker/") || line.contains("see "));
+    if looks_like_pointer {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "ROOT_DOCKERFILE_FORBIDDEN",
+            "root Dockerfile must be absent or a tiny pointer to canonical docker/ definitions".to_string(),
+            "move real container build logic under docker/ and leave only a pointer doc if needed",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_dockerfiles_under_canonical_directory_only(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for file in walk_files(ctx.repo_root) {
+        let Some(name) = file.file_name().and_then(|n| n.to_str()) else {
+            continue;
+        };
+        if name != "Dockerfile" {
+            continue;
+        }
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+        if rel == Path::new("Dockerfile") {
+            continue;
+        }
+        if !rel.starts_with("docker/") {
+            violations.push(violation(
+                "DOCKERFILE_LOCATION_INVALID",
+                format!("Dockerfile outside canonical docker/ directory: {}", rel.display()),
+                "move Dockerfiles under docker/ or replace with pointer docs",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_workflows_no_direct_docker_build_execution(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        ".github/workflows",
+        &["docker build ", " docker buildx ", "docker buildx build "],
+        "WORKFLOW_DIRECT_DOCKER_BUILD_EXECUTION_FOUND",
+    )
+}
+
 pub(super) fn check_root_no_scripts_areas_presence_or_references(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

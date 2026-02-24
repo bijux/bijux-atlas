@@ -147,6 +147,17 @@ budget_ms = 8000
 visibility = "internal"
 
 [[checks]]
+id = "checks_dockerfiles_under_canonical_directory_only"
+domain = "docker"
+title = "dockerfiles live under the canonical docker directory"
+docs = "docker/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_docs_atlasctl_deletion_cutoff_rules"
 domain = "docs"
 title = "control-plane removal plan defines cutoff rules"
@@ -741,6 +752,28 @@ budget_ms = 500
 visibility = "internal"
 
 [[checks]]
+id = "checks_root_dockerfile_pointer_only"
+domain = "root"
+title = "root dockerfile is absent or a tiny pointer only"
+docs = "docs/development/tooling/control-plane.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_dockerignore_context_contract"
+domain = "root"
+title = "dockerignore excludes local build and repository noise"
+docs = "docs/development/tooling/build-outputs.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
 id = "checks_root_forbidden_legacy_directories_absent"
 domain = "root"
 title = "legacy top-level directories are absent"
@@ -859,6 +892,17 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_no_direct_docker_build_execution"
+domain = "workflows"
+title = "workflows avoid direct docker build execution"
+docs = ".github/workflows/atlas-dev-rust.yml"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
 visibility = "internal"
 
 [[checks]]

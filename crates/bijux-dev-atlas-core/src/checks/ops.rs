@@ -67,6 +67,14 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_make_no_direct_ops_script_execution" => {
             Some(check_make_no_direct_ops_script_execution)
         }
+        "checks_root_dockerignore_context_contract" => Some(check_root_dockerignore_context_contract),
+        "checks_root_dockerfile_pointer_only" => Some(check_root_dockerfile_pointer_only),
+        "checks_dockerfiles_under_canonical_directory_only" => {
+            Some(check_dockerfiles_under_canonical_directory_only)
+        }
+        "checks_workflows_no_direct_docker_build_execution" => {
+            Some(check_workflows_no_direct_docker_build_execution)
+        }
         "checks_root_no_scripts_areas_presence_or_references" => {
             Some(check_root_no_scripts_areas_presence_or_references)
         }
@@ -209,6 +217,10 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_make_no_atlasctl_string_references",
         "checks_workflows_no_direct_ops_script_execution",
         "checks_make_no_direct_ops_script_execution",
+        "checks_root_dockerignore_context_contract",
+        "checks_root_dockerfile_pointer_only",
+        "checks_dockerfiles_under_canonical_directory_only",
+        "checks_workflows_no_direct_docker_build_execution",
         "checks_root_no_scripts_areas_presence_or_references",
         "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch",
         "checks_crates_bijux_atlas_help_excludes_dev_commands",
