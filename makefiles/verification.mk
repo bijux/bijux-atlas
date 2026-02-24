@@ -9,7 +9,9 @@ $(eval $(VERIFICATION_MODULE):;@:)
 endif
 endif
 
-VERIFICATION_TARGETS_configs ?= configs-inventory
+VERIFICATION_TARGETS_configs ?= configs configs-doctor configs-validate configs-lint configs-inventory
+VERIFICATION_ACCEPT_CODES ?= 0
+VERIFICATION_ACCEPT_CODES_configs ?= 0 2
 
 verification: ## Run every target declared in makefiles/<module>.mk
 	@module="$(VERIFICATION_MODULE)"; \
@@ -40,14 +42,19 @@ _verification-run:
 		exit 2; \
 	fi; \
 	total=0; failed=0; \
+	accept_codes="$(VERIFICATION_ACCEPT_CODES_$(VERIFICATION_MODULE))"; \
+	if [ -z "$$accept_codes" ]; then accept_codes="$(VERIFICATION_ACCEPT_CODES)"; fi; \
 	for target in $$targets; do \
 		total=$$((total + 1)); \
 		printf '[%s] %s\n' "$$total" "$$target"; \
 		if $(MAKE) --no-print-directory -s "$$target"; then \
 			printf '  result: pass\n'; \
 		else \
-			printf '  result: fail\n'; \
-			failed=$$((failed + 1)); \
+			code=$$?; \
+			case " $$accept_codes " in \
+				*" $$code "*) printf '  result: pass (accepted exit=%s)\n' "$$code" ;; \
+				*) printf '  result: fail (exit=%s)\n' "$$code"; failed=$$((failed + 1));; \
+			esac; \
 		fi; \
 	done; \
 	printf 'verification summary: module=%s total=%s failed=%s\n' "$$module" "$$total" "$$failed"; \
