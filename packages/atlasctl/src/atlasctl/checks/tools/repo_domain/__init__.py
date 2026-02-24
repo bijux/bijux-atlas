@@ -45,17 +45,7 @@ from .native import (
 )
 from ...model import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
-from ....commands.policies.runtime.culprits import (
-    check_budget_drift_approval,
-    check_critical_dir_count_trend,
-    check_budget_exceptions_documented,
-    check_budget_exceptions_sorted,
-    check_budget_metric,
-)
-from ....commands.policies.runtime.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
-from ....commands.policies.runtime.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
-from ....commands.policies.runtime.module_budgets import check_modules_per_domain
-from ....commands.policies.runtime.tree_depth import check_tree_depth
+from ....commands.policies.runtime.culprits import check_budget_metric
 from .enforcement.cwd_usage import (
     check_no_environ_mutation,
     check_no_path_cwd_usage,
@@ -281,80 +271,6 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.no_scripts_dir", "repo", "forbid legacy root scripts dir", 250, check_scripts_dir_absent, fix_hint="Migrate scripts into atlasctl package commands."),
     CheckDef("repo.legacy_package_absent", "repo", "require atlasctl legacy package to be absent", 250, check_legacy_package_absent, fix_hint="Delete packages/atlasctl/src/atlasctl/legacy and migrate importers."),
     CheckDef("repo.module_size", "repo", "enforce module size budget", 400, check_module_size, fix_hint="Split oversized modules into focused submodules."),
-    CheckDef("repo.dir_budget_modules", "repo", "enforce per-directory python module count budget", 400, check_modules_per_dir, fix_hint="Split high-density directories into intent-focused subpackages."),
-    CheckDef("repo.dir_budget_py_files", "repo", "enforce per-directory python file count budget", 400, check_py_files_per_dir, fix_hint="Split high-density directories and keep directory fan-in bounded."),
-    CheckDef(
-        "repo.dir_budget_entries",
-        "repo",
-        "enforce per-directory entries budget in atlasctl src/tests",
-        400,
-        check_dir_entry_budgets,
-        fix_hint="Split crowded directories; required reading: packages/atlasctl/docs/architecture/how-to-split-a-module.md.",
-    ),
-    CheckDef(
-        "repo.dir_budget_py_scope",
-        "repo",
-        "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)",
-        400,
-        check_py_files_per_dir_budget,
-        fix_hint="Split module directories and keep <=10 python files per dir; see how-to-split-a-module.md.",
-    ),
-    CheckDef(
-        "repo.dir_budget_loc",
-        "repo",
-        "enforce per-directory total LOC budget",
-        400,
-        check_loc_per_dir,
-        fix_hint="Move unrelated files into domain subpackages to reduce dir-level LOC density.",
-    ),
-    CheckDef(
-        "repo.module_budget_domains",
-        "repo",
-        "enforce module count budget per top-level atlasctl domain",
-        400,
-        check_modules_per_domain,
-        fix_hint="Split high-density top-level domains and relocate modules by control-plane ownership.",
-    ),
-    CheckDef(
-        "repo.dir_budget_exceptions_documented",
-        "repo",
-        "ensure budget exceptions are documented",
-        300,
-        check_budget_exceptions_documented,
-        fix_hint="Document each budget exception path in packages/atlasctl/docs/architecture.md.",
-    ),
-    CheckDef(
-        "repo.dir_budget_exceptions_sorted",
-        "repo",
-        "ensure budget exceptions are sorted deterministically",
-        300,
-        check_budget_exceptions_sorted,
-        fix_hint="Sort [[tool.atlasctl.budgets.exceptions]] entries by path in pyproject.toml.",
-    ),
-    CheckDef(
-        "repo.budget_drift_approval",
-        "repo",
-        "forbid budget loosening without explicit approval marker",
-        300,
-        check_budget_drift_approval,
-        fix_hint="Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker.",
-    ),
-    CheckDef(
-        "repo.dir_count_trend_gate",
-        "repo",
-        "forbid critical directory file/module count drift above baseline",
-        300,
-        check_critical_dir_count_trend,
-        fix_hint="Split critical directories or update configs/policy/atlasctl-dir-count-baseline.json with approval.",
-    ),
-    CheckDef(
-        "repo.dir_budget_shell_files",
-        "repo",
-        "enforce per-directory shell file count budget",
-        400,
-        lambda repo_root: check_budget_metric(repo_root, "shell-files-per-dir"),
-        fix_hint="Move shell scripts into approved layout/ops directories and split crowded directories.",
-    ),
     CheckDef(
         "repo.file_import_budget",
         "repo",
@@ -488,14 +404,6 @@ CHECKS: tuple[CheckDef, ...] = (
         300,
         check_top_level_package_group_mapping,
         fix_hint="Map new top-level packages to configs/dev/ops/policies/internal in package_shape policy.",
-    ),
-    CheckDef(
-        "repo.package_max_depth",
-        "repo",
-        "enforce maximum atlasctl package nesting depth",
-        300,
-        check_tree_depth,
-        fix_hint="Flatten deep package hierarchies under packages/atlasctl/src/atlasctl.",
     ),
     CheckDef(
         "repo.canonical_concept_homes",

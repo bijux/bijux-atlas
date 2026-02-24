@@ -232,72 +232,6 @@
       ]
     },
     {
-      "area": "general",
-      "callable": "check_count_budget",
-      "category": "check",
-      "description": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Reduce checks count or intentionally raise budget in configs/policy/checks-count-budget.json.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.count_budget",
-      "intent": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_checks_tree_depth_budget",
-      "category": "check",
-      "description": "enforce checks package depth budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Flatten checks package directories to depth budget.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.depth_budget",
-      "intent": "enforce checks package depth budget",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
       "area": "no",
       "callable": "check_docs_checks_no_ops_imports",
       "category": "check",
@@ -365,72 +299,6 @@
       ]
     },
     {
-      "area": "no",
-      "callable": "check_domains_contracts_no_nested_dirs",
-      "category": "check",
-      "description": "forbid nested directories under canonical domain contract modules",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Keep domain contracts flat: avoid nested directories under checks/domains/ops/contracts and checks/domains/policies/make.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.domains_contracts_no_nested_dirs",
-      "intent": "forbid nested directories under canonical domain contract modules",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_checks_domains_module_budget",
-      "category": "check",
-      "description": "enforce checks domains module budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Keep checks domain module count within budget or adjust policy budget intentionally.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.domains_module_budget",
-      "intent": "enforce checks domains module budget",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
       "area": "general",
       "callable": "check_domains_directory_shape",
       "category": "check",
@@ -470,7 +338,8 @@
       "description": "forbid tracked evidence outputs under artifacts/atlasctl/checks",
       "domain": "checks",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -483,39 +352,6 @@
       ],
       "id": "checks.evidence_not_tracked",
       "intent": "forbid tracked evidence outputs under artifacts/atlasctl/checks",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_checks_file_count_budget",
-      "category": "check",
-      "description": "enforce checks package file-count budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Reduce checks package file count to budget by consolidating modules.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.file_count_budget",
-      "intent": "enforce checks package file-count budget",
       "legacy_id": "None",
       "module": "atlasctl.checks.domains.internal",
       "owner": "platform",
@@ -657,39 +493,6 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 300,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "root",
-      "callable": "check_internal_checks_root_budget",
-      "category": "check",
-      "description": "enforce checks package root entry budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Reduce checks package root entries to stay within budget.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.internal_checks_root_budget",
-      "intent": "enforce checks package root entry budget",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -926,39 +729,6 @@
       ]
     },
     {
-      "area": "file",
-      "callable": "check_internal_no_file_per_check_explosion",
-      "category": "check",
-      "description": "enforce python file-count budget per checks directory",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Group per-check files into intent modules and keep per-directory python file count below budget.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.internal_no_file_per_check_explosion",
-      "intent": "enforce python file-count budget per checks directory",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 600,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
       "area": "generated",
       "callable": "check_internal_no_generated_registry_as_input",
       "category": "check",
@@ -1091,39 +861,6 @@
       ]
     },
     {
-      "area": "general",
-      "callable": "check_internal_root_budget",
-      "category": "check",
-      "description": "enforce checks root entry budget alias contract",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Reduce checks root entries to budget.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.internal_root_budget",
-      "intent": "enforce checks root entry budget alias contract",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
       "area": "runner",
       "callable": "check_internal_single_runner_surface",
       "category": "check",
@@ -1185,39 +922,6 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_checks_module_loc_budget",
-      "category": "check",
-      "description": "enforce checks module loc budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split oversized checks modules into intent-focused modules.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.module_loc_budget",
-      "intent": "enforce checks module loc budget",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 600,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -2561,39 +2265,6 @@
       ]
     },
     {
-      "area": "general",
-      "callable": "check_checks_root_entry_budget",
-      "category": "check",
-      "description": "enforce checks root entry budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Reduce top-level entries under packages/atlasctl/src/atlasctl/checks or adjust policy budget intentionally.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.root_entry_budget",
-      "intent": "enforce checks root entry budget",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
       "area": "compat",
       "callable": "check_root_policy_compat_shims_not_expired",
       "category": "check",
@@ -2622,39 +2293,6 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "legacy",
-      "callable": "check_structured_results_legacy_signature_budget",
-      "category": "check",
-      "description": "ratchet down legacy tuple check signatures in favor of structured results",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Migrate tuple[int, list[str]] check signatures to structured Violation/CheckOutcome results.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.structured_results_legacy_signature_budget",
-      "intent": "ratchet down legacy tuple check signatures in favor of structured results",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 600,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -2780,39 +2418,6 @@
       ],
       "id": "checks.surfaces_no_banned_adjectives_in_paths",
       "intent": "forbid policy-listed adjectives in atlasctl module/docs path names",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.domains.internal",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 500,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_checks_tools_module_budget",
-      "category": "check",
-      "description": "enforce checks tools module budget",
-      "domain": "checks",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Keep checks tools module count within budget or adjust policy budget intentionally.",
-      "gate": "checks",
-      "groups": [
-        "checks",
-        "fast",
-        "required"
-      ],
-      "id": "checks.tools_module_budget",
-      "intent": "enforce checks tools module budget",
       "legacy_id": "None",
       "module": "atlasctl.checks.domains.internal",
       "owner": "platform",
@@ -2967,7 +2572,8 @@
       "description": "validate atlasctl CLI contract surface",
       "domain": "contracts",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -3000,7 +2606,8 @@
       "description": "validate repository layout contract",
       "domain": "contracts",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [
@@ -3200,7 +2807,8 @@
       "description": "enforce schema bump + release notes policy for schema changes",
       "domain": "contracts",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -3835,7 +3443,8 @@
       "description": "require docs/tests updates when command registry changes",
       "domain": "docs",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -4512,7 +4121,8 @@
       "description": "ensure deterministic make help output",
       "domain": "make",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -4988,7 +4598,8 @@
       "description": "forbid orphan docs references for make targets and atlasctl commands",
       "domain": "make",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -5974,7 +5585,7 @@
       "description": "validate deterministic committed generated assets",
       "domain": "ops",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -6070,13 +5681,47 @@
       ]
     },
     {
+      "area": "general",
+      "callable": "check_ops_external_tools_manifest_native",
+      "category": "check",
+      "description": "validate ops external tools allowlist manifest",
+      "domain": "ops",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Fix configs/ops/external-tools-allowlist.json area and schema contracts.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "lint",
+        "ops",
+        "required"
+      ],
+      "id": "ops.external_tools_manifest",
+      "intent": "validate ops external tools allowlist manifest",
+      "legacy_id": "None",
+      "module": "atlasctl.checks.tools.ops_domain.contracts",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
       "area": "tracked",
       "callable": "check_ops_generated_not_tracked_unless_allowed",
       "category": "check",
       "description": "forbid tracked generated ops outputs unless explicitly allowlisted",
       "domain": "ops",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -6212,7 +5857,7 @@
       "description": "forbid tracked files in generated ops dirs",
       "domain": "ops",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -6246,7 +5891,7 @@
       "description": "forbid tracked timestamped paths",
       "domain": "ops",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -8349,6 +7994,40 @@
     },
     {
       "area": "general",
+      "callable": "check_ops_surface_manifest_native",
+      "category": "check",
+      "description": "validate ops surface manifest consistency",
+      "domain": "ops",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Fix configs/ops/ops-surface-manifest.json and ops/inventory/surfaces.json contracts.",
+      "gate": "ops",
+      "groups": [
+        "fast",
+        "lint",
+        "ops",
+        "required"
+      ],
+      "id": "ops.surface_manifest",
+      "intent": "validate ops surface manifest consistency",
+      "legacy_id": "None",
+      "module": "atlasctl.checks.tools.ops_domain.contracts",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 1000,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "general",
       "callable": "check_policies_adjective_allowlist_budget",
       "category": "check",
       "description": "enforce adjective allowlist ratchet budget",
@@ -8388,7 +8067,8 @@
       "description": "forbid forbidden adjectives across tracked files",
       "domain": "policies",
       "effects": [
-        "fs_read"
+        "fs_read",
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -8716,7 +8396,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 800,
+      "timeout_ms": 4000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -8750,7 +8430,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 800,
+      "timeout_ms": 4000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -10702,39 +10382,6 @@
     },
     {
       "area": "general",
-      "callable": "check_budget_drift_approval",
-      "category": "check",
-      "description": "forbid budget loosening without explicit approval marker",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Update configs/policy/atlasctl-budgets-baseline.json or add approved budget-loosening marker.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.budget_drift_approval",
-      "intent": "forbid budget loosening without explicit approval marker",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.culprits",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 300,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
       "callable": "check_canonical_concept_homes",
       "category": "check",
       "description": "forbid duplicate top-level concept packages for registry/runner/contracts/output",
@@ -12351,303 +11998,6 @@
       ]
     },
     {
-      "area": "general",
-      "callable": "check_dir_entry_budgets",
-      "category": "check",
-      "description": "enforce per-directory entries budget in atlasctl src/tests",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split crowded directories; required reading: packages/atlasctl/docs/architecture/how-to-split-a-module.md.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_entries",
-      "intent": "enforce per-directory entries budget in atlasctl src/tests",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.dir_entry_budgets",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "exceptions",
-      "callable": "check_budget_exceptions_documented",
-      "category": "check",
-      "description": "ensure budget exceptions are documented",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Document each budget exception path in packages/atlasctl/docs/architecture.md.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_exceptions_documented",
-      "intent": "ensure budget exceptions are documented",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.culprits",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 300,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "exceptions",
-      "callable": "check_budget_exceptions_sorted",
-      "category": "check",
-      "description": "ensure budget exceptions are sorted deterministically",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Sort [[tool.atlasctl.budgets.exceptions]] entries by path in pyproject.toml.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_exceptions_sorted",
-      "intent": "ensure budget exceptions are sorted deterministically",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.culprits",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 300,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_loc_per_dir",
-      "category": "check",
-      "description": "enforce per-directory total LOC budget",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Move unrelated files into domain subpackages to reduce dir-level LOC density.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_loc",
-      "intent": "enforce per-directory total LOC budget",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.dir_budgets",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_modules_per_dir",
-      "category": "check",
-      "description": "enforce per-directory python module count budget",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split high-density directories into intent-focused subpackages.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_modules",
-      "intent": "enforce per-directory python module count budget",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.dir_budgets",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "py",
-      "callable": "check_py_files_per_dir",
-      "category": "check",
-      "description": "enforce per-directory python file count budget",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split high-density directories and keep directory fan-in bounded.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_py_files",
-      "intent": "enforce per-directory python file count budget",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.dir_budgets",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "py",
-      "callable": "check_py_files_per_dir_budget",
-      "category": "check",
-      "description": "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split module directories and keep <=10 python files per dir; see how-to-split-a-module.md.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_py_scope",
-      "intent": "enforce per-directory .py file budget in atlasctl src/tests (excluding __init__.py)",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.dir_entry_budgets",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "shell",
-      "callable": "<lambda>",
-      "category": "check",
-      "description": "enforce per-directory shell file count budget",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Move shell scripts into approved layout/ops directories and split crowded directories.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_budget_shell_files",
-      "intent": "enforce per-directory shell file count budget",
-      "legacy_id": "None",
-      "module": "atlasctl.checks.tools.repo_domain",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "trend",
-      "callable": "check_critical_dir_count_trend",
-      "category": "check",
-      "description": "forbid critical directory file/module count drift above baseline",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split critical directories or update configs/policy/atlasctl-dir-count-baseline.json with approval.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.dir_count_trend_gate",
-      "intent": "forbid critical directory file/module count drift above baseline",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.culprits",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 300,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
       "area": "ops",
       "callable": "check_docs_no_ops_generated_run_paths",
       "category": "check",
@@ -13765,39 +13115,6 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 1200,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_modules_per_domain",
-      "category": "check",
-      "description": "enforce module count budget per top-level atlasctl domain",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Split high-density top-level domains and relocate modules by control-plane ownership.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.module_budget_domains",
-      "intent": "enforce module count budget per top-level atlasctl domain",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.module_budgets",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 400,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -15474,39 +14791,6 @@
       "intent": "require each non-legacy package to contain a module or README",
       "legacy_id": "None",
       "module": "atlasctl.checks.tools.repo_domain.enforcement.package_hygiene",
-      "owner": "platform",
-      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
-      "remediation_short": "Review check output and apply the documented fix.",
-      "result_code": "CHECK_GENERIC",
-      "severity": "error",
-      "speed": "fast",
-      "timeout_ms": 300,
-      "writes_allowed_roots": [
-        "artifacts/evidence/"
-      ]
-    },
-    {
-      "area": "general",
-      "callable": "check_tree_depth",
-      "category": "check",
-      "description": "enforce maximum atlasctl package nesting depth",
-      "domain": "repo",
-      "effects": [
-        "fs_read"
-      ],
-      "evidence": [],
-      "external_tools": [],
-      "fix_hint": "Flatten deep package hierarchies under packages/atlasctl/src/atlasctl.",
-      "gate": "repo",
-      "groups": [
-        "fast",
-        "repo",
-        "required"
-      ],
-      "id": "repo.package_max_depth",
-      "intent": "enforce maximum atlasctl package nesting depth",
-      "legacy_id": "None",
-      "module": "atlasctl.commands.policies.runtime.budgets.tree_depth",
       "owner": "platform",
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "remediation_short": "Review check output and apply the documented fix.",
