@@ -1,4 +1,6 @@
-use bijux_dev_atlas_core::{render_json, run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors};
+use bijux_dev_atlas_core::{
+    render_json, run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors,
+};
 use serde_json::Value;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -14,8 +16,16 @@ fn root() -> PathBuf {
 
 struct TestFs;
 impl Fs for TestFs {
-    fn read_text(&self, repo_root: &Path, path: &Path) -> Result<String, bijux_dev_atlas_core::ports::AdapterError> {
-        let target = if path.is_absolute() { path.to_path_buf() } else { repo_root.join(path) };
+    fn read_text(
+        &self,
+        repo_root: &Path,
+        path: &Path,
+    ) -> Result<String, bijux_dev_atlas_core::ports::AdapterError> {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
         fs::read_to_string(target).map_err(|err| bijux_dev_atlas_core::ports::AdapterError::Io {
             op: "read_to_string",
             path: repo_root.join(path),
@@ -23,22 +33,41 @@ impl Fs for TestFs {
         })
     }
     fn exists(&self, repo_root: &Path, path: &Path) -> bool {
-        let target = if path.is_absolute() { path.to_path_buf() } else { repo_root.join(path) };
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
         target.exists()
     }
-    fn canonicalize(&self, repo_root: &Path, path: &Path) -> Result<PathBuf, bijux_dev_atlas_core::ports::AdapterError> {
-        let target = if path.is_absolute() { path.to_path_buf() } else { repo_root.join(path) };
-        target.canonicalize().map_err(|err| bijux_dev_atlas_core::ports::AdapterError::Io {
-            op: "canonicalize",
-            path: target,
-            detail: err.to_string(),
-        })
+    fn canonicalize(
+        &self,
+        repo_root: &Path,
+        path: &Path,
+    ) -> Result<PathBuf, bijux_dev_atlas_core::ports::AdapterError> {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
+        target
+            .canonicalize()
+            .map_err(|err| bijux_dev_atlas_core::ports::AdapterError::Io {
+                op: "canonicalize",
+                path: target,
+                detail: err.to_string(),
+            })
     }
 }
 
 struct DeniedProcessRunner;
 impl ProcessRunner for DeniedProcessRunner {
-    fn run(&self, program: &str, _args: &[String], _repo_root: &Path) -> Result<i32, bijux_dev_atlas_core::ports::AdapterError> {
+    fn run(
+        &self,
+        program: &str,
+        _args: &[String],
+        _repo_root: &Path,
+    ) -> Result<i32, bijux_dev_atlas_core::ports::AdapterError> {
         Err(bijux_dev_atlas_core::ports::AdapterError::EffectDenied {
             effect: "subprocess",
             detail: format!("attempted to execute `{program}`"),
@@ -90,8 +119,8 @@ fn report_json_matches_golden_shape_and_content() {
     normalize_dynamic_fields(&mut parsed);
     let normalized = serde_json::to_string_pretty(&parsed).expect("normalized");
 
-    let golden_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/goldens/report_default.json");
+    let golden_path =
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/goldens/report_default.json");
     if std::env::var("UPDATE_GOLDENS").ok().as_deref() == Some("1") {
         fs::write(&golden_path, &normalized).expect("write golden");
     }

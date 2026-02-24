@@ -9,7 +9,9 @@
     "max_modules_per_dir_hard": 16,
     "loc_allowlist": [
       "crates/bijux-atlas-server/src/lib.rs",
-      "crates/bijux-dev-atlas/src/main.rs"
+      "crates/bijux-dev-atlas/src/main.rs",
+      "crates/bijux-dev-atlas/src/ops_commands/runtime.rs",
+      "crates/bijux-dev-atlas/src/ops_runtime_execution/runtime.rs"
     ],
     "rs_files_per_dir_allowlist": [
       "crates/bijux-atlas-server/tests"

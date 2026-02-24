@@ -1,11 +1,11 @@
 #![forbid(unsafe_code)]
 
-use std::fs;
-use std::process::Command;
-use std::path::{Component, Path, PathBuf};
 pub use bijux_dev_atlas_core::ports::{
     AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner,
 };
+use std::fs;
+use std::path::{Component, Path, PathBuf};
+use std::process::Command;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AdapterEvent {
@@ -323,12 +323,7 @@ impl FakeWorld {
         self
     }
 
-    pub fn with_command_status(
-        mut self,
-        program: &str,
-        args: &[String],
-        status: i32,
-    ) -> Self {
+    pub fn with_command_status(mut self, program: &str, args: &[String], status: i32) -> Self {
         self.commands
             .insert((program.to_string(), args.to_vec()), status);
         self
@@ -342,14 +337,11 @@ impl Fs for FakeWorld {
         } else {
             repo_root.join(path)
         };
-        self.files
-            .get(&target)
-            .cloned()
-            .ok_or(AdapterError::Io {
-                op: "read_text",
-                path: target,
-                detail: "file not present in FakeWorld".to_string(),
-            })
+        self.files.get(&target).cloned().ok_or(AdapterError::Io {
+            op: "read_text",
+            path: target,
+            detail: "file not present in FakeWorld".to_string(),
+        })
     }
 
     fn exists(&self, repo_root: &Path, path: &Path) -> bool {

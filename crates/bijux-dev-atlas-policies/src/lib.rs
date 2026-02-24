@@ -5,9 +5,9 @@ mod validate;
 
 pub use schema::{
     evaluate_policy_set_pure, CheckPolicyCompatibility, DevAtlasPolicyMode, DevAtlasPolicySet,
-    DevAtlasPolicySetDocument, OpsPolicy, PolicyCategory, PolicyDefinition, PolicyDocumentedDefault,
-    PolicyInputSnapshot, PolicySchemaVersion, PolicyViolation, RatchetRule, Relaxation, RepoPolicy,
-    POLICY_REGISTRY,
+    DevAtlasPolicySetDocument, OpsPolicy, PolicyCategory, PolicyDefinition,
+    PolicyDocumentedDefault, PolicyInputSnapshot, PolicySchemaVersion, PolicyViolation,
+    RatchetRule, Relaxation, RepoPolicy, POLICY_REGISTRY,
 };
 pub use validate::{
     canonical_policy_json, policy_config_path, policy_schema_path,

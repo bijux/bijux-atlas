@@ -104,7 +104,7 @@ impl<'a> CheckRunner<'a> {
             suite: self.selectors.suite.clone(),
         };
         let selected = select_checks(registry, &effective_selectors)?;
-        Ok(selected
+        selected
             .into_iter()
             .map(|spec| match builtin_check_fn(&spec.id) {
                 Some(run_fn) => Ok(BuiltinCheck::from_spec(spec, run_fn)),
@@ -113,7 +113,7 @@ impl<'a> CheckRunner<'a> {
                     spec.id.as_str()
                 )),
             })
-            .collect::<Result<Vec<_>, _>>()?)
+            .collect::<Result<Vec<_>, _>>()
     }
 
     pub fn run(&self) -> Result<RunReport, String> {
@@ -207,7 +207,9 @@ impl<'a> CheckRunner<'a> {
                     )
                     .expect("valid id"),
                     message: "evidence paths must not include timestamps".to_string(),
-                    hint: Some("use stable run identifiers and deterministic file names".to_string()),
+                    hint: Some(
+                        "use stable run identifiers and deterministic file names".to_string(),
+                    ),
                     path: None,
                     line: None,
                     severity: Severity::Error,

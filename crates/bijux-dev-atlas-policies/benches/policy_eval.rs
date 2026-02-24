@@ -1,6 +1,6 @@
 use bijux_dev_atlas_policies::{
-    evaluate_policy_set_pure, DevAtlasPolicyMode, DevAtlasPolicySet, OpsPolicy, PolicyInputSnapshot,
-    PolicySchemaVersion, RepoPolicy,
+    evaluate_policy_set_pure, DevAtlasPolicyMode, DevAtlasPolicySet, OpsPolicy,
+    PolicyInputSnapshot, PolicySchemaVersion, RepoPolicy,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 

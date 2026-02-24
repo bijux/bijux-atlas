@@ -1,9 +1,9 @@
 #![forbid(unsafe_code)]
 
-use std::collections::{BTreeMap, BTreeSet};
 use std::collections::HashMap;
-use std::hash::{Hash, Hasher};
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 
@@ -176,7 +176,8 @@ pub fn load_ops_inventory_cached(repo_root: &Path) -> Result<OpsInventory, Strin
         }
     }
     let inventory = load_ops_inventory(&canonical_root)?;
-    cache.lock()
+    cache
+        .lock()
         .map_err(|_| "ops inventory cache mutex poisoned".to_string())?
         .insert(
             canonical_root,
@@ -438,6 +439,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "schema",
         "schemas",
         "stack",
+        "tools",
         "vendor",
         "CONTRACT.md",
         "CONTROL_PLANE.md",
@@ -613,7 +615,10 @@ mod tests {
         .expect("write contracts");
 
         let first = load_ops_inventory_cached(repo).expect("first");
-        assert_eq!(first.toolchain.images.get("rust"), Some(&"ghcr.io/x/rust:1".to_string()));
+        assert_eq!(
+            first.toolchain.images.get("rust"),
+            Some(&"ghcr.io/x/rust:1".to_string())
+        );
 
         fs::write(
             repo.join("ops/inventory/toolchain.json"),
@@ -622,6 +627,9 @@ mod tests {
         .expect("rewrite toolchain");
 
         let second = load_ops_inventory_cached(repo).expect("second");
-        assert_eq!(second.toolchain.images.get("rust"), Some(&"ghcr.io/x/rust:2".to_string()));
+        assert_eq!(
+            second.toolchain.images.get("rust"),
+            Some(&"ghcr.io/x/rust:2".to_string())
+        );
     }
 }

@@ -6,7 +6,11 @@ use tempfile::TempDir;
 struct TestFs;
 
 impl Fs for TestFs {
-    fn read_text(&self, repo_root: &Path, path: &Path) -> Result<String, crate::ports::AdapterError> {
+    fn read_text(
+        &self,
+        repo_root: &Path,
+        path: &Path,
+    ) -> Result<String, crate::ports::AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
@@ -38,11 +42,13 @@ impl Fs for TestFs {
         } else {
             repo_root.join(path)
         };
-        target.canonicalize().map_err(|err| crate::ports::AdapterError::Io {
-            op: "canonicalize",
-            path: target,
-            detail: err.to_string(),
-        })
+        target
+            .canonicalize()
+            .map_err(|err| crate::ports::AdapterError::Io {
+                op: "canonicalize",
+                path: target,
+                detail: err.to_string(),
+            })
     }
 }
 

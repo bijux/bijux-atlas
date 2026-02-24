@@ -59,11 +59,15 @@ pub fn validate_relaxation_expiry(
         let policy_id = item
             .get("policy_id")
             .and_then(Value::as_str)
-            .ok_or_else(|| PolicyValidationError("relaxations.policy_id must be string".to_string()))?;
+            .ok_or_else(|| {
+                PolicyValidationError("relaxations.policy_id must be string".to_string())
+            })?;
         let expires_on = item
             .get("expires_on")
             .and_then(Value::as_str)
-            .ok_or_else(|| PolicyValidationError("relaxations.expires_on must be string".to_string()))?;
+            .ok_or_else(|| {
+                PolicyValidationError("relaxations.expires_on must be string".to_string())
+            })?;
         if !is_ymd(expires_on) {
             return Err(PolicyValidationError(format!(
                 "relaxation for `{policy_id}` has invalid expires_on `{expires_on}`"
@@ -97,9 +101,10 @@ pub fn validate_policy_registry_ids(config: &Value) -> Result<(), PolicyValidati
     }
     if let Some(ratchets) = config.get("ratchets").and_then(Value::as_array) {
         for item in ratchets {
-            let id = item.get("id").and_then(Value::as_str).ok_or_else(|| {
-                PolicyValidationError("ratchets.id must be string".to_string())
-            })?;
+            let id = item
+                .get("id")
+                .and_then(Value::as_str)
+                .ok_or_else(|| PolicyValidationError("ratchets.id must be string".to_string()))?;
             if !registered.contains(id) {
                 return Err(PolicyValidationError(format!(
                     "ratchet references unknown policy id `{id}`"
@@ -109,9 +114,12 @@ pub fn validate_policy_registry_ids(config: &Value) -> Result<(), PolicyValidati
     }
     if let Some(relaxations) = config.get("relaxations").and_then(Value::as_array) {
         for item in relaxations {
-            let policy_id = item.get("policy_id").and_then(Value::as_str).ok_or_else(|| {
-                PolicyValidationError("relaxations.policy_id must be string".to_string())
-            })?;
+            let policy_id = item
+                .get("policy_id")
+                .and_then(Value::as_str)
+                .ok_or_else(|| {
+                    PolicyValidationError("relaxations.policy_id must be string".to_string())
+                })?;
             if !registered.contains(policy_id) {
                 return Err(PolicyValidationError(format!(
                     "relaxation references unknown policy id `{policy_id}`"

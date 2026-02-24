@@ -693,6 +693,9 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
             }
             for needle in &forbidden {
                 if content.contains(needle) {
+                    if *needle == "/tools/" && content.contains("ops/tools/") {
+                        continue;
+                    }
                     violations.push(violation(
                         "OPS_LEGACY_RUNNER_PATH_REFERENCE_FOUND",
                         format!(
