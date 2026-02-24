@@ -336,6 +336,7 @@ dependencies = [
  "bijux-atlas-store",
  "criterion",
  "hmac",
+ "proptest",
  "rusqlite",
  "serde",
  "serde_json",

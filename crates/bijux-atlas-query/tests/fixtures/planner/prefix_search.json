@@ -1,0 +1,14 @@
+{
+  "node": "prefix_search",
+  "class": "heavy",
+  "cost": {
+    "work_units": 1211
+  },
+  "normalized": "{\"predicates\":[{\"name_prefix\":\"BRCA\"}],\"limit\":11,\"dataset_key\":null,\"allow_full_scan\":false,\"has_cursor\":false,\"sort_key\":\"gene_id\"}",
+  "budget_hooks": [
+    "max_work_units",
+    "max_region_span",
+    "max_prefix_cost_units"
+  ],
+  "sort_key": "gene_id"
+}
