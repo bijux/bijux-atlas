@@ -552,8 +552,20 @@ pub fn render_text_summary(report: &RunReport) -> String {
     )
 }
 
+pub fn render_ci_summary_line(report: &RunReport) -> String {
+    format!(
+        "CI_SUMMARY run_id={} passed={} failed={} skipped={} errors={} total={}",
+        report.run_id.as_str(),
+        report.summary.passed,
+        report.summary.failed,
+        report.summary.skipped,
+        report.summary.errors,
+        report.summary.total
+    )
+}
+
 pub fn render_text_with_durations(report: &RunReport, top_n: usize) -> String {
-    let mut lines = vec![render_text_summary(report)];
+    let mut lines = vec![render_text_summary(report), render_ci_summary_line(report)];
     if top_n > 0 {
         let mut rows = report
             .results
@@ -771,6 +783,12 @@ pub fn run_checks(
                 "id_glob".to_string(),
                 effective_selectors.id_glob.clone().unwrap_or_default(),
             ),
+        ]),
+        capabilities: BTreeMap::from([
+            ("fs_write".to_string(), request.capabilities.fs_write),
+            ("subprocess".to_string(), request.capabilities.subprocess),
+            ("git".to_string(), request.capabilities.git),
+            ("network".to_string(), request.capabilities.network),
         ]),
         results,
         durations_ms: timings.clone(),

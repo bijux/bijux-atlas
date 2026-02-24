@@ -328,6 +328,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
         repo_root: ".".to_string(),
         command: "check run".to_string(),
         selections: BTreeMap::new(),
+        capabilities: BTreeMap::new(),
         results: Vec::new(),
         durations_ms: BTreeMap::new(),
         counts: RunSummary {
@@ -392,6 +393,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
         repo_root: ".".to_string(),
         command: "check run".to_string(),
         selections: BTreeMap::new(),
+        capabilities: BTreeMap::new(),
         results: vec![
             CheckResult {
                 id: CheckId::parse("checks_ops_surface_manifest").expect("id"),
@@ -429,6 +431,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
     };
     let rendered = render_text_with_durations(&report, 2);
     let lines: Vec<&str> = rendered.lines().collect();
+    assert!(lines.iter().any(|line| line.starts_with("CI_SUMMARY ")));
     assert!(lines
         .iter()
         .any(|line| line.contains("duration: checks_ops_surface_manifest 50ms")));
