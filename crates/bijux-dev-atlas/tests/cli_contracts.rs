@@ -344,3 +344,28 @@ fn check_doctor_supports_json_format() {
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
 }
+
+#[test]
+fn check_list_accepts_ci_fast_suite_alias() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["check", "list", "--suite", "ci-fast", "--format", "json"])
+        .output()
+        .expect("check list ci-fast");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn check_list_accepts_local_and_deep_suites() {
+    for suite in ["local", "deep"] {
+        let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+            .current_dir(repo_root())
+            .args(["check", "list", "--suite", suite, "--format", "json"])
+            .output()
+            .expect("check list suite");
+        assert!(output.status.success(), "suite `{suite}` failed");
+    }
+}
