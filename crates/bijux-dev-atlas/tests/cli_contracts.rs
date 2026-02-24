@@ -278,6 +278,46 @@ fn docs_doctor_fixture_json_matches_golden() {
 }
 
 #[test]
+fn configs_inventory_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["configs", "inventory", "--format", "json"])
+        .output()
+        .expect("configs inventory json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn configs_doctor_fixture_json_matches_golden() {
+    let fixture_root = repo_root().join("crates/bijux-dev-atlas/tests/fixtures/configs-mini");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "configs",
+            "doctor",
+            "--repo-root",
+            fixture_root.to_str().expect("fixture root"),
+            "--run-id",
+            "configs_fixture",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("configs doctor fixture");
+    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
+    let mut payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    payload["duration_ms"] = serde_json::json!(0);
+    let actual = serde_json::to_string_pretty(&payload).expect("json");
+    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/configs_doctor_fixture.json");
+    let golden = fs::read_to_string(golden_path).expect("golden");
+    assert_eq!(actual.trim(), golden.trim());
+}
+
+#[test]
 fn ops_status_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
