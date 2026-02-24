@@ -14,9 +14,7 @@ fn command_surface_ssot_matches_doc() {
         "atlas dataset validate",
         "atlas dataset verify",
         "atlas dataset verify-pack",
-        "atlas dev-atlas",
         "atlas diff build",
-        "atlas doctor",
         "atlas explain",
         "atlas explain-query",
         "atlas bench",
@@ -184,6 +182,22 @@ fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
         assert!(
             !rendered.contains(reserved),
             "reserved verb exposed: {reserved}"
+        );
+    }
+}
+
+#[test]
+fn atlas_help_excludes_control_plane_commands() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+        .args(["atlas", "--help"])
+        .output()
+        .expect("atlas help");
+    assert!(output.status.success());
+    let rendered = String::from_utf8(output.stdout).expect("utf8 atlas help");
+    for forbidden in ["dev-atlas", "doctor", "check", "checks"] {
+        assert!(
+            !rendered.contains(forbidden),
+            "control-plane command leaked into runtime surface: {forbidden}"
         );
     }
 }

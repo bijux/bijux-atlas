@@ -67,8 +67,9 @@ exec "$(dirname "$0")/bijux-$subsystem" "$@"
         .stdout(predicate::str::contains("atlas"));
 
     Command::new(&umbrella)
-        .args(["atlas", "atlas", "doctor"])
+        .args(["atlas", "--json", "atlas", "dev-atlas", "doctor"])
         .assert()
-        .success()
-        .stdout(predicate::str::contains("\"command\": \"atlas doctor\""));
+        .failure()
+        .stderr(predicate::str::contains("\"code\":\"legacy_command_redirect\""))
+        .stderr(predicate::str::contains("bijux dev atlas <command>"));
 }
