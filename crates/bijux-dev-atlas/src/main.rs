@@ -2,6 +2,7 @@
 
 mod cli;
 mod configs_commands;
+mod control_plane_commands;
 mod dispatch;
 mod docs_commands;
 #[cfg(test)]
@@ -15,10 +16,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 
 use crate::cli::{
-    Cli, ConfigsCommand, ConfigsCommonArgs, DockerCommand, DockerCommonArgs, DocsCommand,
-    DocsCommonArgs, DomainArg, FormatArg, GatesCommand, OpsCommand, OpsCommonArgs,
-    OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget, OpsStatusTarget, PoliciesCommand,
-    WorkflowsCommand,
+    Cli, ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
+    GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
+    OpsStatusTarget, WorkflowsCommand,
 };
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
@@ -28,13 +28,15 @@ use bijux_dev_atlas_core::{
     Selectors,
 };
 use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
-use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use clap::Parser;
 #[cfg(test)]
 pub(crate) use configs_commands::parse_config_file;
 pub(crate) use configs_commands::{
     configs_context, configs_diff_payload, configs_lint_payload, configs_validate_payload,
     run_configs_command,
+};
+pub(crate) use control_plane_commands::{
+    run_capabilities_command, run_docker_command, run_policies_command, run_print_policies,
 };
 #[cfg(test)]
 pub(crate) use docs_commands::mkdocs_nav_refs;
@@ -414,130 +416,6 @@ pub(crate) fn run_workflows_command(
     }
 }
 
-pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
-    let result = match command {
-        PoliciesCommand::Print {
-            repo_root,
-            format,
-            out,
-        } => run_policies_print(repo_root, format, out),
-        PoliciesCommand::Validate {
-            repo_root,
-            format,
-            out,
-        } => run_policies_validate(repo_root, format, out),
-    };
-    match result {
-        Ok((rendered, code)) => {
-            if !quiet && !rendered.is_empty() {
-                println!("{rendered}");
-            }
-            code
-        }
-        Err(err) => {
-            eprintln!("bijux-dev-atlas policies failed: {err}");
-            1
-        }
-    }
-}
-
-pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
-    let run = (|| -> Result<(String, i32), String> {
-        let started = std::time::Instant::now();
-        let emit = |common: &DockerCommonArgs, payload: serde_json::Value, code: i32| {
-            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            Ok((rendered, code))
-        };
-        match command {
-            DockerCommand::Build(common) => {
-                if !common.allow_subprocess {
-                    return Err("docker build requires --allow-subprocess".to_string());
-                }
-                let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let run_id = common
-                    .run_id
-                    .as_ref()
-                    .map(|v| RunId::parse(v))
-                    .transpose()?
-                    .unwrap_or_else(|| RunId::from_seed("docker_build"));
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "run_id": run_id.as_str(),
-                    "text": "docker build wrapper is defined (subprocess-gated)",
-                    "rows": [{"action":"build","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
-                    "duration_ms": started.elapsed().as_millis() as u64
-                });
-                emit(&common, payload, 0)
-            }
-            DockerCommand::Check(common) => {
-                if !common.allow_subprocess {
-                    return Err("docker check requires --allow-subprocess".to_string());
-                }
-                let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "text": "docker check wrapper is defined (subprocess-gated)",
-                    "rows": [{"action":"check","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
-                    "duration_ms": started.elapsed().as_millis() as u64
-                });
-                emit(&common, payload, 0)
-            }
-            DockerCommand::Push(args) => {
-                if !args.i_know_what_im_doing {
-                    return Err("docker push requires --i-know-what-im-doing".to_string());
-                }
-                if !args.common.allow_subprocess {
-                    return Err("docker push requires --allow-subprocess".to_string());
-                }
-                let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "text": "docker push wrapper is defined (explicit release gate)",
-                    "rows": [{"action":"push","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write},
-                    "duration_ms": started.elapsed().as_millis() as u64
-                });
-                emit(&args.common, payload, 0)
-            }
-            DockerCommand::Release(args) => {
-                if !args.i_know_what_im_doing {
-                    return Err("docker release requires --i-know-what-im-doing".to_string());
-                }
-                if !args.common.allow_subprocess {
-                    return Err("docker release requires --allow-subprocess".to_string());
-                }
-                let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "text": "docker release wrapper is defined (explicit release gate)",
-                    "rows": [{"action":"release","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write},
-                    "duration_ms": started.elapsed().as_millis() as u64
-                });
-                emit(&args.common, payload, 0)
-            }
-        }
-    })();
-    match run {
-        Ok((rendered, code)) => {
-            if !quiet && !rendered.is_empty() {
-                if code == 0 {
-                    println!("{rendered}");
-                } else {
-                    eprintln!("{rendered}");
-                }
-            }
-            code
-        }
-        Err(err) => {
-            eprintln!("bijux-dev-atlas docker failed: {err}");
-            1
-        }
-    }
-}
-
 pub(crate) fn run_gates_command(quiet: bool, command: GatesCommand) -> i32 {
     match command {
         GatesCommand::List {
@@ -811,91 +689,6 @@ pub(crate) fn run_check_registry_doctor(
     };
     write_output_if_requested(out, &rendered)?;
     Ok((rendered, if status == "ok" { 0 } else { 1 }))
-}
-
-pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(repo_root)?;
-    let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
-    let rendered = canonical_policy_json(&policies.to_document()).map_err(|err| err.to_string())?;
-    Ok((rendered, 0))
-}
-
-pub(crate) fn run_policies_print(
-    repo_root: Option<PathBuf>,
-    format: FormatArg,
-    out: Option<PathBuf>,
-) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(repo_root)?;
-    let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
-    let doc = policies.to_document();
-    let rendered = match format {
-        FormatArg::Text => format!(
-            "status: ok\nschema_version: {}\ncompatibility_rules: {}\ndocumented_defaults: {}",
-            format!("{:?}", doc.schema_version),
-            doc.compatibility.len(),
-            doc.documented_defaults.len()
-        ),
-        FormatArg::Json => serde_json::to_string_pretty(&doc).map_err(|err| err.to_string())?,
-        FormatArg::Jsonl => serde_json::to_string(&doc).map_err(|err| err.to_string())?,
-    };
-    write_output_if_requested(out, &rendered)?;
-    Ok((rendered, 0))
-}
-
-pub(crate) fn run_policies_validate(
-    repo_root: Option<PathBuf>,
-    format: FormatArg,
-    out: Option<PathBuf>,
-) -> Result<(String, i32), String> {
-    let root = resolve_repo_root(repo_root)?;
-    let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
-    let doc = policies.to_document();
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "status": "ok",
-        "repo_root": root.display().to_string(),
-        "policy_schema_version": doc.schema_version,
-        "compatibility_rules": doc.compatibility.len(),
-        "documented_defaults": doc.documented_defaults.len(),
-        "capabilities": {
-            "fs_write": false,
-            "subprocess": false,
-            "network": false,
-            "git": false
-        }
-    });
-    let rendered = emit_payload(format, out, &payload)?;
-    Ok((rendered, 0))
-}
-
-pub(crate) fn run_capabilities_command(
-    format: FormatArg,
-    out: Option<PathBuf>,
-) -> Result<(String, i32), String> {
-    let payload = serde_json::json!({
-        "schema_version": 1,
-        "text": "capabilities default-deny; commands require explicit effect flags",
-        "defaults": {
-            "fs_write": false,
-            "subprocess": false,
-            "network": false,
-            "git": false
-        },
-        "rules": [
-            {"effect": "fs_write", "policy": "explicit flag required", "flags": ["--allow-write"]},
-            {"effect": "subprocess", "policy": "explicit flag required", "flags": ["--allow-subprocess"]},
-            {"effect": "network", "policy": "explicit flag required", "flags": ["--allow-network"]},
-            {"effect": "git", "policy": "check run only", "flags": ["--allow-git"]}
-        ],
-        "command_groups": [
-            {"name": "check", "writes": "flag-gated", "subprocess": "flag-gated", "network": "flag-gated"},
-            {"name": "docs", "writes": "flag-gated", "subprocess": "flag-gated", "network": "default-deny"},
-            {"name": "configs", "writes": "flag-gated", "subprocess": "flag-gated", "network": "default-deny"},
-            {"name": "ops", "writes": "flag-gated", "subprocess": "flag-gated", "network": "default-deny"}
-        ]
-    });
-    let rendered = emit_payload(format, out, &payload)?;
-    Ok((rendered, 0))
 }
 
 fn main() {
