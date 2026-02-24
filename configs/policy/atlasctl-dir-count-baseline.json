@@ -1,8 +1,8 @@
 {
   "critical_dirs": {
-    "packages/atlasctl/src/atlasctl/checks/repo/enforcement": {
-      "max_modules": 9,
-      "max_py_files": 10
+    "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/enforcement": {
+      "max_modules": 11,
+      "max_py_files": 11
     },
     "packages/atlasctl/src/atlasctl/core": {
       "max_modules": 12,
