@@ -674,6 +674,156 @@ def check_legacy_check_directories_absent(repo_root: Path) -> tuple[int, list[st
     return (1, violations) if violations else (0, [])
 
 
+def _check_python_files(repo_root: Path) -> list[Path]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not root.exists():
+        return []
+    return [path for path in sorted(root.rglob("*.py")) if "__pycache__" not in path.parts]
+
+
+def check_checks_no_print_calls(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "print":
+                errors.append(f"{rel}:{node.lineno}: checks must not call print(); use structured violations/reporting")
+    return (1, errors) if errors else (0, [])
+
+
+def check_checks_no_sys_exit_calls(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "sys"
+                and node.func.attr == "exit"
+            ):
+                errors.append(f"{rel}:{node.lineno}: checks must not call sys.exit(); return violations/results")
+    return (1, errors) if errors else (0, [])
+
+
+def check_checks_no_direct_env_reads(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "ctx.env" in text:
+            continue
+        if "os.environ" in text or "os.getenv(" in text:
+            errors.append(f"{rel}: direct environment reads are forbidden; use CheckContext.env snapshot")
+    return (1, errors) if errors else (0, [])
+
+
+def check_checks_no_path_dot_usage(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    pattern = re.compile(r"\b(?:Path|pathlib\.Path)\(\s*[\"']\.[\"']\s*\)")
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for idx, line in enumerate(text.splitlines(), start=1):
+            if pattern.search(line):
+                errors.append(f"{rel}:{idx}: dot-path construction is forbidden; anchor paths to repo_root")
+    return (1, errors) if errors else (0, [])
+
+
+def check_checks_no_cwd_reliance(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    forbidden = ("Path.cwd(", "os.getcwd(", "os.chdir(")
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for idx, line in enumerate(text.splitlines(), start=1):
+            if any(token in line for token in forbidden):
+                errors.append(f"{rel}:{idx}: cwd reliance is forbidden; use explicit repo_root context")
+    return (1, errors) if errors else (0, [])
+
+
+def check_write_effect_declared_for_writing_checks(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry_legacy.catalog import list_checks
+
+    violations: list[str] = []
+    write_tokens = ("write_text(", "write_bytes(", ".open(", "json.dump(", "yaml.safe_dump(", "dump(")
+    for check in list_checks():
+        fn = getattr(check, "fn", None)
+        code_obj = getattr(fn, "__code__", None)
+        if code_obj is None:
+            continue
+        path = Path(code_obj.co_filename)
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        effects = {str(effect) for effect in getattr(check, "effects", ())}
+        if any(token in text for token in write_tokens) and "fs_write" not in effects:
+            violations.append(f"{check.check_id}: file write usage requires effects to include fs_write")
+    return (1, sorted(set(violations))) if violations else (0, [])
+
+
+def check_no_duplicate_model_definitions(repo_root: Path) -> tuple[int, list[str]]:
+    canonical = repo_root / "packages/atlasctl/src/atlasctl/checks/model.py"
+    if not canonical.exists():
+        return 1, ["missing canonical model module: packages/atlasctl/src/atlasctl/checks/model.py"]
+    target_classes = {
+        "CheckDef",
+        "CheckResult",
+        "CheckRunReport",
+        "CheckContext",
+        "Violation",
+        "Effect",
+    }
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        if path == canonical:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in tree.body:
+            if isinstance(node, ast.ClassDef) and node.name in target_classes:
+                errors.append(f"{rel}:{node.lineno}: duplicate model class `{node.name}`; keep canonical definition in checks/model.py")
+    return (1, errors) if errors else (0, [])
+
+
+def check_checks_root_allowed_entries_only(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    allowed = {
+        "README.md",
+        "__init__.py",
+        "model.py",
+        "registry.py",
+        "selectors.py",
+        "policy.py",
+        "runner.py",
+        "report.py",
+        "gen_registry.py",
+        "tools",
+        "domains",
+    }
+    errors: list[str] = []
+    for item in sorted(checks_root.iterdir(), key=lambda row: row.name):
+        if item.name == "__pycache__":
+            continue
+        if item.name not in allowed:
+            errors.append(f"checks root contains non-canonical entry: {item.relative_to(repo_root).as_posix()}")
+    return (1, errors) if errors else (0, [])
+
+
 def check_registry_generated_read_only(repo_root: Path) -> tuple[int, list[str]]:
     path = repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"
     if not path.exists():
@@ -1662,6 +1812,94 @@ CHECKS = (
         check_checks_forbidden_imports,
         category=CheckCategory.POLICY,
         fix_hint="Remove checks imports from test/fixture surfaces and keep checks dependent on runtime contracts only.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_print_calls",
+        "checks",
+        "forbid print calls inside checks package modules",
+        600,
+        check_checks_no_print_calls,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove print calls from checks code and emit structured violations/results instead.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_sys_exit_calls",
+        "checks",
+        "forbid sys.exit calls inside checks package modules",
+        500,
+        check_checks_no_sys_exit_calls,
+        category=CheckCategory.POLICY,
+        fix_hint="Replace sys.exit usage with structured check results and propagated command exit codes.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_direct_env_reads",
+        "checks",
+        "forbid direct environment reads in checks package modules",
+        500,
+        check_checks_no_direct_env_reads,
+        category=CheckCategory.POLICY,
+        fix_hint="Read environment via CheckContext.env rather than os.environ/os.getenv inside checks modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_path_dot_usage",
+        "checks",
+        "forbid Path('.') usage in checks package modules",
+        500,
+        check_checks_no_path_dot_usage,
+        category=CheckCategory.POLICY,
+        fix_hint="Resolve paths from explicit repo_root and avoid dot-path construction.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_cwd_reliance",
+        "checks",
+        "forbid cwd-dependent path calls in checks package modules",
+        500,
+        check_checks_no_cwd_reliance,
+        category=CheckCategory.POLICY,
+        fix_hint="Use explicit repo_root context and avoid Path.cwd/os.getcwd/os.chdir in checks modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.write_effect_declared",
+        "checks",
+        "require fs_write effect declaration for checks that perform file writes",
+        700,
+        check_write_effect_declared_for_writing_checks,
+        category=CheckCategory.POLICY,
+        fix_hint="Declare fs_write effect for checks that write files.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_duplicate_model_definitions",
+        "checks",
+        "forbid duplicate model class definitions outside checks/model.py",
+        600,
+        check_no_duplicate_model_definitions,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep model contracts in checks/model.py and remove duplicate class definitions from other modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.root_allowed_entries_only",
+        "checks",
+        "require checks root to contain only canonical modules and directories",
+        500,
+        check_checks_root_allowed_entries_only,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep only canonical files and directories in packages/atlasctl/src/atlasctl/checks root.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
