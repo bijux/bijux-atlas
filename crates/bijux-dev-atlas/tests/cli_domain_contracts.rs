@@ -206,12 +206,24 @@ fn ops_k8s_port_forward_requires_allow_network() {
 }
 
 #[test]
-fn ops_load_run_supports_json_format() {
+fn ops_load_run_requires_effect_flags() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["ops", "load", "run", "--format", "json"])
+        .args(["ops", "load", "run", "mixed", "--format", "json"])
         .output()
         .expect("ops load run");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("load run requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_load_plan_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "load", "plan", "mixed", "--format", "json"])
+        .output()
+        .expect("ops load plan");
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
@@ -219,10 +231,7 @@ fn ops_load_run_supports_json_format() {
         .get("rows")
         .and_then(|v| v.as_array())
         .expect("rows");
-    assert_eq!(
-        rows[0].get("action").and_then(|v| v.as_str()),
-        Some("load-run")
-    );
+    assert_eq!(rows[0].get("suite").and_then(|v| v.as_str()), Some("mixed"));
 }
 
 #[test]
