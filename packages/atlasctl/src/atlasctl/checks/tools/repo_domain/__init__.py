@@ -217,25 +217,35 @@ from .contracts.test_guardrails import (
     check_test_taxonomy_layout,
     check_test_write_sandbox,
 )
-from ..repo_root import (
-    FORBIDDEN_ROOT_FILES_CHECK_ID,
-    FORBIDDEN_ROOT_FILES_DESCRIPTION,
-    FORBIDDEN_ROOT_NAMES_CHECK_ID,
-    FORBIDDEN_ROOT_NAMES_DESCRIPTION,
-    FORBIDDEN_PATHS_DESCRIPTION,
-    FORBIDDEN_PATHS_CHECK_ID,
-    ROOT_DETERMINISM_DESCRIPTION,
-    ROOT_DETERMINISM_CHECK_ID,
-    ROOT_SHAPE_DESCRIPTION,
-    ROOT_SHAPE_CHECK_ID,
-    DIRECT_SCRIPT_RUNS_DESCRIPTION,
-    DIRECT_SCRIPT_RUNS_CHECK_ID,
-    run_forbidden_root_files,
-    run_forbidden_root_names,
-    run_forbidden_paths,
-    run_no_direct_script_runs,
-    run_root_determinism,
-    run_root_shape,
+from .root_forbidden_files import (
+    CHECK_ID as FORBIDDEN_ROOT_FILES_CHECK_ID,
+    DESCRIPTION as FORBIDDEN_ROOT_FILES_DESCRIPTION,
+    run as run_forbidden_root_files,
+)
+from .root_forbidden_names import (
+    CHECK_ID as FORBIDDEN_ROOT_NAMES_CHECK_ID,
+    DESCRIPTION as FORBIDDEN_ROOT_NAMES_DESCRIPTION,
+    run as run_forbidden_root_names,
+)
+from .root_forbidden_paths import (
+    CHECK_ID as FORBIDDEN_PATHS_CHECK_ID,
+    DESCRIPTION as FORBIDDEN_PATHS_DESCRIPTION,
+    run as run_forbidden_paths,
+)
+from .root_no_direct_script_runs import (
+    CHECK_ID as DIRECT_SCRIPT_RUNS_CHECK_ID,
+    DESCRIPTION as DIRECT_SCRIPT_RUNS_DESCRIPTION,
+    run as run_no_direct_script_runs,
+)
+from .root_determinism import (
+    CHECK_ID as ROOT_DETERMINISM_CHECK_ID,
+    DESCRIPTION as ROOT_DETERMINISM_DESCRIPTION,
+    run as run_root_determinism,
+)
+from .root_shape import (
+    CHECK_ID as ROOT_SHAPE_CHECK_ID,
+    DESCRIPTION as ROOT_SHAPE_DESCRIPTION,
+    run as run_root_shape,
 )
 
 CHECKS: tuple[CheckDef, ...] = (

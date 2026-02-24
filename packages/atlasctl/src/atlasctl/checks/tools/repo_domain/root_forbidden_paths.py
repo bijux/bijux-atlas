@@ -9,7 +9,7 @@ DESCRIPTION = "forbid legacy root path references in tracked text surfaces"
 
 _TARGETS = ("Makefile", "makefiles", ".github", "ops", "scripts")
 _PATTERN = r"\./(charts|e2e|load|observability|datasets|fixtures)/|docs/operations/ops/"
-_SELF_PATH = "packages/atlasctl/src/atlasctl/checks/domains/repo_root/check_forbidden_paths.py"
+_SELF_PATH = "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/root_forbidden_paths.py"
 
 
 def run(repo_root: Path) -> tuple[int, list[str]]:
