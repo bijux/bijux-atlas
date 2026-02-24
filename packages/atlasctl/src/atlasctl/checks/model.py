@@ -48,6 +48,10 @@ class CheckId:
 class DomainId:
     value: str
 
+    @classmethod
+    def parse(cls, value: str) -> "DomainId":
+        return cls(value)
+
     def __post_init__(self) -> None:
         value = str(self.value).strip()
         if value not in _DOMAIN_VOCAB:
@@ -61,6 +65,10 @@ class DomainId:
 @dataclass(frozen=True, order=True)
 class OwnerId:
     value: str
+
+    @classmethod
+    def parse(cls, value: str) -> "OwnerId":
+        return cls(value)
 
     def __post_init__(self) -> None:
         value = str(self.value).strip()
@@ -76,6 +84,10 @@ class OwnerId:
 class Tag:
     value: str
 
+    @classmethod
+    def parse(cls, value: str) -> "Tag":
+        return cls(value)
+
     def __post_init__(self) -> None:
         value = str(self.value).strip()
         if not value:
@@ -89,6 +101,10 @@ class Tag:
 @dataclass(frozen=True, order=True)
 class ResultCode:
     value: str
+
+    @classmethod
+    def parse(cls, value: str) -> "ResultCode":
+        return cls(value)
 
     def __post_init__(self) -> None:
         value = str(self.value).strip()

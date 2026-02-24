@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from atlasctl.checks.adapters import FS
-from atlasctl.checks.model import CheckContext, CheckDef, CheckId, CheckSelector, DomainId, ResultCode
+from atlasctl.checks.model import CheckContext, CheckDef, CheckId, CheckSelector, DomainId, OwnerId, ResultCode, Tag
 from atlasctl.checks.policy import Capabilities
 from atlasctl.checks.registry import TAGS_VOCAB, list_checks, resolve_aliases
 from atlasctl.checks.registry.ssot import generate_registry_json
@@ -34,13 +34,22 @@ def test_check_id_parse_validation() -> None:
 
 
 def test_domain_vocab_enforcement() -> None:
-    assert str(DomainId("repo")) == "repo"
+    assert str(DomainId.parse("repo")) == "repo"
     with pytest.raises(ValueError):
         DomainId("unknown-domain")
 
 
+def test_owner_and_tag_validation() -> None:
+    assert str(OwnerId.parse("platform")) == "platform"
+    assert str(Tag.parse("required")) == "required"
+    with pytest.raises(ValueError):
+        OwnerId.parse("Platform-Team")
+    with pytest.raises(ValueError):
+        Tag.parse("")
+
+
 def test_result_code_validation() -> None:
-    assert str(ResultCode("CHECK_GENERIC")) == "CHECK_GENERIC"
+    assert str(ResultCode.parse("CHECK_GENERIC")) == "CHECK_GENERIC"
     with pytest.raises(ValueError):
         ResultCode("check_generic")
 

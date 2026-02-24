@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..model import CheckCategory, CheckDef, Severity
+from ..model import CheckCategory, CheckDef, CheckId, DomainId, Severity
 from ..effects import CheckEffect, normalize_effect
 from ..domains.configs import CHECKS as CHECKS_CONFIGS
 from ..domains.docs import CHECKS as CHECKS_DOCS
@@ -689,19 +689,20 @@ def canonical_check_id(check: CheckDef) -> str:
     return _normalize_checks_id(f"checks_{check.domain}_{payload}", check.domain)
 
 
-def _normalize_checks_id(check_id: str, domain: str) -> str:
-    token = check_id.strip().replace(".", "_").replace("-", "_").lower()
+def _normalize_checks_id(check_id: CheckId | str, domain: DomainId | str) -> str:
+    token = str(check_id).strip().replace(".", "_").replace("-", "_").lower()
+    domain_token = str(domain)
     token = "_".join(part for part in token.split("_") if part)
     if not token.startswith("checks_"):
-        if token.startswith(f"{domain}_"):
+        if token.startswith(f"{domain_token}_"):
             token = f"checks_{token}"
         else:
-            token = f"checks_{domain}_{token}"
+            token = f"checks_{domain_token}_{token}"
     parts = token.split("_")
     if len(parts) < 3:
-        token = f"checks_{domain}_{'_'.join(parts[1:]) if len(parts) > 1 else token}"
-    elif parts[1] != domain:
-        token = "checks_" + domain + "_" + "_".join(parts[1:])
+        token = f"checks_{domain_token}_{'_'.join(parts[1:]) if len(parts) > 1 else token}"
+    elif parts[1] != domain_token:
+        token = "checks_" + domain_token + "_" + "_".join(parts[1:])
     return token
 
 

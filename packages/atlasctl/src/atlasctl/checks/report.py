@@ -6,6 +6,7 @@ from typing import Any
 
 from ..contracts.ids import CHECK_RUN
 from ..contracts.validate_self import validate_self
+from .model import CheckId
 from .model import CheckResult, CheckRunReport
 
 
@@ -150,7 +151,7 @@ def render_text(payload: dict[str, Any], *, quiet: bool = False, verbose: bool =
     return "\n".join(out)
 
 
-def render_show_source(*, check_id: str, source_path: str) -> str:
+def render_show_source(*, check_id: CheckId | str, source_path: str) -> str:
     payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "id": check_id, "source": source_path}
     return json.dumps(payload, sort_keys=True)
 
