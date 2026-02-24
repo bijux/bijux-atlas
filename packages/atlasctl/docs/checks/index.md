@@ -120,7 +120,7 @@ Core commands:
 - `checks_make_no_duplicate_all_variants`: require `*-all` targets to provide distinct full behavior
 - `checks_make_no_legacy_script_aliases`: forbid legacy make alias tokens (ATLAS_SCRIPTS/SCRIPTS/PY_RUN)
 - `checks_make_no_orphan_docs_refs`: forbid orphan docs references for make targets and atlasctl commands
-- `checks_make_no_python_module_invocation`: forbid `python -m atlasctl.cli` in make recipes
+- `checks_make_no_python_module_invocation`: forbid direct python module invocation of atlasctl CLI in make recipes
 - `checks_make_ops_product_atlasctl_only_delegation`: ops.mk and product.mk must delegate only to matching atlasctl groups
 - `checks_make_ops_product_no_tool_tokens`: ops.mk/product.mk must not contain raw tool tokens
 - `checks_make_ops_product_ownership_complete`: ownership metadata must cover ops/product targets

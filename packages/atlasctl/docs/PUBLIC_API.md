@@ -34,6 +34,6 @@
 - `atlasctl.layout`: layout/boundary checks and structure policy helpers.
 
 ## Boundary Contract
-- Cross-module imports are restricted and enforced by `scripts/areas/check/check-bijux-atlas-boundaries.py`.
+- Cross-module imports are restricted and enforced by `atlasctl check run --id checks_repo_bijux_boundaries`.
 - Shared code belongs in `core` or `contracts`.
 - Domain modules must not depend on each other unless declared in the boundary allowlist.
