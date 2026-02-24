@@ -13,7 +13,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from ...checks.registry import check_tags, get_check, list_checks
 from ...checks.report import build_report_payload, render_json, render_jsonl, render_text
 from ...checks.selectors import apply_selection_criteria, parse_selection_criteria
-from ...checks.registry_legacy.ssot import generate_registry_json
+from ...checks.registry import generate_registry_json
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
 from ...engine.runner import domains as check_domains
 from ...engine.runner import run_domain

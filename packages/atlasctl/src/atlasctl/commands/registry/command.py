@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ...core.context import RunContext
 from ...core.runtime.paths import write_text_file
-from ...checks.registry_legacy.ssot import CHECKS_CATALOG_JSON, generate_registry_json
+from ...checks.registry import CHECKS_CATALOG_JSON, generate_registry_json
 from ...checks.domains.internal import (
     check_registry_change_requires_docs_update,
     check_registry_change_requires_golden_update,

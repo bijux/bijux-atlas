@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from ...checks.registry_legacy.ssot import registry_delta
+from ...checks.registry import registry_delta
 from ...core.context import RunContext
 
 
