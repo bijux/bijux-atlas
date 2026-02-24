@@ -620,6 +620,28 @@ budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_no_behavior_source_files"
+domain = "ops"
+title = "ops contains no behavior source files outside fixture allowlists"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_no_executable_bit_files"
+domain = "ops"
+title = "ops files do not carry executable bits"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_no_legacy_runner_paths"
 domain = "ops"
 title = "dev atlas crates do not reference legacy runner path conventions"
