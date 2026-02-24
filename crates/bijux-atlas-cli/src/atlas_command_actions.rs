@@ -39,53 +39,6 @@ fn explain_query_from_query_text(
     )
 }
 
-fn run_bench_command(
-    suite: &str,
-    enforce_baseline: bool,
-    output_mode: OutputMode,
-) -> Result<(), String> {
-    let mut cmd = Command::new("cargo");
-    if enforce_baseline {
-        cmd.env("ATLAS_QUERY_BENCH_ENFORCE", "1");
-    }
-    match suite {
-        "query-patterns" => {
-            cmd.args(["bench", "-p", "bijux-atlas-query", "--bench", "query_patterns"]);
-        }
-        "server-cache" => {
-            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "cache_manager"]);
-        }
-        "server-sequence" => {
-            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "sequence_fetch"]);
-        }
-        "server-diff" => {
-            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "diff_merge"]);
-        }
-        "server-bulkhead" => {
-            cmd.args(["bench", "-p", "bijux-atlas-server", "--bench", "bulkhead_tuning"]);
-        }
-        other => {
-            return Err(format!(
-                "unknown bench suite `{other}`; supported: query-patterns, server-cache, server-sequence, server-diff, server-bulkhead"
-            ));
-        }
-    }
-
-    let status = cmd.status().map_err(|e| format!("failed to run cargo bench: {e}"))?;
-    if !status.success() {
-        return Err(format!("benchmark command failed with status {status}"));
-    }
-    command_output_adapters::emit_ok(
-        output_mode,
-        json!({
-            "command":"atlas bench",
-            "suite": suite,
-            "status":"ok",
-            "enforce_baseline": enforce_baseline
-        }),
-    )?;
-    Ok(())
-}
 
 fn print_completion<G: Generator>(generator: G) {
     let mut command = Cli::command();
@@ -100,10 +53,9 @@ fn emit_config_paths(machine_json: bool) -> Result<(), String> {
         "cache_dir": resolve_bijux_cache_dir(),
     });
     if machine_json {
-        println!(
-            "{}",
-            serde_json::to_string(&payload).map_err(|e| e.to_string())?
-        );
+        let bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
+        println!("{text}");
     } else {
         println!(
             "{}",
@@ -117,10 +69,9 @@ fn emit_plugin_metadata(machine_json: bool) -> Result<(), String> {
     let payload = plugin_metadata_payload();
 
     if machine_json {
-        println!(
-            "{}",
-            serde_json::to_string(&payload).map_err(|e| e.to_string())?
-        );
+        let bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
+        println!("{text}");
     } else {
         println!(
             "{}",
@@ -149,39 +100,6 @@ fn print_version(verbose: bool, output_mode: OutputMode) -> Result<(), String> {
     };
     command_output_adapters::emit_ok(output_mode, payload)?;
     Ok(())
-}
-
-fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String> {
-    if log_flags.trace {
-        std::env::set_var("BIJUX_LOG_LEVEL", "trace");
-        std::env::set_var("RUST_LOG", "trace");
-    } else if log_flags.verbose > 0 {
-        std::env::set_var("BIJUX_LOG_LEVEL", "debug");
-        std::env::set_var("RUST_LOG", "debug");
-    } else if log_flags.quiet {
-        std::env::set_var("BIJUX_LOG_LEVEL", "error");
-        std::env::set_var("RUST_LOG", "error");
-    }
-
-    let current_exe =
-        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
-    let bin_dir = current_exe
-        .parent()
-        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
-    let server_bin = bin_dir.join("atlas-server");
-
-    let status = Command::new(&server_bin).status().map_err(|e| {
-        format!(
-            "failed to start atlas-server at {}: {e}",
-            server_bin.display()
-        )
-    })?;
-    if status.success() {
-        command_output_adapters::emit_ok(output_mode, json!({"command":"atlas serve","status":"ok"}))?;
-        Ok(())
-    } else {
-        Err(format!("atlas-server exited with status {status}"))
-    }
 }
 
 fn plugin_metadata_payload() -> Value {
@@ -236,7 +154,8 @@ fn print_config(canonical_out: bool, output_mode: OutputMode) -> Result<(), Stri
             String::from_utf8(canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?)
                 .map_err(|e| e.to_string())?
         } else {
-            serde_json::to_string(&payload).map_err(|e| e.to_string())?
+            let bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+            String::from_utf8(bytes).map_err(|e| e.to_string())?
         };
         println!("{text}");
         return Ok(());
@@ -377,6 +296,7 @@ fn run_ingest(args: IngestCliArgs, output_mode: OutputMode) -> Result<(), String
         unknown_feature_policy: bijux_atlas_model::UnknownFeaturePolicy::IgnoreWithWarning,
         feature_id_uniqueness_policy: bijux_atlas_model::FeatureIdUniquenessPolicy::Reject,
         reject_normalized_seqid_collisions: true,
+        timestamp_policy: TimestampPolicy::DeterministicZero,
     })
     .map_err(|e| e.to_string())?;
 

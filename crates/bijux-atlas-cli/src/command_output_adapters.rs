@@ -1,29 +1,16 @@
 use crate::OutputMode;
+use bijux_atlas_core::canonical;
 use bijux_atlas_query::{GeneFields, GeneFilter, GeneQueryRequest, RegionFilter};
 use serde_json::{json, Value};
 use std::path::PathBuf;
-use std::process::Command;
 
 pub(crate) fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Result<(), String> {
-    let current_exe =
-        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
-    let bin_dir = current_exe
-        .parent()
-        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
-    let generator = bin_dir.join("atlas-openapi");
-    let status = Command::new(&generator)
-        .arg("--out")
-        .arg(&out)
-        .status()
-        .map_err(|e| {
-            format!(
-                "failed to start atlas-openapi at {}: {e}",
-                generator.display()
-            )
-        })?;
-    if !status.success() {
-        return Err(format!("atlas-openapi exited with status {status}"));
+    let spec = bijux_atlas_api::openapi_v1_spec();
+    let bytes = canonical::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
+    if let Some(parent) = out.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
+    std::fs::write(&out, bytes).map_err(|e| e.to_string())?;
     emit_ok(
         output_mode,
         json!({
@@ -37,10 +24,9 @@ pub(crate) fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Res
 
 pub(crate) fn emit_ok(output_mode: OutputMode, payload: Value) -> Result<(), String> {
     if output_mode.json {
-        println!(
-            "{}",
-            serde_json::to_string(&payload).map_err(|e| e.to_string())?
-        );
+        let bytes = canonical::stable_json_bytes(&payload).map_err(|e| e.to_string())?;
+        let text = String::from_utf8(bytes).map_err(|e| e.to_string())?;
+        println!("{text}");
     } else {
         println!(
             "{}",

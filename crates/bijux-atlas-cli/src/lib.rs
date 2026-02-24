@@ -9,7 +9,7 @@ use bijux_atlas_core::{
     MachineError,
 };
 use bijux_atlas_ingest::{diff_normalized_ids, replay_normalized_counts};
-use bijux_atlas_ingest::{ingest_dataset, IngestOptions};
+use bijux_atlas_ingest::{ingest_dataset, IngestOptions, TimestampPolicy};
 use bijux_atlas_model::{
     BiotypePolicy, DatasetId, DuplicateGeneIdPolicy, GeneIdentifierPolicy, GeneNamePolicy,
     SeqidNormalizationPolicy, ShardingPlan, StrictnessMode, TranscriptTypePolicy,
@@ -26,7 +26,6 @@ use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use std::process::Command;
 use std::process::ExitCode as ProcessExitCode;
 
 const BIJUX_HELP_TEMPLATE: &str = "\
@@ -66,27 +65,17 @@ struct Cli {
     #[arg(long = "umbrella-version")]
     umbrella_version: Option<String>,
     #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    Completion {
-        #[arg(value_enum)]
-        shell: Shell,
-    },
-    Atlas {
-        #[command(subcommand)]
-        command: Box<AtlasCommand>,
-    },
-    Version,
-    #[command(hide = true)]
-    Serve,
+    command: Option<AtlasCommand>,
 }
 
 #[derive(Subcommand)]
 enum AtlasCommand {
-    Serve,
+    #[command(hide = true)]
+    Atlas {
+        #[command(subcommand)]
+        command: Box<AtlasCommand>,
+    },
+    #[command(hide = true)]
     Validate {
         #[arg(long)]
         root: PathBuf,
@@ -104,6 +93,7 @@ enum AtlasCommand {
         #[arg(value_enum)]
         shell: Shell,
     },
+    #[command(name = "config")]
     PrintConfig {
         #[arg(long, default_value_t = false)]
         canonical: bool,
@@ -186,6 +176,7 @@ enum AtlasCommand {
         #[arg(long, default_value_t = false)]
         prod_mode: bool,
     },
+    #[command(hide = true)]
     IngestVerifyInputs {
         #[arg(long)]
         gff3: PathBuf,
@@ -200,28 +191,33 @@ enum AtlasCommand {
         #[arg(long, default_value_t = false)]
         resume: bool,
     },
+    #[command(hide = true)]
     IngestReplay {
         #[arg(long)]
         normalized: PathBuf,
     },
+    #[command(hide = true)]
     IngestNormalizedDiff {
         #[arg(long)]
         base: PathBuf,
         #[arg(long)]
         target: PathBuf,
     },
+    #[command(hide = true)]
     IngestValidate {
         #[arg(long)]
         qc_report: PathBuf,
         #[arg(long, default_value = "configs/ops/dataset-qc-thresholds.v1.json")]
         thresholds: PathBuf,
     },
+    #[command(hide = true)]
     InspectDb {
         #[arg(long)]
         db: PathBuf,
         #[arg(long, default_value_t = 5)]
         sample_rows: usize,
     },
+    #[command(hide = true)]
     ExplainQuery {
         #[arg(long)]
         db: PathBuf,
@@ -240,6 +236,7 @@ enum AtlasCommand {
         #[arg(long, default_value_t = false)]
         allow_full_scan: bool,
     },
+    #[command(hide = true)]
     Explain {
         #[arg(long)]
         db: PathBuf,
@@ -250,12 +247,7 @@ enum AtlasCommand {
         #[arg(long, default_value_t = false)]
         allow_full_scan: bool,
     },
-    Bench {
-        #[arg(long, default_value = "query-patterns")]
-        suite: String,
-        #[arg(long, default_value_t = false)]
-        enforce_baseline: bool,
-    },
+    #[command(hide = true)]
     Smoke {
         #[arg(long)]
         root: PathBuf,
@@ -420,31 +412,26 @@ fn run() -> Result<(), CliError> {
         trace: cli.trace,
     };
 
-    match command {
-        Commands::Completion { shell } => {
-            print_completion(shell);
-            Ok(())
-        }
-        Commands::Version => {
-            print_version(log_flags.verbose > 0, output_mode).map_err(CliError::internal)
-        }
-        Commands::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
-        Commands::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
-    }
+    run_atlas_command(command, log_flags, output_mode)
 }
 
 fn legacy_control_plane_redirect(args: &[String]) -> Option<&'static str> {
-    if let Some(atlas_index) = args.iter().position(|arg| arg == "atlas") {
-        if atlas_index + 1 >= args.len() {
-            return None;
-        }
-        let subcommand = args[atlas_index + 1].as_str();
-        if subcommand == "dev-atlas" {
-            return Some("bijux dev atlas <command>");
-        }
-        if subcommand == "doctor" || subcommand == "check" || subcommand == "checks" {
-            return Some("bijux dev atlas run <selector>");
-        }
+    if args.is_empty() {
+        return None;
+    }
+    let mut start = 0;
+    if args.first().is_some_and(|a| a == "atlas") {
+        start = 1;
+    }
+    if start >= args.len() {
+        return None;
+    }
+    let subcommand = args[start].as_str();
+    if subcommand == "dev-atlas" {
+        return Some("bijux dev atlas <command>");
+    }
+    if subcommand == "doctor" || subcommand == "check" || subcommand == "checks" {
+        return Some("bijux dev atlas run <selector>");
     }
     None
 }
