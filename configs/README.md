@@ -32,8 +32,8 @@ Rule:
 - `configs/policy/policy.json`
   - Consumed by: runtime policy loading and policy lint gates.
 - `configs/contracts/ops-lint-output.schema.json`
-  - Consumed by: `atlasctl ops lint --report json` output validation.
-  - Consumed by: scripts migration inventory report validation (`make legacy/check`).
+  - Consumed by: `bijux dev atlas ops lint --format json` output validation.
+  - Consumed by: tooling inventory report validation.
 - `configs/ops/env.schema.json`
   - Consumed by: `make ops-env-print`, env contract validation.
 - `configs/ops/tool-versions.json`
@@ -59,23 +59,23 @@ Rule:
 - `configs/inventory/owners.json`
   - Consumed by: config ownership validation and compiler outputs.
 - `configs/schema/*.schema.json`
-  - Consumed by: `atlasctl configs validate`.
+  - Consumed by: `bijux dev atlas configs validate`.
 
-## Generated Outputs (`atlasctl configs gen`)
+## Generated Outputs (`bijux dev atlas configs generate`)
 
-- `configs/_generated/INDEX.md`
-- `configs/_generated/compiler-report.json`
-- `configs/_generated/checksums.json`
+- `artifacts/atlas-dev/configs/<run-id>/inventory.json`
+- `artifacts/atlas-dev/configs/<run-id>/compiled.index.json`
+- `artifacts/atlas-dev/configs/<run-id>/checksums.json`
 
-Only compiler outputs belong under `configs/_generated/`. Hand edits are forbidden and detected via checksums.
+Generated outputs belong under `artifacts/atlas-dev/configs/<run-id>/`. Hand edits to committed config inputs are forbidden.
 
 ## Compiler Commands
 
 ```bash
-./bin/atlasctl configs validate --report text
-./bin/atlasctl configs gen --report text
-./bin/atlasctl configs diff --fail --report text
-./bin/atlasctl configs fmt --check --report text
+./bin/bijux dev atlas configs validate --report text
+bijux dev atlas configs generate --format text
+bijux dev atlas configs diff --format text
+bijux dev atlas configs fmt --check --format text
 ```
 
 ## Related Docs

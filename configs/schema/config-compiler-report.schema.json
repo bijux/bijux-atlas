@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "atlasctl configs compiler report",
+  "title": "dev atlas configs compiler report",
   "type": "object",
   "required": [
     "schema_version",
@@ -12,7 +12,7 @@
   ],
   "properties": {
     "schema_version": {"type": "integer", "const": 1},
-    "kind": {"type": "string", "const": "atlasctl-config-compiler.generated"},
+    "kind": {"type": "string", "const": "dev-atlas-config-compiler.generated"},
     "inventory_root": {"type": "string"},
     "generated_root": {"type": "string"},
     "overlay_model": {

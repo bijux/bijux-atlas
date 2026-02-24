@@ -12,7 +12,7 @@ configs/contracts/inventory-scripts-migration.schema.json
 configs/layout/compat-stale-usage-exceptions.json
 configs/layout/dir-budgets.json
 configs/layout/make-command-allowlist.txt
-configs/layout/make-scripts-reference-exceptions.json
+configs/layout/make-command-reference-exceptions.json
 configs/layout/python-legacy-allowlist.txt
 configs/layout/python-migration-exceptions.json
 configs/layout/script-shim-expiries.json
@@ -294,7 +294,7 @@ packages/atlasctl/tests/test_orchestrate_command.py
 packages/atlasctl/tests/test_quality_contracts.py
 packages/atlasctl/tests/test_report_command.py
 python-toolchain.toml
-configs/layout/scripts-references-allowlist.txt
+configs/layout/command-references-allowlist.txt
 packages/atlasctl/tests/policysuite/repo/contracts/test_required_proof.py
 docs/architecture/scripting.md
 configs/repo/root-files-allowlist.txt
