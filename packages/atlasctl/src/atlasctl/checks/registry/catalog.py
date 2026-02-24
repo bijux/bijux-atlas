@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-from ..model import CheckCategory, CheckDef as CheckFactory, Severity
+from ..model import CheckCategory, CheckDef as CheckFactory, CheckId, DomainId, Severity
 from .ssot import RegistryEntry, canonical_check_id, check_id_renames, legacy_checks
 
 _MARKER_VOCAB: tuple[str, ...] = ("slow", "network", "kube", "docker", "fs-write", "git")
@@ -122,15 +122,16 @@ def checks_by_domain() -> dict[str, list[CheckFactory]]:
     return {domain: list(rows) for domain, rows in _build_index().by_domain.items()}
 
 
-def run_checks_for_domain(repo_root: Path, domain: str) -> list[CheckFactory]:
+def run_checks_for_domain(repo_root: Path, domain: DomainId | str) -> list[CheckFactory]:
     if domain == "all":
         return list(list_checks())
     return [c for c in list_checks() if c.domain == domain]
 
 
-def get_check(check_id: str) -> CheckFactory | None:
+def get_check(check_id: CheckId | str) -> CheckFactory | None:
     index = _build_index()
-    resolved = index.aliases.get(check_id, check_id)
+    check_id_raw = str(check_id)
+    resolved = index.aliases.get(check_id_raw, check_id_raw)
     return index.by_id.get(resolved)
 
 

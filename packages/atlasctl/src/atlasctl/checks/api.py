@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from .effects import CheckEffect, normalize_effect
+from .model import CheckId, DomainId
 
 
 @dataclass(frozen=True)
@@ -15,8 +16,8 @@ class CheckResult:
 
 @dataclass(frozen=True)
 class CheckAuthoringMetadata:
-    check_id: str
-    domain: str
+    check_id: CheckId
+    domain: DomainId
     intent: str
     remediation_short: str
     remediation_link: str
@@ -28,8 +29,8 @@ class CheckAuthoringMetadata:
 
 def check(
     *,
-    check_id: str,
-    domain: str,
+    check_id: CheckId | str,
+    domain: DomainId | str,
     intent: str,
     remediation_short: str = "Review check output and apply documented remediation.",
     remediation_link: str = "packages/atlasctl/docs/checks/check-id-migration-rules.md",
@@ -48,8 +49,8 @@ def check(
             fn,
             "__atlasctl_check_meta__",
             CheckAuthoringMetadata(
-                check_id=check_id,
-                domain=domain,
+                check_id=CheckId.parse(str(check_id)),
+                domain=DomainId.parse(str(domain)),
                 intent=intent.strip(),
                 remediation_short=remediation_short.strip(),
                 remediation_link=remediation_link.strip(),
