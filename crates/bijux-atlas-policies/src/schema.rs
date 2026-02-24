@@ -35,6 +35,8 @@ pub struct PolicyConfig {
     pub documented_defaults: Vec<DocumentedDefault>,
 }
 
+pub type PolicySet = PolicyConfig;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PolicyMode {
