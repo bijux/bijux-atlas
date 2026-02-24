@@ -506,17 +506,47 @@ fn docker_check_supports_json_format() {
 }
 
 #[test]
-fn build_bin_supports_json_format() {
+fn build_bin_requires_effect_flags() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["build", "bin", "--format", "json"])
+        .output()
+        .expect("build bin");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("build bin requires --allow-subprocess"));
+}
+
+#[test]
+fn build_bin_writes_manifest_when_effects_enabled() {
+    let repo = repo_root();
+    let manifest = repo.join("artifacts/bin/manifest.json");
+    let _ = fs::remove_file(&manifest);
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&repo)
+        .args([
+            "build",
+            "bin",
+            "--allow-subprocess",
+            "--allow-write",
+            "--format",
+            "json",
+            "--run-id",
+            "build_bin_contract",
+        ])
         .output()
         .expect("build bin");
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert_eq!(payload.get("action").and_then(|v| v.as_str()), Some("bin"));
-    assert!(payload.get("artifacts").is_some());
+    assert!(manifest.exists(), "manifest should exist: {}", manifest.display());
+    let manifest_payload: serde_json::Value =
+        serde_json::from_slice(&fs::read(manifest).expect("read manifest")).expect("manifest json");
+    assert_eq!(
+        manifest_payload.get("kind").and_then(|v| v.as_str()),
+        Some("build_bin_manifest")
+    );
 }
 
 #[test]

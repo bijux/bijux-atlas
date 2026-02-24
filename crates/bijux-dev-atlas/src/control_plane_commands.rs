@@ -266,13 +266,7 @@ pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
         match command {
-            BuildCommand::Bin(common) => build_emit(
-                &common,
-                started,
-                "bin",
-                "build bin wrapper is defined (artifacts/bin)",
-                vec!["bijux", "bijux-atlas", "bijux-dev-atlas"],
-            ),
+            BuildCommand::Bin(common) => run_build_bin(&common, started),
             BuildCommand::Dist(common) => build_emit(
                 &common,
                 started,
@@ -340,6 +334,106 @@ fn build_emit(
     Ok((rendered, 0))
 }
 
+fn run_build_bin(
+    common: &BuildCommonArgs,
+    started: std::time::Instant,
+) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("build bin requires --allow-subprocess".to_string());
+    }
+    if !common.allow_write {
+        return Err("build bin requires --allow-write".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let run_id = common
+        .run_id
+        .as_ref()
+        .map(|v| RunId::parse(v))
+        .transpose()?
+        .unwrap_or_else(|| RunId::from_seed("build_bin"));
+    let cargo_target_dir = repo_root.join("artifacts/build/cargo/build");
+    let artifacts_bin_dir = repo_root.join("artifacts/bin");
+    fs::create_dir_all(&cargo_target_dir).map_err(|e| {
+        format!(
+            "cannot create cargo target dir {}: {e}",
+            cargo_target_dir.display()
+        )
+    })?;
+    fs::create_dir_all(&artifacts_bin_dir)
+        .map_err(|e| format!("cannot create {}: {e}", artifacts_bin_dir.display()))?;
+
+    let binary_specs = [
+        ("bijux-atlas-cli", "bijux-atlas"),
+        ("bijux-dev-atlas", "bijux-dev-atlas"),
+    ];
+    let mut built_rows = Vec::new();
+    for (package, bin_name) in binary_specs {
+        let status = ProcessCommand::new("cargo")
+            .current_dir(&repo_root)
+            .env("CARGO_TARGET_DIR", &cargo_target_dir)
+            .args(["build", "-q", "-p", package, "--bin", bin_name])
+            .status()
+            .map_err(|e| format!("failed to run cargo build for {bin_name}: {e}"))?;
+        if !status.success() {
+            return Err(format!("cargo build failed for {bin_name} (package {package})"));
+        }
+        let src = cargo_target_dir
+            .join("debug")
+            .join(binary_with_ext(bin_name));
+        let dest = artifacts_bin_dir.join(binary_with_ext(bin_name));
+        fs::copy(&src, &dest).map_err(|e| {
+            format!(
+                "cannot copy built binary {} -> {}: {e}",
+                src.display(),
+                dest.display()
+            )
+        })?;
+        built_rows.push(serde_json::json!({
+            "package": package,
+            "bin": bin_name,
+            "source": src.display().to_string(),
+            "path": dest.display().to_string()
+        }));
+    }
+    let manifest_path = artifacts_bin_dir.join("manifest.json");
+    let manifest = serde_json::json!({
+        "schema_version": 1,
+        "kind": "build_bin_manifest",
+        "version": env!("CARGO_PKG_VERSION"),
+        "git_hash": option_env!("BIJUX_GIT_HASH"),
+        "profile": "debug",
+        "cargo_target_dir": cargo_target_dir.display().to_string(),
+        "binaries": built_rows,
+        "run_id": run_id.as_str()
+    });
+    fs::write(
+        &manifest_path,
+        serde_json::to_string_pretty(&manifest).map_err(|e| e.to_string())? + "\n",
+    )
+    .map_err(|e| format!("cannot write {}: {e}", manifest_path.display()))?;
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "bin",
+        "text": "built binaries and wrote artifacts/bin/manifest.json",
+        "repo_root": repo_root.display().to_string(),
+        "run_id": run_id.as_str(),
+        "artifacts": {
+            "bin_dir": artifacts_bin_dir.display().to_string(),
+            "manifest": manifest_path.display().to_string(),
+            "cargo_target_dir": cargo_target_dir.display().to_string()
+        },
+        "rows": manifest.get("binaries").cloned().unwrap_or_else(|| serde_json::json!([])),
+        "capabilities": {
+            "subprocess": common.allow_subprocess,
+            "fs_write": common.allow_write
+        },
+        "duration_ms": started.elapsed().as_millis() as u64
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
 fn run_build_clean(
     args: BuildCleanArgs,
     started: std::time::Instant,
@@ -348,9 +442,17 @@ fn run_build_clean(
         return Err("build clean requires --allow-write".to_string());
     }
     let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
-    let mut removed = vec![repo_root.join("artifacts/build/cargo")];
-    if args.include_bin {
-        removed.push(repo_root.join("artifacts/bin"));
+    let mut removed = Vec::new();
+    let build_dir = repo_root.join("artifacts/build/cargo");
+    if build_dir.exists() {
+        fs::remove_dir_all(&build_dir)
+            .map_err(|e| format!("cannot remove {}: {e}", build_dir.display()))?;
+        removed.push(build_dir);
+    }
+    let bin_dir = repo_root.join("artifacts/bin");
+    if args.include_bin && bin_dir.exists() {
+        fs::remove_dir_all(&bin_dir).map_err(|e| format!("cannot remove {}: {e}", bin_dir.display()))?;
+        removed.push(bin_dir);
     }
     let payload = serde_json::json!({
         "schema_version": 1,
@@ -366,6 +468,17 @@ fn run_build_clean(
     });
     let rendered = emit_payload(args.common.format, args.common.out.clone(), &payload)?;
     Ok((rendered, 0))
+}
+
+fn binary_with_ext(name: &str) -> String {
+    #[cfg(windows)]
+    {
+        format!("{name}.exe")
+    }
+    #[cfg(not(windows))]
+    {
+        name.to_string()
+    }
 }
 
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
