@@ -11,11 +11,19 @@ use bijux_dev_atlas_model::{
     Severity, SuiteId, Tag, Violation, Visibility,
 };
 use serde::Deserialize;
+use std::borrow::Cow;
 
 pub mod checks;
 pub mod ops_inventory;
 
 pub const DEFAULT_REGISTRY_PATH: &str = "ops/atlas-dev/registry.toml";
+
+pub fn load_dev_policy_set(
+    repo_root: &Path,
+) -> Result<bijux_dev_atlas_policies::DevAtlasPolicySet, Cow<'static, str>> {
+    bijux_dev_atlas_policies::DevAtlasPolicySet::load(repo_root)
+        .map_err(|err| Cow::Owned(err.to_string()))
+}
 
 #[derive(Debug, Clone)]
 pub struct RunRequest {

@@ -415,6 +415,7 @@ version = "0.1.0"
 dependencies = [
  "bijux-dev-atlas-adapters",
  "bijux-dev-atlas-model",
+ "bijux-dev-atlas-policies",
  "serde",
  "serde_json",
  "tempfile",
@@ -423,6 +424,14 @@ dependencies = [
 
 [[package]]
 name = "bijux-dev-atlas-model"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bijux-dev-atlas-policies"
 version = "0.1.0"
 dependencies = [
  "serde",

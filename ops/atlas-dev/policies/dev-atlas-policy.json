@@ -1,0 +1,48 @@
+{
+  "schema_version": "1",
+  "mode": "strict",
+  "repo": {
+    "max_loc_warn": 800,
+    "max_loc_hard": 1000,
+    "max_depth_hard": 7,
+    "max_rs_files_per_dir_hard": 10,
+    "max_modules_per_dir_hard": 16,
+    "loc_allowlist": [
+      "crates/bijux-atlas-server/src/lib.rs",
+      "crates/bijux-dev-atlas/src/main.rs"
+    ],
+    "rs_files_per_dir_allowlist": [
+      "crates/bijux-atlas-server/tests"
+    ]
+  },
+  "ops": {
+    "registry_relpath": "ops/atlas-dev/registry.toml"
+  },
+  "compatibility": [
+    {
+      "from": "dev",
+      "to": "ci",
+      "allowed": true
+    },
+    {
+      "from": "ci",
+      "to": "strict",
+      "allowed": true
+    },
+    {
+      "from": "strict",
+      "to": "dev",
+      "allowed": false
+    }
+  ],
+  "documented_defaults": [
+    {
+      "field": "repo.max_loc_hard",
+      "reason": "Keeps Rust modules small enough for code review and maintenance"
+    },
+    {
+      "field": "ops.registry_relpath",
+      "reason": "Pins check registration to one SSOT location"
+    }
+  ]
+}

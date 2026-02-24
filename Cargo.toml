@@ -4,6 +4,7 @@ members = [
   "crates/bijux-dev-atlas-core",
   "crates/bijux-dev-atlas-model",
   "crates/bijux-dev-atlas-adapters",
+  "crates/bijux-dev-atlas-policies",
   "crates/bijux-atlas-core",
   "crates/bijux-atlas-model",
   "crates/bijux-atlas-ingest",
@@ -50,3 +51,4 @@ bijux-dev-atlas = { version = "=0.1.0", path = "crates/bijux-dev-atlas" }
 bijux-dev-atlas-core = { version = "=0.1.0", path = "crates/bijux-dev-atlas-core" }
 bijux-dev-atlas-model = { version = "=0.1.0", path = "crates/bijux-dev-atlas-model" }
 bijux-dev-atlas-adapters = { version = "=0.1.0", path = "crates/bijux-dev-atlas-adapters" }
+bijux-dev-atlas-policies = { version = "=0.1.0", path = "crates/bijux-dev-atlas-policies" }

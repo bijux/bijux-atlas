@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mode",
+    "repo",
+    "ops",
+    "compatibility",
+    "documented_defaults"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["dev", "ci", "strict"]
+    },
+    "repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_loc_warn",
+        "max_loc_hard",
+        "max_depth_hard",
+        "max_rs_files_per_dir_hard",
+        "max_modules_per_dir_hard",
+        "loc_allowlist",
+        "rs_files_per_dir_allowlist"
+      ],
+      "properties": {
+        "max_loc_warn": {"type": "integer", "minimum": 1},
+        "max_loc_hard": {"type": "integer", "minimum": 1},
+        "max_depth_hard": {"type": "integer", "minimum": 1},
+        "max_rs_files_per_dir_hard": {"type": "integer", "minimum": 1},
+        "max_modules_per_dir_hard": {"type": "integer", "minimum": 1},
+        "loc_allowlist": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "rs_files_per_dir_allowlist": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "ops": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registry_relpath"],
+      "properties": {
+        "registry_relpath": {"type": "string", "minLength": 1}
+      }
+    },
+    "compatibility": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "allowed"],
+        "properties": {
+          "from": {"type": "string", "enum": ["dev", "ci", "strict"]},
+          "to": {"type": "string", "enum": ["dev", "ci", "strict"]},
+          "allowed": {"type": "boolean"}
+        }
+      }
+    },
+    "documented_defaults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "reason"],
+        "properties": {
+          "field": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
