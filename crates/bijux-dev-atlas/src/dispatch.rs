@@ -5,7 +5,7 @@ use crate::{
     run_docker_command, run_docs_command, run_gates_command, run_help_inventory_command,
     run_ops_command, run_policies_command, run_version_command, run_workflows_command,
 };
-use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
+use crate::{run_print_policies, CheckListOptions, CheckRunOptions, FormatArg};
 
 pub(crate) fn run_cli(cli: Cli) -> i32 {
     if cli.bijux_plugin_metadata {
@@ -93,6 +93,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     include_internal,
                     include_slow,
                     format,
+                    json,
                     out,
                 } => run_check_list(CheckListOptions {
                     repo_root,
@@ -102,7 +103,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     id,
                     include_internal,
                     include_slow,
-                    format,
+                    format: if json { FormatArg::Json } else { format },
                     out,
                 }),
                 CheckCommand::Explain {

@@ -7,8 +7,8 @@ use std::time::Instant;
 
 use bijux_dev_atlas_adapters::{Capabilities, Fs, ProcessRunner};
 use bijux_dev_atlas_model::{
-    CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId, RunReport, RunSummary,
-    Severity, SuiteId, Tag, Violation, Visibility,
+    ArtifactsRoot, CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId,
+    RunReport, RunSummary, Severity, SuiteId, Tag, Violation, Visibility,
 };
 use serde::Deserialize;
 use std::borrow::Cow;
@@ -91,6 +91,37 @@ pub struct CheckContext<'a> {
     pub run_id: RunId,
     pub adapters: AdapterSet<'a>,
     pub registry: &'a Registry,
+}
+
+#[derive(Debug, Clone)]
+pub struct RuntimeContext {
+    pub repo_root: PathBuf,
+    pub artifacts_root: ArtifactsRoot,
+    pub run_id: RunId,
+    pub capabilities: Capabilities,
+}
+
+impl RuntimeContext {
+    pub fn from_run_request(request: &RunRequest) -> Result<Self, String> {
+        let artifacts_root = match &request.artifacts_root {
+            Some(path) => ArtifactsRoot::parse(&path.display().to_string())?,
+            None => ArtifactsRoot::default_for_repo(&request.repo_root),
+        };
+        let run_id = request
+            .run_id
+            .clone()
+            .unwrap_or_else(|| RunId::from_seed("registry_run"));
+        Ok(Self {
+            repo_root: request.repo_root.clone(),
+            artifacts_root,
+            run_id,
+            capabilities: request.capabilities,
+        })
+    }
+
+    pub fn check_artifacts_run_root(&self) -> PathBuf {
+        self.artifacts_root.to_path_buf().join(self.run_id.as_str())
+    }
 }
 
 #[derive(Debug, Deserialize)]
