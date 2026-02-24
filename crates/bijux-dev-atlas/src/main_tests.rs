@@ -119,6 +119,7 @@ mod tests {
         let commands = [
             vec!["bijux-dev-atlas", "check", "registry", "doctor"],
             vec!["bijux-dev-atlas", "check", "list"],
+            vec!["bijux-dev-atlas", "check", "list", "--json"],
             vec![
                 "bijux-dev-atlas",
                 "check",
@@ -147,7 +148,8 @@ mod tests {
         ] {
             let cli = crate::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                Some(crate::cli::Command::Version { .. }) | Some(crate::cli::Command::Help { .. }) => {}
+                Some(crate::cli::Command::Version { .. })
+                | Some(crate::cli::Command::Help { .. }) => {}
                 _ => panic!("expected top-level version/help command"),
             }
         }

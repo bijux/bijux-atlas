@@ -65,7 +65,10 @@ fn version_supports_json_format() {
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     assert_eq!(
         payload.get("name").and_then(|v| v.as_str()),
         Some("bijux-dev-atlas")
@@ -87,8 +90,12 @@ fn help_inventory_supports_json_format() {
         .get("commands")
         .and_then(|v| v.as_array())
         .expect("commands array");
-    assert!(commands.iter().any(|row| row.get("name").and_then(|v| v.as_str()) == Some("check")));
-    assert!(commands.iter().any(|row| row.get("name").and_then(|v| v.as_str()) == Some("ops")));
+    assert!(commands
+        .iter()
+        .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("check")));
+    assert!(commands
+        .iter()
+        .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("ops")));
     assert!(commands
         .iter()
         .any(|row| row.get("name").and_then(|v| v.as_str()) == Some("policies")));
@@ -239,6 +246,19 @@ fn check_list_supports_json_format() {
         .get("budget_ms")
         .and_then(|v| v.as_u64())
         .is_some());
+}
+
+#[test]
+fn check_list_supports_json_alias() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["check", "list", "--json"])
+        .output()
+        .expect("check list --json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
 }
 
 #[test]

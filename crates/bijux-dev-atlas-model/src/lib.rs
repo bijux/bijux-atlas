@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 use std::fmt;
+use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -247,6 +248,38 @@ impl RunId {
 
     pub fn as_str(&self) -> &str {
         &self.0
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct ArtifactsRoot(String);
+
+impl ArtifactsRoot {
+    pub fn parse(value: &str) -> Result<Self, String> {
+        let raw = value.trim();
+        if raw.is_empty() {
+            return Err("artifacts root cannot be empty".to_string());
+        }
+        Ok(Self(raw.to_string()))
+    }
+
+    pub fn default_for_repo(repo_root: &Path) -> Self {
+        Self(
+            repo_root
+                .join("artifacts")
+                .join("atlas-dev")
+                .display()
+                .to_string(),
+        )
+    }
+
+    pub fn as_path(&self) -> &Path {
+        Path::new(&self.0)
+    }
+
+    pub fn to_path_buf(&self) -> PathBuf {
+        PathBuf::from(&self.0)
     }
 }
 

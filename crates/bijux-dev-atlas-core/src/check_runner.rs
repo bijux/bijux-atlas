@@ -120,18 +120,11 @@ pub fn run_checks(
     };
     let selected = select_checks(&registry, &effective_selectors)?;
 
-    let run_id = request
-        .run_id
-        .clone()
-        .unwrap_or_else(|| RunId::from_seed("registry_run"));
-    let artifacts_root = request
-        .artifacts_root
-        .clone()
-        .unwrap_or_else(|| request.repo_root.join("artifacts").join("atlas-dev"));
+    let runtime = RuntimeContext::from_run_request(request)?;
     let ctx = CheckContext {
-        repo_root: &request.repo_root,
-        artifacts_root: artifacts_root.join(run_id.as_str()),
-        run_id,
+        repo_root: &runtime.repo_root,
+        artifacts_root: runtime.check_artifacts_run_root(),
+        run_id: runtime.run_id.clone(),
         adapters: AdapterSet { fs, process },
         registry: &registry,
     };
@@ -144,7 +137,7 @@ pub fn run_checks(
         let denied = check
             .effects_required
             .iter()
-            .find(|effect| !effect_allowed(**effect, request.capabilities));
+            .find(|effect| !effect_allowed(**effect, runtime.capabilities));
 
         if let Some(effect) = denied {
             timings.insert(check.id.clone(), 0);
@@ -265,7 +258,7 @@ pub fn run_checks(
 
     Ok(RunReport {
         run_id: ctx.run_id,
-        repo_root: request.repo_root.display().to_string(),
+        repo_root: runtime.repo_root.display().to_string(),
         command: request
             .command
             .clone()
@@ -297,10 +290,10 @@ pub fn run_checks(
             ),
         ]),
         capabilities: BTreeMap::from([
-            ("fs_write".to_string(), request.capabilities.fs_write),
-            ("subprocess".to_string(), request.capabilities.subprocess),
-            ("git".to_string(), request.capabilities.git),
-            ("network".to_string(), request.capabilities.network),
+            ("fs_write".to_string(), runtime.capabilities.fs_write),
+            ("subprocess".to_string(), runtime.capabilities.subprocess),
+            ("git".to_string(), runtime.capabilities.git),
+            ("network".to_string(), runtime.capabilities.network),
         ]),
         results,
         durations_ms: timings.clone(),

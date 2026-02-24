@@ -175,6 +175,37 @@ fn run_id_is_deterministic() {
 }
 
 #[test]
+fn artifacts_root_defaults_to_repo_artifacts_atlas_dev() {
+    let repo = root();
+    let artifacts = ArtifactsRoot::default_for_repo(&repo);
+    assert_eq!(
+        artifacts.as_path(),
+        repo.join("artifacts").join("atlas-dev").as_path()
+    );
+}
+
+#[test]
+fn runtime_context_resolves_artifacts_and_run_id_deterministically() {
+    let req = RunRequest {
+        repo_root: root(),
+        domain: None,
+        capabilities: Capabilities::deny_all(),
+        artifacts_root: None,
+        run_id: None,
+        command: None,
+    };
+    let runtime = RuntimeContext::from_run_request(&req).expect("runtime");
+    assert_eq!(runtime.run_id.as_str(), "registry_run");
+    assert_eq!(
+        runtime.check_artifacts_run_root(),
+        root()
+            .join("artifacts")
+            .join("atlas-dev")
+            .join("registry_run")
+    );
+}
+
+#[test]
 fn run_checks_produces_summary() {
     let req = RunRequest {
         repo_root: root(),
