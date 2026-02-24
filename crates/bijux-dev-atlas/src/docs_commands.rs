@@ -475,10 +475,9 @@ fn docs_build_or_serve_subprocess(
     let ctx = docs_context(common)?;
     let output_dir = ctx
         .artifacts_root
-        .join("atlas-dev")
-        .join("docs")
-        .join(ctx.run_id.as_str())
-        .join("site");
+        .join("dist")
+        .join("docs-site")
+        .join(ctx.run_id.as_str());
     if label == "docs build" {
         fs::create_dir_all(&output_dir)
             .map_err(|e| format!("failed to create {}: {e}", output_dir.display()))?;
@@ -490,7 +489,7 @@ fn docs_build_or_serve_subprocess(
             "--site-dir",
             output_dir
                 .to_str()
-                .unwrap_or("artifacts/atlas-dev/docs/site"),
+                .unwrap_or("artifacts/dist/docs-site"),
         ]);
     }
     let out = cmd
@@ -519,8 +518,8 @@ fn docs_build_or_serve_subprocess(
         files.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
         let index_path = ctx
             .artifacts_root
-            .join("atlas-dev")
-            .join("docs")
+            .join("dist")
+            .join("docs-site")
             .join(ctx.run_id.as_str())
             .join("build.index.json");
         if common.allow_write {
@@ -545,7 +544,7 @@ fn docs_build_or_serve_subprocess(
             "error_code": if code == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) },
             "text": format!("{label} {}", if code==0 {"ok"} else {"failed"}),
             "rows":[{"command": args, "exit_code": code, "stdout": stdout, "stderr": stderr, "site_dir": output_dir.display().to_string()}],
-            "artifacts": {"site_dir": output_dir.display().to_string(), "build_index": ctx.artifacts_root.join("atlas-dev").join("docs").join(ctx.run_id.as_str()).join("build.index.json").display().to_string(), "files": files},
+            "artifacts": {"site_dir": output_dir.display().to_string(), "build_index": ctx.artifacts_root.join("dist").join("docs-site").join(ctx.run_id.as_str()).join("build.index.json").display().to_string(), "files": files},
             "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
             "options": {"strict": common.strict, "include_drafts": common.include_drafts}
         }),
