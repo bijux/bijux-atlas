@@ -25,6 +25,12 @@ _verification-run:
 	@module="$(VERIFICATION_MODULE)"; \
 	mk_file="makefiles/$$module.mk"; \
 	if [ ! -f "$$mk_file" ]; then \
+		underscore_file="makefiles/_$$module.mk"; \
+		if [ -f "$$underscore_file" ]; then \
+			mk_file="$$underscore_file"; \
+		fi; \
+	fi; \
+	if [ ! -f "$$mk_file" ]; then \
 		printf '%s\n' "verification: missing $$mk_file"; \
 		exit 2; \
 	fi; \
