@@ -37,7 +37,7 @@
   "paths": {
     "packages/atlasctl/src/atlasctl": "bijux-atlas-platform",
     "packages/atlasctl/tests": "bijux-atlas-platform",
-    "scripts/bin/bijux-atlas-dev": "bijux-atlas-platform",
+    "scripts/bin/bijux-dev-atlas": "bijux-atlas-platform",
     "scripts/bin/bijux-atlas-ops": "bijux-atlas-operations",
     "scripts/bin/atlasctl": "bijux-atlas-platform",
     "scripts/bin/isolate": "bijux-atlas-platform",

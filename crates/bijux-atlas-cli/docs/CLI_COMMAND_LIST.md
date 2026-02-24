@@ -9,6 +9,7 @@ atlas dataset publish
 atlas dataset validate
 atlas dataset verify
 atlas dataset verify-pack
+atlas dev-atlas
 atlas diff build
 atlas doctor
 atlas explain

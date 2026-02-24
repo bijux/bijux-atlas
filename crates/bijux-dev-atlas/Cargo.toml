@@ -1,5 +1,5 @@
 [package]
-name = "bijux-atlas-dev"
+name = "bijux-dev-atlas"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -8,13 +8,13 @@ rust-version.workspace = true
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 serde_json.workspace = true
-bijux-atlas-dev-core.workspace = true
-bijux-atlas-dev-model.workspace = true
-bijux-atlas-dev-adapters.workspace = true
+bijux-dev-atlas-core.workspace = true
+bijux-dev-atlas-model.workspace = true
+bijux-dev-atlas-adapters.workspace = true
 
 [dev-dependencies]
 assert_cmd = "2"
 
 [[bin]]
-name = "bijux-atlas-dev"
+name = "bijux-dev-atlas"
 path = "src/main.rs"

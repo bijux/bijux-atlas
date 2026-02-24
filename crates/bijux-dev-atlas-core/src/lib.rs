@@ -5,8 +5,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use bijux_atlas_dev_adapters::{Capabilities, Fs, ProcessRunner};
-use bijux_atlas_dev_model::{
+use bijux_dev_atlas_adapters::{Capabilities, Fs, ProcessRunner};
+use bijux_dev_atlas_model::{
     CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId, RunReport, RunSummary,
     Severity, SuiteId, Tag, Violation, Visibility,
 };
@@ -724,7 +724,7 @@ pub fn exit_code_for_report(report: &RunReport) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use bijux_atlas_dev_adapters::{DeniedProcessRunner, RealFs};
+    use bijux_dev_atlas_adapters::{DeniedProcessRunner, RealFs};
 
     fn root() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))

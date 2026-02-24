@@ -190,21 +190,21 @@ fn run_dev_atlas(args: Vec<String>, output_mode: OutputMode) -> Result<(), Strin
     let bin_dir = current_exe
         .parent()
         .ok_or_else(|| "failed to resolve executable directory".to_string())?;
-    let local_bin = bin_dir.join("bijux-atlas-dev");
+    let local_bin = bin_dir.join("bijux-dev-atlas");
 
     let mut cmd = if local_bin.exists() {
         let mut command = Command::new(local_bin);
         command.args(&args);
         command
     } else {
-        let mut command = Command::new("bijux-atlas-dev");
+        let mut command = Command::new("bijux-dev-atlas");
         command.args(&args);
         command
     };
 
     let status = cmd
         .status()
-        .map_err(|e| format!("failed to start bijux-atlas-dev: {e}"))?;
+        .map_err(|e| format!("failed to start bijux-dev-atlas: {e}"))?;
     if status.success() {
         command_output_adapters::emit_ok(
             output_mode,
@@ -212,7 +212,7 @@ fn run_dev_atlas(args: Vec<String>, output_mode: OutputMode) -> Result<(), Strin
         )?;
         Ok(())
     } else {
-        Err(format!("bijux-atlas-dev exited with status {status}"))
+        Err(format!("bijux-dev-atlas exited with status {status}"))
     }
 }
 

@@ -14,6 +14,7 @@ fn command_surface_ssot_matches_doc() {
         "atlas dataset validate",
         "atlas dataset verify",
         "atlas dataset verify-pack",
+        "atlas dev-atlas",
         "atlas diff build",
         "atlas doctor",
         "atlas explain",

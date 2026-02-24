@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use bijux_atlas_dev_model::{CheckId, Severity, Violation};
+use bijux_dev_atlas_model::{CheckId, Severity, Violation};
 
 use crate::{CheckContext, CheckError, CheckFn};
 
