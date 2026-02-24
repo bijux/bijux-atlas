@@ -45,13 +45,20 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::Up(common)
         | OpsCommand::Down(common)
         | OpsCommand::Clean(common)
-        | OpsCommand::Cleanup(common) => common.format = FormatArg::Json,
+        | OpsCommand::Cleanup(common)
+        | OpsCommand::K8sPlan(common)
+        | OpsCommand::K8sDryRun(common)
+        | OpsCommand::K8sConformance(common) => common.format = FormatArg::Json,
         OpsCommand::Explain { common, .. } => common.format = FormatArg::Json,
         OpsCommand::Render(args) => args.common.format = FormatArg::Json,
         OpsCommand::Install(args) => args.common.format = FormatArg::Json,
         OpsCommand::Status(args) => args.common.format = FormatArg::Json,
         OpsCommand::ExplainProfile { common, .. } => common.format = FormatArg::Json,
         OpsCommand::Reset(args) => args.common.format = FormatArg::Json,
+        OpsCommand::K8sApply(args) => args.common.format = FormatArg::Json,
+        OpsCommand::K8sWait(args) => args.common.format = FormatArg::Json,
+        OpsCommand::K8sLogs(args) => args.common.format = FormatArg::Json,
+        OpsCommand::K8sPortForward(args) => args.common.format = FormatArg::Json,
         OpsCommand::Pins { command } => match command {
             crate::cli::OpsPinsCommand::Check(common)
             | crate::cli::OpsPinsCommand::Update { common, .. } => common.format = FormatArg::Json,
@@ -79,7 +86,14 @@ fn force_json_ops(command: &mut OpsCommand) {
         },
         OpsCommand::K8s { command } => match command {
             crate::cli::OpsK8sCommand::Render(args) => args.common.format = FormatArg::Json,
-            crate::cli::OpsK8sCommand::Test(common) => common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::Plan(common)
+            | crate::cli::OpsK8sCommand::DryRun(common)
+            | crate::cli::OpsK8sCommand::Conformance(common)
+            | crate::cli::OpsK8sCommand::Test(common) => common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::Apply(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::Wait(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::Logs(args) => args.common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::PortForward(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Status(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::Load { command } => match command {
@@ -204,13 +218,20 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             | OpsCommand::Up(common)
             | OpsCommand::Down(common)
             | OpsCommand::Clean(common)
-            | OpsCommand::Cleanup(common) => common.repo_root = Some(root.clone()),
+            | OpsCommand::Cleanup(common)
+            | OpsCommand::K8sPlan(common)
+            | OpsCommand::K8sDryRun(common)
+            | OpsCommand::K8sConformance(common) => common.repo_root = Some(root.clone()),
             OpsCommand::Explain { common, .. } => common.repo_root = Some(root.clone()),
             OpsCommand::Render(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Install(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Status(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::ExplainProfile { common, .. } => common.repo_root = Some(root.clone()),
             OpsCommand::Reset(args) => args.common.repo_root = Some(root.clone()),
+            OpsCommand::K8sApply(args) => args.common.repo_root = Some(root.clone()),
+            OpsCommand::K8sWait(args) => args.common.repo_root = Some(root.clone()),
+            OpsCommand::K8sLogs(args) => args.common.repo_root = Some(root.clone()),
+            OpsCommand::K8sPortForward(args) => args.common.repo_root = Some(root.clone()),
             OpsCommand::Pins { command } => match command {
                 crate::cli::OpsPinsCommand::Check(common)
                 | crate::cli::OpsPinsCommand::Update { common, .. } => {
@@ -252,7 +273,18 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                 crate::cli::OpsK8sCommand::Render(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
-                crate::cli::OpsK8sCommand::Test(common) => common.repo_root = Some(root.clone()),
+                crate::cli::OpsK8sCommand::Plan(common)
+                | crate::cli::OpsK8sCommand::DryRun(common)
+                | crate::cli::OpsK8sCommand::Conformance(common)
+                | crate::cli::OpsK8sCommand::Test(common) => common.repo_root = Some(root.clone()),
+                crate::cli::OpsK8sCommand::Apply(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsK8sCommand::Wait(args) => args.common.repo_root = Some(root.clone()),
+                crate::cli::OpsK8sCommand::Logs(args) => args.common.repo_root = Some(root.clone()),
+                crate::cli::OpsK8sCommand::PortForward(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsK8sCommand::Status(args) => {
                     args.common.repo_root = Some(root.clone())
                 }

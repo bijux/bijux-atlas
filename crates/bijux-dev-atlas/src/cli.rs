@@ -397,6 +397,20 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsGenerateCommand,
     },
+    #[command(hide = true)]
+    K8sPlan(OpsCommonArgs),
+    #[command(hide = true)]
+    K8sApply(OpsK8sApplyArgs),
+    #[command(hide = true)]
+    K8sDryRun(OpsCommonArgs),
+    #[command(hide = true)]
+    K8sConformance(OpsCommonArgs),
+    #[command(hide = true)]
+    K8sWait(OpsK8sWaitArgs),
+    #[command(hide = true)]
+    K8sLogs(OpsK8sLogsArgs),
+    #[command(hide = true)]
+    K8sPortForward(OpsK8sPortForwardArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -411,8 +425,53 @@ pub enum OpsStackCommand {
 #[derive(Subcommand, Debug)]
 pub enum OpsK8sCommand {
     Render(OpsRenderArgs),
+    Plan(OpsCommonArgs),
+    Apply(OpsK8sApplyArgs),
+    DryRun(OpsCommonArgs),
+    Conformance(OpsCommonArgs),
+    Wait(OpsK8sWaitArgs),
+    Logs(OpsK8sLogsArgs),
+    PortForward(OpsK8sPortForwardArgs),
     Test(OpsCommonArgs),
     Status(OpsStatusArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsK8sApplyArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value_t = false)]
+    pub apply: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsK8sWaitArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value_t = 120)]
+    pub timeout_seconds: u64,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsK8sLogsArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long)]
+    pub pod: Option<String>,
+    #[arg(long, default_value_t = 200)]
+    pub tail: usize,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct OpsK8sPortForwardArgs {
+    #[command(flatten)]
+    pub common: OpsCommonArgs,
+    #[arg(long, default_value = "service/bijux-atlas")]
+    pub resource: String,
+    #[arg(long, default_value_t = 8080)]
+    pub local_port: u16,
+    #[arg(long, default_value_t = 8080)]
+    pub remote_port: u16,
 }
 
 #[derive(Subcommand, Debug)]

@@ -24,7 +24,14 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         },
         OpsCommand::K8s { command } => match command {
             OpsK8sCommand::Render(args) => OpsCommand::Render(args),
-            OpsK8sCommand::Test(common) => OpsCommand::Conformance(common),
+            OpsK8sCommand::Plan(common) => OpsCommand::K8sPlan(common),
+            OpsK8sCommand::Apply(args) => OpsCommand::K8sApply(args),
+            OpsK8sCommand::DryRun(common) => OpsCommand::K8sDryRun(common),
+            OpsK8sCommand::Conformance(common) => OpsCommand::K8sConformance(common),
+            OpsK8sCommand::Wait(args) => OpsCommand::K8sWait(args),
+            OpsK8sCommand::Logs(args) => OpsCommand::K8sLogs(args),
+            OpsK8sCommand::PortForward(args) => OpsCommand::K8sPortForward(args),
+            OpsK8sCommand::Test(common) => OpsCommand::K8sConformance(common),
             OpsK8sCommand::Status(args) => OpsCommand::Status(args),
         },
         OpsCommand::Load { command } => match command {
@@ -92,7 +99,8 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let row = match action_lc.as_str() {
                 "inventory" => serde_json::json!({"action":"inventory","purpose":"list ops manifests and inventory validity","effects_required":[]}),
                 "validate" => serde_json::json!({"action":"validate","purpose":"validate ops SSOT inputs and checks","effects_required":[]}),
-                "render" | "k8s-render" => serde_json::json!({"action":"render","purpose":"render deterministic ops manifests","effects_required":["subprocess"],"flags":["--allow-subprocess","--allow-write (optional)"]}),
+                "render" | "k8s-render" => serde_json::json!({"action":"render","purpose":"render deterministic ops manifests","effects_required":["subprocess"],"flags":["--allow-subprocess","--allow-write"]}),
+                "k8s-plan" => serde_json::json!({"action":"k8s-plan","purpose":"show what rendered resources would be applied","effects_required":[]}),
                 "stack-plan" => serde_json::json!({"action":"stack-plan","purpose":"resolve stack resources for a profile without executing subprocesses","effects_required":[]}),
                 "install" | "stack-up" => serde_json::json!({"action":"install","purpose":"plan/apply ops stack to local cluster","effects_required":["subprocess","fs_write","network"],"flags":["--allow-subprocess","--allow-write","--allow-network"]}),
                 "down" | "stack-down" => serde_json::json!({"action":"down","purpose":"teardown local ops stack resources","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
@@ -428,6 +436,23 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         OpsCommand::Render(args) => crate::ops_runtime_execution::run_ops_render(&args),
         OpsCommand::Install(args) => crate::ops_runtime_execution::run_ops_install(&args),
         OpsCommand::Status(args) => crate::ops_runtime_execution::run_ops_status(&args),
+        OpsCommand::K8sPlan(common) => crate::ops_runtime_execution::run_ops_k8s_plan(&common),
+        OpsCommand::K8sApply(args) => crate::ops_runtime_execution::run_ops_k8s_apply(&args, false),
+        OpsCommand::K8sDryRun(common) => {
+            let args = crate::cli::OpsK8sApplyArgs {
+                common: common.clone(),
+                apply: true,
+            };
+            crate::ops_runtime_execution::run_ops_k8s_apply(&args, true)
+        }
+        OpsCommand::K8sConformance(common) => {
+            crate::ops_runtime_execution::run_ops_k8s_conformance(&common)
+        }
+        OpsCommand::K8sWait(args) => crate::ops_runtime_execution::run_ops_k8s_wait(&args),
+        OpsCommand::K8sLogs(args) => crate::ops_runtime_execution::run_ops_k8s_logs(&args),
+        OpsCommand::K8sPortForward(args) => {
+            crate::ops_runtime_execution::run_ops_k8s_port_forward(&args)
+        }
         OpsCommand::ListProfiles(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
