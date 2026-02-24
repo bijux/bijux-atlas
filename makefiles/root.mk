@@ -5,12 +5,12 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
 include makefiles/dev-atlas.mk
-include makefiles/cargo.mk
+include makefiles/_cargo.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
-include makefiles/configs.mk
-include makefiles/docs.mk
-include makefiles/ops.mk
+include makefiles/_configs.mk
+include makefiles/_docs.mk
+include makefiles/_ops.mk
 include makefiles/verification.mk
 
 CURATED_TARGETS := \
