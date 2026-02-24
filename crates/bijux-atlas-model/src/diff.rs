@@ -1,14 +1,16 @@
 use serde::{Deserialize, Serialize};
 use crate::ModelVersion;
+use crate::{Assembly, GeneId, Release, SeqId, Species};
+use crate::ValidationError;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct GeneSignatureInput {
-    pub gene_id: String,
+    pub gene_id: GeneId,
     pub name: String,
     pub biotype: String,
-    pub seqid: String,
+    pub seqid: SeqId,
     pub start: u64,
     pub end: u64,
     pub transcript_count: u64,
@@ -17,10 +19,10 @@ pub struct GeneSignatureInput {
 impl GeneSignatureInput {
     #[must_use]
     pub fn new(
-        gene_id: String,
+        gene_id: GeneId,
         name: String,
         biotype: String,
-        seqid: String,
+        seqid: SeqId,
         start: u64,
         end: u64,
         transcript_count: u64,
@@ -41,8 +43,8 @@ impl GeneSignatureInput {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct ReleaseGeneIndexEntry {
-    pub gene_id: String,
-    pub seqid: String,
+    pub gene_id: GeneId,
+    pub seqid: SeqId,
     pub start: u64,
     pub end: u64,
     pub signature_sha256: String,
@@ -51,8 +53,8 @@ pub struct ReleaseGeneIndexEntry {
 impl ReleaseGeneIndexEntry {
     #[must_use]
     pub fn new(
-        gene_id: String,
-        seqid: String,
+        gene_id: GeneId,
+        seqid: SeqId,
         start: u64,
         end: u64,
         signature_sha256: String,
@@ -92,6 +94,15 @@ impl ReleaseGeneIndex {
             entries,
         }
     }
+
+    pub fn validate(&self) -> Result<(), ValidationError> {
+        if self.schema_version.trim().is_empty() {
+            return Err(ValidationError(
+                "release gene index schema_version must not be empty".to_string(),
+            ));
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -115,9 +126,9 @@ pub enum DiffScope {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct DiffRecord {
-    pub gene_id: String,
+    pub gene_id: GeneId,
     pub status: DiffStatus,
-    pub seqid: Option<String>,
+    pub seqid: Option<SeqId>,
     pub start: Option<u64>,
     pub end: Option<u64>,
 }
@@ -125,9 +136,9 @@ pub struct DiffRecord {
 impl DiffRecord {
     #[must_use]
     pub fn new(
-        gene_id: String,
+        gene_id: GeneId,
         status: DiffStatus,
-        seqid: Option<String>,
+        seqid: Option<SeqId>,
         start: Option<u64>,
         end: Option<u64>,
     ) -> Self {
@@ -147,10 +158,10 @@ impl DiffRecord {
 pub struct DiffPage {
     #[serde(default)]
     pub model_version: ModelVersion,
-    pub from_release: String,
-    pub to_release: String,
-    pub species: String,
-    pub assembly: String,
+    pub from_release: Release,
+    pub to_release: Release,
+    pub species: Species,
+    pub assembly: Assembly,
     pub scope: DiffScope,
     pub rows: Vec<DiffRecord>,
     pub next_cursor: Option<String>,
@@ -159,10 +170,10 @@ pub struct DiffPage {
 impl DiffPage {
     #[must_use]
     pub fn new(
-        from_release: String,
-        to_release: String,
-        species: String,
-        assembly: String,
+        from_release: Release,
+        to_release: Release,
+        species: Species,
+        assembly: Assembly,
         scope: DiffScope,
         rows: Vec<DiffRecord>,
         next_cursor: Option<String>,
@@ -177,5 +188,14 @@ impl DiffPage {
             rows,
             next_cursor,
         }
+    }
+
+    pub fn validate(&self) -> Result<(), ValidationError> {
+        if self.rows.is_empty() {
+            return Err(ValidationError(
+                "diff page must contain at least one row".to_string(),
+            ));
+        }
+        Ok(())
     }
 }

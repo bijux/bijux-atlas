@@ -1,9 +1,34 @@
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
+use std::fmt::{Display, Formatter};
 
 pub const ID_MAX_LEN: usize = 128;
 pub const SEQID_MAX_LEN: usize = 128;
 pub const NAME_MAX_LEN: usize = 256;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum ParseError {
+    Empty(&'static str),
+    Trimmed(&'static str),
+    TooLong(&'static str, usize),
+    InvalidFormat(&'static str),
+}
+
+impl Display for ParseError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Empty(name) => write!(f, "{name} must not be empty"),
+            Self::Trimmed(name) => {
+                write!(f, "{name} must not contain leading/trailing whitespace")
+            }
+            Self::TooLong(name, max) => write!(f, "{name} exceeds max length {max}"),
+            Self::InvalidFormat(msg) => f.write_str(msg),
+        }
+    }
+}
+
+impl std::error::Error for ParseError {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, PartialOrd, Ord)]
 #[serde(transparent)]
@@ -11,15 +36,15 @@ pub const NAME_MAX_LEN: usize = 256;
 pub struct GeneId(String);
 
 impl GeneId {
-    pub fn parse(input: &str) -> Result<Self, String> {
+    pub fn parse(input: &str) -> Result<Self, ParseError> {
         if input.is_empty() {
-            return Err("gene_id must not be empty".to_string());
+            return Err(ParseError::Empty("gene_id"));
         }
         if input.trim() != input {
-            return Err("gene_id must not contain leading/trailing whitespace".to_string());
+            return Err(ParseError::Trimmed("gene_id"));
         }
         if input.len() > ID_MAX_LEN {
-            return Err(format!("gene_id exceeds max length {ID_MAX_LEN}"));
+            return Err(ParseError::TooLong("gene_id", ID_MAX_LEN));
         }
         Ok(Self(input.to_string()))
     }
@@ -36,15 +61,15 @@ impl GeneId {
 pub struct TranscriptId(String);
 
 impl TranscriptId {
-    pub fn parse(input: &str) -> Result<Self, String> {
+    pub fn parse(input: &str) -> Result<Self, ParseError> {
         if input.is_empty() {
-            return Err("transcript_id must not be empty".to_string());
+            return Err(ParseError::Empty("transcript_id"));
         }
         if input.trim() != input {
-            return Err("transcript_id must not contain leading/trailing whitespace".to_string());
+            return Err(ParseError::Trimmed("transcript_id"));
         }
         if input.len() > ID_MAX_LEN {
-            return Err(format!("transcript_id exceeds max length {ID_MAX_LEN}"));
+            return Err(ParseError::TooLong("transcript_id", ID_MAX_LEN));
         }
         Ok(Self(input.to_string()))
     }
@@ -61,15 +86,15 @@ impl TranscriptId {
 pub struct SeqId(String);
 
 impl SeqId {
-    pub fn parse(input: &str) -> Result<Self, String> {
+    pub fn parse(input: &str) -> Result<Self, ParseError> {
         if input.is_empty() {
-            return Err("seqid must not be empty".to_string());
+            return Err(ParseError::Empty("seqid"));
         }
         if input.trim() != input {
-            return Err("seqid must not contain leading/trailing whitespace".to_string());
+            return Err(ParseError::Trimmed("seqid"));
         }
         if input.len() > SEQID_MAX_LEN {
-            return Err(format!("seqid exceeds max length {SEQID_MAX_LEN}"));
+            return Err(ParseError::TooLong("seqid", SEQID_MAX_LEN));
         }
         Ok(Self(input.to_string()))
     }
@@ -84,14 +109,57 @@ impl SeqId {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct GeneSummary {
-    pub gene_id: String,
+    pub gene_id: GeneId,
     pub name: Option<String>,
-    pub seqid: String,
+    pub seqid: SeqId,
     pub start: u64,
     pub end: u64,
     pub biotype: Option<String>,
     pub transcript_count: u64,
     pub sequence_length: u64,
+}
+
+impl GeneSummary {
+    #[allow(clippy::too_many_arguments)]
+    #[must_use]
+    pub fn new(
+        gene_id: GeneId,
+        name: Option<String>,
+        seqid: SeqId,
+        start: u64,
+        end: u64,
+        biotype: Option<String>,
+        transcript_count: u64,
+        sequence_length: u64,
+    ) -> Self {
+        Self {
+            gene_id,
+            name,
+            seqid,
+            start,
+            end,
+            biotype,
+            transcript_count,
+            sequence_length,
+        }
+    }
+
+    pub fn validate(&self) -> Result<(), ParseError> {
+        if self.start == 0 || self.end == 0 {
+            return Err(ParseError::InvalidFormat("gene summary start/end must be >= 1"));
+        }
+        if self.start > self.end {
+            return Err(ParseError::InvalidFormat(
+                "gene summary start must be <= end",
+            ));
+        }
+        if self.sequence_length != (self.end - self.start + 1) {
+            return Err(ParseError::InvalidFormat(
+                "gene summary sequence_length must equal end-start+1",
+            ));
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
@@ -104,12 +172,14 @@ pub enum Strand {
 }
 
 impl Strand {
-    pub fn parse(raw: &str) -> Result<Self, String> {
+    pub fn parse(raw: &str) -> Result<Self, ParseError> {
         match raw {
             "+" => Ok(Self::Plus),
             "-" => Ok(Self::Minus),
             "." => Ok(Self::Unknown),
-            _ => Err("strand must be one of '+', '-', '.'".to_string()),
+            _ => Err(ParseError::InvalidFormat(
+                "strand must be one of '+', '-', '.'",
+            )),
         }
     }
 
@@ -133,30 +203,34 @@ pub struct Region {
 }
 
 impl Region {
-    pub fn new(seqid: SeqId, start: u64, end: u64) -> Result<Self, String> {
+    pub fn new(seqid: SeqId, start: u64, end: u64) -> Result<Self, ParseError> {
         if start == 0 || end == 0 {
-            return Err("region start/end must be >= 1".to_string());
+            return Err(ParseError::InvalidFormat("region start/end must be >= 1"));
         }
         if start > end {
-            return Err("region start must be <= end".to_string());
+            return Err(ParseError::InvalidFormat("region start must be <= end"));
         }
         Ok(Self { seqid, start, end })
     }
 
-    pub fn parse(input: &str) -> Result<Self, String> {
+    pub fn parse(input: &str) -> Result<Self, ParseError> {
         let (seqid_raw, rest) = input
             .split_once(':')
-            .ok_or_else(|| "region must be in seqid:start-end format".to_string())?;
+            .ok_or(ParseError::InvalidFormat(
+                "region must be in seqid:start-end format",
+            ))?;
         let (start_raw, end_raw) = rest
             .split_once('-')
-            .ok_or_else(|| "region must be in seqid:start-end format".to_string())?;
+            .ok_or(ParseError::InvalidFormat(
+                "region must be in seqid:start-end format",
+            ))?;
         let seqid = SeqId::parse(seqid_raw)?;
         let start = start_raw
             .parse::<u64>()
-            .map_err(|_| "region start must be integer".to_string())?;
+            .map_err(|_| ParseError::InvalidFormat("region start must be integer"))?;
         let end = end_raw
             .parse::<u64>()
-            .map_err(|_| "region end must be integer".to_string())?;
+            .map_err(|_| ParseError::InvalidFormat("region end must be integer"))?;
         Self::new(seqid, start, end)
     }
 

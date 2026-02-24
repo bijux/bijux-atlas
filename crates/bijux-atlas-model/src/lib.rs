@@ -34,12 +34,12 @@ pub use gene::{
     BiotypePolicy, DuplicateGeneIdPolicy, DuplicateTranscriptIdPolicy, FeatureIdUniquenessPolicy,
     GeneId, GeneNamePolicy, GeneOrderKey, GeneSummary, Region, SeqId, SeqidNormalizationPolicy,
     Strand, TranscriptId, TranscriptIdPolicy, TranscriptOrderKey, TranscriptTypePolicy,
-    UnknownFeaturePolicy, ID_MAX_LEN, NAME_MAX_LEN, SEQID_MAX_LEN,
+    UnknownFeaturePolicy, ID_MAX_LEN, NAME_MAX_LEN, ParseError, SEQID_MAX_LEN,
 };
 pub use manifest::{
     artifact_paths, ArtifactChecksums, ArtifactManifest, ArtifactPaths, Catalog, CatalogEntry,
     IngestAnomalyReport, IngestRejection, ManifestInputHashes, ManifestStats, OptionalFieldPolicy,
-    QcSeverity, ShardCatalog, ShardEntry, ShardingPlan, LATEST_ALIAS_POLICY,
+    QcSeverity, ShardCatalog, ShardEntry, ShardId, ShardingPlan, LATEST_ALIAS_POLICY,
     NO_IMPLICIT_DEFAULT_DATASET_POLICY,
 };
 pub use policy::{GeneIdentifierPolicy, StrictnessMode};
