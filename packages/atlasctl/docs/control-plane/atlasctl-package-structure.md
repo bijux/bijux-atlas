@@ -15,17 +15,15 @@ This file declares the intended top-level module layout for `packages/atlasctl/s
 
 `policies` and `internal` are command groups (under `commands/`), not required top-level python packages.
 
-## Migration Notes
+## Checks Layout Notes
 
-- Check implementations are consolidating under `checks/<domain>/...`.
-- Canonical checks command module is `commands/check/command.py`; `checks/command.py` is compatibility-only.
-- Old deep paths under `checks/layout/.../checks/` are compatibility shims; canonical implementations live under:
-  - `checks/domains/policies/make/impl/`
-  - `checks/domains/ops/ops_checks/impl/`
-- Repo native check split modules are consolidated under:
-  - `checks/repo/native/modules/`
-  - `checks/repo/native/runtime_modules/`
-  with `checks/repo/native_loader.py` and `checks/repo/native_runtime.py` kept as compatibility shims.
-- Core execution/model canonical homes:
-  - `core/effects/exec.py` and `core/effects/exec_shell.py` (with `core/exec*.py` compatibility shims)
-  - `core/model/` (with `core/models/` compatibility package)
+- Canonical checks runtime surfaces are:
+  - `checks/model.py`
+  - `checks/registry.py`
+  - `checks/selectors.py`
+  - `checks/policy.py`
+  - `checks/runner.py`
+  - `checks/report.py`
+- Check definitions are exported from flat `checks/domains/*.py` modules.
+- Shared check helpers live under `checks/tools/`.
+- Legacy compatibility trees under `checks/layout/` and `checks/repo/` are blocked by internal checks and are being removed.
