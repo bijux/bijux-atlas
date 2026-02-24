@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 import os
 import re
@@ -993,6 +994,90 @@ def check_all_checks_have_owner(repo_root: Path) -> tuple[int, list[str]]:
 
     violations = [f"{check.check_id}: owner is required" for check in list_checks() if not getattr(check, "owners", ())]
     return (1, violations) if violations else (0, [])
+
+
+def check_checks_approved_top_level_entries_only(repo_root: Path) -> tuple[int, list[str]]:
+    return check_checks_root_allowed_entries_only(repo_root)
+
+
+def check_registry_generated_canonical_hash(repo_root: Path) -> tuple[int, list[str]]:
+    path = repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"
+    if not path.exists():
+        return 1, ["missing generated registry: packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"]
+    raw = path.read_text(encoding="utf-8")
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        return 1, [f"invalid generated registry json: {exc}"]
+    canonical = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    if raw != canonical:
+        digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        return 1, [f"generated registry formatting is non-deterministic; canonical sha256={digest}"]
+    return 0, []
+
+
+def check_all_checks_have_docs_string(repo_root: Path) -> tuple[int, list[str]]:
+    from ..registry import list_checks
+
+    violations = []
+    for check in list_checks():
+        description = str(getattr(check, "description", "")).strip()
+        if not description:
+            violations.append(f"{check.check_id}: description is required")
+    return (1, violations) if violations else (0, [])
+
+
+def check_no_subprocess_import_outside_adapters(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    allowed = {
+        "packages/atlasctl/src/atlasctl/checks/adapters.py",
+        "packages/atlasctl/src/atlasctl/checks/engine.py",
+    }
+    violations: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in allowed:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(r"^\s*import\s+subprocess\b", text, flags=re.MULTILINE) or re.search(
+            r"^\s*from\s+subprocess\s+import\b", text, flags=re.MULTILINE
+        ):
+            violations.append(f"{rel}: subprocess import is restricted to adapters")
+    return (1, violations) if violations else (0, [])
+
+
+def check_no_network_client_import_outside_adapters(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    allowed = {
+        "packages/atlasctl/src/atlasctl/checks/adapters.py",
+    }
+    violations: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in allowed:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(r"^\s*import\s+requests\b", text, flags=re.MULTILINE) or re.search(
+            r"^\s*from\s+requests\s+import\b", text, flags=re.MULTILINE
+        ):
+            violations.append(f"{rel}: requests import is restricted to adapters")
+        if re.search(r"^\s*import\s+httpx\b", text, flags=re.MULTILINE) or re.search(
+            r"^\s*from\s+httpx\s+import\b", text, flags=re.MULTILINE
+        ):
+            violations.append(f"{rel}: httpx import is restricted to adapters")
+    return (1, violations) if violations else (0, [])
+
+
+def check_no_tools_domain_mirrors_exist(repo_root: Path) -> tuple[int, list[str]]:
+    tools_root = repo_root / "packages/atlasctl/src/atlasctl/checks/tools"
+    if not tools_root.exists():
+        return 1, ["missing checks tools directory: packages/atlasctl/src/atlasctl/checks/tools"]
+    mirrors = [path.relative_to(repo_root).as_posix() for path in sorted(tools_root.glob("*_domain")) if path.is_dir()]
+    return (1, [f"tools domain mirror directory must be removed: {item}" for item in mirrors]) if mirrors else (0, [])
 
 
 def check_all_checks_declare_effects(repo_root: Path) -> tuple[int, list[str]]:
@@ -2278,6 +2363,72 @@ CHECKS = (
         check_checks_root_allowed_entries_only,
         category=CheckCategory.POLICY,
         fix_hint="Keep only canonical files and directories in packages/atlasctl/src/atlasctl/checks root.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.approved_top_level_entries_only",
+        "checks",
+        "require checks package top-level entries to match approved allowlist",
+        500,
+        check_checks_approved_top_level_entries_only,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove non-canonical top-level entries under packages/atlasctl/src/atlasctl/checks.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_generated_canonical_hash",
+        "checks",
+        "require generated registry json to use deterministic canonical formatting",
+        500,
+        check_registry_generated_canonical_hash,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Regenerate checks registry using atlasctl generator and commit canonical output.",
+        owners=("platform",),
+        tags=("checks", "registry", "required"),
+    ),
+    CheckDef(
+        "checks.all_checks_have_docs_string",
+        "checks",
+        "require every check definition to provide a non-empty description string",
+        500,
+        check_all_checks_have_docs_string,
+        category=CheckCategory.CONTRACT,
+        fix_hint="Set a concise non-empty description for each check definition.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_subprocess_import_outside_adapters",
+        "checks",
+        "forbid subprocess imports outside approved checks adapter modules",
+        500,
+        check_no_subprocess_import_outside_adapters,
+        category=CheckCategory.POLICY,
+        fix_hint="Move subprocess access into checks adapters and import through adapter interfaces.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_network_client_import_outside_adapters",
+        "checks",
+        "forbid requests/httpx imports outside approved checks adapter modules",
+        500,
+        check_no_network_client_import_outside_adapters,
+        category=CheckCategory.POLICY,
+        fix_hint="Move network client usage into checks adapters and keep checks modules pure.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_tools_domain_mirrors",
+        "checks",
+        "forbid checks/tools mirrored domain directories",
+        500,
+        check_no_tools_domain_mirrors_exist,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove checks/tools/*_domain mirrors and keep canonical helpers under checks/tools.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
