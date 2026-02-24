@@ -12,7 +12,8 @@ pub use crate::domain::canonical;
 pub use crate::domain::time;
 pub use crate::domain::{resolve_bijux_cache_dir, resolve_bijux_config_path, sha256, sha256_hex, Hash256};
 pub use crate::errors::{
-    ConfigPathScope, ErrorCode, ErrorContext, ExitCode, MachineError, ResultExt, ERROR_CODES,
+    ConfigPathScope, Error, ErrorCode, ErrorContext, ExitCode, MachineError, Result, ResultExt,
+    ERROR_CODES,
 };
 
 pub const CRATE_NAME: &str = "bijux-atlas-core";
