@@ -422,6 +422,17 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "checks_makefiles_root_includes_sorted"
+domain = "make"
+title = "root make include lines are sorted deterministically"
+docs = "makefiles/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_artifacts_gitignore_policy"
 domain = "ops"
 title = "artifacts root remains gitignored"
@@ -686,6 +697,28 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
+id = "checks_root_forbidden_legacy_directories_absent"
+domain = "root"
+title = "legacy top-level directories are absent"
+docs = "docs/development/tooling/control-plane.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_makefile_single_include_entrypoint"
+domain = "root"
+title = "root makefile is a single include entrypoint"
+docs = "makefiles/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_root_no_scripts_areas_presence_or_references"
 domain = "root"
 title = "repository avoids scripts areas presence and references"
@@ -716,6 +749,17 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_top_level_directories_contract"
+domain = "root"
+title = "root top-level directories match contract"
+docs = "docs/development/tooling/control-plane.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
 visibility = "internal"
 
 [[checks]]

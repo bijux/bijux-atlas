@@ -70,6 +70,16 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_root_no_scripts_areas_presence_or_references" => {
             Some(check_root_no_scripts_areas_presence_or_references)
         }
+        "checks_root_forbidden_legacy_directories_absent" => {
+            Some(check_root_forbidden_legacy_directories_absent)
+        }
+        "checks_root_makefile_single_include_entrypoint" => {
+            Some(check_root_makefile_single_include_entrypoint)
+        }
+        "checks_makefiles_root_includes_sorted" => Some(check_makefiles_root_includes_sorted),
+        "checks_root_top_level_directories_contract" => {
+            Some(check_root_top_level_directories_contract)
+        }
         "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch" => {
             Some(check_crates_bijux_atlas_cli_owns_umbrella_dispatch)
         }
@@ -229,6 +239,10 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_command_namespace_ownership_unique",
         "checks_crates_plugin_conformance_binaries",
         "checks_root_artifacts_bin_binaries_executable_and_version_printable",
+        "checks_root_forbidden_legacy_directories_absent",
+        "checks_root_makefile_single_include_entrypoint",
+        "checks_makefiles_root_includes_sorted",
+        "checks_root_top_level_directories_contract",
     ]
     .into_iter()
     .map(str::to_string)

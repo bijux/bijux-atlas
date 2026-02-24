@@ -429,6 +429,107 @@ pub(super) fn check_root_no_scripts_areas_presence_or_references(
     Ok(violations)
 }
 
+pub(super) fn check_root_forbidden_legacy_directories_absent(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for rel in ["scripts", "tools", "xtask"] {
+        let path = Path::new(rel);
+        if ctx.adapters.fs.exists(ctx.repo_root, path) {
+            violations.push(violation(
+                "ROOT_FORBIDDEN_LEGACY_DIRECTORY_PRESENT",
+                format!("forbidden legacy top-level directory exists: {}", path.display()),
+                "delete the directory and move behavior into crates/bijux-dev-atlas command surfaces",
+                Some(path),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_root_makefile_single_include_entrypoint(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("Makefile");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut lines = text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter(|line| !line.starts_with('#'))
+        .collect::<Vec<_>>();
+    if lines.len() == 1 && lines[0] == "include makefiles/root.mk" {
+        return Ok(Vec::new());
+    }
+    if !lines.contains(&"include makefiles/root.mk") {
+        return Ok(vec![violation(
+            "ROOT_MAKEFILE_MISSING_ROOT_INCLUDE",
+            "root Makefile must include makefiles/root.mk".to_string(),
+            "use root Makefile as a single include entrypoint",
+            Some(rel),
+        )]);
+    }
+    lines.retain(|line| *line != "include makefiles/root.mk");
+    Ok(vec![violation(
+        "ROOT_MAKEFILE_NOT_SINGLE_INCLUDE_ENTRYPOINT",
+        "root Makefile contains logic beyond the single root include".to_string(),
+        "keep root Makefile to one line: `include makefiles/root.mk`",
+        Some(rel),
+    )])
+}
+
+pub(super) fn check_makefiles_root_includes_sorted(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/root.mk");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let includes = text
+        .lines()
+        .map(str::trim)
+        .filter(|line| line.starts_with("include "))
+        .map(|line| line.trim_start_matches("include ").to_string())
+        .collect::<Vec<_>>();
+    let mut sorted = includes.clone();
+    sorted.sort();
+    if includes == sorted {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "MAKEFILES_ROOT_INCLUDES_NOT_SORTED",
+            "makefiles/root.mk include statements must be sorted".to_string(),
+            "sort include lines lexicographically for deterministic diffs",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_root_top_level_directories_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let expected = ["artifacts", "configs", "crates", "docker", "docs", "makefiles", "ops"];
+    let mut actual = fs::read_dir(ctx.repo_root)
+        .map_err(|err| CheckError::Failed(err.to_string()))?
+        .filter_map(Result::ok)
+        .filter(|e| e.path().is_dir())
+        .filter_map(|e| e.file_name().into_string().ok())
+        .filter(|name| !name.starts_with('.'))
+        .collect::<Vec<_>>();
+    actual.sort();
+    let expected_vec = expected.iter().map(|s| s.to_string()).collect::<Vec<_>>();
+    if actual == expected_vec {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "ROOT_TOP_LEVEL_DIRECTORIES_CONTRACT_MISMATCH",
+            format!("top-level visible directories mismatch: actual={actual:?} expected={expected_vec:?}"),
+            "keep only the canonical top-level directory set and move legacy roots into crates/ or ops/",
+            None,
+        )])
+    }
+}
+
 pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
