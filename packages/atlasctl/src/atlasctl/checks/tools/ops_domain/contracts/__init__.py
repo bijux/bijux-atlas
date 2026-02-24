@@ -8,7 +8,6 @@ import os
 import subprocess
 from pathlib import Path
 
-from .check_ops_manifests_schema import run as run_ops_manifests_schema_check
 from ....tools.ops_generated import check_ops_generated_not_tracked_unless_allowed
 from ....tools.ops_pins import (
     check_ops_pins_no_unpinned_versions,
@@ -69,9 +68,39 @@ def _load_ops_run_temp_approvals(repo_root: Path) -> tuple[list[dict[str, object
 
 
 def check_ops_manifests_schema(repo_root: Path) -> tuple[int, list[str]]:
-    del repo_root
-    code = run_ops_manifests_schema_check()
-    return code, []
+    from atlasctl.contracts.schema.validate import validate
+
+    manifests_root = repo_root / "ops" / "manifests"
+    errors: list[str] = []
+    if not manifests_root.exists():
+        return 0, []
+
+    files = sorted(
+        [
+            *manifests_root.rglob("*.json"),
+            *manifests_root.rglob("*.yaml"),
+            *manifests_root.rglob("*.yml"),
+        ]
+    )
+    if not files:
+        return 0, []
+    for path in files:
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            if path.suffix.lower() == ".json":
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            else:
+                try:
+                    import yaml  # type: ignore
+                except ModuleNotFoundError as exc:
+                    raise RuntimeError("PyYAML is required for yaml ops manifests") from exc
+                payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+            if not isinstance(payload, dict):
+                raise RuntimeError("manifest payload must be an object")
+            validate("atlasctl.ops.manifest.v1", payload)
+        except Exception as exc:
+            errors.append(f"{rel}: {exc}")
+    return (0 if not errors else 1), errors
 
 
 def check_ops_no_direct_script_entrypoints(repo_root: Path) -> tuple[int, list[str]]:
@@ -495,7 +524,7 @@ def check_ops_run_only_allowlisted_scripts(repo_root: Path) -> tuple[int, list[s
 def check_ops_run_non_executable_unless_allowlisted(repo_root: Path) -> tuple[int, list[str]]:
     run_dir = repo_root / "ops" / "run"
     if not run_dir.exists():
-        return 0, ["ops/run directory retired (no executable scripts present)"]
+        return 0, []
     approvals, approval_errors = _load_ops_run_temp_approvals(repo_root)
     executable_allowlist = {
         str(item.get("script", "")).removeprefix("ops/run/").strip()
@@ -741,10 +770,10 @@ def check_ops_all_check_scripts_registered(repo_root: Path) -> tuple[int, list[s
 
 
 CHECKS: tuple[CheckDef, ...] = (
-    CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files."),
-    CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots."),
-    CheckDef("ops.no_tracked_timestamps", "ops", "forbid tracked timestamped paths", 1000, check_tracked_timestamp_paths, fix_hint="Remove timestamped tracked paths."),
-    CheckDef("ops.committed_generated_hygiene", "ops", "validate deterministic committed generated assets", 1000, check_committed_generated_hygiene, fix_hint="Regenerate committed outputs deterministically."),
+    CheckDef("ops.no_tracked_generated", "ops", "forbid tracked files in generated ops dirs", 800, check_ops_generated_tracked, fix_hint="Untrack generated ops files.", effects=(CheckEffect.SUBPROCESS.value,)),
+    CheckDef("ops.generated_not_tracked_unless_allowed", "ops", "forbid tracked generated ops outputs unless explicitly allowlisted", 800, check_ops_generated_not_tracked_unless_allowed, fix_hint="Keep generated outputs untracked or move to committed generated roots.", effects=(CheckEffect.SUBPROCESS.value,)),
+    CheckDef("ops.no_tracked_timestamps", "ops", "forbid tracked timestamped paths", 1000, check_tracked_timestamp_paths, fix_hint="Remove timestamped tracked paths.", effects=(CheckEffect.SUBPROCESS.value,)),
+    CheckDef("ops.committed_generated_hygiene", "ops", "validate deterministic committed generated assets", 1000, check_committed_generated_hygiene, fix_hint="Regenerate committed outputs deterministically.", effects=(CheckEffect.SUBPROCESS.value,)),
     CheckDef("ops.manifests_schema", "ops", "validate ops manifests against atlas.ops.manifest.v1 schema", 1000, check_ops_manifests_schema, fix_hint="Fix ops/manifests/*.json|*.yaml to satisfy atlas.ops.manifest.v1."),
     CheckDef("ops.no_direct_script_entrypoints", "ops", "forbid direct ops script entrypoints in docs/workflows/makefiles", 1000, check_ops_no_direct_script_entrypoints, fix_hint="Use ./bin/atlasctl ops ... or make wrappers, not ops/**/*.sh paths."),
     CheckDef("ops.scripts_are_data_only", "ops", "enforce ops/manifests data-only file policy", 1000, check_ops_scripts_are_data_only, fix_hint="Keep ops/manifests to json/yaml data only."),
