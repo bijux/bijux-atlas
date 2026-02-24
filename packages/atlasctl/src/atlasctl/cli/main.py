@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 
 from .. import __version__, registry
-from ..checks.tools.repo_domain import layout
+from ..checks.tools import repo
 from ..cli.surface_registry import command_registry, register_domain_parser
 from ..core.context import RunContext
 from ..core.runtime.env import getenv, setdefault as env_setdefault, setenv
@@ -28,7 +28,7 @@ from .dispatch import dispatch_command
 from .help_formatter import format_public_help
 from .output import no_network_flag_expired, render_error, resolve_output_format
 
-DOMAIN_RUNNERS = {"registry": registry.run, "layout": layout.run}
+DOMAIN_RUNNERS = {"registry": registry.run, "layout": repo.layout.run}
 _PUBLIC_GROUPS: tuple[tuple[str, str], ...] = (
     ("docs", "documentation and docs contracts"),
     ("configs", "configuration validation and sync"),
