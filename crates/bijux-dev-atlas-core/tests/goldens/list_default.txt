@@ -8,14 +8,10 @@ checks_ops_artifacts_not_tracked	ops evidence paths stay empty in repository
 checks_ops_generated_readonly_markers	ops generated files keep readonly generator markers
 checks_ops_makefile_routes_dev_atlas	ops makefile routes through dev atlas command surface
 checks_ops_manifest_integrity	ops inventory manifests are valid json with required keys
-checks_ops_no_python_retired_runtime_refs	dev atlas crates do not reference removed python runtime
-checks_ops_no_retired_control_plane_invocations	ops owned surfaces avoid retired command invocations
-checks_ops_no_retired_runner_paths	dev atlas crates do not reference retired runner path conventions
-checks_ops_no_retired_tooling_refs	ops does not reference retired tooling paths
 checks_ops_no_scripts_areas_or_xtask_refs	ops owned surfaces avoid scripts areas and xtask references
 checks_ops_schema_presence	ops schema baseline is present
 checks_ops_surface_inventory	ops index inventories top-level surfaces
 checks_ops_surface_manifest	ops surface manifest consistency
 checks_ops_tree_contract	ops contract files are present
-checks_ops_workflow_routes_dev_atlas	atlas dev workflow avoids retired ops routes
+checks_ops_workflow_routes_dev_atlas	atlas dev workflow routes through ops command surface
 checks_repo_import_boundary	repo import boundary contracts

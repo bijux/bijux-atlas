@@ -9,10 +9,10 @@
   "counts": {
     "errors": 0,
     "failed": 1,
-    "passed": 20,
+    "passed": 16,
     "schema_version": 1,
     "skipped": 0,
-    "total": 21
+    "total": 17
   },
   "durations_ms": {
     "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
@@ -25,10 +25,6 @@
     "checks_ops_generated_readonly_markers": 0,
     "checks_ops_makefile_routes_dev_atlas": 0,
     "checks_ops_manifest_integrity": 0,
-    "checks_ops_no_python_retired_runtime_refs": 0,
-    "checks_ops_no_retired_control_plane_invocations": 0,
-    "checks_ops_no_retired_runner_paths": 0,
-    "checks_ops_no_retired_tooling_refs": 0,
     "checks_ops_no_scripts_areas_or_xtask_refs": 0,
     "checks_ops_schema_presence": 0,
     "checks_ops_surface_inventory": 0,
@@ -142,42 +138,6 @@
     {
       "duration_ms": 0,
       "evidence": [],
-      "id": "checks_ops_no_python_retired_runtime_refs",
-      "schema_version": 1,
-      "skip_reason": null,
-      "status": "pass",
-      "violations": []
-    },
-    {
-      "duration_ms": 0,
-      "evidence": [],
-      "id": "checks_ops_no_retired_control_plane_invocations",
-      "schema_version": 1,
-      "skip_reason": null,
-      "status": "pass",
-      "violations": []
-    },
-    {
-      "duration_ms": 0,
-      "evidence": [],
-      "id": "checks_ops_no_retired_runner_paths",
-      "schema_version": 1,
-      "skip_reason": null,
-      "status": "pass",
-      "violations": []
-    },
-    {
-      "duration_ms": 0,
-      "evidence": [],
-      "id": "checks_ops_no_retired_tooling_refs",
-      "schema_version": 1,
-      "skip_reason": null,
-      "status": "pass",
-      "violations": []
-    },
-    {
-      "duration_ms": 0,
-      "evidence": [],
       "id": "checks_ops_no_scripts_areas_or_xtask_refs",
       "schema_version": 1,
       "skip_reason": null,
@@ -250,10 +210,10 @@
   "summary": {
     "errors": 0,
     "failed": 1,
-    "passed": 20,
+    "passed": 16,
     "schema_version": 1,
     "skipped": 0,
-    "total": 21
+    "total": 17
   },
   "timings_ms": {
     "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
@@ -266,10 +226,6 @@
     "checks_ops_generated_readonly_markers": 0,
     "checks_ops_makefile_routes_dev_atlas": 0,
     "checks_ops_manifest_integrity": 0,
-    "checks_ops_no_python_retired_runtime_refs": 0,
-    "checks_ops_no_retired_control_plane_invocations": 0,
-    "checks_ops_no_retired_runner_paths": 0,
-    "checks_ops_no_retired_tooling_refs": 0,
     "checks_ops_no_scripts_areas_or_xtask_refs": 0,
     "checks_ops_schema_presence": 0,
     "checks_ops_surface_inventory": 0,

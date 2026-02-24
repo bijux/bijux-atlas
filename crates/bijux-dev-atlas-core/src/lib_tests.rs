@@ -104,10 +104,6 @@ fn suite_expansion_is_stable() {
             "checks_ops_generated_readonly_markers".to_string(),
             "checks_ops_makefile_routes_dev_atlas".to_string(),
             "checks_ops_manifest_integrity".to_string(),
-            "checks_ops_no_python_retired_runtime_refs".to_string(),
-            "checks_ops_no_retired_control_plane_invocations".to_string(),
-            "checks_ops_no_retired_runner_paths".to_string(),
-            "checks_ops_no_retired_tooling_refs".to_string(),
             "checks_ops_no_scripts_areas_or_xtask_refs".to_string(),
             "checks_ops_schema_presence".to_string(),
             "checks_ops_ssot_manifests_schema_versions".to_string(),
@@ -336,7 +332,7 @@ fn selector_by_suite_works() {
         },
     )
     .expect("selected");
-    assert_eq!(selected.len(), 15);
+    assert_eq!(selected.len(), 11);
     assert!(selected
         .iter()
         .any(|row| row.id.as_str() == "checks_ops_surface_manifest"));

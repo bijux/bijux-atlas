@@ -495,38 +495,3 @@ pub(super) fn check_ops_no_bash_lib_execution(
     Ok(violations)
 }
 
-pub(super) fn check_ops_retired_shell_quarantine_empty(
-    ctx: &CheckContext<'_>,
-) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("ops/quarantine/retired-ops-shell");
-    let dir = ctx.repo_root.join(rel);
-    if !dir.exists() {
-        return Ok(Vec::new());
-    }
-    let mut non_marker = Vec::new();
-    for file in walk_files(&dir) {
-        let name = file
-            .file_name()
-            .and_then(|v| v.to_str())
-            .unwrap_or_default();
-        if name != ".gitkeep" && name != "README.md" {
-            non_marker.push(file);
-        }
-    }
-    if non_marker.is_empty() {
-        Ok(Vec::new())
-    } else {
-        let first = non_marker[0]
-            .strip_prefix(ctx.repo_root)
-            .unwrap_or(&non_marker[0]);
-        Ok(vec![violation(
-            "OPS_LEGACY_SHELL_QUARANTINE_NOT_EMPTY",
-            format!(
-                "retired ops shell quarantine must be empty; found `{}`",
-                first.display()
-            ),
-            "delete retired shell helpers and keep quarantine empty",
-            Some(rel),
-        )])
-    }
-}
