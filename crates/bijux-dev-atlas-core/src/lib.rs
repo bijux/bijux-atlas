@@ -5,7 +5,6 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use bijux_dev_atlas_adapters::{Capabilities, Fs, ProcessRunner};
 use bijux_dev_atlas_model::{
     ArtifactsRoot, CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId,
     RunReport, RunSummary, Severity, SuiteId, Tag, Violation, Visibility,
@@ -17,7 +16,9 @@ mod check_runner;
 pub mod checks;
 pub mod logging;
 pub mod ops_inventory;
+pub mod ports;
 mod report_rendering;
+pub use ports::{Capabilities, Fs, ProcessRunner};
 
 pub const DEFAULT_REGISTRY_PATH: &str = "ops/atlas-dev/registry.toml";
 

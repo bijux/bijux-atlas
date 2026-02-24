@@ -1,7 +1,66 @@
 use super::*;
-use bijux_dev_atlas_adapters::{DeniedProcessRunner, RealFs};
 use std::fs;
+use std::path::{Path, PathBuf};
 use tempfile::TempDir;
+
+struct TestFs;
+
+impl Fs for TestFs {
+    fn read_text(&self, repo_root: &Path, path: &Path) -> Result<String, crate::ports::AdapterError> {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
+        fs::read_to_string(target).map_err(|err| crate::ports::AdapterError::Io {
+            op: "read_to_string",
+            path: repo_root.join(path),
+            detail: err.to_string(),
+        })
+    }
+
+    fn exists(&self, repo_root: &Path, path: &Path) -> bool {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
+        target.exists()
+    }
+
+    fn canonicalize(
+        &self,
+        repo_root: &Path,
+        path: &Path,
+    ) -> Result<PathBuf, crate::ports::AdapterError> {
+        let target = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            repo_root.join(path)
+        };
+        target.canonicalize().map_err(|err| crate::ports::AdapterError::Io {
+            op: "canonicalize",
+            path: target,
+            detail: err.to_string(),
+        })
+    }
+}
+
+struct DeniedProcessRunner;
+
+impl ProcessRunner for DeniedProcessRunner {
+    fn run(
+        &self,
+        program: &str,
+        _args: &[String],
+        _repo_root: &Path,
+    ) -> Result<i32, crate::ports::AdapterError> {
+        Err(crate::ports::AdapterError::EffectDenied {
+            effect: "subprocess",
+            detail: format!("attempted to execute `{program}`"),
+        })
+    }
+}
 
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -217,7 +276,7 @@ fn run_checks_produces_summary() {
     };
     let report = run_checks(
         &DeniedProcessRunner,
-        &RealFs,
+        &TestFs,
         &req,
         &Selectors::default(),
         &RunOptions::default(),
@@ -238,9 +297,9 @@ fn runner_results_are_stably_ordered_and_repeatable() {
     };
     let selectors = Selectors::default();
     let options = RunOptions::default();
-    let first = run_checks(&DeniedProcessRunner, &RealFs, &req, &selectors, &options)
+    let first = run_checks(&DeniedProcessRunner, &TestFs, &req, &selectors, &options)
         .expect("first report");
-    let second = run_checks(&DeniedProcessRunner, &RealFs, &req, &selectors, &options)
+    let second = run_checks(&DeniedProcessRunner, &TestFs, &req, &selectors, &options)
         .expect("second report");
     let first_ids = first
         .results
@@ -333,7 +392,7 @@ fn effect_denied_results_in_skip() {
     };
     let report = run_checks(
         &DeniedProcessRunner,
-        &RealFs,
+        &TestFs,
         &req,
         &Selectors {
             include_internal: true,
@@ -361,7 +420,7 @@ fn fail_fast_stops_after_first_failure() {
     };
     let report = run_checks(
         &DeniedProcessRunner,
-        &RealFs,
+        &TestFs,
         &req,
         &Selectors {
             include_internal: true,
@@ -390,7 +449,7 @@ fn deterministic_json_output() {
     };
     let a = run_checks(
         &DeniedProcessRunner,
-        &RealFs,
+        &TestFs,
         &req,
         &Selectors::default(),
         &RunOptions::default(),
@@ -398,7 +457,7 @@ fn deterministic_json_output() {
     .expect("report a");
     let b = run_checks(
         &DeniedProcessRunner,
-        &RealFs,
+        &TestFs,
         &req,
         &Selectors::default(),
         &RunOptions::default(),
