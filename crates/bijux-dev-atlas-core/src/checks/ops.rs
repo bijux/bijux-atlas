@@ -137,6 +137,10 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_crates_command_namespace_ownership_unique" => {
             Some(check_crates_command_namespace_ownership_unique)
         }
+        "checks_crates_plugin_conformance_binaries" => Some(check_crates_plugin_conformance_binaries),
+        "checks_root_artifacts_bin_binaries_executable_and_version_printable" => {
+            Some(check_artifacts_bin_binaries_executable_and_version_printable)
+        }
         _ => None,
     }
 }
@@ -203,6 +207,8 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev",
         "checks_crates_bijux_dev_atlas_not_umbrella_binary",
         "checks_crates_command_namespace_ownership_unique",
+        "checks_crates_plugin_conformance_binaries",
+        "checks_root_artifacts_bin_binaries_executable_and_version_printable",
     ]
     .into_iter()
     .map(str::to_string)

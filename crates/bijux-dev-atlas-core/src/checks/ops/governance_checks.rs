@@ -254,6 +254,108 @@ pub(super) fn check_make_no_atlasctl_string_references(
         "MAKE_ATLASCTL_REFERENCE_FOUND",
     )
 }
+
+pub(super) fn check_crates_plugin_conformance_binaries(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let commands = [
+        (
+            "bijux-dev-atlas",
+            vec![
+                "run".to_string(),
+                "-q".to_string(),
+                "-p".to_string(),
+                "bijux-dev-atlas".to_string(),
+                "--".to_string(),
+                "--bijux-plugin-metadata".to_string(),
+            ],
+        ),
+        (
+            "bijux-atlas-cli",
+            vec![
+                "run".to_string(),
+                "-q".to_string(),
+                "-p".to_string(),
+                "bijux-atlas-cli".to_string(),
+                "--".to_string(),
+                "--bijux-plugin-metadata".to_string(),
+            ],
+        ),
+    ];
+    let mut violations = Vec::new();
+    for (binary_name, args) in commands {
+        let exit = ctx
+            .adapters
+            .process
+            .run("cargo", &args, ctx.repo_root)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if exit != 0 {
+            violations.push(violation(
+                "PLUGIN_CONFORMANCE_SUBPROCESS_FAILED",
+                format!("failed to run plugin metadata handshake for `{binary_name}`"),
+                "ensure binary builds and supports --bijux-plugin-metadata JSON output",
+                None,
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_artifacts_bin_binaries_executable_and_version_printable(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let dir = ctx.repo_root.join("artifacts/bin");
+    if !dir.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    let Ok(entries) = fs::read_dir(&dir) else {
+        return Ok(vec![violation(
+            "ARTIFACTS_BIN_READ_FAILED",
+            format!("unable to read {}", dir.display()),
+            "ensure artifacts/bin is readable",
+            Some(Path::new("artifacts/bin")),
+        )]);
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_file() {
+            continue;
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mode = fs::metadata(&path)
+                .map_err(|err| CheckError::Failed(err.to_string()))?
+                .permissions()
+                .mode();
+            if mode & 0o111 == 0 {
+                violations.push(violation(
+                    "ARTIFACTS_BIN_NOT_EXECUTABLE",
+                    format!("binary is not executable: {}", path.display()),
+                    "chmod +x generated binaries in artifacts/bin",
+                    path.strip_prefix(ctx.repo_root).ok().map_or(Some(Path::new("artifacts/bin")), |p| Some(p)),
+                ));
+                continue;
+            }
+        }
+        let path_str = path.display().to_string();
+        let exit = ctx
+            .adapters
+            .process
+            .run(&path_str, &["--version".to_string()], ctx.repo_root)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if exit != 0 {
+            violations.push(violation(
+                "ARTIFACTS_BIN_VERSION_FAILED",
+                format!("binary did not print version successfully: {}", path.display()),
+                "ensure copied binaries support `--version` and remain runnable",
+                path.strip_prefix(ctx.repo_root).ok(),
+            ));
+        }
+    }
+    Ok(violations)
+}
 pub(super) fn check_workflows_no_direct_ops_script_execution(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

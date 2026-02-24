@@ -696,6 +696,28 @@ effects_required = ["fs_read"]
 budget_ms = 1200
 visibility = "internal"
 
+[[checks]]
+id = "checks_crates_plugin_conformance_binaries"
+domain = "crates"
+title = "runtime and dev binaries expose plugin metadata handshake command"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["subprocess"]
+budget_ms = 8000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_artifacts_bin_binaries_executable_and_version_printable"
+domain = "root"
+title = "artifacts bin binaries are executable and print version"
+docs = "crates/bijux-dev-atlas/docs/ARTIFACTS.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read", "subprocess"]
+budget_ms = 8000
+visibility = "internal"
+
 [[suites]]
 id = "all_fast"
 checks = []
