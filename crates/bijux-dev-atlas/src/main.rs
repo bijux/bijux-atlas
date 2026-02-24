@@ -688,6 +688,32 @@ pub(crate) fn run_check_doctor(
     Ok((rendered, exit))
 }
 
+pub(crate) fn run_check_registry_doctor(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let report = registry_doctor(&root);
+    let status = if report.errors.is_empty() { "ok" } else { "failed" };
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": status,
+        "repo_root": root.display().to_string(),
+        "errors": report.errors,
+    });
+    let rendered = match format {
+        FormatArg::Text => format!(
+            "status: {status}\nerrors: {}",
+            payload["errors"].as_array().map_or(0, Vec::len)
+        ),
+        FormatArg::Json => serde_json::to_string_pretty(&payload).map_err(|err| err.to_string())?,
+        FormatArg::Jsonl => serde_json::to_string(&payload).map_err(|err| err.to_string())?,
+    };
+    write_output_if_requested(out, &rendered)?;
+    Ok((rendered, if status == "ok" { 0 } else { 1 }))
+}
+
 pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
     let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;

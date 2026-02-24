@@ -628,6 +628,21 @@ fn check_doctor_supports_json_format() {
 }
 
 #[test]
+fn check_registry_doctor_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["check", "registry", "doctor", "--format", "json"])
+        .output()
+        .expect("check registry doctor json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_i64()), Some(1));
+    assert!(payload.get("status").and_then(|v| v.as_str()).is_some());
+    assert!(payload.get("errors").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
 fn check_run_supports_out_file() {
     let out = repo_root().join("artifacts/tests/check_run_output.json");
     if let Some(parent) = out.parent() {

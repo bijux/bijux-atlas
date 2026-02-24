@@ -101,6 +101,7 @@ mod tests {
     #[test]
     fn check_subcommands_parse() {
         let commands = [
+            vec!["bijux-dev-atlas", "check", "registry", "doctor"],
             vec!["bijux-dev-atlas", "check", "list"],
             vec![
                 "bijux-dev-atlas",
