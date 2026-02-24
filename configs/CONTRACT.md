@@ -16,4 +16,6 @@
 
 - Structured config files must be parseable (`json`, `yaml`, `yml`, `toml`).
 - Schema-backed configs belong under intent-based directories.
+- Control-plane schema registry lives under `ops/schemas/configs/` (data only).
+- `configs/` holds config inputs; `ops/schemas/configs/` holds validation schemas.
 - Legacy governance references such as `atlasctl` are forbidden in config docs and contracts.
