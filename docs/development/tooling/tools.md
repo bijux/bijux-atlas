@@ -6,13 +6,12 @@
 - `configs/`: source-of-truth configuration and policy inputs used by tooling and checks.
 - `ops/`: operational runbooks, scripts, schemas, and deployment/test harnesses.
 - `docs/`: human documentation and generated docs surfaces.
-- `makefiles/`: delegated task entrypoints that call `atlasctl`.
+- `makefiles/`: delegated task entrypoints for repository workflows and checks.
 - `crates/`: Rust runtime crates and contract implementations.
 - `artifacts/`: generated evidence/output roots (non-source runtime artifacts).
 - `docker/`: container build contracts and runtime image definitions.
-- `bin/`: stable executable entrypoint wrappers.
 
 ## Notes
 
-- `atlasctl` is the SSOT tooling entrypoint.
+- `bijux dev atlas` is the Rust control-plane entrypoint for dev governance; package CLIs live under `packages/`.
 - `make` targets are orchestration shims, not business-logic hosts.
