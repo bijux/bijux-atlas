@@ -5,20 +5,20 @@ on:
     paths:
       - 'Cargo.toml'
       - 'Cargo.lock'
-      - 'crates/bijux-atlas-dev/**'
-      - 'crates/bijux-atlas-dev-core/**'
-      - 'crates/bijux-atlas-dev-model/**'
-      - 'crates/bijux-atlas-dev-adapters/**'
+      - 'crates/bijux-dev-atlas/**'
+      - 'crates/bijux-dev-atlas-core/**'
+      - 'crates/bijux-dev-atlas-model/**'
+      - 'crates/bijux-dev-atlas-adapters/**'
       - 'crates/bijux-atlas-cli/**'
   push:
     branches: [main]
     paths:
       - 'Cargo.toml'
       - 'Cargo.lock'
-      - 'crates/bijux-atlas-dev/**'
-      - 'crates/bijux-atlas-dev-core/**'
-      - 'crates/bijux-atlas-dev-model/**'
-      - 'crates/bijux-atlas-dev-adapters/**'
+      - 'crates/bijux-dev-atlas/**'
+      - 'crates/bijux-dev-atlas-core/**'
+      - 'crates/bijux-dev-atlas-model/**'
+      - 'crates/bijux-dev-atlas-adapters/**'
       - 'crates/bijux-atlas-cli/**'
 
 jobs:
@@ -29,11 +29,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Build atlas dev crates
         run: |
-          cargo build -p bijux-atlas-dev-model -p bijux-atlas-dev-adapters -p bijux-atlas-dev-core -p bijux-atlas-dev
+          cargo build -p bijux-dev-atlas-model -p bijux-dev-atlas-adapters -p bijux-dev-atlas-core -p bijux-dev-atlas
       - name: Test atlas dev crates
         run: |
-          cargo test -p bijux-atlas-dev-model -p bijux-atlas-dev-adapters -p bijux-atlas-dev-core -p bijux-atlas-dev
+          cargo test -p bijux-dev-atlas-model -p bijux-dev-atlas-adapters -p bijux-dev-atlas-core -p bijux-dev-atlas
       - name: Smoke help and version
         run: |
-          cargo run -p bijux-atlas-dev -- --help >/dev/null
-          cargo run -p bijux-atlas-dev -- --version >/dev/null
+          cargo run -p bijux-dev-atlas -- --help >/dev/null
+          cargo run -p bijux-dev-atlas -- --version >/dev/null
