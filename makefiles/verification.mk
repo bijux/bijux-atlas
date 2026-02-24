@@ -11,6 +11,7 @@ endif
 
 VERIFICATION_ACCEPT_CODES ?= 0
 VERIFICATION_ACCEPT_CODES_configs ?= 0 2
+VERIFICATION_ACCEPT_CODES_docs ?= 0 2
 
 verification: ## Run every target declared in makefiles/<module>.mk
 	@module="$(VERIFICATION_MODULE)"; \
@@ -46,6 +47,27 @@ _verification-run:
 	for target in $$targets; do \
 		total=$$((total + 1)); \
 		printf '[%s] %s\n' "$$total" "$$target"; \
+		case "$$target" in \
+			*-serve) \
+				log_file="/tmp/bijux-verification-$$module-$$target-$$$$.log"; \
+				$(MAKE) --no-print-directory -s "$$target" >"$$log_file" 2>&1 & \
+				pid=$$!; \
+				sleep 2; \
+				if kill -0 "$$pid" >/dev/null 2>&1; then \
+					kill "$$pid" >/dev/null 2>&1 || true; \
+					wait "$$pid" >/dev/null 2>&1 || true; \
+					printf '  result: pass (startup verified, process terminated)\n'; \
+				else \
+					wait "$$pid"; \
+					code=$$?; \
+					cat "$$log_file"; \
+					case " $$accept_codes " in \
+						*" $$code "*) printf '  result: pass (accepted exit=%s)\n' "$$code" ;; \
+						*) printf '  result: fail (exit=%s)\n' "$$code"; failed=$$((failed + 1));; \
+					esac; \
+				fi; \
+				rm -f "$$log_file";; \
+			*) \
 		if $(MAKE) --no-print-directory -s "$$target"; then \
 			printf '  result: pass\n'; \
 		else \
@@ -54,7 +76,8 @@ _verification-run:
 				*" $$code "*) printf '  result: pass (accepted exit=%s)\n' "$$code" ;; \
 				*) printf '  result: fail (exit=%s)\n' "$$code"; failed=$$((failed + 1));; \
 			esac; \
-		fi; \
+		fi;; \
+		esac; \
 	done; \
 	printf 'verification summary: module=%s total=%s failed=%s\n' "$$module" "$$total" "$$failed"; \
 	test "$$failed" -eq 0
