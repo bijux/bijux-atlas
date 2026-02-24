@@ -536,13 +536,22 @@ pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), S
 
 pub(crate) fn run_check_doctor(
     repo_root: Option<PathBuf>,
+    include_internal: bool,
+    include_slow: bool,
     format: FormatArg,
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
     let registry_report = registry_doctor(&root);
     let inventory_errors = validate_ops_inventory(&root);
-    let selectors = parse_selectors(Some("doctor".to_string()), None, None, None, false, false)?;
+    let selectors = parse_selectors(
+        Some("doctor".to_string()),
+        None,
+        None,
+        None,
+        include_internal,
+        include_slow,
+    )?;
     let request = RunRequest {
         repo_root: root.clone(),
         domain: None,
