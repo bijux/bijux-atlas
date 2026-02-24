@@ -265,11 +265,14 @@ def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
     def _emit_live_row(result):  # noqa: ANN001
         nonlocal live_index
         live_index += 1
-        row_status_raw = str(getattr(result, "status", "fail")).lower()
+        status_obj = getattr(result, "status", "fail")
+        row_status_raw = str(getattr(status_obj, "value", status_obj)).lower()
         if row_status_raw == "pass":
             row_status = "PASS"
         elif row_status_raw == "skip":
             row_status = "SKIP"
+        elif row_status_raw == "error":
+            row_status = "ERROR"
         else:
             row_status = "FAIL"
         if row_status == "SKIP" and not bool(getattr(ns, "show_skips", False)):
