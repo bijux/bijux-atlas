@@ -1,1 +1,8 @@
+ops_artifacts_not_tracked
+ops_generated_readonly_markers
+ops_manifest_integrity
+ops_no_legacy_tooling_refs
+ops_schema_presence
+ops_surface_inventory
 ops_surface_manifest
+ops_tree_contract

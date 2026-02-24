@@ -9,7 +9,84 @@ domain = "ops"
 title = "ops surface manifest consistency"
 docs = "ops/CONTRACT.md"
 tags = ["ops", "fast"]
-suites = ["ops_fast", "all_fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_tree_contract"
+domain = "ops"
+title = "ops contract files are present"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_no_legacy_tooling_refs"
+domain = "ops"
+title = "ops does not reference legacy tooling paths"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_generated_readonly_markers"
+domain = "ops"
+title = "ops generated files keep readonly generator markers"
+docs = "ops/_generated.example/MIRROR_POLICY.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_schema_presence"
+domain = "ops"
+title = "ops schema baseline is present"
+docs = "ops/schema/README.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_manifest_integrity"
+domain = "ops"
+title = "ops inventory manifests are valid json with required keys"
+docs = "ops/inventory/README.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_surface_inventory"
+domain = "ops"
+title = "ops index inventories top-level surfaces"
+docs = "ops/INDEX.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "ops_artifacts_not_tracked"
+domain = "ops"
+title = "ops evidence paths stay empty in repository"
+docs = "ops/CONTRACT.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
 effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "public"
@@ -66,7 +143,16 @@ tags_any = ["fast"]
 
 [[suites]]
 id = "ops_fast"
-checks = ["ops_surface_manifest"]
+checks = [
+  "ops_surface_manifest",
+  "ops_tree_contract",
+  "ops_no_legacy_tooling_refs",
+  "ops_generated_readonly_markers",
+  "ops_schema_presence",
+  "ops_manifest_integrity",
+  "ops_surface_inventory",
+  "ops_artifacts_not_tracked",
+]
 domains = ["ops"]
 tags_any = ["fast"]
 
@@ -93,3 +179,18 @@ id = "make_fast"
 checks = []
 domains = ["make"]
 tags_any = ["fast"]
+
+[[suites]]
+id = "ci"
+checks = [
+  "ops_surface_manifest",
+  "ops_tree_contract",
+  "ops_no_legacy_tooling_refs",
+  "ops_generated_readonly_markers",
+  "ops_schema_presence",
+  "ops_manifest_integrity",
+  "ops_surface_inventory",
+  "ops_artifacts_not_tracked",
+]
+domains = []
+tags_any = []
