@@ -268,3 +268,41 @@ fn ops_render_kustomize_is_forbidden() {
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("kustomize render is not enabled"));
 }
+
+#[test]
+fn ops_install_apply_requires_allow_write() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "install",
+            "--apply",
+            "--allow-subprocess",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops install apply");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("install apply/kind requires --allow-write"));
+}
+
+#[test]
+fn ops_status_pods_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "status",
+            "--target",
+            "pods",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops status pods");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("status pods requires --allow-subprocess"));
+}
