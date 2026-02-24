@@ -182,6 +182,8 @@ jobs:
       - name: Control plane conformance checks
         run: |
           ./bin/atlasctl check doctor --json
+          ./bin/atlasctl check run --profile fast
+          ./bin/atlasctl check run --tag lint
           ./bin/atlasctl check run make
           ./bin/atlasctl check run contracts
           ./bin/atlasctl check run docs
