@@ -5,6 +5,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use bijux_dev_atlas_model::{CheckId, Severity, Violation};
+use serde_yaml::Value as YamlValue;
 
 use crate::{CheckContext, CheckError, CheckFn};
 
@@ -67,6 +68,15 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_dev_command_list_matches_contract" => {
             Some(check_docs_dev_command_list_matches_contract)
         }
+        "checks_docs_mkdocs_yaml_parseable" => Some(check_docs_mkdocs_yaml_parseable),
+        "checks_docs_mkdocs_nav_files_exist" => Some(check_docs_mkdocs_nav_files_exist),
+        "checks_docs_no_orphan_markdown_pages" => Some(check_docs_no_orphan_markdown_pages),
+        "checks_docs_no_duplicate_nav_titles" => Some(check_docs_no_duplicate_nav_titles),
+        "checks_docs_readme_index_contract_presence" => Some(check_docs_readme_index_contract_presence),
+        "checks_docs_file_naming_conventions" => Some(check_docs_file_naming_conventions),
+        "checks_docs_no_legacy_scripts_strings" => Some(check_docs_no_legacy_scripts_strings),
+        "checks_docs_command_surface_docs_exist" => Some(check_docs_command_surface_docs_exist),
+        "checks_docs_no_legacy_make_targets" => Some(check_docs_no_legacy_make_targets),
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
             Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
         }
@@ -896,6 +906,219 @@ fn check_crates_command_namespace_ownership_unique(
             Some(dev_rel),
         )])
     }
+}
+
+fn parse_mkdocs_yaml(ctx: &CheckContext<'_>) -> Result<YamlValue, CheckError> {
+    let rel = Path::new("mkdocs.yml");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(format!("failed to read {}: {err}", rel.display())))?;
+    serde_yaml::from_str(&text)
+        .map_err(|err| CheckError::Failed(format!("failed to parse {}: {err}", rel.display())))
+}
+
+fn collect_mkdocs_nav_refs(node: &YamlValue, out: &mut Vec<(String, String)>) {
+    match node {
+        YamlValue::Sequence(seq) => {
+            for item in seq {
+                collect_mkdocs_nav_refs(item, out);
+            }
+        }
+        YamlValue::Mapping(map) => {
+            for (k, v) in map {
+                let title = k.as_str().unwrap_or_default().to_string();
+                if let Some(path) = v.as_str() {
+                    out.push((title, path.to_string()));
+                } else {
+                    collect_mkdocs_nav_refs(v, out);
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
+fn mkdocs_nav_refs(ctx: &CheckContext<'_>) -> Result<Vec<(String, String)>, CheckError> {
+    let yaml = parse_mkdocs_yaml(ctx)?;
+    let nav = yaml
+        .get("nav")
+        .ok_or_else(|| CheckError::Failed("mkdocs.yml missing `nav`".to_string()))?;
+    let mut refs = Vec::new();
+    collect_mkdocs_nav_refs(nav, &mut refs);
+    refs.sort();
+    Ok(refs)
+}
+
+fn docs_markdown_paths(ctx: &CheckContext<'_>) -> Vec<PathBuf> {
+    let docs = ctx.repo_root.join("docs");
+    if !docs.exists() {
+        return Vec::new();
+    }
+    walk_files(&docs)
+        .into_iter()
+        .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+        .collect()
+}
+
+fn check_docs_mkdocs_yaml_parseable(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    match parse_mkdocs_yaml(ctx) {
+        Ok(_) => Ok(Vec::new()),
+        Err(CheckError::Failed(msg)) => Ok(vec![violation(
+            "DOCS_MKDOCS_PARSE_FAILED",
+            msg,
+            "fix mkdocs.yml syntax and required top-level keys",
+            Some(Path::new("mkdocs.yml")),
+        )]),
+    }
+}
+
+fn check_docs_mkdocs_nav_files_exist(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for (_title, rel) in mkdocs_nav_refs(ctx)? {
+        let path = ctx.repo_root.join("docs").join(&rel);
+        if !path.exists() {
+            violations.push(violation(
+                "DOCS_MKDOCS_NAV_PATH_MISSING",
+                format!("mkdocs nav references missing file `docs/{rel}`"),
+                "remove stale nav entry or restore the file",
+                Some(Path::new("mkdocs")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_no_orphan_markdown_pages(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let nav_set = mkdocs_nav_refs(ctx)?
+        .into_iter()
+        .map(|(_, p)| p)
+        .collect::<BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root.join("docs")).unwrap_or(&path);
+        let rels = rel.display().to_string();
+        if rels.starts_with("_assets/") || rels.starts_with("_drafts/") {
+            continue;
+        }
+        if !nav_set.contains(&rels) {
+            violations.push(violation(
+                "DOCS_ORPHAN_MARKDOWN_PAGE",
+                format!("markdown page is not referenced in mkdocs nav: `docs/{rels}`"),
+                "add the page to mkdocs nav or explicitly exclude it from docs surface",
+                Some(Path::new("docs")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_no_duplicate_nav_titles(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut counts = std::collections::BTreeMap::<String, usize>::new();
+    for (title, _) in mkdocs_nav_refs(ctx)? {
+        *counts.entry(title).or_default() += 1;
+    }
+    let mut violations = Vec::new();
+    for (title, count) in counts {
+        if count > 1 {
+            violations.push(violation(
+                "DOCS_DUPLICATE_NAV_TITLE",
+                format!("mkdocs nav title `{title}` is duplicated {count} times"),
+                "rename nav titles to be globally distinct",
+                Some(Path::new("mkdocs.yml")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_readme_index_contract_presence(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required = ["docs/INDEX.md", "docs/contracts/INDEX.md", "ops/CONTRACT.md", "ops/INDEX.md"];
+    let mut violations = Vec::new();
+    for rel in required {
+        let p = Path::new(rel);
+        if !ctx.repo_root.join(p).exists() {
+            violations.push(violation(
+                "DOCS_CONTRACT_PRESENCE_MISSING",
+                format!("required contract/index document missing `{rel}`"),
+                "restore required INDEX/CONTRACT documents for docs and ops areas",
+                Some(p),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_file_naming_conventions(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
+        let name = path.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if rel.to_string_lossy().contains(' ') {
+            violations.push(violation(
+                "DOCS_FILE_NAME_SPACES_FORBIDDEN",
+                format!("docs path contains spaces: `{}`", rel.display()),
+                "use intent-based lowercase names without spaces",
+                Some(rel),
+            ));
+            continue;
+        }
+        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase()) {
+            violations.push(violation(
+                "DOCS_FILE_NAME_CASE_FORBIDDEN",
+                format!("docs file should use lowercase naming: `{}`", rel.display()),
+                "rename docs file to lowercase intent-based name",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_no_legacy_scripts_strings(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for needle in ["scripts/areas", "xtask"] {
+        violations.extend(check_no_string_references_under(
+            ctx,
+            "docs",
+            needle,
+            "DOCS_LEGACY_SCRIPT_REFERENCE_FOUND",
+        )?);
+    }
+    Ok(violations)
+}
+
+fn check_docs_command_surface_docs_exist(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for rel in [
+        "docs/contracts/plugin/mode.md",
+        "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
+        "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
+    ] {
+        let p = Path::new(rel);
+        if !ctx.repo_root.join(p).exists() {
+            violations.push(violation(
+                "DOCS_COMMAND_SURFACE_DOC_MISSING",
+                format!("missing command surface document `{rel}`"),
+                "restore runtime and dev command surface contract docs",
+                Some(p),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn check_docs_no_legacy_make_targets(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for needle in ["make atlasctl", "atlasctl/internal", "atlasctl-check"] {
+        violations.extend(check_no_string_references_under(
+            ctx,
+            "docs",
+            needle,
+            "DOCS_LEGACY_MAKE_TARGET_REFERENCE_FOUND",
+        )?);
+    }
+    Ok(violations)
 }
 
 fn checks_ops_no_atlasctl_invocations(

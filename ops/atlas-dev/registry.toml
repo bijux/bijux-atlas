@@ -400,6 +400,105 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
+id = "checks_docs_mkdocs_yaml_parseable"
+domain = "docs"
+title = "mkdocs configuration exists and parses"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_mkdocs_nav_files_exist"
+domain = "docs"
+title = "mkdocs nav references existing doc files"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_orphan_markdown_pages"
+domain = "docs"
+title = "docs markdown pages are referenced by mkdocs nav"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 4000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_duplicate_nav_titles"
+domain = "docs"
+title = "mkdocs nav titles remain globally unique"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_readme_index_contract_presence"
+domain = "docs"
+title = "docs and ops index contract pages are present"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_file_naming_conventions"
+domain = "docs"
+title = "docs files follow deterministic naming conventions"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_legacy_scripts_strings"
+domain = "docs"
+title = "docs avoid legacy scripts and xtask references"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_command_surface_docs_exist"
+domain = "docs"
+title = "runtime and dev command surface docs are present"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_no_legacy_make_targets"
+domain = "docs"
+title = "docs avoid legacy atlasctl make target references"
+docs = "docs/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
 domain = "crates"
 title = "umbrella runtime tests reserve dev verb ownership"
