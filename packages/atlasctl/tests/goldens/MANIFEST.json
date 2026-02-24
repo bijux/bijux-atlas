@@ -5,6 +5,10 @@
       "path": "README.md"
     },
     {
+      "name": "check-explain-import-cycles.json.golden",
+      "path": "check/check-explain-import-cycles.json.golden"
+    },
+    {
       "name": "check-list-category-lint.json.golden",
       "path": "check/check-list-category-lint.json.golden"
     },
