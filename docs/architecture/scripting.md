@@ -43,7 +43,7 @@ Current implementation maps these through `atlasctl` namespaces (for example `op
 
 ## Toolchain contract
 
-- Python toolchain manager: `pip-tools` (SSOT in `python-toolchain.toml`).
+- Python toolchain manager: `pip-tools` (SSOT in `packages/python-toolchain.toml`).
 - Test runner: `pytest`.
 - Lint/format: `ruff`.
 - Type checker: `mypy`.

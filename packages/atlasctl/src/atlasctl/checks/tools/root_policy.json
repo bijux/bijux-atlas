@@ -17,7 +17,6 @@
   "allowed": [
     ".dockerignore",
     "rust-toolchain.toml",
-    "python-toolchain.toml",
     "mkdocs.yml",
     "docker",
     "artifacts",
