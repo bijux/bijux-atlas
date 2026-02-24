@@ -1855,7 +1855,7 @@ mod tests {
         for argv in commands {
             let cli = super::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                Some(super::Command::Ops { .. }) => {}
+                Some(super::cli::Command::Ops { .. }) => {}
                 _ => panic!("expected ops command"),
             }
         }
@@ -1877,7 +1877,7 @@ mod tests {
         for argv in commands {
             let cli = super::Cli::try_parse_from(argv).expect("parse");
             match cli.command {
-                Some(super::Command::Check { .. }) => {}
+                Some(super::cli::Command::Check { .. }) => {}
                 _ => panic!("expected check command"),
             }
         }
