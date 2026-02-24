@@ -52,6 +52,32 @@ def results_as_rows(results: list[CheckResult]) -> list[dict[str, Any]]:
     return rows
 
 
+def report_from_payload(payload: dict[str, object]) -> CheckRunReport:
+    raw_rows = payload.get("rows", [])
+    rows: list[CheckResult] = []
+    for row in raw_rows if isinstance(raw_rows, list) else []:
+        if not isinstance(row, dict):
+            continue
+        rows.append(
+            CheckResult(
+                id=str(row.get("id", "")),
+                title=str(row.get("title", row.get("id", ""))),
+                domain=str(row.get("domain", "")),
+                status=str(row.get("status", "")).lower(),
+                errors=tuple(
+                    str(row.get("detail", row.get("reason", ""))).strip()
+                    for _ in [0]
+                    if str(row.get("detail", row.get("reason", ""))).strip()
+                ),
+                metrics={"duration_ms": int(row.get("duration_ms", 0))},
+                result_code=str(row.get("result_code", "CHECK_GENERIC")),
+            )
+        )
+    summary = payload.get("summary", {})
+    timings = {"duration_ms": int(summary.get("duration_ms", 0))} if isinstance(summary, dict) else {}
+    return CheckRunReport(rows=tuple(rows), timings=timings)
+
+
 def build_report_payload(
     report: CheckRunReport,
     *,
@@ -197,7 +223,7 @@ def resolve_last_run_report(last_run: str) -> Path:
 
 
 def build_failures_payload(*, source: str, report: CheckRunReport, group: str = "") -> dict[str, Any]:
-    from .runner import extract_failures
+    from .engine import extract_failures
 
     failed_rows = extract_failures(report)
     if group:
@@ -223,7 +249,7 @@ def build_failures_payload(*, source: str, report: CheckRunReport, group: str = 
 
 
 def build_triage_slow_payload(*, source: str, report: CheckRunReport, top: int = 10) -> dict[str, Any]:
-    from .runner import top_n_slowest
+    from .engine import top_n_slowest
 
     ranked = top_n_slowest(report, top)
     return {
@@ -237,7 +263,7 @@ def build_triage_slow_payload(*, source: str, report: CheckRunReport, top: int =
 
 
 def build_triage_failures_payload(*, source: str, report: CheckRunReport) -> dict[str, Any]:
-    from .runner import group_failures_by_domain_area
+    from .engine import group_failures_by_domain_area
 
     rows = group_failures_by_domain_area(report)
     failed_count = sum(sum(areas.values()) for areas in rows.values())
@@ -254,6 +280,7 @@ def build_triage_failures_payload(*, source: str, report: CheckRunReport) -> dic
 
 __all__ = [
     "build_report_payload",
+    "report_from_payload",
     "render_explain",
     "resolve_last_run_report",
     "build_failures_payload",

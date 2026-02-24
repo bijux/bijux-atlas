@@ -11,7 +11,7 @@ from typing import Callable
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 from ...checks.registry import check_tags, get_check, list_checks
-from ...checks.report import build_report_payload, render_json, render_jsonl, render_text
+from ...checks.report import build_report_payload, render_json, render_jsonl, render_text, report_from_payload
 from ...checks.selectors import apply_selection_criteria, parse_selection_criteria
 from ...checks.registry import generate_registry_json
 from ...registry.suites import suite_manifest_specs, resolve_check_ids
@@ -26,7 +26,6 @@ from ...core.runtime.telemetry import emit_telemetry
 from ...core.exit_codes import ERR_USER
 from ...engine.runner import RunnerOptions, run_checks_payload
 from ...checks.effects import CheckEffect, normalize_effect
-from ...checks.runner import report_from_payload
 from .selection import split_group_values, split_marker_values
 
 NativeCheck = Callable[[Path], tuple[int, list[str]]]
