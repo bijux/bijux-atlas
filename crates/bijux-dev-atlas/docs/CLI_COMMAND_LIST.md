@@ -3,6 +3,7 @@ help
 ops
 docs
 configs
+build
 docker
 policies
 workflows

@@ -40,6 +40,7 @@ This section does not duplicate full command reference details from each tooling
 - [control plane](control-plane.md)
 - [control-plane migration rationale](control-plane-migration-rationale.md)
 - [command inventory](command-inventory.md)
+- [build outputs](build-outputs.md)
 - [ops command inventory](ops-command-inventory.md)
 - [atlasctl deletion PR checklist](atlasctl-deletion-pr-checklist.md)
 - [atlasctl migration map](atlasctl-migration-map.md)

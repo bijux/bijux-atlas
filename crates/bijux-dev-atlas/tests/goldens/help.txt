@@ -9,6 +9,7 @@ Commands:
   docs          
   configs       
   docker        
+  build         
   policies      
   workflows     
   gates         
@@ -20,6 +21,7 @@ Options:
       --verbose                              
       --debug                                
       --print-policies                       
+      --print-boundaries                     
       --bijux-plugin-metadata                
       --umbrella-version <UMBRELLA_VERSION>  
       --repo-root <REPO_ROOT>                
