@@ -49,6 +49,7 @@
         "toolchain": 1
       },
       "schemas": [
+        "ops/stack/stack.toml",
         "ops/stack/profiles.json",
         "ops/stack/version-manifest.json",
         "ops/inventory/toolchain.json",

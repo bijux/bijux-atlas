@@ -24,6 +24,7 @@ Commands:
   list-tools       
   verify-tools     
   list-actions     
+  plan             
   up               
   down             
   clean            

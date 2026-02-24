@@ -96,12 +96,24 @@ fn ops_cleanup_supports_json_format() {
 }
 
 #[test]
-fn ops_stack_status_supports_json_format() {
+fn ops_stack_status_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["ops", "stack", "status", "--format", "json"])
         .output()
         .expect("ops stack status");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("status k8s requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_stack_plan_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "stack", "plan", "--format", "json"])
+        .output()
+        .expect("ops stack plan");
     assert!(output.status.success());
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
