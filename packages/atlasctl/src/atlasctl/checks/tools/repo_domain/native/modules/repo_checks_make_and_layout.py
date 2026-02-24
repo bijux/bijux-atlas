@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import json
 import os
 import re
@@ -402,12 +403,29 @@ def check_json_output_deterministic_policy(repo_root: Path) -> tuple[int, list[s
         if "/tests/" in rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        for idx, line in enumerate(text.splitlines(), start=1):
-            if "json.dumps(" not in line:
+        if "json.dumps(" not in text:
+            continue
+        try:
+            tree = ast.parse(text, filename=rel)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
                 continue
-            if "sort_keys=True" in line:
+            func = node.func
+            if not isinstance(func, ast.Attribute):
                 continue
-            entry = f"{rel}:{idx}"
+            if func.attr != "dumps":
+                continue
+            if not isinstance(func.value, ast.Name) or func.value.id != "json":
+                continue
+            has_sort_keys = any(
+                kw.arg == "sort_keys" and isinstance(kw.value, ast.Constant) and kw.value.value is True
+                for kw in node.keywords
+            )
+            if has_sort_keys:
+                continue
+            entry = f"{rel}:{getattr(node, 'lineno', 1)}"
             if entry in allow:
                 continue
             errors.append(f"{entry}: json.dumps must specify sort_keys=True for deterministic JSON output")
