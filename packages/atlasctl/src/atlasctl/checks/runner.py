@@ -11,8 +11,9 @@ from .engine import (
 )
 from pathlib import Path
 
-from .model import CheckContext, CheckResult, CheckRunReport, CheckSelector
+from .model import CheckContext, CheckRunReport, CheckSelector
 from .policy import Capabilities
+from .report import report_from_payload
 
 
 def run_checks(
@@ -31,33 +32,6 @@ def run_checks(
         budget_profile=budget_profile,
         capabilities=capabilities,
     )
-
-
-def report_from_payload(payload: dict[str, object]) -> CheckRunReport:
-    raw_rows = payload.get("rows", [])
-    rows: list[CheckResult] = []
-    for row in raw_rows if isinstance(raw_rows, list) else []:
-        if not isinstance(row, dict):
-            continue
-        rows.append(
-            CheckResult(
-                id=str(row.get("id", "")),
-                title=str(row.get("title", row.get("id", ""))),
-                domain=str(row.get("domain", "")),
-                status=str(row.get("status", "")).lower(),
-                errors=tuple(
-                    str(row.get("detail", row.get("reason", ""))).strip()
-                    for _ in [0]
-                    if str(row.get("detail", row.get("reason", ""))).strip()
-                ),
-                metrics={"duration_ms": int(row.get("duration_ms", 0))},
-                result_code=str(row.get("result_code", "CHECK_GENERIC")),
-            )
-        )
-    summary = payload.get("summary", {})
-    timings = {"duration_ms": int(summary.get("duration_ms", 0))} if isinstance(summary, dict) else {}
-    return CheckRunReport(rows=tuple(rows), timings=timings)
-
 
 __all__ = [
     "BudgetProfile",
