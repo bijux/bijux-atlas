@@ -27,7 +27,7 @@ List and maintain links to section pages in this directory.
 - [Make Targets](make-targets.md)
 - [Scripts Index](scripts.md)
 - [Scripts Governance](scripts.md)
-- [atlasctl Tooling](tooling/atlasctl.md)
+- [control-plane Tooling](tooling/control-plane.md)
 - [Python Version Policy](tooling/python-version-policy.md)
 - [Scripts Air-Gapped Mode](tooling/scripts-air-gapped.md)
 - [Control-Plane Migration Completion Checklist](tooling/scripts-migration-complete-checklist.md)

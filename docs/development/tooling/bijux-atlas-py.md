@@ -30,5 +30,5 @@ Roadmap and non-goals for `bijux-atlas-py`, a future user-facing Python library.
 
 ## See also
 
-- [atlasctl Tooling](atlasctl.md)
+- [control plane](control-plane.md)
 - [ADR-0006 atlas-py vs scripts boundary](../../adrs/ADR-0006-atlas-py-vs-scripts-boundary.md)

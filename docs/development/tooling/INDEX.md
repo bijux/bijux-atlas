@@ -37,7 +37,10 @@ This section does not duplicate full command reference details from each tooling
 
 ## Pages
 
-- [atlasctl](atlasctl.md)
+- [control plane](control-plane.md)
+- [control-plane migration rationale](control-plane-migration-rationale.md)
+- [command inventory](command-inventory.md)
+- [ops command inventory](ops-command-inventory.md)
 - [atlasctl migration map](atlasctl-migration-map.md)
 - [bijux-atlas-py roadmap](bijux-atlas-py.md)
 - [Python version policy](python-version-policy.md)
