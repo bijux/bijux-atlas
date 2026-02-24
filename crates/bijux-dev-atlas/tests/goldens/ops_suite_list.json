@@ -1,0 +1,23 @@
+{
+  "rows": [
+    {
+      "suite": "e2e"
+    },
+    {
+      "suite": "k8s"
+    },
+    {
+      "suite": "load"
+    },
+    {
+      "suite": "obs"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "errors": 0,
+    "total": 4,
+    "warnings": 0
+  },
+  "text": "e2e\nk8s\nload\nobs"
+}
