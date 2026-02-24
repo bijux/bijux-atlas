@@ -13,6 +13,7 @@ include makefiles/build.mk
 include makefiles/ci.mk
 include makefiles/dev.mk
 include makefiles/env.mk
+include makefiles/gates.mk
 include makefiles/verification.mk
 
 CURATED_TARGETS := \
@@ -21,6 +22,7 @@ CURATED_TARGETS := \
 	dev-doctor dev-ci dev-check-ci \
 	build build-release build-ci build-meta dist dist-verify clean-build clean-dist build-doctor \
 	check check-gates check-list gates \
+	gate-10 gate-20 \
 	ci ci-fast ci-pr ci-nightly ci-docs \
 	lanes verify \
 	lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs \
@@ -108,4 +110,4 @@ make-gate-no-legacy-cli-refs: ## Fail if legacy Python control-plane token appea
 
 make-gate-no-legacy-cli-shim: ## Fail if legacy root control-plane shim exists
 	@legacy_cli_path=bin/atlas''ctl; test ! -e "$$legacy_cli_path"
-.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates clean verify lanes lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
+.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates gate-10 gate-20 clean verify lanes lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
