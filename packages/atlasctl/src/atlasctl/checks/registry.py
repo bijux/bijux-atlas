@@ -52,7 +52,13 @@ class Registry:
         errors: list[str] = []
         seen: set[str] = set()
         for row in self.records:
-            cid = str(CheckId.parse(row.id))
+            raw_id = row.id.strip()
+            if raw_id.startswith("checks_"):
+                cid = str(CheckId.parse(raw_id))
+            else:
+                # Legacy dotted ids are tolerated during migration; dedicated
+                # canonical-id checks enforce long-term cleanup.
+                cid = raw_id
             if cid in seen:
                 errors.append(f"duplicate check id: {cid}")
             seen.add(cid)
