@@ -223,6 +223,27 @@ mod tests {
     }
 
     #[test]
+    fn policies_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "policies", "print"],
+            vec![
+                "bijux-dev-atlas",
+                "policies",
+                "validate",
+                "--format",
+                "json",
+            ],
+        ];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Policies { .. }) => {}
+                _ => panic!("expected policies command"),
+            }
+        }
+    }
+
+    #[test]
     fn workflows_subcommands_parse() {
         let commands = [vec!["bijux-dev-atlas", "workflows", "validate"]];
         for argv in commands {

@@ -710,3 +710,18 @@ fn gates_list_supports_json_format() {
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
 }
+
+#[test]
+fn policies_validate_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["policies", "validate", "--format", "json"])
+        .output()
+        .expect("policies validate json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_i64()), Some(1));
+    assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
+    assert!(payload.get("capabilities").and_then(|v| v.as_object()).is_some());
+}
