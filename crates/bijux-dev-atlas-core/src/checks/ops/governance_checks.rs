@@ -155,7 +155,7 @@ pub(super) fn check_root_packages_atlasctl_absent(
         Ok(vec![Violation {
             code: "ROOT_PACKAGES_ATLASCTL_STILL_PRESENT".to_string(),
             message: "legacy package-tree atlasctl directory still exists".to_string(),
-            hint: Some("remove packages/atlasctl after migration closure".to_string()),
+            hint: Some("remove the legacy atlasctl package tree after migration closure".to_string()),
             path: Some(rel.display().to_string()),
             line: None,
             severity: Severity::Warn,
