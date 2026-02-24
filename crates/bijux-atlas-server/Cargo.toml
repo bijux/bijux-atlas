@@ -64,6 +64,10 @@ harness = false
 name = "gene_lookup_p99"
 harness = false
 
+[[bench]]
+name = "query_validate"
+harness = false
+
 [lib]
 path = "src/lib.rs"
 

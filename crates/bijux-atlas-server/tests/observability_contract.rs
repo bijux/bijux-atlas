@@ -62,6 +62,40 @@ async fn send_raw(addr: std::net::SocketAddr, path: &str) -> (u16, String, Strin
     (status, head.to_string(), body.to_string())
 }
 
+async fn send_raw_with_headers(
+    addr: std::net::SocketAddr,
+    path: &str,
+    headers: &[(&str, &str)],
+) -> (u16, String, String) {
+    let mut stream = tokio::net::TcpStream::connect(addr)
+        .await
+        .expect("connect server");
+    let mut req = format!("GET {path} HTTP/1.1\r\nHost: {addr}\r\nConnection: close\r\n");
+    for (name, value) in headers {
+        req.push_str(&format!("{name}: {value}\r\n"));
+    }
+    req.push_str("\r\n");
+    stream
+        .write_all(req.as_bytes())
+        .await
+        .expect("write request");
+    let mut response = String::new();
+    stream
+        .read_to_string(&mut response)
+        .await
+        .expect("read response");
+    let (head, body) = response
+        .split_once("\r\n\r\n")
+        .expect("http response must have separator");
+    let status = head
+        .lines()
+        .next()
+        .and_then(|line| line.split_whitespace().nth(1))
+        .and_then(|s| s.parse::<u16>().ok())
+        .expect("http status");
+    (status, head.to_string(), body.to_string())
+}
+
 #[tokio::test]
 async fn metrics_endpoint_matches_metrics_contract() {
     let store = Arc::new(FakeStore::default());
@@ -258,6 +292,43 @@ async fn request_id_header_is_present_across_core_api_routes() {
             "missing x-request-id for {path}: {headers}"
         );
     }
+}
+
+#[tokio::test]
+async fn request_tracing_preserves_explicit_request_id() {
+    let store = Arc::new(FakeStore::default());
+    let tmp = tempdir().expect("tempdir");
+    let mgr = DatasetCacheManager::new(
+        DatasetCacheConfig {
+            disk_root: tmp.path().to_path_buf(),
+            ..Default::default()
+        },
+        store,
+    );
+    let app = build_router(AppState::new(mgr));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind listener");
+    let addr = listener.local_addr().expect("local addr");
+    tokio::spawn(async move { axum::serve(listener, app).await.expect("serve app") });
+
+    let (status, headers, _body) = send_raw_with_headers(
+        addr,
+        "/healthz",
+        &[
+            ("x-request-id", "req-client-1"),
+            ("x-correlation-id", "corr-client-1"),
+            ("x-run-id", "run-client-1"),
+        ],
+    )
+    .await;
+    assert_eq!(status, 200);
+    assert!(
+        headers
+            .to_ascii_lowercase()
+            .contains("x-request-id: req-client-1"),
+        "server must preserve explicit x-request-id: {headers}"
+    );
 }
 
 #[tokio::test]
