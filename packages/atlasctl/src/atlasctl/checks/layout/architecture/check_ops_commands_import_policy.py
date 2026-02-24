@@ -11,19 +11,19 @@ FORBIDDEN_PREFIXES = ("atlasctl.checks.layout", "atlasctl.checks.domains.policie
 TEMP_ALLOWED_IMPORTS: dict[str, tuple[str, ...]] = {
     # Transitional shim modules still wrapping atlasctl-native ops checks.
     "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_abuse_scenarios_required.py": (
-        "atlasctl.checks.domains.ops.contracts",
+        "atlasctl.checks.tools.ops_domain.contracts",
     ),
     "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_perf_baselines.py": (
-        "atlasctl.checks.domains.ops.contracts",
+        "atlasctl.checks.tools.ops_domain.contracts",
     ),
     "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_pinned_queries_lock.py": (
-        "atlasctl.checks.domains.ops.contracts",
+        "atlasctl.checks.tools.ops_domain.contracts",
     ),
     "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_runbook_suite_names.py": (
-        "atlasctl.checks.domains.ops.contracts",
+        "atlasctl.checks.tools.ops_domain.contracts",
     ),
     "packages/atlasctl/src/atlasctl/commands/ops/load/contracts/validate_suite_manifest.py": (
-        "atlasctl.checks.domains.ops.contracts",
+        "atlasctl.checks.tools.ops_domain.contracts",
     ),
 }
 
