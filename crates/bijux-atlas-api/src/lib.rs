@@ -2,11 +2,6 @@
 
 use bijux_atlas_model::{DatasetId, LATEST_ALIAS_POLICY, NO_IMPLICIT_DEFAULT_DATASET_POLICY};
 
-#[cfg(feature = "allow-raw-genome-io")]
-compile_error!(
-    "Feature `allow-raw-genome-io` is forbidden in API layer: raw GFF3/FASTA reads are disallowed"
-);
-
 pub const CRATE_NAME: &str = "bijux-atlas-api";
 pub const API_POLICY_LATEST_ALIAS: &str = LATEST_ALIAS_POLICY;
 pub const API_POLICY_NO_IMPLICIT_DEFAULT_DATASET: &str = NO_IMPLICIT_DEFAULT_DATASET_POLICY;
