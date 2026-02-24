@@ -498,6 +498,39 @@
     },
     {
       "area": "internal",
+      "callable": "check_internal_domains_flat",
+      "category": "check",
+      "description": "enforce flat checks domains tree",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Flatten checks/domains to top-level modules only.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_domains_flat",
+      "intent": "enforce flat checks domains tree",
+      "legacy_id": "checks.internal_domains_flat",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
       "callable": "check_internal_domains_flat_modules_only",
       "category": "check",
       "description": "enforce flat modules under checks/domains",
@@ -564,6 +597,72 @@
     },
     {
       "area": "internal",
+      "callable": "check_internal_no_checks_logic_in_commands",
+      "category": "check",
+      "description": "forbid commands from importing checks domain implementations directly",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Use checks registry/runner surface from commands.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_checks_logic_in_commands",
+      "intent": "forbid commands from importing checks domain implementations directly",
+      "legacy_id": "checks.internal_no_checks_logic_in_commands",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
+      "callable": "check_internal_no_command_logic_in_checks",
+      "category": "check",
+      "description": "forbid command-layer imports inside checks modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep checks modules independent from commands imports.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_command_logic_in_checks",
+      "intent": "forbid command-layer imports inside checks modules",
+      "legacy_id": "checks.internal_no_command_logic_in_checks",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
       "callable": "check_internal_no_duplicate_engines",
       "category": "check",
       "description": "enforce single canonical checks engine modules",
@@ -591,6 +690,39 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
+      "callable": "check_internal_no_file_per_check_explosion",
+      "category": "check",
+      "description": "enforce python file-count budget per checks directory",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Group per-check files into intent modules and keep per-directory python file count below budget.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_file_per_check_explosion",
+      "intent": "enforce python file-count budget per checks directory",
+      "legacy_id": "checks.internal_no_file_per_check_explosion",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 600,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -630,6 +762,39 @@
     },
     {
       "area": "internal",
+      "callable": "check_internal_no_layout_repo_registry_dirs",
+      "category": "check",
+      "description": "forbid checks layout/repo/registry legacy trees",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Remove legacy checks/layout, checks/repo, and checks/registry package trees after migration.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_no_layout_repo_registry_dirs",
+      "intent": "forbid checks layout/repo/registry legacy trees",
+      "legacy_id": "checks.internal_no_layout_repo_registry_dirs",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
       "callable": "check_internal_no_registry_toml_reads",
       "category": "check",
       "description": "forbid runtime reads of REGISTRY.toml",
@@ -649,6 +814,72 @@
       "id": "checks_checks_internal_no_registry_toml_reads",
       "intent": "forbid runtime reads of REGISTRY.toml",
       "legacy_id": "checks.internal_no_registry_toml_reads",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
+      "callable": "check_internal_registry_ssot_only",
+      "category": "check",
+      "description": "isolate legacy registry bridge usage to SSOT bridge modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Route registry access through checks.registry and confine registry_legacy imports to bridge modules.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_registry_ssot_only",
+      "intent": "isolate legacy registry bridge usage to SSOT bridge modules",
+      "legacy_id": "checks.internal_registry_ssot_only",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "internal",
+      "callable": "check_internal_root_budget",
+      "category": "check",
+      "description": "enforce checks root entry budget alias contract",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Reduce checks root entries to budget.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_internal_root_budget",
+      "intent": "enforce checks root entry budget alias contract",
+      "legacy_id": "checks.internal_root_budget",
       "module": "atlasctl.checks.domains.internal",
       "owner": "platform",
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",

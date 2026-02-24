@@ -57,8 +57,8 @@ def test_forbidden_import_check_passes_for_runtime_imports(tmp_path: Path) -> No
 
 
 def test_registry_import_hygiene_blocks_heavy_imports(tmp_path: Path) -> None:
-    registry_root = tmp_path / "packages/atlasctl/src/atlasctl/checks/registry"
-    _write(registry_root / "catalog.py", "import pandas as pd\n")
+    registry_file = tmp_path / "packages/atlasctl/src/atlasctl/checks/registry.py"
+    _write(registry_file, "import pandas as pd\n")
 
     code, errors = check_registry_import_hygiene(tmp_path)
     assert code == 1
