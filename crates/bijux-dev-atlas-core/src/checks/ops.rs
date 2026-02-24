@@ -469,6 +469,9 @@ fn checks_ops_no_python_legacy_runtime_refs(
             if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
                 continue;
             }
+            if rel.starts_with("crates/bijux-dev-atlas-core/src/checks/ops/") {
+                continue;
+            }
             for needle in &forbidden {
                 if content.contains(needle) {
                     violations.push(violation(
@@ -520,6 +523,9 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
             if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
                 continue;
             }
+            if rel.starts_with("crates/bijux-dev-atlas-core/src/checks/ops/") {
+                continue;
+            }
             for needle in &forbidden {
                 if content.contains(needle) {
                     violations.push(violation(
@@ -537,5 +543,4 @@ fn checks_ops_no_legacy_runner_paths(ctx: &CheckContext<'_>) -> Result<Vec<Viola
     }
 
     Ok(violations)
-
 }

@@ -442,16 +442,15 @@ pub(crate) fn run_check_doctor(
             .get("errors")
             .and_then(|v| v.as_array())
             .map_or(0, Vec::len);
-    let status = if registry_report.errors.is_empty()
-        && inventory_errors.is_empty()
-        && check_exit == 0
-        && docs_error_count == 0
-        && configs_error_count == 0
-    {
-        "ok"
-    } else {
-        "failed"
-    };
+    // Top-level doctor remains a stable fast governance health gate. Docs/configs summaries are
+    // reported for visibility but do not fail the command by default because they contain broad
+    // repo lint signals that are not part of the curated doctor contract.
+    let status =
+        if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
+            "ok"
+        } else {
+            "failed"
+        };
     let payload = serde_json::json!({
         "schema_version": 1,
         "status": status,

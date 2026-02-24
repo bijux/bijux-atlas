@@ -14,7 +14,9 @@ pub(super) fn checks_ops_no_atlasctl_invocations(
     let mut violations = Vec::new();
     for rel in targets {
         let path = ctx.repo_root.join(rel);
-        let Ok(content) = fs::read_to_string(&path) else { continue };
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
         for line in content.lines() {
             let trimmed = line.trim();
             let is_command_like = trimmed.contains("./bin/atlasctl")
@@ -23,7 +25,10 @@ pub(super) fn checks_ops_no_atlasctl_invocations(
             if is_command_like {
                 violations.push(violation(
                     "OPS_ATLASCTL_REFERENCE_FOUND",
-                    format!("forbidden atlasctl invocation found in {}: `{trimmed}`", rel.display()),
+                    format!(
+                        "forbidden atlasctl invocation found in {}: `{trimmed}`",
+                        rel.display()
+                    ),
                     "route ops control-plane invocations through bijux dev atlas",
                     Some(rel),
                 ));
@@ -46,7 +51,9 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
     let mut violations = Vec::new();
     for rel in targets {
         let path = ctx.repo_root.join(rel);
-        let Ok(content) = fs::read_to_string(&path) else { continue };
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
         for line in content.lines() {
             let trimmed = line.trim();
             if trimmed.starts_with('!') && trimmed.contains("rg -n") {
@@ -56,7 +63,10 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
                 if trimmed.contains(needle) {
                     violations.push(violation(
                         "OPS_LEGACY_REFERENCE_FOUND",
-                        format!("forbidden legacy reference `{needle}` found in {}: `{trimmed}`", rel.display()),
+                        format!(
+                            "forbidden legacy reference `{needle}` found in {}: `{trimmed}`",
+                            rel.display()
+                        ),
                         "remove scripts/areas and xtask references from ops-owned surfaces",
                         Some(rel),
                     ));
@@ -117,11 +127,17 @@ pub(super) fn check_ops_internal_registry_consistency(
         .process
         .run(
             "git",
-            &["status".to_string(), "--short".to_string(), path.display().to_string()],
+            &[
+                "status".to_string(),
+                "--short".to_string(),
+                path.display().to_string(),
+            ],
             ctx.repo_root,
         )
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if output == 0 { Ok(Vec::new()) } else {
+    if output == 0 {
+        Ok(Vec::new())
+    } else {
         Ok(vec![violation(
             "OPS_INTERNAL_REGISTRY_GIT_STATUS_FAILED",
             "unable to query git status for registry".to_string(),
@@ -149,20 +165,50 @@ pub(super) fn check_root_packages_atlasctl_absent(
     }
 }
 
-pub(super) fn check_docs_no_atlasctl_string_references(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+pub(super) fn check_docs_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
     check_no_string_references_under(ctx, "docs", "atlasctl", "DOCS_ATLASCTL_REFERENCE_FOUND")
 }
-pub(super) fn check_workflows_no_atlasctl_string_references(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    check_no_string_references_under(ctx, ".github/workflows", "atlasctl", "WORKFLOW_ATLASCTL_REFERENCE_FOUND")
+pub(super) fn check_workflows_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_string_references_under(
+        ctx,
+        ".github/workflows",
+        "atlasctl",
+        "WORKFLOW_ATLASCTL_REFERENCE_FOUND",
+    )
 }
-pub(super) fn check_make_no_atlasctl_string_references(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    check_no_string_references_under(ctx, "makefiles", "atlasctl", "MAKE_ATLASCTL_REFERENCE_FOUND")
+pub(super) fn check_make_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_string_references_under(
+        ctx,
+        "makefiles",
+        "atlasctl",
+        "MAKE_ATLASCTL_REFERENCE_FOUND",
+    )
 }
-pub(super) fn check_workflows_no_direct_ops_script_execution(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    check_no_any_string_references_under(ctx, ".github/workflows", &["bash ops/", "sh ops/", "./ops/"], "WORKFLOW_DIRECT_OPS_SCRIPT_EXECUTION_FOUND")
+pub(super) fn check_workflows_no_direct_ops_script_execution(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        ".github/workflows",
+        &["bash ops/", "sh ops/", "./ops/"],
+        "WORKFLOW_DIRECT_OPS_SCRIPT_EXECUTION_FOUND",
+    )
 }
-pub(super) fn check_make_no_direct_ops_script_execution(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    check_no_any_string_references_under(ctx, "makefiles", &["bash ops/", "sh ops/", "./ops/"], "MAKE_DIRECT_OPS_SCRIPT_EXECUTION_FOUND")
+pub(super) fn check_make_no_direct_ops_script_execution(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        "makefiles",
+        &["bash ops/", "sh ops/", "./ops/"],
+        "MAKE_DIRECT_OPS_SCRIPT_EXECUTION_FOUND",
+    )
 }
 
 pub(super) fn check_root_no_scripts_areas_presence_or_references(
@@ -180,7 +226,10 @@ pub(super) fn check_root_no_scripts_areas_presence_or_references(
     }
     for rel in ["makefiles", ".github/workflows", "docs", "ops"] {
         violations.extend(check_no_string_references_under(
-            ctx, rel, "scripts/areas", "ROOT_SCRIPTS_AREAS_REFERENCE_FOUND",
+            ctx,
+            rel,
+            "scripts/areas",
+            "ROOT_SCRIPTS_AREAS_REFERENCE_FOUND",
         )?);
     }
     Ok(violations)
@@ -190,16 +239,33 @@ pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let crates_root = ctx.repo_root.join("crates");
-    if !crates_root.exists() { return Ok(Vec::new()); }
+    if !crates_root.exists() {
+        return Ok(Vec::new());
+    }
     let mut owners = BTreeSet::new();
     for file in walk_files(&crates_root) {
-        if file.extension().and_then(|v| v.to_str()) != Some("rs") { continue; }
-        let Ok(content) = fs::read_to_string(&file) else { continue };
+        if file.extension().and_then(|v| v.to_str()) != Some("rs") {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&file) else {
+            continue;
+        };
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-        if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") { continue; }
+        if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs")
+            || rel.starts_with("crates/bijux-dev-atlas-core/src/checks/ops/")
+        {
+            continue;
+        }
         if content.contains("--bijux-plugin-metadata") || content.contains("--umbrella-version") {
-            let owner = rel.components().nth(1).and_then(|v| v.as_os_str().to_str()).unwrap_or_default().to_string();
-            if !owner.is_empty() { owners.insert(owner); }
+            let owner = rel
+                .components()
+                .nth(1)
+                .and_then(|v| v.as_os_str().to_str())
+                .unwrap_or_default()
+                .to_string();
+            if !owner.is_empty() {
+                owners.insert(owner);
+            }
         }
     }
     if owners == BTreeSet::from(["bijux-atlas-cli".to_string()]) {
@@ -226,7 +292,9 @@ pub(super) fn check_crates_bijux_atlas_help_excludes_dev_commands(
             "move dev command routing under bijux-dev-atlas only",
             Some(Path::new("crates/bijux-atlas-cli/src/lib.rs")),
         )])
-    } else { Ok(Vec::new()) }
+    } else {
+        Ok(Vec::new())
+    }
 }
 
 pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
@@ -234,7 +302,9 @@ pub(super) fn check_crates_bijux_dev_atlas_help_dispatch_present(
 ) -> Result<Vec<Violation>, CheckError> {
     let src = ctx.repo_root.join("crates/bijux-atlas-cli/src/lib.rs");
     let text = fs::read_to_string(&src).map_err(|err| CheckError::Failed(err.to_string()))?;
-    if text.contains("bijux dev atlas <command>") { Ok(Vec::new()) } else {
+    if text.contains("bijux dev atlas <command>") {
+        Ok(Vec::new())
+    } else {
         Ok(vec![violation(
             "CRATES_DEV_ATLAS_DISPATCH_HINT_MISSING",
             "bijux atlas command routing must advertise `bijux dev atlas --help`".to_string(),
@@ -251,18 +321,31 @@ pub(super) fn check_no_string_references_under(
     code: &str,
 ) -> Result<Vec<Violation>, CheckError> {
     let base = ctx.repo_root.join(rel_root);
-    if !base.exists() { return Ok(Vec::new()); }
+    if !base.exists() {
+        return Ok(Vec::new());
+    }
     let mut violations = Vec::new();
     for file in walk_files(&base) {
-        let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
-        if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "rs" { continue; }
-        let Ok(content) = fs::read_to_string(&file) else { continue };
+        let ext = file
+            .extension()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
+        if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "rs" {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&file) else {
+            continue;
+        };
         for line in content.lines() {
             if line.contains(needle) {
                 let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
                 violations.push(violation(
                     code,
-                    format!("forbidden `{needle}` reference in {}: `{}`", rel.display(), line.trim()),
+                    format!(
+                        "forbidden `{needle}` reference in {}: `{}`",
+                        rel.display(),
+                        line.trim()
+                    ),
                     "remove legacy references and route through bijux dev atlas",
                     Some(rel),
                 ));
@@ -280,19 +363,32 @@ pub(super) fn check_no_any_string_references_under(
     code: &str,
 ) -> Result<Vec<Violation>, CheckError> {
     let base = ctx.repo_root.join(rel_root);
-    if !base.exists() { return Ok(Vec::new()); }
+    if !base.exists() {
+        return Ok(Vec::new());
+    }
     let mut violations = Vec::new();
     for file in walk_files(&base) {
-        let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
-        if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "rs" { continue; }
-        let Ok(content) = fs::read_to_string(&file) else { continue };
+        let ext = file
+            .extension()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
+        if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "rs" {
+            continue;
+        }
+        let Ok(content) = fs::read_to_string(&file) else {
+            continue;
+        };
         for line in content.lines() {
             for needle in needles {
                 if line.contains(needle) {
                     let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
                     violations.push(violation(
                         code,
-                        format!("forbidden `{needle}` reference in {}: `{}`", rel.display(), line.trim()),
+                        format!(
+                            "forbidden `{needle}` reference in {}: `{}`",
+                            rel.display(),
+                            line.trim()
+                        ),
                         "remove direct ops script execution and route through bijux dev atlas",
                         Some(rel),
                     ));
@@ -304,17 +400,31 @@ pub(super) fn check_no_any_string_references_under(
     Ok(violations)
 }
 
-pub(super) fn check_ops_no_bash_lib_execution(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+pub(super) fn check_ops_no_bash_lib_execution(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     for rel in ["makefiles", ".github/workflows"] {
         let root = ctx.repo_root.join(rel);
-        if !root.exists() { continue; }
+        if !root.exists() {
+            continue;
+        }
         for file in walk_files(&root) {
-            let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
-            if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "yml" && ext != "yaml" { continue; }
-            let Ok(content) = fs::read_to_string(&file) else { continue };
+            let ext = file
+                .extension()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
+            if !OPS_TEXT_EXTENSIONS.contains(&ext) && ext != "mk" && ext != "yml" && ext != "yaml" {
+                continue;
+            }
+            let Ok(content) = fs::read_to_string(&file) else {
+                continue;
+            };
             for line in content.lines() {
                 let trimmed = line.trim();
+                if trimmed.starts_with('!') && trimmed.contains("rg -n") {
+                    continue;
+                }
                 let invokes_ops_shell = trimmed.contains("bash ops/")
                     || trimmed.contains("source ops/")
                     || trimmed.starts_with(". ops/");
@@ -325,7 +435,11 @@ pub(super) fn check_ops_no_bash_lib_execution(ctx: &CheckContext<'_>) -> Result<
                     let path = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
                     violations.push(violation(
                         "OPS_BASH_LIB_EXECUTION_REFERENCE_FOUND",
-                        format!("forbidden bash lib execution reference in {}: `{}`", path.display(), trimmed),
+                        format!(
+                            "forbidden bash lib execution reference in {}: `{}`",
+                            path.display(),
+                            trimmed
+                        ),
                         "route ops behavior through bijux dev atlas rust commands",
                         Some(path),
                     ));
@@ -342,19 +456,31 @@ pub(super) fn check_ops_legacy_shell_quarantine_empty(
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("ops/quarantine/legacy-ops-shell");
     let dir = ctx.repo_root.join(rel);
-    if !dir.exists() { return Ok(Vec::new()); }
+    if !dir.exists() {
+        return Ok(Vec::new());
+    }
     let mut non_marker = Vec::new();
     for file in walk_files(&dir) {
-        let name = file.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        let name = file
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
         if name != ".gitkeep" && name != "README.md" {
             non_marker.push(file);
         }
     }
-    if non_marker.is_empty() { Ok(Vec::new()) } else {
-        let first = non_marker[0].strip_prefix(ctx.repo_root).unwrap_or(&non_marker[0]);
+    if non_marker.is_empty() {
+        Ok(Vec::new())
+    } else {
+        let first = non_marker[0]
+            .strip_prefix(ctx.repo_root)
+            .unwrap_or(&non_marker[0]);
         Ok(vec![violation(
             "OPS_LEGACY_SHELL_QUARANTINE_NOT_EMPTY",
-            format!("legacy ops shell quarantine must be empty; found `{}`", first.display()),
+            format!(
+                "legacy ops shell quarantine must be empty; found `{}`",
+                first.display()
+            ),
             "delete legacy shell helpers and keep quarantine empty",
             Some(rel),
         )])

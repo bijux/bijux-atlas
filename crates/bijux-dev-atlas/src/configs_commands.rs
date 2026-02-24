@@ -176,10 +176,14 @@ pub(crate) fn configs_lint_payload(
                     i + 1
                 ));
             }
-            if line.contains("password") || line.contains("secret") {
-                if !rel.contains("allowlist") && !rel.contains("README") {
-                    errors.push(format!("CONFIGS_SCHEMA_ERROR: {rel}:{} potential secret-like key requires allowlist review", i + 1));
-                }
+            if (line.contains("password") || line.contains("secret"))
+                && !rel.contains("allowlist")
+                && !rel.contains("README")
+            {
+                errors.push(format!(
+                    "CONFIGS_SCHEMA_ERROR: {rel}:{} potential secret-like key requires allowlist review",
+                    i + 1
+                ));
             }
         }
     }
@@ -249,7 +253,7 @@ pub(crate) fn configs_diff_payload(
             .display()
             .to_string();
         baseline_hasher.update(rel.as_bytes());
-        baseline_hasher.update(&fs::read(&file).unwrap_or_default());
+        baseline_hasher.update(fs::read(&file).unwrap_or_default());
     }
     let digest_one = format!("{:x}", baseline_hasher.finalize());
     let mut baseline_hasher_two = Sha256::new();
@@ -260,7 +264,7 @@ pub(crate) fn configs_diff_payload(
             .display()
             .to_string();
         baseline_hasher_two.update(rel.as_bytes());
-        baseline_hasher_two.update(&fs::read(&file).unwrap_or_default());
+        baseline_hasher_two.update(fs::read(&file).unwrap_or_default());
     }
     let digest_two = format!("{:x}", baseline_hasher_two.finalize());
     let deterministic = digest_one == digest_two;
