@@ -1,0 +1,18 @@
+# Dev Atlas Ops Ownership
+
+`bijux dev atlas ops` is the canonical control plane for ops validation, rendering, install planning, tool verification, and pins checks.
+
+## Ownership Rules
+
+- `ops/` contains SSOT inputs (inventory, stack manifests, pins, schemas, contracts).
+- `makefiles/ops.mk` is delegation-only and must route to `bijux dev atlas ops ...`.
+- CI workflows must call `make` wrappers or `bijux dev atlas ops ...`, not `atlasctl ops ...`.
+- Runtime artifacts are written only under `artifacts/atlas-dev/ops/...`.
+
+## Canonical Entry Points
+
+- `bijux dev atlas ops doctor`
+- `bijux dev atlas ops validate`
+- `bijux dev atlas ops pins check`
+- `bijux dev atlas ops render --target kind --check`
+- `bijux dev atlas ops verify-tools --allow-subprocess`

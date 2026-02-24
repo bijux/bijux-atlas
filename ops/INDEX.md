@@ -5,6 +5,7 @@ Human entry for the ops specification surface.
 ## Start Here
 
 - Contract: `ops/CONTRACT.md`
+- Control-plane ownership: `docs/development/tooling/dev-atlas-ops.md`
 - Inventory map: `ops/docs/inventory-contracts.md`
 - Migration window: `ops/docs/migration-window.md`
 - Generated index (compiled): `ops/_generated/INDEX.md`
@@ -37,3 +38,4 @@ Deterministic ops generation is owned by `bijux dev atlas ops generate ...`.
 
 - `ops generate pins-index` writes a stable artifact index under `artifacts/atlas-dev/...`
 - inventory inputs remain under `ops/` and are validated as SSOT by `ops doctor` / `ops validate`
+- `ops stack` execution ownership stays in `bijux dev atlas ops`; make/workflows are wrappers only

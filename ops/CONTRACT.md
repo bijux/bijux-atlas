@@ -12,9 +12,10 @@
 ## Ownership
 
 - `ops/` stores specifications and contracts only.
-- Operational behavior is owned by `bijux-dev-atlas` and routed through `bijux dev atlas ...`.
+- Operational behavior is owned by `bijux-dev-atlas` and routed through `bijux dev atlas ops ...`.
 - New shell or bash execution logic under `ops/` is forbidden.
 - `makefiles/ops.mk` is a thin delegator to `bijux dev atlas ...` commands.
+- CI workflows must invoke ops behavior through `make` wrappers or `bijux dev atlas ops ...` commands only.
 
 ## Canonical Tree
 
