@@ -155,7 +155,9 @@ pub(super) fn check_root_packages_atlasctl_absent(
         Ok(vec![Violation {
             code: "ROOT_PACKAGES_ATLASCTL_STILL_PRESENT".to_string(),
             message: "legacy package-tree atlasctl directory still exists".to_string(),
-            hint: Some("remove the legacy atlasctl package tree after migration closure".to_string()),
+            hint: Some(
+                "remove the legacy atlasctl package tree after migration closure".to_string(),
+            ),
             path: Some(rel.display().to_string()),
             line: None,
             severity: Severity::Warn,
@@ -527,13 +529,16 @@ pub(super) fn check_root_dockerfile_pointer_only(
         .filter(|line| !line.starts_with('#'))
         .collect::<Vec<_>>();
     let looks_like_pointer = non_comment_lines.len() <= 3
-        && non_comment_lines.iter().any(|line| line.contains("docker/") || line.contains("see "));
+        && non_comment_lines
+            .iter()
+            .any(|line| line.contains("docker/") || line.contains("see "));
     if looks_like_pointer {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "ROOT_DOCKERFILE_FORBIDDEN",
-            "root Dockerfile must be absent or a tiny pointer to canonical docker/ definitions".to_string(),
+            "root Dockerfile must be absent or a tiny pointer to canonical docker/ definitions"
+                .to_string(),
             "move real container build logic under docker/ and leave only a pointer doc if needed",
             Some(rel),
         )])
@@ -558,7 +563,10 @@ pub(super) fn check_dockerfiles_under_canonical_directory_only(
         if !rel.starts_with("docker/") {
             violations.push(violation(
                 "DOCKERFILE_LOCATION_INVALID",
-                format!("Dockerfile outside canonical docker/ directory: {}", rel.display()),
+                format!(
+                    "Dockerfile outside canonical docker/ directory: {}",
+                    rel.display()
+                ),
                 "move Dockerfiles under docker/ or replace with pointer docs",
                 Some(rel),
             ));
@@ -617,7 +625,10 @@ pub(super) fn check_ops_no_behavior_source_files(
     }
     let mut violations = Vec::new();
     for file in walk_files(&ops_root) {
-        let ext = file.extension().and_then(|e| e.to_str()).unwrap_or_default();
+        let ext = file
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or_default();
         if ext != "sh" && ext != "py" {
             continue;
         }
@@ -739,7 +750,15 @@ pub(super) fn check_makefiles_root_includes_sorted(
 pub(super) fn check_root_top_level_directories_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let expected = ["artifacts", "configs", "crates", "docker", "docs", "makefiles", "ops"];
+    let expected = [
+        "artifacts",
+        "configs",
+        "crates",
+        "docker",
+        "docs",
+        "makefiles",
+        "ops",
+    ];
     let mut actual = fs::read_dir(ctx.repo_root)
         .map_err(|err| CheckError::Failed(err.to_string()))?
         .filter_map(Result::ok)

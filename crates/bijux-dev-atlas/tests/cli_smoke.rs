@@ -26,9 +26,15 @@ fn doctor_smoke() {
         &output.stdout
     };
     let payload: serde_json::Value = serde_json::from_slice(bytes).expect("json");
-    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
     let check_report = payload.get("check_report").expect("check_report");
-    assert!(check_report.get("results").and_then(|v| v.as_array()).is_some());
+    assert!(check_report
+        .get("results")
+        .and_then(|v| v.as_array())
+        .is_some());
     assert!(check_report.get("counts").is_some());
 }
 

@@ -295,10 +295,12 @@ pub(crate) fn docs_links_payload(
                     }
                 }
                 if !ok {
-                    let generated_target = path_part.starts_with("_generated/")
-                        || path_part.contains("/_generated/");
-                    let message =
-                        format!("DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`", idx + 1);
+                    let generated_target =
+                        path_part.starts_with("_generated/") || path_part.contains("/_generated/");
+                    let message = format!(
+                        "DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`",
+                        idx + 1
+                    );
                     if generated_target && !common.strict {
                         issues.warnings.push(message);
                     } else {
@@ -512,9 +514,7 @@ fn docs_build_or_serve_subprocess(
     if label == "docs build" {
         cmd.args([
             "--site-dir",
-            output_dir
-                .to_str()
-                .unwrap_or("artifacts/dist/docs-site"),
+            output_dir.to_str().unwrap_or("artifacts/dist/docs-site"),
         ]);
     }
     let out = cmd

@@ -61,7 +61,10 @@ fn walk_files(root: &Path) -> Vec<PathBuf> {
         let Ok(entries) = fs::read_dir(&dir) else {
             continue;
         };
-        let mut paths = entries.filter_map(Result::ok).map(|e| e.path()).collect::<Vec<_>>();
+        let mut paths = entries
+            .filter_map(Result::ok)
+            .map(|e| e.path())
+            .collect::<Vec<_>>();
         paths.sort();
         for path in paths {
             if path.is_dir() {
@@ -563,12 +566,14 @@ fn run_build_clean(
     }
     let dist_meta = repo_root.join("artifacts/dist/build.json");
     if dist_meta.exists() {
-        fs::remove_file(&dist_meta).map_err(|e| format!("cannot remove {}: {e}", dist_meta.display()))?;
+        fs::remove_file(&dist_meta)
+            .map_err(|e| format!("cannot remove {}: {e}", dist_meta.display()))?;
         removed.push(dist_meta);
     }
     let checksum = repo_root.join("artifacts/dist/sha256sum.txt");
     if checksum.exists() {
-        fs::remove_file(&checksum).map_err(|e| format!("cannot remove {}: {e}", checksum.display()))?;
+        fs::remove_file(&checksum)
+            .map_err(|e| format!("cannot remove {}: {e}", checksum.display()))?;
         removed.push(checksum);
     }
     if args.include_bin {
@@ -720,7 +725,10 @@ fn run_build_doctor(
 }
 
 fn build_binary_specs() -> [(&'static str, &'static str); 2] {
-    [("bijux-atlas-cli", "bijux-atlas"), ("bijux-dev-atlas", "bijux-dev-atlas")]
+    [
+        ("bijux-atlas-cli", "bijux-atlas"),
+        ("bijux-dev-atlas", "bijux-dev-atlas"),
+    ]
 }
 
 fn run_build_plan(

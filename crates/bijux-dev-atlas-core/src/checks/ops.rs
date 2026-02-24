@@ -75,7 +75,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_makefiles_no_direct_fetch_commands)
         }
         "checks_makefiles_no_multiline_recipes" => Some(check_makefiles_no_multiline_recipes),
-        "checks_root_dockerignore_context_contract" => Some(check_root_dockerignore_context_contract),
+        "checks_root_dockerignore_context_contract" => {
+            Some(check_root_dockerignore_context_contract)
+        }
         "checks_root_dockerfile_pointer_only" => Some(check_root_dockerfile_pointer_only),
         "checks_dockerfiles_under_canonical_directory_only" => {
             Some(check_dockerfiles_under_canonical_directory_only)
@@ -103,7 +105,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_root_rustfmt_toml_present" => Some(check_root_rustfmt_toml_present),
         "checks_root_clippy_toml_present" => Some(check_root_clippy_toml_present),
         "checks_configs_nextest_toml_present" => Some(check_configs_nextest_toml_present),
-        "checks_configs_security_deny_toml_present" => Some(check_configs_security_deny_toml_present),
+        "checks_configs_security_deny_toml_present" => {
+            Some(check_configs_security_deny_toml_present)
+        }
         "checks_workflows_rust_toolchain_matches_repo_pin" => {
             Some(check_workflows_rust_toolchain_matches_repo_pin)
         }
