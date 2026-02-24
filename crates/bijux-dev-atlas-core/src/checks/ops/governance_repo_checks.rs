@@ -246,7 +246,7 @@ pub(super) fn check_workflows_rust_toolchain_matches_repo_pin(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let toolchain_rel = Path::new("rust-toolchain.toml");
-    let workflow_rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let workflow_rel = Path::new(".github/workflows/ci-pr.yml");
     let toolchain_text = fs::read_to_string(ctx.repo_root.join(toolchain_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let workflow_text = fs::read_to_string(ctx.repo_root.join(workflow_rel))
@@ -269,9 +269,9 @@ pub(super) fn check_workflows_rust_toolchain_matches_repo_pin(
         Ok(vec![violation(
             "WORKFLOWS_RUST_TOOLCHAIN_PIN_MISMATCH",
             format!(
-                "atlas-dev-rust workflow must pin the same Rust toolchain as rust-toolchain.toml (`{pinned}`)"
+                "ci-pr workflow must pin the same Rust toolchain as rust-toolchain.toml (`{pinned}`)"
             ),
-            "update .github/workflows/atlas-dev-rust.yml dtolnay/rust-toolchain step `with.toolchain` to match rust-toolchain.toml",
+            "update .github/workflows/ci-pr.yml dtolnay/rust-toolchain step `with.toolchain` to match rust-toolchain.toml",
             Some(workflow_rel),
         )])
     }
