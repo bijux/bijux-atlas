@@ -12,6 +12,7 @@ Docs:
 - [Public API](public-api.md)
 - Ingest contract reference: [`../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md`](../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md)
 - [Schema stability rules](SCHEMA_STABILITY.md)
+- [Contract compatibility](CONTRACT_COMPATIBILITY.md)
 - [Schema evolution notes](SCHEMA_EVOLUTION_NOTES.md)
 - [Purity policy](PURITY.md)
 - [Effects policy](effects.md)
