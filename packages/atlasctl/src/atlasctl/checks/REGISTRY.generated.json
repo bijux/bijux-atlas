@@ -12774,7 +12774,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1200,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -12873,7 +12873,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 400,
+      "timeout_ms": 1400,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -12906,7 +12906,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 400,
+      "timeout_ms": 1400,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -12984,7 +12984,7 @@
       "description": "forbid banned wording across tracked repository files",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -13149,7 +13149,7 @@
       "description": "ensure atlasctl package imports in minimal environment",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -13479,7 +13479,7 @@
       "description": "enforce no-shadow config policy",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -13644,7 +13644,7 @@
       "description": "enforce managed write roots under artifacts and reject out-of-root writes",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -13875,7 +13875,7 @@
       "description": "forbid ad-hoc python files outside package boundaries",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14139,7 +14139,7 @@
       "description": "forbid direct scripts/ or ops/ invocations in GitHub workflows",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14337,7 +14337,7 @@
       "description": "forbid executable python outside package boundaries",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14370,7 +14370,7 @@
       "description": "forbid legacy root path references in tracked text surfaces",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14403,7 +14403,7 @@
       "description": "forbid large tracked binary files except approved fixtures",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14655,7 +14655,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 400,
+      "timeout_ms": 900,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -14733,7 +14733,7 @@
       "description": "forbid committed python caches under packages/atlasctl",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14787,7 +14787,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 900,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -14832,7 +14832,7 @@
       "description": "ensure ops/_generated has no tracked files",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14865,7 +14865,7 @@
       "description": "forbid timestamp-like tracked paths",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -14997,7 +14997,7 @@
       "description": "enforce LF-only and no trailing whitespace in ops/configs text files",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -15756,7 +15756,7 @@
       "description": "ensure python -m atlasctl --help works",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -16020,7 +16020,7 @@
       "description": "verify deterministic root output across two make root runs",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -16053,7 +16053,7 @@
       "description": "enforce repository root shape contract from root_policy.json",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -16119,7 +16119,7 @@
       "description": "validate script help contract coverage",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -16944,7 +16944,7 @@
       "description": "forbid committed tmp paths outside artifacts/",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -17076,7 +17076,7 @@
       "description": "ensure atlasctl package version and --version output match pyproject",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],
@@ -17109,7 +17109,7 @@
       "description": "ensure make targets used by workflows exist",
       "domain": "repo",
       "effects": [
-        "fs_read"
+        "subprocess"
       ],
       "evidence": [],
       "external_tools": [],

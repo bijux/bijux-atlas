@@ -500,17 +500,44 @@ def check_no_repo_root_path_literals(repo_root: Path) -> tuple[int, list[str]]:
         "packages/atlasctl/src/atlasctl/core/runtime/",
         "packages/atlasctl/src/atlasctl/runtime/",
     )
-    tokens = ('Path("packages/', 'Path("configs/', 'Path("ops/', 'Path("docs/', 'Path("makefiles/', 'Path("crates/', 'Path("artifacts/')
+    root_prefixes = ("packages/", "configs/", "ops/", "docs/", "makefiles/", "crates/", "artifacts/")
     errors: list[str] = []
-    for rel, lines in _iter_atlasctl_py(repo_root):
+    src = repo_root / "packages/atlasctl/src/atlasctl"
+    for path in sorted(src.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
         if rel.endswith("checks/tools/repo_domain/native/modules/repo_checks_make_and_layout.py"):
             continue
         if rel.startswith(hard_allowed_prefixes):
             continue
-        for idx, line in enumerate(lines, start=1):
-            if not any(tok in line for tok in tokens):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        try:
+            tree = ast.parse(text, filename=rel)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call):
                 continue
-            entry = f"{rel}:{idx}"
+            if not node.args:
+                continue
+            arg0 = node.args[0]
+            if not isinstance(arg0, ast.Constant) or not isinstance(arg0.value, str):
+                continue
+            literal = arg0.value
+            if not literal.startswith(root_prefixes):
+                continue
+            is_path_constructor = False
+            if isinstance(node.func, ast.Name) and node.func.id == "Path":
+                is_path_constructor = True
+            if (
+                isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "pathlib"
+                and node.func.attr == "Path"
+            ):
+                is_path_constructor = True
+            if not is_path_constructor:
+                continue
+            entry = f"{rel}:{getattr(node, 'lineno', 1)}"
             if entry in allow:
                 continue
             errors.append(f"{entry}: repo-root path literals must be resolved via runtime paths/context")
