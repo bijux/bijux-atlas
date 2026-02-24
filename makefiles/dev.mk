@@ -18,7 +18,8 @@ coverage: ## Rust coverage lane
 		exit 1; \
 	}
 	@mkdir -p artifacts/coverage
-	@cargo llvm-cov --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info
+	@cargo llvm-cov nextest --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/nextest/nextest.toml --user-config-file none --run-ignored all
+	@cargo llvm-cov report
 
 fmt: ## Rust formatter check
 	@cargo fmt --all -- --check
