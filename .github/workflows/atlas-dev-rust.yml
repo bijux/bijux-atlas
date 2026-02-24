@@ -29,10 +29,17 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Build atlas dev crates
         run: |
-          cargo build -p bijux-dev-atlas-model -p bijux-dev-atlas-adapters -p bijux-dev-atlas-core -p bijux-dev-atlas
+          cargo build -p bijux-dev-atlas-model -p bijux-dev-atlas-adapters -p bijux-dev-atlas-core -p bijux-dev-atlas -p bijux-atlas-cli
       - name: Test atlas dev crates
         run: |
           cargo test -p bijux-dev-atlas-model -p bijux-dev-atlas-adapters -p bijux-dev-atlas-core -p bijux-dev-atlas
+      - name: Enforce atlas runtime command surface boundaries
+        run: |
+          ! rg -n "DevAtlas\\s*\\{" crates/bijux-atlas-cli/src
+          ! rg -n "run_dev_atlas\\(" crates/bijux-atlas-cli/src
+      - name: Verify atlas runtime command snapshot
+        run: |
+          cargo test -p bijux-atlas-cli --test lib_contracts
       - name: Smoke help and version
         run: |
           cargo run -p bijux-dev-atlas -- --help >/dev/null
