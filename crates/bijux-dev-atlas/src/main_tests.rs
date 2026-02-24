@@ -66,6 +66,9 @@ mod tests {
             vec!["bijux-dev-atlas", "ops", "list-profiles"],
             vec!["bijux-dev-atlas", "ops", "explain-profile", "kind"],
             vec!["bijux-dev-atlas", "ops", "list-tools", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "tools", "list"],
+            vec!["bijux-dev-atlas", "ops", "tools", "verify", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "ops", "tools", "doctor"],
             vec![
                 "bijux-dev-atlas",
                 "ops",

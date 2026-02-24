@@ -3,9 +3,10 @@ pub(crate) use crate::ops_command_support::{
     resolve_profile, run_id_or_default, sha256_hex,
 };
 use crate::ops_command_support::{
-    build_ops_run_report, load_toolchain_inventory_for_ops, ops_exit, ops_pins_check_payload,
-    render_ops_human, render_ops_validation_output, run_ops_checks, tool_definitions_sorted,
-    verify_tools_snapshot,
+    build_ops_run_report, load_stack_pins, load_toolchain_inventory_for_ops, load_tools_manifest,
+    ops_exit, ops_pins_check_payload, parse_tool_overrides, render_ops_human,
+    render_ops_validation_output, run_ops_checks, validate_pins_completeness,
+    verify_tools_snapshot, ToolMismatchCode,
 };
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
@@ -94,6 +95,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
                 "obs-drill-run" => serde_json::json!({"action":"obs-drill-run","purpose":"reserved for observability drill orchestration","status":"not_implemented"}),
                 "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify observability contracts","effects_required":[]}),
+                "tools-doctor" => serde_json::json!({"action":"tools-doctor","purpose":"show required tools and missing requirements without subprocess by default","effects_required":[]}),
                 "suite-list" => serde_json::json!({"kind":"suite","action":"list","suites":["e2e","k8s","load","obs"]}),
                 value if value.starts_with("suite-run:") => serde_json::json!({"kind":"suite","action":"run","suite":value.trim_start_matches("suite-run:")}),
                 "cleanup" => serde_json::json!({"action":"cleanup","purpose":"remove scoped artifacts and local ops resources","effects_required":["subprocess (optional)"]}),
@@ -117,13 +119,18 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
-            let inventory_errors =
+            let mut inventory_errors =
                 match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),
                     Err(err) => vec![err],
                 };
+            if let Ok(pins) = load_stack_pins(&repo_root) {
+                if let Ok(pin_errors) = validate_pins_completeness(&repo_root, &pins) {
+                    inventory_errors.extend(pin_errors);
+                }
+            }
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
@@ -131,7 +138,6 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let toolchain =
                 load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
             let tools_snapshot = verify_tools_snapshot(common.allow_subprocess, &toolchain)?;
-            let mut inventory_errors = inventory_errors;
             if tools_snapshot
                 .get("missing_required")
                 .and_then(|v| v.as_array())
@@ -156,13 +162,17 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
-            let inventory_errors =
+            let mut inventory_errors =
                 match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
                 ) {
                     Ok(_) => Vec::new(),
                     Err(err) => vec![err],
                 };
+            let pins = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
+            inventory_errors.extend(
+                validate_pins_completeness(&repo_root, &pins).map_err(|e| e.to_stable_message())?,
+            );
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
@@ -414,6 +424,101 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
+        OpsCommand::Tools { command } => match command {
+            OpsToolsCommand::List(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let tools = load_tools_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+                let mut rows = tools
+                    .tools
+                    .iter()
+                    .map(|t| {
+                        serde_json::json!({
+                            "name": t.name,
+                            "required": t.required,
+                            "version_regex": t.version_regex,
+                            "probe_argv": t.probe_argv
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+                let text = rows
+                    .iter()
+                    .map(|r| format!("{} required={}", r["name"].as_str().unwrap_or(""), r["required"]))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                let payload = serde_json::json!({"schema_version":1,"text":text,"rows":rows,"summary":{"total":rows.len(),"errors":0,"warnings":0}});
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+            OpsToolsCommand::Verify(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let tools = load_tools_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+                let overrides = parse_tool_overrides(&common.tool_overrides)?;
+                let process = OpsProcess::new(common.allow_subprocess);
+                let mut rows = Vec::new();
+                let mut missing = Vec::new();
+                let mut warnings = Vec::new();
+                for tool in tools.tools {
+                    let binary = overrides
+                        .get(&tool.name)
+                        .cloned()
+                        .unwrap_or_else(|| tool.name.clone());
+                    let mut row = process
+                        .probe_tool(&binary, &tool.probe_argv, &tool.version_regex)
+                        .map_err(|e| e.to_stable_message())?;
+                    row["name"] = serde_json::Value::String(tool.name.clone());
+                    if row["installed"] == serde_json::Value::Bool(false) {
+                        if tool.required {
+                            missing.push(format!("{}:{}", ToolMismatchCode::MissingBinary.as_str(), tool.name));
+                        } else {
+                            warnings.push(format!("{}:{}", ToolMismatchCode::MissingBinary.as_str(), tool.name));
+                        }
+                    } else if row["version"].is_null() {
+                        if tool.required {
+                            missing.push(format!("{}:{}", ToolMismatchCode::VersionMismatch.as_str(), tool.name));
+                        } else {
+                            warnings.push(format!("{}:{}", ToolMismatchCode::VersionMismatch.as_str(), tool.name));
+                        }
+                    }
+                    rows.push(row);
+                }
+                rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+                let payload = serde_json::json!({
+                    "schema_version":1,
+                    "text": if missing.is_empty() {"all required tools verified"} else {"required tools mismatch"},
+                    "rows":rows,
+                    "missing":missing,
+                    "warnings":warnings,
+                    "summary":{"total":rows.len(),"errors":missing.len(),"warnings":warnings.len()}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, if payload["missing"].as_array().is_some_and(|v| v.is_empty()) {ops_exit::PASS} else {ops_exit::TOOL_MISSING}))
+            }
+            OpsToolsCommand::Doctor(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let tools = load_tools_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+                let rows = tools
+                    .tools
+                    .iter()
+                    .map(|t| {
+                        serde_json::json!({
+                            "name": t.name,
+                            "required": t.required,
+                            "version_regex": t.version_regex,
+                            "status": if common.allow_subprocess {"verify_with_subprocess"} else {"requires_allow_subprocess_for_verification"}
+                        })
+                    })
+                    .collect::<Vec<_>>();
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": if common.allow_subprocess {"tool verification can run"} else {"tool verification is dry-run without subprocess"},
+                    "rows": rows,
+                    "summary": {"total": tools.tools.len(), "errors": 0, "warnings": if common.allow_subprocess {0} else {tools.tools.len()}}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+        },
         OpsCommand::Suite { command } => match command {
             OpsSuiteCommand::List(common) => {
                 let mut suites = vec!["e2e", "k8s", "load", "obs"];
@@ -495,30 +600,23 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         }
         OpsCommand::ListTools(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
-                .map_err(|e| e.to_stable_message())?;
-            let inventory =
-                load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
-            let process = OpsProcess::new(common.allow_subprocess);
-            let mut rows = Vec::new();
-            for (name, definition) in tool_definitions_sorted(&inventory) {
-                let mut row = process
-                    .probe_tool(&name, &definition.probe_argv, &definition.version_regex)
-                    .map_err(|e| e.to_stable_message())?;
-                row["required"] = serde_json::Value::Bool(definition.required);
-                rows.push(row);
-            }
+            let tools = load_tools_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+            let mut rows = tools
+                .tools
+                .iter()
+                .map(|t| {
+                    serde_json::json!({
+                        "name": t.name,
+                        "required": t.required,
+                        "version_regex": t.version_regex,
+                        "probe_argv": t.probe_argv
+                    })
+                })
+                .collect::<Vec<_>>();
             rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
             let text = rows
                 .iter()
-                .map(|r| {
-                    format!(
-                        "{} required={} installed={}",
-                        r["name"].as_str().unwrap_or(""),
-                        r["required"],
-                        r["installed"]
-                    )
-                })
+                .map(|r| format!("{} required={}", r["name"].as_str().unwrap_or(""), r["required"]))
                 .collect::<Vec<_>>()
                 .join("\n");
             let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": rows.len(), "errors": 0, "warnings": 0}});
@@ -527,23 +625,48 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         }
         OpsCommand::VerifyTools(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
-                .map_err(|e| e.to_stable_message())?;
-            let inventory =
-                load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
+            let tools = load_tools_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+            let overrides = parse_tool_overrides(&common.tool_overrides)?;
             let process = OpsProcess::new(common.allow_subprocess);
             let mut rows = Vec::new();
             let mut missing = Vec::new();
             let mut warnings = Vec::new();
-            for (name, definition) in tool_definitions_sorted(&inventory) {
-                let row = process
-                    .probe_tool(&name, &definition.probe_argv, &definition.version_regex)
+            for tool in tools.tools {
+                let binary = overrides
+                    .get(&tool.name)
+                    .cloned()
+                    .unwrap_or_else(|| tool.name.clone());
+                let mut row = process
+                    .probe_tool(&binary, &tool.probe_argv, &tool.version_regex)
                     .map_err(|e| e.to_stable_message())?;
+                row["name"] = serde_json::Value::String(tool.name.clone());
                 if row["installed"] == serde_json::Value::Bool(false) {
-                    if definition.required {
-                        missing.push(name.clone());
+                    if tool.required {
+                        missing.push(format!(
+                            "{}:{}",
+                            ToolMismatchCode::MissingBinary.as_str(),
+                            tool.name
+                        ));
                     } else {
-                        warnings.push(name.clone());
+                        warnings.push(format!(
+                            "{}:{}",
+                            ToolMismatchCode::MissingBinary.as_str(),
+                            tool.name
+                        ));
+                    }
+                } else if row["version"].is_null() {
+                    if tool.required {
+                        missing.push(format!(
+                            "{}:{}",
+                            ToolMismatchCode::VersionMismatch.as_str(),
+                            tool.name
+                        ));
+                    } else {
+                        warnings.push(format!(
+                            "{}:{}",
+                            ToolMismatchCode::VersionMismatch.as_str(),
+                            tool.name
+                        ));
                     }
                 }
                 rows.push(row);
@@ -721,9 +844,24 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         OpsCommand::Pins { command } => match command {
             OpsPinsCommand::Check(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let (payload, code) = ops_pins_check_payload(&common, &repo_root)?;
+                let mut errors = Vec::new();
+                let (payload_base, code_base) = ops_pins_check_payload(&common, &repo_root)?;
+                if code_base != 0 {
+                    errors.push("base pins validation failed".to_string());
+                }
+                let pins = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
+                errors.extend(validate_pins_completeness(&repo_root, &pins).map_err(|e| e.to_stable_message())?);
+                let status = if errors.is_empty() { "ok" } else { "failed" };
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "status": status,
+                    "text": if errors.is_empty() { "ops pins check passed" } else { "ops pins check failed" },
+                    "rows": [payload_base],
+                    "errors": errors,
+                    "summary": {"total": 1, "errors": if status == "ok" {0} else {1}, "warnings": 0}
+                });
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-                Ok((rendered, code))
+                Ok((rendered, if errors.is_empty() { ops_exit::PASS } else { ops_exit::FAIL }))
             }
             OpsPinsCommand::Update {
                 i_know_what_im_doing,
@@ -731,11 +869,6 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             } => {
                 if !i_know_what_im_doing {
                     Err("ops pins update requires --i-know-what-im-doing".to_string())
-                } else if !common.allow_subprocess {
-                    Err(OpsCommandError::Effect(
-                        "pins update requires --allow-subprocess".to_string(),
-                    )
-                    .to_stable_message())
                 } else if !common.allow_write {
                     Err(
                         OpsCommandError::Effect("pins update requires --allow-write".to_string())
@@ -743,15 +876,47 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     )
                 } else {
                     let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                    let target = repo_root.join("ops/inventory/pins.yaml");
-                    let text =
-                        "ops pins update is migration-gated; no mutation performed".to_string();
+                    let target = repo_root.join("ops/stack/pins.toml");
+                    let old = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
+                    let mut updated = old.clone();
+                    let stack_manifest: serde_json::Value = serde_json::from_str(
+                        &std::fs::read_to_string(repo_root.join("ops/stack/version-manifest.json"))
+                            .map_err(|err| format!("failed to read version manifest: {err}"))?,
+                    )
+                    .map_err(|err| format!("invalid version manifest json: {err}"))?;
+                    if let Some(obj) = stack_manifest.as_object() {
+                        for (k, v) in obj {
+                            if k == "schema_version" {
+                                continue;
+                            }
+                            if let Some(value) = v.as_str() {
+                                updated.images.insert(k.clone(), value.to_string());
+                            }
+                        }
+                    }
+                    let mut changed = Vec::new();
+                    for (k, v) in &updated.images {
+                        let old_v = old.images.get(k).cloned().unwrap_or_default();
+                        if &old_v != v {
+                            changed.push(serde_json::json!({
+                                "key": format!("images.{k}"),
+                                "old": old_v,
+                                "new": v,
+                                "reason": "sync_from_ops_stack_version_manifest"
+                            }));
+                        }
+                    }
+                    let serialized = toml::to_string_pretty(&updated)
+                        .map_err(|err| format!("failed to render pins toml: {err}"))?;
+                    std::fs::write(&target, serialized)
+                        .map_err(|err| format!("failed to write {}: {err}", target.display()))?;
+                    let text = "ops pins updated from stack version manifest".to_string();
                     let rendered = emit_payload(
                         common.format,
                         common.out.clone(),
-                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [{"target_path": target.display().to_string()}], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [{"target_path": target.display().to_string(),"changes":changed}], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
                     )?;
-                    Ok((rendered, 0))
+                    Ok((rendered, ops_exit::PASS))
                 }
             }
         },
@@ -879,6 +1044,6 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
 }
 use crate::cli::{
     OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,
-    OpsStackCommand, OpsSuiteCommand,
+    OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::*;
