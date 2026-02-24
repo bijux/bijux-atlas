@@ -16,8 +16,8 @@ use std::process::Command as ProcessCommand;
 
 use crate::cli::{
     Cli, ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
-    OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
-    OpsStatusTarget,
+    GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
+    OpsStatusTarget, WorkflowsCommand,
 };
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
@@ -361,6 +361,139 @@ pub(crate) fn run_check_run(options: CheckRunOptions) -> Result<(String, i32), S
     };
     write_output_if_requested(options.out, &rendered)?;
     Ok((rendered, exit_code_for_report(&report)))
+}
+
+pub(crate) fn run_workflows_command(
+    quiet: bool,
+    command: WorkflowsCommand,
+) -> i32 {
+    match command {
+        WorkflowsCommand::Validate {
+            repo_root,
+            format,
+            out,
+            include_internal,
+            include_slow,
+        } => match run_check_run(CheckRunOptions {
+            repo_root,
+            artifacts_root: None,
+            run_id: None,
+            suite: None,
+            domain: Some(DomainArg::Workflows),
+            tag: None,
+            id: None,
+            include_internal,
+            include_slow,
+            allow_subprocess: false,
+            allow_git: false,
+            allow_write: false,
+            allow_network: false,
+            fail_fast: false,
+            max_failures: None,
+            format,
+            out,
+            durations: 0,
+        }) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        println!("{rendered}");
+                    } else {
+                        eprintln!("{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas workflows validate failed: {err}");
+                1
+            }
+        },
+    }
+}
+
+pub(crate) fn run_gates_command(quiet: bool, command: GatesCommand) -> i32 {
+    match command {
+        GatesCommand::List {
+            repo_root,
+            format,
+            out,
+            include_internal,
+            include_slow,
+        } => match run_check_list(CheckListOptions {
+            repo_root,
+            suite: None,
+            domain: None,
+            tag: None,
+            id: None,
+            include_internal,
+            include_slow,
+            format,
+            out,
+        }) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas gates list failed: {err}");
+                1
+            }
+        },
+        GatesCommand::Run {
+            repo_root,
+            artifacts_root,
+            run_id,
+            suite,
+            include_internal,
+            include_slow,
+            allow_subprocess,
+            allow_git,
+            allow_write,
+            allow_network,
+            fail_fast,
+            max_failures,
+            format,
+            out,
+            durations,
+        } => match run_check_run(CheckRunOptions {
+            repo_root,
+            artifacts_root,
+            run_id,
+            suite: Some(suite),
+            domain: None,
+            tag: None,
+            id: None,
+            include_internal,
+            include_slow,
+            allow_subprocess,
+            allow_git,
+            allow_write,
+            allow_network,
+            fail_fast,
+            max_failures,
+            format,
+            out,
+            durations,
+        }) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        println!("{rendered}");
+                    } else {
+                        eprintln!("{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas gates run failed: {err}");
+                1
+            }
+        },
+    }
 }
 
 pub(crate) fn run_check_doctor(
