@@ -103,6 +103,17 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
+id = "checks_crates_dev_atlas_final_crate_set_contract"
+domain = "crates"
+title = "dev atlas final crate set contract is present"
+docs = "ops/CONTROL_PLANE.md"
+tags = ["repo", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_plugin_conformance_binaries"
 domain = "crates"
 title = "runtime and dev binaries expose plugin metadata handshake command"
@@ -111,6 +122,28 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["subprocess"]
 budget_ms = 8000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_atlasctl_deletion_cutoff_rules"
+domain = "docs"
+title = "atlasctl deletion plan defines cutoff and tombstone rules"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_atlasctl_tombstone_directory_contract"
+domain = "docs"
+title = "atlasctl tombstone directory contract exists"
+docs = "docs/tombstones/atlasctl/README.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
@@ -133,6 +166,17 @@ tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_control_plane_naming_contract"
+domain = "docs"
+title = "dev control plane contract freezes runtime and control-plane naming"
+docs = "crates/bijux-dev-atlas/docs/CONTRACT.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
@@ -276,6 +320,17 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_scripting_contract_rust_control_plane_lock"
+domain = "docs"
+title = "scripting architecture doc reflects rust control-plane lock"
+docs = "docs/architecture/scripting.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
