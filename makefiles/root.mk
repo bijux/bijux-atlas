@@ -4,6 +4,7 @@ SHELL := /bin/sh
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
+include makefiles/dev-atlas.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
 include makefiles/configs.mk
@@ -13,12 +14,14 @@ include makefiles/verification.mk
 
 CURATED_TARGETS := \
 	help list explain surface \
-	doctor ci-local \
+	dev-atlas doctor ci-local \
 	dev-doctor dev-ci dev-check-ci \
+	check check-list \
 	ci ci-fast ci-nightly ci-docs \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
-	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-tools-verify ops-pins-check ops-pins-update
+	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-tools-verify ops-pins-check ops-pins-update \
+	make-gate-no-legacy-cli-refs make-gate-no-bin-atlasctl cargo-check
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "Curated make targets (Rust control plane):"; \
@@ -41,10 +44,29 @@ surface: ## Print make surface and docs pointers for Rust control plane
 ci-local: ## Local runner mirroring CI control-plane entrypoints
 	@$(MAKE) -s dev-ci
 
+dev-atlas: ## Print canonical dev-atlas invocation and examples
+	@printf '%s\n' "Local: cargo run -q -p bijux-dev-atlas -- <args>"
+	@printf '%s\n' "Installed umbrella: bijux dev atlas <args>"
+	@printf '%s\n' "Examples:"
+	@printf '%s\n' "  $(DEV_ATLAS) doctor --format json"
+	@printf '%s\n' "  $(DEV_ATLAS) check list --format text"
+	@printf '%s\n' "  $(DEV_ATLAS) ops validate --profile kind --format json"
+
 doctor: ## Run Rust control-plane doctor suite
 	@$(MAKE) -s dev-doctor
+
+check: ## Run Rust control-plane CI-fast check suite
+	@$(DEV_ATLAS) check run --suite ci_fast --format text
+
+check-list: ## List checks from the Rust control-plane registry
+	@$(DEV_ATLAS) check list --format text
 
 configs-check: ## Back-compat alias to configs validation wrapper
 	@$(MAKE) -s configs-validate
 
-.PHONY: help list explain surface ci-local doctor configs-check
+make-gate-no-legacy-cli-refs: ## Fail if atlasctl appears in makefiles
+	@! rg -n "atlasctl" makefiles -g'*.mk' | rg -v 'make-gate-no-legacy-cli-refs|make-gate-no-bin-atlasctl|rg -n "atlasctl"|test ! -e bin/atlasctl'
+
+make-gate-no-bin-atlasctl: ## Fail if legacy root atlasctl shim exists
+	@test ! -e bin/atlasctl
+.PHONY: help list explain surface ci-local dev-atlas doctor check check-list configs-check make-gate-no-legacy-cli-refs make-gate-no-bin-atlasctl
