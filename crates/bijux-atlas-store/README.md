@@ -1,30 +1,32 @@
 # bijux-atlas-store
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+Storage contracts and backend adapters for atlas artifacts.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Stable Store Traits
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+- `StoreRead`
+- `StoreWrite`
+- `StoreAdmin`
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+`ArtifactStore` remains available as a compatibility facade over these ports.
 
-## Telemetry
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
+## Stable Contract Types
 
-## Tests
-- [tests/](tests/)
+- `StorePath`
+- `ArtifactRef`
+- `CatalogRef`
 
-## Benches
-- [benches/](benches/)
+## Backends
 
-## Docs index
-- [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)
+- local filesystem: `backends::local::LocalFsStore`
+- HTTP read-only: `backends::http::HttpReadonlyStore`
+- S3-compatible: `backends::s3::S3LikeStore` (feature `backend-s3`)
+
+## Stable API Guidance
+
+Considered stable:
+- store port traits
+- contract path/key helpers
+- store error codes and retry policy abstraction
+
+Internal implementation details in backend modules may evolve.
