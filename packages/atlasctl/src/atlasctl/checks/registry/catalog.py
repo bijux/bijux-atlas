@@ -9,6 +9,7 @@ from ..model import CheckCategory, CheckDef as CheckFactory, Severity
 from .ssot import RegistryEntry, canonical_check_id, check_id_renames, legacy_checks
 
 _MARKER_VOCAB: tuple[str, ...] = ("slow", "network", "kube", "docker", "fs-write", "git")
+_LINT_DOMAINS: frozenset[str] = frozenset({"ops", "make", "docs", "configs"})
 
 
 @dataclass(frozen=True)
@@ -86,6 +87,11 @@ def _build_index() -> RegistryIndex:
 
 def check_tags(check: CheckFactory) -> tuple[str, ...]:
     tags = set(check.tags)
+    category_value = getattr(check.category, "value", check.category)
+    if str(category_value).strip().lower() == "lint":
+        tags.add("lint")
+    if str(check.domain) in _LINT_DOMAINS:
+        tags.add("lint")
     tags.add(check.domain)
     tags.add("slow" if check.slow else "fast")
     check_id = check.check_id.lower()

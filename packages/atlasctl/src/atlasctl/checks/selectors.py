@@ -6,6 +6,7 @@ from pathlib import Path
 from subprocess import run
 
 from .model import CheckDef, CheckSelector
+from .registry import check_tags
 
 
 @dataclass(frozen=True)
@@ -83,7 +84,7 @@ def parse_selection_criteria(ns: object, repo_root: Path) -> SelectionCriteria:
 
 
 def _is_internal(check: CheckDef) -> bool:
-    tags = set(str(item) for item in check.tags)
+    tags = set(check_tags(check))
     return "internal" in tags or "internal-only" in tags
 
 
@@ -96,7 +97,7 @@ def apply_selection_criteria(checks: list[CheckDef], criteria: SelectionCriteria
             continue
         if criteria.query and criteria.query not in str(check.id) and criteria.query not in str(check.title):
             continue
-        tags = set(str(item) for item in check.tags)
+        tags = set(check_tags(check))
         if criteria.tags and not set(criteria.tags).issubset(tags):
             continue
         if criteria.exclude_tags and tags.intersection(criteria.exclude_tags):
