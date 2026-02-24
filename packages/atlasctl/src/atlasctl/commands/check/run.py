@@ -124,10 +124,31 @@ def run(ctx, ns: argparse.Namespace) -> int:
         checks = list(list_checks())
         domain_filter = str(getattr(ns, "domain_filter", "") or "").strip()
         category_filter = str(getattr(ns, "category", "") or "").strip()
+        list_domains_only = bool(getattr(ns, "domains", False))
+        list_tags_only = bool(getattr(ns, "tags", False))
+        list_suites_only = bool(getattr(ns, "suites", False))
+        if sum([list_domains_only, list_tags_only, list_suites_only]) > 1:
+            print("choose only one list mode: --domains, --tags, or --suites")
+            return ERR_USER
         if domain_filter:
             checks = [check for check in checks if check.domain == domain_filter]
         if category_filter:
             checks = [check for check in checks if check.category.value == category_filter]
+        if list_domains_only:
+            domains = sorted({str(check.domain) for check in checks})
+            payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "kind": "check-domains", "domains": domains}
+            print(json.dumps(payload, sort_keys=True) if (ctx.output_format == "json" or ns.json) else "\n".join(domains))
+            return 0
+        if list_tags_only:
+            tags = sorted({tag for check in checks for tag in check_tags(check)})
+            payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "kind": "check-tags", "tags": tags}
+            print(json.dumps(payload, sort_keys=True) if (ctx.output_format == "json" or ns.json) else "\n".join(tags))
+            return 0
+        if list_suites_only:
+            suites = sorted(spec.name for spec in impl.suite_manifest_specs())
+            payload = {"schema_version": 1, "tool": "atlasctl", "status": "ok", "kind": "check-suites", "suites": suites}
+            print(json.dumps(payload, sort_keys=True) if (ctx.output_format == "json" or ns.json) else "\n".join(suites))
+            return 0
         if not (ctx.output_format == "json" or ns.json):
             for check in checks:
                 print(check.check_id)
