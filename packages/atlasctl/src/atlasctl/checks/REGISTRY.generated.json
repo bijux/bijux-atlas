@@ -167,6 +167,39 @@
     },
     {
       "area": "docs",
+      "callable": "check_docs_checks_no_ops_imports",
+      "category": "check",
+      "description": "forbid docs checks from importing ops implementation modules directly",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep docs checks independent from ops modules and rely on documented contracts/inputs.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_docs_checks_no_ops_imports",
+      "intent": "forbid docs checks from importing ops implementation modules directly",
+      "legacy_id": "checks.docs_checks_no_ops_imports",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "docs",
       "callable": "check_docs_index_complete",
       "category": "check",
       "description": "require checks docs index to include canonical check ids",

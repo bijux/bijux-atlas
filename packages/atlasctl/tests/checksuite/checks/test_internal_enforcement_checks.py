@@ -6,6 +6,7 @@ from atlasctl.checks.domains.internal import (
     check_all_checks_declare_effects,
     check_all_checks_have_owner,
     check_all_checks_have_tags,
+    check_docs_checks_no_ops_imports,
     check_legacy_check_directories_absent,
     check_no_checks_outside_domains_tools,
     check_internal_no_checks_logic_in_commands,
@@ -124,3 +125,12 @@ def test_internal_registry_ssot_only_detects_scattered_legacy_import(tmp_path: P
     code, errors = check_internal_registry_ssot_only(tmp_path)
     assert code == 1
     assert any("registry legacy import must be isolated" in line for line in errors)
+
+
+def test_docs_checks_do_not_import_ops_modules(tmp_path: Path) -> None:
+    path = tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/docs_domain/example.py"
+    _write(path, "from atlasctl.commands.ops.runtime import run\n")
+    code, errors = check_docs_checks_no_ops_imports(tmp_path)
+    assert code == 1
+    assert any("docs checks must not import ops modules directly" in line for line in errors)
+    check_docs_checks_no_ops_imports,
