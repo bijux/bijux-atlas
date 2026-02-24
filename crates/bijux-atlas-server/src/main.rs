@@ -455,6 +455,7 @@ async fn main() -> Result<(), String> {
         hmac_max_skew_secs: env_u64("ATLAS_HMAC_MAX_SKEW_SECS", 300),
         ..ApiConfig::default()
     };
+    bijux_atlas_server::validate_startup_config_contract(&api_cfg, &cache_cfg)?;
 
     let startup_warmup_jitter_max_ms = cache_cfg.startup_warmup_jitter_max_ms;
     let startup_warmup = coordinated_startup_warmup_datasets(

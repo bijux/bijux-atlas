@@ -150,3 +150,63 @@ impl Default for ApiConfig {
         }
     }
 }
+
+pub fn validate_startup_config_contract(
+    api: &ApiConfig,
+    cache: &crate::DatasetCacheConfig,
+) -> Result<(), String> {
+    if api.max_body_bytes == 0 || api.max_uri_bytes == 0 || api.max_header_bytes == 0 {
+        return Err("api size limits must be > 0".to_string());
+    }
+    if api.request_timeout.is_zero() || api.sql_timeout.is_zero() {
+        return Err("timeouts must be > 0".to_string());
+    }
+    if cache.disk_high_watermark_pct <= cache.disk_low_watermark_pct {
+        return Err("cache watermark contract requires high > low".to_string());
+    }
+    if cache.max_dataset_count == 0 || cache.max_total_connections == 0 {
+        return Err("cache capacity limits must be > 0".to_string());
+    }
+    if cache.max_concurrent_downloads == 0 {
+        return Err("max concurrent downloads must be > 0".to_string());
+    }
+    if api.require_api_key && api.allowed_api_keys.is_empty() {
+        return Err("require_api_key=true requires at least one allowed api key".to_string());
+    }
+    if api.hmac_required && api.hmac_secret.as_deref().is_none_or(str::is_empty) {
+        return Err("hmac_required=true requires a non-empty hmac_secret".to_string());
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn startup_config_validation_rejects_invalid_watermark_order() {
+        let api = ApiConfig::default();
+        let mut cache = crate::DatasetCacheConfig::default();
+        cache.disk_high_watermark_pct = 70;
+        cache.disk_low_watermark_pct = 75;
+        let err = validate_startup_config_contract(&api, &cache).expect_err("invalid watermarks");
+        assert!(err.contains("high > low"));
+    }
+
+    #[test]
+    fn startup_config_validation_enforces_auth_contracts() {
+        let mut api = ApiConfig {
+            require_api_key: true,
+            ..ApiConfig::default()
+        };
+        let cache = crate::DatasetCacheConfig::default();
+        let err = validate_startup_config_contract(&api, &cache).expect_err("missing keys");
+        assert!(err.contains("allowed api key"));
+
+        api.allowed_api_keys = vec!["k".to_string()];
+        api.hmac_required = true;
+        api.hmac_secret = None;
+        let err = validate_startup_config_contract(&api, &cache).expect_err("missing hmac");
+        assert!(err.contains("hmac_secret"));
+    }
+}
