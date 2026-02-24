@@ -303,3 +303,88 @@ fn deterministic_json_output() {
     let b_text = render_json(&b).expect("json b");
     assert_eq!(a_text, b_text);
 }
+
+#[test]
+fn exit_code_mapping_is_distinct_for_fail_and_error() {
+    let pass_report = RunReport {
+        run_id: RunId::from_seed("pass"),
+        repo_root: ".".to_string(),
+        results: Vec::new(),
+        summary: RunSummary {
+            passed: 1,
+            failed: 0,
+            skipped: 0,
+            errors: 0,
+            total: 1,
+        },
+        timings_ms: BTreeMap::new(),
+    };
+    assert_eq!(exit_code_for_report(&pass_report), 0);
+
+    let fail_report = RunReport {
+        summary: RunSummary {
+            passed: 0,
+            failed: 1,
+            skipped: 0,
+            errors: 0,
+            total: 1,
+        },
+        ..pass_report.clone()
+    };
+    assert_eq!(exit_code_for_report(&fail_report), 2);
+
+    let error_report = RunReport {
+        summary: RunSummary {
+            passed: 0,
+            failed: 0,
+            skipped: 0,
+            errors: 1,
+            total: 1,
+        },
+        ..pass_report
+    };
+    assert_eq!(exit_code_for_report(&error_report), 3);
+}
+
+#[test]
+fn duration_output_is_deterministic_for_equal_durations() {
+    let report = RunReport {
+        run_id: RunId::from_seed("durations"),
+        repo_root: ".".to_string(),
+        results: vec![
+            CheckResult {
+                id: CheckId::parse("ops_surface_manifest").expect("id"),
+                status: CheckStatus::Pass,
+                skip_reason: None,
+                violations: Vec::new(),
+                duration_ms: 50,
+                evidence: Vec::new(),
+            },
+            CheckResult {
+                id: CheckId::parse("ops_tree_contract").expect("id"),
+                status: CheckStatus::Pass,
+                skip_reason: None,
+                violations: Vec::new(),
+                duration_ms: 50,
+                evidence: Vec::new(),
+            },
+        ],
+        summary: RunSummary {
+            passed: 2,
+            failed: 0,
+            skipped: 0,
+            errors: 0,
+            total: 2,
+        },
+        timings_ms: BTreeMap::new(),
+    };
+    let rendered = render_text_with_durations(&report, 2);
+    let lines: Vec<&str> = rendered.lines().collect();
+    assert!(lines.iter().any(|line| line.contains("duration: ops_surface_manifest 50ms")));
+    assert!(lines.iter().any(|line| line.contains("duration: ops_tree_contract 50ms")));
+    let first_duration = lines
+        .iter()
+        .find(|line| line.starts_with("duration:"))
+        .expect("first duration");
+    assert_eq!(*first_duration, "duration: ops_surface_manifest 50ms");
+}
