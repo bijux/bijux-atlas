@@ -48,7 +48,13 @@ fn doctor_supports_json_format() {
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
-    assert_eq!(payload.get("errors").and_then(|v| v.as_array()).map(|v| v.len()), Some(0));
+    assert_eq!(
+        payload
+            .get("registry_errors")
+            .and_then(|v| v.as_array())
+            .map(|v| v.len()),
+        Some(0)
+    );
 }
 
 #[test]
@@ -305,4 +311,30 @@ fn ops_status_pods_requires_allow_subprocess() {
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("status pods requires --allow-subprocess"));
+}
+
+#[test]
+fn check_list_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["check", "list", "--format", "json"])
+        .output()
+        .expect("check list json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("checks").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn check_doctor_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["check", "doctor", "--format", "json"])
+        .output()
+        .expect("check doctor json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("status").and_then(|v| v.as_str()), Some("ok"));
 }
