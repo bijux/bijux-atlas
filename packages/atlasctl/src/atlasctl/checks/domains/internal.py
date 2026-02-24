@@ -431,6 +431,49 @@ def check_surfaces_no_banned_adjectives_in_paths(repo_root: Path) -> tuple[int, 
     return (1, errors) if errors else (0, [])
 
 
+def check_no_raw_string_check_id_usage(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    model_path = checks_root / "model.py"
+    violations: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        if "__pycache__" in path.parts or path == model_path:
+            continue
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if re.search(r"check_id\s*:\s*str\b", text):
+            violations.append(f"{rel}: use CheckId wrapper instead of raw string check id annotation")
+    return (1, violations) if violations else (0, [])
+
+
+def check_checks_evidence_not_tracked(repo_root: Path) -> tuple[int, list[str]]:
+    proc = run_command(["git", "ls-files", "artifacts/atlasctl/checks"], cwd=repo_root)
+    if proc.code != 0:
+        return 1, ["unable to inspect tracked files under artifacts/atlasctl/checks"]
+    tracked = sorted(line.strip() for line in proc.stdout.splitlines() if line.strip())
+    if tracked:
+        return 1, [f"tracked check evidence file forbidden: {path}" for path in tracked]
+    return 0, []
+
+
+def check_no_generated_timestamp_dirs(repo_root: Path) -> tuple[int, list[str]]:
+    timestamp = re.compile(r"(?:^|[-_/])(?:19|20)\d{2}[-_]?(?:0[1-9]|1[0-2])[-_]?(?:0[1-9]|[12]\d|3[01])(?:[-_T]?\d{2}[._-]?\d{2}[._-]?\d{2})?(?:$|[-_/])")
+    roots = (
+        repo_root / "ops" / "_generated",
+        repo_root / "configs" / "_generated",
+    )
+    violations: list[str] = []
+    for root in roots:
+        if not root.exists():
+            continue
+        for path in sorted(root.rglob("*")):
+            rel = path.relative_to(repo_root).as_posix()
+            if path.name.startswith("."):
+                continue
+            if timestamp.search(rel):
+                violations.append(f"generated path contains timestamp-like segment: {rel}")
+    return (1, violations) if violations else (0, [])
+
+
 def _forbidden_imports(
     root: Path,
     *,
@@ -810,6 +853,39 @@ CHECKS = (
         check_checks_no_commands_import,
         category=CheckCategory.POLICY,
         fix_hint="Keep checks implementation independent from command layer imports.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_raw_string_check_id_usage",
+        "checks",
+        "forbid raw string check_id/domain annotations outside model module",
+        500,
+        check_no_raw_string_check_id_usage,
+        category=CheckCategory.POLICY,
+        fix_hint="Use CheckId and DomainId wrapper types instead of raw str annotations.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.evidence_not_tracked",
+        "checks",
+        "forbid tracked evidence outputs under artifacts/atlasctl/checks",
+        500,
+        check_checks_evidence_not_tracked,
+        category=CheckCategory.HYGIENE,
+        fix_hint="Remove tracked evidence files under artifacts/atlasctl/checks and keep them runtime-only.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.generated_no_timestamp_dirs",
+        "checks",
+        "forbid timestamp-like directory names under generated roots",
+        600,
+        check_no_generated_timestamp_dirs,
+        category=CheckCategory.HYGIENE,
+        fix_hint="Use deterministic, stable generated directory names without timestamps.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
