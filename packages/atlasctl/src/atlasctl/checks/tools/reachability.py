@@ -12,7 +12,12 @@ _DEAD_MODULE_ALLOWLIST = Path("configs/policy/dead-modules-allowlist.json")
 
 def check_repo_check_modules_registered(repo_root: Path) -> tuple[int, list[str]]:
     checks_dir = repo_root / "packages/atlasctl/src/atlasctl/checks/repo"
+    if not checks_dir.exists():
+        # Repo checks were consolidated under checks/tools/repo_domain.
+        return 0, []
     init_path = checks_dir / "__init__.py"
+    if not init_path.exists():
+        return 1, [f"missing registry module: {init_path.relative_to(repo_root).as_posix()}"]
     text = init_path.read_text(encoding="utf-8")
     errors: list[str] = []
     for path in sorted(checks_dir.glob("*.py")):
