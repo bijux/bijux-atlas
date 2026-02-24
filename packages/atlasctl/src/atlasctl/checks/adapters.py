@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+"""Compatibility adapter module for transitional check runtimes."""
+
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -86,4 +88,3 @@ class Network:
     def ensure_enabled(self) -> None:
         if not self._enabled:
             raise PermissionError(f"network effect disabled by default; declare `{CheckEffect.NETWORK.value}` and enable explicitly")
-

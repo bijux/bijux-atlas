@@ -3,10 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from atlasctl.checks.domains.internal import (
+    check_internal_adapters_module_quarantined,
     check_internal_checks_root_budget,
     check_internal_checks_tree_policy,
     check_internal_no_generated_registry_as_input,
     check_internal_no_registry_toml_reads,
+    check_internal_single_runner_surface,
 )
 
 
@@ -43,3 +45,19 @@ def test_registry_artifact_reads_flagged_outside_generation_modules(tmp_path: Pa
     generated_code, generated_errors = check_internal_no_generated_registry_as_input(tmp_path)
     assert toml_code == 1 and toml_errors
     assert generated_code == 1 and generated_errors
+
+
+def test_single_runner_surface_flags_engine_runner_imports(tmp_path: Path) -> None:
+    commands_root = tmp_path / "packages/atlasctl/src/atlasctl/commands/check"
+    _write(commands_root / "command.py", "from ...engine.runner import run_checks_payload\n")
+    code, errors = check_internal_single_runner_surface(tmp_path)
+    assert code == 1
+    assert any("engine.runner import" in line for line in errors)
+
+
+def test_adapters_module_quarantine_marker_required(tmp_path: Path) -> None:
+    adapters = tmp_path / "packages/atlasctl/src/atlasctl/checks/adapters.py"
+    _write(adapters, "from __future__ import annotations\n")
+    code, errors = check_internal_adapters_module_quarantined(tmp_path)
+    assert code == 1
+    assert any("compatibility adapter" in line for line in errors)
