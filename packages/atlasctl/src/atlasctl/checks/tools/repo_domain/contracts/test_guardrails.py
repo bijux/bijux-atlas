@@ -6,7 +6,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-from ....cli.surface_registry import command_registry
+from .....cli.surface_registry import command_registry
 
 
 def _tests_root(repo_root: Path) -> Path:
@@ -122,7 +122,7 @@ def check_command_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
 def check_check_test_coverage(repo_root: Path) -> tuple[int, list[str]]:
     tests_text = "\n".join(path.read_text(encoding="utf-8", errors="ignore") for path in _tests_root(repo_root).rglob("*.py"))
     markers = set(_load_suite_markers(repo_root))
-    repo_init = (repo_root / "packages/atlasctl/src/atlasctl/checks/repo/__init__.py").read_text(encoding="utf-8", errors="ignore")
+    repo_init = (repo_root / "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/__init__.py").read_text(encoding="utf-8", errors="ignore")
     check_ids = sorted(set(re.findall(r'CheckDef\("([^"]+)"', repo_init)))
     missing: list[str] = []
     for marker in check_ids:
@@ -145,7 +145,7 @@ def check_suite_marker_rules(repo_root: Path) -> tuple[int, list[str]]:
     dupes = sorted({marker for marker in markers if markers.count(marker) > 1})
     for marker in dupes:
         errors.append(f"duplicate suite coverage marker: {marker}")
-    repo_init = (repo_root / "packages/atlasctl/src/atlasctl/checks/repo/__init__.py").read_text(encoding="utf-8", errors="ignore")
+    repo_init = (repo_root / "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/__init__.py").read_text(encoding="utf-8", errors="ignore")
     check_ids = set(re.findall(r'CheckDef\("([^"]+)"', repo_init))
     unknown = sorted(marker for marker in set(markers) if marker not in check_ids)
     for marker in unknown:

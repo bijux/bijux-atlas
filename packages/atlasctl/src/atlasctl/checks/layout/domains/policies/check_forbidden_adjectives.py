@@ -4,7 +4,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from atlasctl.checks.repo.domains.forbidden_adjectives import check_forbidden_adjectives
+from atlasctl.checks.tools.repo_domain.domains.forbidden_adjectives import check_forbidden_adjectives
 
 ROOT = Path(__file__).resolve().parents[8]
 

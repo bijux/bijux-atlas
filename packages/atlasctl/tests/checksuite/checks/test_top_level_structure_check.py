@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.enforcement.structure.check_top_level_structure import check_top_level_structure
+from atlasctl.checks.tools.repo_domain.enforcement.structure.check_top_level_structure import check_top_level_structure
 
 
 def _mk_repo(tmp_path: Path) -> Path:

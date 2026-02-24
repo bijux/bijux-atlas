@@ -95,7 +95,7 @@ def check_shell_invocation_via_core_exec(repo_root: Path) -> tuple[int, list[str
     allowed = {
         "packages/atlasctl/src/atlasctl/core/exec.py",
         "packages/atlasctl/src/atlasctl/core/exec_shell.py",
-        "packages/atlasctl/src/atlasctl/checks/repo/enforcement/shell_policy.py",
+        "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/enforcement/shell_policy.py",
     }
     offenders: list[str] = []
     for path in sorted(src_root.rglob("*.py")):
@@ -197,7 +197,7 @@ def check_shell_docs_present(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_no_layout_shadow_configs(repo_root: Path) -> tuple[int, list[str]]:
-    script = repo_root / "packages/atlasctl/src/atlasctl/checks/repo/layout/no_shadow.py"
+    script = repo_root / "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/layout/no_shadow.py"
     proc = subprocess.run(
         [sys.executable, str(script)],
         cwd=repo_root,

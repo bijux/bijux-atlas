@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.pyproject_contracts import (
+from atlasctl.checks.tools.repo_domain.pyproject_contracts import (
     check_dependency_gate_targets,
     check_deps_command_surface,
     check_deps_workflow_doc,

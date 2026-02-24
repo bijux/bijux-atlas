@@ -19,7 +19,7 @@ _COLD_IMPORT_BUDGET_MS = 250.0
 _CHECKS_TO_COMMANDS_ALLOWLIST = {
     "packages/atlasctl/src/atlasctl/checks/tools/make_enforcement.py",
     "packages/atlasctl/src/atlasctl/checks/layout/ops/validation/check_ops_indexes_generated.py",
-    "packages/atlasctl/src/atlasctl/checks/repo/__init__.py",
+    "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/__init__.py",
     "packages/atlasctl/src/atlasctl/checks/tools/reachability.py",
 }
 _COMMANDS_TO_CHECKS_ALLOWLIST = {
@@ -31,7 +31,7 @@ _COMMANDS_TO_CHECKS_ALLOWLIST = {
     "packages/atlasctl/src/atlasctl/commands/ops/load/checks/check_runbook_suite_names.py",
 }
 _CHECKS_TO_CLI_ALLOWLIST = {
-    "packages/atlasctl/src/atlasctl/checks/repo/native/modules/repo_checks_make_and_layout.py",
+    "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/native/modules/repo_checks_make_and_layout.py",
 }
 
 

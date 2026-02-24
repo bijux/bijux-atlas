@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.enforcement.package_hygiene import check_no_empty_dirs_or_pointless_nests
+from atlasctl.checks.tools.repo_domain.enforcement.package_hygiene import check_no_empty_dirs_or_pointless_nests
 
 
 def test_check_no_empty_dirs_flags_empty_directory(tmp_path: Path) -> None:

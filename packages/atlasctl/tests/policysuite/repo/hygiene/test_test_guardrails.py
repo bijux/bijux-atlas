@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.contracts.test_guardrails import (
+from atlasctl.checks.tools.repo_domain.contracts.test_guardrails import (
     check_no_duplicated_coverage_paths,
     check_no_unmarked_test_network,
     check_test_determinism_patterns,

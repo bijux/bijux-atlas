@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.enforcement.argparse_policy import check_argparse_policy
+from atlasctl.checks.tools.repo_domain.enforcement.argparse_policy import check_argparse_policy
 
 
 def test_argparse_policy_check_passes_repo() -> None:

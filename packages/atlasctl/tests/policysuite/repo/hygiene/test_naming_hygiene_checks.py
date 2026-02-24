@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.contracts.naming_hygiene import (
+from atlasctl.checks.tools.repo_domain.contracts.naming_hygiene import (
     check_command_module_cli_intent,
     check_contracts_namespace_purpose,
     check_layout_domain_alias_cleanup,

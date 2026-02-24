@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.native_lint import check_naming_intent_lint
+from atlasctl.checks.tools.repo_domain.native_lint import check_naming_intent_lint
 
 
 def _mk_repo(tmp_path: Path) -> Path:

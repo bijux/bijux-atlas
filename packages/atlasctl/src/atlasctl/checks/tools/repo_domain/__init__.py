@@ -43,19 +43,19 @@ from .native import (
     check_tracked_timestamp_paths,
     check_makefiles_no_deep_config_paths,
 )
-from ..model import CheckDef
+from ...model import CheckDef
 from .enforcement.legacy_guard import check_legacy_package_absent
-from ...commands.policies.runtime.culprits import (
+from ....commands.policies.runtime.culprits import (
     check_budget_drift_approval,
     check_critical_dir_count_trend,
     check_budget_exceptions_documented,
     check_budget_exceptions_sorted,
     check_budget_metric,
 )
-from ...commands.policies.runtime.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
-from ...commands.policies.runtime.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
-from ...commands.policies.runtime.module_budgets import check_modules_per_domain
-from ...commands.policies.runtime.tree_depth import check_tree_depth
+from ....commands.policies.runtime.dir_budgets import check_loc_per_dir, check_modules_per_dir, check_py_files_per_dir
+from ....commands.policies.runtime.dir_entry_budgets import check_dir_entry_budgets, check_py_files_per_dir_budget
+from ....commands.policies.runtime.module_budgets import check_modules_per_domain
+from ....commands.policies.runtime.tree_depth import check_tree_depth
 from .enforcement.cwd_usage import (
     check_no_environ_mutation,
     check_no_path_cwd_usage,
@@ -138,7 +138,7 @@ from .contracts.dependencies import (
     check_optional_dependency_usage_gates,
 )
 from .domains.policies import check_forbidden_adjectives
-from ..tools.reachability import (
+from ..reachability import (
     check_dead_module_reachability_allowlist,
     check_dead_modules_report_runs,
     check_no_legacy_importers,
@@ -217,7 +217,7 @@ from .contracts.test_guardrails import (
     check_test_taxonomy_layout,
     check_test_write_sandbox,
 )
-from ..tools.repo_root import (
+from ..repo_root import (
     FORBIDDEN_ROOT_FILES_CHECK_ID,
     FORBIDDEN_ROOT_FILES_DESCRIPTION,
     FORBIDDEN_ROOT_NAMES_CHECK_ID,
@@ -553,7 +553,7 @@ CHECKS: tuple[CheckDef, ...] = (
     CheckDef("repo.dependency_declarations", "repo", "ensure pyproject dependency declarations match imports", 600, check_dependency_declarations, fix_hint="Add missing dependencies or remove unused declarations."),
     CheckDef("repo.optional_dependency_usage_gates", "repo", "forbid optional dependency usage without explicit allowlist gate", 400, check_optional_dependency_usage_gates, fix_hint="Move dependency to base deps or add justified exception in configs/policy/dependency-exceptions.json."),
     CheckDef("repo.internal_utils_stdlib_only", "repo", "prefer stdlib-only internal utility modules", 300, check_internal_utils_stdlib_only, fix_hint="Replace third-party imports in atlasctl/internal with stdlib equivalents or add a justified exception."),
-    CheckDef("repo.check_module_reachability", "repo", "ensure repo check modules are imported and reachable via registry", 300, check_repo_check_modules_registered, fix_hint="Import new repo check modules in checks/repo/__init__.py."),
+    CheckDef("repo.check_module_reachability", "repo", "ensure repo check modules are imported and reachable via registry", 300, check_repo_check_modules_registered, fix_hint="Import new repo check modules in checks/tools/repo_domain/__init__.py."),
     CheckDef("repo.dead_modules", "repo", "ensure dead modules analyzer runs and returns canonical payload", 300, check_dead_modules_report_runs, fix_hint="Keep policies/dead_modules.py runnable and deterministic."),
     CheckDef("repo.dead_module_reachability", "repo", "enforce dead module candidates are explicitly allowlisted", 300, check_dead_module_reachability_allowlist, fix_hint="Update configs/policy/dead-modules-allowlist.json with intended exceptions."),
     CheckDef("repo.legacy_zero_importers", "repo", "require zero importers of removed atlasctl legacy namespace", 300, check_no_legacy_importers, fix_hint="Remove imports/references to " + "atlasctl." + "legacy" + "."),

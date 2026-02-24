@@ -6,8 +6,8 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from ....core.process import run_command
-from ....core.runtime.paths import write_text_file
+from .....core.process import run_command
+from .....core.runtime.paths import write_text_file
 
 _CONFIG_PATH = Path("configs/policy/forbidden-adjectives.json")
 _APPROVALS_PATH = Path("configs/policy/forbidden-adjectives-approvals.json")

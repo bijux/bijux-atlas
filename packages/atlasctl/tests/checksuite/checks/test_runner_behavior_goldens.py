@@ -6,7 +6,7 @@ from pathlib import Path
 from atlasctl.checks.adapters import FS
 from atlasctl.checks.model import CheckContext, CheckDef
 from atlasctl.checks.policy import Capabilities
-from atlasctl.checks.report import build_report_payload
+from atlasctl.checks.tools.repo_domainrt import build_report_payload
 from atlasctl.checks.runner import run_checks
 from tests.helpers import golden_text
 

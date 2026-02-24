@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.contracts.command_contracts import (
+from atlasctl.checks.tools.repo_domain.contracts.command_contracts import (
     check_command_alias_budget,
     check_command_ownership_docs,
     check_internal_commands_not_public,
 )
-from atlasctl.checks.repo.contracts.test_guardrails import (
+from atlasctl.checks.tools.repo_domain.contracts.test_guardrails import (
     check_check_test_coverage,
     check_command_test_coverage,
     check_json_goldens_validate_schema,
@@ -15,20 +15,20 @@ from atlasctl.checks.repo.contracts.test_guardrails import (
     check_test_duplicate_expectations,
     check_test_ownership_tags,
 )
-from atlasctl.checks.repo.enforcement.boundaries.effect_boundaries import (
+from atlasctl.checks.tools.repo_domain.enforcement.boundaries.effect_boundaries import (
     check_effect_boundary_exceptions_policy,
     check_forbidden_effect_calls,
     check_subprocess_boundary,
 )
-from atlasctl.checks.repo.enforcement.import_policy import (
+from atlasctl.checks.tools.repo_domain.enforcement.import_policy import (
     check_checks_import_lint,
     check_command_import_lint,
 )
-from atlasctl.checks.repo.enforcement.structure.check_structure import (
+from atlasctl.checks.tools.repo_domain.enforcement.structure.check_structure import (
     check_check_impl_no_cli_imports,
     check_checks_canonical_location,
 )
-from atlasctl.checks.repo.enforcement.package_shape import check_checks_domain_split
+from atlasctl.checks.tools.repo_domain.enforcement.package_shape import check_checks_domain_split
 from atlasctl.commands.policies.runtime.culprits import check_critical_dir_count_trend
 
 

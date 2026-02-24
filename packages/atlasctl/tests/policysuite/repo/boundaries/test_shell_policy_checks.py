@@ -3,7 +3,7 @@ from __future__ import annotations
 # BYPASS_TEST_OK: shell boundary tests intentionally reference policy allowlist fixtures.
 from pathlib import Path
 
-from atlasctl.checks.repo.enforcement.shell_policy import (
+from atlasctl.checks.tools.repo_domain.enforcement.shell_policy import (
     check_core_no_bash_subprocess,
     check_shell_location_policy,
 )

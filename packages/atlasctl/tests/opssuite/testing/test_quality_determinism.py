@@ -8,7 +8,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from atlasctl.checks.repo.contracts.test_guardrails import check_check_test_coverage
+from atlasctl.checks.tools.repo_domain.contracts.test_guardrails import check_check_test_coverage
 from atlasctl.contracts.validate import validate
 from tests.helpers import ROOT, run_atlasctl
 

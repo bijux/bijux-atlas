@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.layout.boundary_check import check_boundaries
+from atlasctl.checks.tools.repo_domain.layout.boundary_check import check_boundaries
 
 ROOT = Path(__file__).resolve().parents[3]
 

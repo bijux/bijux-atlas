@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.repo.scripts_dir import check_scripts_dir_absent
+from atlasctl.checks.tools.repo_domain.scripts_dir import check_scripts_dir_absent
 
 
 def test_check_scripts_dir_absent_fails_when_scripts_exists(tmp_path: Path) -> None:
