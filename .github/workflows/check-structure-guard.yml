@@ -1,0 +1,40 @@
+name: check-structure-guard
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/check-structure-guard.yml"
+      - "packages/atlasctl/**"
+      - "configs/**"
+      - "docs/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-structure-guard.yml"
+      - "packages/atlasctl/**"
+      - "configs/**"
+      - "docs/**"
+
+jobs:
+  check-structure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify registry drift
+        run: ./bin/atlasctl --quiet check checks-registry-drift
+      - name: Verify check list schema envelope
+        run: |
+          ./bin/atlasctl --quiet check list --json > /tmp/check-list.json
+          python3 - <<'PY'
+          import json
+          payload = json.load(open("/tmp/check-list.json", encoding="utf-8"))
+          required = {"schema_name", "schema_version", "tool", "status", "checks"}
+          missing = sorted(required.difference(payload.keys()))
+          if missing:
+              raise SystemExit(f"missing keys in check list payload: {missing}")
+          if payload.get("status") != "ok":
+              raise SystemExit(f"unexpected payload status: {payload.get('status')}")
+          PY
+      - name: Run representative lint suite
+        run: ./bin/atlasctl --quiet check run --suite lint --fail-fast
