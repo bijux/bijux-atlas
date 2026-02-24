@@ -365,15 +365,39 @@ fn ops_doctor_and_validate_do_not_require_subprocess_flag() {
 }
 
 #[test]
-fn ops_list_tools_requires_allow_subprocess() {
+fn ops_list_tools_supports_json_without_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["ops", "list-tools", "--format", "json"])
         .output()
         .expect("ops list-tools");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn ops_tools_verify_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "tools", "verify", "--format", "json"])
+        .output()
+        .expect("ops tools verify");
     assert!(!output.status.success());
-    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
-    assert!(stderr.contains("subprocess is denied"));
+}
+
+#[test]
+fn ops_tools_doctor_runs_without_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "tools", "doctor", "--format", "json"])
+        .output()
+        .expect("ops tools doctor");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
 }
 
 #[test]

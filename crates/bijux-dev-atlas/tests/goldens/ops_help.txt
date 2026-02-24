@@ -8,6 +8,7 @@ Commands:
   load             
   e2e              
   obs              
+  tools            
   suite            
   doctor           
   validate         

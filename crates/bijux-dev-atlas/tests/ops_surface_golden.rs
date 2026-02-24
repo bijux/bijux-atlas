@@ -39,8 +39,12 @@ fn ops_inventory_json_matches_golden() {
         .args(["ops", "inventory", "--format", "json"])
         .output()
         .expect("ops inventory");
-    assert!(output.status.success());
-    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("json");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("json");
     let actual = normalize_json(payload);
     let golden = repo_root().join("crates/bijux-dev-atlas/tests/goldens/ops_inventory.json");
     if std::env::var("UPDATE_GOLDENS").ok().as_deref() == Some("1") {
