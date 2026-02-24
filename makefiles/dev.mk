@@ -1,38 +1,6 @@
-# Scope: canonical developer wrappers delegated to cargo-native entrypoints.
-# Keep one target per gate with deterministic cargo commands.
+# Scope: canonical developer wrappers delegated to Rust control-plane entrypoints.
+# Keep one target per gate with deterministic control-plane commands.
 SHELL := /bin/sh
-
-audit: ## Rust dependency audit lane
-	@command -v cargo-audit >/dev/null 2>&1 || { \
-		echo "cargo-audit is required. Install with: cargo install cargo-audit"; \
-		exit 1; \
-	}
-	@cargo audit
-
-cargo-check: ## Rust cargo check lane
-	@cargo check --workspace --all-targets
-
-coverage: ## Rust coverage lane
-	@command -v cargo-llvm-cov >/dev/null 2>&1 || { \
-		echo "cargo-llvm-cov is required. Install with: cargo install cargo-llvm-cov"; \
-		exit 1; \
-	}
-	@mkdir -p artifacts/coverage
-	@cargo llvm-cov nextest --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/nextest/nextest.toml --user-config-file none --run-ignored all
-	@cargo llvm-cov report
-
-fmt: ## Rust formatter check
-	@cargo fmt --all -- --check
-
-lint: ## Rust lint lane
-	@cargo clippy --workspace --all-targets --all-features -- -D warnings
-
-test: ## Rust tests lane
-	@command -v cargo-nextest >/dev/null 2>&1 || { \
-		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
-		exit 1; \
-	}
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}"
 
 dev-doctor: ## Run dev control-plane doctor suite
 	@$(DEV_ATLAS) check doctor --format text
@@ -55,4 +23,4 @@ install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts
 	@echo "installed artifacts/bin/bijux-atlas"
 	@echo "installed artifacts/bin/bijux-dev-atlas"
 
-.PHONY: audit cargo-check coverage fmt lint test dev-doctor dev-check-ci dev-check dev-ci install-local
+.PHONY: dev-doctor dev-check-ci dev-check dev-ci install-local
