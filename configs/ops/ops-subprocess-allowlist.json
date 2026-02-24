@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "policy": "temporary ops subprocess exceptions; prefer atlasctl.core.process",
+  "policy": "temporary ops subprocess exceptions; prefer bijux dev atlas.core.process",
   "paths": [
-    "packages/atlasctl/src/atlasctl/commands/ops/e2e/",
-    "packages/atlasctl/src/atlasctl/commands/ops/stack/",
-    "packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/",
-    "packages/atlasctl/src/atlasctl/commands/ops/k8s/ci/",
-    "packages/atlasctl/src/atlasctl/commands/ops/k8s/clean_uninstall.py",
-    "packages/atlasctl/src/atlasctl/commands/ops/obs/",
-    "packages/atlasctl/src/atlasctl/commands/ops/observability/",
-    "packages/atlasctl/src/atlasctl/commands/ops/datasets/",
-    "packages/atlasctl/src/atlasctl/commands/ops/load/",
-    "packages/atlasctl/src/atlasctl/commands/ops/lint/repo/",
-    "packages/atlasctl/src/atlasctl/commands/ops/orchestrate/"
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/e2e/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/stack/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/k8s/tests/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/k8s/ci/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/k8s/clean_uninstall.py",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/obs/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/observability/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/datasets/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/load/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/lint/repo/",
+    "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/orchestrate/"
   ]
 }

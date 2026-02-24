@@ -32,5 +32,5 @@ Policy SSOT and relaxation registry.
 - `ops/_meta/stack-layer-literal-allowlist.json`
 
 ## Reporting
-- List inventory: `./bin/atlasctl policies bypass list --report json`
-- Write report: `./bin/atlasctl policies bypass report --out artifacts/reports/atlasctl/policies-bypass-report.json`
+- List inventory: `bijux dev atlas policies bypass list --report json`
+- Write report: `bijux dev atlas policies bypass report --out artifacts/reports/bijux dev atlas/policies-bypass-report.json`

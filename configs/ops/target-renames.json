@@ -4,7 +4,7 @@
     {"from": "local", "to": "quick", "status": "deprecated"},
     {"from": "local-full", "to": "local/all", "status": "deprecated"},
     {"from": "contracts", "to": "policies/all", "status": "deprecated"},
-    {"from": "hygiene", "to": "scripts/all", "status": "deprecated"},
+    {"from": "hygiene", "to": "tooling/all", "status": "deprecated"},
     {"from": "config-validate", "to": "configs/all", "status": "deprecated"},
     {"from": "ci", "to": "ci/all", "status": "deprecated"},
     {"from": "nightly", "to": "nightly/all", "status": "deprecated"},

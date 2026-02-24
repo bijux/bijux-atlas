@@ -14,7 +14,7 @@
         "datasets.diff",
         "datasets.lint-ids"
       ],
-      "atlasctl_suite": "ops",
+      "dev_atlas_suite": "ops",
       "evidence_area": "datasets",
       "markers": [
         "ops",
@@ -30,7 +30,7 @@
       "actions": [
         "e2e.run"
       ],
-      "atlasctl_suite": "ops-nightly",
+      "dev_atlas_suite": "ops-nightly",
       "evidence_area": "e2e",
       "markers": [
         "ops",
@@ -48,7 +48,7 @@
         "e2e.validate",
         "e2e.validate-results"
       ],
-      "atlasctl_suite": "ops",
+      "dev_atlas_suite": "ops",
       "evidence_area": "e2e",
       "markers": [
         "ops",
@@ -72,7 +72,7 @@
         "deploy.apply",
         "deploy.rollback"
       ],
-      "atlasctl_suite": "ops-deploy",
+      "dev_atlas_suite": "ops-deploy",
       "evidence_area": "k8s",
       "markers": [
         "ops",
@@ -89,7 +89,7 @@
         "load.run",
         "load.compare"
       ],
-      "atlasctl_suite": "ops-nightly",
+      "dev_atlas_suite": "ops-nightly",
       "evidence_area": "load-suite",
       "markers": [
         "ops",
@@ -106,7 +106,7 @@
         "load.run",
         "load.check"
       ],
-      "atlasctl_suite": "ops-load",
+      "dev_atlas_suite": "ops-load",
       "evidence_area": "load-suite",
       "markers": [
         "ops",
@@ -128,7 +128,7 @@
         "obs.report",
         "obs.drill"
       ],
-      "atlasctl_suite": "ops-obs",
+      "dev_atlas_suite": "ops-obs",
       "evidence_area": "obs",
       "markers": [
         "ops",
@@ -147,7 +147,7 @@
         "pins.check",
         "surface"
       ],
-      "atlasctl_suite": "required-audit",
+      "dev_atlas_suite": "required-audit",
       "evidence_area": "scorecard",
       "markers": [
         "ops",
@@ -173,7 +173,7 @@
         "obs.verify",
         "stack.down"
       ],
-      "atlasctl_suite": "ops",
+      "dev_atlas_suite": "ops",
       "evidence_area": "smoke",
       "markers": [
         "ops",
@@ -195,7 +195,7 @@
         "stack.report",
         "stack.versions-sync"
       ],
-      "atlasctl_suite": "ops-stack",
+      "dev_atlas_suite": "ops-stack",
       "evidence_area": "stack",
       "markers": [
         "ops",
