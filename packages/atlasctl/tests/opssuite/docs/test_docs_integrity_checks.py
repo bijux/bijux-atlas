@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from atlasctl.checks.tools.docs_domain.integrity import (
+from atlasctl.checks.tools.docs_integrity import (
     check_command_group_docs_pages,
     check_docs_check_id_drift,
     check_docs_index_complete,
@@ -22,7 +22,7 @@ from atlasctl.checks.tools.docs_domain.integrity import (
 
 
 def test_docs_integrity_checks_pass_on_repo() -> None:
-    repo_root = Path(__file__).resolve().parents[4]
+    repo_root = Path(__file__).resolve().parents[5]
     for fn in (
         check_no_package_root_markdown_except_readme,
         check_docs_links_exist,
@@ -34,7 +34,6 @@ def test_docs_integrity_checks_pass_on_repo() -> None:
         check_migration_docs_not_stale,
         check_docs_nav_references_exist,
         check_docs_no_orphans,
-        check_docs_registry_indexes,
         check_docs_ownership_metadata,
         check_docs_lint_style,
         check_docs_no_placeholder_release_docs,

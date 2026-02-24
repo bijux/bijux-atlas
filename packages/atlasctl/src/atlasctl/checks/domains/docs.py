@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ..model import CheckDef
-from ..tools.docs_domain.integrity import (
+from ..tools.docs_integrity import (
     check_command_group_docs_pages,
     check_docs_check_id_drift,
     check_docs_ci_lane_mapping,
