@@ -9,7 +9,7 @@ audit: ## Rust dependency audit lane
 	}
 	@cargo audit
 
-check: ## Rust cargo check lane
+cargo-check: ## Rust cargo check lane
 	@cargo check --workspace --all-targets
 
 coverage: ## Rust coverage lane
@@ -40,10 +40,10 @@ test-all: ## Rust tests full variant (includes ignored)
 	@cargo nextest run --workspace --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
 
 dev-doctor: ## Run dev control-plane doctor suite
-	@$(BIJUX_DEV_ATLAS) doctor --format text
+	@$(DEV_ATLAS) doctor --format text
 
 dev-check-ci: ## Run dev control-plane ci suite
-	@$(BIJUX_DEV_ATLAS) check run --suite ci --format text
+	@$(DEV_ATLAS) check run --suite ci --format text
 
 dev-check: ## Alias for dev-check-ci
 	@$(MAKE) -s dev-check-ci
@@ -60,7 +60,4 @@ install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts
 	@echo "installed artifacts/bin/bijux-atlas"
 	@echo "installed artifacts/bin/bijux-dev-atlas"
 
-BIJUX ?= bijux
-BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
-
-.PHONY: audit check coverage fmt lint test test-all dev-doctor dev-check-ci dev-check dev-ci install-local
+.PHONY: audit cargo-check coverage fmt lint test test-all dev-doctor dev-check-ci dev-check dev-ci install-local
