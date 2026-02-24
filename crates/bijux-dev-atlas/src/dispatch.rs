@@ -1,5 +1,5 @@
 use crate::cli::{CheckCommand, Cli, Command};
-use crate::{run_check_doctor, run_check_explain, run_check_list, run_check_run, run_configs_command, run_docs_command, run_ops_command};
+use crate::{run_capabilities_command, run_check_doctor, run_check_explain, run_check_list, run_check_run, run_configs_command, run_docs_command, run_ops_command};
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 
 pub(crate) fn run_cli(cli: Cli) -> i32 {
@@ -145,6 +145,18 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         },
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
+        Command::Capabilities { format, out } => match run_capabilities_command(format, out) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    println!("{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                eprintln!("bijux-dev-atlas capabilities failed: {err}");
+                1
+            }
+        },
         Command::Check { command } => {
             let result = match command {
                 CheckCommand::List {
