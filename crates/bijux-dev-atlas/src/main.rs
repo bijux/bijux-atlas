@@ -550,6 +550,22 @@ pub(crate) fn run_check_doctor(
         &selectors,
         &RunOptions::default(),
     )?;
+    let docs_common = DocsCommonArgs {
+        repo_root: Some(root.clone()),
+        artifacts_root: Some(root.join("artifacts")),
+        run_id: Some("doctor_docs".to_string()),
+        format,
+        out: None,
+        allow_subprocess: false,
+        allow_write: false,
+        allow_network: false,
+        strict: false,
+        include_drafts: false,
+    };
+    let docs_ctx = docs_context(&docs_common)?;
+    let docs_validate = docs_validate_payload(&docs_ctx, &docs_common)?;
+    let docs_links = docs_links_payload(&docs_ctx, &docs_common)?;
+    let docs_lint = docs_lint_payload(&docs_ctx, &docs_common)?;
     let check_exit = exit_code_for_report(&report);
     let status =
         if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
@@ -562,6 +578,11 @@ pub(crate) fn run_check_doctor(
         "status": status,
         "registry_errors": registry_report.errors,
         "inventory_errors": inventory_errors,
+        "docs_doctor": {
+            "validate_errors": docs_validate.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
+            "links_errors": docs_links.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
+            "lint_errors": docs_lint.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len)
+        },
         "check_report": report,
     });
 

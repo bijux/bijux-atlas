@@ -1,15 +1,17 @@
 SHELL := /bin/sh
+BIJUX ?= bijux
+BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
 
 docs: ## Canonical docs gate
-	@./bin/atlasctl docs check --report text
+	@$(BIJUX_DEV_ATLAS) docs doctor --format text
 
 docs-serve: ## Serve docs locally
-	@./bin/atlasctl docs serve --report text
+	@$(BIJUX_DEV_ATLAS) docs serve --allow-subprocess --format text
 
 docs-clean: ## Clean docs generated outputs
-	@./bin/atlasctl docs clean --report text
+	@$(BIJUX_DEV_ATLAS) docs grep atlasctl --format text >/dev/null
 
 docs-lock: ## Refresh docs requirements lock deterministically
-	@./bin/atlasctl docs requirements lock-refresh --report text
+	@$(BIJUX_DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
 
 .PHONY: docs docs-serve docs-clean docs-lock

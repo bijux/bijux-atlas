@@ -499,6 +499,17 @@ budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
+id = "checks_make_docs_wrappers_delegate_dev_atlas"
+domain = "make"
+title = "docs make wrappers delegate through bijux dev atlas docs commands"
+docs = "docs/development/tooling/dev-atlas-docs.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
 domain = "crates"
 title = "umbrella runtime tests reserve dev verb ownership"
@@ -636,6 +647,12 @@ tags_any = ["fast"]
 id = "deep"
 checks = []
 domains = ["ops", "repo", "docs", "make"]
+tags_any = []
+
+[[suites]]
+id = "docs"
+checks = []
+domains = ["docs"]
 tags_any = []
 
 [[suites]]
