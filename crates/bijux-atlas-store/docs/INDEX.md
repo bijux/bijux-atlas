@@ -15,6 +15,7 @@ Docs:
 - [Artifact contract](ARTIFACT_CONTRACT.md)
 - [Effects policy](effects.md)
 - [Caching semantics](CACHING.md)
+- [Backends and guarantees](BACKENDS_AND_GUARANTEES.md)
 - [Failure modes](FAILURE_MODES.md)
 - [Rollback workflow](ROLLBACK.md)
 - [Store outage runbook snippet](RUNBOOK_SNIPPET.md)
@@ -37,4 +38,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-
