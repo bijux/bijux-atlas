@@ -184,6 +184,38 @@ fn run_serve(log_flags: LogFlags, output_mode: OutputMode) -> Result<(), String>
     }
 }
 
+fn run_dev_atlas(args: Vec<String>, output_mode: OutputMode) -> Result<(), String> {
+    let current_exe =
+        std::env::current_exe().map_err(|e| format!("failed to determine executable path: {e}"))?;
+    let bin_dir = current_exe
+        .parent()
+        .ok_or_else(|| "failed to resolve executable directory".to_string())?;
+    let local_bin = bin_dir.join("bijux-atlas-dev");
+
+    let mut cmd = if local_bin.exists() {
+        let mut command = Command::new(local_bin);
+        command.args(&args);
+        command
+    } else {
+        let mut command = Command::new("bijux-atlas-dev");
+        command.args(&args);
+        command
+    };
+
+    let status = cmd
+        .status()
+        .map_err(|e| format!("failed to start bijux-atlas-dev: {e}"))?;
+    if status.success() {
+        command_output_adapters::emit_ok(
+            output_mode,
+            json!({"command":"atlas dev-atlas","status":"ok","args":args}),
+        )?;
+        Ok(())
+    } else {
+        Err(format!("bijux-atlas-dev exited with status {status}"))
+    }
+}
+
 fn plugin_metadata_payload() -> Value {
     json!({
         "schema_version": "v1",

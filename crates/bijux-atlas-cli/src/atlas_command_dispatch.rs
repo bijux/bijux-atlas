@@ -375,6 +375,8 @@ fn run_atlas_command(
             }
         }
         .map_err(CliError::dependency),
+        AtlasCommand::DevAtlas { args } => {
+            run_dev_atlas(args, output_mode).map_err(CliError::dependency)
+        }
     }
 }
-
