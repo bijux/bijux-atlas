@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# BYPASS_TEST_OK: reads configs/policy fixtures for policy-check coverage.
 import argparse
 from pathlib import Path
 from types import SimpleNamespace
