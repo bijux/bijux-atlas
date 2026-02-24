@@ -4,7 +4,7 @@ fn run_atlas_command(
     output_mode: OutputMode,
 ) -> Result<(), CliError> {
     match command {
-        AtlasCommand::Serve => run_serve(log_flags, output_mode).map_err(CliError::dependency),
+        AtlasCommand::Atlas { command } => run_atlas_command(*command, log_flags, output_mode),
         AtlasCommand::Validate {
             root,
             release,
@@ -349,10 +349,6 @@ fn run_atlas_command(
             allow_full_scan,
         } => explain_query_from_query_text(db, &query, limit, allow_full_scan, output_mode)
             .map_err(CliError::internal),
-        AtlasCommand::Bench {
-            suite,
-            enforce_baseline,
-        } => run_bench_command(&suite, enforce_baseline, output_mode).map_err(CliError::dependency),
         AtlasCommand::Smoke {
             root,
             dataset,
@@ -373,6 +369,6 @@ fn run_atlas_command(
                 command_output_adapters::run_openapi_generate(out, output_mode)
             }
         }
-        .map_err(CliError::dependency),
+        .map_err(CliError::internal),
     }
 }
