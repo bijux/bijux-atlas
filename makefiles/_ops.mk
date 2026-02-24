@@ -55,8 +55,8 @@ ops-e2e: ## Run e2e scenario wrapper through grouped ops namespace
 ops-load: ## Run load wrapper through grouped ops namespace
 	@$(DEV_ATLAS) ops load run --profile $(PROFILE) --format json
 
-ops-obs: ## Run observability drill wrapper through grouped ops namespace
-	@$(DEV_ATLAS) ops obs drill run --profile $(PROFILE) --format json
+ops-obs: ## Run observability verification wrapper through grouped ops namespace
+	@$(DEV_ATLAS) ops obs verify --profile $(PROFILE) --format json
 
 ops-tools-verify: ## Verify required ops external tools
 	@$(DEV_ATLAS) ops verify-tools --allow-subprocess --format json

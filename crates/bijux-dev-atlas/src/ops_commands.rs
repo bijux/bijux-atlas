@@ -38,6 +38,10 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     common,
                 },
             },
+            OpsObsCommand::Verify(common) => OpsCommand::Explain {
+                action: "obs-verify".to_string(),
+                common,
+            },
         },
         other => other,
     };

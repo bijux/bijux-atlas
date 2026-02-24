@@ -1,12 +1,32 @@
 # Ops Errors
 
-Mapping of ops-facing failure categories to bijux-dev-atlas error reporting.
+## Scope
 
-| Category | Typical bijux-dev-atlas command family | Error shape | Notes |
-|---|---|---|---|
-| Contract validation | `bijux dev atlas ops * validate/check` | non-zero + schema/contract message | Prefer deterministic schema path in output |
-| Prerequisite missing | `ops prereqs`, `ops kind`, `ops stack` | prereq failure / missing tool | Include missing binary/version |
-| Drift detected | `ops gen check`, surface/schema checks | drift message + remediation command | Must print canonical regen command |
-| Runtime orchestration failure | `ops up/down/deploy/e2e/load/obs` | subprocess/step failure | Include failed step id and log path |
-| Policy denial | lint/policy checks | explicit policy violation | Include owning policy/check id |
-| Migration guard | `ops migrate`, legacy path checks | cutoff or duplicate-path error | Include cutoff date + canonical path |
+Stable error identifiers for `bijux dev atlas ops ...` command surfaces.
+
+## Contract
+
+- Error identifiers are stable strings intended for CI parsing and troubleshooting.
+- Human-readable messages may evolve, but identifiers should not churn without a migration update.
+- Ops commands are capability-gated; missing flags should fail with explicit effect requirements.
+
+## Current Error IDs
+
+- `OPS_CONTRACT_ERROR`: Ops SSOT contract violation or missing required inputs
+- `OPS_TOOL_ERROR`: Required external tool missing or version contract mismatch
+- `OPS_RENDER_ERROR`: Deterministic render/check contract failed
+- `OPS_INSTALL_ERROR`: Install/apply operation refused or failed
+- `OPS_STATUS_ERROR`: Status collection failed
+- `OPS_PINS_ERROR`: Pins validation or update contract failed
+- `OPS_REPORT_ERROR`: Report generation or artifact write failed
+
+## Capability Gate Failures
+
+These are typically emitted as command errors with explicit messages:
+
+- missing `--allow-subprocess`
+- missing `--allow-write`
+- missing `--allow-network`
+
+The presence of a capability gate error indicates the command was invoked in safe mode without the
+required effect enabled.
