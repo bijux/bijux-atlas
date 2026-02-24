@@ -408,6 +408,27 @@ pub struct RunReport {
     pub timings_ms: BTreeMap<CheckId, u64>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct OpsRunReport {
+    #[serde(default = "schema_version")]
+    pub schema_version: u64,
+    pub kind: String,
+    pub command: String,
+    pub run_id: RunId,
+    pub repo_root: String,
+    pub ops_root: String,
+    pub profile: Option<String>,
+    pub suite: Option<String>,
+    pub status: String,
+    pub exit_code: i32,
+    pub checks: Vec<String>,
+    pub warnings: Vec<String>,
+    pub errors: Vec<String>,
+    pub capabilities: BTreeMap<String, String>,
+    pub summary: BTreeMap<String, u64>,
+    pub rows: Vec<serde_json::Value>,
+}
+
 pub mod fingerprint {
     use super::*;
     use std::collections::hash_map::DefaultHasher;
