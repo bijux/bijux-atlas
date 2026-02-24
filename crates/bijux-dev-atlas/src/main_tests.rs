@@ -238,6 +238,35 @@ mod tests {
     }
 
     #[test]
+    fn docker_subcommands_parse() {
+        let commands = [
+            vec!["bijux-dev-atlas", "docker", "build", "--allow-subprocess"],
+            vec!["bijux-dev-atlas", "docker", "check", "--allow-subprocess"],
+            vec![
+                "bijux-dev-atlas",
+                "docker",
+                "push",
+                "--allow-subprocess",
+                "--i-know-what-im-doing",
+            ],
+            vec![
+                "bijux-dev-atlas",
+                "docker",
+                "release",
+                "--allow-subprocess",
+                "--i-know-what-im-doing",
+            ],
+        ];
+        for argv in commands {
+            let cli = crate::Cli::try_parse_from(argv).expect("parse");
+            match cli.command {
+                Some(crate::cli::Command::Docker { .. }) => {}
+                _ => panic!("expected docker command"),
+            }
+        }
+    }
+
+    #[test]
     fn policies_subcommands_parse() {
         let commands = [
             vec!["bijux-dev-atlas", "policies", "print"],

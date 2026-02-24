@@ -15,9 +15,10 @@ use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 
 use crate::cli::{
-    Cli, ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
-    GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
-    OpsStatusTarget, PoliciesCommand, WorkflowsCommand,
+    Cli, ConfigsCommand, ConfigsCommonArgs, DockerCommand, DockerCommonArgs, DocsCommand,
+    DocsCommonArgs, DomainArg, FormatArg, GatesCommand, OpsCommand, OpsCommonArgs,
+    OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget, OpsStatusTarget, PoliciesCommand,
+    WorkflowsCommand,
 };
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
@@ -435,6 +436,103 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
         }
         Err(err) => {
             eprintln!("bijux-dev-atlas policies failed: {err}");
+            1
+        }
+    }
+}
+
+pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
+    let run = (|| -> Result<(String, i32), String> {
+        let started = std::time::Instant::now();
+        let emit = |common: &DockerCommonArgs, payload: serde_json::Value, code: i32| {
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, code))
+        };
+        match command {
+            DockerCommand::Build(common) => {
+                if !common.allow_subprocess {
+                    return Err("docker build requires --allow-subprocess".to_string());
+                }
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_build"));
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": run_id.as_str(),
+                    "text": "docker build wrapper is defined (subprocess-gated)",
+                    "rows": [{"action":"build","repo_root": repo_root.display().to_string()}],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Check(common) => {
+                if !common.allow_subprocess {
+                    return Err("docker check requires --allow-subprocess".to_string());
+                }
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker check wrapper is defined (subprocess-gated)",
+                    "rows": [{"action":"check","repo_root": repo_root.display().to_string()}],
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Push(args) => {
+                if !args.i_know_what_im_doing {
+                    return Err("docker push requires --i-know-what-im-doing".to_string());
+                }
+                if !args.common.allow_subprocess {
+                    return Err("docker push requires --allow-subprocess".to_string());
+                }
+                let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker push wrapper is defined (explicit release gate)",
+                    "rows": [{"action":"push","repo_root": repo_root.display().to_string()}],
+                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&args.common, payload, 0)
+            }
+            DockerCommand::Release(args) => {
+                if !args.i_know_what_im_doing {
+                    return Err("docker release requires --i-know-what-im-doing".to_string());
+                }
+                if !args.common.allow_subprocess {
+                    return Err("docker release requires --allow-subprocess".to_string());
+                }
+                let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": "docker release wrapper is defined (explicit release gate)",
+                    "rows": [{"action":"release","repo_root": repo_root.display().to_string()}],
+                    "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&args.common, payload, 0)
+            }
+        }
+    })();
+    match run {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                if code == 0 {
+                    println!("{rendered}");
+                } else {
+                    eprintln!("{rendered}");
+                }
+            }
+            code
+        }
+        Err(err) => {
+            eprintln!("bijux-dev-atlas docker failed: {err}");
             1
         }
     }

@@ -1,6 +1,7 @@
 ops
 docs
 configs
+docker
 policies
 workflows
 gates
