@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Tracked files: `2840`
+- Tracked files: `2851`
 - Docs markdown files: `431`
 - Script files under `scripts/`: `0`
 - Rust test files: `42`
@@ -15,7 +15,7 @@
 
 ## Naming Health
 
-- Forbidden-token hits: `16`
+- Forbidden-token hits: `18`
 - Non-kebab docs outside allowed exceptions: `28`
 - Non-kebab scripts under `scripts/`: `0`
 
@@ -100,6 +100,7 @@
 - `packages/atlasctl/tests/checksuite/checks/test_k8s_conformance_contracts_phase4.py`
 - `packages/atlasctl/tests/checksuite/checks/test_k8s_conformance_reporting_phase4.py`
 - `packages/atlasctl/tests/checksuite/checks/test_load_phase4_contracts.py`
+- `packages/atlasctl/tests/checksuite/checks/test_models_roundtrip_golden.py`
 - `packages/atlasctl/tests/checksuite/checks/test_obs_phase4_contracts.py`
 - `packages/atlasctl/tests/checksuite/checks/test_stack_contracts_phase4.py`
 - `packages/atlasctl/tests/commands/ops/test_obs_drill_phase4.py`
@@ -107,4 +108,5 @@
 - `packages/atlasctl/tests/commands/product/test_product_phase5_release_flow.py`
 - `packages/atlasctl/tests/devsuite/ops/test_ops_phase6_cli_aliases.py`
 - `packages/atlasctl/tests/devsuite/ops/test_ops_phase6_models_and_workflows.py`
+- `packages/atlasctl/tests/goldens/check/models-roundtrip.json.golden`
 - `packages/atlasctl/tests/policysuite/repo/hygiene/test_required_phase7.py`

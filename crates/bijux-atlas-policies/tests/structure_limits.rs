@@ -10,8 +10,7 @@ use bijux_atlas_policies::{
     EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile, PolicyModes,
     PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy, ResponseBudgetPolicy,
     StoreResiliencePolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD, MAX_LOC_WARN,
-    MAX_MODULES_PER_DIR_HARD,
-    MAX_RS_FILES_PER_DIR_HARD,
+    MAX_MODULES_PER_DIR_HARD, MAX_RS_FILES_PER_DIR_HARD,
 };
 
 fn workspace_root() -> PathBuf {

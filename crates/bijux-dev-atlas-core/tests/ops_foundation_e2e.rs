@@ -130,7 +130,10 @@ tags_any = ["fast"]
     write(&root.join("ops/schema/README.md"), "# Schema\n");
     write(&root.join("ops/schema/meta/ownership.schema.json"), "{}\n");
     write(&root.join("ops/schema/report/unified.schema.json"), "{}\n");
-    write(&root.join("ops/schema/stack/profile-manifest.schema.json"), "{}\n");
+    write(
+        &root.join("ops/schema/stack/profile-manifest.schema.json"),
+        "{}\n",
+    );
     write(&root.join("ops/inventory/README.md"), "# Inventory\n");
     write(
         &root.join("ops/inventory/surfaces.json"),
