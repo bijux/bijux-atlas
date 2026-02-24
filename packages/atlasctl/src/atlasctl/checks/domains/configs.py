@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from ...model import CheckDef
-from ...repo.contracts.pyproject_contracts import (
+from ..model import CheckDef
+from ..repo.contracts.pyproject_contracts import (
     check_pyproject_no_duplicate_tool_config,
     check_pyproject_required_blocks,
 )
