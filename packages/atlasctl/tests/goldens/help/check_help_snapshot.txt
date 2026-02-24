@@ -101,7 +101,7 @@ positional arguments:
                         budget
     checks-registry-drift
                         validate checks REGISTRY.generated.json is in sync
-                        with REGISTRY.toml
+                        with registry source
     python-runtime-artifacts
                         validate runtime python artifacts stay outside tracked
                         paths

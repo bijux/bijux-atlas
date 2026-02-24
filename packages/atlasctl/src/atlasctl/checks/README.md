@@ -6,7 +6,7 @@
 
 - Runtime check definitions are sourced from Python registry modules in `atlasctl/checks/registry.py`.
 - Runtime selector/list/explain paths consume `atlasctl.checks.registry.ALL_CHECKS`.
-- `REGISTRY.toml` and `REGISTRY.generated.json` are generated artifacts, not runtime inputs.
+- `REGISTRY.generated.json` are generated artifacts, not runtime inputs.
 - Check execution is centralized in `atlasctl.checks.runner`.
 
 ## Effect Policy

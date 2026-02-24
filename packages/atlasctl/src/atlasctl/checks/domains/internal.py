@@ -11,7 +11,7 @@ from ...core.process import run_command
 from ..model import CheckCategory, CheckDef
 
 
-REGISTRY_PATH = "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
+REGISTRY_PATH = "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json"
 REQUIRED_OWNERS = "configs/make/ownership.json"
 REQUIRED_DOCS = {"docs/checks/registry.md", "docs/INDEX.md"}
 REQUIRED_GOLDENS = {
@@ -300,7 +300,7 @@ def check_checks_root_entry_budget(repo_root: Path) -> tuple[int, list[str]]:
     root = repo_root / "packages/atlasctl/src/atlasctl/checks"
     if not root.exists():
         return 1, ["missing checks root directory: packages/atlasctl/src/atlasctl/checks"]
-    ignored = {"__pycache__", "__init__.py", "README.md", "REGISTRY.toml", "REGISTRY.generated.json", "api.py"}
+    ignored = {"__pycache__", "__init__.py", "README.md", "REGISTRY.generated.json", "api.py"}
     entries = [
         item.name
         for item in root.iterdir()
@@ -675,6 +675,10 @@ def check_registry_generated_read_only(repo_root: Path) -> tuple[int, list[str]]
     return 0, []
 
 
+def check_registry_generated_is_readonly(repo_root: Path) -> tuple[int, list[str]]:
+    return check_registry_generated_read_only(repo_root)
+
+
 def check_registry_toml_generated_contract(repo_root: Path) -> tuple[int, list[str]]:
     path = repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
     if not path.exists():
@@ -999,7 +1003,7 @@ CHECKS = (
         2500,
         check_registry_integrity,
         category=CheckCategory.CONTRACT,
-        fix_hint="Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.toml/REGISTRY.generated.json.",
+        fix_hint="Run `./bin/atlasctl gen checks-registry` and commit REGISTRY.generated.json.",
         slow=True,
         owners=("platform",),
         tags=("checks", "registry"),
@@ -1011,7 +1015,7 @@ CHECKS = (
         500,
         check_registry_change_requires_owner_update,
         category=CheckCategory.POLICY,
-        fix_hint="Update configs/make/ownership.json when REGISTRY.toml changes.",
+        fix_hint="Update configs/make/ownership.json when REGISTRY.generated.json changes.",
         owners=("platform",),
         tags=("checks", "registry", "ci"),
     ),
@@ -1022,7 +1026,7 @@ CHECKS = (
         500,
         check_registry_change_requires_docs_update,
         category=CheckCategory.POLICY,
-        fix_hint="Update docs/checks/registry.md when REGISTRY.toml changes.",
+        fix_hint="Update docs/checks/registry.md when REGISTRY.generated.json changes.",
         owners=("platform",),
         tags=("checks", "registry", "ci"),
     ),
@@ -1033,7 +1037,7 @@ CHECKS = (
         500,
         check_registry_change_requires_golden_update,
         category=CheckCategory.POLICY,
-        fix_hint="Refresh check list/tree/owners goldens when REGISTRY.toml changes.",
+        fix_hint="Refresh check list/tree/owners goldens when REGISTRY.generated.json changes.",
         owners=("platform",),
         tags=("checks", "registry", "ci"),
     ),
@@ -1044,7 +1048,7 @@ CHECKS = (
         700,
         check_registry_all_checks_have_canonical_id,
         category=CheckCategory.CONTRACT,
-        fix_hint="Update REGISTRY.toml ids to checks_<domain>_<area>_<name>.",
+        fix_hint="Update registry ids to checks_<domain>_<area>_<name>.",
         owners=("platform",),
         tags=("checks", "registry", "required"),
     ),
@@ -1055,7 +1059,7 @@ CHECKS = (
         700,
         check_registry_no_duplicate_canonical_id,
         category=CheckCategory.CONTRACT,
-        fix_hint="Deduplicate conflicting ids in REGISTRY.toml.",
+        fix_hint="Deduplicate conflicting registry ids.",
         owners=("platform",),
         tags=("checks", "registry", "required"),
     ),
@@ -1088,7 +1092,7 @@ CHECKS = (
         500,
         check_registry_speed_required,
         category=CheckCategory.CONTRACT,
-        fix_hint="Set speed to fast, slow, or nightly in REGISTRY.toml.",
+        fix_hint="Set speed to fast, slow, or nightly in the generated registry source.",
         owners=("platform",),
         tags=("checks", "registry", "required"),
     ),
@@ -1176,7 +1180,7 @@ CHECKS = (
         500,
         check_owners_ssot,
         category=CheckCategory.CONTRACT,
-        fix_hint="Set owners for every check in REGISTRY.toml.",
+        fix_hint="Set owners for every check in the generated registry source.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
@@ -1489,13 +1493,13 @@ CHECKS = (
         tags=("checks", "required"),
     ),
     CheckDef(
-        "checks.registry_toml_generated_contract",
+        "checks.registry_generated_is_readonly",
         "checks",
-        "require REGISTRY.toml to be generated-only when present",
+        "require generated registry json to be generator-owned",
         500,
-        check_registry_toml_generated_contract,
+        check_registry_generated_is_readonly,
         category=CheckCategory.CONTRACT,
-        fix_hint="Write REGISTRY.toml through atlasctl generator and include generated-only header.",
+        fix_hint="Regenerate REGISTRY.generated.json via atlasctl registry generator and keep generated metadata markers.",
         owners=("platform",),
         tags=("checks", "required"),
     ),

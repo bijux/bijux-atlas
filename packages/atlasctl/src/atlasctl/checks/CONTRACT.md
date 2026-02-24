@@ -26,7 +26,7 @@ These trees are not allowed in the target shape:
 
 - Runtime check selection uses python registry APIs, not generated artifacts.
 - `REGISTRY.generated.json` is a generated output only.
-- `REGISTRY.toml` is generated-only when present.
+- 
 - Runtime execution must not parse generated registry files as inputs.
 
 ## Runtime Boundaries

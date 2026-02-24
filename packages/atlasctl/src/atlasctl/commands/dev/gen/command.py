@@ -89,7 +89,7 @@ def run_gen_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     sub = ns.gen_cmd
     if sub == "checks-registry":
         out, _changed = generate_registry(ctx.repo_root, check_only=False)
-        print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "registry_toml": "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml", "registry_json": str(out.relative_to(ctx.repo_root))}, sort_keys=True))
+        print(json.dumps({"schema_version": 1, "tool": "atlasctl", "status": "ok", "registry_json": str(out.relative_to(ctx.repo_root))}, sort_keys=True))
         return 0
     if sub == "contracts":
         return run_contracts_command(
@@ -173,4 +173,4 @@ def configure_gen_parser(sub: argparse._SubParsersAction[argparse.ArgumentParser
     p_sub.add_parser("make-targets", help="generate make targets inventory artifacts")
     p_sub.add_parser("surface", help="generate repo public surface artifacts")
     p_sub.add_parser("scripting-surface", help="generate scripts/CLI surface artifacts")
-    p_sub.add_parser("checks-registry", help="generate checks REGISTRY.toml and REGISTRY.generated.json")
+    p_sub.add_parser("checks-registry", help="generate checks REGISTRY.generated.json")

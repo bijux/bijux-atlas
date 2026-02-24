@@ -7,7 +7,6 @@ from ...core.runtime.paths import write_text_file
 
 
 TARGETS: tuple[str, ...] = (
-    "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
     "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
     "packages/atlasctl/src/atlasctl/registry/checks_catalog.json",
     "packages/atlasctl/tests",

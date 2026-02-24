@@ -3,14 +3,8 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-try:
-    import tomllib  # type: ignore[attr-defined]
-except ModuleNotFoundError:  # pragma: no cover
-    import tomli as tomllib  # type: ignore[no-redef]
-
 _SRC_ROOT = Path("packages/atlasctl/src/atlasctl")
 _CHECKS_ROOT = _SRC_ROOT / "checks"
-_REGISTRY_TOML = _CHECKS_ROOT / "REGISTRY.toml"
 _CHECK_IMPL_TRANSITION_ALLOWLIST = (
     "packages/atlasctl/src/atlasctl/load/checks/",
     "packages/atlasctl/src/atlasctl/commands/ops/load/checks/",
@@ -39,22 +33,6 @@ def check_checks_canonical_location(repo_root: Path) -> tuple[int, list[str]]:
     if shell_checks:
         offenders.extend(f"shell check must be migrated to python: {rel}" for rel in shell_checks)
         offenders.append("migration completeness failed: .sh checks remain under packages/atlasctl/src/atlasctl/checks")
-    registry_path = repo_root / _REGISTRY_TOML
-    if registry_path.exists():
-        payload = tomllib.loads(registry_path.read_text(encoding="utf-8"))
-        seen: set[str] = set()
-        duplicates: set[str] = set()
-        for row in payload.get("checks", []):
-            if not isinstance(row, dict):
-                continue
-            check_id = str(row.get("id", "")).strip()
-            if not check_id:
-                continue
-            if check_id in seen:
-                duplicates.add(check_id)
-            seen.add(check_id)
-        if duplicates:
-            offenders.extend(f"duplicate check id in registry: {check_id}" for check_id in sorted(duplicates))
     if offenders:
         return 1, [f"check implementation must live under {_CHECKS_ROOT.as_posix()}/: {rel}" for rel in offenders]
     return 0, []

@@ -323,7 +323,6 @@ def _run_regen_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
             "diff",
             "--exit-code",
             "--",
-            "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
             "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
             "packages/atlasctl/src/atlasctl/registry/checks_catalog.json",
         ],
@@ -335,7 +334,6 @@ def _run_regen_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
         "tool": "atlasctl",
         "status": "pass" if check.returncode == 0 else "fail",
         "files": [
-            "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
             "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
             "packages/atlasctl/src/atlasctl/registry/checks_catalog.json",
         ],

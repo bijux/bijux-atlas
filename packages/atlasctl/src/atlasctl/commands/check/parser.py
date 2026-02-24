@@ -164,7 +164,7 @@ def configure_check_parser(sub: argparse._SubParsersAction[argparse.ArgumentPars
         ("workflow-calls-atlasctl", "validate workflow calls resolve to atlasctl entrypoints"),
         ("ci-surface-documented", "validate DEV/CI command surface docs coverage"),
         ("ops-mk-contract", "validate ops.mk wrapper-only contract and target budget"),
-        ("checks-registry-drift", "validate checks REGISTRY.generated.json is in sync with REGISTRY.toml"),
+        ("checks-registry-drift", "validate checks REGISTRY.generated.json is in sync with registry source"),
     ]:
         parser_sub.add_parser(name, help=help_text)
 
