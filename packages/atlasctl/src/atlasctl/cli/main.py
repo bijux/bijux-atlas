@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 
 from .. import __version__, registry
-from ..checks.repo import layout
+from ..checks.tools.repo_domain import layout
 from ..cli.surface_registry import command_registry, register_domain_parser
 from ..core.context import RunContext
 from ..core.runtime.env import getenv, setdefault as env_setdefault, setenv

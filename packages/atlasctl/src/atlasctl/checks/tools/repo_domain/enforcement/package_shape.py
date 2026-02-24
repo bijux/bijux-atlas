@@ -58,7 +58,7 @@ _CHECK_DOMAIN_PATHS = {
     "artifacts": Path("packages/atlasctl/src/atlasctl/checks/layout/domains/artifacts"),
 }
 _CHECKS_ROOT_REL = Path("packages/atlasctl/src/atlasctl/checks")
-_CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.toml", "REGISTRY.generated.json", "__init__.py"}
+_CHECKS_ROOT_ALLOWED_FILES = {"README.md", "REGISTRY.generated.json", "__init__.py"}
 _CHECKS_DOMAINS_REL = _CHECKS_ROOT_REL / "domains"
 _CHECKS_TOOLS_REL = _CHECKS_ROOT_REL / "tools"
 _CHECKS_DOMAIN_MODULE_CAP = 10

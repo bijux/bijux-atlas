@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 from atlasctl.checks.model import CheckDef
 from atlasctl.checks.effects import CheckEffect
-from atlasctl.checks.tools.repo_domainrt import resolve_last_run_report
+from atlasctl.checks.report import resolve_last_run_report
 from atlasctl.commands.check import command as check_command
 from atlasctl.core.exit_codes import ERR_USER
 
@@ -119,7 +119,7 @@ def test_check_run_writes_default_unified_report(monkeypatch, tmp_path: Path) ->
     ctx = SimpleNamespace(repo_root=tmp_path, evidence_root=tmp_path / "artifacts" / "evidence", output_format="json", run_id="run-1", quiet=False, profile="local")
     rc = check_command._run_check_registry(ctx, _ns())
     assert rc == 0
-    assert (tmp_path / "artifacts/evidence/run-1/checks/report.unified.json").resolve() in writes
+    assert (tmp_path / "artifacts/atlasctl/checks/run-1/report.unified.json").resolve() in writes
 
 
 def test_last_run_resolution_uses_mtime_then_path_order(tmp_path: Path) -> None:

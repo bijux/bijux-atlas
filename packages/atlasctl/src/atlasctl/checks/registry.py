@@ -33,7 +33,6 @@ MARKERS_VOCAB: frozenset[Tag] = frozenset(Tag(marker) for marker in marker_vocab
 _CHECK_INDEX: dict[str, CheckDef] = {str(check.check_id): check for check in ALL_CHECKS}
 RUNTIME_REGISTRY_SOURCE = "python"
 GENERATED_REGISTRY_ARTIFACTS: tuple[str, ...] = (
-    "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml",
     "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json",
 )
 

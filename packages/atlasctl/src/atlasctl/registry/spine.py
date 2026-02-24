@@ -8,7 +8,6 @@ from typing import Any
 from ..checks.registry_legacy.ssot import REGISTRY_SCHEMA, load_registry_entries
 from ..cli.surface_registry import command_registry
 from ..core.meta.owners import load_owner_catalog
-import importlib
 
 from ..runtime.capabilities import capabilities_for_command
 from ..commands.policies.runtime.culprits import load_budgets
@@ -186,20 +185,7 @@ def _load_registry_schema_input(repo_root: Path) -> None:
     if jsonschema is None:
         return
     schema = json.loads((repo_root / REGISTRY_SCHEMA).read_text(encoding="utf-8"))
-    try:
-        tomllib = importlib.import_module("tomllib")
-    except ModuleNotFoundError:  # pragma: no cover
-        tomllib = importlib.import_module("tomli")
-    raw = tomllib.loads((repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml").read_text(encoding="utf-8"))
-    if "schema" in raw and "schema_name" not in raw:
-        raw = dict(raw)
-        raw["schema_name"] = raw.pop("schema")
-    if "schema_version" not in raw:
-        raw = dict(raw)
-        raw["schema_version"] = 1
-    if "kind" not in raw:
-        raw = dict(raw)
-        raw["kind"] = "atlasctl-checks-registry"
+    raw = json.loads((repo_root / "packages/atlasctl/src/atlasctl/checks/REGISTRY.generated.json").read_text(encoding="utf-8"))
     jsonschema.validate(raw, schema)
 
 

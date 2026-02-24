@@ -9,7 +9,6 @@ from atlasctl.checks.domains.internal import (
     check_legacy_check_directories_absent,
     check_no_checks_outside_domains_tools,
     check_registry_generated_read_only,
-    check_registry_toml_generated_contract,
     check_write_roots_are_evidence_only,
 )
 from atlasctl.checks.model import CheckDef
@@ -47,14 +46,6 @@ def test_registry_generated_markers_required(tmp_path: Path) -> None:
     code, errors = check_registry_generated_read_only(tmp_path)
     assert code == 0
     assert errors == []
-
-
-def test_registry_toml_requires_generated_header(tmp_path: Path) -> None:
-    path = tmp_path / "packages/atlasctl/src/atlasctl/checks/REGISTRY.toml"
-    _write(path, "schema_version = 1\n")
-    code, errors = check_registry_toml_generated_contract(tmp_path)
-    assert code == 1
-    assert any("generator marker header" in line for line in errors)
 
 
 def test_check_metadata_requirements(monkeypatch, tmp_path: Path) -> None:
