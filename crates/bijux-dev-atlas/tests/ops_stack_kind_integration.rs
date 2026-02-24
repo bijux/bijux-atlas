@@ -43,6 +43,8 @@ fn k8s_conformance_kind_profile() {
             "ops",
             "k8s",
             "conformance",
+            "--profile",
+            "kind",
             "--allow-subprocess",
             "--format",
             "json",
