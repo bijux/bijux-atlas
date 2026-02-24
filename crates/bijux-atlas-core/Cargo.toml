@@ -17,6 +17,7 @@ sha2 = "0.10"
 
 [dev-dependencies]
 criterion = "0.5"
+proptest = "1"
 serde_json.workspace = true
 walkdir = "2"
 
