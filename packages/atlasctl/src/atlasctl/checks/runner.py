@@ -53,11 +53,12 @@ def _call_check_function(check: CheckDef, ctx: CheckContext) -> tuple[int, list[
     if isinstance(result, list) and all(isinstance(item, Violation) for item in result):
         violations = tuple(sorted(result, key=lambda item: item.canonical_key))
         has_error = any(item.severity != Severity.WARN for item in violations)
-        warnings = [item.message for item in violations if item.severity == Severity.WARN]
+        warnings = sorted(item.message for item in violations if item.severity == Severity.WARN)
         return (1 if has_error else 0), warnings, violations
     if isinstance(result, tuple) and len(result) == 2:
         code, messages = result
-        return int(code), [str(item) for item in messages], ()
+        normalized = sorted(str(item) for item in messages)
+        return int(code), normalized, ()
     return (0, [], ())
 
 
@@ -78,9 +79,10 @@ def _make_result(
     effects_used: tuple[str, ...] = (Effect.FS_READ.value,),
 ) -> CheckResult:
     if not violations:
+        stable_messages = sorted(str(msg) for msg in messages)
         violations = tuple(
             Violation(code=str(check.result_code), message=msg, hint=str(check.fix_hint), severity=Severity.ERROR)
-            for msg in messages
+            for msg in stable_messages
         )
     return CheckResult(
         id=str(check.id),
