@@ -1,8 +1,11 @@
 #![forbid(unsafe_code)]
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::collections::HashMap;
+use std::hash::{Hash, Hasher};
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::{Mutex, OnceLock};
 
 use serde::Deserialize;
 
@@ -20,6 +23,24 @@ const EXPECTED_MIRROR_SCHEMA: u64 = 1;
 const EXPECTED_CONTRACTS_SCHEMA: u64 = 1;
 const EXPECTED_STACK_PROFILES_SCHEMA: u64 = 1;
 const EXPECTED_STACK_VERSION_SCHEMA: u64 = 1;
+
+const INVENTORY_INPUTS: [&str; 7] = [
+    OPS_STACK_PROFILES_PATH,
+    OPS_STACK_VERSION_MANIFEST_PATH,
+    OPS_TOOLCHAIN_PATH,
+    OPS_PINS_PATH,
+    OPS_SURFACES_PATH,
+    OPS_MIRROR_POLICY_PATH,
+    OPS_CONTRACTS_PATH,
+];
+
+#[derive(Debug, Clone)]
+struct CacheEntry {
+    fingerprint: u64,
+    inventory: OpsInventory,
+}
+
+static OPS_INVENTORY_CACHE: OnceLock<Mutex<HashMap<PathBuf, CacheEntry>>> = OnceLock::new();
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct OpsInventory {
@@ -40,7 +61,7 @@ impl OpsInventory {
         if !errors.is_empty() {
             return Err(errors.join("; "));
         }
-        load_ops_inventory(repo_root)
+        load_ops_inventory_cached(repo_root)
     }
 }
 
@@ -124,6 +145,47 @@ pub fn load_ops_inventory(repo_root: &Path) -> Result<OpsInventory, String> {
         mirror_policy: load_json(repo_root, OPS_MIRROR_POLICY_PATH)?,
         contracts: load_json(repo_root, OPS_CONTRACTS_PATH)?,
     })
+}
+
+fn inventory_fingerprint(repo_root: &Path) -> Result<u64, String> {
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    for rel in INVENTORY_INPUTS {
+        rel.hash(&mut hasher);
+        let path = repo_root.join(rel);
+        let bytes =
+            fs::read(&path).map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+        bytes.hash(&mut hasher);
+    }
+    Ok(hasher.finish())
+}
+
+pub fn load_ops_inventory_cached(repo_root: &Path) -> Result<OpsInventory, String> {
+    let canonical_root = repo_root
+        .canonicalize()
+        .unwrap_or_else(|_| repo_root.to_path_buf());
+    let fingerprint = inventory_fingerprint(&canonical_root)?;
+    let cache = OPS_INVENTORY_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
+    if let Some(entry) = cache
+        .lock()
+        .map_err(|_| "ops inventory cache mutex poisoned".to_string())?
+        .get(&canonical_root)
+        .cloned()
+    {
+        if entry.fingerprint == fingerprint {
+            return Ok(entry.inventory);
+        }
+    }
+    let inventory = load_ops_inventory(&canonical_root)?;
+    cache.lock()
+        .map_err(|_| "ops inventory cache mutex poisoned".to_string())?
+        .insert(
+            canonical_root,
+            CacheEntry {
+                fingerprint,
+                inventory: inventory.clone(),
+            },
+        );
+    Ok(inventory)
 }
 
 pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
@@ -460,7 +522,7 @@ fn validate_pins_file_content(repo_root: &Path, errors: &mut Vec<String>) {
 }
 
 pub fn ops_inventory_summary(repo_root: &Path) -> Result<serde_json::Value, String> {
-    let inventory = load_ops_inventory(repo_root)?;
+    let inventory = load_ops_inventory_cached(repo_root)?;
     Ok(serde_json::json!({
         "stack_profiles": inventory.stack_profiles.profiles.len(),
         "surface_actions": inventory.surfaces.actions.len(),
@@ -492,7 +554,7 @@ fn collect_files_recursive(path: PathBuf) -> Vec<PathBuf> {
 
 #[cfg(test)]
 mod tests {
-    use super::validate_pins_file_content;
+    use super::{load_ops_inventory_cached, validate_pins_file_content};
     use std::fs;
 
     #[test]
@@ -510,5 +572,56 @@ mod tests {
         let text = errors.join("\n");
         assert!(text.contains("forbidden latest tag"));
         assert!(text.contains("unsupported digest format"));
+    }
+
+    #[test]
+    fn cached_inventory_reload_detects_content_changes() {
+        let root = tempfile::tempdir().expect("tempdir");
+        let repo = root.path();
+        fs::create_dir_all(repo.join("ops/stack")).expect("mkdir");
+        fs::create_dir_all(repo.join("ops/inventory")).expect("mkdir");
+        fs::write(
+            repo.join("ops/stack/profiles.json"),
+            r#"{"schema_version":1,"profiles":[{"name":"dev","kind_profile":"kind","cluster_config":"ops/kind/dev.yaml"}]}"#,
+        )
+        .expect("write profiles");
+        fs::write(
+            repo.join("ops/stack/version-manifest.json"),
+            r#"{"schema_version":1,"rust":"ghcr.io/x/rust:1"}"#,
+        )
+        .expect("write version manifest");
+        fs::write(
+            repo.join("ops/inventory/toolchain.json"),
+            r#"{"schema_version":1,"images":{"rust":"ghcr.io/x/rust:1"},"tools":{"cargo":{"required":true,"version_regex":"1\\..*","probe_argv":["cargo","--version"]}}}"#,
+        )
+        .expect("write toolchain");
+        fs::write(repo.join("ops/inventory/pins.yaml"), "images: {}\n").expect("write pins");
+        fs::write(
+            repo.join("ops/inventory/surfaces.json"),
+            r#"{"schema_version":2,"actions":[{"id":"check","domain":"ops","command":["bijux","dev","atlas","check","run"]}]}"#,
+        )
+        .expect("write surfaces");
+        fs::write(
+            repo.join("ops/inventory/generated-committed-mirror.json"),
+            r#"{"schema_version":1,"mirrors":[]}"#,
+        )
+        .expect("write mirror");
+        fs::write(
+            repo.join("ops/inventory/contracts.json"),
+            r#"{"schema_version":1}"#,
+        )
+        .expect("write contracts");
+
+        let first = load_ops_inventory_cached(repo).expect("first");
+        assert_eq!(first.toolchain.images.get("rust"), Some(&"ghcr.io/x/rust:1".to_string()));
+
+        fs::write(
+            repo.join("ops/inventory/toolchain.json"),
+            r#"{"schema_version":1,"images":{"rust":"ghcr.io/x/rust:2"},"tools":{"cargo":{"required":true,"version_regex":"1\\..*","probe_argv":["cargo","--version"]}}}"#,
+        )
+        .expect("rewrite toolchain");
+
+        let second = load_ops_inventory_cached(repo).expect("second");
+        assert_eq!(second.toolchain.images.get("rust"), Some(&"ghcr.io/x/rust:2".to_string()));
     }
 }
