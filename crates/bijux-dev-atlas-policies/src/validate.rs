@@ -57,6 +57,20 @@ pub fn canonical_policy_json(policy: &DevAtlasPolicySetDocument) -> Result<Strin
         .map_err(|e| PolicyValidationError(format!("print dev policy failed: {e}")))
 }
 
+pub fn validate_policy_change_requires_version_bump(
+    old_cfg: &DevAtlasPolicySetDocument,
+    new_cfg: &DevAtlasPolicySetDocument,
+) -> Result<(), PolicyValidationError> {
+    let old_json = canonical_policy_json(old_cfg)?;
+    let new_json = canonical_policy_json(new_cfg)?;
+    if old_json != new_json && old_cfg.schema_version == new_cfg.schema_version {
+        return Err(PolicyValidationError(
+            "dev policy content changed without schema_version bump".to_string(),
+        ));
+    }
+    Ok(())
+}
+
 fn validate_schema_version_match(config: &Value, schema: &Value) -> Result<(), PolicyValidationError> {
     let cfg_ver = config
         .get("schema_version")
