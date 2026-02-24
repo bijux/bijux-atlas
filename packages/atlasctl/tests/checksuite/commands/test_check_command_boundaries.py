@@ -39,3 +39,10 @@ def test_check_command_supports_lint_suite_alias() -> None:
     command_py = Path("packages/atlasctl/src/atlasctl/commands/check/command.py")
     text = command_py.read_text(encoding="utf-8")
     assert 'if suite_name == "lint"' in text
+
+
+def test_check_command_uses_checks_engine_for_registry_runs() -> None:
+    command_py = Path("packages/atlasctl/src/atlasctl/commands/check/command.py")
+    text = command_py.read_text(encoding="utf-8")
+    assert "run_checks_engine(" in text
+    assert "run_checks_payload(" not in text
