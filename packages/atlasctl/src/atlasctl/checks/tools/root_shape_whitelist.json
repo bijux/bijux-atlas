@@ -7,6 +7,8 @@
     "Cargo.lock",
     "Makefile",
     "README.md",
+    "crates",
+    "packages",
     "makefiles",
     "docs",
     "ops",
@@ -17,10 +19,11 @@
     "rust-toolchain.toml",
     "python-toolchain.toml",
     "mkdocs.yml",
-    "packages",
-    "crates",
     "docker",
-    "artifacts"
+    "artifacts",
+    "pyproject.toml",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "compat_shims": [
     "Dockerfile",
@@ -30,6 +33,13 @@
     ".idea",
     ".DS_Store",
     "target",
-    ".ruff_cache"
+    ".ruff_cache",
+    ".python-version",
+    ".envrc",
+    "node_modules",
+    ".venv",
+    "dist",
+    "build",
+    "site"
   ]
 }
