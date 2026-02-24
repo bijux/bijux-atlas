@@ -1,10 +1,10 @@
 # Ops Errors
 
-Mapping of ops-facing failure categories to atlasctl error reporting.
+Mapping of ops-facing failure categories to bijux-dev-atlas error reporting.
 
-| Category | Typical atlasctl command family | Error shape | Notes |
+| Category | Typical bijux-dev-atlas command family | Error shape | Notes |
 |---|---|---|---|
-| Contract validation | `atlasctl ops * validate/check` | non-zero + schema/contract message | Prefer deterministic schema path in output |
+| Contract validation | `bijux dev atlas ops * validate/check` | non-zero + schema/contract message | Prefer deterministic schema path in output |
 | Prerequisite missing | `ops prereqs`, `ops kind`, `ops stack` | prereq failure / missing tool | Include missing binary/version |
 | Drift detected | `ops gen check`, surface/schema checks | drift message + remediation command | Must print canonical regen command |
 | Runtime orchestration failure | `ops up/down/deploy/e2e/load/obs` | subprocess/step failure | Include failed step id and log path |

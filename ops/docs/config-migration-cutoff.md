@@ -1,6 +1,6 @@
 # Config Pipeline Migration Cutoff
 
-- Canonical config compiler pipeline target: `atlasctl config validate|gen|diff|fmt`
+- Canonical config compiler pipeline target: `bijux-dev-atlas config validate|gen|diff|fmt`
 - Authoritative inventory location: `ops/inventory/`
 - Legacy location slated for deletion: `configs/inventory/` (if introduced during migration)
 

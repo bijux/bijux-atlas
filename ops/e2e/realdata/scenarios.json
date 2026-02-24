@@ -4,31 +4,31 @@
     {
       "id": "single-release",
       "action_id": "ops.e2e.run",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/run_single_release.py",
       "description": "Validate canonical queries and snapshot stability on a single release."
     },
     {
       "id": "two-release-diff",
       "action_id": "ops.e2e.run",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/run_two_release_diff.py",
       "description": "Validate two-release diff and semantic behavior."
     },
     {
       "id": "schema-evolution",
       "action_id": "ops.e2e.run",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/schema_evolution.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/schema_evolution.py",
       "description": "Validate backward-compatible schema evolution behavior."
     },
     {
       "id": "upgrade-drill",
       "action_id": "ops.e2e.run",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/upgrade_drill.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/upgrade_drill.py",
       "description": "Exercise release upgrade drill and invariants."
     },
     {
       "id": "rollback-drill",
       "action_id": "ops.e2e.run",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/rollback_drill.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/rollback_drill.py",
       "description": "Exercise release rollback drill and invariants."
     }
   ]

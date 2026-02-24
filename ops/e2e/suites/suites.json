@@ -9,7 +9,7 @@
         {
           "id": "api-smoke",
           "description": "Run canonical API smoke queries and emit smoke report.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/smoke_queries.py && python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/smoke/generate_report.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/runtime/smoke_queries.py && python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/smoke/generate_report.py",
           "capabilities": ["stack"],
           "destructive": false,
           "budget": {
@@ -24,7 +24,7 @@
         {
           "id": "metrics-smoke",
           "description": "Validate metrics contract against running stack.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/runtime/verify_metrics.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/runtime/verify_metrics.py",
           "capabilities": ["obs"],
           "destructive": false,
           "budget": {
@@ -45,7 +45,7 @@
         {
           "id": "k8s-contract-suite",
           "description": "Execute k8s test suite with selected suite id.",
-          "runner": "bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/run_suite.py --suite ${ATLAS_E2E_K8S_SUITE:-smoke}",
+          "runner": "bin/bijux-dev-atlas run ./crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/k8s/tests/run_suite.py --suite ${ATLAS_E2E_K8S_SUITE:-smoke}",
           "capabilities": ["k8s", "stack"],
           "destructive": false,
           "budget": {
@@ -67,7 +67,7 @@
         {
           "id": "single-release",
           "description": "Validate canonical single release workflow.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/run_single_release.py",
           "capabilities": ["datasets", "stack"],
           "destructive": false,
           "budget": {
@@ -81,7 +81,7 @@
         {
           "id": "two-release-diff",
           "description": "Validate two-release diff behavior.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/run_two_release_diff.py",
           "capabilities": ["datasets", "stack"],
           "destructive": false,
           "budget": {
@@ -95,7 +95,7 @@
         {
           "id": "schema-evolution",
           "description": "Run schema evolution compatibility drill.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/schema_evolution.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/schema_evolution.py",
           "capabilities": ["datasets"],
           "destructive": true,
           "budget": {
@@ -109,7 +109,7 @@
         {
           "id": "upgrade-drill",
           "description": "Run upgrade drill against realdata fixtures.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/upgrade_drill.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/upgrade_drill.py",
           "capabilities": ["datasets", "obs"],
           "destructive": true,
           "budget": {
@@ -123,7 +123,7 @@
         {
           "id": "rollback-drill",
           "description": "Run rollback drill against realdata fixtures.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/rollback_drill.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/rollback_drill.py",
           "capabilities": ["datasets", "obs"],
           "destructive": true,
           "budget": {
@@ -144,7 +144,7 @@
         {
           "id": "single-release-medium",
           "description": "Run single release fixture ingest/serve/query/snapshot workflow.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_single_release.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/run_single_release.py",
           "capabilities": ["datasets", "stack"],
           "destructive": false,
           "budget": {
@@ -167,7 +167,7 @@
         {
           "id": "release110-vs-111-diff",
           "description": "Run realdata release diff validation for canonical endpoints.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/run_two_release_diff.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/run_two_release_diff.py",
           "capabilities": ["datasets", "stack"],
           "destructive": false,
           "budget": {
@@ -190,7 +190,7 @@
         {
           "id": "realdata-rollback-drill",
           "description": "Run rollback drill and emit deterministic drill report artifacts.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/rollback_drill.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/rollback_drill.py",
           "capabilities": ["datasets", "obs"],
           "destructive": true,
           "budget": {
@@ -212,7 +212,7 @@
         {
           "id": "realdata-upgrade-drill",
           "description": "Run upgrade drill and verify schema evolution with report artifacts.",
-          "runner": "python3 packages/atlasctl/src/atlasctl/commands/ops/e2e/realdata/upgrade_drill.py",
+          "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/upgrade_drill.py",
           "capabilities": ["datasets", "obs"],
           "destructive": true,
           "budget": {

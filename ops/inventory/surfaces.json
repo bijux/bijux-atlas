@@ -104,103 +104,103 @@
     "ops-warm-shards",
     "ops-warm-top"
   ],
-  "atlasctl_commands": [
-    "atlasctl ops actions list",
-    "atlasctl ops actions run",
-    "atlasctl ops cache prune",
-    "atlasctl ops cache status",
-    "atlasctl ops datasets fetch",
-    "atlasctl ops datasets lint-ids",
-    "atlasctl ops datasets lock",
-    "atlasctl ops datasets pin",
-    "atlasctl ops datasets qc diff",
-    "atlasctl ops datasets qc summary",
-    "atlasctl ops datasets validate",
-    "atlasctl ops datasets verify",
-    "atlasctl ops deploy apply",
-    "atlasctl ops deploy plan",
-    "atlasctl ops deploy rollback",
-    "atlasctl ops e2e run",
-    "atlasctl ops e2e validate",
-    "atlasctl ops e2e validate-results",
-    "atlasctl ops env print",
-    "atlasctl ops env validate",
-    "atlasctl ops gen check",
-    "atlasctl ops gen run",
-    "atlasctl ops k8s apply-config",
-    "atlasctl ops k8s check",
-    "atlasctl ops k8s contracts",
-    "atlasctl ops k8s diff",
-    "atlasctl ops k8s render",
-    "atlasctl ops k8s validate",
-    "atlasctl ops k8s validate-configmap-keys",
-    "atlasctl ops kind down",
-    "atlasctl ops kind fault",
-    "atlasctl ops kind reset",
-    "atlasctl ops kind up",
-    "atlasctl ops kind validate",
-    "atlasctl ops load check",
-    "atlasctl ops load compare",
-    "atlasctl ops load run",
-    "atlasctl ops obs check",
-    "atlasctl ops obs drill",
-    "atlasctl ops obs lint",
-    "atlasctl ops obs report",
-    "atlasctl ops obs up",
-    "atlasctl ops obs validate",
-    "atlasctl ops obs verify",
-    "atlasctl ops pins check",
-    "atlasctl ops pins update",
-    "atlasctl ops check",
-    "atlasctl ops clean",
-    "atlasctl ops clean-generated",
-    "atlasctl ops contracts-check",
-    "atlasctl ops contracts-index",
-    "atlasctl ops directory-budgets-check",
-    "atlasctl ops doctor",
-    "atlasctl ops down",
-    "atlasctl ops explain",
-    "atlasctl ops help",
-    "atlasctl ops k8s-checks-layout",
-    "atlasctl ops k8s-flakes-check",
-    "atlasctl ops k8s-surface-generate",
-    "atlasctl ops k8s-test-contract",
-    "atlasctl ops k8s-test-lib-contract",
-    "atlasctl ops layer-drift-check",
-    "atlasctl ops lint",
-    "atlasctl ops list",
-    "atlasctl ops naming-check",
-    "atlasctl ops no-direct-script-usage-check",
-    "atlasctl ops policy-audit",
-    "atlasctl ops prereqs",
-    "atlasctl ops restart",
-    "atlasctl ops root-lanes",
-    "atlasctl ops root-local",
-    "atlasctl ops run",
-    "atlasctl ops run-script",
-    "atlasctl ops schema-check",
-    "atlasctl ops smoke",
-    "atlasctl ops suites-check",
-    "atlasctl ops surface",
-    "atlasctl ops tool-versions-check",
-    "atlasctl ops up",
-    "atlasctl ops warm",
-    "atlasctl ops warm-dx",
-    "atlasctl ops stack check",
-    "atlasctl ops stack down",
-    "atlasctl ops stack report",
-    "atlasctl ops stack restart",
-    "atlasctl ops stack status",
-    "atlasctl ops stack up",
-    "atlasctl ops stack validate",
-    "atlasctl ops stack versions-sync"
+  "bijux-dev-atlas_commands": [
+    "bijux dev atlas ops actions list",
+    "bijux dev atlas ops actions run",
+    "bijux dev atlas ops cache prune",
+    "bijux dev atlas ops cache status",
+    "bijux dev atlas ops datasets fetch",
+    "bijux dev atlas ops datasets lint-ids",
+    "bijux dev atlas ops datasets lock",
+    "bijux dev atlas ops datasets pin",
+    "bijux dev atlas ops datasets qc diff",
+    "bijux dev atlas ops datasets qc summary",
+    "bijux dev atlas ops datasets validate",
+    "bijux dev atlas ops datasets verify",
+    "bijux dev atlas ops deploy apply",
+    "bijux dev atlas ops deploy plan",
+    "bijux dev atlas ops deploy rollback",
+    "bijux dev atlas ops e2e run",
+    "bijux dev atlas ops e2e validate",
+    "bijux dev atlas ops e2e validate-results",
+    "bijux dev atlas ops env print",
+    "bijux dev atlas ops env validate",
+    "bijux dev atlas ops gen check",
+    "bijux dev atlas ops gen run",
+    "bijux dev atlas ops k8s apply-config",
+    "bijux dev atlas ops k8s check",
+    "bijux dev atlas ops k8s contracts",
+    "bijux dev atlas ops k8s diff",
+    "bijux dev atlas ops k8s render",
+    "bijux dev atlas ops k8s validate",
+    "bijux dev atlas ops k8s validate-configmap-keys",
+    "bijux dev atlas ops kind down",
+    "bijux dev atlas ops kind fault",
+    "bijux dev atlas ops kind reset",
+    "bijux dev atlas ops kind up",
+    "bijux dev atlas ops kind validate",
+    "bijux dev atlas ops load check",
+    "bijux dev atlas ops load compare",
+    "bijux dev atlas ops load run",
+    "bijux dev atlas ops obs check",
+    "bijux dev atlas ops obs drill",
+    "bijux dev atlas ops obs lint",
+    "bijux dev atlas ops obs report",
+    "bijux dev atlas ops obs up",
+    "bijux dev atlas ops obs validate",
+    "bijux dev atlas ops obs verify",
+    "bijux dev atlas ops pins check",
+    "bijux dev atlas ops pins update",
+    "bijux dev atlas ops check",
+    "bijux dev atlas ops clean",
+    "bijux dev atlas ops clean-generated",
+    "bijux dev atlas ops contracts-check",
+    "bijux dev atlas ops contracts-index",
+    "bijux dev atlas ops directory-budgets-check",
+    "bijux dev atlas ops doctor",
+    "bijux dev atlas ops down",
+    "bijux dev atlas ops explain",
+    "bijux dev atlas ops help",
+    "bijux dev atlas ops k8s-checks-layout",
+    "bijux dev atlas ops k8s-flakes-check",
+    "bijux dev atlas ops k8s-surface-generate",
+    "bijux dev atlas ops k8s-test-contract",
+    "bijux dev atlas ops k8s-test-lib-contract",
+    "bijux dev atlas ops layer-drift-check",
+    "bijux dev atlas ops lint",
+    "bijux dev atlas ops list",
+    "bijux dev atlas ops naming-check",
+    "bijux dev atlas ops no-direct-script-usage-check",
+    "bijux dev atlas ops policy-audit",
+    "bijux dev atlas ops prereqs",
+    "bijux dev atlas ops restart",
+    "bijux dev atlas ops root-lanes",
+    "bijux dev atlas ops root-local",
+    "bijux dev atlas ops run",
+    "bijux dev atlas ops run-script",
+    "bijux dev atlas ops schema-check",
+    "bijux dev atlas ops smoke",
+    "bijux dev atlas ops suites-check",
+    "bijux dev atlas ops surface",
+    "bijux dev atlas ops tool-versions-check",
+    "bijux dev atlas ops up",
+    "bijux dev atlas ops warm",
+    "bijux dev atlas ops warm-dx",
+    "bijux dev atlas ops stack check",
+    "bijux dev atlas ops stack down",
+    "bijux dev atlas ops stack report",
+    "bijux dev atlas ops stack restart",
+    "bijux dev atlas ops stack status",
+    "bijux dev atlas ops stack up",
+    "bijux dev atlas ops stack validate",
+    "bijux dev atlas ops stack versions-sync"
   ],
   "actions": [
     {
       "id": "ops.actions.list",
       "domain": "actions",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "actions",
         "list"
@@ -214,7 +214,7 @@
       "id": "ops.actions.run",
       "domain": "actions",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "actions",
         "run"
@@ -228,7 +228,7 @@
       "id": "ops.cache.prune",
       "domain": "cache",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "cache",
         "prune"
@@ -242,7 +242,7 @@
       "id": "ops.cache.status",
       "domain": "cache",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "cache",
         "status"
@@ -256,7 +256,7 @@
       "id": "ops.datasets.fetch",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "fetch"
@@ -270,7 +270,7 @@
       "id": "ops.datasets.lint-ids",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "lint-ids"
@@ -284,7 +284,7 @@
       "id": "ops.datasets.lock",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "lock"
@@ -298,7 +298,7 @@
       "id": "ops.datasets.pin",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "pin"
@@ -312,7 +312,7 @@
       "id": "ops.datasets.qc.diff",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "qc",
@@ -328,7 +328,7 @@
       "id": "ops.datasets.qc.summary",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "qc",
@@ -344,7 +344,7 @@
       "id": "ops.datasets.validate",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "validate"
@@ -358,7 +358,7 @@
       "id": "ops.datasets.verify",
       "domain": "datasets",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "datasets",
         "verify"
@@ -372,7 +372,7 @@
       "id": "ops.deploy.apply",
       "domain": "deploy",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "deploy",
         "apply"
@@ -386,7 +386,7 @@
       "id": "ops.deploy.plan",
       "domain": "deploy",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "deploy",
         "plan"
@@ -400,7 +400,7 @@
       "id": "ops.deploy.rollback",
       "domain": "deploy",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "deploy",
         "rollback"
@@ -414,7 +414,7 @@
       "id": "ops.e2e.run",
       "domain": "e2e",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "e2e",
         "run"
@@ -428,7 +428,7 @@
       "id": "ops.e2e.validate",
       "domain": "e2e",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "e2e",
         "validate"
@@ -442,7 +442,7 @@
       "id": "ops.e2e.validate-results",
       "domain": "e2e",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "e2e",
         "validate-results"
@@ -456,7 +456,7 @@
       "id": "ops.env.print",
       "domain": "env",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "env",
         "print"
@@ -470,7 +470,7 @@
       "id": "ops.env.validate",
       "domain": "env",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "env",
         "validate"
@@ -484,7 +484,7 @@
       "id": "ops.gen.check",
       "domain": "gen",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "gen",
         "check"
@@ -498,7 +498,7 @@
       "id": "ops.gen.run",
       "domain": "gen",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "gen",
         "run"
@@ -512,7 +512,7 @@
       "id": "ops.k8s.apply-config",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "apply-config"
@@ -526,7 +526,7 @@
       "id": "ops.k8s.check",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "check"
@@ -540,7 +540,7 @@
       "id": "ops.k8s.contracts",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "contracts"
@@ -554,7 +554,7 @@
       "id": "ops.k8s.diff",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "diff"
@@ -568,7 +568,7 @@
       "id": "ops.k8s.render",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "render"
@@ -582,7 +582,7 @@
       "id": "ops.k8s.validate",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "validate"
@@ -596,7 +596,7 @@
       "id": "ops.k8s.validate-configmap-keys",
       "domain": "k8s",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s",
         "validate-configmap-keys"
@@ -610,7 +610,7 @@
       "id": "ops.kind.down",
       "domain": "kind",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "kind",
         "down"
@@ -624,7 +624,7 @@
       "id": "ops.kind.fault",
       "domain": "kind",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "kind",
         "fault"
@@ -638,7 +638,7 @@
       "id": "ops.kind.reset",
       "domain": "kind",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "kind",
         "reset"
@@ -652,7 +652,7 @@
       "id": "ops.kind.up",
       "domain": "kind",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "kind",
         "up"
@@ -666,7 +666,7 @@
       "id": "ops.kind.validate",
       "domain": "kind",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "kind",
         "validate"
@@ -680,7 +680,7 @@
       "id": "ops.load.check",
       "domain": "load",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "load",
         "check"
@@ -694,7 +694,7 @@
       "id": "ops.load.compare",
       "domain": "load",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "load",
         "compare"
@@ -708,7 +708,7 @@
       "id": "ops.load.run",
       "domain": "load",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "load",
         "run"
@@ -722,7 +722,7 @@
       "id": "ops.obs.check",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "check"
@@ -736,7 +736,7 @@
       "id": "ops.obs.drill",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "drill"
@@ -750,7 +750,7 @@
       "id": "ops.obs.lint",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "lint"
@@ -764,7 +764,7 @@
       "id": "ops.obs.report",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "report"
@@ -778,7 +778,7 @@
       "id": "ops.obs.up",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "up"
@@ -792,7 +792,7 @@
       "id": "ops.obs.validate",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "validate"
@@ -806,7 +806,7 @@
       "id": "ops.obs.verify",
       "domain": "obs",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "obs",
         "verify"
@@ -820,7 +820,7 @@
       "id": "ops.pins.check",
       "domain": "pins",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "pins",
         "check"
@@ -834,7 +834,7 @@
       "id": "ops.pins.update",
       "domain": "pins",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "pins",
         "update"
@@ -848,7 +848,7 @@
       "id": "ops.root.check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "check"
       ],
@@ -860,7 +860,7 @@
       "id": "ops.root.clean",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "clean"
       ],
@@ -872,7 +872,7 @@
       "id": "ops.root.clean-generated",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "clean-generated"
       ],
@@ -884,7 +884,7 @@
       "id": "ops.root.contracts-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "contracts-check"
       ],
@@ -896,7 +896,7 @@
       "id": "ops.root.contracts-index",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "contracts-index"
       ],
@@ -908,7 +908,7 @@
       "id": "ops.root.directory-budgets-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "directory-budgets-check"
       ],
@@ -920,7 +920,7 @@
       "id": "ops.root.doctor",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "doctor"
       ],
@@ -932,7 +932,7 @@
       "id": "ops.root.down",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "down"
       ],
@@ -944,7 +944,7 @@
       "id": "ops.root.explain",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "explain"
       ],
@@ -956,7 +956,7 @@
       "id": "ops.root.help",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "help"
       ],
@@ -968,7 +968,7 @@
       "id": "ops.root.k8s-checks-layout",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s-checks-layout"
       ],
@@ -980,7 +980,7 @@
       "id": "ops.root.k8s-flakes-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s-flakes-check"
       ],
@@ -992,7 +992,7 @@
       "id": "ops.root.k8s-surface-generate",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s-surface-generate"
       ],
@@ -1004,7 +1004,7 @@
       "id": "ops.root.k8s-test-contract",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s-test-contract"
       ],
@@ -1016,7 +1016,7 @@
       "id": "ops.root.k8s-test-lib-contract",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "k8s-test-lib-contract"
       ],
@@ -1028,7 +1028,7 @@
       "id": "ops.root.layer-drift-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "layer-drift-check"
       ],
@@ -1040,7 +1040,7 @@
       "id": "ops.root.lint",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "lint"
       ],
@@ -1052,7 +1052,7 @@
       "id": "ops.root.list",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "list"
       ],
@@ -1064,7 +1064,7 @@
       "id": "ops.root.naming-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "naming-check"
       ],
@@ -1076,7 +1076,7 @@
       "id": "ops.root.no-direct-script-usage-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "no-direct-script-usage-check"
       ],
@@ -1088,7 +1088,7 @@
       "id": "ops.root.policy-audit",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "policy-audit"
       ],
@@ -1100,7 +1100,7 @@
       "id": "ops.root.prereqs",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "prereqs"
       ],
@@ -1112,7 +1112,7 @@
       "id": "ops.root.restart",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "restart"
       ],
@@ -1124,7 +1124,7 @@
       "id": "ops.root.root-lanes",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "root-lanes"
       ],
@@ -1136,7 +1136,7 @@
       "id": "ops.root.root-local",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "root-local"
       ],
@@ -1148,7 +1148,7 @@
       "id": "ops.root.run",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "run"
       ],
@@ -1160,7 +1160,7 @@
       "id": "ops.root.run-script",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "run-script"
       ],
@@ -1172,7 +1172,7 @@
       "id": "ops.root.schema-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "schema-check"
       ],
@@ -1184,7 +1184,7 @@
       "id": "ops.root.smoke",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "smoke"
       ],
@@ -1196,7 +1196,7 @@
       "id": "ops.root.suites-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "suites-check"
       ],
@@ -1208,7 +1208,7 @@
       "id": "ops.root.surface",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "surface"
       ],
@@ -1220,7 +1220,7 @@
       "id": "ops.root.tool-versions-check",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "tool-versions-check"
       ],
@@ -1232,7 +1232,7 @@
       "id": "ops.root.up",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "up"
       ],
@@ -1244,7 +1244,7 @@
       "id": "ops.root.warm",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "warm"
       ],
@@ -1256,7 +1256,7 @@
       "id": "ops.root.warm-dx",
       "domain": "root",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "warm-dx"
       ],
@@ -1268,7 +1268,7 @@
       "id": "ops.stack.check",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "check"
@@ -1282,7 +1282,7 @@
       "id": "ops.stack.down",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "down"
@@ -1296,7 +1296,7 @@
       "id": "ops.stack.report",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "report"
@@ -1310,7 +1310,7 @@
       "id": "ops.stack.restart",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "restart"
@@ -1324,7 +1324,7 @@
       "id": "ops.stack.status",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "status"
@@ -1338,7 +1338,7 @@
       "id": "ops.stack.up",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "up"
@@ -1352,7 +1352,7 @@
       "id": "ops.stack.validate",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "validate"
@@ -1366,7 +1366,7 @@
       "id": "ops.stack.versions-sync",
       "domain": "stack",
       "command": [
-        "atlasctl",
+        "bijux-dev-atlas",
         "ops",
         "stack",
         "versions-sync"
