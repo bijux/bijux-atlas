@@ -464,6 +464,8 @@ def suggested_splits(dir_path: str) -> str:
 
 def check_budget_metric(repo_root: Path, metric: str) -> tuple[int, list[str]]:
     payload = evaluate_metric(repo_root, metric)
+    if not payload["failed_count"]:
+        return 0, []
     errors: list[str] = []
     for item in payload["items"]:
         status = str(item["status"])
