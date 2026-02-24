@@ -466,6 +466,39 @@
     },
     {
       "area": "registry",
+      "callable": "check_scattered_registry_caches",
+      "category": "check",
+      "description": "forbid lru cache usage outside registry index module",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Scope caches to registry/catalog index and remove scattered cache decorators.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_cache_scope",
+      "intent": "forbid lru cache usage outside registry index module",
+      "legacy_id": "checks.registry_cache_scope",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
       "callable": "check_registry_canonical_id_matches_module_path",
       "category": "check",
       "description": "require canonical id domain/area segments to match implementation module path",
@@ -667,6 +700,39 @@
       "severity": "error",
       "speed": "fast",
       "timeout_ms": 700,
+      "writes_allowed_roots": [
+        "artifacts/evidence/"
+      ]
+    },
+    {
+      "area": "registry",
+      "callable": "check_registry_import_hygiene",
+      "category": "check",
+      "description": "forbid heavy imports in checks registry modules",
+      "domain": "checks",
+      "effects": [
+        "fs_read"
+      ],
+      "evidence": [],
+      "external_tools": [],
+      "fix_hint": "Keep checks registry imports lightweight and move heavy logic behind runtime boundaries.",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_registry_import_hygiene",
+      "intent": "forbid heavy imports in checks registry modules",
+      "legacy_id": "checks.registry_import_hygiene",
+      "module": "atlasctl.checks.domains.internal",
+      "owner": "platform",
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "remediation_short": "Review check output and apply the documented fix.",
+      "result_code": "CHECK_GENERIC",
+      "severity": "error",
+      "speed": "fast",
+      "timeout_ms": 500,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]

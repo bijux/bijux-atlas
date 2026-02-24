@@ -630,6 +630,79 @@ def check_checks_forbidden_imports(repo_root: Path) -> tuple[int, list[str]]:
     return (1, errors) if errors else (0, [])
 
 
+def check_registry_import_hygiene(repo_root: Path) -> tuple[int, list[str]]:
+    registry_root = repo_root / "packages/atlasctl/src/atlasctl/checks/registry"
+    if not registry_root.exists():
+        return 1, ["missing checks registry package: packages/atlasctl/src/atlasctl/checks/registry"]
+    banned_roots = {
+        "numpy",
+        "pandas",
+        "torch",
+        "tensorflow",
+        "sklearn",
+        "matplotlib",
+        "seaborn",
+        "scipy",
+    }
+    errors: list[str] = []
+    for path in sorted(registry_root.glob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except SyntaxError as exc:
+            errors.append(f"{rel}: syntax error while parsing imports: {exc.msg}")
+            continue
+        for node in tree.body:
+            imports = list(_resolve_imported_modules(f"atlasctl.checks.registry.{path.stem}", node))
+            for imported in imports:
+                root = imported.split(".", 1)[0]
+                if root in banned_roots:
+                    errors.append(f"{rel}:{getattr(node, 'lineno', 0)}: forbidden heavy import `{imported}`")
+    return (1, errors) if errors else (0, [])
+
+
+def check_scattered_registry_caches(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    allowed = {
+        "packages/atlasctl/src/atlasctl/checks/registry/catalog.py",
+    }
+    violations: list[str] = []
+    for path in sorted(checks_root.rglob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        has_lru_cache = False
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            for decorator in node.decorator_list:
+                if isinstance(decorator, ast.Name) and decorator.id == "lru_cache":
+                    has_lru_cache = True
+                    break
+                if isinstance(decorator, ast.Call):
+                    func = decorator.func
+                    if isinstance(func, ast.Name) and func.id == "lru_cache":
+                        has_lru_cache = True
+                        break
+                    if isinstance(func, ast.Attribute) and func.attr == "lru_cache":
+                        has_lru_cache = True
+                        break
+                if isinstance(decorator, ast.Attribute) and decorator.attr == "lru_cache":
+                    has_lru_cache = True
+                    break
+            if has_lru_cache:
+                break
+        if not has_lru_cache:
+            continue
+        if rel not in allowed:
+            violations.append(f"{rel}: lru_cache usage outside registry index is forbidden")
+    return (1, violations) if violations else (0, [])
+
+
 def check_commands_no_domains_import(repo_root: Path) -> tuple[int, list[str]]:
     commands_root = repo_root / "packages/atlasctl/src/atlasctl/commands"
     if not commands_root.exists():
@@ -1015,6 +1088,28 @@ CHECKS = (
         check_no_generated_timestamp_dirs,
         category=CheckCategory.HYGIENE,
         fix_hint="Use deterministic, stable generated directory names without timestamps.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_import_hygiene",
+        "checks",
+        "forbid heavy imports in checks registry modules",
+        500,
+        check_registry_import_hygiene,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks registry imports lightweight and move heavy logic behind runtime boundaries.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.registry_cache_scope",
+        "checks",
+        "forbid lru cache usage outside registry index module",
+        500,
+        check_scattered_registry_caches,
+        category=CheckCategory.POLICY,
+        fix_hint="Scope caches to registry/catalog index and remove scattered cache decorators.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
