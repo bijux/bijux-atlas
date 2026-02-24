@@ -1,7 +1,8 @@
 use crate::cli::{CheckCommand, Cli, Command};
 use crate::{
     plugin_metadata_json, run_capabilities_command, run_check_doctor, run_check_explain,
-    run_check_list, run_check_run, run_configs_command, run_docs_command, run_ops_command,
+    run_check_list, run_check_run, run_configs_command, run_docs_command, run_gates_command,
+    run_ops_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 
@@ -33,6 +34,8 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
     let exit = match command {
         Command::Docs { command } => run_docs_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
+        Command::Workflows { command } => run_workflows_command(cli.quiet, command),
+        Command::Gates { command } => run_gates_command(cli.quiet, command),
         Command::Capabilities { format, out } => match run_capabilities_command(format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {

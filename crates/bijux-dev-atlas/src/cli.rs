@@ -38,6 +38,14 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigsCommand,
     },
+    Workflows {
+        #[command(subcommand)]
+        command: WorkflowsCommand,
+    },
+    Gates {
+        #[command(subcommand)]
+        command: GatesCommand,
+    },
     Capabilities {
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
@@ -108,6 +116,70 @@ pub enum CheckCommand {
         tag: Option<String>,
         #[arg(long, value_name = "GLOB")]
         id: Option<String>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+        #[arg(long, default_value_t = false)]
+        allow_subprocess: bool,
+        #[arg(long, default_value_t = false)]
+        allow_git: bool,
+        #[arg(long = "allow-write", default_value_t = false)]
+        allow_write: bool,
+        #[arg(long, default_value_t = false)]
+        allow_network: bool,
+        #[arg(long, default_value_t = false)]
+        fail_fast: bool,
+        #[arg(long)]
+        max_failures: Option<usize>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = 0)]
+        durations: usize,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum WorkflowsCommand {
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum GatesCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
+    },
+    Run {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long)]
+        artifacts_root: Option<PathBuf>,
+        #[arg(long)]
+        run_id: Option<String>,
+        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>", default_value = "ci_fast")]
+        suite: String,
         #[arg(long, default_value_t = false)]
         include_internal: bool,
         #[arg(long, default_value_t = false)]
