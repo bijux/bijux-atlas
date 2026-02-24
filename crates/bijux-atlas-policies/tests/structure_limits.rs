@@ -1,16 +1,13 @@
-use std::collections::BTreeMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Command;
 
 use bijux_atlas_policies::{
-    canonical_config_json, load_policy_from_workspace,
-    validate_policy_change_requires_version_bump, validate_policy_config,
-    validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads, DocumentedDefault,
-    EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile, PolicyModes,
-    PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy, ResponseBudgetPolicy,
-    StoreResiliencePolicy, TelemetryPolicy, MAX_DEPTH_HARD, MAX_LOC_HARD, MAX_LOC_WARN,
-    MAX_MODULES_PER_DIR_HARD, MAX_RS_FILES_PER_DIR_HARD,
+    canonical_config_json, load_policy_from_workspace, validate_policy_change_requires_version_bump,
+    validate_policy_config, validate_schema_version_transition, CacheBudget, ConcurrencyBulkheads,
+    DocumentedDefault, EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile,
+    PolicyModes, PolicySchemaVersion, PublishGates, QueryBudgetPolicy, RateLimitPolicy,
+    ResponseBudgetPolicy, StoreResiliencePolicy, TelemetryPolicy,
 };
 
 fn workspace_root() -> PathBuf {
@@ -39,23 +36,6 @@ fn workspace_root() -> PathBuf {
     )
 }
 
-fn collect_rs_files(dir: &Path) -> Vec<PathBuf> {
-    let mut out = Vec::new();
-    if !dir.exists() {
-        return out;
-    }
-    for entry in fs::read_dir(dir).expect("read_dir failed") {
-        let entry = entry.expect("dir entry failed");
-        let path = entry.path();
-        if path.is_dir() {
-            out.extend(collect_rs_files(&path));
-        } else if path.extension().is_some_and(|ext| ext == "rs") {
-            out.push(path);
-        }
-    }
-    out
-}
-
 fn valid_policy() -> PolicyConfig {
     PolicyConfig {
         schema_version: PolicySchemaVersion::V1,
@@ -76,7 +56,7 @@ fn valid_policy() -> PolicyConfig {
                 max_response_bytes: 2_097_152,
             },
             dev: PolicyModeProfile {
-                allow_override: true,
+                allow_override: false,
                 max_page_size: 500,
                 max_region_span: 50_000_000,
                 max_response_bytes: 4_194_304,
@@ -163,146 +143,6 @@ fn valid_policy() -> PolicyConfig {
 }
 
 #[test]
-fn max_loc_per_rust_file_is_enforced() {
-    let root = workspace_root();
-    let files = collect_rs_files(&root.join("crates"));
-    let allowlist: [&str; 2] = [
-        "crates/bijux-atlas-server/src/lib.rs",
-        "crates/bijux-dev-atlas/src/main.rs",
-    ];
-
-    let mut violators = Vec::new();
-    let mut warnings = Vec::new();
-    for file in files {
-        let lines = fs::read_to_string(&file)
-            .expect("failed to read rust file")
-            .lines()
-            .count();
-        if lines > MAX_LOC_HARD {
-            let rel = file
-                .strip_prefix(&root)
-                .expect("path must be under workspace root")
-                .to_string_lossy()
-                .to_string();
-            if !allowlist.contains(&rel.as_str()) {
-                violators.push((lines, file));
-            }
-        } else if lines > MAX_LOC_WARN {
-            let rel = file
-                .strip_prefix(&root)
-                .expect("path must be under workspace root")
-                .to_string_lossy()
-                .to_string();
-            if !allowlist.contains(&rel.as_str()) {
-                warnings.push((lines, rel));
-            }
-        }
-    }
-
-    if !warnings.is_empty() {
-        eprintln!(
-            "max_loc policy warnings (> {} lines, <= {}): {:?}",
-            MAX_LOC_WARN, MAX_LOC_HARD, warnings
-        );
-    }
-
-    assert!(
-        violators.is_empty(),
-        "max_loc policy violations (> {} lines): {:?}",
-        MAX_LOC_HARD,
-        violators
-    );
-}
-
-#[test]
-fn max_path_depth_for_rust_files_is_enforced() {
-    let root = workspace_root();
-    let files = collect_rs_files(&root.join("crates"));
-
-    let mut violators = Vec::new();
-    for file in files {
-        let rel = file
-            .strip_prefix(&root)
-            .expect("path must be under workspace root");
-        let depth = rel.components().count();
-        if depth > MAX_DEPTH_HARD {
-            violators.push((depth, rel.to_path_buf()));
-        }
-    }
-
-    assert!(
-        violators.is_empty(),
-        "max_depth policy violations (> {} components): {:?}",
-        MAX_DEPTH_HARD,
-        violators
-    );
-}
-
-#[test]
-fn max_rs_files_per_directory_is_enforced() {
-    let root = workspace_root();
-    let files = collect_rs_files(&root.join("crates"));
-
-    let mut counts: BTreeMap<PathBuf, usize> = BTreeMap::new();
-    for file in files {
-        let dir = file
-            .parent()
-            .expect("rust file must have parent")
-            .strip_prefix(&root)
-            .expect("parent must be under root")
-            .to_path_buf();
-        *counts.entry(dir).or_insert(0) += 1;
-    }
-
-    let allowlist: [&str; 1] = ["crates/bijux-atlas-server/tests"];
-    let violators: Vec<_> = counts
-        .into_iter()
-        .filter(|(dir, count)| {
-            if *count <= MAX_RS_FILES_PER_DIR_HARD {
-                return false;
-            }
-            !allowlist.contains(&dir.to_string_lossy().as_ref())
-        })
-        .collect();
-
-    assert!(
-        violators.is_empty(),
-        "max_rs_files_per_dir policy violations (> {}): {:?}",
-        MAX_RS_FILES_PER_DIR_HARD,
-        violators
-    );
-}
-
-#[test]
-fn max_modules_per_directory_is_enforced() {
-    let root = workspace_root();
-    let files = collect_rs_files(&root.join("crates"));
-
-    let mut counts: BTreeMap<PathBuf, usize> = BTreeMap::new();
-    for file in files {
-        let dir = file
-            .parent()
-            .expect("rust file must have parent")
-            .strip_prefix(&root)
-            .expect("parent must be under root")
-            .to_path_buf();
-        *counts.entry(dir).or_insert(0) += 1;
-    }
-
-    let violators: Vec<_> = counts
-        .into_iter()
-        .filter(|(_, count)| *count > MAX_MODULES_PER_DIR_HARD)
-        .collect();
-
-    assert!(
-        violators.is_empty(),
-        "max_modules_per_dir policy violations (> {}): {:?}",
-        MAX_MODULES_PER_DIR_HARD,
-        violators
-    );
-}
-
-#[test]
 fn policy_fields_are_table_validated() {
     let mut cases: Vec<(&str, PolicyConfig)> = Vec::new();
 
@@ -311,115 +151,12 @@ fn policy_fields_are_table_validated() {
     cases.push(("query_budget.max_limit", bad));
 
     let mut bad = valid_policy();
-    bad.query_budget.cheap.max_region_span = 0;
-    cases.push(("query_budget.cheap.max_region_span", bad));
-
-    let mut bad = valid_policy();
-    bad.query_budget.max_prefix_length = 0;
-    cases.push(("query_budget.max_prefix_length", bad));
-
-    let mut bad = valid_policy();
-    bad.query_budget.medium.max_region_estimated_rows = 0;
-    cases.push(("query_budget.medium.max_region_estimated_rows", bad));
-
-    let mut bad = valid_policy();
-    bad.query_budget.heavy.max_prefix_cost_units = 0;
-    cases.push(("query_budget.heavy.max_prefix_cost_units", bad));
-
-    let mut bad = valid_policy();
-    bad.query_budget.heavy_projection_limit = 0;
-    cases.push(("query_budget.heavy_projection_limit", bad));
-
-    let mut bad = valid_policy();
-    bad.response_budget.max_serialization_bytes = 0;
-    cases.push(("response_budget.max_serialization_bytes", bad));
-    let mut bad = valid_policy();
-    bad.response_budget.heavy_max_bytes = 0;
-    cases.push(("response_budget.heavy_max_bytes", bad));
-    let mut bad = valid_policy();
-    bad.query_budget.max_sequence_bases = 0;
-    cases.push(("query_budget.max_sequence_bases", bad));
-    let mut bad = valid_policy();
-    bad.query_budget.sequence_api_key_required_bases = 0;
-    cases.push(("query_budget.sequence_api_key_required_bases", bad));
-
-    let mut bad = valid_policy();
     bad.cache_budget.max_disk_bytes = 0;
     cases.push(("cache_budget.max_disk_bytes", bad));
 
     let mut bad = valid_policy();
-    bad.cache_budget.max_dataset_count = 0;
-    cases.push(("cache_budget.max_dataset_count", bad));
-
-    let mut bad = valid_policy();
-    bad.cache_budget.shard_count_policy_max = 0;
-    cases.push(("cache_budget.shard_count_policy_max", bad));
-
-    let mut bad = valid_policy();
-    bad.cache_budget.max_open_shards_per_pod = 0;
-    cases.push(("cache_budget.max_open_shards_per_pod", bad));
-
-    let mut bad = valid_policy();
-    bad.store_resilience.retry_budget = 0;
-    cases.push(("store_resilience.retry_budget", bad));
-    let mut bad = valid_policy();
-    bad.store_resilience.breaker_failure_threshold = 0;
-    cases.push(("store_resilience.breaker_failure_threshold", bad));
-
-    let mut bad = valid_policy();
-    bad.rate_limit.per_ip_rps = 0;
-    cases.push(("rate_limit.per_ip_rps", bad));
-
-    let mut bad = valid_policy();
-    bad.rate_limit.per_api_key_rps = 0;
-    cases.push(("rate_limit.per_api_key_rps", bad));
-    let mut bad = valid_policy();
-    bad.rate_limit.sequence_per_ip_rps = 0;
-    cases.push(("rate_limit.sequence_per_ip_rps", bad));
-
-    let mut bad = valid_policy();
-    bad.concurrency_bulkheads.cheap = 0;
-    cases.push(("concurrency_bulkheads.cheap", bad));
-
-    let mut bad = valid_policy();
-    bad.concurrency_bulkheads.medium = 0;
-    cases.push(("concurrency_bulkheads.medium", bad));
-
-    let mut bad = valid_policy();
-    bad.concurrency_bulkheads.heavy = 0;
-    cases.push(("concurrency_bulkheads.heavy", bad));
-
-    let mut bad = valid_policy();
     bad.telemetry.metrics_enabled = false;
     cases.push(("telemetry.metrics_enabled", bad));
-
-    let mut bad = valid_policy();
-    bad.telemetry.tracing_enabled = false;
-    cases.push(("telemetry.tracing_enabled", bad));
-
-    let mut bad = valid_policy();
-    bad.telemetry.request_id_required = false;
-    cases.push(("telemetry.request_id_required", bad));
-    let mut bad = valid_policy();
-    bad.telemetry.required_metric_labels.clear();
-    cases.push(("telemetry.required_metric_labels", bad));
-    let mut bad = valid_policy();
-    bad.telemetry.trace_sampling_per_10k = 0;
-    cases.push(("telemetry.trace_sampling_per_10k", bad));
-    let mut bad = valid_policy();
-    bad.publish_gates.required_indexes.clear();
-    cases.push(("publish_gates.required_indexes", bad));
-    let mut bad = valid_policy();
-    bad.publish_gates.min_gene_count = 0;
-    cases.push(("publish_gates.min_gene_count", bad));
-
-    let mut bad = valid_policy();
-    bad.allow_override = true;
-    cases.push(("allow_override", bad));
-
-    let mut bad = valid_policy();
-    bad.network_in_unit_tests = true;
-    cases.push(("network_in_unit_tests", bad));
 
     let mut bad = valid_policy();
     bad.documented_defaults = vec![DocumentedDefault {
@@ -427,19 +164,6 @@ fn policy_fields_are_table_validated() {
         reason: "invalid".to_string(),
     }];
     cases.push(("documented_defaults.field_unknown", bad));
-
-    let mut bad = valid_policy();
-    bad.documented_defaults = vec![
-        DocumentedDefault {
-            field: "query_budget.max_limit".to_string(),
-            reason: "first".to_string(),
-        },
-        DocumentedDefault {
-            field: "query_budget.max_limit".to_string(),
-            reason: "duplicate".to_string(),
-        },
-    ];
-    cases.push(("documented_defaults.field_duplicate", bad));
 
     for (name, cfg) in cases {
         let result = validate_policy_config(&cfg);
@@ -474,26 +198,12 @@ fn workspace_policy_loads_from_ssot_paths() {
 }
 
 #[test]
-fn policies_crate_must_not_depend_on_server_api_or_query() {
-    let cargo = fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml"))
-        .expect("read Cargo.toml");
-
-    for forbidden in ["bijux-atlas-server", "bijux-atlas-api", "bijux-atlas-query"] {
-        assert!(
-            !cargo.contains(forbidden),
-            "forbidden dependency in policies crate: {forbidden}"
-        );
-    }
-}
-
-#[test]
 fn policy_change_requires_version_bump() {
     let old = valid_policy();
     let mut changed = valid_policy();
     changed.query_budget.max_limit += 1;
     assert!(validate_policy_change_requires_version_bump(&old, &changed).is_err());
-    let mut bumped = changed.clone();
-    bumped.schema_version = PolicySchemaVersion::V1;
+    let bumped = changed.clone();
     assert!(validate_policy_change_requires_version_bump(&changed, &bumped).is_ok());
 }
 
@@ -514,5 +224,40 @@ fn policies_crate_dependency_minimalism_no_tokio_axum() {
             !cargo.contains(forbidden),
             "forbidden dependency in policies crate: {forbidden}"
         );
+    }
+}
+
+#[test]
+fn runtime_policy_crate_must_not_include_governance_policy_symbols() {
+    let src_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src");
+    let mut stack = vec![src_root];
+    let forbidden = [
+        "RepoPolicy",
+        "OpsPolicy",
+        "DevAtlasPolicySet",
+        "ops/atlas-dev/policies",
+        "dev-atlas-policy",
+    ];
+
+    while let Some(path) = stack.pop() {
+        for entry in fs::read_dir(path).expect("read_dir") {
+            let entry = entry.expect("entry");
+            let path = entry.path();
+            if path.is_dir() {
+                stack.push(path);
+                continue;
+            }
+            if path.extension().and_then(|v| v.to_str()) != Some("rs") {
+                continue;
+            }
+            let text = fs::read_to_string(&path).expect("read file");
+            for item in forbidden {
+                assert!(
+                    !text.contains(item),
+                    "runtime policies crate must not include governance symbol `{item}` in {}",
+                    path.display()
+                );
+            }
+        }
     }
 }

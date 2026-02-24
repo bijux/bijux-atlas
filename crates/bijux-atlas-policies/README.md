@@ -2,6 +2,8 @@
 
 ## Purpose
 - Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+- Scope: runtime policies only (query/response/cache/rate-limit/publish/runtime invariants).
+- Governance policy enforcement is owned by `bijux-dev-atlas-policies`.
 
 ## Public API
 - [docs/public-api.md](docs/public-api.md)
