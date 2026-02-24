@@ -213,7 +213,7 @@ impl OpsProcess {
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         let event = serde_json::json!({
             "binary": binary,
-            "args": args,
+            "args": redact_argv(args),
             "cwd": cwd.display().to_string(),
             "status": output.status.code(),
             "stdout_bytes": output.stdout.len(),
@@ -228,5 +228,56 @@ impl OpsProcess {
                 stderr.lines().next().unwrap_or_default()
             )))
         }
+    }
+}
+
+fn redact_argv(args: &[String]) -> Vec<String> {
+    let sensitive_prefixes = ["--set", "--set-string", "--password", "--token"];
+    let mut out = Vec::with_capacity(args.len());
+    let mut redact_next = false;
+    for arg in args {
+        if redact_next {
+            out.push("<redacted>".to_string());
+            redact_next = false;
+            continue;
+        }
+        if sensitive_prefixes.iter().any(|p| arg == p) {
+            out.push(arg.clone());
+            redact_next = true;
+            continue;
+        }
+        if sensitive_prefixes
+            .iter()
+            .any(|p| arg.starts_with(&format!("{p}=")))
+        {
+            out.push(format!(
+                "{}=<redacted>",
+                arg.split_once('=').map(|(k, _)| k).unwrap_or(arg)
+            ));
+            continue;
+        }
+        out.push(arg.clone());
+    }
+    out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::redact_argv;
+
+    #[test]
+    fn redact_argv_masks_sensitive_values() {
+        let args = vec![
+            "--set".to_string(),
+            "secret=abc".to_string(),
+            "--token=xyz".to_string(),
+            "--namespace".to_string(),
+            "bijux-atlas".to_string(),
+        ];
+        let redacted = redact_argv(&args);
+        assert_eq!(redacted[0], "--set");
+        assert_eq!(redacted[1], "<redacted>");
+        assert_eq!(redacted[2], "--token=<redacted>");
+        assert_eq!(redacted[4], "bijux-atlas");
     }
 }
