@@ -610,6 +610,12 @@ domains = ["ops"]
 tags_any = []
 
 [[suites]]
+id = "ops"
+checks = []
+domains = ["ops"]
+tags_any = []
+
+[[suites]]
 id = "repo_fast"
 checks = []
 domains = ["repo"]
