@@ -311,12 +311,48 @@ def _entry_from_check(check: CheckDef) -> RegistryEntry:
 def load_registry_entries(repo_root: Path | None = None) -> tuple[RegistryEntry, ...]:
     root = repo_root or _repo_root()
     reg = load_registry_generated_json(root / REGISTRY_JSON)
-    by_id = {entry.id: entry for entry in (_entry_from_check(check) for check in ALL_CHECKS)}
+    by_id: dict[str, RegistryEntry] = {}
+    for check in ALL_CHECKS:
+        entry = _entry_from_check(check)
+        aliases = {entry.id, str(check.check_id)}
+        legacy = str(getattr(check, "legacy_check_id", "") or "").strip()
+        if legacy:
+            aliases.add(legacy)
+        for alias in aliases:
+            by_id[alias] = entry
     out: list[RegistryEntry] = []
     for row in reg.list_checks():
         entry = by_id.get(row.id)
-        if entry is not None:
-            out.append(entry)
+        if entry is None:
+            out.append(
+                RegistryEntry(
+                    id=row.id,
+                    domain=row.domain,
+                    area="general",
+                    gate=row.domain,
+                    owner="platform",
+                    speed=row.speed or "fast",
+                    groups=tuple(sorted(set(row.tags))),
+                    timeout_ms=500,
+                    module="atlasctl.checks.registry",
+                    callable="unknown",
+                    description=row.title or row.id,
+                    severity="error",
+                    category="check",
+                    intent=row.title or row.id,
+                    remediation_short="Review check output and apply the documented fix.",
+                    remediation_link="packages/atlasctl/docs/checks/check-id-migration-rules.md",
+                    result_code="CHECK_GENERIC",
+                    fix_hint="Review check output and apply the documented fix.",
+                    effects=("fs_read",),
+                    external_tools=(),
+                    evidence=(),
+                    writes_allowed_roots=("artifacts/evidence/",),
+                    legacy_id=None,
+                )
+            )
+            continue
+        out.append(entry)
     return tuple(sorted(out, key=lambda item: item.id))
 
 
@@ -511,6 +547,21 @@ def check_tags(check: CheckDef) -> tuple[str, ...]:
 
 def marker_vocabulary() -> tuple[str, ...]:
     return ("slow", "network", "kube", "docker", "fs-write", "git", "internal", "internal-only", "required", "fast", "lint")
+
+
+TAGS_VOCAB: frozenset[Tag] = frozenset(
+    Tag.parse(tag)
+    for tag in {
+        *(str(tag) for check in ALL_CHECKS for tag in check_tags(check)),
+        *marker_vocabulary(),
+        "ci",
+        "dev",
+        "internal",
+        "lint",
+        "slow",
+        "fast",
+    }
+)
 
 
 def list_domains() -> list[str]:
