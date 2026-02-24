@@ -314,6 +314,159 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 summary,
             )
         }
+        OpsCommand::Inventory(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let inventory_errors =
+                match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(
+                    &ops_root,
+                ) {
+                    Ok(_) => Vec::new(),
+                    Err(err) => vec![err],
+                };
+            let mut summary = ops_inventory_summary(&repo_root)
+                .unwrap_or_else(|err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}));
+            if let Some(map) = summary.as_object_mut() {
+                map.insert(
+                    "inventory_errors".to_string(),
+                    serde_json::json!(inventory_errors.clone()),
+                );
+            }
+            let status = if inventory_errors.is_empty() { "ok" } else { "failed" };
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "status": status,
+                "text": format!("ops inventory: status={status}"),
+                "rows": [summary],
+                "summary": {"total": 1, "errors": inventory_errors.len(), "warnings": 0}
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, if inventory_errors.is_empty() { 0 } else { 1 }))
+        }
+        OpsCommand::Docs(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let selectors = parse_selectors(
+                Some("ops".to_string()),
+                Some(DomainArg::Ops),
+                None,
+                None,
+                true,
+                true,
+            )?;
+            let request = RunRequest {
+                repo_root: repo_root.clone(),
+                domain: Some(DomainId::Ops),
+                capabilities: Capabilities::deny_all(),
+                artifacts_root: Some(repo_root.join("artifacts")),
+                run_id: Some(run_id_or_default(common.run_id.clone())?),
+                command: Some("bijux dev atlas ops docs".to_string()),
+            };
+            let report = run_checks(
+                &RealProcessRunner,
+                &RealFs,
+                &request,
+                &selectors,
+                &RunOptions::default(),
+            )?;
+            let rendered = match common.format {
+                FormatArg::Text => render_text_with_durations(&report, 10),
+                FormatArg::Json => render_json(&report)?,
+                FormatArg::Jsonl => render_jsonl(&report)?,
+            };
+            write_output_if_requested(common.out.clone(), &rendered)?;
+            Ok((rendered, exit_code_for_report(&report)))
+        }
+        OpsCommand::Conformance(common) => {
+            if !common.allow_subprocess {
+                return Err(
+                    OpsCommandError::Effect("conformance requires --allow-subprocess".to_string())
+                        .to_stable_message(),
+                );
+            }
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let inventory_errors =
+                match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(
+                    &ops_root,
+                ) {
+                    Ok(_) => Vec::new(),
+                    Err(err) => vec![err],
+                };
+            let status_args = crate::cli::OpsStatusArgs {
+                common: common.clone(),
+                target: crate::cli::OpsStatusTarget::K8s,
+            };
+            let (status_rendered, status_code) = crate::ops_runtime_execution::run_ops_status(&status_args)?;
+            let errors = inventory_errors.len() + usize::from(status_code != 0);
+            let status = if errors == 0 { "ok" } else { "failed" };
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "status": status,
+                "text": format!("ops conformance: status={status}"),
+                "rows": [{
+                    "inventory_errors": inventory_errors,
+                    "status_exit": status_code,
+                    "status_output": status_rendered
+                }],
+                "summary": {"total": 1, "errors": errors, "warnings": 0}
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((rendered, if status == "ok" { 0 } else { 1 }))
+        }
+        OpsCommand::Report(common) => {
+            if !common.allow_write {
+                return Err(
+                    OpsCommandError::Effect("report requires --allow-write".to_string())
+                        .to_stable_message(),
+                );
+            }
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let run_id = run_id_or_default(common.run_id.clone())?;
+            let summary = ops_inventory_summary(&repo_root)
+                .unwrap_or_else(|err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}));
+            let inventory_errors =
+                match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(
+                    &ops_root,
+                ) {
+                    Ok(_) => Vec::new(),
+                    Err(err) => vec![err],
+                };
+            let report = serde_json::json!({
+                "schema_version": 1,
+                "kind": "ops_report",
+                "run_id": run_id.as_str(),
+                "repo_root": repo_root.display().to_string(),
+                "inventory_summary": summary,
+                "inventory_errors": inventory_errors,
+                "capabilities": {
+                    "fs_write": common.allow_write,
+                    "subprocess": common.allow_subprocess
+                }
+            });
+            let out_dir = repo_root.join("artifacts/reports/dev-atlas/ops");
+            std::fs::create_dir_all(&out_dir)
+                .map_err(|err| format!("failed to create {}: {err}", out_dir.display()))?;
+            let out_path = out_dir.join(format!("{}.json", run_id.as_str()));
+            std::fs::write(
+                &out_path,
+                serde_json::to_string_pretty(&report).map_err(|err| err.to_string())?,
+            )
+            .map_err(|err| format!("failed to write {}: {err}", out_path.display()))?;
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "status": if report["inventory_errors"].as_array().is_some_and(|v| v.is_empty()) { "ok" } else { "failed" },
+                "text": format!("wrote ops report {}", out_path.display()),
+                "rows": [{"path": out_path.display().to_string()}],
+                "summary": {"total": 1, "errors": report["inventory_errors"].as_array().map_or(1, |v| v.len()), "warnings": 0}
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            let code = if payload["status"] == serde_json::Value::String("ok".to_string()) { 0 } else { 1 };
+            Ok((rendered, code))
+        }
         OpsCommand::Render(args) => crate::ops_runtime_execution::run_ops_render(&args),
         OpsCommand::Install(args) => crate::ops_runtime_execution::run_ops_install(&args),
         OpsCommand::Status(args) => crate::ops_runtime_execution::run_ops_status(&args),

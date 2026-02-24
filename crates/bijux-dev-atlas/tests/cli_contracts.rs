@@ -190,6 +190,40 @@ fn ops_list_profiles_supports_json_format() {
 }
 
 #[test]
+fn ops_inventory_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "inventory", "--format", "json"])
+        .output()
+        .expect("ops inventory");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert!(payload.get("status").and_then(|v| v.as_str()).is_some());
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn ops_docs_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "docs", "--format", "json"])
+        .output()
+        .expect("ops docs");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
+    assert!(payload.get("run_id").is_some());
+    assert!(payload.get("results").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
 fn ops_explain_profile_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

@@ -269,6 +269,10 @@ pub enum FormatArg {
 pub enum OpsCommand {
     Doctor(OpsCommonArgs),
     Validate(OpsCommonArgs),
+    Inventory(OpsCommonArgs),
+    Docs(OpsCommonArgs),
+    Conformance(OpsCommonArgs),
+    Report(OpsCommonArgs),
     Render(OpsRenderArgs),
     Install(OpsInstallArgs),
     Status(OpsStatusArgs),
