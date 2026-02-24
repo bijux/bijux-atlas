@@ -1,0 +1,39 @@
+name: atlas-dev-rust
+
+on:
+  pull_request:
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/bijux-atlas-dev/**'
+      - 'crates/bijux-atlas-dev-core/**'
+      - 'crates/bijux-atlas-dev-model/**'
+      - 'crates/bijux-atlas-dev-adapters/**'
+      - 'crates/bijux-atlas-cli/**'
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/bijux-atlas-dev/**'
+      - 'crates/bijux-atlas-dev-core/**'
+      - 'crates/bijux-atlas-dev-model/**'
+      - 'crates/bijux-atlas-dev-adapters/**'
+      - 'crates/bijux-atlas-cli/**'
+
+jobs:
+  atlas-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build atlas dev crates
+        run: |
+          cargo build -p bijux-atlas-dev-model -p bijux-atlas-dev-adapters -p bijux-atlas-dev-core -p bijux-atlas-dev
+      - name: Test atlas dev crates
+        run: |
+          cargo test -p bijux-atlas-dev-model -p bijux-atlas-dev-adapters -p bijux-atlas-dev-core -p bijux-atlas-dev
+      - name: Smoke help and version
+        run: |
+          cargo run -p bijux-atlas-dev -- --help >/dev/null
+          cargo run -p bijux-atlas-dev -- --version >/dev/null
