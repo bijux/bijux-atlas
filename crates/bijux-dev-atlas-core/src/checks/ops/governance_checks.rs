@@ -530,6 +530,150 @@ pub(super) fn check_root_top_level_directories_contract(
     }
 }
 
+pub(super) fn check_root_cargo_config_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new(".cargo/config.toml");
+    let path = ctx.repo_root.join(rel);
+    let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in ["[build]", "target-dir = \"artifacts/target\"", "[term]"] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "ROOT_CARGO_CONFIG_CONTRACT_MISSING",
+                format!(".cargo/config.toml is missing required contract snippet: `{required}`"),
+                "restore deterministic cargo target-dir and terminal config defaults",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_root_rust_toolchain_toml_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("rust-toolchain.toml");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "[toolchain]",
+        "channel = \"",
+        "profile = \"minimal\"",
+        "components = [\"rustfmt\", \"clippy\"]",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "ROOT_RUST_TOOLCHAIN_CONTRACT_MISSING",
+                format!("rust-toolchain.toml is missing required contract snippet: `{required}`"),
+                "pin stable Rust channel with minimal profile and rustfmt/clippy components",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_root_rustfmt_toml_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("rustfmt.toml");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "ROOT_RUSTFMT_TOML_MISSING",
+            "rustfmt.toml must exist at repo root".to_string(),
+            "add root rustfmt.toml as formatter policy SSOT for cargo fmt",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_root_clippy_toml_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("clippy.toml");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "ROOT_CLIPPY_TOML_MISSING",
+            "clippy.toml must exist at repo root".to_string(),
+            "add root clippy.toml as lint policy SSOT for cargo clippy",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_configs_nextest_toml_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/nextest/nextest.toml");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "CONFIGS_NEXTEST_TOML_MISSING",
+            "configs/nextest/nextest.toml must exist".to_string(),
+            "define nextest execution profiles and isolated store path under configs/nextest",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_configs_security_deny_toml_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("configs/security/deny.toml");
+    if ctx.adapters.fs.exists(ctx.repo_root, rel) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "CONFIGS_SECURITY_DENY_TOML_MISSING",
+            "configs/security/deny.toml must exist".to_string(),
+            "keep cargo-deny policy under configs/security/deny.toml",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_workflows_rust_toolchain_matches_repo_pin(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let toolchain_rel = Path::new("rust-toolchain.toml");
+    let workflow_rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let toolchain_text = fs::read_to_string(ctx.repo_root.join(toolchain_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let workflow_text = fs::read_to_string(ctx.repo_root.join(workflow_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let pinned = toolchain_text
+        .lines()
+        .find_map(|line| {
+            let trimmed = line.trim();
+            if trimmed.starts_with("channel = ") {
+                trimmed.split('"').nth(1).map(str::to_string)
+            } else {
+                None
+            }
+        })
+        .ok_or_else(|| CheckError::Failed("rust-toolchain.toml channel missing".to_string()))?;
+    let expected = format!("toolchain: {pinned}");
+    if workflow_text.contains(&expected) {
+        Ok(Vec::new())
+    } else {
+        Ok(vec![violation(
+            "WORKFLOWS_RUST_TOOLCHAIN_PIN_MISMATCH",
+            format!(
+                "atlas-dev-rust workflow must pin the same Rust toolchain as rust-toolchain.toml (`{pinned}`)"
+            ),
+            "update .github/workflows/atlas-dev-rust.yml dtolnay/rust-toolchain step `with.toolchain` to match rust-toolchain.toml",
+            Some(workflow_rel),
+        )])
+    }
+}
+
 pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
