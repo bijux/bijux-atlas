@@ -8,6 +8,7 @@ include makefiles/dev-atlas.mk
 include makefiles/_cargo.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
+include makefiles/_docker.mk
 include makefiles/_configs.mk
 include makefiles/_docs.mk
 include makefiles/_ops.mk
