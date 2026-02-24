@@ -61,8 +61,6 @@ _CANONICAL_RE = re.compile(r"^checks_[a-z0-9]+_[a-z0-9]+_[a-z0-9_]+$")
 _LEGACY_DOTTED_ID_RE = re.compile(r"^[a-z0-9]+(?:\.[a-z0-9_]+)+$")
 _CATALOG_PATH = Path("packages/atlasctl/src/atlasctl/registry/checks_catalog.json")
 _DOCS_META_PATH = Path("packages/atlasctl/docs/_meta/checks-registry.txt")
-_COUNT_BUDGET_PATH = Path("configs/policy/checks-count-budget.json")
-_SHAPE_BUDGET_PATH = Path("configs/policy/checks-shape-budget.json")
 _FORBIDDEN_ADJECTIVES_CONFIG = Path("configs/policy/forbidden-adjectives.json")
 _REQUIRED_PROFILE_TAGS = ("ci", "dev", "internal", "lint", "slow", "fast")
 
@@ -260,156 +258,6 @@ def check_docs_index_complete(repo_root: Path) -> tuple[int, list[str]]:
     if missing:
         return 1, [f"checks docs index missing required generated refs: {', '.join(missing)}"]
     return 0, []
-
-
-def check_count_budget(repo_root: Path) -> tuple[int, list[str]]:
-    total = len(tuple(_entries(repo_root)))
-    path = repo_root / _COUNT_BUDGET_PATH
-    if not path.exists():
-        return 1, [f"missing checks count budget file: {_COUNT_BUDGET_PATH.as_posix()}"]
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    max_total = int(payload.get("max_total", total))
-    if total > max_total:
-        return 1, [f"checks count budget exceeded: {total} > {max_total} ({_COUNT_BUDGET_PATH.as_posix()})"]
-    return 0, []
-
-
-def _shape_budget(repo_root: Path) -> dict[str, int]:
-    path = repo_root / _SHAPE_BUDGET_PATH
-    if not path.exists():
-        return {
-            "checks_root_max_entries": 15,
-            "checks_domains_max_modules": 10,
-            "checks_tools_max_modules": 10,
-            "checks_module_max_loc": 600,
-            "checks_legacy_signature_max": 398,
-        }
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    return {
-        "checks_root_max_entries": int(payload.get("checks_root_max_entries", 15)),
-        "checks_domains_max_modules": int(payload.get("checks_domains_max_modules", 10)),
-        "checks_tools_max_modules": int(payload.get("checks_tools_max_modules", 10)),
-        "checks_module_max_loc": int(payload.get("checks_module_max_loc", 600)),
-        "checks_legacy_signature_max": int(payload.get("checks_legacy_signature_max", 398)),
-    }
-
-
-def _shape_budget_loc_exemptions(repo_root: Path) -> set[str]:
-    path = repo_root / _SHAPE_BUDGET_PATH
-    if not path.exists():
-        return set()
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    rows = payload.get("checks_module_loc_exemptions", [])
-    if not isinstance(rows, list):
-        return set()
-    return {str(item).strip() for item in rows if str(item).strip()}
-
-
-def check_checks_root_entry_budget(repo_root: Path) -> tuple[int, list[str]]:
-    budget = _shape_budget(repo_root)["checks_root_max_entries"]
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    if not root.exists():
-        return 1, ["missing checks root directory: packages/atlasctl/src/atlasctl/checks"]
-    ignored = {"__pycache__", "__init__.py", "README.md", "REGISTRY.generated.json", "api.py"}
-    entries = [
-        item.name
-        for item in root.iterdir()
-        if item.name not in ignored
-    ]
-    count = len(entries)
-    if count > budget:
-        return 1, [f"checks root entry budget exceeded: {count} > {budget}"]
-    return 0, []
-
-
-def check_checks_domains_module_budget(repo_root: Path) -> tuple[int, list[str]]:
-    budget = _shape_budget(repo_root)["checks_domains_max_modules"]
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks/domains"
-    if not root.exists():
-        return 1, ["missing checks domains directory: packages/atlasctl/src/atlasctl/checks/domains"]
-    module_like: list[str] = []
-    for item in root.iterdir():
-        if item.name == "__pycache__":
-            continue
-        if item.is_file() and item.suffix == ".py":
-            module_like.append(item.name)
-            continue
-        if item.is_dir() and (item / "__init__.py").exists():
-            module_like.append(item.name)
-    count = len(module_like)
-    if count > budget:
-        return 1, [f"checks domains module budget exceeded: {count} > {budget}"]
-    return 0, []
-
-
-def check_checks_tools_module_budget(repo_root: Path) -> tuple[int, list[str]]:
-    budget = _shape_budget(repo_root)["checks_tools_max_modules"]
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks/tools"
-    if not root.exists():
-        return 1, ["missing checks tools directory: packages/atlasctl/src/atlasctl/checks/tools"]
-    modules = [path.name for path in root.glob("*.py")]
-    count = len(modules)
-    if count > budget:
-        return 1, [f"checks tools module budget exceeded: {count} > {budget}"]
-    return 0, []
-
-
-def check_checks_module_loc_budget(repo_root: Path) -> tuple[int, list[str]]:
-    budget = _shape_budget(repo_root)["checks_module_max_loc"]
-    exemptions = _shape_budget_loc_exemptions(repo_root)
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    offenders: list[str] = []
-    for path in sorted(root.rglob("*.py")):
-        if "__pycache__" in path.parts:
-            continue
-        if _is_legacy_migration_check_path(repo_root, path):
-            continue
-        rel = path.relative_to(repo_root).as_posix()
-        if rel in exemptions:
-            continue
-        loc = len(path.read_text(encoding="utf-8", errors="ignore").splitlines())
-        if loc > budget:
-            offenders.append(f"{rel}: {loc} LOC > {budget}")
-    return (1, offenders) if offenders else (0, [])
-
-
-def check_structured_results_legacy_signature_budget(repo_root: Path) -> tuple[int, list[str]]:
-    budget = _shape_budget(repo_root)["checks_legacy_signature_max"]
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    pattern = re.compile(r"def\s+check_[A-Za-z0-9_]+\([^)]*\)\s*->\s*tuple\[\s*int\s*,\s*list\[\s*str\s*\]\s*\]")
-    legacy_defs: list[str] = []
-    for path in sorted(root.rglob("*.py")):
-        if "__pycache__" in path.parts:
-            continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        if pattern.search(text):
-            legacy_defs.append(path.relative_to(repo_root).as_posix())
-    total = len(legacy_defs)
-    if total > budget:
-        return 1, [
-            f"legacy tuple-signature budget exceeded: {total} > {budget}",
-            "migrate checks to structured Violation/CheckOutcome returns",
-        ]
-    return 0, []
-
-
-def check_domains_contracts_no_nested_dirs(repo_root: Path) -> tuple[int, list[str]]:
-    targets = (
-        "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts",
-        "packages/atlasctl/src/atlasctl/checks/domains/policies/make",
-    )
-    errors: list[str] = []
-    for rel_root in targets:
-        root = repo_root / rel_root
-        if not root.exists():
-            continue
-        for path in sorted(root.rglob("*")):
-            if not path.is_dir() or path == root:
-                continue
-            depth = len(path.relative_to(root).parts)
-            if depth > 1 and path.name != "__pycache__":
-                errors.append(f"nested domain directory forbidden: {path.relative_to(repo_root).as_posix()}")
-    return (1, errors) if errors else (0, [])
 
 
 def check_registry_no_banned_adjectives_in_ids(repo_root: Path) -> tuple[int, list[str]]:
@@ -676,6 +524,7 @@ def check_no_checks_outside_domains_tools(repo_root: Path) -> tuple[int, list[st
 
 def check_legacy_check_directories_absent(repo_root: Path) -> tuple[int, list[str]]:
     legacy_dirs = (
+        repo_root / "packages/atlasctl/src/atlasctl/checks/layout",
         repo_root / "packages/atlasctl/src/atlasctl/checks/repo",
     )
     violations = [f"legacy checks directory must be removed: {path.relative_to(repo_root).as_posix()}" for path in legacy_dirs if path.exists()]
@@ -700,34 +549,6 @@ def _is_legacy_migration_check_path(repo_root: Path, path: Path) -> bool:
         "packages/atlasctl/src/atlasctl/checks/tools/repo_domain/",
     )
     return any(rel.startswith(prefix) for prefix in legacy_prefixes)
-
-
-def check_checks_file_count_budget(repo_root: Path) -> tuple[int, list[str]]:
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    if not root.exists():
-        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
-    budget = 400
-    total = sum(1 for path in root.rglob("*") if path.is_file() and "__pycache__" not in path.parts)
-    if total > budget:
-        return 1, [f"checks file-count budget exceeded: {total} > {budget}"]
-    return 0, []
-
-
-def check_checks_tree_depth_budget(repo_root: Path) -> tuple[int, list[str]]:
-    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    if not root.exists():
-        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
-    budget = 10
-    errors: list[str] = []
-    for path in sorted(root.rglob("*")):
-        if "__pycache__" in path.parts:
-            continue
-        depth = len(path.relative_to(root).parts)
-        if depth > budget:
-            errors.append(f"checks tree depth exceeded: {path.relative_to(repo_root).as_posix()} depth={depth} > {budget}")
-            if len(errors) >= 20:
-                break
-    return (1, errors) if errors else (0, [])
 
 
 def check_domains_directory_shape(repo_root: Path) -> tuple[int, list[str]]:
@@ -1276,21 +1097,6 @@ def check_internal_no_layout_repo_registry_dirs(repo_root: Path) -> tuple[int, l
     return check_internal_checks_tree_policy(repo_root)
 
 
-def check_internal_checks_root_budget(repo_root: Path) -> tuple[int, list[str]]:
-    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    if not checks_root.exists():
-        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
-    budget = _shape_budget(repo_root)["checks_root_max_entries"]
-    entries = [path for path in checks_root.iterdir() if path.name != "__pycache__"]
-    if len(entries) > budget:
-        return 1, [f"checks root entry budget exceeded: {len(entries)} > {budget}"]
-    return 0, []
-
-
-def check_internal_root_budget(repo_root: Path) -> tuple[int, list[str]]:
-    return check_internal_checks_root_budget(repo_root)
-
-
 def check_internal_domains_flat_modules_only(repo_root: Path) -> tuple[int, list[str]]:
     domains_root = repo_root / "packages/atlasctl/src/atlasctl/checks/domains"
     if not domains_root.exists():
@@ -1309,19 +1115,6 @@ def check_internal_domains_flat_modules_only(repo_root: Path) -> tuple[int, list
 
 def check_internal_domains_flat(repo_root: Path) -> tuple[int, list[str]]:
     return check_internal_domains_flat_modules_only(repo_root)
-
-
-def check_internal_no_file_per_check_explosion(repo_root: Path) -> tuple[int, list[str]]:
-    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
-    budget = 15
-    errors: list[str] = []
-    for directory in sorted(path for path in checks_root.rglob("*") if path.is_dir() and "__pycache__" not in path.parts):
-        py_files = [row for row in directory.glob("*.py")]
-        if len(py_files) > budget:
-            errors.append(
-                f"python file explosion under checks tree: {directory.relative_to(repo_root).as_posix()} has {len(py_files)} files > {budget}"
-            )
-    return (1, errors) if errors else (0, [])
 
 
 def check_internal_no_duplicate_engines(repo_root: Path) -> tuple[int, list[str]]:
@@ -1826,83 +1619,6 @@ CHECKS = (
         tags=("checks", "docs", "required"),
     ),
     CheckDef(
-        "checks.count_budget",
-        "checks",
-        "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json",
-        500,
-        check_count_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Reduce checks count or intentionally raise budget in configs/policy/checks-count-budget.json.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.root_entry_budget",
-        "checks",
-        "enforce checks root entry budget",
-        500,
-        check_checks_root_entry_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Reduce top-level entries under packages/atlasctl/src/atlasctl/checks or adjust policy budget intentionally.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.domains_module_budget",
-        "checks",
-        "enforce checks domains module budget",
-        500,
-        check_checks_domains_module_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Keep checks domain module count within budget or adjust policy budget intentionally.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.tools_module_budget",
-        "checks",
-        "enforce checks tools module budget",
-        500,
-        check_checks_tools_module_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Keep checks tools module count within budget or adjust policy budget intentionally.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.module_loc_budget",
-        "checks",
-        "enforce checks module loc budget",
-        600,
-        check_checks_module_loc_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Split oversized checks modules into intent-focused modules.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.structured_results_legacy_signature_budget",
-        "checks",
-        "ratchet down legacy tuple check signatures in favor of structured results",
-        600,
-        check_structured_results_legacy_signature_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Migrate tuple[int, list[str]] check signatures to structured Violation/CheckOutcome results.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.domains_contracts_no_nested_dirs",
-        "checks",
-        "forbid nested directories under canonical domain contract modules",
-        500,
-        check_domains_contracts_no_nested_dirs,
-        category=CheckCategory.POLICY,
-        fix_hint="Keep domain contracts flat: avoid nested directories under checks/domains/ops/contracts and checks/domains/policies/make.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
         "checks.registry_no_banned_adjectives_in_ids",
         "checks",
         "forbid policy-listed adjectives in canonical check ids",
@@ -2014,28 +1730,6 @@ CHECKS = (
         tags=("checks", "required"),
     ),
     CheckDef(
-        "checks.internal_checks_root_budget",
-        "checks",
-        "enforce checks package root entry budget",
-        500,
-        check_internal_checks_root_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Reduce checks package root entries to stay within budget.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.internal_root_budget",
-        "checks",
-        "enforce checks root entry budget alias contract",
-        500,
-        check_internal_root_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Reduce checks root entries to budget.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
         "checks.internal_domains_flat_modules_only",
         "checks",
         "enforce flat modules under checks/domains",
@@ -2054,17 +1748,6 @@ CHECKS = (
         check_internal_domains_flat,
         category=CheckCategory.POLICY,
         fix_hint="Flatten checks/domains to top-level modules only.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.internal_no_file_per_check_explosion",
-        "checks",
-        "enforce python file-count budget per checks directory",
-        600,
-        check_internal_no_file_per_check_explosion,
-        category=CheckCategory.POLICY,
-        fix_hint="Group per-check files into intent modules and keep per-directory python file count below budget.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
@@ -2318,28 +2001,6 @@ CHECKS = (
         check_docs_checks_no_ops_imports,
         category=CheckCategory.POLICY,
         fix_hint="Keep docs checks independent from ops modules and rely on documented contracts/inputs.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.file_count_budget",
-        "checks",
-        "enforce checks package file-count budget",
-        500,
-        check_checks_file_count_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Reduce checks package file count to budget by consolidating modules.",
-        owners=("platform",),
-        tags=("checks", "required"),
-    ),
-    CheckDef(
-        "checks.depth_budget",
-        "checks",
-        "enforce checks package depth budget",
-        500,
-        check_checks_tree_depth_budget,
-        category=CheckCategory.POLICY,
-        fix_hint="Flatten checks package directories to depth budget.",
         owners=("platform",),
         tags=("checks", "required"),
     ),

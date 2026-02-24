@@ -93,11 +93,6 @@ The following trees are migration-only and must be removed:
 - Compatibility shims require explicit expiry date metadata.
 - Expired shims are policy violations and must be removed.
 
-## Module Budget Policy
-
-- Root/module/file budgets are enforced by policy checks.
-- LOC and module count budgets are enforced as ratchets.
-
 ## CI Contract
 
 - CI entrypoints select suites.

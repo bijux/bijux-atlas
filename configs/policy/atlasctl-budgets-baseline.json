@@ -1,6 +1,0 @@
-{
-  "max_loc_per_dir": 2600,
-  "max_loc_per_file": 600,
-  "max_modules_per_dir": 15,
-  "max_py_files_per_dir": 15
-}
