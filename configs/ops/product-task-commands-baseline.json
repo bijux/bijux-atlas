@@ -1,4 +1,0 @@
-{
-  "max_count": 0,
-  "notes": "Product task scripts should live under atlasctl commands/product or atlasctl ops area modules, not ops/."
-}

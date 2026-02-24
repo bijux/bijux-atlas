@@ -1,6 +1,0 @@
-{
-  "schema_version": 1,
-  "max_active_shims": 0,
-  "migration_doc": "docs/development/tooling/atlasctl.md",
-  "shims": []
-}
