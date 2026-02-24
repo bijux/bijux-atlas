@@ -4,7 +4,7 @@ pub(super) fn checks_ops_no_atlasctl_invocations(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let targets = [
-        Path::new("makefiles/ops.mk"),
+        Path::new("makefiles/_ops.mk"),
         Path::new("makefiles/CONTRACT.md"),
         Path::new(".github/workflows/atlas-dev-rust.yml"),
         Path::new("ops/CONTRACT.md"),
@@ -42,7 +42,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let targets = [
-        Path::new("makefiles/ops.mk"),
+        Path::new("makefiles/_ops.mk"),
         Path::new(".github/workflows/atlas-dev-rust.yml"),
         Path::new("ops/README.md"),
         Path::new("ops/INDEX.md"),
