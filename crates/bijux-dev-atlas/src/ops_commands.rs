@@ -19,6 +19,26 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsK8sCommand::Test(common) => OpsCommand::Conformance(common),
             OpsK8sCommand::Status(args) => OpsCommand::Status(args),
         },
+        OpsCommand::Load { command } => match command {
+            OpsLoadCommand::Run(common) => OpsCommand::Explain {
+                action: "load-run".to_string(),
+                common,
+            },
+        },
+        OpsCommand::E2e { command } => match command {
+            OpsE2eCommand::Run(common) => OpsCommand::Explain {
+                action: "e2e-run".to_string(),
+                common,
+            },
+        },
+        OpsCommand::Obs { command } => match command {
+            OpsObsCommand::Drill { command } => match command {
+                OpsObsDrillCommand::Run(common) => OpsCommand::Explain {
+                    action: "obs-drill-run".to_string(),
+                    common,
+                },
+            },
+        },
         other => other,
     };
     let run: Result<(String, i32), String> = (|| match command {
@@ -67,10 +87,11 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "load-run" => serde_json::json!({"action":"load-run","purpose":"reserved for k6 orchestration under ops load","status":"not_implemented"}),
                 "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
+                "obs-drill-run" => serde_json::json!({"action":"obs-drill-run","purpose":"reserved for observability drill orchestration","status":"not_implemented"}),
                 "cleanup" => serde_json::json!({"action":"cleanup","purpose":"remove scoped artifacts and local ops resources","effects_required":["subprocess (optional)"]}),
                 _ => {
                     return Err(format!(
-                        "unknown ops action `{}` (try inventory|validate|render|install|down|status|conformance|cleanup)",
+                        "unknown ops action `{}` (try inventory|validate|render|install|down|status|conformance|cleanup|load-run|e2e-run|obs-drill-run)",
                         action
                     ))
                 }
@@ -684,7 +705,11 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 }
             }
         },
-        OpsCommand::Stack { .. } | OpsCommand::K8s { .. } => {
+        OpsCommand::Stack { .. }
+        | OpsCommand::K8s { .. }
+        | OpsCommand::Load { .. }
+        | OpsCommand::E2e { .. }
+        | OpsCommand::Obs { .. } => {
             unreachable!("ops nested wrapper variants are normalized before execution")
         }
     })();
@@ -713,4 +738,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
     }
 }
 use crate::*;
-use crate::cli::{OpsK8sCommand, OpsStackCommand};
+use crate::cli::{
+    OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,
+    OpsStackCommand,
+};

@@ -330,6 +330,18 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsK8sCommand,
     },
+    Load {
+        #[command(subcommand)]
+        command: OpsLoadCommand,
+    },
+    E2e {
+        #[command(subcommand)]
+        command: OpsE2eCommand,
+    },
+    Obs {
+        #[command(subcommand)]
+        command: OpsObsCommand,
+    },
     Doctor(OpsCommonArgs),
     Validate(OpsCommonArgs),
     Inventory(OpsCommonArgs),
@@ -375,6 +387,29 @@ pub enum OpsK8sCommand {
     Render(OpsRenderArgs),
     Test(OpsCommonArgs),
     Status(OpsStatusArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsLoadCommand {
+    Run(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsE2eCommand {
+    Run(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsObsCommand {
+    Drill {
+        #[command(subcommand)]
+        command: OpsObsDrillCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum OpsObsDrillCommand {
+    Run(OpsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
