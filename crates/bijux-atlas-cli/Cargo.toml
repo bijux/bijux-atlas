@@ -7,7 +7,6 @@ rust-version.workspace = true
 
 [dependencies]
 bijux-atlas-core.workspace = true
-bijux-atlas-api.workspace = true
 bijux-atlas-model.workspace = true
 bijux-atlas-ingest.workspace = true
 bijux-atlas-store.workspace = true

@@ -17,7 +17,11 @@ pub fn hash_file(path: &Path) -> Result<String, IngestError> {
     Ok(sha256_hex(&bytes))
 }
 
-pub fn compute_input_hashes(gff3: &Path, fasta: &Path, fai: &Path) -> Result<InputHashes, IngestError> {
+pub fn compute_input_hashes(
+    gff3: &Path,
+    fasta: &Path,
+    fai: &Path,
+) -> Result<InputHashes, IngestError> {
     Ok(InputHashes {
         gff3_sha256: hash_file(gff3)?,
         fasta_sha256: hash_file(fasta)?,

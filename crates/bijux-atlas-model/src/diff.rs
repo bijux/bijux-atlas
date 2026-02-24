@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
 use crate::ModelVersion;
-use crate::{Assembly, GeneId, Release, SeqId, Species};
 use crate::ValidationError;
+use crate::{Assembly, GeneId, Release, SeqId, Species};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

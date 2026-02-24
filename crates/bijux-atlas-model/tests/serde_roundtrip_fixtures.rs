@@ -1,6 +1,6 @@
 use bijux_atlas_model::{
     parse_assembly, parse_release, parse_species, ArtifactChecksums, ArtifactManifest, Catalog,
-    CatalogEntry, DiffPage, DiffScope, DiffStatus, DiffRecord, GeneId, GeneSummary,
+    CatalogEntry, DiffPage, DiffRecord, DiffScope, DiffStatus, GeneId, GeneSummary,
     IngestAnomalyReport, ManifestStats, ModelVersion, ReleaseGeneIndex, ReleaseGeneIndexEntry,
     SeqId, ShardCatalog, ShardEntry, ShardId,
 };
@@ -13,7 +13,8 @@ fn fixture(path: &str) -> String {
 
 #[test]
 fn top_level_models_roundtrip_and_validate() {
-    let dataset = bijux_atlas_model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
+    let dataset =
+        bijux_atlas_model::DatasetId::new("110", "homo_sapiens", "GRCh38").expect("dataset");
 
     let mut manifest = ArtifactManifest::new(
         "1".to_string(),
@@ -32,7 +33,8 @@ fn top_level_models_roundtrip_and_validate() {
     manifest.created_at = "2026-02-24T00:00:00Z".into();
     assert!(manifest.validate().is_ok());
     let manifest_json = serde_json::to_string(&manifest).expect("manifest encode");
-    let manifest_back: ArtifactManifest = serde_json::from_str(&manifest_json).expect("manifest decode");
+    let manifest_back: ArtifactManifest =
+        serde_json::from_str(&manifest_json).expect("manifest decode");
     assert_eq!(manifest_back.model_version, ModelVersion::V1);
 
     let catalog = Catalog::new(vec![CatalogEntry::new(
@@ -104,23 +106,35 @@ fn top_level_models_roundtrip_and_validate() {
 
 #[test]
 fn known_current_fixtures_parse() {
-    let _: ArtifactManifest = serde_json::from_str(&fixture("tests/fixtures/current/artifact_manifest.json")).expect("manifest fixture");
-    let _: Catalog = serde_json::from_str(&fixture("tests/fixtures/current/catalog.json")).expect("catalog fixture");
-    let _: DiffPage = serde_json::from_str(&fixture("tests/fixtures/current/diff_page.json")).expect("diff fixture");
-    let _: ReleaseGeneIndex = serde_json::from_str(&fixture("tests/fixtures/current/release_gene_index.json")).expect("index fixture");
+    let _: ArtifactManifest =
+        serde_json::from_str(&fixture("tests/fixtures/current/artifact_manifest.json"))
+            .expect("manifest fixture");
+    let _: Catalog = serde_json::from_str(&fixture("tests/fixtures/current/catalog.json"))
+        .expect("catalog fixture");
+    let _: DiffPage = serde_json::from_str(&fixture("tests/fixtures/current/diff_page.json"))
+        .expect("diff fixture");
+    let _: ReleaseGeneIndex =
+        serde_json::from_str(&fixture("tests/fixtures/current/release_gene_index.json"))
+            .expect("index fixture");
 }
 
 #[test]
 fn backward_compatibility_fixtures_from_v0_1_parse() {
-    let manifest: ArtifactManifest = serde_json::from_str(&fixture("tests/fixtures/v0_1/artifact_manifest.json")).expect("manifest fixture");
+    let manifest: ArtifactManifest =
+        serde_json::from_str(&fixture("tests/fixtures/v0_1/artifact_manifest.json"))
+            .expect("manifest fixture");
     assert_eq!(manifest.model_version, ModelVersion::V1);
 
-    let catalog: Catalog = serde_json::from_str(&fixture("tests/fixtures/v0_1/catalog.json")).expect("catalog fixture");
+    let catalog: Catalog = serde_json::from_str(&fixture("tests/fixtures/v0_1/catalog.json"))
+        .expect("catalog fixture");
     assert_eq!(catalog.model_version, ModelVersion::V1);
 
-    let diff: DiffPage = serde_json::from_str(&fixture("tests/fixtures/v0_1/diff_page.json")).expect("diff fixture");
+    let diff: DiffPage =
+        serde_json::from_str(&fixture("tests/fixtures/v0_1/diff_page.json")).expect("diff fixture");
     assert_eq!(diff.model_version, ModelVersion::V1);
 
-    let index: ReleaseGeneIndex = serde_json::from_str(&fixture("tests/fixtures/v0_1/release_gene_index.json")).expect("index fixture");
+    let index: ReleaseGeneIndex =
+        serde_json::from_str(&fixture("tests/fixtures/v0_1/release_gene_index.json"))
+            .expect("index fixture");
     assert_eq!(index.model_version, ModelVersion::V1);
 }

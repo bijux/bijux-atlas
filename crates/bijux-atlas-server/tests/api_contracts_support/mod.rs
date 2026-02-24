@@ -1,7 +1,7 @@
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats, ReleaseGeneIndex,
-    ReleaseGeneIndexEntry,
+    ArtifactChecksums, ArtifactManifest, DatasetId, GeneId, ManifestStats, ReleaseGeneIndex,
+    ReleaseGeneIndexEntry, SeqId,
 };
 use rusqlite::Connection;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -62,8 +62,8 @@ pub fn fixture_release_index(
         .into_iter()
         .map(|(gene_id, seqid, start, end, sig)| {
             ReleaseGeneIndexEntry::new(
-                gene_id.to_string(),
-                seqid.to_string(),
+                GeneId::parse(gene_id).expect("gene id"),
+                SeqId::parse(seqid).expect("seqid"),
                 start,
                 end,
                 sig.to_string(),

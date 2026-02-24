@@ -8,19 +8,17 @@ mod manifest;
 mod paths;
 mod retry;
 
-pub use backend::{
-    enforce_dataset_immutability, ArtifactStore, HttpReadonlyStore, LocalFsStore,
-    NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode,
-    StoreInstrumentation, StoreMetrics, StoreMetricsCollector,
-};
 #[cfg(feature = "backend-s3")]
 pub use backend::S3LikeStore;
+pub use backend::{
+    enforce_dataset_immutability, ArtifactStore, HttpReadonlyStore, LocalFsStore,
+    NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode, StoreInstrumentation,
+    StoreMetrics, StoreMetricsCollector,
+};
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
 };
-pub use contracts::{
-    ArtifactRef, CatalogRef, StoreAdmin, StorePath, StoreRead, StoreWrite,
-};
+pub use contracts::{ArtifactRef, CatalogRef, StoreAdmin, StorePath, StoreRead, StoreWrite};
 pub use manifest::{verify_expected_sha256, ManifestLock};
 pub use paths::{
     dataset_artifact_paths, dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key,

@@ -2,7 +2,9 @@ use bijux_atlas_model::{ArtifactManifest, DatasetId};
 
 use crate::backend::{ArtifactStore, PublishLockGuard, StoreError};
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
+)]
 #[serde(transparent)]
 pub struct StorePath(String);
 

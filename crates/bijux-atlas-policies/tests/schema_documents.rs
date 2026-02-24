@@ -28,8 +28,8 @@ fn all_policy_documents_parse_and_validate_against_schema_contract() {
             continue;
         }
         let config_raw = std::fs::read_to_string(&path).expect("config read");
-        let json: serde_json::Value =
-            serde_json::from_str(&config_raw).unwrap_or_else(|err| panic!("{}: {err}", path.display()));
+        let json: serde_json::Value = serde_json::from_str(&config_raw)
+            .unwrap_or_else(|err| panic!("{}: {err}", path.display()));
         let is_policy_set = json.get("schema_version").is_some() && json.get("mode").is_some();
         if !is_policy_set {
             continue;

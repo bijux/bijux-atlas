@@ -5,7 +5,16 @@ use serde_json::{json, Value};
 use std::path::PathBuf;
 
 pub(crate) fn run_openapi_generate(out: PathBuf, output_mode: OutputMode) -> Result<(), String> {
-    let spec = bijux_atlas_api::openapi_v1_spec();
+    let workspace_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .and_then(|p| p.parent())
+        .ok_or_else(|| "failed to resolve workspace root".to_string())?
+        .to_path_buf();
+    let openapi_source = workspace_root.join("configs/openapi/v1/openapi.generated.json");
+    let raw = std::fs::read(&openapi_source)
+        .map_err(|e| format!("failed to read {}: {e}", openapi_source.display()))?;
+    let spec: Value =
+        serde_json::from_slice(&raw).map_err(|e| format!("invalid OpenAPI JSON: {e}"))?;
     let bytes = canonical::stable_json_bytes(&spec).map_err(|e| e.to_string())?;
     if let Some(parent) = out.parent() {
         std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;

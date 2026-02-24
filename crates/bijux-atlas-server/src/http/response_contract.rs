@@ -5,6 +5,7 @@ use bijux_atlas_api::{ApiError, ApiErrorCode};
 use serde_json::{json, Value};
 
 #[must_use]
+#[allow(dead_code)]
 pub(crate) fn api_error_status(code: ApiErrorCode) -> StatusCode {
     match code {
         ApiErrorCode::InvalidQueryParameter

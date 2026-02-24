@@ -429,9 +429,7 @@ impl ShardCatalog {
         }
         let mut previous: Option<&ShardEntry> = None;
         for item in &self.shards {
-            if item.sqlite_path.trim().is_empty()
-                || item.sqlite_sha256.trim().is_empty()
-            {
+            if item.sqlite_path.trim().is_empty() || item.sqlite_sha256.trim().is_empty() {
                 return Err(ValidationError(
                     "shard catalog entries must have non-empty id/path/checksum".to_string(),
                 ));
@@ -579,7 +577,9 @@ impl IngestAnomalyReport {
     pub fn validate(&self) -> Result<(), ValidationError> {
         for rejection in &self.rejections {
             if rejection.line == 0 {
-                return Err(ValidationError("ingest rejection line must be > 0".to_string()));
+                return Err(ValidationError(
+                    "ingest rejection line must be > 0".to_string(),
+                ));
             }
             if rejection.code.trim().is_empty() {
                 return Err(ValidationError(

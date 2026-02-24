@@ -80,7 +80,7 @@ fn parse_region(params: &HashMap<String, String>) -> Result<Option<RegionFilter>
 }
 
 fn overlaps(entry: &ReleaseGeneIndexEntry, region: &RegionFilter) -> bool {
-    entry.seqid == region.seqid && entry.start <= region.end && region.start <= entry.end
+    entry.seqid.as_str() == region.seqid && entry.start <= region.end && region.start <= entry.end
 }
 
 fn load_index(path: &std::path::Path) -> Result<Vec<ReleaseGeneIndexEntry>, ApiError> {
@@ -421,7 +421,10 @@ async fn diff_common(
         let Some((gene_id, status, coord_src)) = next else {
             continue;
         };
-        if cursor_gene.as_ref().is_some_and(|c| &gene_id <= c) {
+        if cursor_gene
+            .as_ref()
+            .is_some_and(|c| gene_id.as_str() <= c.as_str())
+        {
             continue;
         }
         if let Some(r) = &region {
@@ -456,14 +459,14 @@ async fn diff_common(
                     dataset_id: None,
                     sort_key: Some("gene_id".to_string()),
                     last_seen: Some(bijux_atlas_query::CursorLastSeen {
-                        gene_id: x.gene_id.clone(),
+                        gene_id: x.gene_id.as_str().to_string(),
                         seqid: None,
                         start: None,
                     }),
                     order: "gene_id".to_string(),
                     last_seqid: None,
                     last_start: None,
-                    last_gene_id: x.gene_id.clone(),
+                    last_gene_id: x.gene_id.as_str().to_string(),
                     query_hash: query_hash.clone(),
                     depth: 0,
                 },
@@ -476,10 +479,10 @@ async fn diff_common(
     };
 
     let page = DiffPage::new(
-        from_release.clone(),
-        to_release.clone(),
-        species.clone(),
-        assembly.clone(),
+        from_dataset.release.clone(),
+        to_dataset.release.clone(),
+        from_dataset.species.clone(),
+        from_dataset.assembly.clone(),
         scope,
         rows,
         next_cursor,

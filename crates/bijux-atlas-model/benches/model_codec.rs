@@ -1,6 +1,4 @@
-use bijux_atlas_model::{
-    ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats,
-};
+use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn large_manifest() -> ArtifactManifest {

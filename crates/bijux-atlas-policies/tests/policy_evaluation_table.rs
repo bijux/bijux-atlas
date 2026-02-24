@@ -20,8 +20,13 @@ fn policy_evaluation_table_matches_golden_violations() {
 
     let valid = load_policy_set_from_workspace(&root).expect("load policy");
     let valid_violations = evaluate_policy_set(&valid);
-    let valid_golden: serde_json::Value = serde_json::from_str(&fixture("tests/fixtures/evaluation/valid_policy.json")).expect("golden");
-    assert_eq!(serde_json::to_value(valid_violations).expect("encode"), valid_golden);
+    let valid_golden: serde_json::Value =
+        serde_json::from_str(&fixture("tests/fixtures/evaluation/valid_policy.json"))
+            .expect("golden");
+    assert_eq!(
+        serde_json::to_value(valid_violations).expect("encode"),
+        valid_golden
+    );
 
     let mut invalid = valid.clone();
     invalid.allow_override = true;
@@ -36,8 +41,13 @@ fn policy_evaluation_table_matches_golden_violations() {
                 || v.id == "policy.telemetry.metrics.required"
         })
         .collect::<Vec<_>>();
-    let invalid_golden: serde_json::Value = serde_json::from_str(&fixture("tests/fixtures/evaluation/invalid_policy.json")).expect("golden");
-    assert_eq!(serde_json::to_value(invalid_violations).expect("encode"), invalid_golden);
+    let invalid_golden: serde_json::Value =
+        serde_json::from_str(&fixture("tests/fixtures/evaluation/invalid_policy.json"))
+            .expect("golden");
+    assert_eq!(
+        serde_json::to_value(invalid_violations).expect("encode"),
+        invalid_golden
+    );
 }
 
 #[test]
@@ -56,6 +66,9 @@ fn repository_metric_evaluation_matches_golden_violations() {
     };
 
     let violations = evaluate_repository_metrics(&policy, &metrics);
-    let golden: serde_json::Value = serde_json::from_str(&fixture("tests/fixtures/evaluation/repo_budget_exceeded.json")).expect("golden");
+    let golden: serde_json::Value = serde_json::from_str(&fixture(
+        "tests/fixtures/evaluation/repo_budget_exceeded.json",
+    ))
+    .expect("golden");
     assert_eq!(serde_json::to_value(violations).expect("encode"), golden);
 }

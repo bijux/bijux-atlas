@@ -52,8 +52,8 @@ pub fn execute_gene_query(
         None
     };
 
-    let (sql, mut params) = build_sql(req, order_mode, decoded_cursor.as_ref())
-        .map_err(ExecError::Sql)?;
+    let (sql, mut params) =
+        build_sql(req, order_mode, decoded_cursor.as_ref()).map_err(ExecError::Sql)?;
     params.push(Value::Integer((req.limit as i64) + 1));
     assert_index_usage(conn, &sql, &params, req.allow_full_scan).map_err(ExecError::Policy)?;
 

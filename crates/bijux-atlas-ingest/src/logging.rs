@@ -24,7 +24,12 @@ pub struct IngestLog {
 }
 
 impl IngestLog {
-    pub fn emit(&mut self, stage: IngestStage, name: impl Into<String>, fields: BTreeMap<String, String>) {
+    pub fn emit(
+        &mut self,
+        stage: IngestStage,
+        name: impl Into<String>,
+        fields: BTreeMap<String, String>,
+    ) {
         self.events.push(IngestEvent {
             stage,
             name: name.into(),

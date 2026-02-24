@@ -74,7 +74,9 @@ fn http_backend_reads_from_hermetic_cached_objects() {
     )
     .expect("manifest cache");
     std::fs::write(
-        cache.path().join("110__homo_sapiens__GRCh38__manifest.lock"),
+        cache
+            .path()
+            .join("110__homo_sapiens__GRCh38__manifest.lock"),
         &lock_bytes,
     )
     .expect("lock cache");

@@ -22,7 +22,10 @@ pub(crate) fn load_shard_catalog(derived_dir: &Path) -> Result<ShardCatalogIndex
         let shard_path = derived_dir.join(shard.sqlite_path);
         all.push(shard_path.clone());
         for seqid in shard.seqids {
-            by_seqid.entry(seqid).or_default().push(shard_path.clone());
+            by_seqid
+                .entry(seqid.as_str().to_string())
+                .or_default()
+                .push(shard_path.clone());
         }
     }
     all.sort();

@@ -65,6 +65,10 @@ fn planner_output_matches_golden_contracts() {
         let plan = plan_gene_query(&ast, &QueryLimits::default()).expect("plan");
         let actual = serde_json::to_string_pretty(&plan).expect("json");
         let expected = fixture(golden_path);
-        assert_eq!(actual.trim(), expected.trim(), "golden mismatch: {golden_path}");
+        assert_eq!(
+            actual.trim(),
+            expected.trim(),
+            "golden mismatch: {golden_path}"
+        );
     }
 }

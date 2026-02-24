@@ -64,7 +64,9 @@ impl fmt::Display for Error {
             #[cfg(feature = "serde")]
             Self::SerdeJson(err) => write!(f, "serde json error: {err}"),
             #[cfg(feature = "serde")]
-            Self::DecodeCursorBase64(message) => write!(f, "cursor base64 decode failed: {message}"),
+            Self::DecodeCursorBase64(message) => {
+                write!(f, "cursor base64 decode failed: {message}")
+            }
             #[cfg(feature = "serde")]
             Self::DecodeCursorJson(message) => write!(f, "cursor json decode failed: {message}"),
             Self::InvalidIdentifier {
@@ -82,7 +84,9 @@ impl std::error::Error for Error {
             #[cfg(feature = "serde")]
             Self::SerdeJson(err) => Some(err),
             #[cfg(feature = "serde")]
-            Self::DecodeCursorBase64(_) | Self::DecodeCursorJson(_) | Self::InvalidIdentifier { .. } => None,
+            Self::DecodeCursorBase64(_)
+            | Self::DecodeCursorJson(_)
+            | Self::InvalidIdentifier { .. } => None,
             #[cfg(not(feature = "serde"))]
             Self::InvalidIdentifier { .. } => None,
         }

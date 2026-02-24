@@ -71,11 +71,6 @@ struct Cli {
 #[derive(Subcommand)]
 enum AtlasCommand {
     #[command(hide = true)]
-    Atlas {
-        #[command(subcommand)]
-        command: Box<AtlasCommand>,
-    },
-    #[command(hide = true)]
     Validate {
         #[arg(long)]
         root: PathBuf,
@@ -361,7 +356,15 @@ pub fn main_entry() -> ProcessExitCode {
 
 fn run() -> Result<(), CliError> {
     let raw_args: Vec<String> = std::env::args().skip(1).collect();
-    let cli = match Cli::try_parse() {
+    let (parse_args, used_legacy_namespace) = normalize_legacy_namespace(&raw_args);
+    if used_legacy_namespace
+        && parse_args.len() == 2
+        && (parse_args[1] == "--help" || parse_args[1] == "-h")
+    {
+        print_legacy_atlas_help();
+        return Ok(());
+    }
+    let cli = match Cli::try_parse_from(parse_args) {
         Ok(cli) => cli,
         Err(err) => match err.kind() {
             ErrorKind::DisplayHelp | ErrorKind::DisplayVersion => {
@@ -419,14 +422,30 @@ fn legacy_control_plane_redirect(args: &[String]) -> Option<&'static str> {
     if args.is_empty() {
         return None;
     }
-    let mut start = 0;
-    if args.first().is_some_and(|a| a == "atlas") {
-        start = 1;
+    let mut i = 0usize;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--json"
+            | "--quiet"
+            | "--trace"
+            | "--verbose"
+            | "--bijux-plugin-metadata"
+            | "--print-config-paths" => i += 1,
+            "--umbrella-version" => i += 2,
+            token if token.starts_with('-') => i += 1,
+            _ => break,
+        }
     }
-    if start >= args.len() {
+    if i >= args.len() {
         return None;
     }
-    let subcommand = args[start].as_str();
+    if args[i] == "atlas" {
+        i += 1;
+    }
+    if i >= args.len() {
+        return None;
+    }
+    let subcommand = args[i].as_str();
     if subcommand == "dev-atlas" {
         return Some("bijux dev atlas <command>");
     }
@@ -436,10 +455,92 @@ fn legacy_control_plane_redirect(args: &[String]) -> Option<&'static str> {
     None
 }
 
+fn normalize_legacy_namespace(args: &[String]) -> (Vec<String>, bool) {
+    let mut atlas_index = None;
+    let mut i = 0usize;
+    while i < args.len() {
+        match args[i].as_str() {
+            "--json"
+            | "--quiet"
+            | "--trace"
+            | "--verbose"
+            | "--bijux-plugin-metadata"
+            | "--print-config-paths" => {
+                i += 1;
+            }
+            "--umbrella-version" => {
+                i += 2;
+            }
+            token if token.starts_with('-') => {
+                i += 1;
+            }
+            "atlas" => {
+                atlas_index = Some(i);
+                break;
+            }
+            _ => break,
+        }
+    }
+
+    let mut normalized = vec!["bijux-atlas".to_string()];
+    let mut used = false;
+    for (idx, arg) in args.iter().enumerate() {
+        if Some(idx) == atlas_index {
+            used = true;
+            continue;
+        }
+        normalized.push(arg.clone());
+    }
+    normalize_legacy_command_aliases(&mut normalized);
+    (normalized, used)
+}
+
+fn normalize_legacy_command_aliases(args: &mut [String]) {
+    if let Some(first_positional) = args
+        .iter_mut()
+        .skip(1)
+        .find(|token| !token.starts_with('-'))
+    {
+        if first_positional == "print-config" {
+            *first_positional = "config".to_string();
+        }
+    }
+}
+
+fn print_legacy_atlas_help() {
+    const LEGACY_ATLAS_HELP: &str = "\
+Legacy atlas namespace compatibility surface
+Commands:
+  ingest
+  serve
+  catalog
+  dataset
+  openapi
+  completion
+  version
+  validate
+  explain
+  diff
+  gc
+  bench
+  policy
+  print-config
+  smoke
+  inspect-db
+  ingest-verify-inputs
+  ingest-validate
+  ingest-replay
+  ingest-normalized-diff
+";
+    print!("{LEGACY_ATLAS_HELP}");
+}
+
 #[derive(Clone, Copy)]
 struct LogFlags {
+    #[allow(dead_code)]
     quiet: bool,
     verbose: u8,
+    #[allow(dead_code)]
     trace: bool,
 }
 
