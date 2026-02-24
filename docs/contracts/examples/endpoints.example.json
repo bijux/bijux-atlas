@@ -88,7 +88,7 @@
     },
     {
       "method": "GET",
-      "path": "/v1/transcripts/{tx_id}",
+      "path": "/v1/trantooling/{tx_id}",
       "telemetry_class": "transcript"
     },
     {

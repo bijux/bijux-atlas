@@ -30,7 +30,7 @@
 | POST | `/v1/query/validate` | gene query/search |
 | GET | `/v1/releases/{release}/species/{species}/assemblies/{assembly}` | dataset catalog/metadata |
 | GET | `/v1/sequence/region` | sequence retrieval |
-| GET | `/v1/transcripts/{tx_id}` | transcript retrieval |
+| GET | `/v1/trantooling/{tx_id}` | transcript retrieval |
 | GET | `/v1/version` | version/control metadata |
 
 ## Source Of Truth

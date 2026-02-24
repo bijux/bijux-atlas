@@ -12,7 +12,7 @@ Gene-level summaries need drill-down into transcript structures.
 
 ## Scope
 
-Endpoints: `/v1/genes/{gene_id}/transcripts`, `/v1/transcripts/{tx_id}`.
+Endpoints: `/v1/genes/{gene_id}/transcripts`, `/v1/trantooling/{tx_id}`.
 
 ## Non-goals
 

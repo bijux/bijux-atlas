@@ -24,7 +24,7 @@ Does not freeze internal implementation details.
 - Script interfaces: [Scripts Overview](scripts.md)
 - SSOT contracts: [`../contracts/INDEX.md`](../contracts/INDEX.md)
 - Root layout SSOT:
-  - Allowlist source: `packages/atlasctl/src/atlasctl/checks/layout/root_whitelist.json`.
+  - Allowlist source: `crates/bijux-dev-atlas/src/checks/layout/root_whitelist.json`.
   - Classification is explicit and enforced:
     - `required`: must exist at root.
     - `allowed`: allowed at root.
@@ -51,8 +51,8 @@ Surface drift breaks automation and team workflows.
 ## How to verify
 
 ```bash
-$ atlasctl docs script-headers-check --report text
-$ make atlasctl-check-layout
+$ bijux dev atlas docs script-headers-check --report text
+$ make check-gates
 $ make no-direct-scripts
 ```
 

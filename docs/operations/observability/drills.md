@@ -6,7 +6,7 @@
 
 - Drill manifest SSOT: `ops/obs/drills/drills.json`
 - Drill result schema: `ops/obs/drills/result.schema.json`
-- Runner: `ops/obs/scripts/bin/run_drill.sh <name>`
+- Runner: `bijux dev atlas ops obs drill run <name>`
 - Suite target: `make ops-drill-suite`
 
 ## Reproducibility rules

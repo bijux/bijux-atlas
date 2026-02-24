@@ -21,7 +21,7 @@ Canonical page: [`docs/architecture/effects.md`](effects.md)
 - Pure planner modules must not import `rusqlite`, `reqwest`, `std::fs`, `std::process`, `tokio::net`.
 
 ## Enforcement
-- `atlasctl check effects-lint`
+- `bijux dev atlas check effects-lint`
 - `crates/bijux-atlas-query/tests/purity_boundaries.rs`
 - `crates/bijux-atlas-server/tests/support_module_guardrails.rs`
 

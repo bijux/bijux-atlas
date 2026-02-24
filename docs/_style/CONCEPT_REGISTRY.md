@@ -32,8 +32,8 @@ Duplicate canonical ownership or missing concept declarations create contract dr
 ## How to verify
 
 ```bash
-$ atlasctl docs check --report text
-$ atlasctl docs generate --report text
+$ bijux dev atlas docs check --report text
+$ bijux dev atlas docs generate --report text
 $ make docs
 ```
 

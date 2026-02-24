@@ -37,7 +37,7 @@ Expected output: one example JSON file per registry contract.
 ## How to verify
 
 ```bash
-$ ./bin/atlasctl contracts check --checks drift
+$ bijux dev atlas contracts check --checks drift
 $ make ssot-check
 ```
 

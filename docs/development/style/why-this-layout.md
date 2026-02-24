@@ -9,6 +9,6 @@ Cap the public surface and keep internals flexible.
 - SSOT-driven docs and checks prevent drift between intent and implementation.
 
 ## How
-- Keep runnable operator entrypoints in `atlasctl ops ...` and public make targets only.
+- Keep runnable operator entrypoints in `bijux dev atlas ops ...` and public make targets only.
 - Route docs through public make commands, not internal script paths.
 - Emit deterministic artifacts and gate reports for reproducibility.

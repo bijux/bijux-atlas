@@ -22,8 +22,8 @@ The canonical SSOT is `ops/CONTRACT.md`.
 - Enforce generated drift with `make ops-gen-check`.
 - `ops/e2e/` is composition-only.
 - `ops/e2e/k8s/tests/` keeps wrapper entrypoints only; invariant tests live in `ops/k8s/tests/`.
-- Operator entrypoints live in `atlasctl ops ...`; shared helper assets live under atlasctl ops runtime/k8s test asset paths, and domain-local helpers remain under `ops/*/scripts/`.
+- Operator entrypoints live in `bijux dev atlas ops ...`; shared helper assets live under bijux dev atlas ops runtime/k8s test asset paths, and domain-local helpers remain under `ops/*/tooling/`.
 - No symlinked domain directories under `ops/`.
 - Artifacts write to `ops/_artifacts/` unless allowlisted in `configs/ops/artifacts-allowlist.txt`.
 - Empty dirs must contain `INDEX.md` explaining why they exist.
-- Fault injection calls must go through `./bin/atlasctl ops kind fault <name>`.
+- Fault injection calls must go through `bijux dev atlas ops kind fault <name>`.

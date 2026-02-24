@@ -38,8 +38,8 @@ Untracked e2e workflows drift from actual scripts and CI behavior.
 ## How to verify
 
 ```bash
-$ ./bin/atlasctl ops e2e run --suite smoke
-$ ./bin/atlasctl ops e2e run --suite k8s-suite --profile kind
+$ bijux dev atlas ops e2e run --suite smoke
+$ bijux dev atlas ops e2e run --suite k8s-suite --profile kind
 ```
 
 Expected output: end-to-end scripts complete successfully.

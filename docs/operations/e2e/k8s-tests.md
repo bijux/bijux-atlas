@@ -22,7 +22,7 @@ Does not duplicate each test script implementation.
 
 - Runner: `ops-k8s-tests`
 - Local one-command smoke runner: `k8s-smoke`
-- Report on failure: `bin/atlasctl run ./packages/atlasctl/src/atlasctl/commands/ops/k8s/tests/report.py`
+- Report on failure: `bin/bijux dev atlas ./crates/bijux-dev-atlas/src/commands/ops/k8s/tests/report.py`
 - Full contract list: `../k8s/k8s-test-contract.md`
 
 ## Failure modes

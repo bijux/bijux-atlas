@@ -1,7 +1,7 @@
 # Make And Workflow Governance Entrypoints
 
 This document inventories governance-oriented Make and workflow entrypoints during
-the migration from `atlasctl` to `bijux dev atlas`.
+the migration from `bijux dev atlas` to `bijux dev atlas`.
 
 ## Canonical Governance Entrypoints
 
@@ -21,13 +21,13 @@ the migration from `atlasctl` to `bijux dev atlas`.
 - `makefiles/ci.mk`
 - `.github/workflows/atlas-dev-rust.yml`
 
-## Remaining `atlasctl` References Outside Governance Wrappers
+## Remaining `bijux dev atlas` References Outside Governance Wrappers
 
 The repository still contains product, release, and compatibility workflows and
-Make targets that use `atlasctl`. Those are not considered governance wrapper
+Make targets that use `bijux dev atlas`. Those are not considered governance wrapper
 entrypoints and must be migrated in domain-specific changes.
 
 ## Verification
 
 - `bijux dev atlas check run --suite deep --include-internal --include-slow`
-- `rg -n "atlasctl|scripts/areas" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml`
+- `rg -n "bijux dev atlas|tooling/areas" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml`

@@ -13,7 +13,7 @@
 - This page does not replace area-specific writing contracts.
 
 ## Contracts
-- `atlasctl docs index-pages-check --report text`
+- `bijux dev atlas docs index-pages-check --report text`
 
 ## Failure modes
 - Missing required index sections fails docs hardening.

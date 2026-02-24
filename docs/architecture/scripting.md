@@ -11,7 +11,7 @@ Defines historical scripting constraints and the current Rust control-plane repl
 
 1. Repository automation entrypoints are Rust-native and routed through `bijux dev atlas ...`.
 2. Runtime product CLI commands are routed through `bijux atlas ...`.
-3. `atlasctl` is legacy and scheduled for removal; see `docs/development/tooling/atlasctl-deletion-plan.md`.
+3. `bijux dev atlas` is legacy and scheduled for removal; see `docs/development/tooling/bijux dev atlas-deletion-plan.md`.
 4. No direct `python` or `bash` path invocations are allowed in make/workflow/docs control-plane surfaces.
 5. Runtime evidence is non-committed and must write under ignored artifact roots.
 6. Control-plane artifacts use `artifacts/<run-kind>/<run-id>/...` (current dev-atlas layout: `artifacts/atlas-dev/<domain>/<run-id>/...`).
@@ -30,7 +30,7 @@ Stable command families:
 - `ci`
 - `release`
 
-Legacy implementations mapped these through `atlasctl` namespaces. Active control-plane ownership is now `bijux dev atlas` command groups.
+Legacy implementations mapped these through `bijux dev atlas` namespaces. Active control-plane ownership is now `bijux dev atlas` command groups.
 
 ## Internal command policy
 
@@ -39,7 +39,7 @@ Legacy implementations mapped these through `atlasctl` namespaces. Active contro
 
 ## Toolchain Contract (Historical Legacy Note)
 
-- Legacy atlasctl Python toolchain contracts are being removed with `packages/atlasctl`.
+- Legacy bijux dev atlas Python toolchain contracts are being removed with `crates/bijux-dev-atlas`.
 - Active dev governance control-plane commands are Rust-native (`bijux-dev-atlas`).
 - Python tooling documents are removed from the active docs surface.
 

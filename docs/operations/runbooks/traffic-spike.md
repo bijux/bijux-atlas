@@ -15,7 +15,7 @@
 - `bijux_http_requests_total`
 - `bijux_http_request_latency_p95_seconds`
 - `bijux_errors_total`
-- HTTP status split for `/v1/genes`, `/v1/sequence/region`, `/v1/transcripts/{tx_id}`
+- HTTP status split for `/v1/genes`, `/v1/sequence/region`, `/v1/trantooling/{tx_id}`
 
 ## Dashboards
 

@@ -25,7 +25,7 @@ Missing profile/test entries indicate CI generation drift or skipped suites.
 ## How to verify
 
 ```bash
-$ ./bin/atlasctl ops k8s --report text contracts
+$ bijux dev atlas ops k8s --report text contracts
 $ make docs
 ```
 

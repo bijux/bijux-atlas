@@ -9,7 +9,7 @@ Do not add new root directories. Put operational assets under `ops/` and expose 
 ## Required checks
 
 ```bash
-$ make atlasctl-check-layout
+$ make check-gates
 $ make governance-check
 ```
 

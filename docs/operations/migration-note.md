@@ -27,7 +27,7 @@ Use make targets only:
 
 ```bash
 $ make layout-migrate
-$ make atlasctl-check-layout
+$ make check-gates
 ```
 
 Operational validation path: run `ops-full` after migration.

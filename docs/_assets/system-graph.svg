@@ -17,7 +17,7 @@
 
   <rect class="box" x="300" y="40" width="260" height="70"/>
   <text class="txt" x="316" y="70">Generation + checks</text>
-  <text class="txt" x="316" y="92">scripts/contracts + make docs</text>
+  <text class="txt" x="316" y="92">tooling/contracts + make docs</text>
 
   <rect class="box" x="620" y="40" width="320" height="70"/>
   <text class="txt" x="636" y="70">Generated docs/code artifacts</text>

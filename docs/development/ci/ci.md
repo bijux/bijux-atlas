@@ -4,14 +4,14 @@
 
 ## Canonical Entry Points
 
-- `make ci` -> `./bin/atlasctl ci run --json --out-dir artifacts/reports/atlasctl/suite-ci`
-- `make ci-fast` -> `./bin/atlasctl ci fast --json`
-- `make ci-nightly` -> `./bin/atlasctl ci nightly --json`
-- `make ci-help` -> `./bin/atlasctl help ci`
+- `make ci` -> `bijux dev atlas ci run --json --out-dir artifacts/reports/dev-atlas/suite-ci`
+- `make ci-fast` -> `bijux dev atlas ci fast --json`
+- `make ci-nightly` -> `bijux dev atlas ci nightly --json`
+- `make ci-help` -> `bijux dev atlas help ci`
 
 ## Workflow Rules
 
-- CI workflows must call only `make <approved-target>` or `./bin/atlasctl ...`.
+- CI workflows must call only `make <approved-target>` or `bijux dev atlas ...`.
 - Direct `cargo test/fmt/clippy` or `pytest` in workflows is forbidden unless explicitly allowlisted.
 - Workflows running CI must upload report/log artifacts with `if: always()`.
 
@@ -31,6 +31,6 @@
 ## Reporting
 
 - Unified CI summary command:
-  - `./bin/atlasctl report ci-summary --latest`
+  - `bijux dev atlas report ci-summary --latest`
 - CI lane registry:
-  - `./bin/atlasctl ci list --json`
+  - `bijux dev atlas ci list --json`
