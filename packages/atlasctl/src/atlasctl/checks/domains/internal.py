@@ -1381,14 +1381,17 @@ def check_internal_registry_ssot_only(repo_root: Path) -> tuple[int, list[str]]:
 
 
 def check_docs_checks_no_ops_imports(repo_root: Path) -> tuple[int, list[str]]:
-    docs_root = repo_root / "packages/atlasctl/src/atlasctl/checks/tools/docs_domain"
-    if not docs_root.exists():
-        return 1, ["missing docs checks root: packages/atlasctl/src/atlasctl/checks/tools/docs_domain"]
+    docs_root = repo_root / "packages/atlasctl/src/atlasctl/checks/tools"
+    candidates = [
+        docs_root / "docs_integrity.py",
+        docs_root / "docs_ci_surface_documented.py",
+    ]
+    existing = [path for path in candidates if path.exists()]
+    if not existing:
+        return 1, ["missing docs checks module roots: packages/atlasctl/src/atlasctl/checks/tools/docs_integrity.py"]
     errors: list[str] = []
     forbidden_prefixes = ("atlasctl.commands.ops", "atlasctl.ops")
-    for path in sorted(docs_root.rglob("*.py")):
-        if "__pycache__" in path.parts:
-            continue
+    for path in sorted(existing):
         rel = path.relative_to(repo_root).as_posix()
         try:
             tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))

@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import os
 import py_compile
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -205,12 +206,13 @@ def check_contract_import_boundaries(repo_root: Path) -> tuple[int, list[str]]:
 def check_runcontext_single_builder(repo_root: Path) -> tuple[int, list[str]]:
     offenders: list[str] = []
     core_context = "packages/atlasctl/src/atlasctl/core/context.py"
+    runcontext_ctor = re.compile(r"\bRunContext\s*\(")
     for path in _iter_py_files(repo_root):
         rel = path.relative_to(repo_root).as_posix()
         if rel == core_context or "/tests/" in rel:
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
-        if "RunContext" + "(" in text:
+        if runcontext_ctor.search(text):
             offenders.append(rel)
     if offenders:
         return 1, [f"RunContext must be built only in core/context.py via from_args: {rel}" for rel in sorted(set(offenders))]
