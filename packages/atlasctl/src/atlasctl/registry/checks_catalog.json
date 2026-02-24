@@ -231,6 +231,52 @@
       "title": "enforce checks-count ratchet budget from configs/policy/checks-count-budget.json"
     },
     {
+      "area": "depth",
+      "default_enabled": true,
+      "description": "enforce checks package depth budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_depth_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_depth_budget",
+      "impl_ref": {
+        "callable": "check_checks_tree_depth_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Flatten checks package directories to depth budget.",
+        "intent": "enforce checks package depth budget",
+        "legacy_id": "checks.depth_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks package depth budget"
+    },
+    {
       "area": "docs",
       "default_enabled": true,
       "description": "forbid docs checks from importing ops implementation modules directly",
@@ -417,6 +463,52 @@
       "title": "enforce checks domains module budget"
     },
     {
+      "area": "domains",
+      "default_enabled": true,
+      "description": "enforce flat domains directory shape",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_domains_shape",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_domains_shape",
+      "impl_ref": {
+        "callable": "check_domains_directory_shape",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep checks/domains as flat python modules only.",
+        "intent": "enforce flat domains directory shape",
+        "legacy_id": "checks.domains_shape",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce flat domains directory shape"
+    },
+    {
       "area": "evidence",
       "default_enabled": true,
       "description": "forbid tracked evidence outputs under artifacts/atlasctl/checks",
@@ -461,6 +553,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid tracked evidence outputs under artifacts/atlasctl/checks"
+    },
+    {
+      "area": "file",
+      "default_enabled": true,
+      "description": "enforce checks package file-count budget",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_file_count_budget",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_file_count_budget",
+      "impl_ref": {
+        "callable": "check_checks_file_count_budget",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Reduce checks package file count to budget by consolidating modules.",
+        "intent": "enforce checks package file-count budget",
+        "legacy_id": "checks.file_count_budget",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "enforce checks package file-count budget"
     },
     {
       "area": "forbidden",
@@ -1570,6 +1708,52 @@
     {
       "area": "no",
       "default_enabled": true,
+      "description": "forbid cross-domain relative imports in checks domains",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_cross_domain_relative_imports",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_cross_domain_relative_imports",
+      "impl_ref": {
+        "callable": "check_no_relative_imports_across_domains",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Use absolute imports rooted at atlasctl.checks.",
+        "intent": "forbid cross-domain relative imports in checks domains",
+        "legacy_id": "checks.no_cross_domain_relative_imports",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid cross-domain relative imports in checks domains"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
       "description": "forbid cwd-dependent path calls in checks package modules",
       "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_cwd_reliance",
       "domain": "checks",
@@ -1704,6 +1888,52 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid duplicate model class definitions outside checks/model.py"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
+      "description": "forbid checks package imports from ops runtime asset modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_ops_runtime_asset_imports",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_ops_runtime_asset_imports",
+      "impl_ref": {
+        "callable": "check_no_ops_runtime_asset_imports",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Keep checks package independent from ops runtime asset modules.",
+        "intent": "forbid checks package imports from ops runtime asset modules",
+        "legacy_id": "checks.no_ops_runtime_asset_imports",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid checks package imports from ops runtime asset modules"
     },
     {
       "area": "no",
@@ -1888,6 +2118,98 @@
       ],
       "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
       "title": "forbid sys.exit calls inside checks package modules"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
+      "description": "forbid checks package imports from tests/fixtures paths",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_tests_fixtures_imports",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_tests_fixtures_imports",
+      "impl_ref": {
+        "callable": "check_no_tests_fixtures_imports",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Remove tests/fixtures imports from checks package modules.",
+        "intent": "forbid checks package imports from tests/fixtures paths",
+        "legacy_id": "checks.no_tests_fixtures_imports",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 500,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid checks package imports from tests/fixtures paths"
+    },
+    {
+      "area": "no",
+      "default_enabled": true,
+      "description": "forbid unused imports in checks package modules",
+      "docs_link": "packages/atlasctl/docs/checks/index.md#checks_checks_no_unused_imports",
+      "domain": "checks",
+      "gate": "checks",
+      "groups": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "id": "checks_checks_no_unused_imports",
+      "impl_ref": {
+        "callable": "check_unused_imports_in_checks",
+        "category": "check",
+        "effects": [
+          "fs_read"
+        ],
+        "evidence": [],
+        "external_tools": [],
+        "fix_hint": "Remove unused imports from checks package modules.",
+        "intent": "forbid unused imports in checks package modules",
+        "legacy_id": "checks.no_unused_imports",
+        "module": "atlasctl.checks.domains.internal",
+        "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+        "remediation_short": "Review check output and apply the documented fix.",
+        "result_code": "CHECK_GENERIC",
+        "severity": "error",
+        "speed": "fast",
+        "timeout_ms": 700,
+        "writes_allowed_roots": [
+          "artifacts/evidence/"
+        ]
+      },
+      "markers": [
+        "checks",
+        "fast",
+        "required"
+      ],
+      "owners": [
+        "platform"
+      ],
+      "remediation_link": "packages/atlasctl/docs/checks/check-id-migration-rules.md",
+      "title": "forbid unused imports in checks package modules"
     },
     {
       "area": "owners",
