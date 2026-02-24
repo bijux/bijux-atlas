@@ -8,6 +8,7 @@ include makefiles/env.mk
 include makefiles/_macros.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
+include makefiles/configs.mk
 include makefiles/docs.mk
 include makefiles/product.mk
 include makefiles/ops.mk
