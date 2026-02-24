@@ -1,6 +1,8 @@
 # Scope: ops area wrappers only.
 # Public targets: ops, ops-up, ops-down, ops-clean, ops-pins-check, ops-pins-update
 SHELL := /bin/sh
+# verification lane must stay non-destructive and deterministic.
+VERIFICATION_TARGETS_ops := ops-clean
 
 ops: ## Canonical ops gate
 	@./bin/atlasctl ops check --report text

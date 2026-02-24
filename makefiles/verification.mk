@@ -24,12 +24,15 @@ _verification-run:
 		printf '%s\n' "verification: missing $$mk_file"; \
 		exit 2; \
 	fi; \
-	targets=$$(awk -F: '/^[A-Za-z0-9_.\/-]+:[^=]/{print $$1}' "$$mk_file" \
+	targets="$(VERIFICATION_TARGETS_$(VERIFICATION_MODULE))"; \
+	if [ -z "$$targets" ]; then \
+		targets=$$(awk -F: '/^[A-Za-z0-9_.\/-]+:[^=]/{print $$1}' "$$mk_file" \
 		| grep -v '^\.' \
 		| grep -v '/internal$$' \
 		| grep -v '/internal/' \
 		| grep -v '^_' \
 		| sort -u); \
+	fi; \
 	if [ -z "$$targets" ]; then \
 		printf '%s\n' "verification: no runnable targets found in $$mk_file"; \
 		exit 2; \
