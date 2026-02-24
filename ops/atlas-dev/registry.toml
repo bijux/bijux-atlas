@@ -377,6 +377,61 @@ effects_required = ["fs_read"]
 budget_ms = 1500
 visibility = "internal"
 
+[[checks]]
+id = "checks_docs_runtime_command_list_matches_contract"
+domain = "docs"
+title = "runtime command list doc matches runtime command contract"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_dev_command_list_matches_contract"
+domain = "docs"
+title = "dev command list doc matches dev help command contract"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_crates_bijux_atlas_reserved_verbs_exclude_dev"
+domain = "crates"
+title = "umbrella runtime tests reserve dev verb ownership"
+docs = "docs/contracts/plugin/spec.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_crates_bijux_dev_atlas_not_umbrella_binary"
+domain = "crates"
+title = "dev atlas crate does not define umbrella binary name"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_crates_command_namespace_ownership_unique"
+domain = "crates"
+title = "runtime and dev command namespaces have unique ownership"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
 [[suites]]
 id = "all_fast"
 checks = []
