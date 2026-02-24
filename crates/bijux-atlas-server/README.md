@@ -1,31 +1,20 @@
 # bijux-atlas-server
 
-## Purpose
-- Crate purpose and boundaries are defined in [docs/INDEX.md](docs/INDEX.md).
+Runtime HTTP service for `bijux-atlas`.
 
-## Public API
-- [docs/public-api.md](docs/public-api.md)
+## Local Run
+- `cargo run -p bijux-atlas-server --bin atlas-server`
+- Health: `GET /healthz`
+- Readiness: `GET /readyz`
 
-## Boundaries
-- [Crate Boundaries](../../docs/architecture/boundaries.md)
+## Config
+- Environment schema contract: `configs/contracts/env.schema.json`
+- Startup config validation is fail-fast at process boot.
+- Operational guide: [docs/OPERATIONS_RUNBOOK.md](docs/OPERATIONS_RUNBOOK.md)
 
-## Effects
-- [docs/effects.md](docs/effects.md)
-- [Global Effects Contract](../../docs/architecture/effects.md)
+## Stability
+- Stable HTTP/OpenAPI surface is `v1`.
+- Response error envelope and request-id propagation are contract behavior.
 
-## Telemetry
-- [docs/TELEMETRY.md](docs/TELEMETRY.md)
-- [Global Metrics Conventions](../../docs/reference/store/metrics-conventions.md)
-
-## Tests
-- [tests/](tests/)
-
-## Benches
-- [benches/](benches/)
-
-## Docs index
+## Docs
 - [docs/INDEX.md](docs/INDEX.md)
-- [docs/public-api.md](docs/public-api.md)
-- [docs/architecture.md](docs/architecture.md)
-- [docs/effects.md](docs/effects.md)
-- [docs/testing.md](docs/testing.md)

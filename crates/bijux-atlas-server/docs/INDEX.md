@@ -4,6 +4,7 @@
 - [Effects](effects.md)
 - [Runtime](RUNTIME.md)
 - [Telemetry](TELEMETRY.md)
+- [Operations Runbook](OPERATIONS_RUNBOOK.md)
 - [Caching](CACHING.md)
 - [Failure Modes](FAILURE_MODES.md)
 - [Kubernetes Ops](KUBERNETES.md)
@@ -28,4 +29,3 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
-
