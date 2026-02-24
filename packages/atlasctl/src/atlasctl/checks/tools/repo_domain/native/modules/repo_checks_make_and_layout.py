@@ -364,7 +364,18 @@ def check_single_canonical_runtime_adapters(repo_root: Path) -> tuple[int, list[
         },
     }
     for name, expected in canonical.items():
-        found = sorted(p.relative_to(repo_root).as_posix() for p in src.rglob(name))
+        # Restrict duplicate detection to runtime adapter homes only; other domains
+        # can legitimately define helper modules with the same filename.
+        adapter_scopes = (
+            src / "core",
+            src / "runtime",
+        )
+        found = sorted(
+            p.relative_to(repo_root).as_posix()
+            for scope in adapter_scopes
+            for p in scope.rglob(name)
+            if p.is_file()
+        )
         if expected not in found:
             errors.append(f"missing canonical adapter {name}: expected {expected}")
             continue
