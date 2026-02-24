@@ -80,6 +80,9 @@ jobs:
         run: |
           cargo run -p bijux-dev-atlas -- ops pins check --format json >/dev/null
           cargo run -p bijux-dev-atlas -- ops render --target kind --check --format json >/dev/null
+      - name: Verify ops load plan entrypoint
+        run: |
+          cargo run -p bijux-dev-atlas -- ops load plan mixed --format json >/dev/null
       - name: Verify docs doctor entrypoint (no subprocess)
         run: |
           make docs-doctor >/dev/null
