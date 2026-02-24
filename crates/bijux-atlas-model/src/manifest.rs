@@ -1,4 +1,5 @@
 use crate::dataset::{DatasetId, ValidationError};
+use crate::gene::SeqId;
 use crate::serde_helpers;
 use crate::ModelVersion;
 use serde::{Deserialize, Serialize};
@@ -245,6 +246,10 @@ impl ArtifactManifest {
         }
         Ok(())
     }
+
+    pub fn validate(&self) -> Result<(), ValidationError> {
+        self.validate_strict()
+    }
 }
 
 fn default_derived_column_origins() -> BTreeMap<String, String> {
@@ -382,8 +387,8 @@ pub struct ShardCatalog {
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct ShardEntry {
-    pub shard_id: String,
-    pub seqids: Vec<String>,
+    pub shard_id: ShardId,
+    pub seqids: Vec<SeqId>,
     pub sqlite_path: String,
     pub sqlite_sha256: String,
 }
@@ -391,8 +396,8 @@ pub struct ShardEntry {
 impl ShardEntry {
     #[must_use]
     pub fn new(
-        shard_id: String,
-        seqids: Vec<String>,
+        shard_id: ShardId,
+        seqids: Vec<SeqId>,
         sqlite_path: String,
         sqlite_sha256: String,
     ) -> Self {
@@ -424,8 +429,7 @@ impl ShardCatalog {
         }
         let mut previous: Option<&ShardEntry> = None;
         for item in &self.shards {
-            if item.shard_id.trim().is_empty()
-                || item.sqlite_path.trim().is_empty()
+            if item.sqlite_path.trim().is_empty()
                 || item.sqlite_sha256.trim().is_empty()
             {
                 return Err(ValidationError(
@@ -447,6 +451,10 @@ impl ShardCatalog {
             previous = Some(item);
         }
         Ok(())
+    }
+
+    pub fn validate(&self) -> Result<(), ValidationError> {
+        self.validate_sorted()
     }
 }
 
@@ -481,6 +489,10 @@ impl Catalog {
             previous = Some(item);
         }
         Ok(())
+    }
+
+    pub fn validate(&self) -> Result<(), ValidationError> {
+        self.validate_sorted()
     }
 }
 
@@ -523,10 +535,59 @@ pub struct IngestRejection {
     pub sample: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord, Hash)]
+#[serde(transparent)]
+#[non_exhaustive]
+pub struct ShardId(String);
+
+impl ShardId {
+    pub fn parse(input: &str) -> Result<Self, ValidationError> {
+        let trimmed = input.trim();
+        if trimmed.is_empty() {
+            return Err(ValidationError("shard_id must not be empty".to_string()));
+        }
+        if !trimmed
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-' || c == '_')
+        {
+            return Err(ValidationError(
+                "shard_id must contain only [a-z0-9_-]".to_string(),
+            ));
+        }
+        Ok(Self(trimmed.to_string()))
+    }
+
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
 impl IngestRejection {
     #[must_use]
     pub fn new(line: usize, code: String, sample: String) -> Self {
         Self { line, code, sample }
+    }
+}
+
+impl IngestAnomalyReport {
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn validate(&self) -> Result<(), ValidationError> {
+        for rejection in &self.rejections {
+            if rejection.line == 0 {
+                return Err(ValidationError("ingest rejection line must be > 0".to_string()));
+            }
+            if rejection.code.trim().is_empty() {
+                return Err(ValidationError(
+                    "ingest rejection code must not be empty".to_string(),
+                ));
+            }
+        }
+        Ok(())
     }
 }
 
