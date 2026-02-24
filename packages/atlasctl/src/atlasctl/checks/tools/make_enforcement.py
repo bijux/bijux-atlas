@@ -216,7 +216,7 @@ def _run_script(repo_root: Path, script: str) -> tuple[int, list[str]]:
 
 
 def check_make_ci_entrypoints_contract(repo_root: Path) -> tuple[int, list[str]]:
-    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/domains/ops/contracts/check_ci_entrypoints.py")
+    return _run_script(repo_root, "packages/atlasctl/src/atlasctl/checks/tools/ops_domain/contracts/check_ci_entrypoints.py")
 
 
 def check_make_public_targets_documented(repo_root: Path) -> tuple[int, list[str]]:
