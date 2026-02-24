@@ -809,14 +809,14 @@ pub(super) fn check_root_rust_toolchain_toml_contract(
 pub(super) fn check_root_rustfmt_toml_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("rustfmt.toml");
+    let rel = Path::new("configs/rust/rustfmt.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "ROOT_RUSTFMT_TOML_MISSING",
-            "rustfmt.toml must exist at repo root".to_string(),
-            "add root rustfmt.toml as formatter policy SSOT for cargo fmt",
+            "configs/rust/rustfmt.toml must exist".to_string(),
+            "define rustfmt policy under configs/rust and use explicit cargo fmt --config-path",
             Some(rel),
         )])
     }
@@ -825,14 +825,14 @@ pub(super) fn check_root_rustfmt_toml_present(
 pub(super) fn check_root_clippy_toml_present(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("clippy.toml");
+    let rel = Path::new("configs/rust/clippy.toml");
     if ctx.adapters.fs.exists(ctx.repo_root, rel) {
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
             "ROOT_CLIPPY_TOML_MISSING",
-            "clippy.toml must exist at repo root".to_string(),
-            "add root clippy.toml as lint policy SSOT for cargo clippy",
+            "configs/rust/clippy.toml must exist".to_string(),
+            "define clippy policy under configs/rust and use explicit CLIPPY_CONF_DIR",
             Some(rel),
         )])
     }

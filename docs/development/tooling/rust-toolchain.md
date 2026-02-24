@@ -6,8 +6,8 @@ The Rust toolchain contract for this repository is rooted at the repo root.
 
 - `rust-toolchain.toml`: pinned Rust channel and required components
 - `.cargo/config.toml`: deterministic Cargo build defaults and target directory isolation
-- `rustfmt.toml`: formatter policy
-- `clippy.toml`: lint policy
+- `configs/rust/rustfmt.toml`: formatter policy
+- `configs/rust/clippy.toml`: lint policy
 - `configs/nextest/nextest.toml`: nextest execution profile and isolated store path
 - `configs/security/deny.toml`: cargo-deny policy
 - `configs/security/audit-allowlist.toml`: audited exception allowlist
