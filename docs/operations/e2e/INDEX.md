@@ -24,7 +24,7 @@ Does not duplicate individual script source files.
 - [K8s Tests](k8s-tests.md)
 - [Realdata Drills](realdata-drills.md)
 - [Fixtures](fixtures.md)
-- [Scripts](scripts.md)
+- [Ops Command Inventory](../../development/tooling/ops-command-inventory.md)
 - [What E2E Is Not](what-e2e-is-not.md)
 - scenario:smoke
 - scenario:k8s-suite

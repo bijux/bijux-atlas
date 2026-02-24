@@ -55,4 +55,4 @@ Expected output: cluster starts, chart template checks pass, then stack tears do
 
 - [E2E Index](INDEX.md)
 - [K8s Tests](k8s-tests.md)
-- [Scripts](scripts.md)
+- [Ops Command Inventory](../../development/tooling/ops-command-inventory.md)

@@ -295,10 +295,15 @@ pub(crate) fn docs_links_payload(
                     }
                 }
                 if !ok {
-                    issues.errors.push(format!(
-                        "DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`",
-                        idx + 1
-                    ));
+                    let generated_target = path_part.starts_with("_generated/")
+                        || path_part.contains("/_generated/");
+                    let message =
+                        format!("DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`", idx + 1);
+                    if generated_target && !common.strict {
+                        issues.warnings.push(message);
+                    } else {
+                        issues.errors.push(message);
+                    }
                 }
                 rows.push(
                     serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}),
@@ -315,10 +320,14 @@ pub(crate) fn docs_links_payload(
     });
     issues.errors.sort();
     issues.errors.dedup();
+    issues.warnings.sort();
+    issues.warnings.dedup();
     Ok(serde_json::json!({
         "schema_version":1,
         "run_id":ctx.run_id.as_str(),
-        "text": if issues.errors.is_empty() {"docs links passed"} else {"docs links failed"},
+        "text": if issues.errors.is_empty() {
+            if issues.warnings.is_empty() {"docs links passed"} else {"docs links passed with warnings"}
+        } else {"docs links failed"},
         "rows":rows,
         "errors":issues.errors,
         "warnings": issues.warnings,
