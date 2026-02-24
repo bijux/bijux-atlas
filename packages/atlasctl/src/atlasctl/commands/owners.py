@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from ..checks.registry.ssot import load_registry_entries
+from ..checks.registry import list_checks
 from ..cli.surface_registry import command_registry
 from ..core.context import RunContext
 from ..core.meta.owners import load_owner_catalog
@@ -42,7 +42,7 @@ def run_owners_command(ctx: RunContext, ns: argparse.Namespace) -> int:
     if ns.owners_cmd == "validate":
         known_owners = set(catalog.owners)
         errors: list[str] = []
-        check_owners = {entry.owner for entry in load_registry_entries(ctx.repo_root)}
+        check_owners = {owner for check in list_checks() for owner in check.owners}
         for owner in sorted(check_owners):
             if owner not in known_owners:
                 errors.append(f"check owner `{owner}` missing from configs/meta/owners.json")
