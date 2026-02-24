@@ -80,6 +80,15 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_root_top_level_directories_contract" => {
             Some(check_root_top_level_directories_contract)
         }
+        "checks_root_cargo_config_contract" => Some(check_root_cargo_config_contract),
+        "checks_root_rust_toolchain_toml_contract" => Some(check_root_rust_toolchain_toml_contract),
+        "checks_root_rustfmt_toml_present" => Some(check_root_rustfmt_toml_present),
+        "checks_root_clippy_toml_present" => Some(check_root_clippy_toml_present),
+        "checks_configs_nextest_toml_present" => Some(check_configs_nextest_toml_present),
+        "checks_configs_security_deny_toml_present" => Some(check_configs_security_deny_toml_present),
+        "checks_workflows_rust_toolchain_matches_repo_pin" => {
+            Some(check_workflows_rust_toolchain_matches_repo_pin)
+        }
         "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch" => {
             Some(check_crates_bijux_atlas_cli_owns_umbrella_dispatch)
         }
@@ -243,6 +252,13 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_root_makefile_single_include_entrypoint",
         "checks_makefiles_root_includes_sorted",
         "checks_root_top_level_directories_contract",
+        "checks_root_cargo_config_contract",
+        "checks_root_rust_toolchain_toml_contract",
+        "checks_root_rustfmt_toml_present",
+        "checks_root_clippy_toml_present",
+        "checks_configs_nextest_toml_present",
+        "checks_configs_security_deny_toml_present",
+        "checks_workflows_rust_toolchain_matches_repo_pin",
     ]
     .into_iter()
     .map(str::to_string)

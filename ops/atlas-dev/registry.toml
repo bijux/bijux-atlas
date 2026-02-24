@@ -4,6 +4,17 @@ schema_version = 1
 vocabulary = ["ops", "repo", "docs", "make", "lint", "internal", "fast", "slow"]
 
 [[checks]]
+id = "checks_configs_nextest_toml_present"
+domain = "configs"
+title = "nextest config exists under configs"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 600
+visibility = "internal"
+
+[[checks]]
 id = "checks_configs_no_atlasctl_string_references"
 domain = "configs"
 title = "configs files do not reference legacy control-plane strings"
@@ -32,6 +43,17 @@ title = "configs schema and contracts directories exist"
 docs = "configs/CONTRACT.md"
 tags = ["internal", "fast"]
 suites = ["deep", "configs"]
+effects_required = ["fs_read"]
+budget_ms = 600
+visibility = "internal"
+
+[[checks]]
+id = "checks_configs_security_deny_toml_present"
+domain = "configs"
+title = "cargo deny policy config exists under configs security"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 600
 visibility = "internal"
@@ -697,6 +719,28 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
+id = "checks_root_cargo_config_contract"
+domain = "root"
+title = "cargo config enforces deterministic target and terminal defaults"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_clippy_toml_present"
+domain = "root"
+title = "clippy lint policy exists at repo root"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 500
+visibility = "internal"
+
+[[checks]]
 id = "checks_root_forbidden_legacy_directories_absent"
 domain = "root"
 title = "legacy top-level directories are absent"
@@ -749,6 +793,28 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_rust_toolchain_toml_contract"
+domain = "root"
+title = "rust toolchain pin declares minimal profile and required components"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_rustfmt_toml_present"
+domain = "root"
+title = "rustfmt policy exists at repo root"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 500
 visibility = "internal"
 
 [[checks]]
@@ -815,6 +881,17 @@ tags = ["internal", "slow"]
 suites = ["deep", "ops"]
 effects_required = ["fs_read"]
 budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_workflows_rust_toolchain_matches_repo_pin"
+domain = "workflows"
+title = "rust workflow pin matches rust-toolchain.toml"
+docs = "docs/development/tooling/rust-toolchain.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 800
 visibility = "internal"
 
 [[suites]]
