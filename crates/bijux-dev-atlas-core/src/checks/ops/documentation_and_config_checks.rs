@@ -1,0 +1,485 @@
+use super::*;
+
+pub(super) fn parse_mkdocs_yaml(ctx: &CheckContext<'_>) -> Result<YamlValue, CheckError> {
+    let rel = Path::new("mkdocs.yml");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(format!("failed to read {}: {err}", rel.display())))?;
+    serde_yaml::from_str(&text)
+        .map_err(|err| CheckError::Failed(format!("failed to parse {}: {err}", rel.display())))
+}
+
+fn collect_mkdocs_nav_refs(node: &YamlValue, out: &mut Vec<(String, String)>) {
+    match node {
+        YamlValue::Sequence(seq) => {
+            for item in seq {
+                collect_mkdocs_nav_refs(item, out);
+            }
+        }
+        YamlValue::Mapping(map) => {
+            for (k, v) in map {
+                let title = k.as_str().unwrap_or_default().to_string();
+                if let Some(path) = v.as_str() {
+                    out.push((title, path.to_string()));
+                } else {
+                    collect_mkdocs_nav_refs(v, out);
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
+pub(super) fn mkdocs_nav_refs(ctx: &CheckContext<'_>) -> Result<Vec<(String, String)>, CheckError> {
+    let yaml = parse_mkdocs_yaml(ctx)?;
+    let nav = yaml
+        .get("nav")
+        .ok_or_else(|| CheckError::Failed("mkdocs.yml missing `nav`".to_string()))?;
+    let mut refs = Vec::new();
+    collect_mkdocs_nav_refs(nav, &mut refs);
+    refs.sort();
+    Ok(refs)
+}
+
+fn docs_markdown_paths(ctx: &CheckContext<'_>) -> Vec<PathBuf> {
+    let docs = ctx.repo_root.join("docs");
+    if !docs.exists() {
+        return Vec::new();
+    }
+    walk_files(&docs)
+        .into_iter()
+        .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+        .collect()
+}
+
+pub(super) fn check_docs_mkdocs_yaml_parseable(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    match parse_mkdocs_yaml(ctx) {
+        Ok(_) => Ok(Vec::new()),
+        Err(CheckError::Failed(msg)) => Ok(vec![violation(
+            "DOCS_MKDOCS_PARSE_FAILED",
+            msg,
+            "fix mkdocs.yml syntax and required top-level keys",
+            Some(Path::new("mkdocs.yml")),
+        )]),
+    }
+}
+
+pub(super) fn check_docs_mkdocs_nav_files_exist(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for (_title, rel) in mkdocs_nav_refs(ctx)? {
+        let path = ctx.repo_root.join("docs").join(&rel);
+        if !path.exists() {
+            violations.push(violation(
+                "DOCS_MKDOCS_NAV_PATH_MISSING",
+                format!("mkdocs nav references missing file `docs/{rel}`"),
+                "remove stale nav entry or restore the file",
+                Some(Path::new("mkdocs")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_no_orphan_markdown_pages(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let nav_set = mkdocs_nav_refs(ctx)?
+        .into_iter()
+        .map(|(_, p)| p)
+        .collect::<BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root.join("docs")).unwrap_or(&path);
+        let rels = rel.display().to_string();
+        if rels.starts_with("_assets/") || rels.starts_with("_drafts/") {
+            continue;
+        }
+        if !nav_set.contains(&rels) {
+            violations.push(violation(
+                "DOCS_ORPHAN_MARKDOWN_PAGE",
+                format!("markdown page is not referenced in mkdocs nav: `docs/{rels}`"),
+                "add the page to mkdocs nav or explicitly exclude it from docs surface",
+                Some(Path::new("docs")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_no_duplicate_nav_titles(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut counts = std::collections::BTreeMap::<String, usize>::new();
+    for (title, _) in mkdocs_nav_refs(ctx)? {
+        *counts.entry(title).or_default() += 1;
+    }
+    let mut violations = Vec::new();
+    for (title, count) in counts {
+        if count > 1 {
+            violations.push(violation(
+                "DOCS_DUPLICATE_NAV_TITLE",
+                format!("mkdocs nav title `{title}` is duplicated {count} times"),
+                "rename nav titles to be globally distinct",
+                Some(Path::new("mkdocs.yml")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_readme_index_contract_presence(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required = ["docs/INDEX.md", "docs/contracts/INDEX.md", "ops/CONTRACT.md", "ops/INDEX.md"];
+    let mut violations = Vec::new();
+    for rel in required {
+        let p = Path::new(rel);
+        if !ctx.repo_root.join(p).exists() {
+            violations.push(violation(
+                "DOCS_CONTRACT_PRESENCE_MISSING",
+                format!("required contract/index document missing `{rel}`"),
+                "restore required INDEX/CONTRACT documents for docs and ops areas",
+                Some(p),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_file_naming_conventions(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
+        let name = path.file_name().and_then(|v| v.to_str()).unwrap_or_default();
+        if rel.to_string_lossy().contains(' ') {
+            violations.push(violation(
+                "DOCS_FILE_NAME_SPACES_FORBIDDEN",
+                format!("docs path contains spaces: `{}`", rel.display()),
+                "use intent-based lowercase names without spaces",
+                Some(rel),
+            ));
+            continue;
+        }
+        if name != "README.md" && name != "INDEX.md" && name.chars().any(|c| c.is_ascii_uppercase()) {
+            violations.push(violation(
+                "DOCS_FILE_NAME_CASE_FORBIDDEN",
+                format!("docs file should use lowercase naming: `{}`", rel.display()),
+                "rename docs file to lowercase intent-based name",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_no_legacy_scripts_strings(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for needle in ["scripts/areas", "xtask"] {
+        violations.extend(super::check_no_string_references_under(
+            ctx,
+            "docs",
+            needle,
+            "DOCS_LEGACY_SCRIPT_REFERENCE_FOUND",
+        )?);
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_command_surface_docs_exist(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for rel in [
+        "docs/contracts/plugin/mode.md",
+        "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
+        "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
+    ] {
+        let p = Path::new(rel);
+        if !ctx.repo_root.join(p).exists() {
+            violations.push(violation(
+                "DOCS_COMMAND_SURFACE_DOC_MISSING",
+                format!("missing command surface document `{rel}`"),
+                "restore runtime and dev command surface contract docs",
+                Some(p),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_no_legacy_make_targets(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for needle in ["make atlasctl", "atlasctl/internal", "atlasctl-check"] {
+        violations.extend(super::check_no_string_references_under(
+            ctx,
+            "docs",
+            needle,
+            "DOCS_LEGACY_MAKE_TARGET_REFERENCE_FOUND",
+        )?);
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/docs.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
+        violations.push(violation(
+            "MAKE_DOCS_BIJUX_VARIABLES_MISSING",
+            "makefiles/docs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
+            Some(rel),
+        ));
+    }
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.contains("atlasctl") {
+            violations.push(violation(
+                "MAKE_DOCS_ATLASCTL_REFERENCE_FOUND",
+                format!("makefiles/docs.mk must not call atlasctl: `{line}`"),
+                "route docs wrappers through bijux dev atlas docs commands",
+                Some(rel),
+            ));
+        }
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "MAKE_DOCS_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/docs.mk wrapper recipes must be single-line delegations".to_string(),
+                "keep docs wrappers single-line and delegation-only",
+                Some(rel),
+            ));
+        }
+        let words = line.split_whitespace().collect::<Vec<_>>();
+        if words.iter().any(|w| {
+            *w == "python" || *w == "python3" || *w == "bash" || *w == "helm" || *w == "kubectl" || *w == "k6"
+        }) {
+            violations.push(violation(
+                "MAKE_DOCS_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/docs.mk must stay delegation-only: `{line}`"),
+                "docs wrappers may call make or bijux dev atlas only",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_configs_required_surface_paths(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required = ["configs/README.md", "configs/INDEX.md", "configs/CONTRACT.md"];
+    let mut violations = Vec::new();
+    for path in required {
+        let rel = Path::new(path);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "CONFIGS_REQUIRED_PATH_MISSING",
+                format!("missing required configs path `{path}`"),
+                "restore required configs contract files",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_configs_schema_paths_present(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required = ["configs/schema", "configs/contracts"];
+    let mut violations = Vec::new();
+    for path in required {
+        let rel = Path::new(path);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "CONFIGS_SCHEMA_PATH_MISSING",
+                format!("missing required configs schema path `{path}`"),
+                "restore configs schema and contracts directories",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_configs_no_atlasctl_string_references(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    super::check_no_string_references_under(
+        ctx,
+        "configs",
+        "atlasctl",
+        "CONFIGS_LEGACY_ATLASCTL_REFERENCE",
+    )
+}
+
+pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/configs.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
+        violations.push(violation(
+            "MAKE_CONFIGS_BIJUX_VARIABLES_MISSING",
+            "makefiles/configs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
+            Some(rel),
+        ));
+    }
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "MAKE_CONFIGS_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/configs.mk wrapper recipes must be single-line delegations".to_string(),
+                "keep configs wrappers single-line and delegation-only",
+                Some(rel),
+            ));
+        }
+        if line.contains("atlasctl") {
+            violations.push(violation(
+                "MAKE_CONFIGS_ATLASCTL_REFERENCE_FOUND",
+                format!("makefiles/configs.mk must not call atlasctl: `{line}`"),
+                "route configs wrappers through bijux dev atlas configs commands",
+                Some(rel),
+            ));
+        }
+        let words = line.split_whitespace().collect::<Vec<_>>();
+        if words.iter().any(|w| {
+            *w == "python" || *w == "python3" || *w == "bash" || *w == "sh" || *w == "kubectl" || *w == "helm" || *w == "k6"
+        }) {
+            violations.push(violation(
+                "MAKE_CONFIGS_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/configs.mk must remain delegation-only: `{line}`"),
+                "wrapper recipes may call bijux dev atlas only",
+                Some(rel),
+            ));
+        }
+    }
+    for required in ["configs-doctor:", "configs-validate:", "configs-lint:"] {
+        if !content.contains(required) {
+            violations.push(violation(
+                "MAKE_CONFIGS_REQUIRED_TARGET_MISSING",
+                format!("makefiles/configs.mk is missing `{required}`"),
+                "keep required configs delegation targets in makefiles/configs.mk",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_ops_control_plane_doc_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("ops/CONTROL_PLANE.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "Control plane version:",
+        "## Scope",
+        "## SSOT Rules",
+        "## Invariants",
+        "## Effect Rules",
+        "bijux dev atlas doctor",
+        "check run --suite ci",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_DOC_INCOMPLETE",
+                format!("ops/CONTROL_PLANE.md is missing required content `{required}`"),
+                "update the control plane definition document with the required invariant/entrypoint text",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_ops_command_list_matches_snapshot(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md");
+    let current = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let expected = [
+        "ops","doctor","validate","render","install","status","list-profiles","explain-profile",
+        "list-tools","verify-tools","list-actions","up","down","clean","reset","pins","generate",
+    ].join("\n");
+    if current.trim() == expected.trim() { Ok(Vec::new()) } else {
+        Ok(vec![violation(
+            "DOCS_OPS_COMMAND_LIST_MISMATCH",
+            "ops command list doc does not match canonical ops help snapshot".to_string(),
+            "update crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md to match ops --help command list",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_docs_configs_command_list_matches_snapshot(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md");
+    let current = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let expected = ["configs","doctor","validate","lint","inventory","compile","diff"].join("\n");
+    if current.trim() == expected.trim() { Ok(Vec::new()) } else {
+        Ok(vec![violation(
+            "DOCS_CONFIGS_COMMAND_LIST_MISMATCH",
+            "configs command list doc does not match canonical configs help snapshot".to_string(),
+            "update crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md to match configs --help command list",
+            Some(rel),
+        )])
+    }
+}
+
+pub(super) fn check_ops_ssot_manifests_schema_versions(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let manifests = [
+        "ops/stack/profiles.json","ops/stack/version-manifest.json","ops/inventory/toolchain.json",
+        "ops/inventory/surfaces.json","ops/inventory/contracts.json","ops/inventory/generated-committed-mirror.json",
+    ];
+    let mut violations = Vec::new();
+    for path in manifests {
+        let rel = Path::new(path);
+        let text = fs::read_to_string(ctx.repo_root.join(rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let value: serde_json::Value =
+            serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        if value.get("schema_version").is_none() {
+            violations.push(violation(
+                "OPS_SSOT_SCHEMA_VERSION_MISSING",
+                format!("ssot manifest `{path}` must include `schema_version`"),
+                "add schema_version to the SSOT manifest payload",
+                Some(rel),
+            ));
+        }
+    }
+    let control_plane = Path::new("ops/CONTROL_PLANE.md");
+    let control_text = fs::read_to_string(ctx.repo_root.join(control_plane))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if !control_text.contains("Control plane version:") {
+        violations.push(violation(
+            "OPS_CONTROL_PLANE_VERSION_MISSING",
+            "ops/CONTROL_PLANE.md must declare a control plane version".to_string(),
+            "add `Control plane version:` line to ops/CONTROL_PLANE.md",
+            Some(control_plane),
+        ));
+    }
+    Ok(violations)
+}
