@@ -401,6 +401,7 @@ dependencies = [
  "bijux-dev-atlas-model",
  "bijux-dev-atlas-policies",
  "clap",
+ "regex",
  "serde",
  "serde_json",
  "sha2",

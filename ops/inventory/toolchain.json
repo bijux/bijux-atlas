@@ -9,5 +9,51 @@
     "redis": "redis:7.4-alpine",
     "toxiproxy": "ghcr.io/shopify/toxiproxy:2.12.0"
   },
-  "tools": {}
+  "tools": {
+    "kind": {
+      "required": true,
+      "version_regex": "(\\d+\\.\\d+\\.\\d+)",
+      "probe_argv": [
+        "--version"
+      ]
+    },
+    "kubectl": {
+      "required": true,
+      "version_regex": "(\\d+\\.\\d+\\.\\d+)",
+      "probe_argv": [
+        "version",
+        "--client",
+        "--short"
+      ]
+    },
+    "helm": {
+      "required": true,
+      "version_regex": "(\\d+\\.\\d+\\.\\d+)",
+      "probe_argv": [
+        "version",
+        "--short"
+      ]
+    },
+    "curl": {
+      "required": true,
+      "version_regex": "(\\d+\\.\\d+\\.\\d+)",
+      "probe_argv": [
+        "--version"
+      ]
+    },
+    "k6": {
+      "required": false,
+      "version_regex": "(\\d+\\.\\d+\\.\\d+)",
+      "probe_argv": [
+        "version"
+      ]
+    },
+    "kubeconform": {
+      "required": false,
+      "version_regex": "(\\d+\\.\\d+\\.\\d+)",
+      "probe_argv": [
+        "-v"
+      ]
+    }
+  }
 }

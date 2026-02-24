@@ -9,6 +9,7 @@ use serde::Deserialize;
 const OPS_STACK_PROFILES_PATH: &str = "ops/stack/profiles.json";
 const OPS_STACK_VERSION_MANIFEST_PATH: &str = "ops/stack/version-manifest.json";
 const OPS_TOOLCHAIN_PATH: &str = "ops/inventory/toolchain.json";
+const OPS_PINS_PATH: &str = "ops/inventory/pins.yaml";
 const OPS_SURFACES_PATH: &str = "ops/inventory/surfaces.json";
 const OPS_MIRROR_POLICY_PATH: &str = "ops/inventory/generated-committed-mirror.json";
 const OPS_CONTRACTS_PATH: &str = "ops/inventory/contracts.json";
@@ -28,6 +29,19 @@ pub struct OpsInventory {
     pub surfaces: SurfacesManifest,
     pub mirror_policy: MirrorPolicyManifest,
     pub contracts: ContractsManifest,
+}
+
+impl OpsInventory {
+    pub fn load_and_validate(ops_root: &Path) -> Result<Self, String> {
+        let repo_root = ops_root
+            .parent()
+            .ok_or_else(|| "ops root must be under repo root".to_string())?;
+        let errors = validate_ops_inventory(repo_root);
+        if !errors.is_empty() {
+            return Err(errors.join("; "));
+        }
+        load_ops_inventory(repo_root)
+    }
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -54,6 +68,14 @@ pub struct StackProfile {
 pub struct ToolchainManifest {
     pub schema_version: u64,
     pub images: BTreeMap<String, String>,
+    pub tools: BTreeMap<String, ToolSpec>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct ToolSpec {
+    pub required: bool,
+    pub version_regex: String,
+    pub probe_argv: Vec<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -114,6 +136,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_STACK_PROFILES_PATH,
         OPS_STACK_VERSION_MANIFEST_PATH,
         OPS_TOOLCHAIN_PATH,
+        OPS_PINS_PATH,
         OPS_SURFACES_PATH,
         OPS_MIRROR_POLICY_PATH,
         OPS_CONTRACTS_PATH,
@@ -200,6 +223,24 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         errors.push(format!(
             "{OPS_TOOLCHAIN_PATH}: images map must not be empty"
         ));
+    }
+    if inventory.toolchain.tools.is_empty() {
+        errors.push(format!("{OPS_TOOLCHAIN_PATH}: tools map must not be empty"));
+    }
+    for (name, spec) in &inventory.toolchain.tools {
+        if name.trim().is_empty() {
+            errors.push(format!("{OPS_TOOLCHAIN_PATH}: tools key must not be empty"));
+        }
+        if spec.version_regex.trim().is_empty() {
+            errors.push(format!(
+                "{OPS_TOOLCHAIN_PATH}: tool `{name}` must define version_regex"
+            ));
+        }
+        if spec.probe_argv.is_empty() {
+            errors.push(format!(
+                "{OPS_TOOLCHAIN_PATH}: tool `{name}` must define probe_argv"
+            ));
+        }
     }
     for (name, image) in &inventory.toolchain.images {
         if image.contains(":latest") {
@@ -327,6 +368,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "manifests",
         "obs",
         "observe",
+        "quarantine",
         "registry",
         "report",
         "schema",

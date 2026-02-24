@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 use std::{fs, io::Write};
@@ -14,6 +15,7 @@ use bijux_dev_atlas_core::{
 use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use clap::{Args, Parser, Subcommand, ValueEnum};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -245,6 +247,10 @@ enum OpsCommand {
         #[command(subcommand)]
         command: OpsPinsCommand,
     },
+    Generate {
+        #[command(subcommand)]
+        command: OpsGenerateCommand,
+    },
 }
 
 #[derive(Args, Debug, Clone)]
@@ -281,6 +287,11 @@ enum OpsPinsCommand {
         #[command(flatten)]
         common: OpsCommonArgs,
     },
+}
+
+#[derive(Subcommand, Debug)]
+enum OpsGenerateCommand {
+    PinsIndex(OpsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -348,6 +359,18 @@ struct OpsResetArgs {
 #[derive(Debug, Deserialize, Clone)]
 struct StackProfiles {
     profiles: Vec<StackProfile>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+struct ToolchainInventory {
+    tools: BTreeMap<String, ToolDefinition>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+struct ToolDefinition {
+    required: bool,
+    version_regex: String,
+    probe_argv: Vec<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -459,23 +482,35 @@ impl OpsProcess {
         Self { allow_subprocess }
     }
 
-    fn probe_tool(&self, name: &str) -> Result<serde_json::Value, OpsCommandError> {
+    fn probe_tool(
+        &self,
+        name: &str,
+        probe_argv: &[String],
+        version_regex: &str,
+    ) -> Result<serde_json::Value, OpsCommandError> {
         if !self.allow_subprocess {
             return Err(OpsCommandError::Effect(
                 "subprocess is denied; pass --allow-subprocess".to_string(),
             ));
         }
-        match ProcessCommand::new(name).arg("--version").output() {
+        let mut cmd = ProcessCommand::new(name);
+        if probe_argv.is_empty() {
+            cmd.arg("--version");
+        } else {
+            cmd.args(probe_argv);
+        }
+        match cmd.output() {
             Ok(out) if out.status.success() => {
                 let text = String::from_utf8_lossy(&out.stdout);
-                let version = text.lines().next().unwrap_or("").trim().to_string();
-                Ok(serde_json::json!({"name": name, "installed": true, "version": version}))
+                let raw = text.lines().next().unwrap_or("").trim().to_string();
+                let version = normalize_tool_version_with_regex(&raw, version_regex);
+                Ok(serde_json::json!({"name": name, "installed": true, "version_raw": raw, "version": version, "version_regex": version_regex}))
             }
             Ok(_) => Ok(
-                serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}),
+                serde_json::json!({"name": name, "installed": false, "version_raw": serde_json::Value::Null, "version": serde_json::Value::Null}),
             ),
             Err(err) if err.kind() == std::io::ErrorKind::NotFound => Ok(
-                serde_json::json!({"name": name, "installed": false, "version": serde_json::Value::Null}),
+                serde_json::json!({"name": name, "installed": false, "version_raw": serde_json::Value::Null, "version": serde_json::Value::Null}),
             ),
             Err(err) => Err(OpsCommandError::Tool(format!(
                 "failed to probe tool `{name}`: {err}"
@@ -876,8 +911,12 @@ fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, i32), Strin
     Ok((rendered, 0))
 }
 
-const REQUIRED_OPS_TOOLS: &[&str] = &["kind", "kubectl", "helm", "curl"];
-const OPTIONAL_OPS_TOOLS: &[&str] = &["k6", "kubeconform"];
+fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {
+    let re = Regex::new(pattern).ok()?;
+    re.captures(raw)
+        .and_then(|cap| cap.get(1))
+        .map(|m| m.as_str().to_string())
+}
 
 fn resolve_ops_root(
     repo_root: &Path,
@@ -898,6 +937,23 @@ fn load_profiles(ops_root: &Path) -> Result<Vec<StackProfile>, OpsCommandError> 
         OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
     })?;
     Ok(payload.profiles)
+}
+
+fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCommandError> {
+    let path = ops_root.join("inventory/toolchain.json");
+    let text = std::fs::read_to_string(&path).map_err(|err| {
+        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
+    })?;
+    serde_json::from_str(&text)
+        .map_err(|err| OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display())))
+}
+
+fn tool_definitions_sorted(inventory: &ToolchainInventory) -> Vec<(String, ToolDefinition)> {
+    inventory
+        .tools
+        .iter()
+        .map(|(name, definition)| (name.clone(), definition.clone()))
+        .collect()
 }
 
 fn resolve_profile(
@@ -1124,6 +1180,40 @@ fn run_ops_checks(
     Ok((rendered, exit_code_for_report(&report)))
 }
 
+fn verify_tools_snapshot(
+    allow_subprocess: bool,
+    inventory: &ToolchainInventory,
+) -> Result<serde_json::Value, String> {
+    if !allow_subprocess {
+        return Ok(serde_json::json!({
+            "enabled": false,
+            "text": "tool verification skipped (pass --allow-subprocess)",
+            "missing_required": [],
+            "rows": []
+        }));
+    }
+    let process = OpsProcess::new(true);
+    let mut rows = Vec::new();
+    let mut missing_required = Vec::new();
+    for (name, definition) in tool_definitions_sorted(inventory) {
+        let mut row = process
+            .probe_tool(&name, &definition.probe_argv, &definition.version_regex)
+            .map_err(|e| e.to_stable_message())?;
+        row["required"] = serde_json::Value::Bool(definition.required);
+        if definition.required && row["installed"] != serde_json::Value::Bool(true) {
+            missing_required.push(name.clone());
+        }
+        rows.push(row);
+    }
+    rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
+    Ok(serde_json::json!({
+        "enabled": true,
+        "text": if missing_required.is_empty() { "all required tools available" } else { "missing required tools" },
+        "missing_required": missing_required,
+        "rows": rows
+    }))
+}
+
 fn render_ops_validation_output(
     common: &OpsCommonArgs,
     mode: &str,
@@ -1170,11 +1260,30 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let run: Result<(String, i32), String> = (|| match command {
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let inventory_errors = validate_ops_inventory(&repo_root);
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let inventory_errors = match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(&ops_root) {
+                Ok(_) => Vec::new(),
+                Err(err) => vec![err],
+            };
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
             let (checks_rendered, checks_exit) = run_ops_checks(&common, "ops_fast", false, false)?;
+            let toolchain = load_toolchain_inventory(&ops_root).map_err(|e| e.to_stable_message())?;
+            let tools_snapshot = verify_tools_snapshot(common.allow_subprocess, &toolchain)?;
+            let mut inventory_errors = inventory_errors;
+            if tools_snapshot
+                .get("missing_required")
+                .and_then(|v| v.as_array())
+                .is_some_and(|v| !v.is_empty())
+            {
+                inventory_errors.push("required external tools are missing".to_string());
+            }
+            let summary = serde_json::json!({
+                "inventory": summary,
+                "tools": tools_snapshot
+            });
             render_ops_validation_output(
                 &common,
                 "doctor",
@@ -1186,7 +1295,12 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
         }
         OpsCommand::Validate(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
-            let inventory_errors = validate_ops_inventory(&repo_root);
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let inventory_errors = match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(&ops_root) {
+                Ok(_) => Vec::new(),
+                Err(err) => vec![err],
+            };
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
@@ -1676,20 +1790,17 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             Ok((rendered, 0))
         }
         OpsCommand::ListTools(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let inventory = load_toolchain_inventory(&ops_root).map_err(|e| e.to_stable_message())?;
             let process = OpsProcess::new(common.allow_subprocess);
             let mut rows = Vec::new();
-            for name in REQUIRED_OPS_TOOLS {
+            for (name, definition) in tool_definitions_sorted(&inventory) {
                 let mut row = process
-                    .probe_tool(name)
+                    .probe_tool(&name, &definition.probe_argv, &definition.version_regex)
                     .map_err(|e| e.to_stable_message())?;
-                row["required"] = serde_json::Value::Bool(true);
-                rows.push(row);
-            }
-            for name in OPTIONAL_OPS_TOOLS {
-                let mut row = process
-                    .probe_tool(name)
-                    .map_err(|e| e.to_stable_message())?;
-                row["required"] = serde_json::Value::Bool(false);
+                row["required"] = serde_json::Value::Bool(definition.required);
                 rows.push(row);
             }
             rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
@@ -1710,25 +1821,24 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
             Ok((rendered, 0))
         }
         OpsCommand::VerifyTools(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                .map_err(|e| e.to_stable_message())?;
+            let inventory = load_toolchain_inventory(&ops_root).map_err(|e| e.to_stable_message())?;
             let process = OpsProcess::new(common.allow_subprocess);
             let mut rows = Vec::new();
             let mut missing = Vec::new();
             let mut warnings = Vec::new();
-            for name in REQUIRED_OPS_TOOLS {
+            for (name, definition) in tool_definitions_sorted(&inventory) {
                 let row = process
-                    .probe_tool(name)
+                    .probe_tool(&name, &definition.probe_argv, &definition.version_regex)
                     .map_err(|e| e.to_stable_message())?;
                 if row["installed"] == serde_json::Value::Bool(false) {
-                    missing.push((*name).to_string());
-                }
-                rows.push(row);
-            }
-            for name in OPTIONAL_OPS_TOOLS {
-                let row = process
-                    .probe_tool(name)
-                    .map_err(|e| e.to_stable_message())?;
-                if row["installed"] == serde_json::Value::Bool(false) {
-                    warnings.push((*name).to_string());
+                    if definition.required {
+                        missing.push(name.clone());
+                    } else {
+                        warnings.push(name.clone());
+                    }
                 }
                 rows.push(row);
             }
@@ -1909,6 +2019,45 @@ fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
                     )?;
                     Ok((rendered, 0))
                 }
+            }
+        },
+        OpsCommand::Generate { command } => match command {
+            OpsGenerateCommand::PinsIndex(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = run_id_or_default(common.run_id.clone())?;
+                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let pins_rel = "ops/inventory/pins.yaml";
+                let toolchain_rel = "ops/inventory/toolchain.json";
+                let stack_rel = "ops/stack/version-manifest.json";
+                let pins_raw = fs::read_to_string(repo_root.join(pins_rel))
+                    .map_err(|err| format!("failed to read {pins_rel}: {err}"))?;
+                let toolchain_raw = fs::read_to_string(repo_root.join(toolchain_rel))
+                    .map_err(|err| format!("failed to read {toolchain_rel}: {err}"))?;
+                let stack_raw = fs::read_to_string(repo_root.join(stack_rel))
+                    .map_err(|err| format!("failed to read {stack_rel}: {err}"))?;
+                let mut files = vec![
+                    serde_json::json!({"path": pins_rel, "sha256": sha256_hex(&pins_raw), "bytes": pins_raw.len()}),
+                    serde_json::json!({"path": stack_rel, "sha256": sha256_hex(&stack_raw), "bytes": stack_raw.len()}),
+                    serde_json::json!({"path": toolchain_rel, "sha256": sha256_hex(&toolchain_raw), "bytes": toolchain_raw.len()}),
+                ];
+                files.sort_by(|a, b| a["path"].as_str().cmp(&b["path"].as_str()));
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": run_id.as_str(),
+                    "generator": "ops generate pins-index",
+                    "files": files
+                });
+                let rel = "generate/pins.index.json";
+                let out = fs_adapter
+                    .write_artifact_json(&run_id, rel, &payload)
+                    .map_err(|e| e.to_stable_message())?;
+                let text = format!("generated deterministic pins index at {}", out.display());
+                let rendered = emit_payload(
+                    common.format,
+                    common.out.clone(),
+                    &serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+                )?;
+                Ok((rendered, 0))
             }
         },
     })();
@@ -2267,6 +2416,7 @@ mod tests {
                 "--allow-subprocess",
                 "--i-know-what-im-doing",
             ],
+            vec!["bijux-dev-atlas", "ops", "generate", "pins-index"],
         ];
         for argv in commands {
             let cli = super::Cli::try_parse_from(argv).expect("parse");
