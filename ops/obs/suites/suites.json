@@ -6,16 +6,16 @@
       "id": "cheap",
       "description": "Fast observability smoke (<2m): metric scrape + trace sample + log schema.",
       "tests": [
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_cheap.py"
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_cheap.py"
       ]
     },
     {
       "id": "contracts",
       "description": "Observability contract and profile checks.",
       "tests": [
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_contracts.py",
         "test_profiles.sh",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py"
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_slo_burn_determinism.py"
       ]
     },
     {
@@ -29,39 +29,39 @@
       "id": "minimal-drills",
       "description": "Minimal drill set for local confidence (store latency + prom outage + otel outage).",
       "tests": [
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py"
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_prom_outage.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_otel_outage.py"
       ]
     },
     {
       "id": "root-local",
       "description": "Root-local observability suite: contracts + coverage + minimal drills.",
       "tests": [
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_contracts.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_slo_burn_determinism.py",
         "test_coverage.sh",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_prom_outage.py",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_otel_outage.py"
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_toxiproxy_latency_drill.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_prom_outage.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_otel_outage.py"
       ]
     },
     {
       "id": "drills",
       "description": "Full drill execution suite.",
       "tests": [
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py"
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_drills.py"
       ]
     },
     {
       "id": "full",
       "description": "Full observability verification suite.",
       "tests": [
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_contracts.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_contracts.py",
         "test_profiles.sh",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_slo_burn_determinism.py",
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_slo_burn_determinism.py",
         "test_coverage.sh",
-        "packages/atlasctl/src/atlasctl/commands/ops/observability/tests/test_drills.py"
+        "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/tests/test_drills.py"
       ]
     }
   ]

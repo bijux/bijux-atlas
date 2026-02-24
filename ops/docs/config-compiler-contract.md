@@ -7,10 +7,10 @@
 
 ## Compiler API
 
-- `atlasctl config validate`: validate config files, schema pairs, overlay merge model, and lock discipline.
-- `atlasctl config gen`: render deterministic compiler outputs under `configs/_generated/`.
-- `atlasctl config diff --fail`: drift gate for generated compiler outputs.
-- `atlasctl config fmt`: canonicalize JSON formatting for `configs/**`.
+- `bijux-dev-atlas config validate`: validate config files, schema pairs, overlay merge model, and lock discipline.
+- `bijux-dev-atlas config gen`: render deterministic compiler outputs under `configs/_generated/`.
+- `bijux-dev-atlas config diff --fail`: drift gate for generated compiler outputs.
+- `bijux-dev-atlas config fmt`: canonicalize JSON formatting for `configs/**`.
 
 ## Overlay Model
 
@@ -22,4 +22,4 @@
 
 - `configs/_generated/*` files are generated-only (header + checksum enforced).
 - Human-facing docs/workflows/makefiles must not reference `configs/_generated/` directly.
-- Use `atlasctl config ...` commands as the stable interface.
+- Use `bijux-dev-atlas config ...` commands as the stable interface.

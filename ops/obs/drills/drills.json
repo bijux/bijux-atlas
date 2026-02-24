@@ -3,7 +3,7 @@
   "drills": [
     {
       "name": "store-outage-under-load",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_outage_under_load.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/store_outage_under_load.py",
       "purpose": "Simulate store outage during active load and validate graceful degradation.",
       "expected_signals": [
         "metric:bijux_store_breaker_open",
@@ -19,7 +19,7 @@
     },
     {
       "name": "prom-outage",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/prom_outage.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/prom_outage.py",
       "purpose": "Ensure Prometheus outage does not impact atlas serving behavior.",
       "expected_signals": [
         "metric:bijux_http_requests_total",
@@ -34,7 +34,7 @@
     },
     {
       "name": "otel-outage",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/otel_outage.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/otel_outage.py",
       "purpose": "Ensure OTEL outage degrades traces only and serving remains available.",
       "expected_signals": [
         "metric:bijux_http_requests_total",
@@ -50,7 +50,7 @@
     },
     {
       "name": "store-latency-injection",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/store_latency_injection.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/store_latency_injection.py",
       "purpose": "Inject store latency and validate breaker and resilience metrics.",
       "expected_signals": [
         "metric:bijux_store_breaker_open",
@@ -65,7 +65,7 @@
     },
     {
       "name": "overload-admission-control",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/overload_admission_control.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/overload_admission_control.py",
       "purpose": "Drive heavy request and verify admission control/shed signals.",
       "expected_signals": [
         "metric:atlas_overload_active",
@@ -81,7 +81,7 @@
     },
     {
       "name": "log-schema-violation-injection",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/log_schema_violation_injection.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/log_schema_violation_injection.py",
       "purpose": "Inject invalid log line and ensure schema validator catches it.",
       "expected_signals": [
         "validator:log_schema_failure"
@@ -95,7 +95,7 @@
     },
     {
       "name": "metric-cardinality-blowup-attempt",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/metric_cardinality_blowup_attempt.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/metric_cardinality_blowup_attempt.py",
       "purpose": "Inject high-cardinality metric labels and ensure guard check fails.",
       "expected_signals": [
         "validator:metric_cardinality_failure"
@@ -109,7 +109,7 @@
     },
     {
       "name": "trace-missing-spans-regression",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/trace_missing_spans_regression.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/trace_missing_spans_regression.py",
       "purpose": "Ensure trace contract catches missing span regression.",
       "expected_signals": [
         "validator:trace_coverage_failure"
@@ -123,7 +123,7 @@
     },
     {
       "name": "alert-firing-proof",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alert_firing_proof.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/alert_firing_proof.py",
       "purpose": "Simulate alert condition checks and confirm alert rules exist.",
       "expected_signals": [
         "validator:alerts_contract"
@@ -137,7 +137,7 @@
     },
     {
       "name": "runbook-proof-top5",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/runbook_proof_top5.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/runbook_proof_top5.py",
       "purpose": "Run representative drills and verify top runbook mapping.",
       "expected_signals": [
         "validator:runbook_mapping"
@@ -151,7 +151,7 @@
     },
     {
       "name": "cheap-endpoint-survival",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cheap_endpoint_survival.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/cheap_endpoint_survival.py",
       "purpose": "Prove cheap endpoint survives overload and is observable.",
       "expected_signals": [
         "metric:bijux_cheap_queries_served_while_overloaded_total"
@@ -165,7 +165,7 @@
     },
     {
       "name": "cache-stampede",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cache_stampede.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/cache_stampede.py",
       "purpose": "Exercise cache stampede handling and observe singleflight/cache metrics.",
       "expected_signals": [
         "metric:bijux_dataset_cache_misses_total"
@@ -179,7 +179,7 @@
     },
     {
       "name": "registry-refresh-failure",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/registry_refresh_failure.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/registry_refresh_failure.py",
       "purpose": "Validate registry/catalog refresh failure behavior and readiness semantics.",
       "expected_signals": [
         "validator:readiness_catalog_refresh"
@@ -193,7 +193,7 @@
     },
     {
       "name": "dataset-corruption-detection",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/dataset_corruption_detection.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/dataset_corruption_detection.py",
       "purpose": "Validate corrupted dataset is detected and quarantined.",
       "expected_signals": [
         "validator:dataset_corruption"
@@ -207,7 +207,7 @@
     },
     {
       "name": "gc-under-load",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/gc_under_load.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/gc_under_load.py",
       "purpose": "Run GC while service is active and confirm no critical disruption.",
       "expected_signals": [
         "validator:gc_under_load"
@@ -221,7 +221,7 @@
     },
     {
       "name": "rolling-restart-no-downtime",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/rolling_restart_no_downtime.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/rolling_restart_no_downtime.py",
       "purpose": "Validate rolling restart availability with observability evidence.",
       "expected_signals": [
         "validator:rolling_restart"
@@ -235,7 +235,7 @@
     },
     {
       "name": "hpa-scale-event",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/hpa_scale_event.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/hpa_scale_event.py",
       "purpose": "Validate HPA scale event under load and recovery.",
       "expected_signals": [
         "validator:hpa_scale"
@@ -249,7 +249,7 @@
     },
     {
       "name": "node-disk-pressure",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/node_disk_pressure.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/node_disk_pressure.py",
       "purpose": "Validate node disk pressure scenario and continued service health.",
       "expected_signals": [
         "validator:disk_pressure"
@@ -263,7 +263,7 @@
     },
     {
       "name": "cpu-throttle-noisy-neighbor",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/cpu_throttle_noisy_neighbor.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/cpu_throttle_noisy_neighbor.py",
       "purpose": "Validate noisy-neighbor CPU throttle resilience.",
       "expected_signals": [
         "validator:cpu_throttle"
@@ -277,7 +277,7 @@
     },
     {
       "name": "dashboard-fault-signature",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/dashboard_fault_signature.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/dashboard_fault_signature.py",
       "purpose": "Confirm dashboards expose expected signatures during injected faults.",
       "expected_signals": [
         "validator:dashboard_contract"
@@ -291,7 +291,7 @@
     },
     {
       "name": "alerts-runbook-id-map",
-      "script": "packages/atlasctl/src/atlasctl/commands/ops/observability/drills/alerts_runbook_id_map.py",
+      "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/observability/drills/alerts_runbook_id_map.py",
       "purpose": "Confirm alert rules map to valid runbook identifiers.",
       "expected_signals": [
         "validator:alerts_runbook_map"

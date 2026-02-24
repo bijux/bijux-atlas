@@ -20,6 +20,6 @@
     "ops/report": "bijux-atlas-operations",
     "ops/fixtures": "bijux-atlas-operations",
     "ops/run": "bijux-atlas-operations",
-    "packages/atlasctl": "bijux-atlas-platform"
+    "crates/bijux-dev-atlas": "bijux-atlas-platform"
   }
 }
