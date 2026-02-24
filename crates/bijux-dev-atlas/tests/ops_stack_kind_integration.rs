@@ -31,3 +31,21 @@ fn stack_status_kind_profile_k8s_target() {
         .expect("ops stack status");
     assert!(output.status.success());
 }
+
+#[test]
+#[ignore = "requires local kind+kubectl toolchain and network access"]
+fn k8s_conformance_kind_profile() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "k8s",
+            "conformance",
+            "--allow-subprocess",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops k8s conformance");
+    assert!(output.status.success());
+}
