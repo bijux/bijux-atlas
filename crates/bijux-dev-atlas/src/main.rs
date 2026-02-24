@@ -7,6 +7,7 @@ mod dispatch;
 mod docs_commands;
 #[cfg(test)]
 mod main_tests;
+mod ops_command_support;
 mod ops_commands;
 mod ops_runtime_execution;
 mod ops_support;
