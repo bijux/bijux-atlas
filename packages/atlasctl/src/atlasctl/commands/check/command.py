@@ -40,7 +40,7 @@ SHELL_POLICY_CHECK_IDS: tuple[str, ...] = (
     "checks_repo_shell_script_budget",
     "checks_repo_shell_docs_present",
 )
-CHECK_EVIDENCE_ROOT = "artifacts/atlasctl/checks"
+CHECK_EVIDENCE_ROOT = "artifacts/atlasctl/check"
 
 
 def _run(ctx: RunContext, cmd: list[str]) -> int:
@@ -132,6 +132,12 @@ def _write_junitxml(path: Path, rows: list[dict[str, object]]) -> None:
 
 
 def _run_check_registry(ctx: RunContext, ns: argparse.Namespace) -> int:
+    cwd = Path.cwd().resolve()
+    ops_root = (ctx.repo_root / "ops").resolve()
+    if cwd == ops_root or ops_root in cwd.parents:
+        print("refusing to run checks from inside ops/; run from repository root to keep path policy deterministic")
+        return ERR_USER
+
     started = time.perf_counter()
     select_value = str(getattr(ns, "select", "") or "").strip()
     id_value = str(getattr(ns, "id", "") or "").strip()
