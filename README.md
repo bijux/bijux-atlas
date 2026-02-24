@@ -11,7 +11,7 @@
 - `docker/`: canonical container build surface and policy.
 
 Compatibility shims retained at root:
-- Root config symlinks (`deny.toml`, `audit-allowlist.toml`, `clippy.toml`, `rustfmt.toml`, `.vale.ini`, `.vale/`, `nextest.toml`).
+- Root config shims (`deny.toml`, `audit-allowlist.toml`, `.vale.ini`, `.vale/`, `nextest.toml`) only where required by tooling.
 - Root `bin/` is removed; local build outputs live under `artifacts/bin/`.
 
 Operational policy:

@@ -22,10 +22,10 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 	@cargo llvm-cov report
 
 fmt: ## Run cargo fmt --check
-	@cargo fmt --all -- --check
+	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
 
 lint: ## Run cargo clippy with warnings denied
-	@cargo clippy --workspace --all-targets --all-features -- -D warnings
+	@CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features -- -D warnings
 
 test: ## Run workspace tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
