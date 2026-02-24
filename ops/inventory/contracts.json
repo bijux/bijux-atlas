@@ -46,6 +46,10 @@
       "version": 1
     },
     {
+      "path": "ops/load/load.toml",
+      "version": 1
+    },
+    {
       "path": "ops/datasets/CONTRACT.md",
       "version": 1
     },
