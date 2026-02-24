@@ -455,6 +455,50 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "checks_makefiles_no_cd_invocations"
+domain = "make"
+title = "makefiles avoid cd invocations"
+docs = "makefiles/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_makefiles_no_direct_fetch_commands"
+domain = "make"
+title = "makefiles avoid direct curl and wget commands"
+docs = "makefiles/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_makefiles_no_direct_tool_invocations"
+domain = "make"
+title = "makefiles avoid direct shell and tool invocations"
+docs = "makefiles/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_makefiles_no_multiline_recipes"
+domain = "make"
+title = "makefiles keep wrapper recipes to single lines"
+docs = "makefiles/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
 id = "checks_makefiles_root_includes_sorted"
 domain = "make"
 title = "root make include lines are sorted deterministically"

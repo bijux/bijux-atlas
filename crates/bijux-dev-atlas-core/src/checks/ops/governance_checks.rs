@@ -405,6 +405,91 @@ pub(super) fn check_make_no_direct_ops_script_execution(
     )
 }
 
+pub(super) fn check_makefiles_no_cd_invocations(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        "makefiles",
+        &["\tcd ", "; cd ", "&& cd "],
+        "MAKEFILES_CD_INVOCATION_FOUND",
+    )
+}
+
+pub(super) fn check_makefiles_no_direct_tool_invocations(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        "makefiles",
+        &[
+            "\tpython ",
+            "\tpython3 ",
+            "\tbash ",
+            "\tsh ",
+            "\tnode ",
+            "\tkubectl ",
+            "\thelm ",
+            "\tk6 ",
+        ],
+        "MAKEFILES_DIRECT_TOOL_INVOCATION_FOUND",
+    )
+}
+
+pub(super) fn check_makefiles_no_direct_fetch_commands(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    check_no_any_string_references_under(
+        ctx,
+        "makefiles",
+        &["\tcurl ", "\twget "],
+        "MAKEFILES_DIRECT_FETCH_COMMAND_FOUND",
+    )
+}
+
+pub(super) fn check_makefiles_no_multiline_recipes(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let makefiles_root = ctx.repo_root.join("makefiles");
+    if !makefiles_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    for file in walk_files(&makefiles_root) {
+        if file.extension().and_then(|e| e.to_str()) != Some("mk") {
+            continue;
+        }
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+        let Ok(text) = fs::read_to_string(&file) else {
+            continue;
+        };
+        let lines = text.lines().collect::<Vec<_>>();
+        for idx in 0..lines.len() {
+            let line = lines[idx];
+            if !line.starts_with('\t') {
+                continue;
+            }
+            if line.trim_start().starts_with('#') {
+                continue;
+            }
+            if idx + 1 < lines.len() && lines[idx + 1].starts_with('\t') {
+                violations.push(violation(
+                    "MAKEFILES_MULTILINE_RECIPE_FOUND",
+                    format!(
+                        "multiline recipe detected in {} near line {}",
+                        rel.display(),
+                        idx + 1
+                    ),
+                    "keep wrapper targets to one recipe line; move logic into bijux dev atlas commands",
+                    Some(rel),
+                ));
+                break;
+            }
+        }
+    }
+    Ok(violations)
+}
+
 pub(super) fn check_root_dockerignore_context_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
