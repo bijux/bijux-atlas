@@ -737,7 +737,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             }
         },
         OpsCommand::Generate { command } => match command {
-            OpsGenerateCommand::PinsIndex(common) => {
+            OpsGenerateCommand::PinsIndex { check, common } => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let run_id = run_id_or_default(common.run_id.clone())?;
                 let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
@@ -763,16 +763,54 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     "files": files
                 });
                 let rel = "generate/pins.index.json";
-                let out = fs_adapter
-                    .write_artifact_json(&run_id, rel, &payload)
-                    .map_err(|e| e.to_stable_message())?;
-                let text = format!("generated deterministic pins index at {}", out.display());
-                let rendered = emit_payload(
-                    common.format,
-                    common.out.clone(),
-                    &serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
-                )?;
-                Ok((rendered, 0))
+                if check {
+                    let expected_path = repo_root
+                        .join("artifacts/atlas-dev/ops")
+                        .join(run_id.as_str())
+                        .join(rel);
+                    let existing = std::fs::read_to_string(&expected_path).map_err(|err| {
+                        format!(
+                            "pins-index check failed: missing {}: {err}",
+                            expected_path.display()
+                        )
+                    })?;
+                    let expected_json: serde_json::Value =
+                        serde_json::from_str(&existing).map_err(|err| {
+                            format!(
+                                "pins-index check failed: invalid json {}: {err}",
+                                expected_path.display()
+                            )
+                        })?;
+                    let matches = expected_json == payload;
+                    let text = if matches {
+                        format!(
+                            "pins index matches existing artifact {}",
+                            expected_path.display()
+                        )
+                    } else {
+                        format!(
+                            "pins index drift detected for {}",
+                            expected_path.display()
+                        )
+                    };
+                    let rendered = emit_payload(
+                        common.format,
+                        common.out.clone(),
+                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": if matches {0} else {1}, "warnings": 0}}),
+                    )?;
+                    Ok((rendered, if matches { 0 } else { 1 }))
+                } else {
+                    let out = fs_adapter
+                        .write_artifact_json(&run_id, rel, &payload)
+                        .map_err(|e| e.to_stable_message())?;
+                    let text = format!("generated deterministic pins index at {}", out.display());
+                    let rendered = emit_payload(
+                        common.format,
+                        common.out.clone(),
+                        &serde_json::json!({"schema_version": 1, "text": text, "rows": [payload], "summary": {"total": 1, "errors": 0, "warnings": 0}}),
+                    )?;
+                    Ok((rendered, 0))
+                }
             }
         },
     })();

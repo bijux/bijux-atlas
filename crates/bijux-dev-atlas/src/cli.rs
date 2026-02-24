@@ -337,7 +337,12 @@ pub enum OpsPinsCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum OpsGenerateCommand {
-    PinsIndex(OpsCommonArgs),
+    PinsIndex {
+        #[arg(long, default_value_t = false)]
+        check: bool,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Args, Debug, Clone)]
