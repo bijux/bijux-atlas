@@ -20,6 +20,18 @@ Output modes:
 
 All check and lint execution routes through one runner and one report envelope.
 
+## Determinism Contract
+
+- Check rows are sorted deterministically by canonical check id.
+- JSON/jsonl envelopes are schema-versioned and stable.
+- Runtime paths use explicit `run_id` and must not embed timestamps in path shape.
+
+## Exit and Error Contract
+
+- Success returns zero when no check fails or errors.
+- Check failures and runner errors return non-zero.
+- Runner errors are emitted in typed error fields in the report envelope.
+
 ## Lint Alias
 
 `atlasctl lint <domain>` is a thin selector alias over checks:
