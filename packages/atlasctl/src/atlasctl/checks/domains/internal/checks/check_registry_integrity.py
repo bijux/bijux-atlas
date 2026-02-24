@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import json
 import re
 from pathlib import Path
@@ -382,3 +383,54 @@ def check_surfaces_no_banned_adjectives_in_paths(repo_root: Path) -> tuple[int, 
         if bad:
             errors.append(f"{rel}: path contains banned adjective(s): {', '.join(sorted(set(bad)))}")
     return (1, errors) if errors else (0, [])
+
+
+def _forbidden_imports(
+    root: Path,
+    *,
+    include_glob: str,
+    forbidden_prefixes: tuple[str, ...],
+) -> list[str]:
+    violations: list[str] = []
+    for path in sorted(root.glob(include_glob)):
+        rel = path.relative_to(root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except SyntaxError as exc:
+            violations.append(f"{rel}: syntax error while parsing imports: {exc.msg}")
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    name = str(alias.name).strip()
+                    if any(name == prefix or name.startswith(f"{prefix}.") for prefix in forbidden_prefixes):
+                        violations.append(f"{rel}:{node.lineno}: forbidden import `{name}`")
+            elif isinstance(node, ast.ImportFrom):
+                module = str(node.module or "").strip()
+                if any(module == prefix or module.startswith(f"{prefix}.") for prefix in forbidden_prefixes):
+                    violations.append(f"{rel}:{node.lineno}: forbidden import `{module}`")
+    return violations
+
+
+def check_commands_no_domains_import(repo_root: Path) -> tuple[int, list[str]]:
+    commands_root = repo_root / "packages/atlasctl/src/atlasctl/commands"
+    if not commands_root.exists():
+        return 1, ["missing commands directory: packages/atlasctl/src/atlasctl/commands"]
+    violations = _forbidden_imports(
+        commands_root,
+        include_glob="**/*.py",
+        forbidden_prefixes=("atlasctl.checks.domains",),
+    )
+    return (1, violations) if violations else (0, [])
+
+
+def check_checks_no_commands_import(repo_root: Path) -> tuple[int, list[str]]:
+    checks_root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not checks_root.exists():
+        return 1, ["missing checks directory: packages/atlasctl/src/atlasctl/checks"]
+    violations = _forbidden_imports(
+        checks_root,
+        include_glob="**/*.py",
+        forbidden_prefixes=("atlasctl.commands",),
+    )
+    return (1, violations) if violations else (0, [])
