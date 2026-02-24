@@ -426,6 +426,7 @@ dependencies = [
  "bijux-dev-atlas-adapters",
  "bijux-dev-atlas-model",
  "bijux-dev-atlas-policies",
+ "criterion",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -437,6 +438,7 @@ dependencies = [
 name = "bijux-dev-atlas-model"
 version = "0.1.0"
 dependencies = [
+ "criterion",
  "serde",
  "serde_json",
 ]
