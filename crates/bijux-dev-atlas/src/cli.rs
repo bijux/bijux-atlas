@@ -54,6 +54,10 @@ pub enum Command {
     Doctor {
         #[arg(long)]
         repo_root: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
         #[arg(long)]
@@ -155,6 +159,10 @@ pub enum CheckCommand {
     Doctor {
         #[arg(long)]
         repo_root: Option<PathBuf>,
+        #[arg(long, default_value_t = false)]
+        include_internal: bool,
+        #[arg(long, default_value_t = false)]
+        include_slow: bool,
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
         #[arg(long)]

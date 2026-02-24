@@ -75,9 +75,11 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         },
         Command::Doctor {
             repo_root,
+            include_internal,
+            include_slow,
             format,
             out,
-        } => match run_check_doctor(repo_root, format, out) {
+        } => match run_check_doctor(repo_root, include_internal, include_slow, format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
                     if code == 0 {
@@ -188,9 +190,11 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 } => run_check_explain(check_id, repo_root, format, out),
                 CheckCommand::Doctor {
                     repo_root,
+                    include_internal,
+                    include_slow,
                     format,
                     out,
-                } => run_check_doctor(repo_root, format, out),
+                } => run_check_doctor(repo_root, include_internal, include_slow, format, out),
                 CheckCommand::Run {
                     repo_root,
                     artifacts_root,
