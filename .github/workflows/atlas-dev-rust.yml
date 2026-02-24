@@ -53,6 +53,11 @@ jobs:
           cargo run -p bijux-dev-atlas -- doctor --format json >/dev/null
           cargo run -p bijux-dev-atlas -- check doctor --format json >/dev/null
           cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json >/dev/null
+      - name: Verify deterministic dev atlas JSON in CI
+        run: |
+          cargo run -p bijux-dev-atlas -- doctor --format json > /tmp/dev-atlas-doctor.json
+          cargo run -p bijux-dev-atlas -- check run --suite ci_fast --format json > /tmp/dev-atlas-ci-fast.json
+          ! rg -n "\"(hostname|host|timestamp|created_at)\"" /tmp/dev-atlas-doctor.json /tmp/dev-atlas-ci-fast.json
       - name: Verify ops doctor and validate entrypoints
         run: |
           cargo run -p bijux-dev-atlas -- ops doctor --format json >/dev/null
@@ -64,6 +69,7 @@ jobs:
           ! rg -n "bash ops/|ops/_lib" makefiles/ops.mk .github/workflows/atlas-dev-rust.yml
       - name: Verify ops make wrappers in CI mode
         env:
+          BIJUX: bijux
           BIJUX_DEV_ATLAS: cargo run -p bijux-dev-atlas --
         run: |
           make dev-doctor
