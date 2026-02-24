@@ -1,0 +1,6 @@
+{
+  "target": "kind",
+  "write_enabled": false,
+  "check_only": true,
+  "stdout_mode": false
+}
