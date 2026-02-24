@@ -63,6 +63,24 @@ class DomainId:
 
 
 @dataclass(frozen=True, order=True)
+class SuiteId:
+    value: str
+
+    @classmethod
+    def parse(cls, value: str) -> "SuiteId":
+        return cls(value)
+
+    def __post_init__(self) -> None:
+        value = str(self.value).strip()
+        if not _SEGMENT_PATTERN.fullmatch(value):
+            raise ValueError(f"invalid suite id `{value}`: expected lowercase snake_case")
+        object.__setattr__(self, "value", value)
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass(frozen=True, order=True)
 class OwnerId:
     value: str
 
@@ -135,6 +153,16 @@ class CheckStatus(str, Enum):
     FAIL = "fail"
     SKIP = "skip"
     ERROR = "error"
+
+
+class Visibility(str, Enum):
+    PUBLIC = "public"
+    INTERNAL = "internal"
+
+
+class Speed(str, Enum):
+    FAST = "fast"
+    SLOW = "slow"
 
 
 class CheckCategory(str, Enum):
@@ -257,6 +285,8 @@ class CheckDef:
     evidence: tuple[str, ...] = ()
     writes_allowed_roots: tuple[str, ...] = ("artifacts/evidence/",)
     result_code: ResultCode | str = "CHECK_GENERIC"
+    visibility: Visibility | str = Visibility.PUBLIC
+    speed: Speed | str = Speed.FAST
 
     def __post_init__(self) -> None:
         did = self.domain if isinstance(self.domain, DomainId) else DomainId(str(self.domain))
@@ -274,6 +304,10 @@ class CheckDef:
         object.__setattr__(self, "tags", tuple(str(Tag(str(t))) for t in self.tags if str(t).strip()))
         object.__setattr__(self, "effects", tuple(normalize_effect(str(e)) for e in self.effects if str(e).strip()) or (Effect.FS_READ.value,))
         object.__setattr__(self, "owners", tuple(str(OwnerId(str(o))) for o in self.owners if str(o).strip()))
+        visibility_value = self.visibility.value if isinstance(self.visibility, Visibility) else str(self.visibility).strip().lower()
+        speed_value = self.speed.value if isinstance(self.speed, Speed) else str(self.speed).strip().lower()
+        object.__setattr__(self, "visibility", Visibility(visibility_value or Visibility.PUBLIC.value))
+        object.__setattr__(self, "speed", Speed.SLOW if bool(self.slow) else Speed(speed_value or Speed.FAST.value))
 
     @property
     def id(self) -> str:
@@ -397,6 +431,9 @@ __all__ = [
     "GitView",
     "ResultCode",
     "Severity",
+    "Speed",
+    "SuiteId",
     "Tag",
+    "Visibility",
     "Violation",
 ]
