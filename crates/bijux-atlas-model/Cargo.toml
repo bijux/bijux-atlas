@@ -24,3 +24,7 @@ harness = false
 [[bench]]
 name = "parse_validation"
 harness = false
+
+[[bench]]
+name = "model_codec"
+harness = false
