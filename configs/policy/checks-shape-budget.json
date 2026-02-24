@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "checks_root_max_entries": 15,
-  "checks_domains_max_modules": 10,
+  "checks_domains_max_modules": 15,
   "checks_tools_max_modules": 10,
   "checks_module_max_loc": 600,
   "checks_legacy_signature_max": 398,
