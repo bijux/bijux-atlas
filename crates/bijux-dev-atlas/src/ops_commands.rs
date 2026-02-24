@@ -1,20 +1,26 @@
+use crate::cli::OpsInstallArgs;
+use crate::ops_command_support::{
+    build_ops_run_report, load_stack_manifest, load_stack_pins, load_toolchain_inventory_for_ops,
+    load_tools_manifest, ops_exit, ops_pins_check_payload, parse_tool_overrides, render_ops_human,
+    render_ops_validation_output, run_ops_checks, validate_pins_completeness,
+    validate_stack_manifest, verify_tools_snapshot, ToolMismatchCode,
+};
 pub(crate) use crate::ops_command_support::{
     emit_payload, load_profiles, normalize_tool_version_with_regex, resolve_ops_root,
     resolve_profile, run_id_or_default, sha256_hex,
-};
-use crate::ops_command_support::{
-    build_ops_run_report, load_stack_pins, load_toolchain_inventory_for_ops, load_tools_manifest,
-    ops_exit, ops_pins_check_payload, parse_tool_overrides, render_ops_human,
-    render_ops_validation_output, run_ops_checks, validate_pins_completeness,
-    verify_tools_snapshot, ToolMismatchCode,
 };
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let command = match command {
         OpsCommand::Stack { command } => match command {
+            OpsStackCommand::Plan(common) => OpsCommand::Plan(common),
             OpsStackCommand::Up(common) => OpsCommand::Up(common),
             OpsStackCommand::Down(common) => OpsCommand::Down(common),
-            OpsStackCommand::Status(args) => OpsCommand::Status(args),
+            OpsStackCommand::Status(mut args) => {
+                args.target = OpsStatusTarget::K8s;
+                OpsCommand::Status(args)
+            }
+            OpsStackCommand::Reset(args) => OpsCommand::Reset(args),
         },
         OpsCommand::K8s { command } => match command {
             OpsK8sCommand::Render(args) => OpsCommand::Render(args),
@@ -87,7 +93,8 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "inventory" => serde_json::json!({"action":"inventory","purpose":"list ops manifests and inventory validity","effects_required":[]}),
                 "validate" => serde_json::json!({"action":"validate","purpose":"validate ops SSOT inputs and checks","effects_required":[]}),
                 "render" | "k8s-render" => serde_json::json!({"action":"render","purpose":"render deterministic ops manifests","effects_required":["subprocess"],"flags":["--allow-subprocess","--allow-write (optional)"]}),
-                "install" | "stack-up" => serde_json::json!({"action":"install","purpose":"plan/apply ops stack to local cluster","effects_required":["subprocess","fs_write"],"flags":["--allow-subprocess","--allow-write","--apply"]}),
+                "stack-plan" => serde_json::json!({"action":"stack-plan","purpose":"resolve stack resources for a profile without executing subprocesses","effects_required":[]}),
+                "install" | "stack-up" => serde_json::json!({"action":"install","purpose":"plan/apply ops stack to local cluster","effects_required":["subprocess","fs_write","network"],"flags":["--allow-subprocess","--allow-write","--allow-network"]}),
                 "down" | "stack-down" => serde_json::json!({"action":"down","purpose":"teardown local ops stack resources","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "status" | "stack-status" => serde_json::json!({"action":"status","purpose":"collect local/k8s status rows","effects_required":["subprocess (for k8s/pods/endpoints)"]}),
                 "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
@@ -129,6 +136,11 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             if let Ok(pins) = load_stack_pins(&repo_root) {
                 if let Ok(pin_errors) = validate_pins_completeness(&repo_root, &pins) {
                     inventory_errors.extend(pin_errors);
+                }
+            }
+            if let Ok(stack_manifest) = load_stack_manifest(&repo_root) {
+                if let Ok(stack_errors) = validate_stack_manifest(&repo_root, &stack_manifest) {
+                    inventory_errors.extend(stack_errors);
                 }
             }
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
@@ -173,6 +185,12 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             inventory_errors.extend(
                 validate_pins_completeness(&repo_root, &pins).map_err(|e| e.to_stable_message())?,
             );
+            let stack_manifest =
+                load_stack_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+            inventory_errors.extend(
+                validate_stack_manifest(&repo_root, &stack_manifest)
+                    .map_err(|e| e.to_stable_message())?,
+            );
             let summary = ops_inventory_summary(&repo_root).unwrap_or_else(
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
@@ -216,19 +234,23 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     serde_json::json!(inventory_errors.clone()),
                 );
                 map.insert("profiles".to_string(), serde_json::json!(profiles));
-                map.insert(
-                    "components".to_string(),
-                    toolchain_images,
-                );
+                map.insert("components".to_string(), toolchain_images);
                 map.insert(
                     "charts".to_string(),
-                    serde_json::json!(surfaces.actions.iter().filter(|a| a.id.contains("render")).count()),
+                    serde_json::json!(surfaces
+                        .actions
+                        .iter()
+                        .filter(|a| a.id.contains("render"))
+                        .count()),
                 );
                 map.insert(
                     "tools".to_string(),
                     serde_json::json!(toolchain.tools.keys().cloned().collect::<Vec<_>>()),
                 );
-                map.insert("suites".to_string(), serde_json::json!(["load", "e2e", "k8s", "obs"]));
+                map.insert(
+                    "suites".to_string(),
+                    serde_json::json!(["load", "e2e", "k8s", "obs"]),
+                );
                 map.insert(
                     "scenarios".to_string(),
                     serde_json::json!(["load.run", "e2e.run", "obs.drill.run", "obs.verify"]),
@@ -236,6 +258,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 map.insert(
                     "schemas".to_string(),
                     serde_json::json!([
+                        "ops/stack/stack.toml",
                         "ops/stack/profiles.json",
                         "ops/stack/version-manifest.json",
                         "ops/inventory/toolchain.json",
@@ -443,7 +466,13 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
                 let text = rows
                     .iter()
-                    .map(|r| format!("{} required={}", r["name"].as_str().unwrap_or(""), r["required"]))
+                    .map(|r| {
+                        format!(
+                            "{} required={}",
+                            r["name"].as_str().unwrap_or(""),
+                            r["required"]
+                        )
+                    })
                     .collect::<Vec<_>>()
                     .join("\n");
                 let payload = serde_json::json!({"schema_version":1,"text":text,"rows":rows,"summary":{"total":rows.len(),"errors":0,"warnings":0}});
@@ -469,15 +498,31 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     row["name"] = serde_json::Value::String(tool.name.clone());
                     if row["installed"] == serde_json::Value::Bool(false) {
                         if tool.required {
-                            missing.push(format!("{}:{}", ToolMismatchCode::MissingBinary.as_str(), tool.name));
+                            missing.push(format!(
+                                "{}:{}",
+                                ToolMismatchCode::MissingBinary.as_str(),
+                                tool.name
+                            ));
                         } else {
-                            warnings.push(format!("{}:{}", ToolMismatchCode::MissingBinary.as_str(), tool.name));
+                            warnings.push(format!(
+                                "{}:{}",
+                                ToolMismatchCode::MissingBinary.as_str(),
+                                tool.name
+                            ));
                         }
                     } else if row["version"].is_null() {
                         if tool.required {
-                            missing.push(format!("{}:{}", ToolMismatchCode::VersionMismatch.as_str(), tool.name));
+                            missing.push(format!(
+                                "{}:{}",
+                                ToolMismatchCode::VersionMismatch.as_str(),
+                                tool.name
+                            ));
                         } else {
-                            warnings.push(format!("{}:{}", ToolMismatchCode::VersionMismatch.as_str(), tool.name));
+                            warnings.push(format!(
+                                "{}:{}",
+                                ToolMismatchCode::VersionMismatch.as_str(),
+                                tool.name
+                            ));
                         }
                     }
                     rows.push(row);
@@ -492,7 +537,14 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     "summary":{"total":rows.len(),"errors":missing.len(),"warnings":warnings.len()}
                 });
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-                Ok((rendered, if payload["missing"].as_array().is_some_and(|v| v.is_empty()) {ops_exit::PASS} else {ops_exit::TOOL_MISSING}))
+                Ok((
+                    rendered,
+                    if payload["missing"].as_array().is_some_and(|v| v.is_empty()) {
+                        ops_exit::PASS
+                    } else {
+                        ops_exit::TOOL_MISSING
+                    },
+                ))
             }
             OpsToolsCommand::Doctor(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -575,11 +627,22 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 );
                 let rendered = match common.format {
                     FormatArg::Text => render_ops_human(&report),
-                    FormatArg::Json => serde_json::to_string_pretty(&report).map_err(|e| e.to_string())?,
-                    FormatArg::Jsonl => serde_json::to_string(&report).map_err(|e| e.to_string())?,
+                    FormatArg::Json => {
+                        serde_json::to_string_pretty(&report).map_err(|e| e.to_string())?
+                    }
+                    FormatArg::Jsonl => {
+                        serde_json::to_string(&report).map_err(|e| e.to_string())?
+                    }
                 };
                 write_output_if_requested(common.out.clone(), &rendered)?;
-                Ok((rendered, if checks_code == 0 { ops_exit::PASS } else { ops_exit::FAIL }))
+                Ok((
+                    rendered,
+                    if checks_code == 0 {
+                        ops_exit::PASS
+                    } else {
+                        ops_exit::FAIL
+                    },
+                ))
             }
         },
         OpsCommand::ExplainProfile { name, common } => {
@@ -616,7 +679,13 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             rows.sort_by(|a, b| a["name"].as_str().cmp(&b["name"].as_str()));
             let text = rows
                 .iter()
-                .map(|r| format!("{} required={}", r["name"].as_str().unwrap_or(""), r["required"]))
+                .map(|r| {
+                    format!(
+                        "{} required={}",
+                        r["name"].as_str().unwrap_or(""),
+                        r["required"]
+                    )
+                })
                 .collect::<Vec<_>>()
                 .join("\n");
             let envelope = serde_json::json!({"schema_version": 1, "text": text, "rows": rows, "summary": {"total": rows.len(), "errors": 0, "warnings": 0}});
@@ -716,6 +785,47 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
+        OpsCommand::Plan(common) => {
+            let repo_root = resolve_repo_root(common.repo_root.clone())?;
+            let manifest = load_stack_manifest(&repo_root).map_err(|e| e.to_stable_message())?;
+            let stack_errors = validate_stack_manifest(&repo_root, &manifest)
+                .map_err(|e| e.to_stable_message())?;
+            let profile_name = common.profile.clone().unwrap_or_else(|| "kind".to_string());
+            let profile = manifest.profiles.get(&profile_name).ok_or_else(|| {
+                format!("OPS_PROFILE_ERROR: unknown stack profile `{profile_name}`")
+            })?;
+            let mut resources = profile.components.clone();
+            resources.sort();
+            let mut tools = vec!["kind".to_string(), "kubectl".to_string()];
+            if resources.iter().any(|c| c.contains("charts")) {
+                tools.push("helm".to_string());
+            }
+            tools.sort();
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "status": if stack_errors.is_empty() { "ok" } else { "failed" },
+                "text": format!("ops stack plan profile={profile_name} resources={}", resources.len()),
+                "rows": [{
+                    "profile": profile_name,
+                    "kind_profile": profile.kind_profile,
+                    "cluster_config": profile.cluster_config,
+                    "namespace": profile.namespace,
+                    "resources": resources,
+                    "tools": tools
+                }],
+                "summary": {"total": 1, "errors": stack_errors.len(), "warnings": 0},
+                "errors": stack_errors
+            });
+            let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+            Ok((
+                rendered,
+                if payload["summary"]["errors"] == serde_json::json!(0) {
+                    ops_exit::PASS
+                } else {
+                    ops_exit::FAIL
+                },
+            ))
+        }
         OpsCommand::Up(common) => {
             if !common.allow_subprocess {
                 return Err(
@@ -729,13 +839,33 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                         .to_stable_message(),
                 );
             }
-            let text = "ops up delegates to install --kind --apply --plan".to_string();
-            let rendered = emit_payload(
-                common.format,
-                common.out.clone(),
-                &serde_json::json!({"schema_version": 1, "text": text, "rows": [], "summary": {"total": 0, "errors": 0, "warnings": 0}}),
-            )?;
-            Ok((rendered, 0))
+            if !common.allow_network {
+                return Err(
+                    OpsCommandError::Effect("up requires --allow-network".to_string())
+                        .to_stable_message(),
+                );
+            }
+            let args = OpsInstallArgs {
+                common: common.clone(),
+                kind: true,
+                apply: true,
+                plan: false,
+                dry_run: "none".to_string(),
+            };
+            match crate::ops_runtime_execution::run_ops_install(&args) {
+                Ok(ok) => Ok(ok),
+                Err(err) => {
+                    let rollback = "rollback guidance: run `bijux dev atlas ops stack down --profile kind --allow-subprocess --allow-write --allow-network`";
+                    let payload = serde_json::json!({
+                        "schema_version": 1,
+                        "text": "ops stack up failed",
+                        "rows": [{"error": err, "rollback": rollback}],
+                        "summary": {"total": 1, "errors": 1, "warnings": 0}
+                    });
+                    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                    Ok((rendered, ops_exit::FAIL))
+                }
+            }
         }
         OpsCommand::Down(common) => {
             if !common.allow_subprocess {
@@ -743,6 +873,18 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     "down requires --allow-subprocess".to_string(),
                 )
                 .to_stable_message());
+            }
+            if !common.allow_write {
+                return Err(
+                    OpsCommandError::Effect("down requires --allow-write".to_string())
+                        .to_stable_message(),
+                );
+            }
+            if !common.allow_network {
+                return Err(
+                    OpsCommandError::Effect("down requires --allow-network".to_string())
+                        .to_stable_message(),
+                );
             }
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
@@ -752,6 +894,21 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let profile = resolve_profile(common.profile.clone(), &profiles)
                 .map_err(|e| e.to_stable_message())?;
             let process = OpsProcess::new(common.allow_subprocess);
+            let expected_context = format!("kind-{}", profile.kind_profile);
+            let current_context = process
+                .run_subprocess(
+                    "kubectl",
+                    &["config".to_string(), "current-context".to_string()],
+                    &repo_root,
+                )
+                .map(|(stdout, _)| stdout.trim().to_string())
+                .unwrap_or_default();
+            if current_context != expected_context && !common.force {
+                return Err(OpsCommandError::Effect(format!(
+                    "context guard failed: expected `{expected_context}` got `{current_context}`; pass --force to override"
+                ))
+                .to_stable_message());
+            }
             let args = vec![
                 "delete".to_string(),
                 "cluster".to_string(),
@@ -850,7 +1007,10 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     errors.push("base pins validation failed".to_string());
                 }
                 let pins = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
-                errors.extend(validate_pins_completeness(&repo_root, &pins).map_err(|e| e.to_stable_message())?);
+                errors.extend(
+                    validate_pins_completeness(&repo_root, &pins)
+                        .map_err(|e| e.to_stable_message())?,
+                );
                 let status = if errors.is_empty() { "ok" } else { "failed" };
                 let payload = serde_json::json!({
                     "schema_version": 1,
@@ -861,7 +1021,14 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                     "summary": {"total": 1, "errors": if status == "ok" {0} else {1}, "warnings": 0}
                 });
                 let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-                Ok((rendered, if errors.is_empty() { ops_exit::PASS } else { ops_exit::FAIL }))
+                Ok((
+                    rendered,
+                    if errors.is_empty() {
+                        ops_exit::PASS
+                    } else {
+                        ops_exit::FAIL
+                    },
+                ))
             }
             OpsPinsCommand::Update {
                 i_know_what_im_doing,

@@ -383,6 +383,7 @@ pub enum OpsCommand {
     ListTools(OpsCommonArgs),
     VerifyTools(OpsCommonArgs),
     ListActions(OpsCommonArgs),
+    Plan(OpsCommonArgs),
     Up(OpsCommonArgs),
     Down(OpsCommonArgs),
     Clean(OpsCommonArgs),
@@ -400,9 +401,11 @@ pub enum OpsCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum OpsStackCommand {
+    Plan(OpsCommonArgs),
     Up(OpsCommonArgs),
     Down(OpsCommonArgs),
     Status(OpsStatusArgs),
+    Reset(OpsResetArgs),
 }
 
 #[derive(Subcommand, Debug)]
@@ -525,6 +528,10 @@ pub struct OpsCommonArgs {
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
     pub allow_write: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub force: bool,
     #[arg(long = "tool")]
     pub tool_overrides: Vec<String>,
 }
@@ -541,8 +548,6 @@ pub struct OpsInstallArgs {
     pub plan: bool,
     #[arg(long, default_value = "none")]
     pub dry_run: String,
-    #[arg(long, default_value_t = false)]
-    pub force: bool,
 }
 
 #[derive(Args, Debug, Clone)]

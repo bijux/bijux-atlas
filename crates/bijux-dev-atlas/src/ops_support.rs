@@ -7,6 +7,19 @@ pub(crate) struct StackProfiles {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+pub(crate) struct StackManifestToml {
+    pub(crate) profiles: BTreeMap<String, StackManifestProfile>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub(crate) struct StackManifestProfile {
+    pub(crate) kind_profile: String,
+    pub(crate) cluster_config: String,
+    pub(crate) namespace: String,
+    pub(crate) components: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
 pub(crate) struct ToolchainInventory {
     pub(crate) tools: BTreeMap<String, ToolDefinition>,
 }
