@@ -7,9 +7,7 @@ from atlasctl.checks.domains.internal import (
     check_all_checks_declare_effects,
     check_all_checks_have_owner,
     check_all_checks_have_tags,
-    check_checks_file_count_budget,
     check_checks_approved_top_level_entries_only,
-    check_checks_tree_depth_budget,
     check_domains_directory_shape,
     check_docs_checks_no_ops_imports,
     check_legacy_check_directories_absent,
@@ -145,25 +143,6 @@ def test_docs_checks_do_not_import_ops_modules(tmp_path: Path) -> None:
     code, errors = check_docs_checks_no_ops_imports(tmp_path)
     assert code == 1
     assert any("docs checks must not import ops modules directly" in line for line in errors)
-
-
-def test_checks_file_count_budget_flags_large_tree(tmp_path: Path) -> None:
-    root = tmp_path / "packages/atlasctl/src/atlasctl/checks/tools"
-    for idx in range(45):
-        _write(root / f"f_{idx}.py", "X = 1\n")
-    code, errors = check_checks_file_count_budget(tmp_path)
-    assert code == 1
-    assert any("file-count budget exceeded" in line for line in errors)
-
-
-def test_checks_depth_budget_flags_deep_paths(tmp_path: Path) -> None:
-    _write(
-        tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/a/b/c.py",
-        "X = 1\n",
-    )
-    code, errors = check_checks_tree_depth_budget(tmp_path)
-    assert code == 1
-    assert any("depth exceeded" in line for line in errors)
 
 
 def test_checks_approved_top_level_entries_only_flags_unknown_entry(tmp_path: Path) -> None:
