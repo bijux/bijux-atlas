@@ -224,6 +224,28 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
+id = "checks_root_bin_atlasctl_absent"
+domain = "root"
+title = "legacy root atlasctl shim is absent"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_root_artifacts_reports_atlasctl_absent"
+domain = "root"
+title = "legacy atlasctl report artifact directory is absent"
+docs = "docs/development/tooling/atlasctl-deletion-plan.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_docs_no_atlasctl_string_references"
 domain = "docs"
 title = "docs avoid legacy atlasctl string references"
