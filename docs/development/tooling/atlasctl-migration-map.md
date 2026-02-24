@@ -1,4 +1,7 @@
-# Atlasctl Migration Map
+# Atlasctl Migration Map (Historical Note)
+
+This page is retained temporarily as migration history while atlasctl deletion work is in progress.
+It is not a canonical operator guide.
 
 ## Purpose
 Map legacy atlasctl check surfaces to `bijux-dev-atlas` check identifiers and routes.
