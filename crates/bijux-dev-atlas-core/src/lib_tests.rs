@@ -31,6 +31,7 @@ fn suite_expansion_is_stable() {
         vec![
             "checks_ops_artifacts_gitignore_policy".to_string(),
             "checks_ops_artifacts_not_tracked".to_string(),
+            "checks_ops_control_plane_doc_contract".to_string(),
             "checks_ops_generated_readonly_markers".to_string(),
             "checks_ops_makefile_routes_dev_atlas".to_string(),
             "checks_ops_manifest_integrity".to_string(),
@@ -40,6 +41,7 @@ fn suite_expansion_is_stable() {
             "checks_ops_no_python_legacy_runtime_refs".to_string(),
             "checks_ops_no_scripts_areas_or_xtask_refs".to_string(),
             "checks_ops_schema_presence".to_string(),
+            "checks_ops_ssot_manifests_schema_versions".to_string(),
             "checks_ops_surface_inventory".to_string(),
             "checks_ops_surface_manifest".to_string(),
             "checks_ops_tree_contract".to_string(),
@@ -442,7 +444,10 @@ fn duration_output_is_deterministic_for_equal_durations() {
         .iter()
         .find(|line| line.starts_with("duration:"))
         .expect("first duration");
-    assert_eq!(*first_duration, "duration: checks_ops_surface_manifest 50ms");
+    assert_eq!(
+        *first_duration,
+        "duration: checks_ops_surface_manifest 50ms"
+    );
 }
 
 #[test]
