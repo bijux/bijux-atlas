@@ -22,7 +22,7 @@ ops-install-plan: ## Print install plan without applying resources
 	@$(DEV_ATLAS) ops install --kind --apply --plan --profile $(PROFILE) --allow-subprocess --allow-write --format json
 
 ops-up: ## Bring up full local ops environment
-	@$(DEV_ATLAS) ops install --kind --apply --profile $(PROFILE) --allow-subprocess --allow-write --format text
+	@if command -v kind >/dev/null 2>&1 && kind get clusters 2>/dev/null | grep -Eq '^(normal|bijux-atlas-e2e)$$'; then echo "ops-up: local kind cluster already exists"; else $(DEV_ATLAS) ops install --kind --apply --profile $(PROFILE) --allow-subprocess --allow-write --format text; fi
 
 ops-down: ## Tear down full local ops environment
 	@$(DEV_ATLAS) ops down --profile $(PROFILE) --allow-subprocess --format text
