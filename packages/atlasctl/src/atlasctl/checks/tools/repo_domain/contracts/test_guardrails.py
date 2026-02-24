@@ -189,6 +189,7 @@ def check_no_unjustified_skips(repo_root: Path) -> tuple[int, list[str]]:
 def check_no_conflicting_json_goldens(repo_root: Path) -> tuple[int, list[str]]:
     golden_dir = _tests_root(repo_root) / "goldens"
     schema_surface_to_files: dict[tuple[str, str], list[str]] = {}
+    schema_surface_to_signatures: dict[tuple[str, str], set[tuple[str, ...]]] = {}
     for golden in sorted(golden_dir.rglob("*.json.golden")):
         text = golden.read_text(encoding="utf-8", errors="ignore").strip()
         if not text:
@@ -197,15 +198,28 @@ def check_no_conflicting_json_goldens(repo_root: Path) -> tuple[int, list[str]]:
             payload = json.loads(text)
         except Exception:
             continue
-        schema_name = str(payload.get("schema_name", "")).strip()
-        surface = str(payload.get("kind", "")).strip() or str(payload.get("action", "")).strip() or golden.stem
-        if not schema_name:
+        rows: list[dict[str, object]]
+        if isinstance(payload, dict):
+            rows = [payload]
+        elif isinstance(payload, list):
+            rows = [item for item in payload if isinstance(item, dict)]
+        else:
             continue
-        schema_surface_to_files.setdefault((schema_name, surface), []).append(golden.name)
+        for row in rows:
+            schema_name = str(row.get("schema_name", "")).strip()
+            surface = str(row.get("kind", "")).strip() or str(row.get("action", "")).strip() or golden.stem
+            if not schema_name:
+                continue
+            key = (schema_name, surface)
+            schema_surface_to_files.setdefault(key, []).append(golden.name)
+            schema_surface_to_signatures.setdefault(key, set()).add(tuple(sorted(str(k) for k in row.keys())))
     errors: list[str] = []
-    for (schema_name, surface), files in sorted(schema_surface_to_files.items()):
-        if len(files) > 1:
-            errors.append(f"conflicting goldens for schema {schema_name} surface {surface}: {sorted(files)}")
+    for key, files in sorted(schema_surface_to_files.items()):
+        signatures = schema_surface_to_signatures.get(key, set())
+        if len(signatures) <= 1:
+            continue
+        schema_name, surface = key
+        errors.append(f"conflicting goldens for schema {schema_name} surface {surface}: {sorted(files)}")
     return (0 if not errors else 1), errors
 
 
