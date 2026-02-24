@@ -331,6 +331,12 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
         )
         .to_stable_message());
     }
+    if (args.apply || args.kind) && !common.allow_network {
+        return Err(OpsCommandError::Effect(
+            "install apply/kind requires --allow-network".to_string(),
+        )
+        .to_stable_message());
+    }
 
     let mut steps = Vec::new();
     let process = OpsProcess::new(common.allow_subprocess);
@@ -346,15 +352,18 @@ pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32
                 "--config".to_string(),
                 kind_config.display().to_string(),
             ];
-            let _ = process
-                .run_subprocess("kind", &kind_args, &repo_root)
-                .map_err(|e| e.to_stable_message())?;
+            if let Err(err) = process.run_subprocess("kind", &kind_args, &repo_root) {
+                let stable = err.to_stable_message();
+                if !stable.contains("already exists") {
+                    return Err(stable);
+                }
+            }
         }
     }
     if args.apply {
         steps.push("kubectl apply".to_string());
         if !args.plan {
-            ensure_kind_context(&process, &profile, args.force)
+            ensure_kind_context(&process, &profile, common.force)
                 .map_err(|e| e.to_stable_message())?;
             ensure_namespace_exists(&process, "bijux-atlas", &args.dry_run)
                 .map_err(|e| e.to_stable_message())?;

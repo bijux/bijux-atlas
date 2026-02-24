@@ -1,3 +1,4 @@
+use crate::ops_support::StackManifestToml;
 use crate::*;
 use bijux_dev_atlas_model::OpsRunReport;
 use serde::{Deserialize, Serialize};
@@ -95,16 +96,79 @@ pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsComm
     })
 }
 
-pub(crate) fn parse_tool_overrides(values: &[String]) -> Result<std::collections::BTreeMap<String, String>, String> {
+pub(crate) fn load_stack_manifest(repo_root: &Path) -> Result<StackManifestToml, OpsCommandError> {
+    let path = repo_root.join("ops/stack/stack.toml");
+    let text = std::fs::read_to_string(&path).map_err(|err| {
+        OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
+    })?;
+    toml::from_str(&text).map_err(|err| {
+        OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    })
+}
+
+pub(crate) fn validate_stack_manifest(
+    repo_root: &Path,
+    manifest: &StackManifestToml,
+) -> Result<Vec<String>, OpsCommandError> {
+    let mut errors = Vec::new();
+    if manifest.profiles.is_empty() {
+        errors.push("stack manifest must declare at least one profile".to_string());
+    }
+    for (name, profile) in &manifest.profiles {
+        let cluster_path = repo_root.join(&profile.cluster_config);
+        if !cluster_path.exists() {
+            errors.push(format!(
+                "stack profile `{name}` references missing cluster config `{}`",
+                profile.cluster_config
+            ));
+        }
+        if profile.components.is_empty() {
+            errors.push(format!("stack profile `{name}` must declare components"));
+            continue;
+        }
+        let mut sorted = profile.components.clone();
+        sorted.sort();
+        sorted.dedup();
+        if sorted.len() != profile.components.len() {
+            errors.push(format!(
+                "stack profile `{name}` has duplicate components; ordering must be deterministic"
+            ));
+        }
+        if profile.components != sorted {
+            errors.push(format!(
+                "stack profile `{name}` components must be lexicographically sorted"
+            ));
+        }
+        for component in &profile.components {
+            let component_path = repo_root.join(component);
+            if !component_path.exists() {
+                errors.push(format!(
+                    "stack profile `{name}` references missing component `{component}`"
+                ));
+            }
+        }
+    }
+    errors.sort();
+    errors.dedup();
+    Ok(errors)
+}
+
+pub(crate) fn parse_tool_overrides(
+    values: &[String],
+) -> Result<std::collections::BTreeMap<String, String>, String> {
     let mut out = std::collections::BTreeMap::new();
     for raw in values {
         let Some((name, path)) = raw.split_once('=') else {
-            return Err(format!("invalid --tool override `{raw}`; expected name=path"));
+            return Err(format!(
+                "invalid --tool override `{raw}`; expected name=path"
+            ));
         };
         let name = name.trim();
         let path = path.trim();
         if name.is_empty() || path.is_empty() {
-            return Err(format!("invalid --tool override `{raw}`; expected name=path"));
+            return Err(format!(
+                "invalid --tool override `{raw}`; expected name=path"
+            ));
         }
         out.insert(name.to_string(), path.to_string());
     }
@@ -117,9 +181,13 @@ pub(crate) fn validate_pins_completeness(
 ) -> Result<Vec<String>, OpsCommandError> {
     let mut errors = Vec::new();
     let stack_manifest: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/stack/version-manifest.json")).map_err(|err| {
-            OpsCommandError::Manifest(format!("failed to read ops/stack/version-manifest.json: {err}"))
-        })?,
+        &std::fs::read_to_string(repo_root.join("ops/stack/version-manifest.json")).map_err(
+            |err| {
+                OpsCommandError::Manifest(format!(
+                    "failed to read ops/stack/version-manifest.json: {err}"
+                ))
+            },
+        )?,
     )
     .map_err(|err| OpsCommandError::Schema(format!("invalid version manifest json: {err}")))?;
     if let Some(obj) = stack_manifest.as_object() {
@@ -149,7 +217,11 @@ pub(crate) fn validate_pins_completeness(
     }
     let contracts_json: serde_json::Value = serde_json::from_str(
         &std::fs::read_to_string(repo_root.join("ops/inventory/contracts.json")).map_err(
-            |err| OpsCommandError::Manifest(format!("failed to read ops/inventory/contracts.json: {err}")),
+            |err| {
+                OpsCommandError::Manifest(format!(
+                    "failed to read ops/inventory/contracts.json: {err}"
+                ))
+            },
         )?,
     )
     .map_err(|err| OpsCommandError::Schema(format!("invalid contracts.json: {err}")))?;
@@ -159,11 +231,17 @@ pub(crate) fn validate_pins_completeness(
         .cloned()
         .unwrap_or_default()
         .into_iter()
-        .filter_map(|v| v.get("path").and_then(serde_json::Value::as_str).map(str::to_string))
+        .filter_map(|v| {
+            v.get("path")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        })
         .collect::<std::collections::BTreeSet<_>>();
     for required in ["ops/tools/tools.toml", "ops/stack/pins.toml"] {
         if !contract_paths.contains(required) {
-            errors.push(format!("contracts inventory missing required entry `{required}`"));
+            errors.push(format!(
+                "contracts inventory missing required entry `{required}`"
+            ));
         }
     }
     let values_files = [
@@ -171,9 +249,8 @@ pub(crate) fn validate_pins_completeness(
         "ops/k8s/charts/bijux-atlas/values-offline.yaml",
     ];
     for file in values_files {
-        let text = std::fs::read_to_string(repo_root.join(file)).map_err(|err| {
-            OpsCommandError::Manifest(format!("failed to read {file}: {err}"))
-        })?;
+        let text = std::fs::read_to_string(repo_root.join(file))
+            .map_err(|err| OpsCommandError::Manifest(format!("failed to read {file}: {err}")))?;
         for line in text.lines() {
             let trimmed = line.trim();
             if trimmed.contains(":latest") {
@@ -184,7 +261,9 @@ pub(crate) fn validate_pins_completeness(
                 && !trimmed.contains("@sha256:")
                 && !trimmed.ends_with(':')
             {
-                errors.push(format!("base image pin must include digest in {file}: `{trimmed}`"));
+                errors.push(format!(
+                    "base image pin must include digest in {file}: `{trimmed}`"
+                ));
             }
         }
     }
@@ -332,6 +411,14 @@ pub(crate) fn build_ops_run_report(
     capabilities.insert(
         "fs_write".to_string(),
         if common.allow_write {
+            "enabled: requested by flag".to_string()
+        } else {
+            "disabled: default deny".to_string()
+        },
+    );
+    capabilities.insert(
+        "network".to_string(),
+        if common.allow_network {
             "enabled: requested by flag".to_string()
         } else {
             "disabled: default deny".to_string()
@@ -550,6 +637,7 @@ pub(crate) fn load_toolchain_inventory_for_ops(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ops_support::StackManifestProfile;
 
     #[test]
     fn tools_manifest_parses() {
@@ -570,7 +658,8 @@ mod tests {
     fn pins_validation_rejects_latest_tag() {
         let root = tempfile::tempdir().expect("tempdir");
         std::fs::create_dir_all(root.path().join("ops/stack")).expect("mkdir stack");
-        std::fs::create_dir_all(root.path().join("ops/k8s/charts/bijux-atlas")).expect("mkdir chart");
+        std::fs::create_dir_all(root.path().join("ops/k8s/charts/bijux-atlas"))
+            .expect("mkdir chart");
         std::fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
         std::fs::write(
             root.path().join("ops/stack/version-manifest.json"),
@@ -583,7 +672,8 @@ mod tests {
         )
         .expect("write values");
         std::fs::write(
-            root.path().join("ops/k8s/charts/bijux-atlas/values-offline.yaml"),
+            root.path()
+                .join("ops/k8s/charts/bijux-atlas/values-offline.yaml"),
             "image: redis:latest\n",
         )
         .expect("write values offline");
@@ -594,10 +684,43 @@ mod tests {
         .expect("write contracts");
         let pins = StackPinsToml {
             charts: std::collections::BTreeMap::new(),
-            images: std::collections::BTreeMap::from([("redis".to_string(), "redis:latest".to_string())]),
+            images: std::collections::BTreeMap::from([(
+                "redis".to_string(),
+                "redis:latest".to_string(),
+            )]),
             crds: std::collections::BTreeMap::new(),
         };
         let errors = validate_pins_completeness(root.path(), &pins).expect("validate");
         assert!(errors.iter().any(|e| e.contains("floating tag forbidden")));
+    }
+
+    #[test]
+    fn stack_manifest_validation_checks_component_order_and_paths() {
+        let root = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(root.path().join("ops/stack/kind")).expect("mkdir");
+        std::fs::write(
+            root.path().join("ops/stack/kind/cluster.yaml"),
+            "kind: Cluster\n",
+        )
+        .expect("write cluster");
+        let manifest = StackManifestToml {
+            profiles: std::collections::BTreeMap::from([(
+                "kind".to_string(),
+                StackManifestProfile {
+                    kind_profile: "normal".to_string(),
+                    cluster_config: "ops/stack/kind/cluster.yaml".to_string(),
+                    namespace: "bijux-atlas".to_string(),
+                    components: vec![
+                        "ops/stack/redis/redis.yaml".to_string(),
+                        "ops/obs/pack/k8s/namespace.yaml".to_string(),
+                    ],
+                },
+            )]),
+        };
+        let errors = validate_stack_manifest(root.path(), &manifest).expect("validate");
+        assert!(errors
+            .iter()
+            .any(|e| e.contains("components must be lexicographically sorted")));
+        assert!(errors.iter().any(|e| e.contains("missing component")));
     }
 }
