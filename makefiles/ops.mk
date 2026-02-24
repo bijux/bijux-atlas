@@ -2,6 +2,7 @@
 # Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update
 SHELL := /bin/sh
 PROFILE ?= kind
+OPS_RESET_RUN_ID ?= ops_reset
 
 ops: ## Canonical ops gate
 	@$(DEV_ATLAS) ops validate --profile $(PROFILE) --format text
@@ -31,7 +32,7 @@ ops-clean: ## Clean generated ops outputs
 	@$(DEV_ATLAS) ops clean --format text
 
 ops-reset: ## Delete artifacts for RESET_RUN_ID
-	@$(DEV_ATLAS) ops reset --reset-run-id $(RESET_RUN_ID) --format text
+	@$(DEV_ATLAS) ops reset --reset-run-id $(or $(RESET_RUN_ID),$(OPS_RESET_RUN_ID)) --format text
 
 ops-kind-up: ## Ensure local kind cluster plan is valid
 	@$(DEV_ATLAS) ops install --kind --plan --profile $(PROFILE) --allow-subprocess --allow-write --format text
