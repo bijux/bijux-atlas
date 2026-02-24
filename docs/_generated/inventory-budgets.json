@@ -18,7 +18,7 @@
     "stack"
   ],
   "scripts_commands": [
-    "bijux-atlas-dev",
+    "bijux-dev-atlas",
     "bijux-atlas-ops",
     "atlasctl",
     "isolate",
