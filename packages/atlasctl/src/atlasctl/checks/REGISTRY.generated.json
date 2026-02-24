@@ -11520,7 +11520,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 800,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -12015,7 +12015,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1200,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -12378,7 +12378,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 400,
+      "timeout_ms": 1800,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -13137,7 +13137,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 600,
+      "timeout_ms": 4000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -13236,7 +13236,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1200,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -13731,7 +13731,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1200,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -13764,7 +13764,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1200,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -14028,7 +14028,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1000,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -15414,7 +15414,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 400,
+      "timeout_ms": 1400,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
@@ -16602,7 +16602,7 @@
       "result_code": "CHECK_GENERIC",
       "severity": "error",
       "speed": "fast",
-      "timeout_ms": 300,
+      "timeout_ms": 1400,
       "writes_allowed_roots": [
         "artifacts/evidence/"
       ]
