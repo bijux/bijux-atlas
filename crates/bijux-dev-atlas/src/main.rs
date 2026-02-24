@@ -17,7 +17,7 @@ use std::process::Command as ProcessCommand;
 use crate::cli::{
     Cli, ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
     GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
-    OpsStatusTarget, WorkflowsCommand,
+    OpsStatusTarget, PoliciesCommand, WorkflowsCommand,
 };
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
@@ -412,6 +412,33 @@ pub(crate) fn run_workflows_command(
     }
 }
 
+pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
+    let result = match command {
+        PoliciesCommand::Print {
+            repo_root,
+            format,
+            out,
+        } => run_policies_print(repo_root, format, out),
+        PoliciesCommand::Validate {
+            repo_root,
+            format,
+            out,
+        } => run_policies_validate(repo_root, format, out),
+    };
+    match result {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                println!("{rendered}");
+            }
+            code
+        }
+        Err(err) => {
+            eprintln!("bijux-dev-atlas policies failed: {err}");
+            1
+        }
+    }
+}
+
 pub(crate) fn run_gates_command(quiet: bool, command: GatesCommand) -> i32 {
     match command {
         GatesCommand::List {
@@ -665,6 +692,54 @@ pub(crate) fn run_print_policies(repo_root: Option<PathBuf>) -> Result<(String, 
     let root = resolve_repo_root(repo_root)?;
     let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
     let rendered = canonical_policy_json(&policies.to_document()).map_err(|err| err.to_string())?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_policies_print(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
+    let doc = policies.to_document();
+    let rendered = match format {
+        FormatArg::Text => format!(
+            "status: ok\nschema_version: {}\ncompatibility_rules: {}\ndocumented_defaults: {}",
+            format!("{:?}", doc.schema_version),
+            doc.compatibility.len(),
+            doc.documented_defaults.len()
+        ),
+        FormatArg::Json => serde_json::to_string_pretty(&doc).map_err(|err| err.to_string())?,
+        FormatArg::Jsonl => serde_json::to_string(&doc).map_err(|err| err.to_string())?,
+    };
+    write_output_if_requested(out, &rendered)?;
+    Ok((rendered, 0))
+}
+
+pub(crate) fn run_policies_validate(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let policies = DevAtlasPolicySet::load(&root).map_err(|err| err.to_string())?;
+    let doc = policies.to_document();
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "status": "ok",
+        "repo_root": root.display().to_string(),
+        "policy_schema_version": doc.schema_version,
+        "compatibility_rules": doc.compatibility.len(),
+        "documented_defaults": doc.documented_defaults.len(),
+        "capabilities": {
+            "fs_write": false,
+            "subprocess": false,
+            "network": false,
+            "git": false
+        }
+    });
+    let rendered = emit_payload(format, out, &payload)?;
     Ok((rendered, 0))
 }
 

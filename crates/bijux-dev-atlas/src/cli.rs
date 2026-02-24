@@ -38,6 +38,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigsCommand,
     },
+    Policies {
+        #[command(subcommand)]
+        command: PoliciesCommand,
+    },
     Workflows {
         #[command(subcommand)]
         command: WorkflowsCommand,
@@ -154,6 +158,26 @@ pub enum WorkflowsCommand {
         include_internal: bool,
         #[arg(long, default_value_t = false)]
         include_slow: bool,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum PoliciesCommand {
+    Print {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Json)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
     },
 }
 
