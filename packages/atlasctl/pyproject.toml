@@ -236,6 +236,22 @@ max_public_symbols_per_module = 30
 max_branch_keywords_per_file = 80
 
 [[tool.atlasctl.budgets.rules]]
+name = "checks_root_symbol_budget"
+path_glob = "packages/atlasctl/src/atlasctl/checks"
+enforce = true
+max_entries_per_dir = 15
+max_py_files_per_dir = 15
+max_modules_per_dir = 15
+max_loc_per_file = 600
+max_loc_per_dir = 2600
+max_shell_files_per_dir = 10
+max_total_loc_per_dir = 2600
+max_total_bytes_per_dir = 280000
+max_imports_per_file = 40
+max_public_symbols_per_module = 40
+max_branch_keywords_per_file = 80
+
+[[tool.atlasctl.budgets.rules]]
 name = "tests_domain_default"
 path_glob = "packages/atlasctl/tests/*"
 enforce = true
