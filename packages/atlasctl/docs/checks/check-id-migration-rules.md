@@ -6,7 +6,7 @@ Canonical check IDs use this format:
 
 Migration policy:
 
-1. Add/keep canonical ID in `packages/atlasctl/src/atlasctl/checks/REGISTRY.toml`.
+1. Add/keep canonical ID in python registry composition (`checks/domains/*.py` + `checks/registry.py`).
 2. Keep legacy dotted IDs temporarily via `legacy_id` metadata.
 3. Record non-derived renames in `configs/policy/check-id-migration.json`.
 4. Regenerate registry artifacts with `./bin/atlasctl gen checks-registry`.
