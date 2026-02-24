@@ -3,16 +3,16 @@ SHELL := /bin/sh
 .DEFAULT_GOAL := help
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
-include makefiles/env.mk
-include makefiles/build.mk
 include makefiles/_cargo.mk
-include makefiles/dev.mk
-include makefiles/ci.mk
-include makefiles/_docker.mk
-include makefiles/_policies.mk
 include makefiles/_configs.mk
 include makefiles/_docs.mk
+include makefiles/_docker.mk
 include makefiles/_ops.mk
+include makefiles/_policies.mk
+include makefiles/build.mk
+include makefiles/ci.mk
+include makefiles/dev.mk
+include makefiles/env.mk
 include makefiles/verification.mk
 
 CURATED_TARGETS := \
@@ -22,6 +22,8 @@ CURATED_TARGETS := \
 	build build-release build-ci build-meta dist dist-verify clean-build clean-dist build-doctor \
 	check check-gates check-list gates \
 	ci ci-fast ci-pr ci-nightly ci-docs \
+	lanes verify \
+	lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs \
 	policies \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
@@ -57,8 +59,8 @@ dev-atlas: ## Print canonical dev-atlas invocation and examples
 	@printf '%s\n' "  $(DEV_ATLAS) check list --format text"
 	@printf '%s\n' "  $(DEV_ATLAS) ops validate --profile kind --format json"
 
-doctor: ## Run Rust control-plane doctor suite
-	@$(MAKE) -s dev-doctor
+doctor: ## Run Rust control-plane doctor suite as JSON
+	@$(DEV_ATLAS) check doctor --format json
 
 check-gates: ## Run Rust control-plane CI-fast check suite
 	@$(DEV_ATLAS) check run --suite ci_fast --format text
@@ -72,9 +74,38 @@ check-list: ## List checks from the Rust control-plane registry
 clean: ## Clean scoped generated outputs via control-plane wrappers
 	@$(MAKE) -s ops-clean
 
+verify: ## Run repo verification orchestration via dev-atlas checks
+	@$(DEV_ATLAS) check run --suite ci --format json
+
+lanes: ## Print CI lane mapping to dev-atlas suites
+	@printf '%s\n' "ci-pr -> check run --suite ci_fast"; \
+	printf '%s\n' "ci-nightly -> check run --suite deep --include-internal --include-slow"; \
+	printf '%s\n' "ci-docs -> check run --domain docs"
+
+lint-makefiles: ## Lint make wrappers via dev-atlas make checks
+	@$(DEV_ATLAS) check run --domain make --format json
+
+lint-root: ## Lint root repo contracts via dev-atlas root checks
+	@$(DEV_ATLAS) check run --domain root --format json
+
+lint-policies: ## Lint control-plane policies via dev-atlas policies validate
+	@$(DEV_ATLAS) policies validate --format json
+
+lint-docker: ## Lint docker contracts via dev-atlas docker checks
+	@$(DEV_ATLAS) check run --domain docker --format json
+
+lint-ops: ## Lint ops contracts via dev-atlas ops checks
+	@$(DEV_ATLAS) check run --domain ops --format json
+
+lint-configs: ## Lint configs contracts via dev-atlas configs checks
+	@$(DEV_ATLAS) check run --domain configs --format json
+
+lint-docs: ## Lint docs contracts via dev-atlas docs checks
+	@$(DEV_ATLAS) check run --domain docs --format json
+
 make-gate-no-legacy-cli-refs: ## Fail if legacy Python control-plane token appears in makefiles
 	@legacy_cli_token='atlas''ctl'; ! rg -n "$$legacy_cli_token" makefiles -g'*.mk'
 
 make-gate-no-legacy-cli-shim: ## Fail if legacy root control-plane shim exists
 	@legacy_cli_path=bin/atlas''ctl; test ! -e "$$legacy_cli_path"
-.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates clean make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
+.PHONY: help list explain surface ci-local dev-atlas doctor check check-list gates clean verify lanes lint-makefiles lint-root lint-policies lint-docker lint-ops lint-configs lint-docs make-gate-no-legacy-cli-refs make-gate-no-legacy-cli-shim
