@@ -3,6 +3,7 @@
 SHELL := /bin/sh
 PYTHONPATH ?= packages/atlasctl/src
 ATLASCTL_ARTIFACT_ROOT ?= artifacts/atlasctl
+
 atlasctl-check: ## Run all atlasctl checks across all groups
 	@./bin/atlasctl check run --profile fast --durations 10 --quiet --show-skips
 

@@ -116,7 +116,10 @@ fn checks_ops_no_legacy_tooling_refs(ctx: &CheckContext<'_>) -> Result<Vec<Viola
         if !file.exists() {
             continue;
         }
-        let ext = file.extension().and_then(|v| v.to_str()).unwrap_or_default();
+        let ext = file
+            .extension()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
         if !OPS_TEXT_EXTENSIONS.contains(&ext) {
             continue;
         }
@@ -131,7 +134,10 @@ fn checks_ops_no_legacy_tooling_refs(ctx: &CheckContext<'_>) -> Result<Vec<Viola
             if content.contains(needle) {
                 violations.push(violation(
                     code,
-                    format!("forbidden legacy reference `{needle}` found in {}", rel.display()),
+                    format!(
+                        "forbidden legacy reference `{needle}` found in {}",
+                        rel.display()
+                    ),
                     "remove legacy tooling references from ops contracts",
                     Some(rel.as_path()),
                 ));
@@ -146,11 +152,15 @@ fn checks_ops_generated_readonly_markers(
 ) -> Result<Vec<Violation>, CheckError> {
     let policy_rel = Path::new("ops/inventory/generated-committed-mirror.json");
     let policy_path = ctx.repo_root.join(policy_rel);
-    let policy_text = fs::read_to_string(&policy_path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let policy_text =
+        fs::read_to_string(&policy_path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let policy_json: serde_json::Value =
         serde_json::from_str(&policy_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut allowlisted = BTreeSet::new();
-    if let Some(entries) = policy_json.get("allow_runtime_compat").and_then(|v| v.as_array()) {
+    if let Some(entries) = policy_json
+        .get("allow_runtime_compat")
+        .and_then(|v| v.as_array())
+    {
         for entry in entries {
             if let Some(path) = entry.as_str() {
                 allowlisted.insert(path.to_string());
@@ -212,7 +222,10 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
 
 fn checks_ops_manifest_integrity(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let manifests: [(&str, &[&str]); 3] = [
-        ("ops/inventory/surfaces.json", &["schema_version", "entrypoints"]),
+        (
+            "ops/inventory/surfaces.json",
+            &["schema_version", "entrypoints"],
+        ),
         ("ops/inventory/contracts.json", &["schema_version"]),
         ("ops/inventory/drills.json", &["schema_version"]),
     ];
@@ -256,8 +269,11 @@ fn checks_ops_manifest_integrity(ctx: &CheckContext<'_>) -> Result<Vec<Violation
 fn checks_ops_surface_inventory(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let index_rel = Path::new("ops/INDEX.md");
     let index = ctx.repo_root.join(index_rel);
-    let index_text = fs::read_to_string(&index).map_err(|err| CheckError::Failed(err.to_string()))?;
-    let required_entries = ["stack", "k8s", "observe", "load", "e2e", "datasets", "report"];
+    let index_text =
+        fs::read_to_string(&index).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let required_entries = [
+        "stack", "k8s", "observe", "load", "e2e", "datasets", "report",
+    ];
     let listed_dirs: BTreeSet<String> = index_text
         .lines()
         .filter_map(|line| line.split("`ops/").nth(1))
@@ -268,12 +284,12 @@ fn checks_ops_surface_inventory(ctx: &CheckContext<'_>) -> Result<Vec<Violation>
     let mut violations = Vec::new();
     for dir in required_entries {
         if !listed_dirs.contains(dir) {
-        violations.push(violation(
-            "OPS_INDEX_DIRECTORY_MISSING",
-            format!("ops/INDEX.md does not list ops directory `{dir}`"),
-            "regenerate ops index so directories are listed",
-            Some(index_rel),
-        ));
+            violations.push(violation(
+                "OPS_INDEX_DIRECTORY_MISSING",
+                format!("ops/INDEX.md does not list ops directory `{dir}`"),
+                "regenerate ops index so directories are listed",
+                Some(index_rel),
+            ));
         }
     }
     Ok(violations)
@@ -297,7 +313,10 @@ fn checks_ops_artifacts_not_tracked(ctx: &CheckContext<'_>) -> Result<Vec<Violat
             .unwrap_or(&tracked_like[0]);
         Ok(vec![violation(
             "OPS_ARTIFACTS_POLICY_VIOLATION",
-            format!("ops evidence directory contains committed file `{}`", first.display()),
+            format!(
+                "ops evidence directory contains committed file `{}`",
+                first.display()
+            ),
             "remove files under ops/_evidence and keep runtime output under artifacts/",
             Some(Path::new("ops/_evidence")),
         )])

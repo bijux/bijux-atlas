@@ -7,7 +7,7 @@ Generated from `ops/k8s/tests/manifest.json` and `ops/k8s/tests/suites.json`.
 - `full` groups=*
 - `graceful-degradation` groups=load,readiness,resilience
 - `resilience` groups=autoscaling,availability,pdb,resilience,rolling-restart
-- `smoke` groups=autoscaling,install,observability,readiness,sanity
+- `smoke` groups=autoscaling,install,observability,pdb,readiness,sanity
 
 ## Group -> Tests
 ### `admission-control`

@@ -1,7 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
-
-use assert_cmd::Command;
+use std::process::Command;
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -14,28 +13,27 @@ fn repo_root() -> PathBuf {
 
 #[test]
 fn doctor_smoke() {
-    Command::cargo_bin("bijux-dev-atlas")
-        .expect("bin")
+    let status = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .arg("doctor")
-        .assert()
-        .success();
+        .status()
+        .expect("doctor");
+    assert!(status.success());
 }
 
 #[test]
 fn run_smoke() {
-    Command::cargo_bin("bijux-dev-atlas")
-        .expect("bin")
+    let status = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["run", "--format", "text"])
-        .assert()
-        .success();
+        .status()
+        .expect("run");
+    assert!(status.success());
 }
 
 #[test]
 fn help_snapshot_stable() {
-    let output = Command::cargo_bin("bijux-dev-atlas")
-        .expect("bin")
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .arg("--help")
         .output()
