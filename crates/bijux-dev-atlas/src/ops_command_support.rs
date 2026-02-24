@@ -1,4 +1,5 @@
 use crate::*;
+use bijux_dev_atlas_model::OpsRunReport;
 
 pub(crate) fn normalize_tool_version_with_regex(raw: &str, pattern: &str) -> Option<String> {
     let re = Regex::new(pattern).ok()?;
@@ -106,6 +107,91 @@ pub(crate) fn emit_payload(
     Ok(rendered)
 }
 
+pub(crate) mod ops_exit {
+    pub const PASS: i32 = 0;
+    pub const FAIL: i32 = 1;
+    pub const USAGE: i32 = 2;
+    pub const INFRA: i32 = 3;
+    pub const TOOL_MISSING: i32 = 4;
+}
+
+pub(crate) fn build_ops_run_report(
+    command: &str,
+    common: &OpsCommonArgs,
+    run_id: &RunId,
+    repo_root: &Path,
+    ops_root: &Path,
+    suite: Option<String>,
+    status: &str,
+    exit_code: i32,
+    warnings: Vec<String>,
+    errors: Vec<String>,
+    rows: Vec<serde_json::Value>,
+) -> OpsRunReport {
+    let mut capabilities = std::collections::BTreeMap::new();
+    capabilities.insert(
+        "subprocess".to_string(),
+        if common.allow_subprocess {
+            "enabled: requested by flag".to_string()
+        } else {
+            "disabled: default deny".to_string()
+        },
+    );
+    capabilities.insert(
+        "fs_write".to_string(),
+        if common.allow_write {
+            "enabled: requested by flag".to_string()
+        } else {
+            "disabled: default deny".to_string()
+        },
+    );
+    let mut summary = std::collections::BTreeMap::new();
+    summary.insert("warnings".to_string(), warnings.len() as u64);
+    summary.insert("errors".to_string(), errors.len() as u64);
+    summary.insert("rows".to_string(), rows.len() as u64);
+    OpsRunReport {
+        schema_version: bijux_dev_atlas_model::schema_version(),
+        kind: "ops_run_report_v1".to_string(),
+        command: command.to_string(),
+        run_id: run_id.clone(),
+        repo_root: repo_root.display().to_string(),
+        ops_root: ops_root.display().to_string(),
+        profile: common.profile.clone(),
+        suite,
+        status: status.to_string(),
+        exit_code,
+        checks: Vec::new(),
+        warnings,
+        errors,
+        capabilities,
+        summary,
+        rows,
+    }
+}
+
+pub(crate) fn render_ops_human(report: &OpsRunReport) -> String {
+    let mut lines = vec![
+        format!("ops {} [{}]", report.command, report.status),
+        format!("run_id={}", report.run_id),
+        format!(
+            "errors={} warnings={}",
+            report.summary.get("errors").copied().unwrap_or(0),
+            report.summary.get("warnings").copied().unwrap_or(0)
+        ),
+    ];
+    let mut errs = report.errors.clone();
+    errs.sort();
+    for err in errs {
+        lines.push(format!("E {err}"));
+    }
+    let mut warns = report.warnings.clone();
+    warns.sort();
+    for warn in warns {
+        lines.push(format!("W {warn}"));
+    }
+    lines.join("\n")
+}
+
 pub(crate) fn sha256_hex(content: &str) -> String {
     let mut hasher = Sha256::new();
     hasher.update(content.as_bytes());
@@ -131,7 +217,12 @@ pub(crate) fn run_ops_checks(
         repo_root: repo_root.clone(),
         domain: Some(DomainId::Ops),
         capabilities: Capabilities::deny_all(),
-        artifacts_root: Some(repo_root.join("artifacts")),
+        artifacts_root: Some(
+            common
+                .artifacts_root
+                .clone()
+                .unwrap_or_else(|| repo_root.join("artifacts")),
+        ),
         run_id: Some(run_id_or_default(common.run_id.clone())?),
         command: Some(format!("bijux dev atlas ops {suite}")),
     };
@@ -140,7 +231,10 @@ pub(crate) fn run_ops_checks(
         &RealFs,
         &request,
         &selectors,
-        &RunOptions::default(),
+        &RunOptions {
+            fail_fast: common.fail_fast,
+            max_failures: common.max_failures,
+        },
     )?;
     let rendered = match common.format {
         FormatArg::Text => render_text_with_durations(&report, 10),

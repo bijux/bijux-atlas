@@ -3,8 +3,9 @@ pub(crate) use crate::ops_command_support::{
     resolve_profile, run_id_or_default, sha256_hex,
 };
 use crate::ops_command_support::{
-    load_toolchain_inventory_for_ops, ops_pins_check_payload, render_ops_validation_output,
-    run_ops_checks, tool_definitions_sorted, verify_tools_snapshot,
+    build_ops_run_report, load_toolchain_inventory_for_ops, ops_exit, ops_pins_check_payload,
+    render_ops_human, render_ops_validation_output, run_ops_checks, tool_definitions_sorted,
+    verify_tools_snapshot,
 };
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
@@ -77,7 +78,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "summary": {"total": 8, "errors": 0, "warnings": 0}
             });
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            Ok((rendered, 0))
+            Ok((rendered, ops_exit::PASS))
         }
         OpsCommand::Explain { action, common } => {
             let action_lc = action.trim().to_ascii_lowercase();
@@ -92,6 +93,9 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "load-run" => serde_json::json!({"action":"load-run","purpose":"reserved for k6 orchestration under ops load","status":"not_implemented"}),
                 "e2e-run" => serde_json::json!({"action":"e2e-run","purpose":"reserved for scenario orchestration","status":"not_implemented"}),
                 "obs-drill-run" => serde_json::json!({"action":"obs-drill-run","purpose":"reserved for observability drill orchestration","status":"not_implemented"}),
+                "obs-verify" => serde_json::json!({"action":"obs-verify","purpose":"verify observability contracts","effects_required":[]}),
+                "suite-list" => serde_json::json!({"kind":"suite","action":"list","suites":["e2e","k8s","load","obs"]}),
+                value if value.starts_with("suite-run:") => serde_json::json!({"kind":"suite","action":"run","suite":value.trim_start_matches("suite-run:")}),
                 "cleanup" => serde_json::json!({"action":"cleanup","purpose":"remove scoped artifacts and local ops resources","effects_required":["subprocess (optional)"]}),
                 _ => {
                     return Err(format!(
@@ -107,7 +111,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "summary": {"total": 1, "errors": 0, "warnings": 0}
             });
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            Ok((rendered, 0))
+            Ok((rendered, ops_exit::PASS))
         }
         OpsCommand::Doctor(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -176,6 +180,12 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
                 .map_err(|e| e.to_stable_message())?;
+            let profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+            let surfaces: SurfacesInventory = OpsFs::new(repo_root.clone(), ops_root.clone())
+                .read_ops_json("inventory/surfaces.json")
+                .map_err(|e| e.to_stable_message())?;
+            let toolchain =
+                load_toolchain_inventory_for_ops(&ops_root).map_err(|e| e.to_stable_message())?;
             let inventory_errors =
                 match bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(
                     &ops_root,
@@ -186,10 +196,42 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let mut summary = ops_inventory_summary(&repo_root).unwrap_or_else(
                 |err| serde_json::json!({"error": format!("OPS_MANIFEST_ERROR: {err}")}),
             );
+            let toolchain_images = summary
+                .get("toolchain_images")
+                .cloned()
+                .unwrap_or(serde_json::json!(0));
             if let Some(map) = summary.as_object_mut() {
                 map.insert(
                     "inventory_errors".to_string(),
                     serde_json::json!(inventory_errors.clone()),
+                );
+                map.insert("profiles".to_string(), serde_json::json!(profiles));
+                map.insert(
+                    "components".to_string(),
+                    toolchain_images,
+                );
+                map.insert(
+                    "charts".to_string(),
+                    serde_json::json!(surfaces.actions.iter().filter(|a| a.id.contains("render")).count()),
+                );
+                map.insert(
+                    "tools".to_string(),
+                    serde_json::json!(toolchain.tools.keys().cloned().collect::<Vec<_>>()),
+                );
+                map.insert("suites".to_string(), serde_json::json!(["load", "e2e", "k8s", "obs"]));
+                map.insert(
+                    "scenarios".to_string(),
+                    serde_json::json!(["load.run", "e2e.run", "obs.drill.run", "obs.verify"]),
+                );
+                map.insert(
+                    "schemas".to_string(),
+                    serde_json::json!([
+                        "ops/stack/profiles.json",
+                        "ops/stack/version-manifest.json",
+                        "ops/inventory/toolchain.json",
+                        "ops/inventory/surfaces.json",
+                        "ops/inventory/contracts.json"
+                    ]),
                 );
             }
             let status = if inventory_errors.is_empty() {
@@ -205,7 +247,14 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "summary": {"total": 1, "errors": inventory_errors.len(), "warnings": 0}
             });
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            Ok((rendered, if inventory_errors.is_empty() { 0 } else { 1 }))
+            Ok((
+                rendered,
+                if inventory_errors.is_empty() {
+                    ops_exit::PASS
+                } else {
+                    ops_exit::FAIL
+                },
+            ))
         }
         OpsCommand::Docs(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -277,7 +326,14 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 "summary": {"total": 1, "errors": errors, "warnings": 0}
             });
             let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
-            Ok((rendered, if status == "ok" { 0 } else { 1 }))
+            Ok((
+                rendered,
+                if status == "ok" {
+                    ops_exit::PASS
+                } else {
+                    ops_exit::FAIL
+                },
+            ))
         }
         OpsCommand::Report(common) => {
             if !common.allow_write {
@@ -358,6 +414,69 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             let rendered = emit_payload(common.format, common.out.clone(), &envelope)?;
             Ok((rendered, 0))
         }
+        OpsCommand::Suite { command } => match command {
+            OpsSuiteCommand::List(common) => {
+                let mut suites = vec!["e2e", "k8s", "load", "obs"];
+                suites.sort();
+                let rows = suites
+                    .iter()
+                    .map(|suite| serde_json::json!({"suite": suite}))
+                    .collect::<Vec<_>>();
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "text": suites.join("\n"),
+                    "rows": rows,
+                    "summary": {"total": suites.len(), "errors": 0, "warnings": 0}
+                });
+                let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+                Ok((rendered, ops_exit::PASS))
+            }
+            OpsSuiteCommand::Run { suite, common } => {
+                let suite_norm = suite.trim().to_ascii_lowercase();
+                let mapped = match suite_norm.as_str() {
+                    "load" | "e2e" | "k8s" | "obs" => "ops_all",
+                    _ => {
+                        return Err(format!(
+                            "unknown suite `{suite_norm}` (expected load|e2e|k8s|obs)"
+                        ))
+                    }
+                };
+                let (checks_rendered, checks_code) = run_ops_checks(&common, mapped, true, true)?;
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
+                    .map_err(|e| e.to_stable_message())?;
+                let run_id = run_id_or_default(common.run_id.clone())?;
+                let status = if checks_code == 0 { "ok" } else { "failed" };
+                let report = build_ops_run_report(
+                    "ops suite run",
+                    &common,
+                    &run_id,
+                    &repo_root,
+                    &ops_root,
+                    Some(suite_norm.clone()),
+                    status,
+                    if checks_code == 0 {
+                        ops_exit::PASS
+                    } else {
+                        ops_exit::FAIL
+                    },
+                    Vec::new(),
+                    if checks_code == 0 {
+                        Vec::new()
+                    } else {
+                        vec!["suite checks failed".to_string()]
+                    },
+                    vec![serde_json::json!({"checks_output": checks_rendered})],
+                );
+                let rendered = match common.format {
+                    FormatArg::Text => render_ops_human(&report),
+                    FormatArg::Json => serde_json::to_string_pretty(&report).map_err(|e| e.to_string())?,
+                    FormatArg::Jsonl => serde_json::to_string(&report).map_err(|e| e.to_string())?,
+                };
+                write_output_if_requested(common.out.clone(), &rendered)?;
+                Ok((rendered, if checks_code == 0 { ops_exit::PASS } else { ops_exit::FAIL }))
+            }
+        },
         OpsCommand::ExplainProfile { name, common } => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
             let ops_root = resolve_ops_root(&repo_root, common.ops_root.clone())
@@ -738,12 +857,28 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         }
         Err(err) => {
             eprintln!("bijux-dev-atlas ops failed: {err}");
-            1
+            if err.contains("unknown ops action")
+                || err.contains("unknown suite")
+                || err.contains("requires --")
+            {
+                ops_exit::USAGE
+            } else if err.contains("missing required ops tools")
+                || err.contains("required external tools are missing")
+            {
+                ops_exit::TOOL_MISSING
+            } else if err.contains("OPS_MANIFEST_ERROR")
+                || err.contains("OPS_SCHEMA_ERROR")
+                || err.contains("cannot resolve ops root")
+            {
+                ops_exit::INFRA
+            } else {
+                ops_exit::FAIL
+            }
         }
     }
 }
 use crate::cli::{
     OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,
-    OpsStackCommand,
+    OpsStackCommand, OpsSuiteCommand,
 };
 use crate::*;

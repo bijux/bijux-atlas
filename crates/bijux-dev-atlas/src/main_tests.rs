@@ -126,6 +126,8 @@ mod tests {
             vec!["bijux-dev-atlas", "ops", "e2e", "run"],
             vec!["bijux-dev-atlas", "ops", "obs", "drill", "run"],
             vec!["bijux-dev-atlas", "ops", "obs", "verify"],
+            vec!["bijux-dev-atlas", "ops", "suite", "list"],
+            vec!["bijux-dev-atlas", "ops", "suite", "run", "k8s"],
             vec![
                 "bijux-dev-atlas",
                 "ops",
