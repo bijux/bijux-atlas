@@ -409,10 +409,12 @@ pub struct OpsResetArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum DocsCommand {
+    Check(DocsCommonArgs),
     Doctor(DocsCommonArgs),
     Validate(DocsCommonArgs),
     Build(DocsCommonArgs),
     Serve(DocsServeArgs),
+    Clean(DocsCommonArgs),
     Lint(DocsCommonArgs),
     Links(DocsCommonArgs),
     Inventory(DocsCommonArgs),
@@ -462,9 +464,16 @@ pub struct DocsGrepArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum ConfigsCommand {
+    Print(ConfigsCommonArgs),
     Doctor(ConfigsCommonArgs),
     Validate(ConfigsCommonArgs),
     Lint(ConfigsCommonArgs),
+    Fmt {
+        #[arg(long = "check", default_value_t = false)]
+        check: bool,
+        #[command(flatten)]
+        common: ConfigsCommonArgs,
+    },
     Inventory(ConfigsCommonArgs),
     Compile(ConfigsCommonArgs),
     Diff(ConfigsCommonArgs),

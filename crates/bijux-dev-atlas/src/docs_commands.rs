@@ -495,6 +495,36 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
         match command {
+            DocsCommand::Check(common) => {
+                if !common.allow_subprocess {
+                    return Err("docs check requires --allow-subprocess".to_string());
+                }
+                let ctx = docs_context(&common)?;
+                let validate = docs_validate_payload(&ctx, &common)?;
+                let links = docs_links_payload(&ctx, &common)?;
+                let (build_payload, build_code) =
+                    docs_build_or_serve_subprocess(&["build".to_string()], &common, "docs build")?;
+                let errors = validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)
+                    + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
+                    + usize::from(build_code != 0);
+                let payload = serde_json::json!({
+                    "schema_version":1,
+                    "run_id":ctx.run_id.as_str(),
+                    "text": if errors == 0 { "docs check passed" } else { "docs check failed" },
+                    "rows":[
+                        {"name":"validate","errors": validate["errors"].as_array().map(|v| v.len()).unwrap_or(0)},
+                        {"name":"links","errors": links["errors"].as_array().map(|v| v.len()).unwrap_or(0)},
+                        {"name":"build","exit_code": build_code}
+                    ],
+                    "checks": {"validate": validate, "links": links, "build": build_payload},
+                    "counts":{"errors": errors},
+                    "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "options":{"strict": common.strict, "include_drafts": common.include_drafts},
+                    "duration_ms": started.elapsed().as_millis() as u64,
+                    "error_code": if errors == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) }
+                });
+                Ok((emit_payload(common.format, common.out, &payload)?, if errors == 0 { 0 } else { 1 }))
+            }
             DocsCommand::Validate(common) => {
                 let ctx = docs_context(&common)?;
                 let mut payload = docs_validate_payload(&ctx, &common)?;
@@ -570,6 +600,27 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     emit_payload(args.common.format, args.common.out, &payload)?,
                     code,
                 ))
+            }
+            DocsCommand::Clean(common) => {
+                if !common.allow_write {
+                    return Err("docs clean requires --allow-write".to_string());
+                }
+                let ctx = docs_context(&common)?;
+                let target = ctx.artifacts_root.join("atlas-dev").join("docs");
+                if target.exists() {
+                    fs::remove_dir_all(&target)
+                        .map_err(|e| format!("failed to remove {}: {e}", target.display()))?;
+                }
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": ctx.run_id.as_str(),
+                    "text": format!("docs clean removed {}", target.display()),
+                    "rows": [{"path": target.display().to_string()}],
+                    "capabilities":{"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "options":{"strict": common.strict, "include_drafts": common.include_drafts},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
             DocsCommand::Doctor(common) => {
                 let ctx = docs_context(&common)?;
