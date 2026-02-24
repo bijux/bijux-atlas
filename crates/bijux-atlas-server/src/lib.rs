@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod adapters;
 mod cache;
 mod config;
 mod dataset_shards;
@@ -7,6 +8,7 @@ mod effect_adapters;
 mod http;
 mod middleware;
 mod routing_hash;
+mod services;
 mod store;
 mod store_resilience;
 mod telemetry;

@@ -15,27 +15,8 @@ impl Drop for RequestQueueGuard {
     }
 }
 
-pub(crate) fn api_error_response(status: StatusCode, err: ApiError) -> Response {
-    let body = Json(json!({"error": err}));
-    let mut resp = (status, body).into_response();
-    if matches!(
-        status,
-        StatusCode::TOO_MANY_REQUESTS | StatusCode::SERVICE_UNAVAILABLE
-    ) {
-        resp.headers_mut()
-            .insert("retry-after", HeaderValue::from_static("3"));
-    }
-    resp
-}
-
-pub(crate) fn error_json(code: ApiErrorCode, message: &str, details: Value) -> ApiError {
-    ApiError {
-        code,
-        message: message.to_string(),
-        details,
-        request_id: "req-unknown".to_string(),
-    }
-}
+pub(crate) use crate::http::response_contract::api_error_response;
+pub(crate) use crate::http::response_contract::api_error as error_json;
 
 pub(crate) fn json_envelope(
     dataset: Option<Value>,
@@ -291,19 +272,7 @@ pub(crate) fn make_request_id(state: &AppState) -> String {
 }
 
 pub(crate) fn propagated_request_id(headers: &HeaderMap, state: &AppState) -> String {
-    if let Some(raw) = headers.get("x-request-id").and_then(|v| v.to_str().ok()) {
-        let trimmed = raw.trim();
-        if !trimmed.is_empty() {
-            return trimmed.to_string();
-        }
-    }
-    if let Some(raw) = headers.get("traceparent").and_then(|v| v.to_str().ok()) {
-        let trimmed = raw.trim();
-        if !trimmed.is_empty() {
-            return format!("trace-{trimmed}");
-        }
-    }
-    make_request_id(state)
+    crate::http::request_tracing::extract_request_trace(headers, state).request_id
 }
 
 pub(crate) fn normalized_forwarded_for(headers: &HeaderMap) -> Option<String> {
