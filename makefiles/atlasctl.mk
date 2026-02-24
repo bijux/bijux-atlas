@@ -4,10 +4,10 @@ SHELL := /bin/sh
 PYTHONPATH ?= packages/atlasctl/src
 ATLASCTL_ARTIFACT_ROOT ?= artifacts/atlasctl
 atlasctl-check: ## Run all atlasctl checks across all groups
-	@./bin/atlasctl check run --profile fast --durations 10
+	@./bin/atlasctl check run --profile fast --durations 10 --quiet --show-skips
 
 atlasctl-check-all: ## Run all atlasctl checks including slow checks
-	@./bin/atlasctl check run --profile all --all --timeout-ms 30000 --ignore-speed-regressions --durations 20
+	@./bin/atlasctl check run --profile all --all --timeout-ms 30000 --ignore-speed-regressions --durations 20 --quiet --show-skips
 
 atlasctl-check-contracts: ## Run atlasctl contracts checks
 	@./bin/atlasctl check run --group contracts --durations 10
