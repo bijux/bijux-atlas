@@ -57,7 +57,7 @@ jobs:
           cargo run -p bijux-dev-atlas -- ops validate --format json >/dev/null
       - name: Enforce ops make/workflow migration guards
         run: |
-          ! rg -n "atlasctl" makefiles/ops.mk
+          ! rg -n "atlasctl" makefiles/ops.mk makefiles/CONTRACT.md ops/CONTRACT.md
           ! rg -n "atlasctl" .github/workflows/atlas-dev-rust.yml
           ! rg -n "scripts/areas|bash ops/|ops/_lib" makefiles/ops.mk .github/workflows/atlas-dev-rust.yml
       - name: Verify ops make wrappers in CI mode
