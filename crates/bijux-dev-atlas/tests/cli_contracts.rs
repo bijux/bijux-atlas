@@ -537,6 +537,9 @@ fn check_doctor_supports_json_format() {
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert!(payload.get("status").and_then(|v| v.as_str()).is_some());
     assert!(payload.get("ops_doctor").and_then(|v| v.as_object()).is_some());
+    assert!(payload.get("docs_doctor").and_then(|v| v.as_object()).is_some());
+    assert!(payload.get("configs_doctor").and_then(|v| v.as_object()).is_some());
+    assert!(payload.get("control_plane_doctor").and_then(|v| v.as_object()).is_some());
 }
 
 #[test]

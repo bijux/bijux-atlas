@@ -574,12 +574,44 @@ pub(crate) fn run_check_doctor(
     let docs_validate = docs_validate_payload(&docs_ctx, &docs_common)?;
     let docs_links = docs_links_payload(&docs_ctx, &docs_common)?;
     let docs_lint = docs_lint_payload(&docs_ctx, &docs_common)?;
+    let configs_common = ConfigsCommonArgs {
+        repo_root: Some(root.clone()),
+        artifacts_root: Some(root.join("artifacts")),
+        run_id: Some("doctor_configs".to_string()),
+        format,
+        out: None,
+        allow_write: false,
+        allow_subprocess: false,
+        allow_network: false,
+        strict: false,
+    };
+    let configs_ctx = configs_context(&configs_common)?;
+    let configs_validate = configs_validate_payload(&configs_ctx, &configs_common)?;
+    let configs_lint = configs_lint_payload(&configs_ctx, &configs_common)?;
+    let configs_diff = configs_diff_payload(&configs_ctx, &configs_common)?;
     let check_exit = exit_code_for_report(&report);
     let inventory_error_count = inventory_errors.len();
     let ops_doctor_status =
         if inventory_errors.is_empty() && check_exit == 0 { "ok" } else { "failed" };
+    let docs_error_count = docs_validate
+        .get("errors")
+        .and_then(|v| v.as_array())
+        .map_or(0, Vec::len)
+        + docs_links.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len)
+        + docs_lint.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len);
+    let configs_error_count = configs_validate
+        .get("errors")
+        .and_then(|v| v.as_array())
+        .map_or(0, Vec::len)
+        + configs_lint.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len)
+        + configs_diff.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len);
     let status =
-        if registry_report.errors.is_empty() && inventory_errors.is_empty() && check_exit == 0 {
+        if registry_report.errors.is_empty()
+            && inventory_errors.is_empty()
+            && check_exit == 0
+            && docs_error_count == 0
+            && configs_error_count == 0
+        {
             "ok"
         } else {
             "failed"
@@ -597,7 +629,20 @@ pub(crate) fn run_check_doctor(
         "docs_doctor": {
             "validate_errors": docs_validate.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
             "links_errors": docs_links.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
-            "lint_errors": docs_lint.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len)
+            "lint_errors": docs_lint.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
+            "status": if docs_error_count == 0 { "ok" } else { "failed" }
+        },
+        "configs_doctor": {
+            "validate_errors": configs_validate.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
+            "lint_errors": configs_lint.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
+            "diff_errors": configs_diff.get("errors").and_then(|v| v.as_array()).map_or(0, Vec::len),
+            "status": if configs_error_count == 0 { "ok" } else { "failed" }
+        },
+        "control_plane_doctor": {
+            "status": status,
+            "ops": {"status": ops_doctor_status, "errors": inventory_error_count + usize::from(check_exit != 0)},
+            "docs": {"status": if docs_error_count == 0 { "ok" } else { "failed" }, "errors": docs_error_count},
+            "configs": {"status": if configs_error_count == 0 { "ok" } else { "failed" }, "errors": configs_error_count}
         },
         "check_report": report,
     });
