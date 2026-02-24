@@ -1,4 +1,4 @@
-# bijux-atlas-dev
+# bijux-dev-atlas
 
 Rust control-plane tool for Atlas development checks and workflows.
 
@@ -12,5 +12,5 @@ Rust control-plane tool for Atlas development checks and workflows.
 - No shell-script check execution as SSOT.
 
 ## Plugin dispatch
-- Binary: `bijux-atlas-dev`
-- Umbrella route: `bijux dev atlas <args>` should execute `bijux-atlas-dev <args>`.
+- Binary: `bijux-dev-atlas`
+- Umbrella route: `bijux dev atlas <args>` should execute `bijux-dev-atlas <args>`.

@@ -1,9 +1,9 @@
 use std::fs;
 use std::path::Path;
 
-use bijux_atlas_dev_adapters::{Capabilities, DeniedProcessRunner, RealFs};
-use bijux_atlas_dev_core::{run_checks, RunOptions, RunRequest, Selectors};
-use bijux_atlas_dev_model::SuiteId;
+use bijux_dev_atlas_adapters::{Capabilities, DeniedProcessRunner, RealFs};
+use bijux_dev_atlas_core::{run_checks, RunOptions, RunRequest, Selectors};
+use bijux_dev_atlas_model::SuiteId;
 
 fn write(path: &Path, content: &str) {
     if let Some(parent) = path.parent() {

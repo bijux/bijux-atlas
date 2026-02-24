@@ -1,8 +1,8 @@
 use std::fs;
 use std::path::PathBuf;
 
-use bijux_atlas_dev_core::{expand_suite, list_output, load_registry, select_checks, Selectors};
-use bijux_atlas_dev_model::SuiteId;
+use bijux_dev_atlas_core::{expand_suite, list_output, load_registry, select_checks, Selectors};
+use bijux_dev_atlas_model::SuiteId;
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -26,7 +26,7 @@ fn suite_expansion_matches_golden() {
         .join("\n")
         + "\n";
     let golden = fs::read_to_string(
-        root.join("crates/bijux-atlas-dev-core/tests/goldens/suite_ops_fast.txt"),
+        root.join("crates/bijux-dev-atlas-core/tests/goldens/suite_ops_fast.txt"),
     )
     .expect("golden");
     assert_eq!(rendered, golden);
@@ -39,7 +39,7 @@ fn default_list_output_matches_golden() {
     let selected = select_checks(&registry, &Selectors::default()).expect("select");
     let rendered = list_output(&selected) + "\n";
     let golden =
-        fs::read_to_string(root.join("crates/bijux-atlas-dev-core/tests/goldens/list_default.txt"))
+        fs::read_to_string(root.join("crates/bijux-dev-atlas-core/tests/goldens/list_default.txt"))
             .expect("golden");
     assert_eq!(rendered, golden);
 }

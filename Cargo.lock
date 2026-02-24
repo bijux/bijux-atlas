@@ -290,42 +290,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bijux-atlas-dev"
-version = "0.1.0"
-dependencies = [
- "assert_cmd",
- "bijux-atlas-dev-adapters",
- "bijux-atlas-dev-core",
- "bijux-atlas-dev-model",
- "clap",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-atlas-dev-adapters"
-version = "0.1.0"
-
-[[package]]
-name = "bijux-atlas-dev-core"
-version = "0.1.0"
-dependencies = [
- "bijux-atlas-dev-adapters",
- "bijux-atlas-dev-model",
- "serde",
- "serde_json",
- "tempfile",
- "toml",
-]
-
-[[package]]
-name = "bijux-atlas-dev-model"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "bijux-atlas-ingest"
 version = "0.1.0"
 dependencies = [
@@ -425,6 +389,42 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tiny_http",
+]
+
+[[package]]
+name = "bijux-dev-atlas"
+version = "0.1.0"
+dependencies = [
+ "assert_cmd",
+ "bijux-dev-atlas-adapters",
+ "bijux-dev-atlas-core",
+ "bijux-dev-atlas-model",
+ "clap",
+ "serde_json",
+]
+
+[[package]]
+name = "bijux-dev-atlas-adapters"
+version = "0.1.0"
+
+[[package]]
+name = "bijux-dev-atlas-core"
+version = "0.1.0"
+dependencies = [
+ "bijux-dev-atlas-adapters",
+ "bijux-dev-atlas-model",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "toml",
+]
+
+[[package]]
+name = "bijux-dev-atlas-model"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

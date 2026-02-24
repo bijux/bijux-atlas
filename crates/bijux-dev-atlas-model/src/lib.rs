@@ -253,7 +253,7 @@ pub struct RunReport {
 pub fn report_json_schema() -> Value {
     json!({
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "title": "bijux-atlas-dev run report",
+        "title": "bijux-dev-atlas run report",
         "type": "object",
         "required": ["run_id", "repo_root", "results", "summary", "timings_ms"],
         "properties": {

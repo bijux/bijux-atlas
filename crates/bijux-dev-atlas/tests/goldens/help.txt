@@ -1,6 +1,6 @@
 Bijux Atlas development control-plane
 
-Usage: bijux-atlas-dev [OPTIONS] <COMMAND>
+Usage: bijux-dev-atlas [OPTIONS] <COMMAND>
 
 Commands:
   list     

@@ -1,8 +1,8 @@
 # Atlas Check Migration Map
 
-This map tracks the migration from `atlasctl` checks to `bijux-atlas-dev`.
+This map tracks the migration from `atlasctl` checks to `bijux-dev-atlas`.
 
-| atlasctl check | bijux-atlas-dev check | status |
+| atlasctl check | bijux-dev-atlas check | status |
 | --- | --- | --- |
 | `check_ops_surface_manifest` | `ops_surface_manifest` | migrated |
 | `check_ops_*` contract family | `ops_tree_contract` | started |

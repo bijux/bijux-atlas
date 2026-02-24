@@ -1,3 +1,3 @@
-# bijux-atlas-dev-core
+# bijux-dev-atlas-core
 
 Pure execution core for atlas dev checks.

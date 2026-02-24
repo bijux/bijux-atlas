@@ -14,7 +14,7 @@ fn repo_root() -> PathBuf {
 
 #[test]
 fn doctor_smoke() {
-    Command::cargo_bin("bijux-atlas-dev")
+    Command::cargo_bin("bijux-dev-atlas")
         .expect("bin")
         .current_dir(repo_root())
         .arg("doctor")
@@ -24,7 +24,7 @@ fn doctor_smoke() {
 
 #[test]
 fn run_smoke() {
-    Command::cargo_bin("bijux-atlas-dev")
+    Command::cargo_bin("bijux-dev-atlas")
         .expect("bin")
         .current_dir(repo_root())
         .args(["run", "--format", "text"])
@@ -34,7 +34,7 @@ fn run_smoke() {
 
 #[test]
 fn help_snapshot_stable() {
-    let output = Command::cargo_bin("bijux-atlas-dev")
+    let output = Command::cargo_bin("bijux-dev-atlas")
         .expect("bin")
         .current_dir(repo_root())
         .arg("--help")
@@ -43,7 +43,7 @@ fn help_snapshot_stable() {
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8");
 
-    let golden_path = repo_root().join("crates/bijux-atlas-dev/tests/goldens/help.txt");
+    let golden_path = repo_root().join("crates/bijux-dev-atlas/tests/goldens/help.txt");
     let golden = fs::read_to_string(&golden_path).expect("golden");
     assert_eq!(text, golden);
 }

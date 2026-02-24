@@ -1,9 +1,9 @@
 [workspace]
 members = [
-  "crates/bijux-atlas-dev",
-  "crates/bijux-atlas-dev-core",
-  "crates/bijux-atlas-dev-model",
-  "crates/bijux-atlas-dev-adapters",
+  "crates/bijux-dev-atlas",
+  "crates/bijux-dev-atlas-core",
+  "crates/bijux-dev-atlas-model",
+  "crates/bijux-dev-atlas-adapters",
   "crates/bijux-atlas-core",
   "crates/bijux-atlas-model",
   "crates/bijux-atlas-ingest",
@@ -46,7 +46,7 @@ bijux-atlas-api = { version = "=0.1.0", path = "crates/bijux-atlas-api" }
 bijux-atlas-cli = { version = "=0.1.0", path = "crates/bijux-atlas-cli" }
 bijux-atlas-server = { version = "=0.1.0", path = "crates/bijux-atlas-server" }
 bijux-atlas-policies = { version = "=0.1.0", path = "crates/bijux-atlas-policies" }
-bijux-atlas-dev = { version = "=0.1.0", path = "crates/bijux-atlas-dev" }
-bijux-atlas-dev-core = { version = "=0.1.0", path = "crates/bijux-atlas-dev-core" }
-bijux-atlas-dev-model = { version = "=0.1.0", path = "crates/bijux-atlas-dev-model" }
-bijux-atlas-dev-adapters = { version = "=0.1.0", path = "crates/bijux-atlas-dev-adapters" }
+bijux-dev-atlas = { version = "=0.1.0", path = "crates/bijux-dev-atlas" }
+bijux-dev-atlas-core = { version = "=0.1.0", path = "crates/bijux-dev-atlas-core" }
+bijux-dev-atlas-model = { version = "=0.1.0", path = "crates/bijux-dev-atlas-model" }
+bijux-dev-atlas-adapters = { version = "=0.1.0", path = "crates/bijux-dev-atlas-adapters" }

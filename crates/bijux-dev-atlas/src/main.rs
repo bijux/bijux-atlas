@@ -2,17 +2,17 @@
 
 use std::path::{Path, PathBuf};
 
-use bijux_atlas_dev_adapters::{Capabilities, RealFs, RealProcessRunner};
-use bijux_atlas_dev_core::{
+use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
+use bijux_dev_atlas_core::{
     exit_code_for_report, explain_output, list_output, load_registry, registry_doctor, render_json,
     render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
     Selectors,
 };
-use bijux_atlas_dev_model::{CheckId, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas_model::{CheckId, DomainId, RunId, SuiteId, Tag};
 use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser, Debug)]
-#[command(name = "bijux-atlas-dev", version)]
+#[command(name = "bijux-dev-atlas", version)]
 #[command(about = "Bijux Atlas development control-plane")]
 struct Cli {
     #[arg(long, default_value_t = false)]
@@ -190,7 +190,7 @@ fn main() {
                     0
                 }
                 Err(err) => {
-                    eprintln!("bijux-atlas-dev list failed: {err}");
+                    eprintln!("bijux-dev-atlas list failed: {err}");
                     1
                 }
             }
@@ -208,7 +208,7 @@ fn main() {
                 0
             }
             Err(err) => {
-                eprintln!("bijux-atlas-dev explain failed: {err}");
+                eprintln!("bijux-dev-atlas explain failed: {err}");
                 1
             }
         },
@@ -216,10 +216,10 @@ fn main() {
             Ok(root) => {
                 let report = registry_doctor(&root);
                 if report.errors.is_empty() {
-                    println!("bijux-atlas-dev doctor: ok");
+                    println!("bijux-dev-atlas doctor: ok");
                     0
                 } else {
-                    eprintln!("bijux-atlas-dev doctor failed:");
+                    eprintln!("bijux-dev-atlas doctor failed:");
                     for err in report.errors {
                         eprintln!("{err}");
                     }
@@ -227,7 +227,7 @@ fn main() {
                 }
             }
             Err(err) => {
-                eprintln!("bijux-atlas-dev doctor failed: {err}");
+                eprintln!("bijux-dev-atlas doctor failed: {err}");
                 1
             }
         },
@@ -289,7 +289,7 @@ fn main() {
                     code
                 }
                 Err(err) => {
-                    eprintln!("bijux-atlas-dev run failed: {err}");
+                    eprintln!("bijux-dev-atlas run failed: {err}");
                     1
                 }
             }
@@ -297,7 +297,7 @@ fn main() {
     };
 
     if cli.verbose {
-        eprintln!("bijux-atlas-dev exit={exit}");
+        eprintln!("bijux-dev-atlas exit={exit}");
     }
     std::process::exit(exit);
 }

@@ -665,4 +665,4 @@ ci-workflow-contract: ## Validate CI and nightly workflows use canonical make en
 	@./bin/atlasctl run ./packages/atlasctl/src/atlasctl/checks/layout/workflows/check_ci_entrypoints.py
 
 dev-atlas: ## Run Rust atlas development control-plane (usage: make dev-atlas ARGS='check --domain ops')
-	@cargo run -p bijux-atlas-dev -- $(ARGS)
+	@cargo run -p bijux-dev-atlas -- $(ARGS)

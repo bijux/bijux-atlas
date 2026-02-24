@@ -1,5 +1,5 @@
 [package]
-name = "bijux-atlas-dev-model"
+name = "bijux-dev-atlas-model"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
