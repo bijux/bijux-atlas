@@ -4,9 +4,8 @@ SHELL := /bin/sh
 JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 
 include makefiles/env.mk
-include makefiles/dev-atlas.mk
-include makefiles/_cargo.mk
 include makefiles/build.mk
+include makefiles/_cargo.mk
 include makefiles/dev.mk
 include makefiles/ci.mk
 include makefiles/_docker.mk
