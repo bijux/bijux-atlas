@@ -10,7 +10,7 @@
     },
     "tool": {
       "type": "string",
-      "const": "atlasctl"
+      "const": "bijux-dev-atlas"
     },
     "status": {
       "type": "string",

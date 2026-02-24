@@ -16,7 +16,7 @@
   "additionalProperties": true,
   "properties": {
     "schema_version": {"type": "integer", "minimum": 1},
-    "tool": {"type": "string", "const": "atlasctl"},
+    "tool": {"type": "string", "const": "bijux-dev-atlas"},
     "status": {"type": "string", "enum": ["ok", "error"]},
     "run_id": {"type": "string", "minLength": 1},
     "lane_filter": {"type": "array", "items": {"type": "string"}},
