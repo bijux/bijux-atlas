@@ -56,6 +56,7 @@ CHECKS: tuple[CheckDef, ...] = (
         500,
         run_forbidden_paths,
         fix_hint="Replace legacy path references with canonical paths.",
+        effects=("subprocess",),
     ),
     CheckDef(
         "repo.root_determinism",
