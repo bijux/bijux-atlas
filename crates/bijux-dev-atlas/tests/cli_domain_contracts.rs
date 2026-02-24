@@ -115,6 +115,23 @@ fn ops_k8s_test_requires_allow_subprocess() {
 }
 
 #[test]
+fn ops_load_run_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "load", "run", "--format", "json"])
+        .output()
+        .expect("ops load run");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .expect("rows");
+    assert_eq!(rows[0].get("action").and_then(|v| v.as_str()), Some("load-run"));
+}
+
+#[test]
 fn ops_docs_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
