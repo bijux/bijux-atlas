@@ -1,0 +1,10 @@
+catalog
+completion
+config
+dataset
+diff
+gc
+ingest
+openapi
+policy
+version

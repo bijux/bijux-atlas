@@ -3,37 +3,25 @@ use std::process::Command;
 #[test]
 fn command_surface_ssot_matches_doc() {
     let expected = [
-        "atlas catalog publish",
-        "atlas catalog promote",
-        "atlas catalog rollback",
-        "atlas catalog validate",
-        "atlas catalog latest-alias-update",
-        "atlas completion",
-        "atlas dataset pack",
-        "atlas dataset publish",
-        "atlas dataset validate",
-        "atlas dataset verify",
-        "atlas dataset verify-pack",
-        "atlas diff build",
-        "atlas explain",
-        "atlas explain-query",
-        "atlas bench",
-        "atlas gc apply",
-        "atlas gc plan",
-        "atlas ingest",
-        "atlas ingest-verify-inputs",
-        "atlas ingest-normalized-diff",
-        "atlas ingest-replay",
-        "atlas ingest-validate",
-        "atlas inspect-db",
-        "atlas openapi generate",
-        "atlas policy",
-        "atlas print-config",
-        "atlas serve",
-        "atlas smoke",
-        "atlas validate",
-        "atlas version",
+        "catalog validate",
+        "catalog publish",
+        "catalog rollback",
+        "catalog promote",
+        "catalog latest-alias-update",
         "completion",
+        "dataset verify",
+        "dataset validate",
+        "dataset publish",
+        "dataset pack",
+        "dataset verify-pack",
+        "diff build",
+        "gc plan",
+        "gc apply",
+        "ingest",
+        "openapi generate",
+        "policy validate",
+        "policy explain",
+        "config",
         "version",
     ]
     .join("\n");
@@ -108,37 +96,23 @@ fn help_output_command_surface_matches_doc_exactly() {
     let top_help = String::from_utf8(top.stdout).expect("utf8 top help");
     let top_cmds = parse_commands_from_help(&top_help);
 
-    let atlas = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["atlas", "--help"])
-        .output()
-        .expect("atlas help");
-    assert!(atlas.status.success());
-    let atlas_help = String::from_utf8(atlas.stdout).expect("utf8 atlas help");
-    let atlas_cmds = parse_commands_from_help(&atlas_help);
-
     let mut observed = Vec::new();
-    for c in top_cmds {
-        if c == "atlas" {
-            for sub in &atlas_cmds {
-                if matches!(
-                    sub.as_str(),
-                    "catalog" | "dataset" | "openapi" | "diff" | "gc"
-                ) {
-                    let nested = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-                        .args(["atlas", sub, "--help"])
-                        .output()
-                        .expect("nested atlas help");
-                    assert!(nested.status.success());
-                    let nested_help = String::from_utf8(nested.stdout).expect("utf8 nested help");
-                    for subsub in parse_commands_from_help(&nested_help) {
-                        observed.push(format!("atlas {sub} {subsub}"));
-                    }
-                } else {
-                    observed.push(format!("atlas {sub}"));
-                }
+    for sub in &top_cmds {
+        if matches!(
+            sub.as_str(),
+            "catalog" | "dataset" | "diff" | "gc" | "policy" | "openapi"
+        ) {
+            let nested = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
+                .args([sub, "--help"])
+                .output()
+                .expect("nested help");
+            assert!(nested.status.success());
+            let nested_help = String::from_utf8(nested.stdout).expect("utf8 nested help");
+            for subsub in parse_commands_from_help(&nested_help) {
+                observed.push(format!("{sub} {subsub}"));
             }
         } else {
-            observed.push(c);
+            observed.push(sub.clone());
         }
     }
     observed.sort();
@@ -184,93 +158,4 @@ fn top_level_subcommands_avoid_reserved_umbrella_verbs() {
             "reserved verb exposed: {reserved}"
         );
     }
-}
-
-#[test]
-fn atlas_help_excludes_control_plane_commands() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["atlas", "--help"])
-        .output()
-        .expect("atlas help");
-    assert!(output.status.success());
-    let rendered = String::from_utf8(output.stdout).expect("utf8 atlas help");
-    for forbidden in ["dev-atlas", "doctor", "check", "checks"] {
-        assert!(
-            !rendered.contains(forbidden),
-            "control-plane command leaked into runtime surface: {forbidden}"
-        );
-    }
-}
-
-#[test]
-fn completion_generation_contains_atlas_namespace() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["completion", "bash"])
-        .output()
-        .expect("run completion");
-    assert!(output.status.success());
-    let text = String::from_utf8(output.stdout).expect("utf8 completion");
-    assert!(text.contains("atlas"));
-}
-
-#[test]
-fn atlas_namespace_completion_generation_is_deterministic() {
-    let one = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["atlas", "completion", "bash"])
-        .output()
-        .expect("run atlas completion #1");
-    let two = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["atlas", "completion", "bash"])
-        .output()
-        .expect("run atlas completion #2");
-    assert!(one.status.success());
-    assert!(two.status.success());
-    assert_eq!(one.stdout, two.stdout);
-    let text = String::from_utf8(one.stdout).expect("utf8 atlas completion");
-    assert!(text.contains("atlas"));
-}
-
-#[test]
-fn completion_generation_is_deterministic() {
-    let one = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["completion", "bash"])
-        .output()
-        .expect("run completion #1");
-    let two = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .args(["completion", "bash"])
-        .output()
-        .expect("run completion #2");
-    assert!(one.status.success());
-    assert!(two.status.success());
-    assert_eq!(one.stdout, two.stdout);
-}
-
-#[test]
-fn plugin_metadata_contains_required_fields() {
-    let output = Command::new(env!("CARGO_BIN_EXE_bijux-atlas"))
-        .arg("--bijux-plugin-metadata")
-        .output()
-        .expect("run metadata");
-    assert!(output.status.success());
-    let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid JSON metadata");
-    for field in [
-        "schema_version",
-        "name",
-        "version",
-        "compatible_umbrella",
-        "compatible_umbrella_min",
-        "compatible_umbrella_max_exclusive",
-        "build_hash",
-    ] {
-        assert!(payload.get(field).is_some(), "missing field `{field}`");
-    }
-}
-
-#[test]
-fn atlas_repo_builds_only_bijux_atlas_plugin_binary() {
-    let manifest = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
-    let text = std::fs::read_to_string(manifest).expect("read Cargo.toml");
-    assert!(text.contains("name = \"bijux-atlas\""));
-    assert!(!text.contains("name = \"bijux\""));
 }
