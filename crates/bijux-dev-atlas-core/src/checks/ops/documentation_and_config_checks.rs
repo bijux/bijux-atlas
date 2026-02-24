@@ -436,6 +436,126 @@ pub(super) fn check_ops_control_plane_doc_contract(
     Ok(violations)
 }
 
+pub(super) fn check_control_plane_naming_contract_docs(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("crates/bijux-dev-atlas/docs/CONTRACT.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "Runtime product CLI namespace: `bijux atlas <args>`",
+        "Installed umbrella dispatch: `bijux dev atlas <args>`",
+        "Naming contract is frozen",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "CONTROL_PLANE_NAMING_CONTRACT_MISSING",
+                format!("dev control-plane contract is missing `{required}`"),
+                "document the frozen runtime vs control-plane naming contract in crates/bijux-dev-atlas/docs/CONTRACT.md",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_atlasctl_deletion_cutoff_rules(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("docs/development/tooling/atlasctl-deletion-plan.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "Cutoff date:",
+        "docs/tombstones/atlasctl/",
+        "No new `atlasctl` references",
+        "Any PR introducing a new `atlasctl` reference",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "ATLASCTL_DELETION_POLICY_INCOMPLETE",
+                format!("atlasctl deletion plan is missing `{required}`"),
+                "lock atlasctl cutoff date and tombstone-only rules in the deletion plan",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_atlasctl_tombstone_directory_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("docs/tombstones/atlasctl/README.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "only allowed location",
+        "atlasctl",
+        "archival notes only",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "ATLASCTL_TOMBSTONE_DIR_INVALID",
+                format!("atlasctl tombstone README is missing `{required}`"),
+                "keep docs/tombstones/atlasctl/README.md as the explicit tombstone policy marker",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_final_dev_atlas_crate_set_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let required_dirs = [
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas-core",
+        "crates/bijux-dev-atlas-policies",
+    ];
+    let mut violations = Vec::new();
+    for path in required_dirs {
+        let rel = Path::new(path);
+        if !ctx.repo_root.join(rel).is_dir() {
+            violations.push(violation(
+                "DEV_ATLAS_CRATE_SET_MISSING",
+                format!("required control-plane crate directory is missing: {}", rel.display()),
+                "keep the final dev-atlas crate set present and explicitly named",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_scripting_contract_rust_control_plane_lock(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("docs/architecture/scripting.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+    for required in [
+        "Repository automation entrypoints are Rust-native and routed through `bijux dev atlas ...`.",
+        "Runtime product CLI commands are routed through `bijux atlas ...`.",
+        "Python tooling documents are historical-only",
+    ] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "SCRIPTING_CONTRACT_NOT_LOCKED",
+                format!("scripting architecture contract is missing `{required}`"),
+                "update docs/architecture/scripting.md to reflect the Rust control-plane lock and python tombstone-only policy",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
 pub(super) fn check_docs_ops_command_list_matches_snapshot(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

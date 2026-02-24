@@ -125,8 +125,19 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_configs_command_list_matches_snapshot" => {
             Some(check_docs_configs_command_list_matches_snapshot)
         }
+        "checks_docs_control_plane_naming_contract" => Some(check_control_plane_naming_contract_docs),
+        "checks_docs_atlasctl_deletion_cutoff_rules" => Some(check_atlasctl_deletion_cutoff_rules),
+        "checks_docs_atlasctl_tombstone_directory_contract" => {
+            Some(check_atlasctl_tombstone_directory_contract)
+        }
         "checks_ops_ssot_manifests_schema_versions" => {
             Some(check_ops_ssot_manifests_schema_versions)
+        }
+        "checks_crates_dev_atlas_final_crate_set_contract" => {
+            Some(check_final_dev_atlas_crate_set_contract)
+        }
+        "checks_docs_scripting_contract_rust_control_plane_lock" => {
+            Some(check_scripting_contract_rust_control_plane_lock)
         }
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev" => {
             Some(check_crates_bijux_atlas_reserved_verbs_exclude_dev)
@@ -205,7 +216,12 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_ops_control_plane_doc_contract",
         "checks_docs_ops_command_list_matches_snapshot",
         "checks_docs_configs_command_list_matches_snapshot",
+        "checks_docs_control_plane_naming_contract",
+        "checks_docs_atlasctl_deletion_cutoff_rules",
+        "checks_docs_atlasctl_tombstone_directory_contract",
         "checks_ops_ssot_manifests_schema_versions",
+        "checks_crates_dev_atlas_final_crate_set_contract",
+        "checks_docs_scripting_contract_rust_control_plane_lock",
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev",
         "checks_crates_bijux_dev_atlas_not_umbrella_binary",
         "checks_crates_command_namespace_ownership_unique",
