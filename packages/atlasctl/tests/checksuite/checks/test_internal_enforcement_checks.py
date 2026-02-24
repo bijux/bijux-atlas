@@ -6,9 +6,15 @@ from atlasctl.checks.domains.internal import (
     check_all_checks_declare_effects,
     check_all_checks_have_owner,
     check_all_checks_have_tags,
+    check_checks_file_count_budget,
+    check_checks_tree_depth_budget,
+    check_domains_directory_shape,
     check_docs_checks_no_ops_imports,
     check_legacy_check_directories_absent,
     check_no_checks_outside_domains_tools,
+    check_no_relative_imports_across_domains,
+    check_no_tests_fixtures_imports,
+    check_unused_imports_in_checks,
     check_internal_no_checks_logic_in_commands,
     check_internal_no_command_logic_in_checks,
     check_internal_registry_ssot_only,
@@ -133,4 +139,53 @@ def test_docs_checks_do_not_import_ops_modules(tmp_path: Path) -> None:
     code, errors = check_docs_checks_no_ops_imports(tmp_path)
     assert code == 1
     assert any("docs checks must not import ops modules directly" in line for line in errors)
-    check_docs_checks_no_ops_imports,
+
+
+def test_checks_file_count_budget_flags_large_tree(tmp_path: Path) -> None:
+    root = tmp_path / "packages/atlasctl/src/atlasctl/checks/tools"
+    for idx in range(45):
+        _write(root / f"f_{idx}.py", "X = 1\n")
+    code, errors = check_checks_file_count_budget(tmp_path)
+    assert code == 1
+    assert any("file-count budget exceeded" in line for line in errors)
+
+
+def test_checks_depth_budget_flags_deep_paths(tmp_path: Path) -> None:
+    _write(
+        tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/a/b/c.py",
+        "X = 1\n",
+    )
+    code, errors = check_checks_tree_depth_budget(tmp_path)
+    assert code == 1
+    assert any("depth exceeded" in line for line in errors)
+
+
+def test_domains_directory_shape_flags_nested_directory(tmp_path: Path) -> None:
+    _write(tmp_path / "packages/atlasctl/src/atlasctl/checks/domains/repo.py", "X = 1\n")
+    (tmp_path / "packages/atlasctl/src/atlasctl/checks/domains/nested").mkdir(parents=True, exist_ok=True)
+    code, errors = check_domains_directory_shape(tmp_path)
+    assert code == 1
+    assert any("domains root must contain only python modules" in line for line in errors)
+
+
+def test_no_relative_imports_across_domains(tmp_path: Path) -> None:
+    _write(
+        tmp_path / "packages/atlasctl/src/atlasctl/checks/domains/repo.py",
+        "from .internal import CHECKS\n",
+    )
+    code, errors = check_no_relative_imports_across_domains(tmp_path)
+    assert code == 1
+    assert any("cross-domain relative imports are forbidden" in line for line in errors)
+
+
+def test_no_tests_fixtures_imports_and_unused_imports(tmp_path: Path) -> None:
+    _write(
+        tmp_path / "packages/atlasctl/src/atlasctl/checks/tools/example.py",
+        "from atlasctl.tests.fixtures import sample\nimport os\n\nX = 1\n",
+    )
+    code1, errors1 = check_no_tests_fixtures_imports(tmp_path)
+    code2, errors2 = check_unused_imports_in_checks(tmp_path)
+    assert code1 == 1
+    assert code2 == 1
+    assert errors1
+    assert any("unused import" in line for line in errors2)

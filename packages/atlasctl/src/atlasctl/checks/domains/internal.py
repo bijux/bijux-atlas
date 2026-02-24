@@ -681,6 +681,140 @@ def _check_python_files(repo_root: Path) -> list[Path]:
     return [path for path in sorted(root.rglob("*.py")) if "__pycache__" not in path.parts]
 
 
+def check_checks_file_count_budget(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    budget = 40
+    total = sum(1 for path in root.rglob("*") if path.is_file() and "__pycache__" not in path.parts)
+    if total > budget:
+        return 1, [f"checks file-count budget exceeded: {total} > {budget}"]
+    return 0, []
+
+
+def check_checks_tree_depth_budget(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    budget = 2
+    errors: list[str] = []
+    for path in sorted(root.rglob("*")):
+        if "__pycache__" in path.parts:
+            continue
+        depth = len(path.relative_to(root).parts)
+        if depth > budget:
+            errors.append(f"checks tree depth exceeded: {path.relative_to(repo_root).as_posix()} depth={depth} > {budget}")
+            if len(errors) >= 20:
+                break
+    return (1, errors) if errors else (0, [])
+
+
+def check_domains_directory_shape(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks/domains"
+    if not root.exists():
+        return 1, ["missing checks domains root: packages/atlasctl/src/atlasctl/checks/domains"]
+    errors: list[str] = []
+    for path in sorted(root.iterdir(), key=lambda row: row.name):
+        if path.name == "__pycache__":
+            continue
+        if path.is_dir():
+            errors.append(f"domains root must contain only python modules: {path.relative_to(repo_root).as_posix()}")
+            continue
+        if path.is_file() and path.suffix == ".py":
+            continue
+        errors.append(f"domains root contains unsupported entry: {path.relative_to(repo_root).as_posix()}")
+    return (1, errors) if errors else (0, [])
+
+
+def check_no_relative_imports_across_domains(repo_root: Path) -> tuple[int, list[str]]:
+    domains_root = repo_root / "packages/atlasctl/src/atlasctl/checks/domains"
+    if not domains_root.exists():
+        return 1, ["missing checks domains root: packages/atlasctl/src/atlasctl/checks/domains"]
+    errors: list[str] = []
+    for path in sorted(domains_root.glob("*.py")):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ImportFrom):
+                continue
+            if int(getattr(node, "level", 0)) <= 0:
+                continue
+            errors.append(f"{rel}:{node.lineno}: cross-domain relative imports are forbidden; use absolute atlasctl.checks imports")
+    return (1, errors) if errors else (0, [])
+
+
+def check_no_ops_runtime_asset_imports(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    forbidden = ("atlasctl.commands.ops.runtime_modules", "atlasctl.commands.ops.runtime", "atlasctl.ops.runtime")
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                modules = [str(node.module or "")]
+            else:
+                continue
+            for module in modules:
+                if any(module == tok or module.startswith(f"{tok}.") for tok in forbidden):
+                    errors.append(f"{rel}:{getattr(node, 'lineno', 0)}: forbidden import from ops runtime assets `{module}`")
+    return (1, errors) if errors else (0, [])
+
+
+def check_no_tests_fixtures_imports(repo_root: Path) -> tuple[int, list[str]]:
+    root = repo_root / "packages/atlasctl/src/atlasctl/checks"
+    if not root.exists():
+        return 1, ["missing checks root: packages/atlasctl/src/atlasctl/checks"]
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if ".tests" in text or ".fixtures" in text:
+            errors.append(f"{rel}: imports from tests/fixtures are forbidden in checks package")
+    return (1, errors) if errors else (0, [])
+
+
+def check_unused_imports_in_checks(repo_root: Path) -> tuple[int, list[str]]:
+    errors: list[str] = []
+    for path in _check_python_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except SyntaxError:
+            continue
+        imported: dict[str, int] = {}
+        used: set[str] = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    name = alias.asname or alias.name.split(".", 1)[0]
+                    imported[name] = node.lineno
+            elif isinstance(node, ast.ImportFrom):
+                for alias in node.names:
+                    if alias.name == "*":
+                        continue
+                    name = alias.asname or alias.name
+                    imported[name] = node.lineno
+            elif isinstance(node, ast.Name):
+                used.add(node.id)
+        for name, lineno in sorted(imported.items(), key=lambda item: item[1]):
+            if name.startswith("_"):
+                continue
+            if name not in used:
+                errors.append(f"{rel}:{lineno}: unused import `{name}` in checks package")
+    return (1, errors) if errors else (0, [])
+
+
 def check_checks_no_print_calls(repo_root: Path) -> tuple[int, list[str]]:
     errors: list[str] = []
     for path in _check_python_files(repo_root):
@@ -1960,6 +2094,83 @@ CHECKS = (
         check_docs_checks_no_ops_imports,
         category=CheckCategory.POLICY,
         fix_hint="Keep docs checks independent from ops modules and rely on documented contracts/inputs.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.file_count_budget",
+        "checks",
+        "enforce checks package file-count budget",
+        500,
+        check_checks_file_count_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Reduce checks package file count to budget by consolidating modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.depth_budget",
+        "checks",
+        "enforce checks package depth budget",
+        500,
+        check_checks_tree_depth_budget,
+        category=CheckCategory.POLICY,
+        fix_hint="Flatten checks package directories to depth budget.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.domains_shape",
+        "checks",
+        "enforce flat domains directory shape",
+        500,
+        check_domains_directory_shape,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks/domains as flat python modules only.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_cross_domain_relative_imports",
+        "checks",
+        "forbid cross-domain relative imports in checks domains",
+        500,
+        check_no_relative_imports_across_domains,
+        category=CheckCategory.POLICY,
+        fix_hint="Use absolute imports rooted at atlasctl.checks.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_ops_runtime_asset_imports",
+        "checks",
+        "forbid checks package imports from ops runtime asset modules",
+        500,
+        check_no_ops_runtime_asset_imports,
+        category=CheckCategory.POLICY,
+        fix_hint="Keep checks package independent from ops runtime asset modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_tests_fixtures_imports",
+        "checks",
+        "forbid checks package imports from tests/fixtures paths",
+        500,
+        check_no_tests_fixtures_imports,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove tests/fixtures imports from checks package modules.",
+        owners=("platform",),
+        tags=("checks", "required"),
+    ),
+    CheckDef(
+        "checks.no_unused_imports",
+        "checks",
+        "forbid unused imports in checks package modules",
+        700,
+        check_unused_imports_in_checks,
+        category=CheckCategory.POLICY,
+        fix_hint="Remove unused imports from checks package modules.",
         owners=("platform",),
         tags=("checks", "required"),
     ),
