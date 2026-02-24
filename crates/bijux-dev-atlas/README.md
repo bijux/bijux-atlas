@@ -6,6 +6,7 @@ Rust control-plane tool for Atlas development checks and workflows.
 - Replace atlasctl check/gate surfaces incrementally.
 - Keep one runner and one registry contract for checks.
 - Keep effect boundaries explicit through adapters.
+- Own `ops` control-plane behavior through `bijux dev atlas ...` routing.
 
 ## Non-goals
 - No direct dependency on `packages/atlasctl` runtime.
@@ -14,6 +15,11 @@ Rust control-plane tool for Atlas development checks and workflows.
 ## Plugin dispatch
 - Binary: `bijux-dev-atlas`
 - Umbrella route: `bijux dev atlas <args>` should execute `bijux-dev-atlas <args>`.
+
+## Ops ownership contract
+- `ops/` is SSOT data: manifests, schemas, docs, and inventories.
+- Runtime behavior for ops workflows belongs to `bijux-dev-atlas`.
+- `makefiles/ops.mk` must delegate to `bijux dev atlas ...`, not atlasctl surfaces.
 
 ## Output contract
 - `list`, `explain`, `doctor`, and `run` support `--format text|json`.
