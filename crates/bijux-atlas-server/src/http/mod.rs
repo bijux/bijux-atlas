@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub(crate) mod diff;
 pub(crate) mod effects_adapters;
 pub(crate) mod genes;

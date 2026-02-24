@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::gff3::Gff3Record;
 use crate::{IngestError, IngestOptions};
 use bijux_atlas_core::canonical;

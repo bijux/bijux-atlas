@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_adapters::sorted_non_empty_lines;
 use criterion::{criterion_group, criterion_main, Criterion};
 

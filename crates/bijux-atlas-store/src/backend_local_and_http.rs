@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::catalog::validate_catalog_strict;
 use crate::manifest::{verify_expected_sha256, ManifestLock};
 use crate::paths::{

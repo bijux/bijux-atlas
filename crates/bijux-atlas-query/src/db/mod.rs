@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::cursor::{CursorPayload, OrderMode};
 use crate::filters::{
     compile_field_projection, escape_like_prefix, normalize_name_lookup, GeneFields,

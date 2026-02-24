@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #![deny(clippy::redundant_clone)]
 
 use crate::http::handlers::{

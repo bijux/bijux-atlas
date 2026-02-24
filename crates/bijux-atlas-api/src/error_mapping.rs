@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::{ApiError, ApiErrorCode};
 
 pub const API_ERROR_SCHEMA_REF: &str = "#/components/schemas/ApiError";

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use super::*;
 pub(super) fn dispatch_profiles(command: OpsCommand, debug: bool) -> Result<(String, i32), String> {
     let _ = debug;

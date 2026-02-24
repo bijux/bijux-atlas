@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,

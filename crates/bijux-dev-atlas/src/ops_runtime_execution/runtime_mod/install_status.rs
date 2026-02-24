@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub(crate) fn run_ops_install(args: &cli::OpsInstallArgs) -> Result<(String, i32), String> {
     let common = &args.common;
     let repo_root = resolve_repo_root(common.repo_root.clone())?;

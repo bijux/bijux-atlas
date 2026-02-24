@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 
 use bijux_atlas_core::sha256_hex;

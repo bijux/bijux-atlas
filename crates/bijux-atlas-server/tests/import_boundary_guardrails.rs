@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #[test]
 fn http_layer_does_not_import_runtime_effect_internals() {
     let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/http");

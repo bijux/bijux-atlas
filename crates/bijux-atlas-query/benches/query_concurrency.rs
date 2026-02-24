@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_query::{query_genes, GeneFields, GeneFilter, GeneQueryRequest, QueryLimits};
 use criterion::{criterion_group, criterion_main, Criterion};
 use rusqlite::{Connection, OpenFlags};

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_core::ops_inventory::load_ops_inventory_cached;
 use bijux_dev_atlas_core::{
     run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors,

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub(crate) fn run_ops_k8s_plan(common: &OpsCommonArgs) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let ops_root =

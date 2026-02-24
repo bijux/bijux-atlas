@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_model::RunReport;
 use std::fs;
 use std::path::PathBuf;

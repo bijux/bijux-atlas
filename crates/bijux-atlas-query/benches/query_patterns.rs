@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_query::{
     query_genes, query_genes_fanout, query_transcripts, GeneFields, GeneFilter, GeneQueryRequest,
     QueryLimits, RegionFilter, TranscriptFilter, TranscriptQueryRequest,

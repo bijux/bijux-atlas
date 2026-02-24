@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 pub mod generated;
 pub(crate) mod metrics_endpoint;
 pub(crate) mod rate_limiter;

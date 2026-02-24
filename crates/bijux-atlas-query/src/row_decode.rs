@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RawGeneRow {
     pub gene_id: String,

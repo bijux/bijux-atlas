@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::dataset::{DatasetId, ValidationError};
 use crate::gene::SeqId;
 use crate::serde_helpers;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_query::{decode_cursor, encode_cursor, CursorErrorCode, CursorPayload, OrderMode};
 
 #[test]

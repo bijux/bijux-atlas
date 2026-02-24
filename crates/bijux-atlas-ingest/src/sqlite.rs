@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::extract::{ExonRecord, GeneRecord, TranscriptRecord};
 use crate::fai::ContigStats;
 use crate::IngestError;

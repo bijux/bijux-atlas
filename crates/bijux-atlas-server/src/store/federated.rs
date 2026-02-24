@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::{CacheError, CatalogFetch, DatasetStoreBackend, RegistrySourceHealth};
 use async_trait::async_trait;
 use bijux_atlas_core::sha256_hex;

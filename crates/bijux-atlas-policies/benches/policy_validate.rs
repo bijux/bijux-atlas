@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_policies::{
     validate_policy_config, CacheBudget, ConcurrencyBulkheads, DocumentedDefault,
     EndpointClassBudget, PolicyConfig, PolicyMode, PolicyModeProfile, PolicyModes,

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::cli::{BuildCleanArgs, BuildCommand, BuildCommonArgs, FormatArg};
 use crate::*;
 use sha2::{Digest, Sha256};

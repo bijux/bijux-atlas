@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::{sha256_hex, OutputMode};
 use bijux_atlas_core::canonical;
 use bijux_atlas_model::{

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_atlas_api::openapi::{openapi_v1_spec, OPENAPI_V1_PINNED_SHA256};
 use bijux_atlas_core::canonical;
 use serde_json::Value;

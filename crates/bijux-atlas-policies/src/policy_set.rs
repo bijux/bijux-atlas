@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::evaluation::{evaluate_policy_set, PolicySeverity};
 use crate::schema::{PolicyConfig, PolicyMode, PolicyModeProfile, PolicySchema, PolicySet};
 use crate::validate::{

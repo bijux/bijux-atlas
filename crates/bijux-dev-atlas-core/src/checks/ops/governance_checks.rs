@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use super::*;
 
 pub(super) fn checks_ops_no_atlasctl_invocations(

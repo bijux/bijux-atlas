@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::*;
 use bijux_atlas_api::params::{IncludeField, SortKey};
 use serde_json::json;

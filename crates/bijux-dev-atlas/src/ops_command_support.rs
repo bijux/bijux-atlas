@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #[path = "ops_command_support_mod/manifests.rs"]
 mod manifests;
 #[path = "ops_command_support_mod/reports.rs"]

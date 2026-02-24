@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 #[test]
 fn cursor_generation_is_concurrency_stable() {
     let conn = setup_db();

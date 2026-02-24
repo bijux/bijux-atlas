@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use bijux_dev_atlas_model::{
     schema_version, ArtifactPath, CheckId, CheckResult, CheckStatus, EvidenceRef, RunId, RunReport,
     RunSummary, Severity, Violation, ViolationId,

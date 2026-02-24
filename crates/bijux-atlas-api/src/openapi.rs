@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 use serde_json::{json, Map, Value};
 
 pub const OPENAPI_V1_PINNED_SHA256: &str =
