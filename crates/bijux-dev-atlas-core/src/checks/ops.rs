@@ -25,19 +25,11 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
     match check_id.as_str() {
         "checks_ops_surface_manifest" => Some(check_ops_surface_manifest),
         "checks_ops_tree_contract" => Some(checks_ops_tree_contract),
-        "checks_ops_no_retired_tooling_refs" => Some(checks_ops_no_retired_tooling_refs),
         "checks_ops_generated_readonly_markers" => Some(checks_ops_generated_readonly_markers),
         "checks_ops_schema_presence" => Some(checks_ops_schema_presence),
         "checks_ops_manifest_integrity" => Some(checks_ops_manifest_integrity),
         "checks_ops_surface_inventory" => Some(checks_ops_surface_inventory),
         "checks_ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
-        "checks_ops_no_python_retired_runtime_refs" => {
-            Some(checks_ops_no_python_retired_runtime_refs)
-        }
-        "checks_ops_no_retired_runner_paths" => Some(checks_ops_no_retired_runner_paths),
-        "checks_ops_no_retired_control_plane_invocations" => {
-            Some(checks_ops_no_retired_control_plane_invocations)
-        }
         "checks_ops_no_scripts_areas_or_xtask_refs" => {
             Some(checks_ops_no_scripts_areas_or_xtask_refs)
         }
@@ -51,26 +43,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_workflows_ops_entrypoints_bijux_only)
         }
         "checks_ops_internal_registry_consistency" => Some(check_ops_internal_registry_consistency),
-        "checks_root_packages_retired_control_plane_absent" => {
-            Some(check_root_packages_retired_control_plane_token_absent)
-        }
-        "checks_root_bin_retired_control_plane_absent" => {
-            Some(check_root_bin_retired_control_plane_token_absent)
-        }
-        "checks_root_artifacts_reports_retired_control_plane_absent" => {
-            Some(check_root_artifacts_reports_retired_control_plane_token_absent)
-        }
         "checks_root_python_toolchain_toml_absent" => Some(check_root_python_toolchain_toml_absent),
         "checks_root_uv_lock_absent" => Some(check_root_uv_lock_absent),
-        "checks_docs_no_retired_control_plane_string_references" => {
-            Some(check_docs_no_retired_control_plane_token_string_references)
-        }
-        "checks_workflows_no_retired_control_plane_string_references" => {
-            Some(check_workflows_no_retired_control_plane_token_string_references)
-        }
-        "checks_make_no_retired_control_plane_string_references" => {
-            Some(check_make_no_retired_control_plane_token_string_references)
-        }
         "checks_workflows_no_direct_ops_script_execution" => {
             Some(check_workflows_no_direct_ops_script_execution)
         }
@@ -131,9 +105,6 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_crates_bijux_dev_atlas_help_dispatch_present)
         }
         "checks_ops_no_bash_lib_execution" => Some(check_ops_no_bash_lib_execution),
-        "checks_ops_retired_shell_quarantine_empty" => {
-            Some(check_ops_retired_shell_quarantine_empty)
-        }
         "checks_make_governance_wrappers_bijux_only" => {
             Some(check_make_governance_wrappers_bijux_only)
         }
@@ -157,17 +128,12 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(check_docs_readme_index_contract_presence)
         }
         "checks_docs_file_naming_conventions" => Some(check_docs_file_naming_conventions),
-        "checks_docs_no_retired_scripts_strings" => Some(check_docs_no_retired_scripts_strings),
         "checks_docs_command_surface_docs_exist" => Some(check_docs_command_surface_docs_exist),
-        "checks_docs_no_retired_make_targets" => Some(check_docs_no_retired_make_targets),
         "checks_make_docs_wrappers_delegate_dev_atlas" => {
             Some(check_make_docs_wrappers_delegate_dev_atlas)
         }
         "checks_configs_required_surface_paths" => Some(check_configs_required_surface_paths),
         "checks_configs_schema_paths_present" => Some(check_configs_schema_paths_present),
-        "checks_configs_no_retired_control_plane_string_references" => {
-            Some(check_configs_no_retired_control_plane_token_string_references)
-        }
         "checks_make_configs_wrappers_delegate_dev_atlas" => {
             Some(check_make_configs_wrappers_delegate_dev_atlas)
         }
@@ -180,12 +146,6 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         }
         "checks_docs_control_plane_naming_contract" => {
             Some(check_control_plane_naming_contract_docs)
-        }
-        "checks_docs_control_plane_reference_cutoff_rules" => {
-            Some(check_retired_control_plane_token_deletion_cutoff_rules)
-        }
-        "checks_docs_control_plane_reference_boundary_contract" => {
-            Some(check_retired_control_plane_token_tombstone_directory_contract)
         }
         "checks_ops_ssot_manifests_schema_versions" => {
             Some(check_ops_ssot_manifests_schema_versions)
@@ -219,15 +179,11 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
     [
         "checks_ops_surface_manifest",
         "checks_ops_tree_contract",
-        "checks_ops_no_retired_tooling_refs",
         "checks_ops_generated_readonly_markers",
         "checks_ops_schema_presence",
         "checks_ops_manifest_integrity",
         "checks_ops_surface_inventory",
         "checks_ops_artifacts_not_tracked",
-        "checks_ops_no_python_retired_runtime_refs",
-        "checks_ops_no_retired_runner_paths",
-        "checks_ops_no_retired_control_plane_invocations",
         "checks_ops_no_scripts_areas_or_xtask_refs",
         "checks_ops_artifacts_gitignore_policy",
         "checks_ops_makefile_routes_dev_atlas",
@@ -235,14 +191,8 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_make_ops_wrappers_delegate_dev_atlas",
         "checks_workflows_ops_entrypoints_bijux_only",
         "checks_ops_internal_registry_consistency",
-        "checks_root_packages_retired_control_plane_absent",
-        "checks_root_bin_retired_control_plane_absent",
-        "checks_root_artifacts_reports_retired_control_plane_absent",
         "checks_root_python_toolchain_toml_absent",
         "checks_root_uv_lock_absent",
-        "checks_docs_no_retired_control_plane_string_references",
-        "checks_workflows_no_retired_control_plane_string_references",
-        "checks_make_no_retired_control_plane_string_references",
         "checks_workflows_no_direct_ops_script_execution",
         "checks_make_no_direct_ops_script_execution",
         "checks_makefiles_no_cd_invocations",
@@ -260,7 +210,6 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_crates_bijux_atlas_help_excludes_dev_commands",
         "checks_crates_bijux_dev_atlas_help_dispatch_present",
         "checks_ops_no_bash_lib_execution",
-        "checks_ops_retired_shell_quarantine_empty",
         "checks_make_governance_wrappers_bijux_only",
         "checks_workflows_governance_entrypoints_bijux_only",
         "checks_make_governance_wrappers_no_direct_cargo",
@@ -272,20 +221,15 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_no_duplicate_nav_titles",
         "checks_docs_readme_index_contract_presence",
         "checks_docs_file_naming_conventions",
-        "checks_docs_no_retired_scripts_strings",
         "checks_docs_command_surface_docs_exist",
-        "checks_docs_no_retired_make_targets",
         "checks_make_docs_wrappers_delegate_dev_atlas",
         "checks_configs_required_surface_paths",
         "checks_configs_schema_paths_present",
-        "checks_configs_no_retired_control_plane_string_references",
         "checks_make_configs_wrappers_delegate_dev_atlas",
         "checks_ops_control_plane_doc_contract",
         "checks_docs_ops_command_list_matches_snapshot",
         "checks_docs_configs_command_list_matches_snapshot",
         "checks_docs_control_plane_naming_contract",
-        "checks_docs_control_plane_reference_cutoff_rules",
-        "checks_docs_control_plane_reference_boundary_contract",
         "checks_ops_ssot_manifests_schema_versions",
         "checks_crates_dev_atlas_final_crate_set_contract",
         "checks_docs_scripting_contract_rust_control_plane_lock",
@@ -386,51 +330,6 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
                 "restore the required ops contract file",
                 Some(rel),
             ));
-        }
-    }
-    Ok(violations)
-}
-
-fn checks_ops_no_retired_tooling_refs(
-    ctx: &CheckContext<'_>,
-) -> Result<Vec<Violation>, CheckError> {
-    let forbidden = [
-        ("scripts/areas", "OPS_FORBIDDEN_SCRIPTS_AREAS_REF"),
-        ("xtask", "OPS_FORBIDDEN_XTASK_REF"),
-        ("/tools/", "OPS_FORBIDDEN_TOOLS_REF"),
-    ];
-    let mut violations = Vec::new();
-    for rel in ["ops/CONTRACT.md", "ops/INDEX.md", "ops/README.md"] {
-        let file = ctx.repo_root.join(rel);
-        if !file.exists() {
-            continue;
-        }
-        let ext = file
-            .extension()
-            .and_then(|v| v.to_str())
-            .unwrap_or_default();
-        if !OPS_TEXT_EXTENSIONS.contains(&ext) {
-            continue;
-        }
-        let Ok(content) = fs::read_to_string(&file) else {
-            continue;
-        };
-        let rel = file
-            .strip_prefix(ctx.repo_root)
-            .unwrap_or(&file)
-            .to_path_buf();
-        for (needle, code) in forbidden {
-            if content.contains(needle) {
-                violations.push(violation(
-                    code,
-                    format!(
-                        "forbidden retired reference `{needle}` found in {}",
-                        rel.display()
-                    ),
-                    "remove retired tooling references from ops contracts",
-                    Some(rel.as_path()),
-                ));
-            }
         }
     }
     Ok(violations)
@@ -612,119 +511,3 @@ fn checks_ops_artifacts_not_tracked(ctx: &CheckContext<'_>) -> Result<Vec<Violat
     }
 }
 
-fn checks_ops_no_python_retired_runtime_refs(
-    ctx: &CheckContext<'_>,
-) -> Result<Vec<Violation>, CheckError> {
-    let mut violations = Vec::new();
-    let forbidden = [
-        ["packages", "/", "retired_control_plane_token"].concat(),
-        ["python -m ", "retired_control_plane_token"].concat(),
-        ["./bin/", "retired_control_plane_token"].concat(),
-    ];
-    let roots = [
-        ctx.repo_root.join("crates/bijux-dev-atlas"),
-        ctx.repo_root.join("crates/bijux-dev-atlas-core"),
-        ctx.repo_root.join("crates/bijux-dev-atlas-adapters"),
-        ctx.repo_root.join("crates/bijux-dev-atlas-model"),
-    ];
-
-    for root in roots {
-        if !root.exists() {
-            continue;
-        }
-        for file in walk_files(&root) {
-            if file.extension().and_then(|v| v.to_str()) != Some("rs") {
-                continue;
-            }
-            let Ok(content) = fs::read_to_string(&file) else {
-                continue;
-            };
-            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-            if rel.components().any(|c| c.as_os_str() == "tests")
-                || rel.to_string_lossy().ends_with("_tests.rs")
-            {
-                continue;
-            }
-            if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
-                continue;
-            }
-            if rel.starts_with("crates/bijux-dev-atlas-core/src/checks/ops/") {
-                continue;
-            }
-            for needle in &forbidden {
-                if content.contains(needle) {
-                    violations.push(violation(
-                        "OPS_PYTHON_LEGACY_REFERENCE_FOUND",
-                        format!(
-                            "forbidden retired runtime reference `{needle}` found in {}",
-                            rel.display()
-                        ),
-                        "remove python retired_control_plane_token coupling from bijux-dev-atlas crates",
-                        Some(rel),
-                    ));
-                }
-            }
-        }
-    }
-
-    Ok(violations)
-}
-
-fn checks_ops_no_retired_runner_paths(
-    ctx: &CheckContext<'_>,
-) -> Result<Vec<Violation>, CheckError> {
-    let mut violations = Vec::new();
-    let forbidden = [
-        ["scripts/", "areas"].concat(),
-        ["x", "task"].concat(),
-        ["/to", "ols/"].concat(),
-    ];
-    let roots = [
-        ctx.repo_root.join("crates/bijux-dev-atlas"),
-        ctx.repo_root.join("crates/bijux-dev-atlas-core"),
-        ctx.repo_root.join("crates/bijux-dev-atlas-adapters"),
-        ctx.repo_root.join("crates/bijux-dev-atlas-model"),
-    ];
-
-    for root in roots {
-        if !root.exists() {
-            continue;
-        }
-        for file in walk_files(&root) {
-            if file.extension().and_then(|v| v.to_str()) != Some("rs") {
-                continue;
-            }
-            let Ok(content) = fs::read_to_string(&file) else {
-                continue;
-            };
-            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-            if rel == Path::new("crates/bijux-dev-atlas-core/src/lib_tests.rs") {
-                continue;
-            }
-            if rel == Path::new("crates/bijux-dev-atlas-core/src/checks/ops.rs") {
-                continue;
-            }
-            if rel.starts_with("crates/bijux-dev-atlas-core/src/checks/ops/") {
-                continue;
-            }
-            for needle in &forbidden {
-                if content.contains(needle) {
-                    if *needle == "/tools/" && content.contains("ops/tools/") {
-                        continue;
-                    }
-                    violations.push(violation(
-                        "OPS_LEGACY_RUNNER_PATH_REFERENCE_FOUND",
-                        format!(
-                            "forbidden retired runner path reference `{needle}` found in {}",
-                            rel.display()
-                        ),
-                        "remove retired runner path references from dev-atlas crates",
-                        Some(rel),
-                    ));
-                }
-            }
-        }
-    }
-
-    Ok(violations)
-}

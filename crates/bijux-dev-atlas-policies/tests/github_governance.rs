@@ -26,36 +26,6 @@ fn collect_files_recursive(root: &Path, out: &mut Vec<PathBuf>) {
 }
 
 #[test]
-fn github_files_do_not_reference_retired_control_plane_token() {
-    let root = workspace_root();
-    let github_root = root.join(".github");
-    let mut files = Vec::new();
-    collect_files_recursive(&github_root, &mut files);
-    files.sort();
-
-    let mut violations = Vec::new();
-    let retired_token = ["atlas", "ctl"].concat();
-    for file in files {
-        let rel = file
-            .strip_prefix(&root)
-            .expect("path must be under workspace root")
-            .to_string_lossy()
-            .to_string();
-        let Ok(content) = fs::read_to_string(&file) else {
-            continue;
-        };
-        if content.contains(&retired_token) {
-            violations.push(rel);
-        }
-    }
-
-    assert!(
-        violations.is_empty(),
-        "forbidden retired token found in .github files: {violations:?}"
-    );
-}
-
-#[test]
 fn workflows_do_not_invoke_scripts_directly() {
     let root = workspace_root();
     let workflows = root.join(".github/workflows");

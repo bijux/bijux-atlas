@@ -165,17 +165,6 @@ effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "public"
 
-[[checks]]
-id = "checks_ops_no_retired_tooling_refs"
-domain = "ops"
-title = "ops does not reference retired tooling paths"
-docs = "ops/CONTRACT.md"
-tags = ["ops", "fast"]
-suites = ["ops_fast"]
-effects_required = ["fs_read"]
-budget_ms = 1000
-visibility = "public"
-
 [[suites]]
 id = "ops_fast"
 checks = []
@@ -254,5 +243,5 @@ tags_any = ["fast"]
 
     assert_eq!(report.summary.failed, 0);
     assert_eq!(report.summary.errors, 0);
-    assert_eq!(report.summary.total, 8);
+    assert_eq!(report.summary.total, 7);
 }
