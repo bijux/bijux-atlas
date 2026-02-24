@@ -9,6 +9,8 @@ $(eval $(VERIFICATION_MODULE):;@:)
 endif
 endif
 
+VERIFICATION_TARGETS_configs ?= configs-inventory
+
 verification: ## Run every target declared in makefiles/<module>.mk
 	@module="$(VERIFICATION_MODULE)"; \
 	if [ -z "$$module" ]; then \
