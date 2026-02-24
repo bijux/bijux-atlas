@@ -60,7 +60,7 @@ def suite_manifest_specs() -> tuple[SuiteManifestSpec, ...]:
                 internal=bool(row.get("internal", False)),
             )
         )
-    return tuple(specs)
+    return tuple(sorted(specs, key=lambda spec: spec.name))
 
 
 def suite_marker_violations() -> list[str]:
