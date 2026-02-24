@@ -1,8 +1,28 @@
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn crate_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+}
+
+fn collect_rs_files(root: &Path) -> Vec<PathBuf> {
+    fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
+        let Ok(entries) = fs::read_dir(dir) else {
+            return;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                walk(&path, out);
+            } else if path.extension().and_then(|v| v.to_str()) == Some("rs") {
+                out.push(path);
+            }
+        }
+    }
+    let mut out = Vec::new();
+    walk(root, &mut out);
+    out.sort();
+    out
 }
 
 #[test]
@@ -28,33 +48,28 @@ fn cli_main_rs_loc_stays_within_budget() {
 #[test]
 fn cli_crate_module_count_stays_within_budget() {
     let src = crate_root().join("src");
-    let mut modules = fs::read_dir(&src)
-        .expect("read src")
-        .filter_map(Result::ok)
-        .map(|e| e.path())
-        .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("rs"))
-        .collect::<Vec<_>>();
-    modules.sort();
+    let modules = collect_rs_files(&src);
     let count = modules.len();
-    let budget = 14usize;
+    let budget = 48usize;
     assert!(
         count <= budget,
-        "cli crate module count exceeds budget: {count} > {budget} (src/*.rs)"
+        "cli crate module count exceeds budget: {count} > {budget} (src/**/*.rs)"
     );
 }
 
 #[test]
 fn cli_source_files_stay_within_loc_budget() {
     let src = crate_root().join("src");
-    let mut files = fs::read_dir(&src)
-        .expect("read src")
-        .filter_map(Result::ok)
-        .map(|e| e.path())
-        .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("rs"))
-        .collect::<Vec<_>>();
-    files.sort();
+    let files = collect_rs_files(&src);
     let warning_budget = 800usize;
     let error_budget = 1000usize;
+    let strict_budget = 700usize;
+    let strict_paths = [
+        "src/cli.rs",
+        "src/ops_command_support.rs",
+        "src/ops_commands/runtime.rs",
+        "src/ops_runtime_execution/runtime.rs",
+    ];
     for path in files {
         let text = fs::read_to_string(&path).expect("read source file");
         let loc = text.lines().count();
@@ -69,5 +84,17 @@ fn cli_source_files_stay_within_loc_budget() {
             "cli source file exceeds hard LOC budget: {loc} > {error_budget} ({})",
             path.display()
         );
+        let rel = path
+            .strip_prefix(crate_root())
+            .unwrap_or(path.as_path())
+            .display()
+            .to_string();
+        if strict_paths.contains(&rel.as_str()) {
+            assert!(
+                loc <= strict_budget,
+                "strict LOC budget exceeded: {loc} > {strict_budget} ({})",
+                path.display()
+            );
+        }
     }
 }
