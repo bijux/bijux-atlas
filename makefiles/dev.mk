@@ -40,10 +40,13 @@ test-all: ## Rust tests full variant (includes ignored)
 	@cargo nextest run --workspace --profile "$${NEXTEST_PROFILE:-default}" --run-ignored all
 
 dev-doctor: ## Run dev control-plane doctor suite
-	@bijux dev atlas doctor --format text
+	@$(BIJUX_DEV_ATLAS) doctor --format text
 
-dev-check: ## Run dev control-plane ci suite
-	@bijux dev atlas check run --suite ci --format text
+dev-check-ci: ## Run dev control-plane ci suite
+	@$(BIJUX_DEV_ATLAS) check run --suite ci --format text
+
+dev-check: ## Alias for dev-check-ci
+	@$(MAKE) -s dev-check-ci
 
 install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts/bin
 	@mkdir -p artifacts/bin
@@ -54,4 +57,7 @@ install-local: ## Build and install bijux-atlas + bijux-dev-atlas into artifacts
 	@echo "installed artifacts/bin/bijux-atlas"
 	@echo "installed artifacts/bin/bijux-dev-atlas"
 
-.PHONY: audit check coverage fmt lint test test-all dev-doctor dev-check install-local
+BIJUX ?= bijux
+BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas
+
+.PHONY: audit check coverage fmt lint test test-all dev-doctor dev-check-ci dev-check install-local

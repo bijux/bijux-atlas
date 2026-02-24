@@ -54,6 +54,10 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         }
         "checks_ops_no_bash_lib_execution" => Some(check_ops_no_bash_lib_execution),
         "checks_ops_legacy_shell_quarantine_empty" => Some(check_ops_legacy_shell_quarantine_empty),
+        "checks_make_governance_wrappers_bijux_only" => Some(check_make_governance_wrappers_bijux_only),
+        "checks_workflows_governance_entrypoints_bijux_only" => {
+            Some(check_workflows_governance_entrypoints_bijux_only)
+        }
         _ => None,
     }
 }
@@ -496,7 +500,32 @@ fn checks_ops_makefile_routes_dev_atlas(
         }
     }
     for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "OPS_MAKEFILE_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/ops.mk wrapper recipes must be single-line delegations".to_string(),
+                "replace multi-line shell blocks with one-line bijux delegations",
+                Some(rel),
+            ));
+        }
         if line.contains("$(BIJUX_DEV_ATLAS)") {
+            let words = line.split_whitespace().collect::<Vec<_>>();
+            if words.iter().any(|word| {
+                *word == "python"
+                    || *word == "python3"
+                    || *word == "bash"
+                    || *word == "sh"
+                    || *word == "helm"
+                    || *word == "kubectl"
+                    || *word == "k6"
+            }) {
+                violations.push(violation(
+                    "OPS_MAKEFILE_DELEGATION_ONLY_VIOLATION",
+                    format!("makefiles/ops.mk wrapper must not invoke tools directly: `{line}`"),
+                    "delegate to bijux dev atlas ops commands only",
+                    Some(rel),
+                ));
+            }
             continue;
         }
         let words = line.split_whitespace().collect::<Vec<_>>();
@@ -558,6 +587,109 @@ fn checks_ops_makefile_routes_dev_atlas(
             "add ops-doctor, ops-validate, ops-render, ops-install-plan, ops-status, ops-tools-verify",
             Some(rel),
         ));
+    }
+
+    Ok(violations)
+}
+
+fn check_make_governance_wrappers_bijux_only(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("makefiles/ci.mk");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+
+    if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
+        violations.push(violation(
+            "MAKE_GOVERNANCE_BIJUX_VARIABLES_MISSING",
+            "makefiles/ci.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
+            Some(rel),
+        ));
+    }
+
+    for line in content.lines().filter(|line| line.starts_with('\t')) {
+        if line.trim_end().ends_with('\\') {
+            violations.push(violation(
+                "MAKE_GOVERNANCE_SINGLE_LINE_RECIPE_REQUIRED",
+                "makefiles/ci.mk wrapper recipes must be single-line delegations".to_string(),
+                "replace multi-line shell blocks with one-line make/bijux delegations",
+                Some(rel),
+            ));
+        }
+        if line.contains("atlasctl") {
+            violations.push(violation(
+                "MAKE_GOVERNANCE_ATLASCTL_REFERENCE_FOUND",
+                format!("makefiles/ci.mk must not call atlasctl: `{line}`"),
+                "route governance wrappers through make dev-doctor/dev-check-ci or bijux dev atlas",
+                Some(rel),
+            ));
+        }
+        let words = line.split_whitespace().collect::<Vec<_>>();
+        if words.iter().any(|word| {
+            *word == "python"
+                || *word == "python3"
+                || *word == "bash"
+                || *word == "sh"
+                || *word == "helm"
+                || *word == "kubectl"
+                || *word == "k6"
+        }) {
+            violations.push(violation(
+                "MAKE_GOVERNANCE_DELEGATION_ONLY_VIOLATION",
+                format!("makefiles/ci.mk must remain delegation-only: `{line}`"),
+                "wrapper recipes may call make or bijux only",
+                Some(rel),
+            ));
+        }
+        if !(line.contains("$(BIJUX") || line.contains("$(MAKE)")) {
+            violations.push(violation(
+                "MAKE_GOVERNANCE_ENTRYPOINT_INVALID",
+                format!("makefiles/ci.mk wrapper must call make/bijux only: `{line}`"),
+                "use $(MAKE) or $(BIJUX_DEV_ATLAS) in ci wrapper recipes",
+                Some(rel),
+            ));
+        }
+    }
+
+    Ok(violations)
+}
+
+fn check_workflows_governance_entrypoints_bijux_only(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new(".github/workflows/atlas-dev-rust.yml");
+    let path = ctx.repo_root.join(rel);
+    let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut violations = Vec::new();
+
+    for token in ["atlasctl", "scripts/areas"] {
+        if content.contains(token) {
+            violations.push(violation(
+                "WORKFLOW_GOVERNANCE_LEGACY_REFERENCE_FOUND",
+                format!("atlas-dev-rust workflow contains forbidden token `{token}`"),
+                "route governance workflow through make/bijux dev atlas only",
+                Some(rel),
+            ));
+        }
+    }
+
+    for required in [
+        "make dev-doctor",
+        "make dev-check-ci",
+        "make ops-doctor",
+        "make ops-validate",
+        "bijux-dev-atlas -- doctor --format json",
+    ] {
+        if !content.contains(required) {
+            violations.push(violation(
+                "WORKFLOW_GOVERNANCE_ENTRYPOINT_MISSING",
+                format!("atlas-dev-rust workflow is missing `{required}`"),
+                "keep governance workflow checks routed through make and bijux dev atlas",
+                Some(rel),
+            ));
+        }
     }
 
     Ok(violations)
