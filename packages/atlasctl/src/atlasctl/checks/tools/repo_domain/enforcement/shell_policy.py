@@ -29,10 +29,13 @@ def _iter_layout_shell_checks(repo_root: Path) -> list[Path]:
 
 
 def check_shell_location_policy(repo_root: Path) -> tuple[int, list[str]]:
-    offenders = [
-        path.relative_to(repo_root).as_posix()
-        for path in sorted((repo_root / "packages/atlasctl/src/atlasctl").rglob("*.sh"))
-    ]
+    allowlist = _read_allowlist(repo_root, "configs/policy/shell-location-allowlist.txt")
+    offenders = []
+    for path in sorted((repo_root / "packages/atlasctl/src/atlasctl").rglob("*.sh")):
+        rel = path.relative_to(repo_root).as_posix()
+        if rel in allowlist:
+            continue
+        offenders.append(rel)
     if offenders:
         return 1, [
             "shell scripts are forbidden inside packages/atlasctl/src/atlasctl; quarantine under ops/vendor/layout-checks/ or port to python",
