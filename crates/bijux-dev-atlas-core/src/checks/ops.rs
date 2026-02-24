@@ -12,9 +12,11 @@ use crate::{CheckContext, CheckError, CheckFn};
 const OPS_TEXT_EXTENSIONS: [&str; 5] = ["md", "json", "toml", "yaml", "yml"];
 mod documentation_and_config_checks;
 mod governance_checks;
+mod governance_repo_checks;
 mod surface_contract_checks;
 use documentation_and_config_checks::*;
 use governance_checks::*;
+use governance_repo_checks::*;
 use surface_contract_checks::*;
 
 pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
