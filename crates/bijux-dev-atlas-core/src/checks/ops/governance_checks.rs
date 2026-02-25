@@ -1125,6 +1125,192 @@ pub(super) fn check_ops_inventory_contract_integrity(
     Ok(violations)
 }
 
+pub(super) fn check_ops_docs_governance(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+
+    let domain_dirs = [
+        "ops/datasets",
+        "ops/e2e",
+        "ops/k8s",
+        "ops/load",
+        "ops/observe",
+        "ops/report",
+        "ops/stack",
+        "ops/env",
+        "ops/inventory",
+        "ops/schema",
+    ];
+    for domain in domain_dirs {
+        let index_rel = Path::new(domain).join("INDEX.md");
+        if ctx.adapters.fs.exists(ctx.repo_root, &index_rel) {
+            let index_text = fs::read_to_string(ctx.repo_root.join(&index_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            for line in index_text.lines() {
+                let trimmed = line.trim();
+                if trimmed.is_empty() || trimmed.starts_with('#') {
+                    continue;
+                }
+                if !trimmed.starts_with("- ") {
+                    violations.push(violation(
+                        "OPS_DOC_INDEX_NON_LINK_CONTENT",
+                        format!(
+                            "domain index must be links-only; found non-link content in `{}`: `{trimmed}`",
+                            index_rel.display()
+                        ),
+                        "keep domain INDEX.md files links-only with headings and bullet links",
+                        Some(&index_rel),
+                    ));
+                }
+            }
+
+            for required_doc in ["README.md", "CONTRACT.md"] {
+                let doc_rel = Path::new(domain).join(required_doc);
+                if ctx.adapters.fs.exists(ctx.repo_root, &doc_rel)
+                    && !index_text.contains(required_doc)
+                {
+                    violations.push(violation(
+                        "OPS_DOC_INDEX_REQUIRED_LINK_MISSING",
+                        format!(
+                            "domain index `{}` must link `{}`",
+                            index_rel.display(),
+                            doc_rel.display()
+                        ),
+                        "add README.md and CONTRACT.md links to domain INDEX.md when files exist",
+                        Some(&index_rel),
+                    ));
+                }
+            }
+        }
+
+        let readme_rel = Path::new(domain).join("README.md");
+        if ctx.adapters.fs.exists(ctx.repo_root, &readme_rel) {
+            let readme_text = fs::read_to_string(ctx.repo_root.join(&readme_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let line_count = readme_text.lines().count();
+            if line_count > 30 {
+                violations.push(violation(
+                    "OPS_DOC_README_SIZE_BUDGET_EXCEEDED",
+                    format!(
+                        "domain README exceeds 30 line budget: `{}` has {} lines",
+                        readme_rel.display(),
+                        line_count
+                    ),
+                    "keep domain README focused on what it is and where to start within 30 lines",
+                    Some(&readme_rel),
+                ));
+            }
+        }
+    }
+
+    let reference_index_rel = Path::new("ops/report/docs/REFERENCE_INDEX.md");
+    let reference_index_text = fs::read_to_string(ctx.repo_root.join(reference_index_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let docs_root = ctx.repo_root.join("ops/report/docs");
+    for doc in walk_files(&docs_root) {
+        let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
+        if rel.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        let Some(name) = rel.file_name().and_then(|v| v.to_str()) else {
+            continue;
+        };
+        if name == "REFERENCE_INDEX.md" {
+            continue;
+        }
+        if !reference_index_text.contains(&format!("({name})")) {
+            violations.push(violation(
+                "OPS_REPORT_DOC_ORPHAN",
+                format!(
+                    "report doc `{}` is not linked from ops/report/docs/REFERENCE_INDEX.md",
+                    rel.display()
+                ),
+                "add doc link to REFERENCE_INDEX.md or remove orphan report doc",
+                Some(reference_index_rel),
+            ));
+        }
+    }
+
+    let control_plane_rel = Path::new("ops/CONTROL_PLANE.md");
+    let control_plane_snapshot_rel = Path::new("ops/_generated.example/control-plane.snapshot.md");
+    if !ctx
+        .adapters
+        .fs
+        .exists(ctx.repo_root, control_plane_snapshot_rel)
+    {
+        violations.push(violation(
+            "OPS_CONTROL_PLANE_SNAPSHOT_MISSING",
+            format!(
+                "missing control-plane snapshot `{}`",
+                control_plane_snapshot_rel.display()
+            ),
+            "generate and commit control-plane snapshot for drift checks",
+            Some(control_plane_snapshot_rel),
+        ));
+    } else {
+        let current = fs::read_to_string(ctx.repo_root.join(control_plane_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let snapshot = fs::read_to_string(ctx.repo_root.join(control_plane_snapshot_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if current != snapshot {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_SNAPSHOT_DRIFT",
+                "ops/CONTROL_PLANE.md does not match ops/_generated.example/control-plane.snapshot.md"
+                    .to_string(),
+                "refresh control-plane snapshot to match current control-plane contract",
+                Some(control_plane_snapshot_rel),
+            ));
+        }
+    }
+
+    let docs_drift_rel = Path::new("ops/_generated.example/docs-drift-report.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, docs_drift_rel) {
+        violations.push(violation(
+            "OPS_DOCS_DRIFT_ARTIFACT_MISSING",
+            format!("missing docs drift artifact `{}`", docs_drift_rel.display()),
+            "generate and commit docs drift report artifact",
+            Some(docs_drift_rel),
+        ));
+    }
+
+    let forbidden_doc_refs = [
+        "ops/schema/obs/",
+        "ops/obs/",
+        "ops/k8s/Makefile",
+        "ops/load/k6/manifests/suites.json",
+        "ops/load/k6/thresholds/",
+    ];
+    for file in walk_files(&ctx.repo_root.join("ops")) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        if rel.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        let text = fs::read_to_string(&file).map_err(|err| CheckError::Failed(err.to_string()))?;
+        for forbidden in forbidden_doc_refs {
+            if text.contains(forbidden) {
+                violations.push(violation(
+                    "OPS_DOC_FORBIDDEN_PATH_REFERENCE",
+                    format!(
+                        "doc `{}` references retired or forbidden path `{forbidden}`",
+                        rel.display()
+                    ),
+                    "replace with current canonical path and remove retired references",
+                    Some(rel),
+                ));
+            }
+        }
+        if text.contains("TODO") {
+            violations.push(violation(
+                "OPS_DOC_TODO_MARKER_FORBIDDEN",
+                format!("doc `{}` contains TODO marker", rel.display()),
+                "remove TODO markers from ops docs for release-ready contracts",
+                Some(rel),
+            ));
+        }
+    }
+
+    Ok(violations)
+}
+
 fn parse_required_files_markdown_yaml(
     content: &str,
     rel: &Path,
