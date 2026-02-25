@@ -1381,6 +1381,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let mut violations = Vec::new();
     let contracts_map_rel = Path::new("ops/inventory/contracts-map.json");
     let contracts_rel = Path::new("ops/inventory/contracts.json");
+    let authority_index_rel = Path::new("ops/inventory/authority-index.json");
     let contracts_meta_rel = Path::new("ops/inventory/meta/contracts.json");
     let namespaces_rel = Path::new("ops/inventory/namespaces.json");
     let layers_rel = Path::new("ops/inventory/layers.json");
@@ -1450,6 +1451,19 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 Some(contracts_map_rel),
             ));
         }
+        let consumer = item
+            .get("consumer")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .trim();
+        if consumer.is_empty() {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTRACTS_MAP_CONSUMER_MISSING",
+                format!("contracts-map item `{path}` is missing non-empty `consumer`"),
+                "add contracts-map.items[].consumer with the enforcing check or runtime consumer id",
+                Some(contracts_map_rel),
+            ));
+        }
     }
 
     let contracts_text = fs::read_to_string(ctx.repo_root.join(contracts_rel))
@@ -1467,6 +1481,22 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 .to_string(),
             "mark contracts.json as a generated mirror of contracts-map",
             Some(contracts_rel),
+        ));
+    }
+    if !item_paths.contains(authority_index_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_AUTHORITY_INDEX_NOT_REGISTERED",
+            "ops/inventory/authority-index.json must be declared in contracts-map items".to_string(),
+            "register ops/inventory/authority-index.json in contracts-map with schema and consumer metadata",
+            Some(contracts_map_rel),
+        ));
+    }
+    if !ctx.adapters.fs.exists(ctx.repo_root, authority_index_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_AUTHORITY_INDEX_MISSING",
+            "missing ops/inventory/authority-index.json".to_string(),
+            "restore authority-index.json with authoritative and generated registry roles",
+            Some(authority_index_rel),
         ));
     }
     if ctx.adapters.fs.exists(ctx.repo_root, contracts_meta_rel) {

@@ -9,6 +9,7 @@
 | Path | Role |
 | --- | --- |
 | `ops/inventory/contracts-map.json` | Authored registry SSOT |
+| `ops/inventory/authority-index.json` | Authored authority hierarchy index |
 | `ops/inventory/pins.yaml` | Authored pins SSOT |
 | `ops/inventory/pin-freeze.json` | Authored pin lifecycle policy |
 | `ops/inventory/toolchain.json` | Authored toolchain registry |
@@ -23,6 +24,7 @@
 | Artifact | Schema |
 | --- | --- |
 | `ops/inventory/contracts-map.json` | `ops/schema/inventory/contracts-map.schema.json` |
+| `ops/inventory/authority-index.json` | `ops/schema/inventory/authority-index.schema.json` |
 | `ops/inventory/contracts.json` | `ops/schema/inventory/contracts.schema.json` |
 | `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` |
 | `ops/inventory/pin-freeze.json` | `ops/schema/inventory/pin-freeze.schema.json` |

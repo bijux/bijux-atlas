@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "authority_hierarchy": [
+    "ops/inventory",
+    "ops/schema",
+    "docs"
+  ],
+  "authoritative_files": [
+    {
+      "path": "ops/inventory/contracts-map.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/inventory/surfaces.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/inventory/owners.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/inventory/contracts.json",
+      "role": "generated",
+      "owner": "bijux-atlas-operations",
+      "derived_from": "ops/inventory/contracts-map.json"
+    },
+    {
+      "path": "ops/inventory/REQUIRED_FILES.md",
+      "role": "presence_contract",
+      "owner": "bijux-atlas-operations"
+    }
+  ]
+}

@@ -6,6 +6,7 @@ required_files:
   - ops/inventory/OWNER.md
   - ops/inventory/REQUIRED_FILES.md
   - ops/inventory/surfaces.json
+  - ops/inventory/authority-index.json
   - ops/inventory/contracts.json
   - ops/inventory/contracts-map.json
   - ops/inventory/toolchain.json
@@ -27,4 +28,5 @@ forbidden_patterns:
 notes:
   - authored_root: ops/inventory/pins.yaml
   - authored_root: ops/inventory/contracts-map.json
+  - schema_semantics: ops/schema/meta/required-files-contract.schema.json
 ```

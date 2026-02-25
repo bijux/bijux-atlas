@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "authority_hierarchy", "authoritative_files"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "authority_hierarchy": {
+      "type": "array",
+      "minItems": 3,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "authoritative_files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "role", "owner"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^ops/.+"},
+          "role": {
+            "type": "string",
+            "enum": ["authoritative", "generated", "presence_contract"]
+          },
+          "owner": {"type": "string", "minLength": 1},
+          "derived_from": {"type": "string", "pattern": "^ops/.+"}
+        }
+      }
+    }
+  }
+}

@@ -26,6 +26,7 @@
 | `ops/schema/e2e/summary.schema.json` |
 | `ops/schema/e2e/taxonomy.schema.json` |
 | `ops/schema/env/overlay.schema.json` |
+| `ops/schema/inventory/authority-index.schema.json` |
 | `ops/schema/inventory/contracts-map.schema.json` |
 | `ops/schema/inventory/contracts.schema.json` |
 | `ops/schema/inventory/drills.schema.json` |

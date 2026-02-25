@@ -13,11 +13,12 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "schema", "generator"],
+        "required": ["path", "schema", "generator", "consumer"],
         "properties": {
           "path": {"type": "string", "minLength": 1},
           "schema": {"type": "string", "pattern": "^ops/schema/.+\\.schema\\.json$"},
-          "generator": {"type": "string", "minLength": 1}
+          "generator": {"type": "string", "minLength": 1},
+          "consumer": {"type": "string", "minLength": 1}
         }
       }
     }
