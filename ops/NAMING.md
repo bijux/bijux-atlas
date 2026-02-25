@@ -3,7 +3,7 @@
 ## Canonical Terms
 
 - Use `observe` for observability domain naming.
-- `obs` naming is retired and forbidden in new paths, filenames, and contract keys.
+- `obs` is prohibited everywhere, including ids, keys, path segments, and command groups.
 
 ## File and Directory Naming
 

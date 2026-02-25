@@ -15,4 +15,4 @@ Canonical observability directory name is `ops/observe/`.
 
 ## Cutover Rule
 
-Legacy `ops/observe/` is removed. Contracts and schemas must use `ops/observe/` only.
+Migration completed on 2026-02-25. Contracts, inventories, schemas, and docs use `ops/observe/` only.

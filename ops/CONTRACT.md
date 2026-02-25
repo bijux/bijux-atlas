@@ -76,6 +76,7 @@ Generated truth:
 
 - Command surface metadata is declared in `ops/inventory/surfaces.json`.
 - Ownership metadata is declared in `ops/inventory/owners.json`.
+- No semantic domain `obs` exists; only `observe` is valid across ids, keys, commands, and paths.
 - Schemas live only under `ops/schema/`.
 - Generated runtime outputs are written only under `ops/_generated/`.
 - Committed generated outputs are written only under `ops/_generated.example/`.
