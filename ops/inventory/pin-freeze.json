@@ -4,5 +4,12 @@
   "state": "frozen",
   "frozen_at": "2026-02-25",
   "pins_source": "ops/inventory/pins.yaml",
+  "frozen_namespaces": [
+    "images",
+    "dataset_ids",
+    "versions.chart",
+    "versions.app",
+    "versions.prometheus_operator_crd"
+  ],
   "notes": "Pins are frozen for v0.1.0 release line."
 }
