@@ -275,12 +275,7 @@ mod tests {
             vec!["bijux-dev-atlas", "docs", "lint"],
             vec!["bijux-dev-atlas", "docs", "links"],
             vec!["bijux-dev-atlas", "docs", "inventory"],
-            vec![
-                "bijux-dev-atlas",
-                "docs",
-                "grep",
-                "bijux dev atlas",
-            ],
+            vec!["bijux-dev-atlas", "docs", "grep", "bijux dev atlas"],
             vec![
                 "bijux-dev-atlas",
                 "docs",
