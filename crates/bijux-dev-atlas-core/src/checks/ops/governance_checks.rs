@@ -2338,7 +2338,7 @@ pub(super) fn check_ops_docs_governance(
                 violations.push(violation(
                     "OPS_MARKDOWN_FILENAME_FORBIDDEN",
                     format!("non-canonical markdown file under redirect-only area: `{rel_str}`"),
-                    "keep only redirect stubs under ops/report/docs or migrate docs to docs/ops",
+                    "keep only redirect stubs under ops/report/docs or migrate docs to docs/operations",
                     Some(rel),
                 ));
             }
@@ -2359,6 +2359,17 @@ pub(super) fn check_ops_docs_governance(
                     "OPS_MARKDOWN_HOW_TO_HEADING_FORBIDDEN",
                     format!("ops markdown contains workflow-style heading in `{rel_str}`"),
                     "move tutorial/workflow prose to docs/operations and keep ops markdown normative",
+                    Some(rel),
+                ));
+                break;
+            }
+            let line_lower = trimmed.to_ascii_lowercase();
+            let is_markdown_link_line = trimmed.starts_with("- [") && trimmed.contains("](");
+            if line_lower.contains("how to") && !is_markdown_link_line {
+                violations.push(violation(
+                    "OPS_MARKDOWN_HOW_TO_PHRASE_FORBIDDEN",
+                    format!("ops markdown contains \"How to\" prose in `{rel_str}`"),
+                    "move workflow prose to docs/operations and keep ops markdown normative",
                     Some(rel),
                 ));
                 break;
@@ -2406,10 +2417,10 @@ pub(super) fn check_ops_docs_governance(
                 violations.push(violation(
                     "OPS_DOCS_DIRECTORY_FORBIDDEN",
                     format!(
-                        "forbidden ops docs subtree `{}`; ops docs must live under docs/ops",
+                        "forbidden ops docs subtree `{}`; ops docs must live under docs/operations",
                         rel.display()
                     ),
-                    "remove ops/**/docs/** subtree or migrate docs into docs/ops",
+                    "remove ops/**/docs/** subtree or migrate docs into docs/operations",
                     Some(rel),
                 ));
             }
