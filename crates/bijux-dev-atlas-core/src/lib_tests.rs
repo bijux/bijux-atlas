@@ -666,7 +666,7 @@ fn evidence_paths_must_not_include_timestamps() {
 }
 
 fn write_temp_registry(temp: &TempDir, body: &str) -> PathBuf {
-    let path = temp.path().join("ops/atlas-dev");
+    let path = temp.path().join("ops/inventory");
     fs::create_dir_all(&path).expect("mkdir");
     let registry = path.join("registry.toml");
     fs::write(&registry, body).expect("write registry");

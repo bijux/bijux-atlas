@@ -268,6 +268,39 @@ budget_ms = 4000
 visibility = "internal"
 
 [[checks]]
+id = "checks_docs_operations_canonical_concept_paths"
+domain = "docs"
+title = "operations docs enforce canonical concept paths without duplicates"
+docs = "docs/operations/INDEX.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_operations_directory_index_contract"
+domain = "docs"
+title = "operations docs directories have exactly one index entrypoint"
+docs = "docs/operations/INDEX.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_operations_verify_command_quality"
+domain = "docs"
+title = "operations docs verification commands match docs doctor surface"
+docs = "docs/operations/INDEX.md"
+tags = ["internal", "fast"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "internal"
+
+[[checks]]
 id = "checks_docs_ops_command_list_matches_snapshot"
 domain = "docs"
 title = "ops command list doc matches ops command snapshot"
@@ -488,6 +521,61 @@ budget_ms = 800
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_docs_governance"
+domain = "ops"
+title = "ops docs governance enforces indexing and drift controls"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_domain_contract_structure"
+domain = "ops"
+title = "ops domain contracts include invariants and authored generated sections"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2500
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_evidence_bundle_discipline"
+domain = "ops"
+title = "ops evidence bundle artifacts remain deterministic and complete"
+docs = "ops/_generated.example/MIRROR_POLICY.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2500
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_file_usage_and_orphan_contract"
+domain = "ops"
+title = "ops data artifacts are classified and orphan-free"
+docs = "ops/_generated.example/file-usage-report.json"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_fixture_governance"
+domain = "ops"
+title = "ops fixture layout and binary policy remain governed"
+docs = "ops/datasets/fixtures/README.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2500
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_generated_readonly_markers"
 domain = "ops"
 title = "ops generated files keep readonly generator markers"
@@ -507,6 +595,17 @@ tags = ["ops", "internal", "slow"]
 suites = ["ops_all"]
 effects_required = ["fs_read", "git"]
 budget_ms = 4000
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_inventory_contract_integrity"
+domain = "ops"
+title = "ops inventory contracts and schemas are consistent and authoritative"
+docs = "ops/inventory/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
 visibility = "internal"
 
 [[checks]]
@@ -554,9 +653,31 @@ budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_no_direct_tool_invocations"
+domain = "ops"
+title = "ops tree avoids direct kubectl helm k6 and kind invocations"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_no_executable_bit_files"
 domain = "ops"
 title = "ops files do not carry executable bits"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_no_makefiles"
+domain = "ops"
+title = "ops tree contains no makefiles"
 docs = "ops/CONTRACT.md"
 tags = ["internal", "slow"]
 suites = ["deep"]
@@ -574,6 +695,28 @@ suites = ["ops_fast", "all_fast", "ci", "ci_fast"]
 effects_required = ["fs_read"]
 budget_ms = 1000
 visibility = "public"
+
+[[checks]]
+id = "checks_ops_quarantine_shim_expiration_contract"
+domain = "ops"
+title = "ops quarantine shim references are retired and absent"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_ops_required_files_contracts"
+domain = "ops"
+title = "ops required files contracts are machine-checkable and satisfied"
+docs = "ops/CONTRACT.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
 
 [[checks]]
 id = "checks_ops_schema_presence"
@@ -952,8 +1095,26 @@ tags_any = []
 
 [[suites]]
 id = "ops_all"
-checks = []
-domains = ["ops"]
+checks = [
+  "checks_ops_artifacts_gitignore_policy",
+  "checks_ops_artifacts_not_tracked",
+  "checks_ops_control_plane_doc_contract",
+  "checks_ops_generated_readonly_markers",
+  "checks_ops_internal_registry_consistency",
+  "checks_ops_makefile_routes_dev_atlas",
+  "checks_ops_manifest_integrity",
+  "checks_ops_no_bash_lib_execution",
+  "checks_ops_no_behavior_source_files",
+  "checks_ops_no_executable_bit_files",
+  "checks_ops_no_scripts_areas_or_xtask_refs",
+  "checks_ops_schema_presence",
+  "checks_ops_ssot_manifests_schema_versions",
+  "checks_ops_surface_inventory",
+  "checks_ops_surface_manifest",
+  "checks_ops_tree_contract",
+  "checks_ops_workflow_routes_dev_atlas",
+]
+domains = []
 tags_any = []
 
 [[suites]]

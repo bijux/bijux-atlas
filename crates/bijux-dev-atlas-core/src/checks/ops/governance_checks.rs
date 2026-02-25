@@ -1420,6 +1420,228 @@ pub(super) fn check_ops_inventory_contract_integrity(
     Ok(violations)
 }
 
+pub(super) fn check_ops_file_usage_and_orphan_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let usage_report_rel = Path::new("ops/_generated.example/file-usage-report.json");
+    let usage_report_text = fs::read_to_string(ctx.repo_root.join(usage_report_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let usage_report_json: serde_json::Value = serde_json::from_str(&usage_report_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if usage_report_json.get("schema_version").is_none()
+        || usage_report_json.get("generated_by").is_none()
+    {
+        violations.push(violation(
+            "OPS_FILE_USAGE_REPORT_METADATA_MISSING",
+            "ops/_generated.example/file-usage-report.json must include schema_version and generated_by"
+                .to_string(),
+            "add schema_version and generated_by to file usage report",
+            Some(usage_report_rel),
+        ));
+    }
+
+    let contracts_map_rel = Path::new("ops/inventory/contracts-map.json");
+    let contracts_map_text = fs::read_to_string(ctx.repo_root.join(contracts_map_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contracts_map_json: serde_json::Value = serde_json::from_str(&contracts_map_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let registry_inputs = contracts_map_json
+        .get("items")
+        .and_then(|v| v.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|item| item.get("path").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+
+    let schema_index_rel = Path::new("ops/schema/generated/schema-index.json");
+    let schema_index_text = fs::read_to_string(ctx.repo_root.join(schema_index_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let schema_index_json: serde_json::Value = serde_json::from_str(&schema_index_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let schema_files = schema_index_json
+        .get("files")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+
+    let mut required_file_refs = BTreeSet::new();
+    for req in walk_files(&ctx.repo_root.join("ops")) {
+        let rel = req.strip_prefix(ctx.repo_root).unwrap_or(req.as_path());
+        if rel.file_name().and_then(|name| name.to_str()) != Some("REQUIRED_FILES.md") {
+            continue;
+        }
+        let content = fs::read_to_string(&req).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let parsed = parse_required_files_markdown_yaml(&content, rel)?;
+        for required in parsed.required_files {
+            required_file_refs.insert(required.display().to_string());
+        }
+    }
+
+    let mut docs_refs = BTreeSet::new();
+    for root in ["docs", "ops"] {
+        for doc in walk_files(&ctx.repo_root.join(root)) {
+            if doc.extension().and_then(|v| v.to_str()) != Some("md") {
+                continue;
+            }
+            let text = fs::read_to_string(&doc).map_err(|err| CheckError::Failed(err.to_string()))?;
+            docs_refs.extend(extract_ops_data_paths(&text));
+        }
+    }
+
+    let mut computed_orphans = Vec::new();
+    let mut registry_count_by_domain = BTreeMap::<String, usize>::new();
+    let mut generated_count_by_domain = BTreeMap::<String, usize>::new();
+    for file in walk_files(&ctx.repo_root.join("ops")) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        let Some(ext) = rel.extension().and_then(|v| v.to_str()) else {
+            continue;
+        };
+        if !matches!(ext, "json" | "yaml" | "yml" | "toml") {
+            continue;
+        }
+        let rel_str = rel.display().to_string();
+        let domain = rel
+            .components()
+            .nth(1)
+            .and_then(|c| c.as_os_str().to_str())
+            .unwrap_or("root")
+            .to_string();
+        let is_schema = rel_str.starts_with("ops/schema/");
+        let is_generated =
+            rel_str.contains("/generated/") || rel_str.starts_with("ops/_generated.example/");
+        let is_registry_input = registry_inputs.contains(&rel_str)
+            || rel_str.starts_with("ops/inventory/contracts/")
+            || rel_str.starts_with("ops/inventory/policies/")
+            || rel_str.starts_with("ops/k8s/charts/")
+            || rel_str.starts_with("ops/k8s/values/")
+            || rel_str.starts_with("ops/observe/pack/")
+            || rel_str.starts_with("ops/observe/alerts/")
+            || rel_str.starts_with("ops/observe/rules/")
+            || rel_str.starts_with("ops/observe/dashboards/")
+            || rel_str.starts_with("ops/load/compose/")
+            || rel_str.starts_with("ops/load/baselines/")
+            || rel_str.starts_with("ops/load/thresholds/")
+            || rel_str.starts_with("ops/e2e/manifests/")
+            || rel_str.starts_with("ops/stack/")
+            || rel_str.contains("/contracts/")
+            || rel_str.contains("/scenarios/")
+            || rel_str.contains("/suites/");
+        let is_docs_ref = docs_refs.contains(&rel_str);
+        let is_required_ref = required_file_refs.contains(&rel_str);
+        let is_schema_ref = schema_files.contains(&rel_str);
+        let is_fixture_or_test = rel_str.contains("/fixtures/")
+            || rel_str.contains("/tests/")
+            || rel_str.contains("/goldens/")
+            || rel_str.contains("/realdata/");
+        if is_generated {
+            *generated_count_by_domain.entry(domain).or_insert(0) += 1;
+        } else {
+            *registry_count_by_domain.entry(domain).or_insert(0) += 1;
+        }
+        if !(is_schema
+            || is_generated
+            || is_registry_input
+            || is_docs_ref
+            || is_required_ref
+            || is_schema_ref
+            || is_fixture_or_test)
+        {
+            computed_orphans.push(rel_str);
+        }
+    }
+
+    if !computed_orphans.is_empty() {
+        violations.push(violation(
+            "OPS_DATA_FILE_ORPHAN_FOUND",
+            format!(
+                "orphan ops data artifacts detected: {}",
+                computed_orphans.join(", ")
+            ),
+            "remove orphan data files or classify them through contracts-map, schema-index, docs, and REQUIRED_FILES",
+            Some(Path::new("ops")),
+        ));
+    }
+
+    if let Some(orphan_arr) = usage_report_json.get("orphans").and_then(|v| v.as_array()) {
+        let report_orphans = orphan_arr
+            .iter()
+            .filter_map(|v| v.as_str())
+            .map(ToString::to_string)
+            .collect::<BTreeSet<_>>();
+        let computed_orphan_set = computed_orphans.into_iter().collect::<BTreeSet<_>>();
+        if report_orphans != computed_orphan_set {
+            violations.push(violation(
+                "OPS_FILE_USAGE_REPORT_ORPHAN_MISMATCH",
+                "ops/_generated.example/file-usage-report.json orphan list is stale".to_string(),
+                "regenerate and commit file-usage-report.json after updating ops artifacts",
+                Some(usage_report_rel),
+            ));
+        }
+    }
+
+    let registry_budget = BTreeMap::from([
+        ("inventory".to_string(), 35usize),
+        ("load".to_string(), 70usize),
+        ("observe".to_string(), 50usize),
+        ("k8s".to_string(), 45usize),
+        ("datasets".to_string(), 30usize),
+        ("e2e".to_string(), 20usize),
+        ("stack".to_string(), 20usize),
+        ("env".to_string(), 10usize),
+        ("report".to_string(), 10usize),
+        ("schema".to_string(), 120usize),
+    ]);
+    for (domain, count) in registry_count_by_domain {
+        if let Some(max) = registry_budget.get(&domain) {
+            if count > *max {
+                violations.push(violation(
+                    "OPS_REGISTRY_FILE_BUDGET_EXCEEDED",
+                    format!(
+                        "registry/config file budget exceeded for `{domain}`: {count} > {max}"
+                    ),
+                    "consolidate or remove registry/config files before adding new ones",
+                    Some(Path::new("ops")),
+                ));
+            }
+        }
+    }
+    let generated_budget = BTreeMap::from([
+        ("_generated.example".to_string(), 20usize),
+        ("stack".to_string(), 10usize),
+        ("report".to_string(), 10usize),
+        ("k8s".to_string(), 10usize),
+        ("datasets".to_string(), 10usize),
+        ("load".to_string(), 10usize),
+        ("schema".to_string(), 10usize),
+        ("e2e".to_string(), 10usize),
+        ("observe".to_string(), 10usize),
+    ]);
+    for (domain, count) in generated_count_by_domain {
+        if let Some(max) = generated_budget.get(&domain) {
+            if count > *max {
+                violations.push(violation(
+                    "OPS_GENERATED_FILE_BUDGET_EXCEEDED",
+                    format!("generated file budget exceeded for `{domain}`: {count} > {max}"),
+                    "consolidate generated outputs and avoid adding redundant generated artifacts",
+                    Some(Path::new("ops")),
+                ));
+            }
+        }
+    }
+
+    Ok(violations)
+}
+
 pub(super) fn check_ops_docs_governance(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
@@ -2810,6 +3032,37 @@ fn parse_required_files_markdown_yaml(
         forbidden_patterns,
         notes,
     })
+}
+
+fn extract_ops_data_paths(text: &str) -> BTreeSet<String> {
+    let mut refs = BTreeSet::new();
+    for token in text.split_whitespace() {
+        let trimmed = token
+            .trim_matches(|c: char| {
+                c == '`'
+                    || c == '('
+                    || c == ')'
+                    || c == '['
+                    || c == ']'
+                    || c == ','
+                    || c == ';'
+                    || c == ':'
+                    || c == '"'
+                    || c == '\''
+            })
+            .to_string();
+        if !trimmed.starts_with("ops/") {
+            continue;
+        }
+        if trimmed.ends_with(".json")
+            || trimmed.ends_with(".yaml")
+            || trimmed.ends_with(".yml")
+            || trimmed.ends_with(".toml")
+        {
+            refs.insert(trimmed);
+        }
+    }
+    refs
 }
 
 pub(super) fn check_ops_quarantine_shim_expiration_contract(
