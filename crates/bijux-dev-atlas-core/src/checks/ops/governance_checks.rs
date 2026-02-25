@@ -2536,7 +2536,7 @@ pub(super) fn check_ops_docs_governance(
         .into_iter()
         .filter(|path| path.extension().and_then(|v| v.to_str()) == Some("md"))
         .collect::<Vec<_>>();
-    let ops_markdown_file_budget = 110usize;
+    let ops_markdown_file_budget = 103usize;
     if ops_markdown_files.len() > ops_markdown_file_budget {
         violations.push(violation(
             "OPS_MARKDOWN_FILE_BUDGET_EXCEEDED",
@@ -2577,6 +2577,27 @@ pub(super) fn check_ops_docs_governance(
         "ops/schema/generated/schema-index.md".to_string(),
         "ops/stack/dependencies.md".to_string(),
     ]);
+    let ops_markdown_max_depth = 3usize;
+    let depth_exception_paths = BTreeSet::from([
+        "ops/k8s/charts/bijux-atlas/README.md".to_string(),
+        "ops/load/k6/queries/INDEX.md".to_string(),
+        "ops/observe/drills/templates/incident-template.md".to_string(),
+    ]);
+    let ops_markdown_domain_budget = BTreeMap::from([
+        ("_generated".to_string(), 3usize),
+        ("_generated.example".to_string(), 7usize),
+        ("datasets".to_string(), 11usize),
+        ("e2e".to_string(), 10usize),
+        ("env".to_string(), 4usize),
+        ("inventory".to_string(), 4usize),
+        ("k8s".to_string(), 8usize),
+        ("load".to_string(), 11usize),
+        ("observe".to_string(), 9usize),
+        ("report".to_string(), 8usize),
+        ("schema".to_string(), 12usize),
+        ("stack".to_string(), 8usize),
+    ]);
+    let mut ops_markdown_domain_counts = BTreeMap::<String, usize>::new();
     for doc in &ops_markdown_files {
         let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
         let rel_str = rel.display().to_string();
@@ -2587,6 +2608,28 @@ pub(super) fn check_ops_docs_governance(
             .to_string();
         let text = fs::read_to_string(doc).map_err(|err| CheckError::Failed(err.to_string()))?;
         ops_markdown_lines += text.lines().count();
+        if let Ok(stripped) = rel.strip_prefix("ops") {
+            let domain = stripped
+                .components()
+                .next()
+                .and_then(|component| component.as_os_str().to_str())
+                .map(ToString::to_string);
+            if let Some(domain) = domain {
+                *ops_markdown_domain_counts.entry(domain).or_insert(0) += 1;
+            }
+        }
+        let depth = rel.components().count().saturating_sub(1);
+        if depth > ops_markdown_max_depth && !depth_exception_paths.contains(&rel_str) {
+            violations.push(violation(
+                "OPS_MARKDOWN_DEPTH_BUDGET_EXCEEDED",
+                format!(
+                    "ops markdown depth exceeded: `{rel_str}` depth={} max={}",
+                    depth, ops_markdown_max_depth
+                ),
+                "move deep ops markdown into docs/operations or add an explicit governance allowlist exception",
+                Some(rel),
+            ));
+        }
         if rel.starts_with(Path::new("ops/report/docs/")) {
             if name != "README.md" && name != "REFERENCE_INDEX.md" {
                 violations.push(violation(
@@ -2641,6 +2684,19 @@ pub(super) fn check_ops_docs_governance(
                     Some(rel),
                 ));
             }
+        }
+    }
+    for (domain, max) in ops_markdown_domain_budget {
+        let count = ops_markdown_domain_counts.get(&domain).copied().unwrap_or(0);
+        if count > max {
+            violations.push(violation(
+                "OPS_MARKDOWN_DOMAIN_BUDGET_EXCEEDED",
+                format!(
+                    "ops markdown domain budget exceeded for `{domain}`: {count} > {max}"
+                ),
+                "move handbook-style docs out of ops domain surfaces and keep only canonical headers",
+                Some(Path::new("ops")),
+            ));
         }
     }
     if ops_markdown_lines > ops_markdown_line_budget {
