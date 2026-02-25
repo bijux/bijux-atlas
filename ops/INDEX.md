@@ -4,20 +4,20 @@ Human entry for the ops specification surface.
 
 ## Start Here
 
-- `ops/README.md`
-- `ops/CONTRACT.md`
-- `ops/CONTROL_PLANE.md`
-- `ops/ERRORS.md`
-- `ops/SSOT.md`
-- `ops/NAMING.md`
-- `ops/DRIFT.md`
-- `ops/schema/VERSIONING_POLICY.md`
-- `ops/report/docs/inventory-contracts.md`
-- `ops/report/docs/migration-window.md`
-- `ops/report/docs/pin-lifecycle.md`
-- `ops/report/docs/ops-docs-update-workflow.md`
-- `ops/_generated.example/ops-index.json`
-- `ops/_generated.example/ops-evidence-bundle.json`
+- `README.md`
+- `CONTRACT.md`
+- `CONTROL_PLANE.md`
+- `ERRORS.md`
+- `SSOT.md`
+- `NAMING.md`
+- `DRIFT.md`
+- `schema/VERSIONING_POLICY.md` (canonical path: `ops/schema/VERSIONING_POLICY.md`)
+- `report/docs/inventory-contracts.md`
+- `report/docs/migration-window.md`
+- `report/docs/pin-lifecycle.md`
+- `report/docs/ops-docs-update-workflow.md`
+- `_generated.example/ops-index.json`
+- `_generated.example/ops-evidence-bundle.json`
 
 ## Domains
 
@@ -33,7 +33,6 @@ Human entry for the ops specification surface.
 - `ops/report/`
 - `ops/_generated/`
 - `ops/_generated.example/`
-- `ops/report/docs/observe-rename.md`
 
 ## Make Surface
 
