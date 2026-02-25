@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "status": "stable",
+  "base_report": "ops/report/examples/unified-report-example.json",
+  "target_report": "ops/report/examples/unified-report-example.json",
+  "changes": []
+}

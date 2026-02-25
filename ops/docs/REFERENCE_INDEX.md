@@ -24,6 +24,7 @@
 - [Stack Definition](stack-definition.md)
 - [Render Pipeline](render-pipeline.md)
 - [Artifacts Contract](artifacts-contract.md)
+- [Unified Reporting Contract](unified-reporting-contract.md)
 - [Ops Evidence Explanation](ops-evidence-explanation.md)
 - [Ops Safety Guarantees](ops-safety-guarantees.md)
 - [Offline Mode](offline-mode.md)

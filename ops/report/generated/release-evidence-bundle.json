@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "release": "v0.1.0",
+  "bundle_paths": [
+    "ops/report/examples/unified-report-example.json",
+    "ops/report/generated/readiness-score.json",
+    "ops/report/generated/report-diff.json",
+    "ops/report/generated/historical-comparison.json"
+  ],
+  "status": "ready"
+}

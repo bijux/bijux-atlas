@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "window": "30d",
+  "status": "stable",
+  "trend": "flat",
+  "readiness_scores": [100, 100, 100],
+  "failures": []
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "score": 100,
+  "status": "ready",
+  "inputs": {
+    "ops_validate": "pass",
+    "ops_doctor": "pass",
+    "schema_drift": "none",
+    "inventory_drift": "none"
+  }
+}
