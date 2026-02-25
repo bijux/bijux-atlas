@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_by", "fixtures"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "generated_by": {"type": "string", "minLength": 1},
+    "fixtures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "version",
+          "manifest_lock",
+          "asset",
+          "asset_sha256",
+          "src_dir",
+          "goldens"
+        ],
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "version": {"type": "string", "pattern": "^v[0-9]+$"},
+          "manifest_lock": {"type": "string", "pattern": "^ops/datasets/fixtures/.+/v[0-9]+/manifest\\.lock$"},
+          "asset": {"type": "string", "pattern": "^ops/datasets/fixtures/.+/v[0-9]+/assets/.+\\.tar\\.gz$"},
+          "asset_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "src_dir": {"type": "string", "pattern": "^ops/datasets/fixtures/.+/v[0-9]+/src$"},
+          "goldens": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "pattern": "^ops/datasets/fixtures/.+/v[0-9]+/.+\\.(json|yaml|yml)$"}
+          }
+        }
+      }
+    }
+  }
+}
