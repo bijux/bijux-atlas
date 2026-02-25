@@ -7,3 +7,4 @@
 - [Schema](schema.md)
 - [Generators](generators.md)
 - [Ops Docs Consolidation Checklist](ops-docs-consolidation-checklist.md)
+- [Ops Design Defense](ops-design-defense.md)
