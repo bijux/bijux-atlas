@@ -620,6 +620,24 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             crate_api_table,
                         )
                         .map_err(|e| format!("write crate doc api table failed: {e}"))?;
+                        let pruning_rows = crate_doc_warnings
+                            .iter()
+                            .filter(|w| {
+                                w.starts_with("CRATE_DOC_DUPLICATE_CONCEPT_WARN:")
+                                    || w.starts_with("CRATE_DOC_BUDGET_ERROR:")
+                                    || w.starts_with("CRATE_DOC_ALLOWED_TYPE_WARN:")
+                            })
+                            .cloned()
+                            .collect::<Vec<_>>();
+                        fs::write(
+                            generated_dir.join("crate-doc-pruning.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "rows": pruning_rows
+                            }))
+                            .map_err(|e| format!("crate doc pruning encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write crate doc pruning failed: {e}"))?;
                         let mut inventory_md =
                             String::from("# Docs Inventory\n\nLicense: Apache-2.0\n\n");
                         inventory_md
@@ -742,6 +760,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "crate_doc_coverage": "docs/_generated/crate-doc-coverage.json",
                             "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
                             "crate_doc_api_table": "docs/_generated/crate-doc-api-table.md",
+                            "crate_doc_pruning": "docs/_generated/crate-doc-pruning.json",
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "generated_make_targets": "makefiles/GENERATED_TARGETS.md"

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "rows": [
+    {
+      "crate": "bijux-atlas-api",
+      "root_doc_count": 8,
+      "docs_dir_count": 15,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-cli",
+      "root_doc_count": 9,
+      "docs_dir_count": 11,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-core",
+      "root_doc_count": 8,
+      "docs_dir_count": 14,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-ingest",
+      "root_doc_count": 8,
+      "docs_dir_count": 12,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-model",
+      "root_doc_count": 9,
+      "docs_dir_count": 14,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "root_doc_count": 9,
+      "docs_dir_count": 13,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-query",
+      "root_doc_count": 8,
+      "docs_dir_count": 13,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "root_doc_count": 8,
+      "docs_dir_count": 17,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "root_doc_count": 8,
+      "docs_dir_count": 14,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "root_doc_count": 9,
+      "docs_dir_count": 9,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-dev-atlas-adapters",
+      "root_doc_count": 9,
+      "docs_dir_count": 2,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-dev-atlas-core",
+      "root_doc_count": 8,
+      "docs_dir_count": 2,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-dev-atlas-model",
+      "root_doc_count": 9,
+      "docs_dir_count": 2,
+      "diagram_count": 3
+    },
+    {
+      "crate": "bijux-dev-atlas-policies",
+      "root_doc_count": 9,
+      "docs_dir_count": 2,
+      "diagram_count": 3
+    }
+  ]
+}
