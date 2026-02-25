@@ -14,6 +14,7 @@
     {"path": "ops/inventory/toolchain.yaml", "schema": "ops/schema/stack/version-manifest.schema.json", "generator": "bijux dev atlas ops stack versions-sync + migrate"},
     {"path": "ops/inventory/owner-docs.fragments.json", "schema": "none", "generator": "bijux dev atlas ops migrate inventory-fragments"},
     {"path": "ops/inventory/contracts-map.json", "schema": "none", "generator": "manual"},
-    {"path": "ops/inventory/generated-committed-mirror.json", "schema": "none", "generator": "manual"}
+    {"path": "ops/inventory/generated-committed-mirror.json", "schema": "none", "generator": "manual"},
+    {"path": "ops/datasets/manifest.json", "schema": "ops/schema/datasets/manifest.schema.json", "generator": "manual"}
   ]
 }

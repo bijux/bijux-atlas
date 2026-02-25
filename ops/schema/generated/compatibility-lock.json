@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "targets": [
+    {
+      "schema_path": "ops/schema/inventory/pins.schema.json",
+      "required_fields": ["schema_version", "images", "dataset_ids", "versions"]
+    },
+    {
+      "schema_path": "ops/schema/inventory/toolchain.schema.json",
+      "required_fields": ["schema_version", "images", "tools"]
+    },
+    {
+      "schema_path": "ops/schema/datasets/manifest.schema.json",
+      "required_fields": ["schema_version", "datasets"]
+    },
+    {
+      "schema_path": "ops/schema/report/unified.schema.json",
+      "required_fields": [
+        "schema_version",
+        "report_version",
+        "run_id",
+        "generated_at",
+        "lanes",
+        "summary",
+        "budget_status"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/load/perf-baseline.schema.json",
+      "required_fields": ["schema_version", "name", "metadata", "rows"]
+    }
+  ]
+}
