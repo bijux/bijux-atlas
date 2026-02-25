@@ -9,11 +9,11 @@
 | Path | Role |
 | --- | --- |
 | `ops/report/schema.json` | Authored unified report contract |
-| `ops/report/evidence-levels.json` | Authored evidence-level policy |
-| `ops/report/examples/unified-report-example.json` | Authored curated report example |
+| `ops/report/evidence-levels.json` | Authored evidence policy |
+| `ops/report/examples/unified-report-example.json` | Authored reference example |
 | `ops/report/generated/report-diff.json` | Generated report diff |
 | `ops/report/generated/historical-comparison.json` | Generated historical comparison |
-| `ops/report/generated/release-evidence-bundle.json` | Generated release evidence bundle |
+| `ops/report/generated/release-evidence-bundle.json` | Generated evidence bundle |
 | `ops/report/generated/readiness-score.json` | Generated readiness score |
 
 ## Schema References
@@ -29,9 +29,17 @@
 
 ## Invariants
 
-- Unified report schema and evidence-level policy are authored truth for report assembly.
-- Generated report artifacts are deterministic for the same inventory, schema index, and gate outputs.
-- Evidence bundle must contain hashes for required SSOT artifacts and schema index inputs.
-- Report diff and historical comparison must be based on pinned artifact snapshots.
-- Readiness score calculation rules are stable and versioned with report schemas.
-- Report docs under `ops/report/docs/` define contract semantics and must remain linked from the reference index.
+- No duplicate authored truth is allowed; report model and evidence policy are authored only in `ops/report/schema.json` and `ops/report/evidence-levels.json`.
+- Schema references for this domain must resolve only to `ops/schema/**`.
+- Behavior source is forbidden in `ops/report`; report execution logic remains outside `ops/`.
+- The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
+- Generated report artifacts must include `generated_by` and `schema_version` metadata.
+- Report docs must be linked from `ops/report/docs/REFERENCE_INDEX.md`; orphan docs are forbidden.
+- Evidence bundle must include deterministic hashes of inventory and schema index inputs.
+- Generated reporting outputs must be deterministic for identical authored and generated inputs.
+
+## Enforcement Links
+
+- `checks_ops_docs_governance`
+- `checks_ops_evidence_bundle_discipline`
+- `checks_ops_domain_contract_structure`

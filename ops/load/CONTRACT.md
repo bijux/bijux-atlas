@@ -8,11 +8,11 @@
 
 | Path | Role |
 | --- | --- |
-| `ops/load/suites/suites.json` | Authored SSOT suite catalog |
-| `ops/load/thresholds/*.thresholds.json` | Authored SSOT thresholds |
-| `ops/load/scenarios/*.json` | Authored SSOT scenarios |
+| `ops/load/suites/suites.json` | Authored suite catalog SSOT |
+| `ops/load/thresholds/*.thresholds.json` | Authored thresholds SSOT |
+| `ops/load/scenarios/*.json` | Authored scenarios SSOT |
 | `ops/load/k6/suites/*.js` | Authored suite scripts |
-| `ops/load/generated/suites.manifest.json` | Generated mirror from `ops/load/suites/suites.json` |
+| `ops/load/generated/suites.manifest.json` | Generated suite manifest |
 | `ops/load/generated/load-summary.json` | Generated summary |
 | `ops/load/generated/load-drift-report.json` | Generated drift report |
 
@@ -23,16 +23,22 @@
 | `ops/load/suites/suites.json` | `ops/schema/load/suite-manifest.schema.json` |
 | `ops/load/thresholds/*.thresholds.json` | `ops/schema/load/thresholds.schema.json` |
 | `ops/load/contracts/deterministic-seed-policy.json` | `ops/schema/load/deterministic-seed-policy.schema.json` |
+| `ops/load/generated/suites.manifest.json` | `ops/schema/load/suite-manifest.schema.json` |
 | `ops/load/generated/load-summary.json` | `ops/schema/load/load-summary.schema.json` |
 | `ops/load/generated/load-drift-report.json` | `ops/schema/load/load-drift-report.schema.json` |
 
 ## Invariants
 
-- Canonical suite manifest is `ops/load/suites/suites.json`.
-- Authored JSON under `ops/load/k6/manifests/` is forbidden.
-- Canonical thresholds live only under `ops/load/thresholds/`.
-- Threshold filenames must be unique and follow `<suite>.thresholds.json`.
-- Every k6 suite entry references an existing scenario file.
-- Deterministic seed policy is defined in `ops/load/contracts/deterministic-seed-policy.json`.
-- Scenario coverage in generated summary must be complete (`missing` must be empty for stable catalog).
-- Threshold expectations are enforced against referenced threshold files.
+- No duplicate authored truth is allowed; suite SSOT is `ops/load/suites/suites.json` and threshold SSOT is `ops/load/thresholds/*.thresholds.json`.
+- Schema references for this domain must resolve only to `ops/schema/**`.
+- Behavior source outside canonical k6 script surfaces is forbidden under `ops/load`.
+- The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
+- Generated load artifacts must include `generated_by` and `schema_version` metadata.
+- Load docs must be linked from `ops/load/INDEX.md`; orphan docs are forbidden.
+- Authored JSON in `ops/load/k6/manifests/` is forbidden.
+- Generated load summary and drift reports must be deterministic for identical authored inputs.
+
+## Enforcement Links
+
+- `checks_ops_required_files_contracts`
+- `checks_ops_domain_contract_structure`

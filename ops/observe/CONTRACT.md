@@ -9,11 +9,11 @@
 | Path | Role |
 | --- | --- |
 | `ops/observe/alert-catalog.json` | Authored alert catalog |
-| `ops/observe/slo-definitions.json` | Authored SLO definitions |
-| `ops/observe/telemetry-drills.json` | Authored telemetry drill catalog |
-| `ops/observe/readiness.json` | Authored observability readiness policy |
-| `ops/observe/suites/suites.json` | Authored observability suite definitions |
-| `ops/observe/generated/telemetry-index.json` | Generated observability index |
+| `ops/observe/slo-definitions.json` | Authored SLO catalog |
+| `ops/observe/telemetry-drills.json` | Authored drill catalog |
+| `ops/observe/readiness.json` | Authored readiness policy |
+| `ops/observe/suites/suites.json` | Authored suite catalog |
+| `ops/observe/generated/telemetry-index.json` | Generated telemetry index |
 
 ## Schema References
 
@@ -28,9 +28,17 @@
 
 ## Invariants
 
-- Canonical naming is `observe`; legacy `obs` names and paths are forbidden in authored artifacts.
-- Public telemetry surface is the union of published metrics, alerts, traces, logs fields, and dashboard contracts under `ops/observe/contracts/`.
-- Alert catalog coverage must reference SLOs and stable severity semantics.
-- SLO definitions and telemetry drills are authored policy; generated telemetry index is derived evidence.
-- Observability suites must be deterministic for the same drill catalog and contracts.
-- Generated telemetry index is immutable evidence output and must not be hand-edited.
+- No duplicate authored truth is allowed; authored observability policy lives only in `ops/observe/*.json` and `ops/observe/suites/*.json`.
+- Schema references for this domain must resolve only to `ops/schema/**`.
+- Behavior source is forbidden in `ops/observe`; runtime execution logic remains outside `ops/`.
+- The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
+- Generated observe artifacts must include `generated_by` and `schema_version` metadata.
+- Observe docs must be linked from `ops/observe/INDEX.md`; orphan docs are forbidden.
+- Public telemetry surface is defined by contracts in `ops/observe/contracts/` and must not drift silently.
+- Generated telemetry index output must be deterministic for identical authored inputs.
+
+## Enforcement Links
+
+- `checks_ops_no_scripts_areas_or_xtask_refs`
+- `checks_ops_required_files_contracts`
+- `checks_ops_domain_contract_structure`

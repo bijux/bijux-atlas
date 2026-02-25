@@ -32,9 +32,17 @@
 
 ## Invariants
 
-- E2E is composition-only: scenarios orchestrate existing stack, load, observe, and dataset contracts without redefining them.
-- Each suite entry references existing scenarios and expectations by stable identifiers.
-- Reproducibility settings in `reproducibility-policy.json` are mandatory for every promoted suite.
-- Fixtures referenced by E2E scenarios must be present and allowlisted before execution.
-- Generated summary and coverage artifacts are deterministic for the same suite input and fixture set.
-- Scenario taxonomy must classify all suites and scenarios used in the promoted E2E catalog.
+- No duplicate authored truth is allowed; scenario composition is authored only in `ops/e2e/scenarios/scenarios.json`.
+- Schema references for this domain must resolve only to `ops/schema/**`.
+- E2E is composition-only; behavior implementation does not live under `ops/e2e`.
+- The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
+- Generated E2E artifacts must include `generated_by` and `schema_version` metadata.
+- E2E docs must be linked from `ops/e2e/INDEX.md`; orphan docs are forbidden.
+- Referenced fixture assets must be versioned, allowlisted, and lock-verified.
+- Suite and scenario coverage generation must be deterministic for identical authored inputs.
+
+## Enforcement Links
+
+- `checks_ops_domain_contract_structure`
+- `checks_ops_required_files_contracts`
+- `checks_ops_fixture_governance`

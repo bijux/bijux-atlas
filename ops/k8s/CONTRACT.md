@@ -31,9 +31,16 @@
 
 ## Invariants
 
-- Helm chart content under `ops/k8s/charts/` is specification-only and does not execute behavior.
-- Install matrix profile names are unique, deterministic, and lexicographically sorted.
-- Canonical values profiles include `kind`, `dev`, `ci`, and `prod`.
-- Render determinism is required: the same chart and values inputs must produce identical rendered manifests.
-- Release snapshot and render artifact index are generated outputs and must never be hand-edited.
-- CRD compatibility policy and rollout/rollback expectations remain backward-compatible for promoted versions.
+- No duplicate authored truth is allowed; k8s authored inputs are constrained to chart, values, and install matrix paths.
+- Schema references for this domain must resolve only to `ops/schema/**`.
+- Behavior source is forbidden in `ops/k8s`; execution logic remains outside `ops/`.
+- The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
+- Generated k8s artifacts must include `generated_by` and `schema_version` metadata.
+- K8s docs must be linked from `ops/k8s/INDEX.md`; orphan docs are forbidden.
+- Render determinism is mandatory: same chart plus same values must produce identical manifests.
+- Release snapshot and inventory index generation must be deterministic for identical authored inputs.
+
+## Enforcement Links
+
+- `checks_ops_domain_contract_structure`
+- `checks_ops_required_files_contracts`
