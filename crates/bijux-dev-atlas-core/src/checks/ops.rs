@@ -610,6 +610,7 @@ fn checks_ops_generated_readonly_markers(
 fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let required = [
         "ops/schema/README.md",
+        "ops/schema/inventory/gates.schema.json",
         "ops/schema/inventory/pins.schema.json",
         "ops/schema/inventory/toolchain.schema.json",
         "ops/schema/env/overlay.schema.json",
@@ -650,6 +651,7 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     }
 
     let schema_contracts = [
+        "ops/schema/inventory/gates.schema.json",
         "ops/schema/inventory/pins.schema.json",
         "ops/schema/inventory/toolchain.schema.json",
         "ops/schema/datasets/manifest.schema.json",
@@ -804,13 +806,14 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
 }
 
 fn checks_ops_manifest_integrity(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let manifests: [(&str, &[&str]); 3] = [
+    let manifests: [(&str, &[&str]); 4] = [
         (
             "ops/inventory/surfaces.json",
             &["schema_version", "entrypoints"],
         ),
         ("ops/inventory/contracts.json", &["schema_version"]),
         ("ops/inventory/drills.json", &["schema_version"]),
+        ("ops/inventory/gates.json", &["schema_version", "gates"]),
     ];
     let mut violations = Vec::new();
     for (path, required_keys) in manifests {
