@@ -476,7 +476,10 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         {
             violations.push(violation(
                 "OPS_ENV_RUNTIME_LOGIC_FORBIDDEN",
-                format!("runtime logic file is forbidden in ops/env: `{}`", rel.display()),
+                format!(
+                    "runtime logic file is forbidden in ops/env: `{}`",
+                    rel.display()
+                ),
                 "keep ops/env overlays as pure data only",
                 Some(rel),
             ));
@@ -535,7 +538,9 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
     Ok(violations)
 }
 
-fn merged_env_overlay(repo_root: &Path) -> Result<serde_json::Map<String, serde_json::Value>, String> {
+fn merged_env_overlay(
+    repo_root: &Path,
+) -> Result<serde_json::Map<String, serde_json::Value>, String> {
     let base = parse_overlay_values(repo_root, "ops/env/base/overlay.json")?;
     let mut merged = base;
     for rel in [
@@ -565,6 +570,47 @@ fn parse_overlay_values(
         .and_then(|v| v.as_object())
         .cloned()
         .ok_or_else(|| format!("{rel}: missing `values` object"))
+}
+
+fn extract_required_files_yaml_block(content: &str) -> Option<String> {
+    let mut in_yaml = false;
+    let mut yaml_block = String::new();
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed == "```yaml" {
+            in_yaml = true;
+            continue;
+        }
+        if trimmed == "```" && in_yaml {
+            break;
+        }
+        if in_yaml {
+            yaml_block.push_str(line);
+            yaml_block.push('\n');
+        }
+    }
+    if yaml_block.trim().is_empty() {
+        None
+    } else {
+        Some(yaml_block)
+    }
+}
+
+fn collect_json_string_values(value: &serde_json::Value, out: &mut Vec<String>) {
+    match value {
+        serde_json::Value::String(s) => out.push(s.to_string()),
+        serde_json::Value::Array(items) => {
+            for item in items {
+                collect_json_string_values(item, out);
+            }
+        }
+        serde_json::Value::Object(map) => {
+            for item in map.values() {
+                collect_json_string_values(item, out);
+            }
+        }
+        _ => {}
+    }
 }
 
 fn checks_ops_generated_readonly_markers(
@@ -638,7 +684,14 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/schema/load/k6-suite.schema.json",
         "ops/schema/load/perf-baseline.schema.json",
         "ops/schema/load/thresholds.schema.json",
+        "ops/schema/configs/public-surface.schema.json",
         "ops/schema/meta/ownership.schema.json",
+        "ops/schema/meta/namespaces.schema.json",
+        "ops/schema/meta/pins.schema.json",
+        "ops/schema/meta/required-files-contract.schema.json",
+        "ops/schema/meta/inventory-index.schema.json",
+        "ops/schema/meta/ops-index.schema.json",
+        "ops/schema/meta/scorecard.schema.json",
         "ops/schema/report/unified.schema.json",
         "ops/schema/report/readiness-score.schema.json",
         "ops/schema/report/evidence-levels.schema.json",
@@ -703,6 +756,13 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/schema/load/k6-suite.schema.json",
         "ops/schema/load/perf-baseline.schema.json",
         "ops/schema/load/thresholds.schema.json",
+        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/meta/namespaces.schema.json",
+        "ops/schema/meta/pins.schema.json",
+        "ops/schema/meta/required-files-contract.schema.json",
+        "ops/schema/meta/inventory-index.schema.json",
+        "ops/schema/meta/ops-index.schema.json",
+        "ops/schema/meta/scorecard.schema.json",
         "ops/schema/report/readiness-score.schema.json",
         "ops/schema/report/evidence-levels.schema.json",
         "ops/schema/load/deterministic-seed-policy.schema.json",
@@ -726,7 +786,10 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         let required_schema_version = value
             .get("required")
             .and_then(|v| v.as_array())
-            .map(|arr| arr.iter().any(|item| item.as_str() == Some("schema_version")))
+            .map(|arr| {
+                arr.iter()
+                    .any(|item| item.as_str() == Some("schema_version"))
+            })
             .unwrap_or(false);
         if !required_schema_version {
             violations.push(violation(
@@ -752,7 +815,9 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         if let Some(name) = rel.file_name().and_then(|n| n.to_str()) {
             let stem = name.trim_end_matches(".schema.json");
             let naming_valid = !stem.is_empty()
-                && stem.chars().all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
+                && stem
+                    .chars()
+                    .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
                 && !stem.starts_with('-')
                 && !stem.ends_with('-');
             if !naming_valid {
@@ -948,6 +1013,17 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
             ));
         }
     }
+    let ops_index_rel = Path::new("ops/INDEX.md");
+    let ops_index_text = fs::read_to_string(ctx.repo_root.join(ops_index_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if !ops_index_text.contains("ops/schema/VERSIONING_POLICY.md") {
+        violations.push(violation(
+            "OPS_SCHEMA_VERSIONING_POLICY_NOT_LINKED",
+            "ops/INDEX.md must link ops/schema/VERSIONING_POLICY.md".to_string(),
+            "add schema versioning policy link to ops/INDEX.md",
+            Some(ops_index_rel),
+        ));
+    }
 
     const SCHEMA_BUDGET_CAP: usize = 90;
     if actual_schema_files.len() > SCHEMA_BUDGET_CAP {
@@ -971,6 +1047,37 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     let allowlist_rel = Path::new("ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md");
     let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for line in allowlist_text.lines() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("- ") {
+            continue;
+        }
+        let Some(path) = trimmed.split('`').nth(1) else {
+            violations.push(violation(
+                "OPS_SCHEMA_REFERENCE_ALLOWLIST_LINE_INVALID",
+                format!("allowlist entry must contain backtick path and reason: `{trimmed}`"),
+                "format entries as `- `ops/schema/...`: reason`",
+                Some(allowlist_rel),
+            ));
+            continue;
+        };
+        if !path.starts_with("ops/schema/") {
+            violations.push(violation(
+                "OPS_SCHEMA_REFERENCE_ALLOWLIST_PATH_INVALID",
+                format!("allowlist schema path must start with ops/schema/: `{path}`"),
+                "keep schema allowlist scoped to ops/schema/**",
+                Some(allowlist_rel),
+            ));
+        }
+        if !trimmed.contains(":") {
+            violations.push(violation(
+                "OPS_SCHEMA_REFERENCE_ALLOWLIST_REASON_MISSING",
+                format!("allowlist entry is missing rationale: `{trimmed}`"),
+                "append a rationale after `:` for every allowlist entry",
+                Some(allowlist_rel),
+            ));
+        }
+    }
     let allowed_unreferenced = allowlist_text
         .lines()
         .filter_map(|line| line.split('`').nth(1))
@@ -995,6 +1102,104 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
                 "reference schema from contract/config or add a reason in SCHEMA_REFERENCE_ALLOWLIST.md",
                 Some(Path::new(schema_path)),
             ));
+        }
+    }
+
+    let required_files_schema_rel =
+        Path::new("ops/schema/meta/required-files-contract.schema.json");
+    let required_files_schema_text =
+        fs::read_to_string(ctx.repo_root.join(required_files_schema_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let required_files_schema_json: serde_json::Value =
+        serde_json::from_str(&required_files_schema_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let required_fields = required_files_schema_json
+        .get("required")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    for key in [
+        "required_files",
+        "required_dirs",
+        "forbidden_patterns",
+        "notes",
+    ] {
+        if !required_fields.contains(key) {
+            violations.push(violation(
+                "OPS_REQUIRED_FILES_SCHEMA_KEY_MISSING",
+                format!("required-files schema must require key `{key}`"),
+                "keep required-files meta schema aligned with REQUIRED_FILES contract format",
+                Some(required_files_schema_rel),
+            ));
+        }
+    }
+    for required_doc in walk_files(&ctx.repo_root.join("ops"))
+        .into_iter()
+        .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
+        .filter(|rel| rel.file_name().and_then(|n| n.to_str()) == Some("REQUIRED_FILES.md"))
+    {
+        let text = fs::read_to_string(ctx.repo_root.join(&required_doc))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let Some(yaml_block) = extract_required_files_yaml_block(&text) else {
+            continue;
+        };
+        let yaml_value: serde_yaml::Value =
+            serde_yaml::from_str(&yaml_block).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let json_value =
+            serde_json::to_value(yaml_value).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let json_obj = json_value.as_object().cloned().unwrap_or_default();
+        for key in [
+            "required_files",
+            "required_dirs",
+            "forbidden_patterns",
+            "notes",
+        ] {
+            if !json_obj.contains_key(key) {
+                violations.push(violation(
+                    "OPS_REQUIRED_FILES_CONTRACT_KEY_MISSING",
+                    format!(
+                        "required files contract `{}` is missing key `{key}`",
+                        required_doc.display()
+                    ),
+                    "include all canonical REQUIRED_FILES keys",
+                    Some(&required_doc),
+                ));
+            }
+        }
+    }
+
+    for schema_rel in &actual_schema_files {
+        let schema_path = Path::new(schema_rel);
+        let schema_text = fs::read_to_string(ctx.repo_root.join(schema_path))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let schema_json: serde_json::Value = serde_json::from_str(&schema_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let mut strings = Vec::new();
+        collect_json_string_values(&schema_json, &mut strings);
+        for value in strings {
+            if !(value.contains(".schema.json") || value.starts_with("ops/")) {
+                continue;
+            }
+            if !(value.starts_with("ops/schema/") || value.starts_with("ops/")) {
+                continue;
+            }
+            let ref_path = Path::new(&value);
+            if ref_path.starts_with("ops/") && !ctx.adapters.fs.exists(ctx.repo_root, ref_path) {
+                violations.push(violation(
+                    "OPS_SCHEMA_REFERENCE_PATH_MISSING",
+                    format!(
+                        "schema `{}` references missing path `{}`",
+                        schema_path.display(),
+                        ref_path.display()
+                    ),
+                    "fix schema reference path or restore the referenced file",
+                    Some(schema_path),
+                ));
+            }
         }
     }
 

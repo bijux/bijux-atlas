@@ -10,6 +10,7 @@ Human entry for the ops specification surface.
 - Inventory map: `ops/report/docs/inventory-contracts.md`
 - Migration window: `ops/report/docs/migration-window.md`
 - Pin lifecycle: `ops/report/docs/pin-lifecycle.md`
+- Schema versioning policy: `ops/schema/VERSIONING_POLICY.md`
 - Generated index artifact: `ops/_generated.example/ops-index.json`
 - Release evidence bundle: `ops/_generated.example/ops-evidence-bundle.json`
 
