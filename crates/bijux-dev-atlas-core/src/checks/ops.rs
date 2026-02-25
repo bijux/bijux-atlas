@@ -131,6 +131,11 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_no_duplicate_nav_titles" => Some(check_docs_no_duplicate_nav_titles),
         "checks_docs_markdown_link_targets_exist" => Some(check_docs_markdown_link_targets_exist),
         "checks_docs_markdown_directory_budgets" => Some(check_docs_markdown_directory_budgets),
+        "checks_docs_index_reachability_ledger" => Some(check_docs_index_reachability_ledger),
+        "checks_docs_ops_operations_duplicate_titles" => {
+            Some(check_docs_ops_operations_duplicate_titles)
+        }
+        "checks_docs_near_duplicate_filenames" => Some(check_docs_near_duplicate_filenames),
         "checks_docs_operations_directory_index_contract" => {
             Some(check_docs_operations_directory_index_contract)
         }
@@ -253,6 +258,9 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_no_duplicate_nav_titles",
         "checks_docs_markdown_link_targets_exist",
         "checks_docs_markdown_directory_budgets",
+        "checks_docs_index_reachability_ledger",
+        "checks_docs_ops_operations_duplicate_titles",
+        "checks_docs_near_duplicate_filenames",
         "checks_docs_operations_directory_index_contract",
         "checks_docs_operations_canonical_concept_paths",
         "checks_docs_operations_verify_command_quality",

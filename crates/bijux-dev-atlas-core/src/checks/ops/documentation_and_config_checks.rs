@@ -54,6 +54,11 @@ fn docs_markdown_paths(ctx: &CheckContext<'_>) -> Vec<PathBuf> {
         .collect()
 }
 
+fn markdown_h1_title(text: &str) -> Option<String> {
+    text.lines()
+        .find_map(|line| line.strip_prefix("# ").map(|v| v.trim().to_string()))
+}
+
 fn markdown_link_targets(content: &str) -> Vec<String> {
     let mut out = Vec::new();
     for line in content.lines() {
@@ -231,6 +236,182 @@ pub(super) fn check_docs_markdown_directory_budgets(
                 "consolidate duplicate docs and keep one canonical page per concept",
                 Some(Path::new(&prefix)),
             ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_index_reachability_ledger(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let mut index_paths = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path).to_path_buf();
+        if rel.file_name().and_then(|n| n.to_str()) == Some("INDEX.md") {
+            index_paths.push(path);
+        }
+    }
+
+    let mut reachable = BTreeSet::new();
+    for index in &index_paths {
+        let text = fs::read_to_string(index).map_err(|err| CheckError::Failed(err.to_string()))?;
+        for target in markdown_link_targets(&text) {
+            let clean = target
+                .split('#')
+                .next()
+                .unwrap_or_default()
+                .trim()
+                .to_string();
+            if clean.is_empty() {
+                continue;
+            }
+            let candidate = index.parent().unwrap_or_else(|| Path::new("docs")).join(&clean);
+            let target_path = if candidate.exists() {
+                candidate
+            } else {
+                ctx.repo_root.join("docs").join(&clean)
+            };
+            if target_path.exists() && target_path.extension().and_then(|v| v.to_str()) == Some("md") {
+                if let Ok(rel) = target_path.strip_prefix(ctx.repo_root) {
+                    reachable.insert(rel.display().to_string());
+                }
+            }
+        }
+    }
+
+    let mut computed_entries = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path
+            .strip_prefix(ctx.repo_root)
+            .unwrap_or(&path)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let title = markdown_h1_title(&text).unwrap_or_else(|| "(untitled)".to_string());
+        let is_index = rel.ends_with("/INDEX.md") || rel == "docs/INDEX.md" || rel == "docs/index.md";
+        let is_reachable = is_index || reachable.contains(&rel);
+        if !is_reachable {
+            violations.push(violation(
+                "DOCS_INDEX_REACHABILITY_MISSING",
+                format!("docs markdown `{rel}` is not linked from any docs/**/INDEX.md"),
+                "link the page from a canonical INDEX.md or remove it",
+                Some(Path::new(&rel)),
+            ));
+        }
+        computed_entries.push(serde_json::json!({
+            "path": rel,
+            "title": title,
+            "is_index": is_index,
+            "reachable_from_index": is_reachable
+        }));
+    }
+    computed_entries.sort_by(|a, b| {
+        a.get("path")
+            .and_then(|v| v.as_str())
+            .cmp(&b.get("path").and_then(|v| v.as_str()))
+    });
+    let computed_ledger = serde_json::json!({
+        "schema_version": 1,
+        "generated_by": "bijux dev atlas docs ledger --write-example",
+        "entries": computed_entries
+    });
+    let ledger_rel = Path::new("docs/_generated/docs-ledger.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, ledger_rel) {
+        violations.push(violation(
+            "DOCS_LEDGER_MISSING",
+            "missing docs ledger artifact `docs/_generated/docs-ledger.json`".to_string(),
+            "generate and commit docs/_generated/docs-ledger.json",
+            Some(ledger_rel),
+        ));
+    } else {
+        let committed = fs::read_to_string(ctx.repo_root.join(ledger_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let committed_json: serde_json::Value = serde_json::from_str(&committed)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if committed_json != computed_ledger {
+            violations.push(violation(
+                "DOCS_LEDGER_STALE",
+                "docs/_generated/docs-ledger.json is stale against current docs index reachability"
+                    .to_string(),
+                "regenerate and commit docs/_generated/docs-ledger.json",
+                Some(ledger_rel),
+            ));
+        }
+    }
+
+    Ok(violations)
+}
+
+pub(super) fn check_docs_ops_operations_duplicate_titles(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut ops_titles = BTreeMap::<String, String>::new();
+    let mut violations = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path
+            .strip_prefix(ctx.repo_root)
+            .unwrap_or(&path)
+            .display()
+            .to_string();
+        if !rel.starts_with("docs/ops/") && !rel.starts_with("docs/operations/") {
+            continue;
+        }
+        let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let title = markdown_h1_title(&text).unwrap_or_default();
+        if title.is_empty() {
+            continue;
+        }
+        if rel.starts_with("docs/ops/") {
+            ops_titles.insert(title.to_ascii_lowercase(), rel);
+        } else if let Some(dup) = ops_titles.get(&title.to_ascii_lowercase()) {
+            violations.push(violation(
+                "DOCS_DUPLICATE_TITLE_ACROSS_OPS_GROUPS",
+                format!(
+                    "duplicate title across docs groups: `{}` in `{dup}` and `{rel}`",
+                    title
+                ),
+                "keep one canonical page title and convert duplicate page to a redirect stub",
+                Some(Path::new(&rel)),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_near_duplicate_filenames(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut by_dir = BTreeMap::<String, BTreeSet<String>>::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
+        let parent = rel
+            .parent()
+            .map(|p| p.display().to_string())
+            .unwrap_or_default();
+        let stem = rel
+            .file_stem()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default()
+            .to_string();
+        by_dir.entry(parent).or_default().insert(stem);
+    }
+    let mut violations = Vec::new();
+    for (dir, stems) in by_dir {
+        for stem in &stems {
+            if let Some(stripped) = stem.strip_suffix("ly") {
+                if stems.contains(stripped) {
+                    violations.push(violation(
+                        "DOCS_NEAR_DUPLICATE_FILENAME",
+                        format!(
+                            "near-duplicate filenames in `{dir}`: `{}` and `{}`",
+                            stem, stripped
+                        ),
+                        "keep one canonical filename and remove redirect-style duplicates",
+                        Some(Path::new(&dir)),
+                    ));
+                }
+            }
         }
     }
     Ok(violations)

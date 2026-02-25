@@ -224,6 +224,17 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "checks_docs_index_reachability_ledger"
+domain = "docs"
+title = "docs markdown pages are reachable from index graph and docs ledger is current"
+docs = "docs/operations/INDEX.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 3000
+visibility = "internal"
+
+[[checks]]
 id = "checks_docs_markdown_directory_budgets"
 domain = "docs"
 title = "docs markdown directory budgets stay within caps"
@@ -265,6 +276,17 @@ tags = ["internal", "slow"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_near_duplicate_filenames"
+domain = "docs"
+title = "docs disallow near-duplicate filenames in the same directory"
+docs = "docs/operations/INDEX.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
@@ -331,6 +353,17 @@ tags = ["internal", "fast"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 800
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_ops_operations_duplicate_titles"
+domain = "docs"
+title = "docs/ops and docs/operations must not share duplicate top-level titles"
+docs = "docs/operations/INDEX.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
