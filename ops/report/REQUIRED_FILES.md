@@ -10,7 +10,7 @@ required_files:
   - ops/report/schema.json
   - ops/report/evidence-levels.json
   - ops/report/examples/unified-report-example.json
-  - ops/report/docs/REFERENCE_INDEX.md
+  - docs/ops/INDEX.md
 required_dirs:
   - ops/report/generated
 forbidden_patterns:

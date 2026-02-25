@@ -1,51 +1,12 @@
-# Ops Reference Index
+# Report Docs Redirect Index
 
-- Owner: bijux-atlas-operations
-- Stability: stable
+Canonical ops documentation index: `docs/ops/INDEX.md`.
 
-- [Stack Lifecycle](stack-lifecycle.md)
-- [Report Docs README](README.md)
-- [Kubernetes Conformance](k8s-conformance.md)
-- [Kubernetes Install Contract](k8s-install-contract.md)
-- [Kubernetes Uninstall Contract](k8s-uninstall-contract.md)
-- [Kubernetes Upgrade Contract](k8s-upgrade-contract.md)
-- [Kubernetes Rollback Contract](k8s-rollback-contract.md)
-- [Kubernetes CRD Compatibility Policy](k8s-crd-compatibility-policy.md)
-- [Load Testing](load-testing.md)
-- [E2E Philosophy](e2e-philosophy.md)
-- [E2E Composition Contract](e2e-composition-contract.md)
-- [Observability Verification](observability-verification.md)
-- [Observability Pack Definition](observability-pack-definition.md)
-- [Dataset Lifecycle Contract](dataset-lifecycle-contract.md)
-- [Toolchain Pins Explanation](toolchain-pins-explanation.md)
-- [Pin Lifecycle](pin-lifecycle.md)
-- [Pin Promotion Workflow](pin-promotion-workflow.md)
-- [Schema Compatibility Policy](schema-compatibility-policy.md)
-- [Ops Gates Contract](ops-gates-contract.md)
-- [Environment Overlays](environment-overlays.md)
-- [Stack Definition](stack-definition.md)
-- [Render Pipeline](render-pipeline.md)
-- [Artifacts Contract](artifacts-contract.md)
-- [Unified Reporting Contract](unified-reporting-contract.md)
-- [Ops Evidence Explanation](ops-evidence-explanation.md)
-- [How Ops Works](how-ops-works.md)
-- [Ops Architecture](ops-architecture.md)
-- [Ops Safety Guarantees](ops-safety-guarantees.md)
-- [Offline Mode](offline-mode.md)
-- [Deterministic Runs](deterministic-runs.md)
-- [Failure Triage Guide](failure-triage-guide.md)
-- [Troubleshooting Runbook](troubleshooting-runbook.md)
-- [Policy Relaxations](policy-relaxations.md)
-- [Ops Glossary](ops-glossary.md)
-- [Cross Area Navigation](cross-area-navigation.md)
-- [Ops Diagrams](ops-diagrams.md)
-- [Observability Directory Rename](observe-rename.md)
-- [Config Compiler Contract](config-compiler-contract.md)
-- [Config Migration Cutoff](config-migration-cutoff.md)
-- [Generated Committed Policy](generated-committed-policy.md)
-- [Inventory Contracts](inventory-contracts.md)
-- [Layout Migration](layout-migration.md)
-- [Migration Window](migration-window.md)
-- [Ops API Contract](ops-api-contract.md)
-- [Ops Docs Update Workflow](ops-docs-update-workflow.md)
-- [v0.1.0 Ops Readiness Checklist](v0.1.0-ops-readiness-checklist.md)
+Primary references:
+- `docs/ops/README.md`
+- `docs/ops/architecture.md`
+- `docs/ops/contracts.md`
+- `docs/ops/workflows.md`
+- `docs/ops/troubleshooting-runbook.md`
+- `docs/ops/ops-glossary.md`
+- `docs/ops/cross-area-navigation.md`

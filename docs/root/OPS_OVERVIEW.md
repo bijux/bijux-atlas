@@ -7,4 +7,4 @@ Operations documentation covers stack lifecycle, render/apply safety, observabil
 
 Reference:
 - `docs/operations/INDEX.md`
-- `ops/report/docs/REFERENCE_INDEX.md`
+- `docs/ops/INDEX.md`

@@ -5,7 +5,7 @@
 - `ops/report/CONTRACT.md`
 - `ops/report/REQUIRED_FILES.md`
 - `ops/report/OWNER.md`
-- `ops/report/docs/REFERENCE_INDEX.md`
+- `docs/ops/INDEX.md`
 
 ## Inputs
 - `ops/report/schema.json`

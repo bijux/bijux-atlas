@@ -12,10 +12,11 @@ Human entry for the ops specification surface.
 - `NAMING.md`
 - `DRIFT.md`
 - `schema/VERSIONING_POLICY.md` (canonical path: `ops/schema/VERSIONING_POLICY.md`)
-- `report/docs/inventory-contracts.md`
-- `report/docs/migration-window.md`
-- `report/docs/pin-lifecycle.md`
-- `report/docs/ops-docs-update-workflow.md`
+- `../docs/ops/INDEX.md`
+- `../docs/ops/inventory-contracts.md`
+- `../docs/ops/migration-window.md`
+- `../docs/ops/pin-lifecycle.md`
+- `../docs/ops/ops-docs-update-workflow.md`
 - `_generated.example/ops-index.json`
 - `_generated.example/ops-evidence-bundle.json`
 
