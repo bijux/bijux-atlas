@@ -18,6 +18,7 @@ const OPS_PINS_PATH: &str = "ops/inventory/pins.yaml";
 const OPS_SURFACES_PATH: &str = "ops/inventory/surfaces.json";
 const OPS_MIRROR_POLICY_PATH: &str = "ops/inventory/generated-committed-mirror.json";
 const OPS_CONTRACTS_PATH: &str = "ops/inventory/contracts.json";
+const OPS_DATASETS_MANIFEST_PATH: &str = "ops/datasets/manifest.json";
 
 const EXPECTED_TOOLCHAIN_SCHEMA: u64 = 1;
 const EXPECTED_SURFACES_SCHEMA: u64 = 2;
@@ -25,6 +26,7 @@ const EXPECTED_MIRROR_SCHEMA: u64 = 1;
 const EXPECTED_CONTRACTS_SCHEMA: u64 = 1;
 const EXPECTED_STACK_PROFILES_SCHEMA: u64 = 1;
 const EXPECTED_STACK_VERSION_SCHEMA: u64 = 1;
+const EXPECTED_PINS_SCHEMA: u64 = 1;
 
 const INVENTORY_INPUTS: [&str; 7] = [
     OPS_STACK_PROFILES_PATH,
@@ -131,6 +133,29 @@ pub struct ContractsManifest {
     pub schema_version: u64,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct PinsManifest {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub images: BTreeMap<String, String>,
+    #[serde(default)]
+    pub dataset_ids: Vec<String>,
+    #[serde(default)]
+    pub versions: BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetsManifest {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub datasets: Vec<DatasetEntry>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetEntry {
+    pub id: String,
+}
+
 fn load_json<T: for<'de> Deserialize<'de>>(repo_root: &Path, rel: &str) -> Result<T, String> {
     let path = repo_root.join(rel);
     let text = fs::read_to_string(&path)
@@ -220,7 +245,17 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         }
     };
 
-    validate_pins_file_content(repo_root, &mut errors);
+    validate_pins_file_content(
+        repo_root,
+        inventory.toolchain.images.keys().cloned().collect(),
+        inventory
+            .stack_version_manifest
+            .components
+            .keys()
+            .cloned()
+            .collect(),
+        &mut errors,
+    );
 
     if inventory.stack_profiles.schema_version != EXPECTED_STACK_PROFILES_SCHEMA {
         errors.push(format!(
@@ -492,37 +527,143 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     errors
 }
 
-fn validate_pins_file_content(repo_root: &Path, errors: &mut Vec<String>) {
+fn validate_pins_file_content(
+    repo_root: &Path,
+    toolchain_image_keys: BTreeSet<String>,
+    stack_component_keys: BTreeSet<String>,
+    errors: &mut Vec<String>,
+) {
     let path = repo_root.join(OPS_PINS_PATH);
     let Ok(text) = fs::read_to_string(&path) else {
         return;
     };
-    for (idx, line) in text.lines().enumerate() {
-        let trimmed = line.trim();
-        if trimmed.is_empty() || trimmed.starts_with('#') {
-            continue;
+    let parsed: PinsManifest = match serde_yaml::from_str(&text) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(format!("{OPS_PINS_PATH}: invalid yaml: {err}"));
+            return;
         }
-        if trimmed.contains(":latest") {
+    };
+    if parsed.schema_version != EXPECTED_PINS_SCHEMA {
+        errors.push(format!(
+            "{OPS_PINS_PATH}: expected schema_version={EXPECTED_PINS_SCHEMA}, got {}",
+            parsed.schema_version
+        ));
+    }
+    if parsed.images.is_empty() {
+        errors.push(format!("{OPS_PINS_PATH}: images must not be empty"));
+    }
+    if parsed.dataset_ids.is_empty() {
+        errors.push(format!("{OPS_PINS_PATH}: dataset_ids must not be empty"));
+    }
+    for (name, image) in &parsed.images {
+        if image.contains(":latest") {
             errors.push(format!(
-                "{OPS_PINS_PATH}: line {} uses forbidden latest tag",
-                idx + 1
+                "{OPS_PINS_PATH}: image `{name}` uses forbidden latest tag"
             ));
         }
-        if let Some(at_pos) = trimmed.find('@') {
-            let digest = &trimmed[at_pos + 1..];
-            if !digest.starts_with("sha256:") {
-                errors.push(format!(
-                    "{OPS_PINS_PATH}: line {} uses unsupported digest format (expected sha256)",
-                    idx + 1
-                ));
-            } else if digest.len() <= "sha256:".len() {
-                errors.push(format!(
-                    "{OPS_PINS_PATH}: line {} has empty sha256 digest",
-                    idx + 1
-                ));
-            }
+        validate_image_hash(name, image, errors);
+    }
+
+    for required in toolchain_image_keys.union(&stack_component_keys) {
+        if !parsed.images.contains_key(required) {
+            errors.push(format!(
+                "{OPS_PINS_PATH}: missing image pin `{required}` required by toolchain/stack manifests"
+            ));
         }
     }
+    for key in parsed.images.keys() {
+        if !toolchain_image_keys.contains(key) || !stack_component_keys.contains(key) {
+            errors.push(format!(
+                "{OPS_PINS_PATH}: unused image pin `{key}` not present in both toolchain and stack manifests"
+            ));
+        }
+    }
+
+    let mut seen_dataset_ids = BTreeSet::new();
+    for id in &parsed.dataset_ids {
+        if id.trim().is_empty() {
+            errors.push(format!("{OPS_PINS_PATH}: dataset_ids must not contain empty entries"));
+            continue;
+        }
+        if !seen_dataset_ids.insert(id.clone()) {
+            errors.push(format!("{OPS_PINS_PATH}: duplicate dataset pin `{id}`"));
+        }
+    }
+
+    let datasets_path = repo_root.join(OPS_DATASETS_MANIFEST_PATH);
+    if let Ok(dataset_text) = fs::read_to_string(&datasets_path) {
+        match serde_json::from_str::<DatasetsManifest>(&dataset_text) {
+            Ok(manifest) => {
+                if manifest.schema_version < 1 {
+                    errors.push(format!(
+                        "{OPS_DATASETS_MANIFEST_PATH}: schema_version must be >= 1"
+                    ));
+                }
+                let known_ids = manifest
+                    .datasets
+                    .iter()
+                    .map(|entry| entry.id.clone())
+                    .collect::<BTreeSet<_>>();
+                for known in &known_ids {
+                    if !seen_dataset_ids.contains(known) {
+                        errors.push(format!(
+                            "{OPS_PINS_PATH}: missing dataset pin `{known}` from {OPS_DATASETS_MANIFEST_PATH}"
+                        ));
+                    }
+                }
+                for pinned in &seen_dataset_ids {
+                    if !known_ids.contains(pinned) {
+                        errors.push(format!(
+                            "{OPS_PINS_PATH}: unused dataset pin `{pinned}` not present in {OPS_DATASETS_MANIFEST_PATH}"
+                        ));
+                    }
+                }
+            }
+            Err(err) => errors.push(format!(
+                "{OPS_DATASETS_MANIFEST_PATH}: invalid json for dataset pin validation: {err}"
+            )),
+        }
+    }
+
+    for (name, version) in &parsed.versions {
+        if !is_semver(version) {
+            errors.push(format!(
+                "{OPS_PINS_PATH}: version `{name}` must be semver (x.y.z), got `{version}`"
+            ));
+        }
+    }
+}
+
+fn validate_image_hash(name: &str, image: &str, errors: &mut Vec<String>) {
+    let Some(at_pos) = image.find('@') else {
+        return;
+    };
+    let digest = &image[at_pos + 1..];
+    if !digest.starts_with("sha256:") {
+        errors.push(format!(
+            "{OPS_PINS_PATH}: image `{name}` uses unsupported digest format (expected sha256)"
+        ));
+        return;
+    }
+    let raw = &digest["sha256:".len()..];
+    if raw.len() != 64 || !raw.chars().all(|c| c.is_ascii_hexdigit()) {
+        errors.push(format!(
+            "{OPS_PINS_PATH}: image `{name}` has invalid sha256 digest length/content"
+        ));
+    }
+}
+
+fn is_semver(value: &str) -> bool {
+    let mut parts = value.split('.');
+    let (Some(major), Some(minor), Some(patch), None) =
+        (parts.next(), parts.next(), parts.next(), parts.next())
+    else {
+        return false;
+    };
+    [major, minor, patch]
+        .iter()
+        .all(|part| !part.is_empty() && part.chars().all(|c| c.is_ascii_digit()))
 }
 
 pub fn ops_inventory_summary(repo_root: &Path) -> Result<serde_json::Value, String> {
@@ -559,6 +700,7 @@ fn collect_files_recursive(path: PathBuf) -> Vec<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::{load_ops_inventory_cached, validate_pins_file_content};
+    use std::collections::BTreeSet;
     use std::fs;
 
     #[test]
@@ -566,16 +708,28 @@ mod tests {
         let root = tempfile::tempdir().expect("tempdir");
         let ops_inventory = root.path().join("ops/inventory");
         fs::create_dir_all(&ops_inventory).expect("mkdir");
+        fs::create_dir_all(root.path().join("ops/datasets")).expect("mkdir datasets");
         fs::write(
             ops_inventory.join("pins.yaml"),
-            "images:\n  app: repo/app:latest\n  good: repo/app:v1@sha256:abc\n  bad: repo/app:v1@sha1:abc\n",
+            "schema_version: 1\nimages:\n  app: repo/app:latest\n  good: repo/app:v1@sha256:abc\n  bad: repo/app:v1@sha1:abc\ndataset_ids:\n  - 110/homo_sapiens/GRCh38\nversions:\n  chart: 0.1.0\n",
         )
         .expect("write pins");
+        fs::write(
+            root.path().join("ops/datasets/manifest.json"),
+            r#"{"schema_version":1,"datasets":[{"id":"110/homo_sapiens/GRCh38"}]}"#,
+        )
+        .expect("write datasets");
         let mut errors = Vec::new();
-        validate_pins_file_content(root.path(), &mut errors);
+        validate_pins_file_content(
+            root.path(),
+            BTreeSet::from(["app".to_string(), "good".to_string(), "bad".to_string()]),
+            BTreeSet::from(["app".to_string(), "good".to_string(), "bad".to_string()]),
+            &mut errors,
+        );
         let text = errors.join("\n");
-        assert!(text.contains("forbidden latest tag"));
-        assert!(text.contains("unsupported digest format"));
+        assert!(text.contains("forbidden latest tag"), "{text}");
+        assert!(text.contains("unsupported digest format"), "{text}");
+        assert!(text.contains("invalid sha256 digest"), "{text}");
     }
 
     #[test]
@@ -633,5 +787,36 @@ mod tests {
             second.toolchain.images.get("rust"),
             Some(&"ghcr.io/x/rust:2".to_string())
         );
+    }
+
+    #[test]
+    fn pins_file_flags_missing_and_unused_pins() {
+        let root = tempfile::tempdir().expect("tempdir");
+        fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
+        fs::create_dir_all(root.path().join("ops/datasets")).expect("mkdir datasets");
+        fs::write(
+            root.path().join("ops/inventory/pins.yaml"),
+            "schema_version: 1\nimages:\n  redis: redis:7.4-alpine\n  orphan: ghcr.io/example/orphan:1.0.0\ndataset_ids:\n  - 111/homo_sapiens/GRCh38\nversions:\n  chart: not-semver\n",
+        )
+        .expect("write pins");
+        fs::write(
+            root.path().join("ops/datasets/manifest.json"),
+            r#"{"schema_version":1,"datasets":[{"id":"110/homo_sapiens/GRCh38"}]}"#,
+        )
+        .expect("write datasets");
+
+        let mut errors = Vec::new();
+        validate_pins_file_content(
+            root.path(),
+            BTreeSet::from(["redis".to_string()]),
+            BTreeSet::from(["redis".to_string()]),
+            &mut errors,
+        );
+
+        let text = errors.join("\n");
+        assert!(text.contains("unused image pin `orphan`"), "{text}");
+        assert!(text.contains("missing dataset pin `110/homo_sapiens/GRCh38`"), "{text}");
+        assert!(text.contains("unused dataset pin `111/homo_sapiens/GRCh38`"), "{text}");
+        assert!(text.contains("must be semver"), "{text}");
     }
 }
