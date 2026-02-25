@@ -51,7 +51,7 @@ mod tests {
         std::fs::create_dir_all(root.path().join("ops/load/queries")).expect("mkdir queries");
         std::fs::create_dir_all(root.path().join("ops/atlas-dev")).expect("mkdir atlas-dev");
         std::fs::write(
-            root.path().join("ops/atlas-dev/registry.toml"),
+            root.path().join("ops/inventory/registry.toml"),
             "schema_version = 1\n",
         )
         .expect("registry");
@@ -108,7 +108,7 @@ mod tests {
         std::fs::create_dir_all(root.path().join("ops/load/thresholds")).expect("mkdir thresholds");
         std::fs::create_dir_all(root.path().join("ops/atlas-dev")).expect("mkdir atlas-dev");
         std::fs::write(
-            root.path().join("ops/atlas-dev/registry.toml"),
+            root.path().join("ops/inventory/registry.toml"),
             "schema_version = 1\n",
         )
         .expect("registry");

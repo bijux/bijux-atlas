@@ -4,7 +4,7 @@
 `bijux-dev-atlas-core` is the deterministic engine for repository checks. It owns check selection, execution order, report aggregation, and rendering helpers.
 
 ## Check Lifecycle
-1. Load and validate the registry (`ops/atlas-dev/registry.toml`).
+1. Load and validate the registry (`ops/inventory/registry.toml`).
 2. Select checks by suite, domain, tag, and id glob.
 3. Resolve each selected check to a `Check` implementation with a stable check id.
 4. Enforce effect capabilities before execution.

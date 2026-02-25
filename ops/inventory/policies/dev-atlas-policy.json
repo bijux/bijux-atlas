@@ -18,7 +18,7 @@
     ]
   },
   "ops": {
-    "registry_relpath": "ops/atlas-dev/registry.toml"
+    "registry_relpath": "ops/inventory/registry.toml"
   },
   "compatibility": [
     {

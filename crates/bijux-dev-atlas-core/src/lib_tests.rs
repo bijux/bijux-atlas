@@ -686,7 +686,7 @@ domain = "ops"
     );
     let err = load_registry(temp.path()).expect_err("must fail");
     assert!(err.contains("failed to parse"));
-    assert!(err.contains("ops/atlas-dev/registry.toml"));
+    assert!(err.contains("ops/inventory/registry.toml"));
 }
 
 #[test]

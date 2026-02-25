@@ -19,7 +19,7 @@ fn policy_doc() -> DevAtlasPolicySetDocument {
     "loc_allowlist":[],
     "rs_files_per_dir_allowlist":[]
   },
-  "ops":{"registry_relpath":"ops/atlas-dev/registry.toml"},
+  "ops":{"registry_relpath":"ops/inventory/registry.toml"},
   "compatibility":[],
   "documented_defaults":[
     {"field":"repo.max_loc_hard","reason":"limit complexity"},

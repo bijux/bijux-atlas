@@ -19,6 +19,6 @@ Belongs in `bijux-atlas-policies`:
 - Relaxations require explicit expiry dates.
 
 ## Workflow
-- Edit policy source: `ops/atlas-dev/policies/dev-atlas-policy.json`.
-- Keep schema synchronized: `ops/atlas-dev/policies/dev-atlas-policy.schema.json`.
+- Edit policy source: `ops/inventory/policies/dev-atlas-policy.json`.
+- Keep schema synchronized: `ops/inventory/policies/dev-atlas-policy.schema.json`.
 - Run: `cargo test -p bijux-dev-atlas-policies`.

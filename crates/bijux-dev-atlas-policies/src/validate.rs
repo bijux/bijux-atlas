@@ -5,8 +5,8 @@ use serde_json::{Map, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const POLICY_CONFIG_PATH: &str = "ops/atlas-dev/policies/dev-atlas-policy.json";
-const POLICY_SCHEMA_PATH: &str = "ops/atlas-dev/policies/dev-atlas-policy.schema.json";
+const POLICY_CONFIG_PATH: &str = "ops/inventory/policies/dev-atlas-policy.json";
+const POLICY_SCHEMA_PATH: &str = "ops/inventory/policies/dev-atlas-policy.schema.json";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PolicyValidationError(pub String);

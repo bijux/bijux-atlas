@@ -82,7 +82,7 @@ fn ops_foundation_suite_passes_on_minimal_fixture() {
     let root = temp.path();
 
     write(
-        &root.join("ops/atlas-dev/registry.toml"),
+        &root.join("ops/inventory/registry.toml"),
         r#"schema_version = 1
 
 [tags]

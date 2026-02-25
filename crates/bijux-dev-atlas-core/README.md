@@ -10,7 +10,7 @@ Deterministic engine crate for `bijux dev atlas check ...` execution.
 - Effects are explicit and capability-gated in the runner.
 
 ## Add A Check
-1. Add a new check entry in `ops/atlas-dev/registry.toml` with stable `id`.
+1. Add a new check entry in `ops/inventory/registry.toml` with stable `id`.
 2. Assign domain, tags, suites, and required effects.
 3. Set a non-zero execution budget.
 4. Implement check logic in `src/checks/`.

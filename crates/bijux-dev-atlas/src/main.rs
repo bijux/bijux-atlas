@@ -83,14 +83,14 @@ impl From<DomainArg> for DomainId {
 fn discover_repo_root(start: &Path) -> Result<PathBuf, String> {
     let mut current = start.canonicalize().map_err(|err| err.to_string())?;
     loop {
-        if current.join("ops/atlas-dev/registry.toml").exists() {
+        if current.join("ops/inventory/registry.toml").exists() {
             return Ok(current);
         }
         if let Some(parent) = current.parent() {
             current = parent.to_path_buf();
         } else {
             return Err(
-                "could not discover repo root (no ops/atlas-dev/registry.toml found)".to_string(),
+                "could not discover repo root (no ops/inventory/registry.toml found)".to_string(),
             );
         }
     }

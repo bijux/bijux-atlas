@@ -22,7 +22,7 @@ pub mod ports;
 mod report_rendering;
 pub use ports::{Capabilities, Fs, ProcessRunner};
 
-pub const DEFAULT_REGISTRY_PATH: &str = "ops/atlas-dev/registry.toml";
+pub const DEFAULT_REGISTRY_PATH: &str = "ops/inventory/registry.toml";
 
 pub fn load_dev_policy_set(
     repo_root: &Path,

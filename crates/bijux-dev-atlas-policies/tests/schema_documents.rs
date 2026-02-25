@@ -15,8 +15,8 @@ fn workspace_root() -> PathBuf {
 #[test]
 fn policy_document_matches_declared_schema_shape() {
     let root = workspace_root();
-    let schema_path = root.join("ops/atlas-dev/policies/dev-atlas-policy.schema.json");
-    let document_path = root.join("ops/atlas-dev/policies/dev-atlas-policy.json");
+    let schema_path = root.join("ops/inventory/policies/dev-atlas-policy.schema.json");
+    let document_path = root.join("ops/inventory/policies/dev-atlas-policy.json");
 
     let schema: serde_json::Value =
         serde_json::from_str(&fs::read_to_string(schema_path).expect("schema text"))

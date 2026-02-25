@@ -7,8 +7,8 @@
 4. Add evaluation logic in `evaluate_policy_set_pure`.
 5. Keep evaluation pure: inputs must come from `PolicyInputSnapshot`.
 6. Add table tests to `tests/policy_evaluation_table.rs`.
-7. Update `ops/atlas-dev/policies/dev-atlas-policy.schema.json` when contract changes.
-8. Update `ops/atlas-dev/policies/dev-atlas-policy.json` with default values.
+7. Update `ops/inventory/policies/dev-atlas-policy.schema.json` when contract changes.
+8. Update `ops/inventory/policies/dev-atlas-policy.json` with default values.
 9. Run schema validation tests.
 10. Run full crate tests.
 

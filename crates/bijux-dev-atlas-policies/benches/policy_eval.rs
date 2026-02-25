@@ -29,7 +29,7 @@ fn sample_policy() -> DevAtlasPolicySet {
             rs_files_per_dir_allowlist: Vec::new(),
         },
         ops_policy: OpsPolicy {
-            registry_relpath: "ops/atlas-dev/registry.toml".to_string(),
+            registry_relpath: "ops/inventory/registry.toml".to_string(),
         },
         compatibility: Vec::new(),
         documented_defaults: Vec::new(),
