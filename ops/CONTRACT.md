@@ -63,7 +63,7 @@ Stable (reviewed):
 Generated (rebuildable):
 - `ops/_generated/**`
 - `ops/_generated.example/**` for committed examples only
-- `ops/_examples/**`
+- `ops/_generated.example/**`
 
 Runtime outputs (ephemeral):
 - `artifacts/**`

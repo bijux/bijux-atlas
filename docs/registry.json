@@ -15409,7 +15409,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/_examples/generated/INDEX.example.md",
+      "path": "ops/_generated.example/INDEX.example.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16374,7 +16374,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/helm/README.md",
+      "path": "ops/k8s/charts/bijux-atlas/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16556,7 +16556,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/kind/README.md",
+      "path": "ops/stack/kind/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [

@@ -9,7 +9,7 @@
       "run_id": "atlas-ops-example",
       "status": "pass",
       "duration_seconds": 120,
-      "log": "ops/_examples/logs/rust-example.log"
+      "log": "ops/_generated.example/logs/rust-example.log"
     }
   },
   "summary": {
