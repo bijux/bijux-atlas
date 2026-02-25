@@ -640,6 +640,15 @@ pub(super) fn check_ops_required_files_contracts(
         let required_files = required_contract.required_files.clone();
         let required_directories = required_contract.required_dirs.clone();
         let domain_root = rel.parent().unwrap_or(Path::new("ops"));
+        let domain_readme_rel = domain_root.join("README.md");
+        let domain_readme_text = if ctx.adapters.fs.exists(ctx.repo_root, &domain_readme_rel) {
+            Some(
+                fs::read_to_string(ctx.repo_root.join(&domain_readme_rel))
+                    .map_err(|err| CheckError::Failed(err.to_string()))?,
+            )
+        } else {
+            None
+        };
 
         for forbidden in [
             "ops/obs/",
@@ -797,6 +806,20 @@ pub(super) fn check_ops_required_files_contracts(
                     "create required directory or remove stale declaration from REQUIRED_FILES.md",
                     Some(rel),
                 ));
+            } else {
+                let mut entries = fs::read_dir(&dir_path)
+                    .map_err(|err| CheckError::Failed(err.to_string()))?;
+                if entries.next().is_none() {
+                    violations.push(violation(
+                        "OPS_EMPTY_DIRECTORY_WITHOUT_GITKEEP",
+                        format!(
+                            "required directory `{}` is empty and missing `.gitkeep`",
+                            dir_rel.display()
+                        ),
+                        "add `.gitkeep` to empty required directories or remove the stale directory",
+                        Some(rel),
+                    ));
+                }
             }
         }
         for file in walk_files(&ctx.repo_root.join(domain_root)) {
@@ -821,6 +844,128 @@ pub(super) fn check_ops_required_files_contracts(
                     Some(rel),
                 ));
             }
+            if let Some(readme_text) = &domain_readme_text {
+                let keep_dir_str = keep_dir.display().to_string();
+                if !readme_text.contains(&keep_dir_str) {
+                    violations.push(violation(
+                        "OPS_PLACEHOLDER_DIR_README_NOTE_MISSING",
+                        format!(
+                            "placeholder directory `{}` is not documented in `{}`",
+                            keep_dir.display(),
+                            domain_readme_rel.display()
+                        ),
+                        "document each placeholder extension directory in the domain README",
+                        Some(&domain_readme_rel),
+                    ));
+                }
+            }
+        }
+    }
+
+    let actual_gitkeep_dirs = walk_files(&ops_root)
+        .into_iter()
+        .filter(|p| p.file_name().and_then(|n| n.to_str()) == Some(".gitkeep"))
+        .filter_map(|p| {
+            p.parent()
+                .and_then(|parent| parent.strip_prefix(ctx.repo_root).ok())
+                .map(PathBuf::from)
+        })
+        .collect::<BTreeSet<_>>();
+    let placeholder_allowlist_rel = Path::new("ops/inventory/placeholder-dirs.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, placeholder_allowlist_rel) {
+        violations.push(violation(
+            "OPS_PLACEHOLDER_DIR_ALLOWLIST_MISSING",
+            "missing inventory placeholder-dir allowlist `ops/inventory/placeholder-dirs.json`"
+                .to_string(),
+            "add and maintain ops/inventory/placeholder-dirs.json as the single placeholder-dir allowlist",
+            Some(placeholder_allowlist_rel),
+        ));
+    } else {
+        let allowlist_text = fs::read_to_string(ctx.repo_root.join(placeholder_allowlist_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let allowlist_json: serde_json::Value = serde_json::from_str(&allowlist_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let allowlisted_dirs = allowlist_json
+            .get("placeholder_dirs")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|item| item.as_str())
+                    .map(PathBuf::from)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        for dir in &actual_gitkeep_dirs {
+            if !allowlisted_dirs.contains(dir) {
+                violations.push(violation(
+                    "OPS_PLACEHOLDER_DIR_NOT_ALLOWLISTED",
+                    format!(
+                        "placeholder directory `{}` is not declared in `{}`",
+                        dir.display(),
+                        placeholder_allowlist_rel.display()
+                    ),
+                    "add the directory to ops/inventory/placeholder-dirs.json or remove `.gitkeep`",
+                    Some(placeholder_allowlist_rel),
+                ));
+            }
+        }
+        for dir in &allowlisted_dirs {
+            if !actual_gitkeep_dirs.contains(dir) {
+                violations.push(violation(
+                    "OPS_PLACEHOLDER_DIR_STALE_ALLOWLIST_ENTRY",
+                    format!(
+                        "allowlisted placeholder directory `{}` has no `.gitkeep` directory",
+                        dir.display()
+                    ),
+                    "remove stale placeholder allowlist entries or recreate the directory with `.gitkeep`",
+                    Some(placeholder_allowlist_rel),
+                ));
+            }
+        }
+    }
+
+    let placeholder_report_rel = Path::new("ops/_generated.example/placeholder-dirs-report.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, placeholder_report_rel) {
+        violations.push(violation(
+            "OPS_PLACEHOLDER_DIR_REPORT_MISSING",
+            format!(
+                "missing placeholder directory report `{}`",
+                placeholder_report_rel.display()
+            ),
+            "generate and commit ops/_generated.example/placeholder-dirs-report.json",
+            Some(placeholder_report_rel),
+        ));
+    } else {
+        let report_text = fs::read_to_string(ctx.repo_root.join(placeholder_report_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let report_json: serde_json::Value =
+            serde_json::from_str(&report_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        if report_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_PLACEHOLDER_DIR_REPORT_BLOCKING",
+                "placeholder-dirs-report.json status is not `pass`".to_string(),
+                "resolve placeholder directory drift and regenerate placeholder-dirs-report.json",
+                Some(placeholder_report_rel),
+            ));
+        }
+        let report_dirs = report_json
+            .get("placeholder_dirs")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|item| item.as_str())
+                    .map(PathBuf::from)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        if report_dirs != actual_gitkeep_dirs {
+            violations.push(violation(
+                "OPS_PLACEHOLDER_DIR_REPORT_DRIFT",
+                "placeholder-dirs-report.json does not match current ops .gitkeep directory set"
+                    .to_string(),
+                "regenerate placeholder-dirs-report.json with deterministic sorted placeholder directories",
+                Some(placeholder_report_rel),
+            ));
         }
     }
 
