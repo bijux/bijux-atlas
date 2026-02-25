@@ -17,7 +17,7 @@
 - `K8s`: chart install profiles, policies, and cluster validation.
 - `Obs`: observability pack, signal contracts, dashboards, and drills.
 - `Load`: k6 suites, scenarios, baselines, and load reports.
-- `E2E`: composition-only workflows spanning stack + k8s + obs + datasets + load.
+- `E2E`: composition-only workflows spanning stack + k8s + observe + datasets + load.
 
 ## Synonym Policy
 

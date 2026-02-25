@@ -323,7 +323,7 @@
         "contracts"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_chart_contract_required_fields.sh",
+      "script": "checks/observe/contracts/test_chart_contract_required_fields.sh",
       "timeout_seconds": 120
     },
     {
@@ -331,7 +331,7 @@
         "chart"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_chart_drift.sh",
+      "script": "checks/observe/contracts/test_chart_drift.sh",
       "timeout_seconds": 120
     },
     {
@@ -340,7 +340,7 @@
         "supply-chain"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_helm_repo_pinning.sh",
+      "script": "checks/observe/contracts/test_helm_repo_pinning.sh",
       "timeout_seconds": 120
     },
     {
@@ -348,7 +348,7 @@
         "chart"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_helm_templates.sh",
+      "script": "checks/observe/contracts/test_helm_templates.sh",
       "timeout_seconds": 120
     },
     {
@@ -357,7 +357,7 @@
         "contracts"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_layer_contract_render.sh",
+      "script": "checks/observe/contracts/test_layer_contract_render.sh",
       "timeout_seconds": 120
     },
     {
@@ -366,7 +366,7 @@
         "chart-contract"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_no_checksum_rollout.sh",
+      "script": "checks/observe/contracts/test_no_checksum_rollout.sh",
       "timeout_seconds": 120
     },
     {
@@ -375,7 +375,7 @@
         "contracts"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_values_contract.sh",
+      "script": "checks/observe/contracts/test_values_contract.sh",
       "timeout_seconds": 120
     },
     {
@@ -384,7 +384,7 @@
         "chart-contract"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_values_minimums.sh",
+      "script": "checks/observe/contracts/test_values_minimums.sh",
       "timeout_seconds": 120
     },
     {
@@ -394,7 +394,7 @@
         "profiles"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_values_profiles_are_valid.sh",
+      "script": "checks/observe/contracts/test_values_profiles_are_valid.sh",
       "timeout_seconds": 240
     },
     {
@@ -404,7 +404,7 @@
         "schema"
       ],
       "owner": "chart",
-      "script": "checks/obs/contracts/test_values_schema_strict.sh",
+      "script": "checks/observe/contracts/test_values_schema_strict.sh",
       "timeout_seconds": 120
     },
     {
@@ -413,7 +413,7 @@
         "observability"
       ],
       "owner": "observability",
-      "script": "checks/obs/runtime/test_logs_json.sh",
+      "script": "checks/observe/runtime/test_logs_json.sh",
       "timeout_seconds": 180
     },
     {
@@ -422,7 +422,7 @@
         "observability"
       ],
       "owner": "observability",
-      "script": "checks/obs/runtime/test_observability_objects_contract.sh",
+      "script": "checks/observe/runtime/test_observability_objects_contract.sh",
       "timeout_seconds": 120
     },
     {
@@ -430,7 +430,7 @@
         "observability"
       ],
       "owner": "observability",
-      "script": "checks/obs/runtime/test_prometheus_rule.sh",
+      "script": "checks/observe/runtime/test_prometheus_rule.sh",
       "timeout_seconds": 240
     },
     {
@@ -439,7 +439,7 @@
         "redis"
       ],
       "owner": "observability",
-      "script": "checks/obs/runtime/test_redis_backend_metric.sh",
+      "script": "checks/observe/runtime/test_redis_backend_metric.sh",
       "timeout_seconds": 180
     },
     {
@@ -447,7 +447,7 @@
         "observability"
       ],
       "owner": "observability",
-      "script": "checks/obs/runtime/test_service_monitor.sh",
+      "script": "checks/observe/runtime/test_service_monitor.sh",
       "timeout_seconds": 240
     },
     {

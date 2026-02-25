@@ -18,7 +18,7 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make ops-check`
 - `make ops-smoke`
 - `make ops-k8s-smoke`
-- `make ops-obs-verify`
+- `make ops-observability-verify`
 - `make report`
 - `make configs-check`
 
@@ -92,11 +92,11 @@ Generated from `configs/ops/public-surface.json`. Do not edit manually.
 - `make ops-local-full`
 - `make ops-local-full-stack`
 - `make ops-metrics-check`
-- `make ops-obs-down`
-- `make ops-obs-install`
-- `make ops-obs-mode`
-- `make ops-obs-uninstall`
-- `make ops-obs-verify`
+- `make ops-observability-down`
+- `make ops-observability-install`
+- `make ops-observability-mode`
+- `make ops-observability-uninstall`
+- `make ops-observability-verify`
 - `make ops-observability-pack-conformance-report`
 - `make ops-observability-pack-export`
 - `make ops-observability-pack-health`

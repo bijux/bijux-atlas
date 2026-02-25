@@ -16,7 +16,7 @@ Generated from `make help`. Do not edit manually.
 - `lint`
 - `load`
 - `nightly`
-- `obs`
+- `observe`
 - `ops`
 - `report`
 - `root`

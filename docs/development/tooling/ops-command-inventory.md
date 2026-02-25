@@ -9,7 +9,7 @@ Frozen ops command taxonomy:
 - `bijux dev atlas ops k8s ...`
 - `bijux dev atlas ops load ...`
 - `bijux dev atlas ops e2e ...`
-- `bijux dev atlas ops obs ...`
+- `bijux dev atlas ops observe ...`
 - `bijux dev atlas ops tools ...`
 - `bijux dev atlas ops render ...`
 

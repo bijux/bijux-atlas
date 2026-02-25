@@ -128,7 +128,7 @@
         "observe.report",
         "observe.drill"
       ],
-      "dev_atlas_suite": "ops-obs",
+      "dev_atlas_suite": "ops-observability",
       "evidence_area": "observe",
       "markers": [
         "ops",

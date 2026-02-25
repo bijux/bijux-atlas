@@ -284,7 +284,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_chart_contract_required_fields.sh",
+      "script": "checks/observe/contracts/test_chart_contract_required_fields.sh",
       "groups": [
         "chart",
         "contracts"
@@ -297,7 +297,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_chart_drift.sh",
+      "script": "checks/observe/contracts/test_chart_drift.sh",
       "groups": [
         "chart"
       ],
@@ -309,7 +309,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_helm_repo_pinning.sh",
+      "script": "checks/observe/contracts/test_helm_repo_pinning.sh",
       "groups": [
         "chart",
         "supply-chain"
@@ -322,7 +322,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_helm_templates.sh",
+      "script": "checks/observe/contracts/test_helm_templates.sh",
       "groups": [
         "chart"
       ],
@@ -362,7 +362,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_layer_contract_render.sh",
+      "script": "checks/observe/contracts/test_layer_contract_render.sh",
       "groups": [
         "chart",
         "contracts"
@@ -375,7 +375,7 @@
       ]
     },
     {
-      "script": "checks/obs/runtime/test_logs_json.sh",
+      "script": "checks/observe/runtime/test_logs_json.sh",
       "groups": [
         "contracts",
         "observability"
@@ -389,7 +389,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_no_checksum_rollout.sh",
+      "script": "checks/observe/contracts/test_no_checksum_rollout.sh",
       "groups": [
         "chart",
         "chart-contract"
@@ -402,7 +402,7 @@
       ]
     },
     {
-      "script": "checks/obs/runtime/test_observability_objects_contract.sh",
+      "script": "checks/observe/runtime/test_observability_objects_contract.sh",
       "groups": [
         "chart-contract",
         "observability"
@@ -415,7 +415,7 @@
       ]
     },
     {
-      "script": "checks/obs/runtime/test_prometheus_rule.sh",
+      "script": "checks/observe/runtime/test_prometheus_rule.sh",
       "groups": [
         "observability"
       ],
@@ -427,7 +427,7 @@
       ]
     },
     {
-      "script": "checks/obs/runtime/test_redis_backend_metric.sh",
+      "script": "checks/observe/runtime/test_redis_backend_metric.sh",
       "groups": [
         "observability",
         "redis"
@@ -440,7 +440,7 @@
       ]
     },
     {
-      "script": "checks/obs/runtime/test_service_monitor.sh",
+      "script": "checks/observe/runtime/test_service_monitor.sh",
       "groups": [
         "observability"
       ],
@@ -452,7 +452,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_values_contract.sh",
+      "script": "checks/observe/contracts/test_values_contract.sh",
       "groups": [
         "chart",
         "contracts"
@@ -465,7 +465,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_values_minimums.sh",
+      "script": "checks/observe/contracts/test_values_minimums.sh",
       "groups": [
         "chart",
         "chart-contract"
@@ -478,7 +478,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_values_profiles_are_valid.sh",
+      "script": "checks/observe/contracts/test_values_profiles_are_valid.sh",
       "groups": [
         "chart",
         "chart-contract",
@@ -492,7 +492,7 @@
       ]
     },
     {
-      "script": "checks/obs/contracts/test_values_schema_strict.sh",
+      "script": "checks/observe/contracts/test_values_schema_strict.sh",
       "groups": [
         "chart",
         "chart-contract",
