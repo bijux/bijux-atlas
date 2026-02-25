@@ -3,6 +3,7 @@
   "schema_version": 1,
   "name": "ops-smoke",
   "description": "Minimal manifest-driven ops smoke run",
+  "queries_lock": "ops/e2e/smoke/queries.lock",
   "steps": [
     {
       "id": "ops-help",
