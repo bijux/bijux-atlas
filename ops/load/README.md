@@ -15,7 +15,14 @@ Own k6 suites/manifests, perf baselines, and load reporting.
 - `ops/load/contracts/deterministic-seed-policy.json`
 - `ops/load/contracts/query-pack-catalog.json`
 
+## Authored Inputs
+- `ops/load/suites/suites.json`
+- `ops/load/thresholds/*.thresholds.json`
+- `ops/load/scenarios/*.json`
+- `ops/load/k6/suites/*.js`
+
 ## Generated
+- `ops/load/generated/suites.manifest.json`
 - `ops/load/generated/load-summary.json`
 - `ops/load/generated/load-drift-report.json`
 
