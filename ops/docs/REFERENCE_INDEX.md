@@ -5,6 +5,11 @@
 
 - [Stack Lifecycle](stack-lifecycle.md)
 - [Kubernetes Conformance](k8s-conformance.md)
+- [Kubernetes Install Contract](k8s-install-contract.md)
+- [Kubernetes Uninstall Contract](k8s-uninstall-contract.md)
+- [Kubernetes Upgrade Contract](k8s-upgrade-contract.md)
+- [Kubernetes Rollback Contract](k8s-rollback-contract.md)
+- [Kubernetes CRD Compatibility Policy](k8s-crd-compatibility-policy.md)
 - [Load Testing](load-testing.md)
 - [E2E Philosophy](e2e-philosophy.md)
 - [Observability Verification](observability-verification.md)

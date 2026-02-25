@@ -1,0 +1,15 @@
+replicaCount: 3
+
+server:
+  configSchemaVersion: v1
+  cachedOnlyMode: false
+  readinessRequiresCatalog: true
+
+networkPolicy:
+  enabled: true
+  allowDns: true
+
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source": "ops/k8s",
+  "files": [
+    "ops/k8s/charts/bijux-atlas/Chart.yaml",
+    "ops/k8s/charts/bijux-atlas/values.schema.json",
+    "ops/k8s/charts/bijux-atlas/values.yaml",
+    "ops/k8s/install-matrix.json",
+    "ops/k8s/tests/manifest.json",
+    "ops/k8s/tests/suites.json"
+  ]
+}

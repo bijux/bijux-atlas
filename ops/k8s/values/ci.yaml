@@ -1,0 +1,13 @@
+replicaCount: 2
+
+server:
+  configSchemaVersion: v1
+  cachedOnlyMode: true
+  readinessRequiresCatalog: true
+
+networkPolicy:
+  enabled: true
+  allowDns: false
+
+hpa:
+  enabled: false

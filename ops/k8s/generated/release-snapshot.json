@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "release": "v0.1.0",
+  "chart": {
+    "name": "bijux-atlas",
+    "version": "0.1.0",
+    "app_version": "0.1.0"
+  },
+  "install_profiles": ["ci", "dev", "kind", "perf", "prod"],
+  "generated_at": "1970-01-01T00:00:00Z"
+}

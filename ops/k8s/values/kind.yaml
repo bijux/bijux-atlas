@@ -1,0 +1,13 @@
+replicaCount: 2
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30080
+
+server:
+  configSchemaVersion: v1
+  readinessRequiresCatalog: true
+
+networkPolicy:
+  enabled: true

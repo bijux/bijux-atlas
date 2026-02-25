@@ -1,0 +1,9 @@
+replicaCount: 1
+
+server:
+  configSchemaVersion: v1
+  enableDebugDatasets: true
+  cachedOnlyMode: false
+
+networkPolicy:
+  enabled: false

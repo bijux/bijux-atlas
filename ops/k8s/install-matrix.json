@@ -1,10 +1,14 @@
 {
   "schema_version": 1,
   "profiles": [
+    {"name": "ci", "values_file": "ops/k8s/values/ci.yaml", "suite": "install-gate"},
+    {"name": "dev", "values_file": "ops/k8s/values/dev.yaml", "suite": "install-gate"},
+    {"name": "ingress", "values_file": "ops/k8s/values/ingress.yaml", "suite": "nightly"},
+    {"name": "kind", "values_file": "ops/k8s/values/kind.yaml", "suite": "k8s-suite"},
     {"name": "local", "values_file": "ops/k8s/values/local.yaml", "suite": "install-gate"},
+    {"name": "multi-registry", "values_file": "ops/k8s/values/multi-registry.yaml", "suite": "nightly"},
     {"name": "offline", "values_file": "ops/k8s/values/offline.yaml", "suite": "k8s-suite"},
     {"name": "perf", "values_file": "ops/k8s/values/perf.yaml", "suite": "nightly"},
-    {"name": "multi-registry", "values_file": "ops/k8s/values/multi-registry.yaml", "suite": "nightly"},
-    {"name": "ingress", "values_file": "ops/k8s/values/ingress.yaml", "suite": "nightly"}
+    {"name": "prod", "values_file": "ops/k8s/values/prod.yaml", "suite": "nightly"}
   ]
 }

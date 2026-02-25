@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "render_outputs": [
+    "artifacts/ops/<run-id>/render/k8s/rendered.yaml",
+    "artifacts/ops/<run-id>/render/k8s/index.json"
+  ],
+  "determinism": {
+    "required": true,
+    "hash_algorithm": "sha256"
+  }
+}
