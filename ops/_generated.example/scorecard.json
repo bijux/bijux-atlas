@@ -14,6 +14,11 @@
       "detail": "duration_sec=0, limit=600",
       "name": "ops-smoke-time-budget",
       "status": "fail"
+    },
+    {
+      "detail": "ops/_generated.example/control-plane-surface-list.json status=pass",
+      "name": "control-plane-surface-list",
+      "status": "pass"
     }
   ],
   "generated_at": "2026-02-22T17:49:51.443033+00:00",

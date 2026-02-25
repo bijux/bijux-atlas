@@ -4,7 +4,7 @@
   "summary": {
     "total_files": 331,
     "by_category": {
-      "evidence_bundle": 13,
+      "evidence_bundle": 14,
       "generated_output": 23,
       "referenced_by_docs": 202,
       "referenced_by_required_files": 97,
@@ -25,6 +25,14 @@
     },
     {
       "path": "ops/_generated.example/contract-coverage-report.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/control-plane-surface-list.json",
       "categories": [
         "evidence_bundle",
         "referenced_by_docs",

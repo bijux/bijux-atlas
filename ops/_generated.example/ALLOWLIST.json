@@ -10,6 +10,7 @@
     "ops/_generated.example/REQUIRED_FILES.md",
     "ops/_generated.example/contract-coverage-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
+    "ops/_generated.example/control-plane-surface-list.json",
     "ops/_generated.example/control-plane.snapshot.md",
     "ops/_generated.example/docs-links-report.json",
     "ops/_generated.example/docs-drift-report.json",

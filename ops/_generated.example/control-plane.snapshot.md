@@ -43,6 +43,7 @@ Current-state crate inventory must live only in `ops/_generated.example/control-
 - Internal checks stay hidden unless `--include-internal` is provided.
 - `ops/CONTROL_PLANE.md` must stay policy-only; crate names are forbidden outside explicit examples.
 - `ops/_generated.example/control-plane.snapshot.md` is the only committed current-state crate snapshot.
+- `ops/_generated.example/control-plane-surface-list.json` records the enforced control-plane command groups and crate-alignment status.
 - Docs that name repository crates must match `cargo metadata` package names.
 
 ## Effect Rules

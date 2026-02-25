@@ -13,6 +13,7 @@ required_files:
   - ops/_generated.example/pins.index.example.json
   - ops/_generated.example/inventory-index.json
   - ops/_generated.example/control-plane.snapshot.md
+  - ops/_generated.example/control-plane-surface-list.json
   - ops/_generated.example/docs-drift-report.json
   - ops/_generated.example/docs-links-report.json
   - ops/_generated.example/file-usage-report.json

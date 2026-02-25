@@ -5,6 +5,7 @@
   "sources": {
     "ops_index": "ops/_generated.example/ops-index.json",
     "scorecard": "ops/_generated.example/scorecard.json",
+    "control_plane_surface_list": "ops/_generated.example/control-plane-surface-list.json",
     "pin_freeze": "ops/inventory/pin-freeze.json"
   },
   "hashes": {
@@ -138,6 +139,11 @@
     },
     {
       "id": "ops.gate.control-plane-drift",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.control-plane-surface-list",
       "status": "unknown",
       "last_run": null
     },

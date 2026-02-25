@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops control-plane surface-list --write-example",
+  "status": "pass",
+  "surfaces": [
+    "check",
+    "docs",
+    "configs",
+    "ops"
+  ],
+  "crate_alignment": {
+    "source": "cargo metadata",
+    "status": "pass"
+  }
+}

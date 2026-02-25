@@ -294,6 +294,22 @@
       "deletion_allowed": false
     },
     {
+      "path": "ops/_generated.example/control-plane-surface-list.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
       "path": "ops/_generated.example/control-plane.snapshot.md",
       "type": "curated_evidence",
       "reasons": [

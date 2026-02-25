@@ -14,6 +14,10 @@
     {
       "id": "control-plane-cargo-metadata-alignment",
       "status": "pass"
+    },
+    {
+      "id": "control-plane-surface-list-present",
+      "status": "pass"
     }
   ]
 }

@@ -5,6 +5,7 @@
     "ops/_generated.example/INDEX.example.md",
     "ops/_generated.example/contract-coverage-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
+    "ops/_generated.example/control-plane-surface-list.json",
     "ops/_generated.example/fixture-drift-report.json",
     "ops/_generated.example/report.example.json",
     "ops/_generated.example/report.unified.example.json",
