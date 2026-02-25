@@ -34,7 +34,7 @@
 - Behavior source is forbidden in `ops/report`; report execution logic remains outside `ops/`.
 - The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
 - Generated report artifacts must include `generated_by` and `schema_version` metadata.
-- Report docs must be linked from `docs/ops/INDEX.md`; orphan docs are forbidden.
+- Report docs must be linked from `docs/operations/ops-system/INDEX.md`; orphan docs are forbidden.
 - Evidence bundle must include deterministic hashes of inventory and schema index inputs.
 - Generated reporting outputs must be deterministic for identical authored and generated inputs.
 

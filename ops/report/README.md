@@ -7,7 +7,7 @@ Report assembly and evidence publishing across stack, observe, load, datasets, a
 - `ops/report/schema.json`
 - `ops/report/evidence-levels.json`
 - `ops/report/examples/unified-report-example.json`
-- `docs/ops/INDEX.md`
+- `docs/operations/ops-system/INDEX.md`
 
 ## Generated
 
