@@ -119,6 +119,50 @@
         "schema-index"
       ],
       "topic": "SCHEMA_INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "ops",
+        "schema",
+        "schema-budget-exceptions"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "schema",
+        "schema-budget-exceptions"
+      ],
+      "topic": "SCHEMA_BUDGET_EXCEPTIONS"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "ops",
+        "schema",
+        "schema-reference-allowlist"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "schema",
+        "schema-reference-allowlist"
+      ],
+      "topic": "SCHEMA_REFERENCE_ALLOWLIST"
     }
   ],
   "schema_version": 1

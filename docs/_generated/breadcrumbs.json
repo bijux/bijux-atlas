@@ -6299,6 +6299,13 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/DRIFT.md"
+      ],
+      "path": "ops/DRIFT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/ERRORS.md"
       ],
       "path": "ops/ERRORS.md"
@@ -6313,6 +6320,13 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/NAMING.md"
+      ],
+      "path": "ops/NAMING.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/README.md"
       ],
       "path": "ops/README.md"
@@ -6320,11 +6334,17 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/_examples",
-        "ops/_examples/generated",
-        "ops/_examples/generated/INDEX.example.md"
+        "ops/SSOT.md"
       ],
-      "path": "ops/_examples/generated/INDEX.example.md"
+      "path": "ops/SSOT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/INDEX.example.md"
+      ],
+      "path": "ops/_generated.example/INDEX.example.md"
     },
     {
       "breadcrumbs": [
@@ -6333,6 +6353,62 @@
         "ops/_generated.example/MIRROR_POLICY.md"
       ],
       "path": "ops/_generated.example/MIRROR_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/OWNER.md"
+      ],
+      "path": "ops/_generated.example/OWNER.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/README.md"
+      ],
+      "path": "ops/_generated.example/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/REQUIRED_FILES.md"
+      ],
+      "path": "ops/_generated.example/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/control-plane.snapshot.md"
+      ],
+      "path": "ops/_generated.example/control-plane.snapshot.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated",
+        "ops/_generated/OWNER.md"
+      ],
+      "path": "ops/_generated/OWNER.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated",
+        "ops/_generated/README.md"
+      ],
+      "path": "ops/_generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/_generated",
+        "ops/_generated/REQUIRED_FILES.md"
+      ],
+      "path": "ops/_generated/REQUIRED_FILES.md"
     },
     {
       "breadcrumbs": [
@@ -6369,218 +6445,46 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/docs",
-        "ops/docs/README.md"
+        "ops/datasets",
+        "ops/datasets/REQUIRED_FILES.md"
       ],
-      "path": "ops/docs/README.md"
+      "path": "ops/datasets/REQUIRED_FILES.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/docs",
-        "ops/docs/REFERENCE_INDEX.md"
+        "ops/datasets",
+        "ops/datasets/fixtures",
+        "ops/datasets/fixtures/CONTRACT.md"
       ],
-      "path": "ops/docs/REFERENCE_INDEX.md"
+      "path": "ops/datasets/fixtures/CONTRACT.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/docs",
-        "ops/docs/artifacts-contract.md"
+        "ops/datasets",
+        "ops/datasets/fixtures",
+        "ops/datasets/fixtures/INDEX.md"
       ],
-      "path": "ops/docs/artifacts-contract.md"
+      "path": "ops/datasets/fixtures/INDEX.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/docs",
-        "ops/docs/config-compiler-contract.md"
+        "ops/datasets",
+        "ops/datasets/fixtures",
+        "ops/datasets/fixtures/OWNER.md"
       ],
-      "path": "ops/docs/config-compiler-contract.md"
+      "path": "ops/datasets/fixtures/OWNER.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/docs",
-        "ops/docs/config-migration-cutoff.md"
+        "ops/datasets",
+        "ops/datasets/fixtures",
+        "ops/datasets/fixtures/README.md"
       ],
-      "path": "ops/docs/config-migration-cutoff.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/cross-area-navigation.md"
-      ],
-      "path": "ops/docs/cross-area-navigation.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/deterministic-runs.md"
-      ],
-      "path": "ops/docs/deterministic-runs.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/e2e-philosophy.md"
-      ],
-      "path": "ops/docs/e2e-philosophy.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/failure-triage-guide.md"
-      ],
-      "path": "ops/docs/failure-triage-guide.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/generated-committed-policy.md"
-      ],
-      "path": "ops/docs/generated-committed-policy.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/inventory-contracts.md"
-      ],
-      "path": "ops/docs/inventory-contracts.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/k8s-conformance.md"
-      ],
-      "path": "ops/docs/k8s-conformance.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/layout-migration.md"
-      ],
-      "path": "ops/docs/layout-migration.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/load-testing.md"
-      ],
-      "path": "ops/docs/load-testing.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/migration-window.md"
-      ],
-      "path": "ops/docs/migration-window.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/observability-verification.md"
-      ],
-      "path": "ops/docs/observability-verification.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/offline-mode.md"
-      ],
-      "path": "ops/docs/offline-mode.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/ops-api-contract.md"
-      ],
-      "path": "ops/docs/ops-api-contract.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/ops-diagrams.md"
-      ],
-      "path": "ops/docs/ops-diagrams.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/ops-evidence-explanation.md"
-      ],
-      "path": "ops/docs/ops-evidence-explanation.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/ops-glossary.md"
-      ],
-      "path": "ops/docs/ops-glossary.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/ops-safety-guarantees.md"
-      ],
-      "path": "ops/docs/ops-safety-guarantees.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/policy-relaxations.md"
-      ],
-      "path": "ops/docs/policy-relaxations.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/render-pipeline.md"
-      ],
-      "path": "ops/docs/render-pipeline.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/stack-lifecycle.md"
-      ],
-      "path": "ops/docs/stack-lifecycle.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/toolchain-pins-explanation.md"
-      ],
-      "path": "ops/docs/toolchain-pins-explanation.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/docs",
-        "ops/docs/troubleshooting-runbook.md"
-      ],
-      "path": "ops/docs/troubleshooting-runbook.md"
+      "path": "ops/datasets/fixtures/README.md"
     },
     {
       "breadcrumbs": [
@@ -6613,6 +6517,14 @@
         "ops/e2e/README.md"
       ],
       "path": "ops/e2e/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/e2e",
+        "ops/e2e/REQUIRED_FILES.md"
+      ],
+      "path": "ops/e2e/REQUIRED_FILES.md"
     },
     {
       "breadcrumbs": [
@@ -6654,6 +6566,14 @@
       "breadcrumbs": [
         "ops",
         "ops/env",
+        "ops/env/OWNER.md"
+      ],
+      "path": "ops/env/OWNER.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/env",
         "ops/env/README.md"
       ],
       "path": "ops/env/README.md"
@@ -6661,42 +6581,18 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/fixtures",
-        "ops/fixtures/CONTRACT.md"
+        "ops/env",
+        "ops/env/REQUIRED_FILES.md"
       ],
-      "path": "ops/fixtures/CONTRACT.md"
+      "path": "ops/env/REQUIRED_FILES.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/fixtures",
-        "ops/fixtures/INDEX.md"
+        "ops/inventory",
+        "ops/inventory/OWNER.md"
       ],
-      "path": "ops/fixtures/INDEX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/fixtures",
-        "ops/fixtures/OWNER.md"
-      ],
-      "path": "ops/fixtures/OWNER.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/fixtures",
-        "ops/fixtures/README.md"
-      ],
-      "path": "ops/fixtures/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/helm",
-        "ops/helm/README.md"
-      ],
-      "path": "ops/helm/README.md"
+      "path": "ops/inventory/OWNER.md"
     },
     {
       "breadcrumbs": [
@@ -6705,6 +6601,14 @@
         "ops/inventory/README.md"
       ],
       "path": "ops/inventory/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/inventory",
+        "ops/inventory/REQUIRED_FILES.md"
+      ],
+      "path": "ops/inventory/REQUIRED_FILES.md"
     },
     {
       "breadcrumbs": [
@@ -6742,6 +6646,14 @@
       "breadcrumbs": [
         "ops",
         "ops/k8s",
+        "ops/k8s/REQUIRED_FILES.md"
+      ],
+      "path": "ops/k8s/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/k8s",
         "ops/k8s/charts",
         "ops/k8s/charts/bijux-atlas",
         "ops/k8s/charts/bijux-atlas/README.md"
@@ -6752,18 +6664,19 @@
       "breadcrumbs": [
         "ops",
         "ops/k8s",
-        "ops/k8s/tests",
-        "ops/k8s/tests/INDEX.md"
+        "ops/k8s/generated",
+        "ops/k8s/generated/README.md"
       ],
-      "path": "ops/k8s/tests/INDEX.md"
+      "path": "ops/k8s/generated/README.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/kind",
-        "ops/kind/README.md"
+        "ops/k8s",
+        "ops/k8s/tests",
+        "ops/k8s/tests/INDEX.md"
       ],
-      "path": "ops/kind/README.md"
+      "path": "ops/k8s/tests/INDEX.md"
     },
     {
       "breadcrumbs": [
@@ -6801,6 +6714,14 @@
       "breadcrumbs": [
         "ops",
         "ops/load",
+        "ops/load/REQUIRED_FILES.md"
+      ],
+      "path": "ops/load/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/load",
         "ops/load/baselines",
         "ops/load/baselines/README.md"
       ],
@@ -6828,6 +6749,15 @@
       "breadcrumbs": [
         "ops",
         "ops/load",
+        "ops/load/generated",
+        "ops/load/generated/README.md"
+      ],
+      "path": "ops/load/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/load",
         "ops/load/k6",
         "ops/load/k6/README.md"
       ],
@@ -6846,97 +6776,26 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/obs",
-        "ops/obs/CONTRACT.md"
+        "ops/observe",
+        "ops/observe/CONTRACT.md"
       ],
-      "path": "ops/obs/CONTRACT.md"
+      "path": "ops/observe/CONTRACT.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/obs",
-        "ops/obs/CONTRACTS.md"
+        "ops/observe",
+        "ops/observe/INDEX.md"
       ],
-      "path": "ops/obs/CONTRACTS.md"
+      "path": "ops/observe/INDEX.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/obs",
-        "ops/obs/INDEX.md"
+        "ops/observe",
+        "ops/observe/OWNER.md"
       ],
-      "path": "ops/obs/INDEX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/OWNER.md"
-      ],
-      "path": "ops/obs/OWNER.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/README.md"
-      ],
-      "path": "ops/obs/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/grafana",
-        "ops/obs/grafana/README.md"
-      ],
-      "path": "ops/obs/grafana/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/otel",
-        "ops/obs/otel/INDEX.md"
-      ],
-      "path": "ops/obs/otel/INDEX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/pack",
-        "ops/obs/pack/README.md"
-      ],
-      "path": "ops/obs/pack/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/prometheus",
-        "ops/obs/prometheus/INDEX.md"
-      ],
-      "path": "ops/obs/prometheus/INDEX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/scripts",
-        "ops/obs/scripts/lib",
-        "ops/obs/scripts/lib/INDEX.md"
-      ],
-      "path": "ops/obs/scripts/lib/INDEX.md"
-    },
-    {
-      "breadcrumbs": [
-        "ops",
-        "ops/obs",
-        "ops/obs/tests",
-        "ops/obs/tests/README.md"
-      ],
-      "path": "ops/obs/tests/README.md"
+      "path": "ops/observe/OWNER.md"
     },
     {
       "breadcrumbs": [
@@ -6950,6 +6809,14 @@
       "breadcrumbs": [
         "ops",
         "ops/observe",
+        "ops/observe/REQUIRED_FILES.md"
+      ],
+      "path": "ops/observe/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/observe",
         "ops/observe/dashboards",
         "ops/observe/dashboards/README.md"
       ],
@@ -6958,11 +6825,21 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/quarantine",
-        "ops/quarantine/legacy-ops-shell",
-        "ops/quarantine/legacy-ops-shell/README.md"
+        "ops/observe",
+        "ops/observe/drills",
+        "ops/observe/drills/templates",
+        "ops/observe/drills/templates/incident-template.md"
       ],
-      "path": "ops/quarantine/legacy-ops-shell/README.md"
+      "path": "ops/observe/drills/templates/incident-template.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/observe",
+        "ops/observe/pack",
+        "ops/observe/pack/README.md"
+      ],
+      "path": "ops/observe/pack/README.md"
     },
     {
       "breadcrumbs": [
@@ -6999,6 +6876,435 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/report",
+        "ops/report/REQUIRED_FILES.md"
+      ],
+      "path": "ops/report/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/README.md"
+      ],
+      "path": "ops/report/docs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/REFERENCE_INDEX.md"
+      ],
+      "path": "ops/report/docs/REFERENCE_INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/artifacts-contract.md"
+      ],
+      "path": "ops/report/docs/artifacts-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/config-compiler-contract.md"
+      ],
+      "path": "ops/report/docs/config-compiler-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/config-migration-cutoff.md"
+      ],
+      "path": "ops/report/docs/config-migration-cutoff.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/cross-area-navigation.md"
+      ],
+      "path": "ops/report/docs/cross-area-navigation.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/dataset-lifecycle-contract.md"
+      ],
+      "path": "ops/report/docs/dataset-lifecycle-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/deterministic-runs.md"
+      ],
+      "path": "ops/report/docs/deterministic-runs.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/e2e-composition-contract.md"
+      ],
+      "path": "ops/report/docs/e2e-composition-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/e2e-philosophy.md"
+      ],
+      "path": "ops/report/docs/e2e-philosophy.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/environment-overlays.md"
+      ],
+      "path": "ops/report/docs/environment-overlays.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/failure-triage-guide.md"
+      ],
+      "path": "ops/report/docs/failure-triage-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/generated-committed-policy.md"
+      ],
+      "path": "ops/report/docs/generated-committed-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/how-ops-works.md"
+      ],
+      "path": "ops/report/docs/how-ops-works.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/inventory-contracts.md"
+      ],
+      "path": "ops/report/docs/inventory-contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/k8s-conformance.md"
+      ],
+      "path": "ops/report/docs/k8s-conformance.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/k8s-crd-compatibility-policy.md"
+      ],
+      "path": "ops/report/docs/k8s-crd-compatibility-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/k8s-install-contract.md"
+      ],
+      "path": "ops/report/docs/k8s-install-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/k8s-rollback-contract.md"
+      ],
+      "path": "ops/report/docs/k8s-rollback-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/k8s-uninstall-contract.md"
+      ],
+      "path": "ops/report/docs/k8s-uninstall-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/k8s-upgrade-contract.md"
+      ],
+      "path": "ops/report/docs/k8s-upgrade-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/layout-migration.md"
+      ],
+      "path": "ops/report/docs/layout-migration.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/load-testing.md"
+      ],
+      "path": "ops/report/docs/load-testing.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/migration-window.md"
+      ],
+      "path": "ops/report/docs/migration-window.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/observability-pack-definition.md"
+      ],
+      "path": "ops/report/docs/observability-pack-definition.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/observability-verification.md"
+      ],
+      "path": "ops/report/docs/observability-verification.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/observe-rename.md"
+      ],
+      "path": "ops/report/docs/observe-rename.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/offline-mode.md"
+      ],
+      "path": "ops/report/docs/offline-mode.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-api-contract.md"
+      ],
+      "path": "ops/report/docs/ops-api-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-architecture.md"
+      ],
+      "path": "ops/report/docs/ops-architecture.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-diagrams.md"
+      ],
+      "path": "ops/report/docs/ops-diagrams.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-evidence-explanation.md"
+      ],
+      "path": "ops/report/docs/ops-evidence-explanation.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-gates-contract.md"
+      ],
+      "path": "ops/report/docs/ops-gates-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-glossary.md"
+      ],
+      "path": "ops/report/docs/ops-glossary.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/ops-safety-guarantees.md"
+      ],
+      "path": "ops/report/docs/ops-safety-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/pin-lifecycle.md"
+      ],
+      "path": "ops/report/docs/pin-lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/pin-promotion-workflow.md"
+      ],
+      "path": "ops/report/docs/pin-promotion-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/policy-relaxations.md"
+      ],
+      "path": "ops/report/docs/policy-relaxations.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/render-pipeline.md"
+      ],
+      "path": "ops/report/docs/render-pipeline.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/schema-compatibility-policy.md"
+      ],
+      "path": "ops/report/docs/schema-compatibility-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/stack-definition.md"
+      ],
+      "path": "ops/report/docs/stack-definition.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/stack-lifecycle.md"
+      ],
+      "path": "ops/report/docs/stack-lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/toolchain-pins-explanation.md"
+      ],
+      "path": "ops/report/docs/toolchain-pins-explanation.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/troubleshooting-runbook.md"
+      ],
+      "path": "ops/report/docs/troubleshooting-runbook.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/report",
+        "ops/report/docs",
+        "ops/report/docs/unified-reporting-contract.md"
+      ],
+      "path": "ops/report/docs/unified-reporting-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/BUDGET_POLICY.md"
+      ],
+      "path": "ops/schema/BUDGET_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/OWNER.md"
+      ],
+      "path": "ops/schema/OWNER.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/schema",
         "ops/schema/README.md"
       ],
@@ -7007,20 +7313,61 @@
     {
       "breadcrumbs": [
         "ops",
-        "ops/schemas",
-        "ops/schemas/configs",
-        "ops/schemas/configs/INDEX.md"
+        "ops/schema",
+        "ops/schema/REQUIRED_FILES.md"
       ],
-      "path": "ops/schemas/configs/INDEX.md"
+      "path": "ops/schema/REQUIRED_FILES.md"
     },
     {
       "breadcrumbs": [
         "ops",
-        "ops/schemas",
-        "ops/schemas/configs",
-        "ops/schemas/configs/README.md"
+        "ops/schema",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
       ],
-      "path": "ops/schemas/configs/README.md"
+      "path": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"
+      ],
+      "path": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/VERSIONING_POLICY.md"
+      ],
+      "path": "ops/schema/VERSIONING_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/configs",
+        "ops/schema/configs/INDEX.md"
+      ],
+      "path": "ops/schema/configs/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/configs",
+        "ops/schema/configs/README.md"
+      ],
+      "path": "ops/schema/configs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/generated",
+        "ops/schema/generated/schema-index.md"
+      ],
+      "path": "ops/schema/generated/schema-index.md"
     },
     {
       "breadcrumbs": [
@@ -7058,9 +7405,26 @@
       "breadcrumbs": [
         "ops",
         "ops/stack",
+        "ops/stack/REQUIRED_FILES.md"
+      ],
+      "path": "ops/stack/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/stack",
         "ops/stack/dependencies.md"
       ],
       "path": "ops/stack/dependencies.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/stack",
+        "ops/stack/generated",
+        "ops/stack/generated/README.md"
+      ],
+      "path": "ops/stack/generated/README.md"
     },
     {
       "breadcrumbs": [

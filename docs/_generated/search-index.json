@@ -9410,6 +9410,18 @@
     },
     {
       "keywords": [
+        "drift",
+        "ops"
+      ],
+      "path": "ops/DRIFT.md",
+      "tags": [
+        "drift",
+        "ops"
+      ],
+      "topic": "DRIFT"
+    },
+    {
+      "keywords": [
         "errors",
         "ops"
       ],
@@ -9434,6 +9446,18 @@
     },
     {
       "keywords": [
+        "naming",
+        "ops"
+      ],
+      "path": "ops/NAMING.md",
+      "tags": [
+        "naming",
+        "ops"
+      ],
+      "topic": "NAMING"
+    },
+    {
+      "keywords": [
         "ops",
         "readme"
       ],
@@ -9446,15 +9470,25 @@
     },
     {
       "keywords": [
-        "-examples",
-        "generated",
+        "ops",
+        "ssot"
+      ],
+      "path": "ops/SSOT.md",
+      "tags": [
+        "ops",
+        "ssot"
+      ],
+      "topic": "SSOT"
+    },
+    {
+      "keywords": [
+        "-generated.example",
         "index.example",
         "ops"
       ],
-      "path": "ops/_examples/generated/INDEX.example.md",
+      "path": "ops/_generated.example/INDEX.example.md",
       "tags": [
-        "-examples",
-        "generated",
+        "-generated.example",
         "index.example",
         "ops"
       ],
@@ -9473,6 +9507,104 @@
         "ops"
       ],
       "topic": "MIRROR_POLICY"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "ops",
+        "owner"
+      ],
+      "path": "ops/_generated.example/OWNER.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/_generated.example/README.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/_generated.example/REQUIRED_FILES.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "-generated.example",
+        "control-plane.snapshot",
+        "ops"
+      ],
+      "path": "ops/_generated.example/control-plane.snapshot.md",
+      "tags": [
+        "-generated.example",
+        "control-plane.snapshot",
+        "ops"
+      ],
+      "topic": "control-plane.snapshot"
+    },
+    {
+      "keywords": [
+        "-generated",
+        "ops",
+        "owner"
+      ],
+      "path": "ops/_generated/OWNER.md",
+      "tags": [
+        "-generated",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "-generated",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/_generated/README.md",
+      "tags": [
+        "-generated",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "-generated",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/_generated/REQUIRED_FILES.md",
+      "tags": [
+        "-generated",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -9532,327 +9664,81 @@
     },
     {
       "keywords": [
+        "datasets",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/datasets/REQUIRED_FILES.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "contract",
+        "datasets",
+        "fixtures",
+        "ops"
+      ],
+      "path": "ops/datasets/fixtures/CONTRACT.md",
+      "tags": [
+        "contract",
+        "datasets",
+        "fixtures",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "fixtures",
+        "index",
+        "ops"
+      ],
+      "path": "ops/datasets/fixtures/INDEX.md",
+      "tags": [
+        "datasets",
+        "fixtures",
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "fixtures",
+        "ops",
+        "owner"
+      ],
+      "path": "ops/datasets/fixtures/OWNER.md",
+      "tags": [
+        "datasets",
+        "fixtures",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "fixtures",
         "ops",
         "readme"
       ],
-      "path": "ops/docs/README.md",
+      "path": "ops/datasets/fixtures/README.md",
       "tags": [
+        "datasets",
+        "fixtures",
         "ops",
         "readme"
       ],
       "topic": "README"
-    },
-    {
-      "keywords": [
-        "ops",
-        "reference-index"
-      ],
-      "path": "ops/docs/REFERENCE_INDEX.md",
-      "tags": [
-        "ops",
-        "reference-index"
-      ],
-      "topic": "REFERENCE_INDEX"
-    },
-    {
-      "keywords": [
-        "artifacts-contract",
-        "ops"
-      ],
-      "path": "ops/docs/artifacts-contract.md",
-      "tags": [
-        "artifacts-contract",
-        "ops"
-      ],
-      "topic": "artifacts-contract"
-    },
-    {
-      "keywords": [
-        "config-compiler-contract",
-        "ops"
-      ],
-      "path": "ops/docs/config-compiler-contract.md",
-      "tags": [
-        "config-compiler-contract",
-        "ops"
-      ],
-      "topic": "config-compiler-contract"
-    },
-    {
-      "keywords": [
-        "config-migration-cutoff",
-        "ops"
-      ],
-      "path": "ops/docs/config-migration-cutoff.md",
-      "tags": [
-        "config-migration-cutoff",
-        "ops"
-      ],
-      "topic": "config-migration-cutoff"
-    },
-    {
-      "keywords": [
-        "cross-area-navigation",
-        "ops"
-      ],
-      "path": "ops/docs/cross-area-navigation.md",
-      "tags": [
-        "cross-area-navigation",
-        "ops"
-      ],
-      "topic": "cross-area-navigation"
-    },
-    {
-      "keywords": [
-        "deterministic-runs",
-        "ops"
-      ],
-      "path": "ops/docs/deterministic-runs.md",
-      "tags": [
-        "deterministic-runs",
-        "ops"
-      ],
-      "topic": "deterministic-runs"
-    },
-    {
-      "keywords": [
-        "e2e-philosophy",
-        "ops"
-      ],
-      "path": "ops/docs/e2e-philosophy.md",
-      "tags": [
-        "e2e-philosophy",
-        "ops"
-      ],
-      "topic": "e2e-philosophy"
-    },
-    {
-      "keywords": [
-        "failure-triage-guide",
-        "ops"
-      ],
-      "path": "ops/docs/failure-triage-guide.md",
-      "tags": [
-        "failure-triage-guide",
-        "ops"
-      ],
-      "topic": "failure-triage-guide"
-    },
-    {
-      "keywords": [
-        "generated-committed-policy",
-        "ops"
-      ],
-      "path": "ops/docs/generated-committed-policy.md",
-      "tags": [
-        "generated-committed-policy",
-        "ops"
-      ],
-      "topic": "generated-committed-policy"
-    },
-    {
-      "keywords": [
-        "inventory-contracts",
-        "ops"
-      ],
-      "path": "ops/docs/inventory-contracts.md",
-      "tags": [
-        "inventory-contracts",
-        "ops"
-      ],
-      "topic": "inventory-contracts"
-    },
-    {
-      "keywords": [
-        "k8s-conformance",
-        "ops"
-      ],
-      "path": "ops/docs/k8s-conformance.md",
-      "tags": [
-        "k8s-conformance",
-        "ops"
-      ],
-      "topic": "k8s-conformance"
-    },
-    {
-      "keywords": [
-        "layout-migration",
-        "ops"
-      ],
-      "path": "ops/docs/layout-migration.md",
-      "tags": [
-        "layout-migration",
-        "ops"
-      ],
-      "topic": "layout-migration"
-    },
-    {
-      "keywords": [
-        "load-testing",
-        "ops"
-      ],
-      "path": "ops/docs/load-testing.md",
-      "tags": [
-        "load-testing",
-        "ops"
-      ],
-      "topic": "load-testing"
-    },
-    {
-      "keywords": [
-        "migration-window",
-        "ops"
-      ],
-      "path": "ops/docs/migration-window.md",
-      "tags": [
-        "migration-window",
-        "ops"
-      ],
-      "topic": "migration-window"
-    },
-    {
-      "keywords": [
-        "observability-verification",
-        "ops"
-      ],
-      "path": "ops/docs/observability-verification.md",
-      "tags": [
-        "observability-verification",
-        "ops"
-      ],
-      "topic": "observability-verification"
-    },
-    {
-      "keywords": [
-        "offline-mode",
-        "ops"
-      ],
-      "path": "ops/docs/offline-mode.md",
-      "tags": [
-        "offline-mode",
-        "ops"
-      ],
-      "topic": "offline-mode"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-api-contract"
-      ],
-      "path": "ops/docs/ops-api-contract.md",
-      "tags": [
-        "ops",
-        "ops-api-contract"
-      ],
-      "topic": "ops-api-contract"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-diagrams"
-      ],
-      "path": "ops/docs/ops-diagrams.md",
-      "tags": [
-        "ops",
-        "ops-diagrams"
-      ],
-      "topic": "ops-diagrams"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-evidence-explanation"
-      ],
-      "path": "ops/docs/ops-evidence-explanation.md",
-      "tags": [
-        "ops",
-        "ops-evidence-explanation"
-      ],
-      "topic": "ops-evidence-explanation"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-glossary"
-      ],
-      "path": "ops/docs/ops-glossary.md",
-      "tags": [
-        "ops",
-        "ops-glossary"
-      ],
-      "topic": "ops-glossary"
-    },
-    {
-      "keywords": [
-        "ops",
-        "ops-safety-guarantees"
-      ],
-      "path": "ops/docs/ops-safety-guarantees.md",
-      "tags": [
-        "ops",
-        "ops-safety-guarantees"
-      ],
-      "topic": "ops-safety-guarantees"
-    },
-    {
-      "keywords": [
-        "ops",
-        "policy-relaxations"
-      ],
-      "path": "ops/docs/policy-relaxations.md",
-      "tags": [
-        "ops",
-        "policy-relaxations"
-      ],
-      "topic": "policy-relaxations"
-    },
-    {
-      "keywords": [
-        "ops",
-        "render-pipeline"
-      ],
-      "path": "ops/docs/render-pipeline.md",
-      "tags": [
-        "ops",
-        "render-pipeline"
-      ],
-      "topic": "render-pipeline"
-    },
-    {
-      "keywords": [
-        "ops",
-        "stack-lifecycle"
-      ],
-      "path": "ops/docs/stack-lifecycle.md",
-      "tags": [
-        "ops",
-        "stack-lifecycle"
-      ],
-      "topic": "stack-lifecycle"
-    },
-    {
-      "keywords": [
-        "ops",
-        "toolchain-pins-explanation"
-      ],
-      "path": "ops/docs/toolchain-pins-explanation.md",
-      "tags": [
-        "ops",
-        "toolchain-pins-explanation"
-      ],
-      "topic": "toolchain-pins-explanation"
-    },
-    {
-      "keywords": [
-        "ops",
-        "troubleshooting-runbook"
-      ],
-      "path": "ops/docs/troubleshooting-runbook.md",
-      "tags": [
-        "ops",
-        "troubleshooting-runbook"
-      ],
-      "topic": "troubleshooting-runbook"
     },
     {
       "keywords": [
@@ -9909,6 +9795,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/e2e/REQUIRED_FILES.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -9976,6 +9876,20 @@
       "keywords": [
         "env",
         "ops",
+        "owner"
+      ],
+      "path": "ops/env/OWNER.md",
+      "tags": [
+        "env",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "env",
+        "ops",
         "readme"
       ],
       "path": "ops/env/README.md",
@@ -9988,73 +9902,31 @@
     },
     {
       "keywords": [
-        "contract",
-        "fixtures",
-        "ops"
+        "env",
+        "ops",
+        "required-files"
       ],
-      "path": "ops/fixtures/CONTRACT.md",
+      "path": "ops/env/REQUIRED_FILES.md",
       "tags": [
-        "contract",
-        "fixtures",
-        "ops"
+        "env",
+        "ops",
+        "required-files"
       ],
-      "topic": "CONTRACT"
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
-        "fixtures",
-        "index",
-        "ops"
-      ],
-      "path": "ops/fixtures/INDEX.md",
-      "tags": [
-        "fixtures",
-        "index",
-        "ops"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "fixtures",
+        "inventory",
         "ops",
         "owner"
       ],
-      "path": "ops/fixtures/OWNER.md",
+      "path": "ops/inventory/OWNER.md",
       "tags": [
-        "fixtures",
+        "inventory",
         "ops",
         "owner"
       ],
       "topic": "OWNER"
-    },
-    {
-      "keywords": [
-        "fixtures",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/fixtures/README.md",
-      "tags": [
-        "fixtures",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "helm",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/helm/README.md",
-      "tags": [
-        "helm",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [
@@ -10069,6 +9941,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "inventory",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/inventory/REQUIRED_FILES.md",
+      "tags": [
+        "inventory",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -10128,6 +10014,20 @@
     },
     {
       "keywords": [
+        "k8s",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/k8s/REQUIRED_FILES.md",
+      "tags": [
+        "k8s",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
         "bijux-atlas",
         "charts",
         "k8s",
@@ -10138,6 +10038,22 @@
       "tags": [
         "bijux-atlas",
         "charts",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "generated",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/k8s/generated/README.md",
+      "tags": [
+        "generated",
         "k8s",
         "ops",
         "readme"
@@ -10159,20 +10075,6 @@
         "tests"
       ],
       "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "kind",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/kind/README.md",
-      "tags": [
-        "kind",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [
@@ -10232,6 +10134,20 @@
     },
     {
       "keywords": [
+        "load",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/load/REQUIRED_FILES.md",
+      "tags": [
+        "load",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
         "baselines",
         "load",
         "ops",
@@ -10280,6 +10196,22 @@
     },
     {
       "keywords": [
+        "generated",
+        "load",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/load/generated/README.md",
+      "tags": [
+        "generated",
+        "load",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "load",
         "ops",
         "readme"
@@ -10311,170 +10243,44 @@
     {
       "keywords": [
         "contract",
-        "obs",
+        "observe",
         "ops"
       ],
-      "path": "ops/obs/CONTRACT.md",
+      "path": "ops/observe/CONTRACT.md",
       "tags": [
         "contract",
-        "obs",
+        "observe",
         "ops"
       ],
       "topic": "CONTRACT"
     },
     {
       "keywords": [
-        "contracts",
-        "obs",
-        "ops"
-      ],
-      "path": "ops/obs/CONTRACTS.md",
-      "tags": [
-        "contracts",
-        "obs",
-        "ops"
-      ],
-      "topic": "CONTRACTS"
-    },
-    {
-      "keywords": [
         "index",
-        "obs",
+        "observe",
         "ops"
       ],
-      "path": "ops/obs/INDEX.md",
+      "path": "ops/observe/INDEX.md",
       "tags": [
         "index",
-        "obs",
+        "observe",
         "ops"
       ],
       "topic": "INDEX"
     },
     {
       "keywords": [
-        "obs",
+        "observe",
         "ops",
         "owner"
       ],
-      "path": "ops/obs/OWNER.md",
+      "path": "ops/observe/OWNER.md",
       "tags": [
-        "obs",
+        "observe",
         "ops",
         "owner"
       ],
       "topic": "OWNER"
-    },
-    {
-      "keywords": [
-        "obs",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/obs/README.md",
-      "tags": [
-        "obs",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "grafana",
-        "obs",
-        "ops",
-        "readme"
-      ],
-      "path": "ops/obs/grafana/README.md",
-      "tags": [
-        "grafana",
-        "obs",
-        "ops",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "index",
-        "obs",
-        "ops",
-        "otel"
-      ],
-      "path": "ops/obs/otel/INDEX.md",
-      "tags": [
-        "index",
-        "obs",
-        "ops",
-        "otel"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "obs",
-        "ops",
-        "pack",
-        "readme"
-      ],
-      "path": "ops/obs/pack/README.md",
-      "tags": [
-        "obs",
-        "ops",
-        "pack",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "keywords": [
-        "index",
-        "obs",
-        "ops",
-        "prometheus"
-      ],
-      "path": "ops/obs/prometheus/INDEX.md",
-      "tags": [
-        "index",
-        "obs",
-        "ops",
-        "prometheus"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "index",
-        "lib",
-        "obs",
-        "ops",
-        "scripts"
-      ],
-      "path": "ops/obs/scripts/lib/INDEX.md",
-      "tags": [
-        "index",
-        "lib",
-        "obs",
-        "ops",
-        "scripts"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "obs",
-        "ops",
-        "readme",
-        "tests"
-      ],
-      "path": "ops/obs/tests/README.md",
-      "tags": [
-        "obs",
-        "ops",
-        "readme",
-        "tests"
-      ],
-      "topic": "README"
     },
     {
       "keywords": [
@@ -10489,6 +10295,20 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "observe",
+        "ops",
+        "required-files"
+      ],
+      "path": "ops/observe/REQUIRED_FILES.md",
+      "tags": [
+        "observe",
+        "ops",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
     },
     {
       "keywords": [
@@ -10508,16 +10328,34 @@
     },
     {
       "keywords": [
-        "legacy-ops-shell",
+        "drills",
+        "incident-template",
+        "observe",
         "ops",
-        "quarantine",
+        "templates"
+      ],
+      "path": "ops/observe/drills/templates/incident-template.md",
+      "tags": [
+        "drills",
+        "incident-template",
+        "observe",
+        "ops",
+        "templates"
+      ],
+      "topic": "incident-template"
+    },
+    {
+      "keywords": [
+        "observe",
+        "ops",
+        "pack",
         "readme"
       ],
-      "path": "ops/quarantine/legacy-ops-shell/README.md",
+      "path": "ops/observe/pack/README.md",
       "tags": [
-        "legacy-ops-shell",
+        "observe",
         "ops",
-        "quarantine",
+        "pack",
         "readme"
       ],
       "topic": "README"
@@ -10581,6 +10419,678 @@
     {
       "keywords": [
         "ops",
+        "report",
+        "required-files"
+      ],
+      "path": "ops/report/REQUIRED_FILES.md",
+      "tags": [
+        "ops",
+        "report",
+        "required-files"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "ops",
+        "readme",
+        "report"
+      ],
+      "path": "ops/report/docs/README.md",
+      "tags": [
+        "ops",
+        "readme",
+        "report"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "ops",
+        "reference-index",
+        "report"
+      ],
+      "path": "ops/report/docs/REFERENCE_INDEX.md",
+      "tags": [
+        "ops",
+        "reference-index",
+        "report"
+      ],
+      "topic": "REFERENCE_INDEX"
+    },
+    {
+      "keywords": [
+        "artifacts-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/artifacts-contract.md",
+      "tags": [
+        "artifacts-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "artifacts-contract"
+    },
+    {
+      "keywords": [
+        "config-compiler-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/config-compiler-contract.md",
+      "tags": [
+        "config-compiler-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "config-compiler-contract"
+    },
+    {
+      "keywords": [
+        "config-migration-cutoff",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/config-migration-cutoff.md",
+      "tags": [
+        "config-migration-cutoff",
+        "ops",
+        "report"
+      ],
+      "topic": "config-migration-cutoff"
+    },
+    {
+      "keywords": [
+        "cross-area-navigation",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/cross-area-navigation.md",
+      "tags": [
+        "cross-area-navigation",
+        "ops",
+        "report"
+      ],
+      "topic": "cross-area-navigation"
+    },
+    {
+      "keywords": [
+        "dataset-lifecycle-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/dataset-lifecycle-contract.md",
+      "tags": [
+        "dataset-lifecycle-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "dataset-lifecycle-contract"
+    },
+    {
+      "keywords": [
+        "deterministic-runs",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/deterministic-runs.md",
+      "tags": [
+        "deterministic-runs",
+        "ops",
+        "report"
+      ],
+      "topic": "deterministic-runs"
+    },
+    {
+      "keywords": [
+        "e2e-composition-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/e2e-composition-contract.md",
+      "tags": [
+        "e2e-composition-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "e2e-composition-contract"
+    },
+    {
+      "keywords": [
+        "e2e-philosophy",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/e2e-philosophy.md",
+      "tags": [
+        "e2e-philosophy",
+        "ops",
+        "report"
+      ],
+      "topic": "e2e-philosophy"
+    },
+    {
+      "keywords": [
+        "environment-overlays",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/environment-overlays.md",
+      "tags": [
+        "environment-overlays",
+        "ops",
+        "report"
+      ],
+      "topic": "environment-overlays"
+    },
+    {
+      "keywords": [
+        "failure-triage-guide",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/failure-triage-guide.md",
+      "tags": [
+        "failure-triage-guide",
+        "ops",
+        "report"
+      ],
+      "topic": "failure-triage-guide"
+    },
+    {
+      "keywords": [
+        "generated-committed-policy",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/generated-committed-policy.md",
+      "tags": [
+        "generated-committed-policy",
+        "ops",
+        "report"
+      ],
+      "topic": "generated-committed-policy"
+    },
+    {
+      "keywords": [
+        "how-ops-works",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/how-ops-works.md",
+      "tags": [
+        "how-ops-works",
+        "ops",
+        "report"
+      ],
+      "topic": "how-ops-works"
+    },
+    {
+      "keywords": [
+        "inventory-contracts",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/inventory-contracts.md",
+      "tags": [
+        "inventory-contracts",
+        "ops",
+        "report"
+      ],
+      "topic": "inventory-contracts"
+    },
+    {
+      "keywords": [
+        "k8s-conformance",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/k8s-conformance.md",
+      "tags": [
+        "k8s-conformance",
+        "ops",
+        "report"
+      ],
+      "topic": "k8s-conformance"
+    },
+    {
+      "keywords": [
+        "k8s-crd-compatibility-policy",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/k8s-crd-compatibility-policy.md",
+      "tags": [
+        "k8s-crd-compatibility-policy",
+        "ops",
+        "report"
+      ],
+      "topic": "k8s-crd-compatibility-policy"
+    },
+    {
+      "keywords": [
+        "k8s-install-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/k8s-install-contract.md",
+      "tags": [
+        "k8s-install-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "k8s-install-contract"
+    },
+    {
+      "keywords": [
+        "k8s-rollback-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/k8s-rollback-contract.md",
+      "tags": [
+        "k8s-rollback-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "k8s-rollback-contract"
+    },
+    {
+      "keywords": [
+        "k8s-uninstall-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/k8s-uninstall-contract.md",
+      "tags": [
+        "k8s-uninstall-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "k8s-uninstall-contract"
+    },
+    {
+      "keywords": [
+        "k8s-upgrade-contract",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/k8s-upgrade-contract.md",
+      "tags": [
+        "k8s-upgrade-contract",
+        "ops",
+        "report"
+      ],
+      "topic": "k8s-upgrade-contract"
+    },
+    {
+      "keywords": [
+        "layout-migration",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/layout-migration.md",
+      "tags": [
+        "layout-migration",
+        "ops",
+        "report"
+      ],
+      "topic": "layout-migration"
+    },
+    {
+      "keywords": [
+        "load-testing",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/load-testing.md",
+      "tags": [
+        "load-testing",
+        "ops",
+        "report"
+      ],
+      "topic": "load-testing"
+    },
+    {
+      "keywords": [
+        "migration-window",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/migration-window.md",
+      "tags": [
+        "migration-window",
+        "ops",
+        "report"
+      ],
+      "topic": "migration-window"
+    },
+    {
+      "keywords": [
+        "observability-pack-definition",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/observability-pack-definition.md",
+      "tags": [
+        "observability-pack-definition",
+        "ops",
+        "report"
+      ],
+      "topic": "observability-pack-definition"
+    },
+    {
+      "keywords": [
+        "observability-verification",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/observability-verification.md",
+      "tags": [
+        "observability-verification",
+        "ops",
+        "report"
+      ],
+      "topic": "observability-verification"
+    },
+    {
+      "keywords": [
+        "observe-rename",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/observe-rename.md",
+      "tags": [
+        "observe-rename",
+        "ops",
+        "report"
+      ],
+      "topic": "observe-rename"
+    },
+    {
+      "keywords": [
+        "offline-mode",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/docs/offline-mode.md",
+      "tags": [
+        "offline-mode",
+        "ops",
+        "report"
+      ],
+      "topic": "offline-mode"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-api-contract",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-api-contract.md",
+      "tags": [
+        "ops",
+        "ops-api-contract",
+        "report"
+      ],
+      "topic": "ops-api-contract"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-architecture",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-architecture.md",
+      "tags": [
+        "ops",
+        "ops-architecture",
+        "report"
+      ],
+      "topic": "ops-architecture"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-diagrams",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-diagrams.md",
+      "tags": [
+        "ops",
+        "ops-diagrams",
+        "report"
+      ],
+      "topic": "ops-diagrams"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-evidence-explanation",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-evidence-explanation.md",
+      "tags": [
+        "ops",
+        "ops-evidence-explanation",
+        "report"
+      ],
+      "topic": "ops-evidence-explanation"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-gates-contract",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-gates-contract.md",
+      "tags": [
+        "ops",
+        "ops-gates-contract",
+        "report"
+      ],
+      "topic": "ops-gates-contract"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-glossary",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-glossary.md",
+      "tags": [
+        "ops",
+        "ops-glossary",
+        "report"
+      ],
+      "topic": "ops-glossary"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-safety-guarantees",
+        "report"
+      ],
+      "path": "ops/report/docs/ops-safety-guarantees.md",
+      "tags": [
+        "ops",
+        "ops-safety-guarantees",
+        "report"
+      ],
+      "topic": "ops-safety-guarantees"
+    },
+    {
+      "keywords": [
+        "ops",
+        "pin-lifecycle",
+        "report"
+      ],
+      "path": "ops/report/docs/pin-lifecycle.md",
+      "tags": [
+        "ops",
+        "pin-lifecycle",
+        "report"
+      ],
+      "topic": "pin-lifecycle"
+    },
+    {
+      "keywords": [
+        "ops",
+        "pin-promotion-workflow",
+        "report"
+      ],
+      "path": "ops/report/docs/pin-promotion-workflow.md",
+      "tags": [
+        "ops",
+        "pin-promotion-workflow",
+        "report"
+      ],
+      "topic": "pin-promotion-workflow"
+    },
+    {
+      "keywords": [
+        "ops",
+        "policy-relaxations",
+        "report"
+      ],
+      "path": "ops/report/docs/policy-relaxations.md",
+      "tags": [
+        "ops",
+        "policy-relaxations",
+        "report"
+      ],
+      "topic": "policy-relaxations"
+    },
+    {
+      "keywords": [
+        "ops",
+        "render-pipeline",
+        "report"
+      ],
+      "path": "ops/report/docs/render-pipeline.md",
+      "tags": [
+        "ops",
+        "render-pipeline",
+        "report"
+      ],
+      "topic": "render-pipeline"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "schema-compatibility-policy"
+      ],
+      "path": "ops/report/docs/schema-compatibility-policy.md",
+      "tags": [
+        "ops",
+        "report",
+        "schema-compatibility-policy"
+      ],
+      "topic": "schema-compatibility-policy"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "stack-definition"
+      ],
+      "path": "ops/report/docs/stack-definition.md",
+      "tags": [
+        "ops",
+        "report",
+        "stack-definition"
+      ],
+      "topic": "stack-definition"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "stack-lifecycle"
+      ],
+      "path": "ops/report/docs/stack-lifecycle.md",
+      "tags": [
+        "ops",
+        "report",
+        "stack-lifecycle"
+      ],
+      "topic": "stack-lifecycle"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "toolchain-pins-explanation"
+      ],
+      "path": "ops/report/docs/toolchain-pins-explanation.md",
+      "tags": [
+        "ops",
+        "report",
+        "toolchain-pins-explanation"
+      ],
+      "topic": "toolchain-pins-explanation"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "troubleshooting-runbook"
+      ],
+      "path": "ops/report/docs/troubleshooting-runbook.md",
+      "tags": [
+        "ops",
+        "report",
+        "troubleshooting-runbook"
+      ],
+      "topic": "troubleshooting-runbook"
+    },
+    {
+      "keywords": [
+        "ops",
+        "report",
+        "unified-reporting-contract"
+      ],
+      "path": "ops/report/docs/unified-reporting-contract.md",
+      "tags": [
+        "ops",
+        "report",
+        "unified-reporting-contract"
+      ],
+      "topic": "unified-reporting-contract"
+    },
+    {
+      "keywords": [
+        "budget-policy",
+        "ops",
+        "schema"
+      ],
+      "path": "ops/schema/BUDGET_POLICY.md",
+      "tags": [
+        "budget-policy",
+        "ops",
+        "schema"
+      ],
+      "topic": "BUDGET_POLICY"
+    },
+    {
+      "keywords": [
+        "ops",
+        "owner",
+        "schema"
+      ],
+      "path": "ops/schema/OWNER.md",
+      "tags": [
+        "ops",
+        "owner",
+        "schema"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "keywords": [
+        "ops",
         "readme",
         "schema"
       ],
@@ -10594,17 +11104,73 @@
     },
     {
       "keywords": [
+        "ops",
+        "required-files",
+        "schema"
+      ],
+      "path": "ops/schema/REQUIRED_FILES.md",
+      "tags": [
+        "ops",
+        "required-files",
+        "schema"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema",
+        "schema-budget-exceptions"
+      ],
+      "path": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+      "tags": [
+        "ops",
+        "schema",
+        "schema-budget-exceptions"
+      ],
+      "topic": "SCHEMA_BUDGET_EXCEPTIONS"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema",
+        "schema-reference-allowlist"
+      ],
+      "path": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+      "tags": [
+        "ops",
+        "schema",
+        "schema-reference-allowlist"
+      ],
+      "topic": "SCHEMA_REFERENCE_ALLOWLIST"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema",
+        "versioning-policy"
+      ],
+      "path": "ops/schema/VERSIONING_POLICY.md",
+      "tags": [
+        "ops",
+        "schema",
+        "versioning-policy"
+      ],
+      "topic": "VERSIONING_POLICY"
+    },
+    {
+      "keywords": [
         "configs",
         "index",
         "ops",
-        "schemas"
+        "schema"
       ],
-      "path": "ops/schemas/configs/INDEX.md",
+      "path": "ops/schema/configs/INDEX.md",
       "tags": [
         "configs",
         "index",
         "ops",
-        "schemas"
+        "schema"
       ],
       "topic": "INDEX"
     },
@@ -10613,16 +11179,32 @@
         "configs",
         "ops",
         "readme",
-        "schemas"
+        "schema"
       ],
-      "path": "ops/schemas/configs/README.md",
+      "path": "ops/schema/configs/README.md",
       "tags": [
         "configs",
         "ops",
         "readme",
-        "schemas"
+        "schema"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "generated",
+        "ops",
+        "schema",
+        "schema-index"
+      ],
+      "path": "ops/schema/generated/schema-index.md",
+      "tags": [
+        "generated",
+        "ops",
+        "schema",
+        "schema-index"
+      ],
+      "topic": "schema-index"
     },
     {
       "keywords": [
@@ -10682,6 +11264,20 @@
     },
     {
       "keywords": [
+        "ops",
+        "required-files",
+        "stack"
+      ],
+      "path": "ops/stack/REQUIRED_FILES.md",
+      "tags": [
+        "ops",
+        "required-files",
+        "stack"
+      ],
+      "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
         "dependencies",
         "ops",
         "stack"
@@ -10693,6 +11289,22 @@
         "stack"
       ],
       "topic": "dependencies"
+    },
+    {
+      "keywords": [
+        "generated",
+        "ops",
+        "readme",
+        "stack"
+      ],
+      "path": "ops/stack/generated/README.md",
+      "tags": [
+        "generated",
+        "ops",
+        "readme",
+        "stack"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [
