@@ -7,6 +7,7 @@ required_files:
   - ops/datasets/CONTRACT.md
   - ops/datasets/INDEX.md
   - ops/datasets/REQUIRED_FILES.md
+  - ops/datasets/FIXTURE_LIFECYCLE.md
   - ops/datasets/manifest.json
   - ops/datasets/manifest.lock
   - ops/datasets/promotion-rules.json

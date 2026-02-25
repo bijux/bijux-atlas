@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "allowlist_sha256": "d2fbceab7f092129528fe9f2d51662af1338fd5442f654a7d99a9842a40e9ac9",
+  "fixture_inventory_sha256": "f962ccd11042c983115c6012722af2203aeca81557ee9fc1a58c498430812c05",
   "datasets": [
     {
       "id": "110/homo_sapiens/GRCh38",

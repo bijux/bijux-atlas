@@ -6,6 +6,7 @@
       "version": "v1",
       "manifest_lock": "ops/datasets/fixtures/medium/v1/manifest.lock",
       "asset": "ops/datasets/fixtures/medium/v1/assets/bijux-atlas-medium-fixture-v1.tar.gz",
+      "asset_sha256": "fc883999cf6d4bbe7be36a45ee4f31af06dd1235f5dc6fd1f6f1bdb360bc3ffd",
       "src_dir": "ops/datasets/fixtures/medium/v1/src",
       "goldens": [
         "ops/datasets/fixtures/medium/v1/api-list-queries.v1.json",
@@ -21,6 +22,7 @@
       "version": "v1",
       "manifest_lock": "ops/datasets/fixtures/release-diff/v1/manifest.lock",
       "asset": "ops/datasets/fixtures/release-diff/v1/assets/bijux-atlas-release-diff-v1.tar.gz",
+      "asset_sha256": "c2d610a5812cf93101b552df408580b0cf9aa5056aadcee2e11bab149e053ea0",
       "src_dir": "ops/datasets/fixtures/release-diff/v1/src",
       "goldens": [
         "ops/datasets/fixtures/release-diff/v1/release-diff-queries.v1.json",

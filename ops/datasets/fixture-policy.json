@@ -3,5 +3,9 @@
   "allow_remote_download": false,
   "fixture_roots": ["ops/datasets/fixtures"],
   "allowed_kinds": ["fixture", "real"],
+  "allowed_binary_paths": [
+    "ops/datasets/fixtures/release-diff/v1/store/release=110/species=homo_sapiens/assembly=GRCh38/assets/gene_summary.sqlite",
+    "ops/datasets/fixtures/release-diff/v1/store/release=111/species=homo_sapiens/assembly=GRCh38/assets/gene_summary.sqlite"
+  ],
   "policy": "fixtures are local, deterministic, and immutable per release"
 }

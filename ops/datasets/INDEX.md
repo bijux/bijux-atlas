@@ -5,6 +5,7 @@
 - `ops/datasets/CONTRACT.md`
 - `ops/datasets/REQUIRED_FILES.md`
 - `ops/datasets/OWNER.md`
+- `ops/datasets/FIXTURE_LIFECYCLE.md`
 
 ## Data
 - `ops/datasets/manifest.json`
