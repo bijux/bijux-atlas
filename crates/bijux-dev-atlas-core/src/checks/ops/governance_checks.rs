@@ -506,16 +506,61 @@ pub(super) fn check_ops_no_behavior_source_files(
             continue;
         }
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-        let allowlisted_fixture = rel.starts_with("ops/stack/tests/");
-        if allowlisted_fixture {
-            continue;
-        }
         violations.push(violation(
             "OPS_BEHAVIOR_SOURCE_FILE_PRESENT",
-            format!("ops contains behavior source file outside fixture allowlist: {}", rel.display()),
-            "move behavior into crates/bijux-dev-atlas; keep ops/ for manifests, schemas, fixtures, and docs",
+            format!("ops contains behavior source file: {}", rel.display()),
+            "move behavior into crates/bijux-dev-atlas; keep ops/ for manifests, schemas, and docs",
             Some(rel),
         ));
     }
     Ok(violations)
+}
+
+pub(super) fn check_ops_quarantine_shim_expiration_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let readme_rel = Path::new("ops/quarantine/legacy-ops-shell/README.md");
+    if !ctx.adapters.fs.exists(ctx.repo_root, readme_rel) {
+        return Ok(vec![violation(
+            "OPS_SHIM_QUARANTINE_README_MISSING",
+            format!(
+                "missing shim quarantine contract file `{}`",
+                readme_rel.display()
+            ),
+            "add shim quarantine README with explicit deadline",
+            Some(readme_rel),
+        )]);
+    }
+    let text = fs::read_to_string(ctx.repo_root.join(readme_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let deadline_line = text
+        .lines()
+        .find(|line| line.trim_start().starts_with("- Remove all legacy shell helpers by "));
+    let Some(deadline_line) = deadline_line else {
+        return Ok(vec![violation(
+            "OPS_SHIM_EXPIRATION_MISSING",
+            "shim quarantine README must declare an explicit removal deadline".to_string(),
+            "add a deadline line in the form `- Remove all legacy shell helpers by YYYY-MM-DD.`",
+            Some(readme_rel),
+        )]);
+    };
+    let deadline = deadline_line
+        .trim_start()
+        .trim_start_matches("- Remove all legacy shell helpers by ")
+        .trim_end_matches('.')
+        .trim();
+    let valid_deadline = deadline.len() == 10
+        && deadline.chars().enumerate().all(|(idx, ch)| match idx {
+            4 | 7 => ch == '-',
+            _ => ch.is_ascii_digit(),
+        });
+    if !valid_deadline {
+        return Ok(vec![violation(
+            "OPS_SHIM_EXPIRATION_FORMAT_INVALID",
+            format!("shim quarantine deadline has invalid format: `{deadline}`"),
+            "use ISO date format YYYY-MM-DD in shim quarantine deadline",
+            Some(readme_rel),
+        )]);
+    }
+    Ok(Vec::new())
 }

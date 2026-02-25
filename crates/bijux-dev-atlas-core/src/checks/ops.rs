@@ -71,6 +71,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         }
         "checks_ops_no_executable_bit_files" => Some(check_ops_no_executable_bit_files),
         "checks_ops_no_behavior_source_files" => Some(check_ops_no_behavior_source_files),
+        "checks_ops_quarantine_shim_expiration_contract" => {
+            Some(check_ops_quarantine_shim_expiration_contract)
+        }
         "checks_root_no_scripts_areas_presence_or_references" => {
             Some(check_root_no_scripts_areas_presence_or_references)
         }
@@ -209,6 +212,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_workflows_no_direct_docker_build_execution",
         "checks_ops_no_executable_bit_files",
         "checks_ops_no_behavior_source_files",
+        "checks_ops_quarantine_shim_expiration_contract",
         "checks_root_no_scripts_areas_presence_or_references",
         "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch",
         "checks_crates_bijux_atlas_help_excludes_dev_commands",
@@ -408,7 +412,6 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         "k8s",
         "kind",
         "load",
-        "manifests",
         "obs",
         "observe",
         "quarantine",
