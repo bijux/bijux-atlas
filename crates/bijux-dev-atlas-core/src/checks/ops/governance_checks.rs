@@ -741,6 +741,82 @@ pub(super) fn check_ops_required_files_contracts(
     Ok(violations)
 }
 
+pub(super) fn check_ops_domain_contract_structure(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let contract_files = [
+        "ops/datasets/CONTRACT.md",
+        "ops/e2e/CONTRACT.md",
+        "ops/k8s/CONTRACT.md",
+        "ops/load/CONTRACT.md",
+        "ops/observe/CONTRACT.md",
+        "ops/report/CONTRACT.md",
+        "ops/stack/CONTRACT.md",
+    ];
+    let mut violations = Vec::new();
+    for rel_str in contract_files {
+        let rel = Path::new(rel_str);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_MISSING",
+                format!("missing domain contract `{}`", rel.display()),
+                "add missing domain CONTRACT.md file",
+                Some(rel),
+            ));
+            continue;
+        }
+        let text = fs::read_to_string(ctx.repo_root.join(rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if !text.contains("## Authored vs Generated") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_AUTHORED_GENERATED_SECTION_MISSING",
+                format!(
+                    "domain contract `{}` must include `## Authored vs Generated`",
+                    rel.display()
+                ),
+                "add an authored-vs-generated table with explicit file paths",
+                Some(rel),
+            ));
+        }
+        if !text.contains("## Invariants") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_INVARIANTS_SECTION_MISSING",
+                format!("domain contract `{}` must include `## Invariants`", rel.display()),
+                "add an invariants section with explicit, enforceable rules",
+                Some(rel),
+            ));
+            continue;
+        }
+        let mut in_invariants = false;
+        let mut invariant_count = 0usize;
+        for line in text.lines() {
+            if line.starts_with("## ") {
+                in_invariants = line == "## Invariants";
+                continue;
+            }
+            if in_invariants {
+                let trimmed = line.trim_start();
+                if trimmed.starts_with("- ") {
+                    invariant_count += 1;
+                }
+            }
+        }
+        if invariant_count < 6 {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_INVARIANT_COUNT_TOO_LOW",
+                format!(
+                    "domain contract `{}` must define at least 6 invariants; found {}",
+                    rel.display(),
+                    invariant_count
+                ),
+                "add concrete invariants until the minimum count is satisfied",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
 fn parse_required_files_markdown_yaml(
     content: &str,
     rel: &Path,
