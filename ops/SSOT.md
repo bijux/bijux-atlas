@@ -1,0 +1,23 @@
+# Ops SSOT Policy
+
+This page defines authored truth versus generated truth in `ops/`.
+
+## Authored
+
+- Author intent files under:
+  - `ops/inventory/`
+  - `ops/schema/` (source schemas, not generated indexes)
+  - `ops/env/`
+  - `ops/stack/` and `ops/k8s/` source manifests
+  - `ops/observe/`, `ops/load/`, `ops/datasets/`, `ops/e2e/`, `ops/report/`
+
+## Generated
+
+- Runtime generated outputs: `ops/_generated/`
+- Curated committed generated evidence: `ops/_generated.example/`
+- Generated indexes and summaries under domain `generated/` directories
+
+## Rule
+
+- Semantic data can have one authored source only.
+- Any additional copy must be generated from the authored source and documented as generated.
