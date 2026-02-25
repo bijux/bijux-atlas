@@ -3538,6 +3538,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/root/DOCKER_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/root/DOCS_PHILOSOPHY.md"
     },
     {
@@ -3564,6 +3569,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/root/LICENSE_EXPLANATION.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/MAKEFILES_OVERVIEW.md"
     },
     {
       "crate": null,

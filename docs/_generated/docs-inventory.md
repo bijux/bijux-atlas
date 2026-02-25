@@ -711,12 +711,14 @@ License: Apache-2.0
 | `docs/root/CRATE_INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/DIAGRAM_ALT_TEXT_POLICY.md` | `concept` | `docs-governance` | `stable` |
+| `docs/root/DOCKER_OVERVIEW.md` | `concept` | `docker-governance` | `stable` |
 | `docs/root/DOCS_PHILOSOPHY.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/FAQ.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/GLOSSARY.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/GLOSSARY_CROSSLINKS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/LICENSE_EXPLANATION.md` | `concept` | `docs-governance` | `stable` |
+| `docs/root/MAKEFILES_OVERVIEW.md` | `concept` | `build-and-release` | `stable` |
 | `docs/root/NAVIGATION_POLICY.md` | `concept` | `docs-governance` | `stable` |
 | `docs/root/OBSERVABILITY_OVERVIEW.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/root/OPS_OVERVIEW.md` | `concept` | `bijux-atlas-operations` | `stable` |

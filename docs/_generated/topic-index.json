@@ -230,6 +230,9 @@
     "DIAGRAM_ALT_TEXT_POLICY": [
       "docs/root/DIAGRAM_ALT_TEXT_POLICY.md"
     ],
+    "DOCKER_OVERVIEW": [
+      "docs/root/DOCKER_OVERVIEW.md"
+    ],
     "DOCS_OWNERSHIP": [
       "docs/governance/DOCS_OWNERSHIP.md"
     ],
@@ -406,6 +409,9 @@
     ],
     "LICENSE_EXPLANATION": [
       "docs/root/LICENSE_EXPLANATION.md"
+    ],
+    "MAKEFILES_OVERVIEW": [
+      "docs/root/MAKEFILES_OVERVIEW.md"
     ],
     "MIRROR_POLICY": [
       "ops/_generated.example/MIRROR_POLICY.md"
