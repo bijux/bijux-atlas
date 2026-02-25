@@ -7,5 +7,6 @@
   "determinism": {
     "required": true,
     "hash_algorithm": "sha256"
-  }
+  },
+  "generated_by": "bijux dev atlas ops generate"
 }

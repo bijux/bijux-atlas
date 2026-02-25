@@ -536,7 +536,10 @@ pub(super) fn check_ops_no_behavior_source_files(
             continue;
         }
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-        if allowlisted_prefixes.iter().any(|prefix| rel.starts_with(prefix)) {
+        if allowlisted_prefixes
+            .iter()
+            .any(|prefix| rel.starts_with(prefix))
+        {
             continue;
         }
         violations.push(violation(
@@ -549,9 +552,7 @@ pub(super) fn check_ops_no_behavior_source_files(
     Ok(violations)
 }
 
-pub(super) fn check_ops_no_makefiles(
-    ctx: &CheckContext<'_>,
-) -> Result<Vec<Violation>, CheckError> {
+pub(super) fn check_ops_no_makefiles(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
     let ops_root = ctx.repo_root.join("ops");
     if !ops_root.exists() {
         return Ok(Vec::new());
@@ -590,9 +591,10 @@ pub(super) fn check_ops_no_direct_tool_invocations(
             continue;
         };
         let is_behavior_surface = name == "Makefile"
-            || rel.extension().and_then(|e| e.to_str()).is_some_and(|ext| {
-                ext == "mk" || ext == "sh" || ext == "bash" || ext == "py"
-            });
+            || rel
+                .extension()
+                .and_then(|e| e.to_str())
+                .is_some_and(|ext| ext == "mk" || ext == "sh" || ext == "bash" || ext == "py");
         if !is_behavior_surface {
             continue;
         }
@@ -631,8 +633,8 @@ pub(super) fn check_ops_required_files_contracts(
         if rel.file_name().and_then(|n| n.to_str()) != Some("REQUIRED_FILES.md") {
             continue;
         }
-        let content = fs::read_to_string(&required_doc)
-            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let content =
+            fs::read_to_string(&required_doc).map_err(|err| CheckError::Failed(err.to_string()))?;
         let (required_files, required_directories) =
             parse_required_files_markdown_yaml(&content, rel)?;
         for file_rel in required_files {
@@ -706,7 +708,10 @@ pub(super) fn check_ops_required_files_contracts(
         if !inventory_meta_allowed.contains(rel) {
             violations.push(violation(
                 "OPS_INVENTORY_META_UNKNOWN_FILE",
-                format!("unexpected file in tight inventory meta surface: `{}`", rel.display()),
+                format!(
+                    "unexpected file in tight inventory meta surface: `{}`",
+                    rel.display()
+                ),
                 "remove unknown file or update tight inventory meta contract",
                 Some(rel),
             ));
@@ -731,10 +736,78 @@ pub(super) fn check_ops_required_files_contracts(
         if !is_allowed_doc && !is_schema {
             violations.push(violation(
                 "OPS_SCHEMA_UNKNOWN_FILE",
-                format!("unexpected file in tight schema surface: `{}`", rel.display()),
+                format!(
+                    "unexpected file in tight schema surface: `{}`",
+                    rel.display()
+                ),
                 "keep ops/schema constrained to .schema.json and canonical docs only",
                 Some(rel),
             ));
+        }
+    }
+
+    let ops_root = ctx.repo_root.join("ops");
+    for generated_dir in walk_files(&ops_root)
+        .into_iter()
+        .filter_map(|p| p.parent().map(PathBuf::from))
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .filter(|p| p.ends_with("generated"))
+    {
+        let rel_dir = generated_dir
+            .strip_prefix(ctx.repo_root)
+            .unwrap_or(generated_dir.as_path());
+        let readme_rel = rel_dir.join("README.md");
+        if !ctx.adapters.fs.exists(ctx.repo_root, &readme_rel) {
+            violations.push(violation(
+                "OPS_GENERATED_DIRECTORY_README_MISSING",
+                format!(
+                    "generated directory `{}` is missing README.md",
+                    rel_dir.display()
+                ),
+                "add README.md with generated-only contract in each ops/**/generated directory",
+                Some(rel_dir),
+            ));
+        }
+        let domain_root = rel_dir.parent().unwrap_or(Path::new("ops"));
+        let domain_required_rel = domain_root.join("REQUIRED_FILES.md");
+        if ctx.adapters.fs.exists(ctx.repo_root, &domain_required_rel) {
+            let required_text = fs::read_to_string(ctx.repo_root.join(&domain_required_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let rel_dir_str = rel_dir.display().to_string();
+            if !required_text.contains(&rel_dir_str) {
+                violations.push(violation(
+                    "OPS_GENERATED_DIRECTORY_NOT_DECLARED",
+                    format!(
+                        "generated directory `{}` is not declared in `{}`",
+                        rel_dir.display(),
+                        domain_required_rel.display()
+                    ),
+                    "declare generated directory in domain REQUIRED_FILES.md",
+                    Some(&domain_required_rel),
+                ));
+            }
+        }
+        for file in walk_files(&generated_dir) {
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            if rel.extension().and_then(|ext| ext.to_str()) != Some("json") {
+                continue;
+            }
+            let text =
+                fs::read_to_string(&file).map_err(|err| CheckError::Failed(err.to_string()))?;
+            let value: serde_json::Value =
+                serde_json::from_str(&text).map_err(|err| CheckError::Failed(err.to_string()))?;
+            if value.get("generated_by").is_none() {
+                violations.push(violation(
+                    "OPS_GENERATED_METADATA_MISSING",
+                    format!(
+                        "generated artifact `{}` must include `generated_by` metadata",
+                        rel.display()
+                    ),
+                    "add generated_by field to generated JSON artifacts",
+                    Some(rel),
+                ));
+            }
         }
     }
 
@@ -781,7 +854,10 @@ pub(super) fn check_ops_domain_contract_structure(
         if !text.contains("## Invariants") {
             violations.push(violation(
                 "OPS_DOMAIN_CONTRACT_INVARIANTS_SECTION_MISSING",
-                format!("domain contract `{}` must include `## Invariants`", rel.display()),
+                format!(
+                    "domain contract `{}` must include `## Invariants`",
+                    rel.display()
+                ),
                 "add an invariants section with explicit, enforceable rules",
                 Some(rel),
             ));
@@ -840,11 +916,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let contracts_map: serde_json::Value = serde_json::from_str(&contracts_map_text)
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if contracts_map
-        .get("authoritative")
-        .and_then(|v| v.as_bool())
-        != Some(true)
-    {
+    if contracts_map.get("authoritative").and_then(|v| v.as_bool()) != Some(true) {
         violations.push(violation(
             "OPS_INVENTORY_CONTRACTS_MAP_NOT_AUTHORITATIVE",
             "ops/inventory/contracts-map.json must declare `authoritative: true`".to_string(),
@@ -881,13 +953,14 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 Some(contracts_map_rel),
             ));
         }
-        let schema = item.get("schema").and_then(|v| v.as_str()).unwrap_or("none");
+        let schema = item
+            .get("schema")
+            .and_then(|v| v.as_str())
+            .unwrap_or("none");
         if schema != "none" && !ctx.adapters.fs.exists(ctx.repo_root, Path::new(schema)) {
             violations.push(violation(
                 "OPS_INVENTORY_SCHEMA_REFERENCE_MISSING",
-                format!(
-                    "contracts-map references missing schema `{schema}` for `{path}`"
-                ),
+                format!("contracts-map references missing schema `{schema}` for `{path}`"),
                 "restore schema path or fix schema pointer in contracts-map",
                 Some(contracts_map_rel),
             ));
@@ -896,8 +969,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
 
     let contracts_text = fs::read_to_string(ctx.repo_root.join(contracts_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let contracts_json: serde_json::Value = serde_json::from_str(&contracts_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contracts_json: serde_json::Value =
+        serde_json::from_str(&contracts_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     if contracts_json
         .get("generated_from")
         .and_then(|v| v.as_str())
@@ -953,7 +1026,10 @@ pub(super) fn check_ops_inventory_contract_integrity(
         if !item_paths.contains(rel) {
             violations.push(violation(
                 "OPS_INVENTORY_ORPHAN_FILE",
-                format!("orphan inventory file not tracked by contracts-map: `{}`", rel.display()),
+                format!(
+                    "orphan inventory file not tracked by contracts-map: `{}`",
+                    rel.display()
+                ),
                 "add file to contracts-map or remove orphan artifact",
                 Some(rel),
             ));
@@ -972,8 +1048,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
 
     let layers_text = fs::read_to_string(ctx.repo_root.join(layers_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let layers_json: serde_json::Value = serde_json::from_str(&layers_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let layers_json: serde_json::Value =
+        serde_json::from_str(&layers_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     if layers_text.contains("\"obs\"") {
         violations.push(violation(
             "OPS_INVENTORY_LAYER_LEGACY_OBS_REFERENCE",
@@ -1000,12 +1076,12 @@ pub(super) fn check_ops_inventory_contract_integrity(
 
     let gates_text = fs::read_to_string(ctx.repo_root.join(gates_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let gates_json: serde_json::Value = serde_json::from_str(&gates_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let gates_json: serde_json::Value =
+        serde_json::from_str(&gates_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     let surfaces_text = fs::read_to_string(ctx.repo_root.join(surfaces_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let surfaces_json: serde_json::Value = serde_json::from_str(&surfaces_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let surfaces_json: serde_json::Value =
+        serde_json::from_str(&surfaces_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     let action_ids = surfaces_json
         .get("actions")
         .and_then(|v| v.as_array())
@@ -1047,7 +1123,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
     if tools_text.contains("[[checks]]") || tools_text.contains("[[actions]]") {
         violations.push(violation(
             "OPS_INVENTORY_TOOLS_REGISTRY_SURFACE_COLLISION",
-            "ops/inventory/tools.toml must not define [[checks]] or [[actions]] entries".to_string(),
+            "ops/inventory/tools.toml must not define [[checks]] or [[actions]] entries"
+                .to_string(),
             "keep tools.toml limited to [[tools]] entries",
             Some(tools_rel),
         ));
@@ -1063,8 +1140,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
     }
     let policy_text = fs::read_to_string(ctx.repo_root.join(policy_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let policy_json: serde_json::Value = serde_json::from_str(&policy_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let policy_json: serde_json::Value =
+        serde_json::from_str(&policy_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     if policy_json.get("schema_version").is_none() || policy_json.get("mode").is_none() {
         violations.push(violation(
             "OPS_INVENTORY_POLICY_REQUIRED_KEYS_MISSING",
@@ -1076,8 +1153,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
 
     let pins_text = fs::read_to_string(ctx.repo_root.join(pins_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let pins_yaml: serde_yaml::Value = serde_yaml::from_str(&pins_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let pins_yaml: serde_yaml::Value =
+        serde_yaml::from_str(&pins_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     let pins_images = pins_yaml
         .get("images")
         .and_then(|v| v.as_mapping())
@@ -1100,9 +1177,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
             if pin_value != image_value {
                 violations.push(violation(
                     "OPS_INVENTORY_PIN_STACK_DRIFT",
-                    format!(
-                        "stack manifest image `{key}` differs from inventory pin value"
-                    ),
+                    format!("stack manifest image `{key}` differs from inventory pin value"),
                     "regenerate stack generated version-manifest from inventory pins",
                     Some(stack_manifest_rel),
                 ));
@@ -1125,7 +1200,9 @@ pub(super) fn check_ops_inventory_contract_integrity(
     Ok(violations)
 }
 
-pub(super) fn check_ops_docs_governance(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
+pub(super) fn check_ops_docs_governance(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
 
     let domain_dirs = [
@@ -1353,9 +1430,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         if !mirror_policy_text.contains(required) {
             violations.push(violation(
                 "OPS_EVIDENCE_MIRROR_POLICY_INCOMPLETE",
-                format!(
-                    "mirror policy must declare mirrored artifact `{required}`"
-                ),
+                format!("mirror policy must declare mirrored artifact `{required}`"),
                 "update MIRROR_POLICY.md mirrored artifact list",
                 Some(mirror_policy_rel),
             ));
@@ -1364,8 +1439,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 
     let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let allowlist_json: serde_json::Value = serde_json::from_str(&allowlist_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowlist_json: serde_json::Value =
+        serde_json::from_str(&allowlist_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     let allowlisted_files = allowlist_json
         .get("allowed_files")
         .and_then(|v| v.as_array())
@@ -1413,8 +1488,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                 ));
             }
             if rel.extension().and_then(|ext| ext.to_str()) == Some("json") {
-                let text = fs::read_to_string(&file)
-                    .map_err(|err| CheckError::Failed(err.to_string()))?;
+                let text =
+                    fs::read_to_string(&file).map_err(|err| CheckError::Failed(err.to_string()))?;
                 let json: serde_json::Value = serde_json::from_str(&text)
                     .map_err(|err| CheckError::Failed(err.to_string()))?;
                 if json.get("schema_version").is_none() {
@@ -1434,9 +1509,16 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 
     let bundle_text = fs::read_to_string(ctx.repo_root.join(bundle_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let bundle_json: serde_json::Value = serde_json::from_str(&bundle_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
-    for key in ["schema_version", "release", "status", "hashes", "gates", "pin_freeze_status"] {
+    let bundle_json: serde_json::Value =
+        serde_json::from_str(&bundle_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    for key in [
+        "schema_version",
+        "release",
+        "status",
+        "hashes",
+        "gates",
+        "pin_freeze_status",
+    ] {
         if bundle_json.get(key).is_none() {
             violations.push(violation(
                 "OPS_EVIDENCE_BUNDLE_REQUIRED_KEY_MISSING",
@@ -1481,8 +1563,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 
     let gates_text = fs::read_to_string(ctx.repo_root.join(gates_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let gates_json: serde_json::Value = serde_json::from_str(&gates_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let gates_json: serde_json::Value =
+        serde_json::from_str(&gates_text).map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected_gates = gates_json
         .get("gates")
         .and_then(|v| v.as_array())
@@ -1561,14 +1643,19 @@ pub(super) fn check_ops_fixture_governance(
             if is_binary_like_file(&file)? && !rel_str.contains("/assets/") {
                 violations.push(violation(
                     "OPS_FIXTURE_BINARY_OUTSIDE_ASSETS",
-                    format!("binary fixture file must be under assets/: `{}`", rel.display()),
+                    format!(
+                        "binary fixture file must be under assets/: `{}`",
+                        rel.display()
+                    ),
                     "move binary fixture payloads under versioned assets/ directories",
                     Some(rel),
                 ));
             }
         }
 
-        for entry in fs::read_dir(&fixtures_root).map_err(|err| CheckError::Failed(err.to_string()))? {
+        for entry in
+            fs::read_dir(&fixtures_root).map_err(|err| CheckError::Failed(err.to_string()))?
+        {
             let entry = entry.map_err(|err| CheckError::Failed(err.to_string()))?;
             let path = entry.path();
             if !path.is_dir() {
@@ -1590,7 +1677,9 @@ pub(super) fn check_ops_fixture_governance(
                 if child_path.is_dir() && child_name.starts_with('v') {
                     has_version_dir = true;
                 } else if child_path.is_file() {
-                    let rel = child_path.strip_prefix(ctx.repo_root).unwrap_or(child_path.as_path());
+                    let rel = child_path
+                        .strip_prefix(ctx.repo_root)
+                        .unwrap_or(child_path.as_path());
                     violations.push(violation(
                         "OPS_FIXTURE_LOOSE_FILE_FORBIDDEN",
                         format!(
@@ -1606,7 +1695,9 @@ pub(super) fn check_ops_fixture_governance(
                 let rel = path.strip_prefix(ctx.repo_root).unwrap_or(path.as_path());
                 violations.push(violation(
                     "OPS_FIXTURE_VERSION_DIRECTORY_MISSING",
-                    format!("fixture family `{name}` must contain versioned directories (v1, v2, ...)"),
+                    format!(
+                        "fixture family `{name}` must contain versioned directories (v1, v2, ...)"
+                    ),
                     "create versioned fixture subdirectory and move fixture payloads into it",
                     Some(rel),
                 ));
@@ -1617,9 +1708,11 @@ pub(super) fn check_ops_fixture_governance(
             .into_iter()
             .filter(|p| p.file_name().and_then(|v| v.to_str()) == Some("manifest.lock"))
         {
-            let manifest_rel = manifest.strip_prefix(ctx.repo_root).unwrap_or(manifest.as_path());
-            let content = fs::read_to_string(&manifest)
-                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let manifest_rel = manifest
+                .strip_prefix(ctx.repo_root)
+                .unwrap_or(manifest.as_path());
+            let content =
+                fs::read_to_string(&manifest).map_err(|err| CheckError::Failed(err.to_string()))?;
             let mut archive_name = None::<String>;
             let mut sha256 = None::<String>;
             for line in content.lines() {
@@ -1633,7 +1726,10 @@ pub(super) fn check_ops_fixture_governance(
             let Some(archive_name) = archive_name else {
                 violations.push(violation(
                     "OPS_FIXTURE_MANIFEST_ARCHIVE_MISSING",
-                    format!("manifest lock missing archive= entry: `{}`", manifest_rel.display()),
+                    format!(
+                        "manifest lock missing archive= entry: `{}`",
+                        manifest_rel.display()
+                    ),
                     "add archive=<filename> to fixture manifest.lock",
                     Some(manifest_rel),
                 ));
@@ -1642,7 +1738,10 @@ pub(super) fn check_ops_fixture_governance(
             let Some(expected_sha) = sha256 else {
                 violations.push(violation(
                     "OPS_FIXTURE_MANIFEST_SHA_MISSING",
-                    format!("manifest lock missing sha256= entry: `{}`", manifest_rel.display()),
+                    format!(
+                        "manifest lock missing sha256= entry: `{}`",
+                        manifest_rel.display()
+                    ),
                     "add sha256=<digest> to fixture manifest.lock",
                     Some(manifest_rel),
                 ));
@@ -1697,12 +1796,16 @@ pub(super) fn check_ops_fixture_governance(
                     Some(manifest_rel),
                 ));
             }
-            let has_queries = walk_files(version_dir)
-                .iter()
-                .any(|p| p.file_name().and_then(|v| v.to_str()).is_some_and(|n| n.contains("queries")));
-            let has_responses = walk_files(version_dir)
-                .iter()
-                .any(|p| p.file_name().and_then(|v| v.to_str()).is_some_and(|n| n.contains("responses")));
+            let has_queries = walk_files(version_dir).iter().any(|p| {
+                p.file_name()
+                    .and_then(|v| v.to_str())
+                    .is_some_and(|n| n.contains("queries"))
+            });
+            let has_responses = walk_files(version_dir).iter().any(|p| {
+                p.file_name()
+                    .and_then(|v| v.to_str())
+                    .is_some_and(|n| n.contains("responses"))
+            });
             if !has_queries || !has_responses {
                 violations.push(violation(
                     "OPS_FIXTURE_GOLDENS_MISSING",
@@ -1740,7 +1843,11 @@ pub(super) fn check_ops_fixture_governance(
             .unwrap_or_default();
         let actual_fixture_paths = walk_files(&e2e_fixture_root)
             .into_iter()
-            .filter_map(|p| p.strip_prefix(ctx.repo_root).ok().map(|r| r.display().to_string()))
+            .filter_map(|p| {
+                p.strip_prefix(ctx.repo_root)
+                    .ok()
+                    .map(|r| r.display().to_string())
+            })
             .collect::<BTreeSet<_>>();
         for path in &actual_fixture_paths {
             if !allowed_paths.contains(path) {
@@ -1866,7 +1973,9 @@ fn is_binary_like_file(path: &Path) -> Result<bool, CheckError> {
         .and_then(|e| e.to_str())
         .unwrap_or_default()
         .to_ascii_lowercase();
-    let known_binary_ext = ["gz", "zip", "zst", "tar", "sqlite", "db", "bin", "png", "jpg", "jpeg"];
+    let known_binary_ext = [
+        "gz", "zip", "zst", "tar", "sqlite", "db", "bin", "png", "jpg", "jpeg",
+    ];
     if known_binary_ext.contains(&ext.as_str()) {
         return Ok(true);
     }
@@ -1950,9 +2059,10 @@ pub(super) fn check_ops_quarantine_shim_expiration_contract(
     }
     let text = fs::read_to_string(ctx.repo_root.join(contract_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let deadline_line = text
-        .lines()
-        .find(|line| line.trim_start().starts_with("- Legacy shell compatibility deadline: "));
+    let deadline_line = text.lines().find(|line| {
+        line.trim_start()
+            .starts_with("- Legacy shell compatibility deadline: ")
+    });
     let Some(deadline_line) = deadline_line else {
         return Ok(vec![violation(
             "OPS_SHIM_EXPIRATION_MISSING",

@@ -7,5 +7,6 @@
     "ops/stack/stack.toml",
     "ops/stack/generated/version-manifest.json",
     "ops/stack/generated/versions.json"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

@@ -3,5 +3,6 @@
   "summary": {
     "source": "ops/inventory/pins.yaml",
     "generated_manifest": "ops/stack/generated/version-manifest.json"
-  }
+  },
+  "generated_by": "bijux dev atlas ops generate"
 }

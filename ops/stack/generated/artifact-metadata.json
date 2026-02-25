@@ -8,5 +8,6 @@
   "retention": {
     "policy": "ephemeral",
     "committed_examples": "ops/_generated.example/"
-  }
+  },
+  "generated_by": "bijux dev atlas ops generate"
 }

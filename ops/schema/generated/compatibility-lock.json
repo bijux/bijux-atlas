@@ -96,5 +96,6 @@
         "profiles"
       ]
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

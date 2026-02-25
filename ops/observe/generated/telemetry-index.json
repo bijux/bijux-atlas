@@ -8,5 +8,6 @@
     "ops/observe/readiness.json",
     "ops/observe/slo-definitions.json",
     "ops/observe/telemetry-drills.json"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

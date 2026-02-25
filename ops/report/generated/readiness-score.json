@@ -7,5 +7,6 @@
     "ops_doctor": "pass",
     "schema_drift": "none",
     "inventory_drift": "none"
-  }
+  },
+  "generated_by": "bijux dev atlas ops generate"
 }

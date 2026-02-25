@@ -17,5 +17,6 @@
     "perf-e2e",
     "realdata",
     "smoke"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

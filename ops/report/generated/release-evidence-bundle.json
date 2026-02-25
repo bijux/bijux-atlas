@@ -7,5 +7,6 @@
     "ops/report/generated/report-diff.json",
     "ops/report/generated/historical-comparison.json"
   ],
-  "status": "ready"
+  "status": "ready",
+  "generated_by": "bijux dev atlas ops generate"
 }

@@ -31,5 +31,6 @@
         "ops/stack/redis/redis.yaml"
       ]
     }
-  }
+  },
+  "generated_by": "bijux dev atlas ops generate"
 }

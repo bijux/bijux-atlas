@@ -9,9 +9,24 @@
       "kind": "k6",
       "scenario": "mixed.json",
       "must_pass": true,
-      "run_in": ["smoke", "full", "nightly", "pr", "load-ci", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
-      "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1300, "error_rate_max": 0.02}
+      "run_in": [
+        "smoke",
+        "full",
+        "nightly",
+        "pr",
+        "load-ci",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed",
+        "http_reqs"
+      ],
+      "thresholds": {
+        "p95_ms_max": 900,
+        "p99_ms_max": 1300,
+        "error_rate_max": 0.02
+      }
     },
     {
       "name": "cheap-only-survival",
@@ -19,9 +34,24 @@
       "kind": "k6",
       "scenario": "cheap-only-survival.json",
       "must_pass": true,
-      "run_in": ["smoke", "full", "nightly", "pr", "load-ci", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
-      "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1500, "error_rate_max": 0.03}
+      "run_in": [
+        "smoke",
+        "full",
+        "nightly",
+        "pr",
+        "load-ci",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed",
+        "http_reqs"
+      ],
+      "thresholds": {
+        "p95_ms_max": 900,
+        "p99_ms_max": 1500,
+        "error_rate_max": 0.03
+      }
     },
     {
       "name": "warm-steady-state-p99",
@@ -29,9 +59,20 @@
       "kind": "k6",
       "scenario": "warm-steady-state-p99.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 800, "p99_ms_max": 1500, "error_rate_max": 0.01}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 800,
+        "p99_ms_max": 1500,
+        "error_rate_max": 0.01
+      }
     },
     {
       "name": "cold-start-p99",
@@ -39,9 +80,17 @@
       "kind": "k6",
       "scenario": "cold-start.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration"],
-      "thresholds": {"cold_start_p99_ms_max": 2500}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration"
+      ],
+      "thresholds": {
+        "cold_start_p99_ms_max": 2500
+      }
     },
     {
       "name": "cold-start-prefetch-5pods",
@@ -49,9 +98,17 @@
       "kind": "script",
       "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/load/run/cold_start_prefetch_5pods.py",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["pod_cold_start_ms"],
-      "thresholds": {"max_pod_cold_start_ms_max": 4000}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "pod_cold_start_ms"
+      ],
+      "thresholds": {
+        "max_pod_cold_start_ms_max": 4000
+      }
     },
     {
       "name": "stampede",
@@ -59,9 +116,20 @@
       "kind": "k6",
       "scenario": "stampede.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.02}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1200,
+        "p99_ms_max": 2500,
+        "error_rate_max": 0.02
+      }
     },
     {
       "name": "store-outage-under-spike",
@@ -69,9 +137,20 @@
       "kind": "k6",
       "scenario": "store-outage-under-spike.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1500, "p99_ms_max": 3000, "error_rate_max": 0.1}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1500,
+        "p99_ms_max": 3000,
+        "error_rate_max": 0.1
+      }
     },
     {
       "name": "noisy-neighbor-cpu-throttle",
@@ -79,9 +158,20 @@
       "kind": "k6",
       "scenario": "noisy-neighbor-cpu-throttle.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1600, "p99_ms_max": 3200, "error_rate_max": 0.05}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1600,
+        "p99_ms_max": 3200,
+        "error_rate_max": 0.05
+      }
     },
     {
       "name": "pod-churn",
@@ -89,9 +179,20 @@
       "kind": "k6",
       "scenario": "pod-churn.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1200,
+        "p99_ms_max": 2500,
+        "error_rate_max": 0.03
+      }
     },
     {
       "name": "spike-overload-proof",
@@ -99,7 +200,11 @@
       "kind": "k6",
       "scenario": "spike-overload-proof.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
       "expected_metrics": [
         "http_req_duration",
         "http_req_failed",
@@ -110,7 +215,11 @@
         "queue_depth_positive_observed_total",
         "rss_cap_exceeded_total"
       ],
-      "thresholds": {"p95_ms_max": 1300, "p99_ms_max": 2600, "error_rate_max": 0.08}
+      "thresholds": {
+        "p95_ms_max": 1300,
+        "p99_ms_max": 2600,
+        "error_rate_max": 0.08
+      }
     },
     {
       "name": "response-size-abuse",
@@ -118,9 +227,20 @@
       "kind": "k6",
       "scenario": "response-size-abuse.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 900, "p99_ms_max": 1800, "error_rate_max": 0.02}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 900,
+        "p99_ms_max": 1800,
+        "error_rate_max": 0.02
+      }
     },
     {
       "name": "multi-release",
@@ -128,9 +248,20 @@
       "kind": "k6",
       "scenario": "multi-release.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2500, "error_rate_max": 0.03}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1200,
+        "p99_ms_max": 2500,
+        "error_rate_max": 0.03
+      }
     },
     {
       "name": "sharded-fanout",
@@ -138,9 +269,20 @@
       "kind": "k6",
       "scenario": "sharded-fanout.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2800, "error_rate_max": 0.04}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1400,
+        "p99_ms_max": 2800,
+        "error_rate_max": 0.04
+      }
     },
     {
       "name": "diff-heavy",
@@ -148,9 +290,20 @@
       "kind": "k6",
       "scenario": "diff-heavy.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1400,
+        "p99_ms_max": 2600,
+        "error_rate_max": 0.05
+      }
     },
     {
       "name": "mixed-gene-sequence",
@@ -158,9 +311,20 @@
       "kind": "k6",
       "scenario": "mixed-gene-sequence.json",
       "must_pass": true,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1100, "p99_ms_max": 2200, "error_rate_max": 0.04}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1100,
+        "p99_ms_max": 2200,
+        "error_rate_max": 0.04
+      }
     },
     {
       "name": "soak-30m",
@@ -168,9 +332,21 @@
       "kind": "k6",
       "scenario": "soak-30m.json",
       "must_pass": true,
-      "run_in": ["nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed", "vus"],
-      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2400, "error_rate_max": 0.03, "memory_growth_bytes_max": 268435456}
+      "run_in": [
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed",
+        "vus"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1200,
+        "p99_ms_max": 2400,
+        "error_rate_max": 0.03,
+        "memory_growth_bytes_max": 268435456
+      }
     },
     {
       "name": "redis-optional",
@@ -178,10 +354,23 @@
       "kind": "k6",
       "scenario": "redis-optional.json",
       "must_pass": false,
-      "run_in": ["full", "nightly", "load-nightly"],
-      "requires": {"redis_experiment": true},
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1200, "p99_ms_max": 2200, "error_rate_max": 0.05}
+      "run_in": [
+        "full",
+        "nightly",
+        "load-nightly"
+      ],
+      "requires": {
+        "redis_experiment": true
+      },
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1200,
+        "p99_ms_max": 2200,
+        "error_rate_max": 0.05
+      }
     },
     {
       "name": "load-under-rollout",
@@ -189,9 +378,19 @@
       "kind": "script",
       "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/load/run/load_under_rollout.py",
       "must_pass": true,
-      "run_in": ["nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
+      "run_in": [
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1400,
+        "p99_ms_max": 2600,
+        "error_rate_max": 0.05
+      }
     },
     {
       "name": "load-under-rollback",
@@ -199,9 +398,19 @@
       "kind": "script",
       "runner": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/load/run/load_under_rollback.py",
       "must_pass": true,
-      "run_in": ["nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed"],
-      "thresholds": {"p95_ms_max": 1400, "p99_ms_max": 2600, "error_rate_max": 0.05}
+      "run_in": [
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed"
+      ],
+      "thresholds": {
+        "p95_ms_max": 1400,
+        "p99_ms_max": 2600,
+        "error_rate_max": 0.05
+      }
     },
     {
       "name": "hpa-validation-short",
@@ -209,9 +418,22 @@
       "kind": "k6",
       "scenario": "hpa-validation-short.json",
       "must_pass": true,
-      "run_in": ["hpa-validation", "nightly", "load-nightly"],
-      "expected_metrics": ["http_req_duration", "http_req_failed", "http_reqs"],
-      "thresholds": {"p95_ms_max": 2200, "p99_ms_max": 3500, "error_rate_max": 0.15}
+      "run_in": [
+        "hpa-validation",
+        "nightly",
+        "load-nightly"
+      ],
+      "expected_metrics": [
+        "http_req_duration",
+        "http_req_failed",
+        "http_reqs"
+      ],
+      "thresholds": {
+        "p95_ms_max": 2200,
+        "p99_ms_max": 3500,
+        "error_rate_max": 0.15
+      }
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

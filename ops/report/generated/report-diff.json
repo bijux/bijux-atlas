@@ -3,5 +3,6 @@
   "status": "stable",
   "base_report": "ops/report/examples/unified-report-example.json",
   "target_report": "ops/report/examples/unified-report-example.json",
-  "changes": []
+  "changes": [],
+  "generated_by": "bijux dev atlas ops generate"
 }

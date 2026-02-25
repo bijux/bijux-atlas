@@ -8,5 +8,6 @@
     "ops/k8s/install-matrix.json",
     "ops/k8s/tests/manifest.json",
     "ops/k8s/tests/suites.json"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

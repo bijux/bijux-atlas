@@ -1,10 +1,41 @@
 {
   "schema_version": 1,
   "rows": [
-    {"scenario_id": "smoke", "covers": ["stack", "observe", "datasets", "load"]},
-    {"scenario_id": "k8s-suite", "covers": ["stack", "observe", "k8s"]},
-    {"scenario_id": "realdata", "covers": ["stack", "observe", "datasets"]},
-    {"scenario_id": "perf-e2e", "covers": ["stack", "observe", "datasets", "load"]}
+    {
+      "scenario_id": "smoke",
+      "covers": [
+        "stack",
+        "observe",
+        "datasets",
+        "load"
+      ]
+    },
+    {
+      "scenario_id": "k8s-suite",
+      "covers": [
+        "stack",
+        "observe",
+        "k8s"
+      ]
+    },
+    {
+      "scenario_id": "realdata",
+      "covers": [
+        "stack",
+        "observe",
+        "datasets"
+      ]
+    },
+    {
+      "scenario_id": "perf-e2e",
+      "covers": [
+        "stack",
+        "observe",
+        "datasets",
+        "load"
+      ]
+    }
   ],
-  "missing_domains": []
+  "missing_domains": [],
+  "generated_by": "bijux dev atlas ops generate"
 }

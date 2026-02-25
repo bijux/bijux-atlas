@@ -27,5 +27,6 @@
         "ops/datasets/fixtures/release-diff/v1/release-diff-responses.v1.json"
       ]
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

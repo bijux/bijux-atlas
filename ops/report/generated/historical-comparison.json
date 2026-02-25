@@ -3,6 +3,11 @@
   "window": "30d",
   "status": "stable",
   "trend": "flat",
-  "readiness_scores": [100, 100, 100],
-  "failures": []
+  "readiness_scores": [
+    100,
+    100,
+    100
+  ],
+  "failures": [],
+  "generated_by": "bijux dev atlas ops generate"
 }

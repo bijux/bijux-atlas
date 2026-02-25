@@ -1,8 +1,14 @@
 {
   "schema_version": 1,
   "nodes": [
-    {"id": "110/homo_sapiens/GRCh38", "kind": "fixture"},
-    {"id": "111/homo_sapiens/GRCh38", "kind": "real"}
+    {
+      "id": "110/homo_sapiens/GRCh38",
+      "kind": "fixture"
+    },
+    {
+      "id": "111/homo_sapiens/GRCh38",
+      "kind": "real"
+    }
   ],
   "edges": [
     {
@@ -10,5 +16,6 @@
       "to": "111/homo_sapiens/GRCh38",
       "relation": "derived"
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

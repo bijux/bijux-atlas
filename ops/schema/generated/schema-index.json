@@ -84,5 +84,6 @@
     "ops/schema/stack/dependency-graph.schema.json",
     "ops/schema/stack/profile-manifest.schema.json",
     "ops/schema/stack/version-manifest.schema.json"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }

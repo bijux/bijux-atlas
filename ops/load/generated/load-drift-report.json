@@ -7,5 +7,6 @@
     "scenario-coverage-complete",
     "query-pack-lock-consistent",
     "baseline-contract-compatible"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate"
 }
