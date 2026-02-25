@@ -64,6 +64,13 @@ jobs:
         run: |
           set -euo pipefail
           cargo run -q -p bijux-dev-atlas -- check doctor --format json > /dev/null
+      - name: Run docs completeness gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          mkdir -p "${report_root}"
+          cargo run -q -p bijux-dev-atlas -- docs registry validate --format json > "${report_root}/docs-completeness.json"
       - name: Build dist artifacts
         shell: bash
         run: |
@@ -72,8 +79,8 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}" "${logs_root}"
           make dist > "${report_root}/release-candidate.json" 2> "${logs_root}/release-candidate.stderr.log"
-          printf "- lane: release-candidate\n- report: %s\n- input version: %s\n" \
-            "${report_root}/release-candidate.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
+          printf "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- input version: %s\n" \
+            "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - uses: actions/upload-artifact@v4
         if: always()
