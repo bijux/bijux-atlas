@@ -817,6 +817,314 @@ pub(super) fn check_ops_domain_contract_structure(
     Ok(violations)
 }
 
+pub(super) fn check_ops_inventory_contract_integrity(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let contracts_map_rel = Path::new("ops/inventory/contracts-map.json");
+    let contracts_rel = Path::new("ops/inventory/contracts.json");
+    let contracts_meta_rel = Path::new("ops/inventory/meta/contracts.json");
+    let namespaces_rel = Path::new("ops/inventory/namespaces.json");
+    let layers_rel = Path::new("ops/inventory/layers.json");
+    let gates_rel = Path::new("ops/inventory/gates.json");
+    let surfaces_rel = Path::new("ops/inventory/surfaces.json");
+    let policy_rel = Path::new("ops/inventory/policies/dev-atlas-policy.json");
+    let policy_schema_rel = Path::new("ops/inventory/policies/dev-atlas-policy.schema.json");
+    let pins_rel = Path::new("ops/inventory/pins.yaml");
+    let stack_manifest_rel = Path::new("ops/stack/generated/version-manifest.json");
+    let registry_rel = Path::new("ops/inventory/registry.toml");
+    let tools_rel = Path::new("ops/inventory/tools.toml");
+    let inventory_index_rel = Path::new("ops/_generated.example/inventory-index.json");
+
+    let contracts_map_text = fs::read_to_string(ctx.repo_root.join(contracts_map_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contracts_map: serde_json::Value = serde_json::from_str(&contracts_map_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if contracts_map
+        .get("authoritative")
+        .and_then(|v| v.as_bool())
+        != Some(true)
+    {
+        violations.push(violation(
+            "OPS_INVENTORY_CONTRACTS_MAP_NOT_AUTHORITATIVE",
+            "ops/inventory/contracts-map.json must declare `authoritative: true`".to_string(),
+            "mark contracts-map as the authoritative inventory contract manifest",
+            Some(contracts_map_rel),
+        ));
+    }
+    let items = contracts_map
+        .get("items")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    let mut seen_paths = std::collections::BTreeSet::new();
+    let mut item_paths = std::collections::BTreeSet::new();
+    for item in &items {
+        let Some(path) = item.get("path").and_then(|v| v.as_str()) else {
+            continue;
+        };
+        let path_buf = PathBuf::from(path);
+        if !seen_paths.insert(path.to_string()) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTRACTS_MAP_DUPLICATE_PATH",
+                format!("duplicate contracts-map item path `{path}`"),
+                "keep unique paths in contracts-map items",
+                Some(contracts_map_rel),
+            ));
+        }
+        item_paths.insert(path_buf.clone());
+        if !ctx.adapters.fs.exists(ctx.repo_root, &path_buf) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTRACTS_MAP_PATH_MISSING",
+                format!("contracts-map references missing path `{path}`"),
+                "remove stale path or restore referenced inventory artifact",
+                Some(contracts_map_rel),
+            ));
+        }
+        let schema = item.get("schema").and_then(|v| v.as_str()).unwrap_or("none");
+        if schema != "none" && !ctx.adapters.fs.exists(ctx.repo_root, Path::new(schema)) {
+            violations.push(violation(
+                "OPS_INVENTORY_SCHEMA_REFERENCE_MISSING",
+                format!(
+                    "contracts-map references missing schema `{schema}` for `{path}`"
+                ),
+                "restore schema path or fix schema pointer in contracts-map",
+                Some(contracts_map_rel),
+            ));
+        }
+    }
+
+    let contracts_text = fs::read_to_string(ctx.repo_root.join(contracts_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contracts_json: serde_json::Value = serde_json::from_str(&contracts_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if contracts_json
+        .get("generated_from")
+        .and_then(|v| v.as_str())
+        != Some("ops/inventory/contracts-map.json")
+    {
+        violations.push(violation(
+            "OPS_INVENTORY_CONTRACTS_GENERATION_METADATA_MISSING",
+            "ops/inventory/contracts.json must declare `generated_from: ops/inventory/contracts-map.json`"
+                .to_string(),
+            "mark contracts.json as a generated mirror of contracts-map",
+            Some(contracts_rel),
+        ));
+    }
+    let contracts_meta_text = fs::read_to_string(ctx.repo_root.join(contracts_meta_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contracts_meta_json: serde_json::Value = serde_json::from_str(&contracts_meta_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if contracts_meta_json
+        .get("generated_from")
+        .and_then(|v| v.as_str())
+        != Some("ops/inventory/contracts-map.json")
+    {
+        violations.push(violation(
+            "OPS_INVENTORY_META_CONTRACTS_GENERATION_METADATA_MISSING",
+            "ops/inventory/meta/contracts.json must declare `generated_from: ops/inventory/contracts-map.json`"
+                .to_string(),
+            "mark meta/contracts.json as generated mirror metadata",
+            Some(contracts_meta_rel),
+        ));
+    }
+
+    let inventory_root = ctx.repo_root.join("ops/inventory");
+    let allowed_unmapped = [
+        PathBuf::from("ops/inventory/OWNER.md"),
+        PathBuf::from("ops/inventory/README.md"),
+        PathBuf::from("ops/inventory/REQUIRED_FILES.md"),
+        PathBuf::from("ops/inventory/registry.toml"),
+        PathBuf::from("ops/inventory/tools.toml"),
+    ]
+    .into_iter()
+    .collect::<std::collections::BTreeSet<_>>();
+    for file in walk_files(&inventory_root) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        if rel.starts_with(Path::new("ops/inventory/contracts/"))
+            || rel.starts_with(Path::new("ops/inventory/meta/"))
+            || rel.starts_with(Path::new("ops/inventory/policies/"))
+        {
+            continue;
+        }
+        if allowed_unmapped.contains(rel) {
+            continue;
+        }
+        if !item_paths.contains(rel) {
+            violations.push(violation(
+                "OPS_INVENTORY_ORPHAN_FILE",
+                format!("orphan inventory file not tracked by contracts-map: `{}`", rel.display()),
+                "add file to contracts-map or remove orphan artifact",
+                Some(rel),
+            ));
+        }
+    }
+
+    let namespaces_text = fs::read_to_string(ctx.repo_root.join(namespaces_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let namespaces_json: serde_json::Value = serde_json::from_str(&namespaces_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let namespace_keys = namespaces_json
+        .get("namespaces")
+        .and_then(|v| v.as_object())
+        .map(|v| v.keys().cloned().collect::<std::collections::BTreeSet<_>>())
+        .unwrap_or_default();
+
+    let layers_text = fs::read_to_string(ctx.repo_root.join(layers_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let layers_json: serde_json::Value = serde_json::from_str(&layers_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if layers_text.contains("\"obs\"") {
+        violations.push(violation(
+            "OPS_INVENTORY_LAYER_LEGACY_OBS_REFERENCE",
+            "ops/inventory/layers.json contains legacy `obs` references".to_string(),
+            "replace `obs` with canonical `observe` layer naming",
+            Some(layers_rel),
+        ));
+    }
+    let layer_namespace_keys = layers_json
+        .get("namespaces")
+        .and_then(|v| v.as_object())
+        .map(|v| v.keys().cloned().collect::<std::collections::BTreeSet<_>>())
+        .unwrap_or_default();
+    if namespace_keys != layer_namespace_keys {
+        violations.push(violation(
+            "OPS_INVENTORY_NAMESPACE_LAYER_DRIFT",
+            format!(
+                "namespace key mismatch between namespaces.json and layers.json: namespaces={namespace_keys:?} layers={layer_namespace_keys:?}"
+            ),
+            "keep namespace keys synchronized between namespaces and layer policy",
+            Some(namespaces_rel),
+        ));
+    }
+
+    let gates_text = fs::read_to_string(ctx.repo_root.join(gates_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let gates_json: serde_json::Value = serde_json::from_str(&gates_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let surfaces_text = fs::read_to_string(ctx.repo_root.join(surfaces_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let surfaces_json: serde_json::Value = serde_json::from_str(&surfaces_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let action_ids = surfaces_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.get("id").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    if let Some(gates) = gates_json.get("gates").and_then(|v| v.as_array()) {
+        for gate in gates {
+            let Some(action_id) = gate.get("action_id").and_then(|v| v.as_str()) else {
+                continue;
+            };
+            if !action_ids.contains(action_id) {
+                violations.push(violation(
+                    "OPS_INVENTORY_GATE_ACTION_NOT_FOUND",
+                    format!("gate action id `{action_id}` is not present in surfaces actions"),
+                    "align ops/inventory/gates.json action_id fields with ops/inventory/surfaces.json",
+                    Some(gates_rel),
+                ));
+            }
+        }
+    }
+
+    let registry_text = fs::read_to_string(ctx.repo_root.join(registry_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let tools_text = fs::read_to_string(ctx.repo_root.join(tools_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if registry_text.contains("[[tools]]") {
+        violations.push(violation(
+            "OPS_INVENTORY_REGISTRY_TOOLS_SURFACE_COLLISION",
+            "ops/inventory/registry.toml must not define [[tools]] entries".to_string(),
+            "keep registry.toml for checks/actions and tools.toml for tool probes",
+            Some(registry_rel),
+        ));
+    }
+    if tools_text.contains("[[checks]]") || tools_text.contains("[[actions]]") {
+        violations.push(violation(
+            "OPS_INVENTORY_TOOLS_REGISTRY_SURFACE_COLLISION",
+            "ops/inventory/tools.toml must not define [[checks]] or [[actions]] entries".to_string(),
+            "keep tools.toml limited to [[tools]] entries",
+            Some(tools_rel),
+        ));
+    }
+
+    if !ctx.adapters.fs.exists(ctx.repo_root, policy_schema_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_POLICY_SCHEMA_MISSING",
+            format!("missing policy schema `{}`", policy_schema_rel.display()),
+            "restore dev-atlas policy schema file",
+            Some(policy_schema_rel),
+        ));
+    }
+    let policy_text = fs::read_to_string(ctx.repo_root.join(policy_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let policy_json: serde_json::Value = serde_json::from_str(&policy_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if policy_json.get("schema_version").is_none() || policy_json.get("mode").is_none() {
+        violations.push(violation(
+            "OPS_INVENTORY_POLICY_REQUIRED_KEYS_MISSING",
+            "dev-atlas policy is missing required top-level keys".to_string(),
+            "ensure dev-atlas policy includes at least schema_version and mode",
+            Some(policy_rel),
+        ));
+    }
+
+    let pins_text = fs::read_to_string(ctx.repo_root.join(pins_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let pins_yaml: serde_yaml::Value = serde_yaml::from_str(&pins_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let pins_images = pins_yaml
+        .get("images")
+        .and_then(|v| v.as_mapping())
+        .cloned()
+        .unwrap_or_default();
+    let stack_manifest_text = fs::read_to_string(ctx.repo_root.join(stack_manifest_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let stack_manifest_json: serde_json::Value = serde_json::from_str(&stack_manifest_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if let Some(obj) = stack_manifest_json.as_object() {
+        for (key, value) in obj {
+            if key == "schema_version" {
+                continue;
+            }
+            let image_value = value.as_str().unwrap_or_default();
+            let pin_value = pins_images
+                .get(serde_yaml::Value::String(key.clone()))
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if pin_value != image_value {
+                violations.push(violation(
+                    "OPS_INVENTORY_PIN_STACK_DRIFT",
+                    format!(
+                        "stack manifest image `{key}` differs from inventory pin value"
+                    ),
+                    "regenerate stack generated version-manifest from inventory pins",
+                    Some(stack_manifest_rel),
+                ));
+            }
+        }
+    }
+
+    if !ctx.adapters.fs.exists(ctx.repo_root, inventory_index_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_INDEX_ARTIFACT_MISSING",
+            format!(
+                "missing generated inventory index artifact `{}`",
+                inventory_index_rel.display()
+            ),
+            "generate and commit ops/_generated.example/inventory-index.json",
+            Some(inventory_index_rel),
+        ));
+    }
+
+    Ok(violations)
+}
+
 fn parse_required_files_markdown_yaml(
     content: &str,
     rel: &Path,
