@@ -2,6 +2,8 @@
 
 Canonical docs toolchain and lint configuration.
 
+Reference index: `configs/docs/INDEX.md`
+
 ## Files
 
 - `.vale.ini`

@@ -38,5 +38,6 @@ make docker-release
 ## Policy Links
 
 - `docker/CONTRACT.md`
+- `docker/contracts/INDEX.md`
 - `docs/operations/container.md`
 - `configs/security/README.md`
