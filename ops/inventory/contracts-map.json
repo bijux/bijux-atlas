@@ -15,6 +15,8 @@
     {"path": "ops/inventory/gates.json", "schema": "ops/schema/inventory/gates.schema.json", "generator": "manual"},
     {"path": "ops/inventory/namespaces.json", "schema": "ops/schema/inventory/namespaces.schema.json", "generator": "manual"},
     {"path": "ops/inventory/toolchain.json", "schema": "ops/schema/inventory/toolchain.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/tools.toml", "schema": "ops/schema/inventory/tools.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/registry.toml", "schema": "ops/schema/inventory/registry.schema.json", "generator": "manual"},
     {"path": "ops/inventory/owner-docs.fragments.json", "schema": "ops/schema/inventory/owner-docs.fragments.schema.json", "generator": "bijux dev atlas ops migrate inventory-fragments"},
     {"path": "ops/inventory/generated-committed-mirror.json", "schema": "ops/schema/inventory/generated-committed-mirror.schema.json", "generator": "manual"},
     {"path": "ops/datasets/manifest.json", "schema": "ops/schema/datasets/manifest.schema.json", "generator": "manual"}

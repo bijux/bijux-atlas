@@ -18,6 +18,8 @@
     {"id": "ops.gate.inventory-schema-coverage", "action_id": "ops.schema-check", "category": "inventory", "description": "every inventory artifact must reference an ops/schema/inventory schema"},
     {"id": "ops.gate.inventory-schema-index-coverage", "action_id": "ops.schema-check", "category": "inventory", "description": "schema index must include all ops/schema/inventory schemas"},
     {"id": "ops.gate.inventory-owner-fragments-live", "action_id": "ops.contracts-check", "category": "inventory", "description": "owner-docs.fragments.json entries must reference live owner docs"},
+    {"id": "ops.gate.inventory-tool-registry-uniqueness", "action_id": "ops.contracts-check", "category": "inventory", "description": "tools.toml is the only tool probe registry; registry.toml is check catalog only"},
+    {"id": "ops.gate.inventory-pin-format", "action_id": "ops.pins.check", "category": "inventory", "description": "toolchain and release pins must conform to inventory pin format rules"},
     {"id": "ops.gate.canonical-directory-names", "action_id": "ops.naming-check", "category": "governance", "description": "enforce canonical directory names; contracts/ is allowed and contract/ is forbidden"},
     {"id": "ops.gate.control-plane-drift", "action_id": "ops.contracts-check", "category": "docs", "description": "ops/CONTROL_PLANE.md must match control-plane snapshot contract or avoid hardcoded crate lists"},
     {"id": "ops.gate.no-stale-locked-claims", "action_id": "ops.contracts-check", "category": "docs", "description": "non-generated contract docs must not contain stale locked list claims"},
