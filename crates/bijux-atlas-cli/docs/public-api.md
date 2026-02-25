@@ -4,6 +4,6 @@ Stability reference: [Stability Levels](../../../docs/_style/stability-levels.md
 
 Current stability:
 
-- Public symbols: `experimental`
+- Public symbols: `provisional`
 - Crate module layout: `provisional`
 - Compatibility guarantees become `stable` only after explicit API freeze notes.

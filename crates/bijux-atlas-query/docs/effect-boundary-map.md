@@ -14,4 +14,4 @@ These modules are pure and must not pull DB/network/process APIs.
 - `lib.rs` (query execution bridge)
 
 ## Guardrail
-- `tests/purity_boundaries.rs` and `scripts/effects-lint.sh` enforce purity boundaries.
+- `tests/purity_boundaries.rs` and `make lint` enforce purity boundaries.

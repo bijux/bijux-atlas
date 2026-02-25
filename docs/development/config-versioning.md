@@ -22,7 +22,7 @@ Does not define API endpoint versioning.
 ## Contracts
 
 - Every schema carries an explicit version field (`schema_version` or equivalent).
-- Breaking schema changes require a version bump and migration note.
+- Breaking schema changes require a version bump and compatibility note.
 - `configs/policy/policy.schema.json` must stay in sync with `docs/contracts/POLICY_SCHEMA.json`.
 
 ## Failure modes

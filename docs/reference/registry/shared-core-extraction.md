@@ -10,7 +10,7 @@ Reusable canonical utilities are extracted to dedicated repository:
   - `canonical` (stable JSON hashing/sorting)
   - `cursor` (signed opaque cursor encoding/decoding)
 
-`bijux-atlas` keeps local compatibility surfaces during migration, while cross-project reuse should target `bijux-core` for new integrations.
+`bijux-atlas` keeps local compatibility surfaces during ongoing extraction, while cross-project reuse should target `bijux-core` for new integrations.
 
 ## What
 

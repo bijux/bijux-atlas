@@ -16,7 +16,7 @@ Applies to v1 surfaces.
 
 ## Non-goals
 
-Does not promise behavior for undocumented fields or experimental registries.
+Does not promise behavior for undocumented fields or incubating registries.
 
 ## Contracts
 

@@ -18,7 +18,7 @@ Required indexes:
 Hard gate:
 - Dataset validation rejects artifacts if any required index above is missing.
 - `atlas_meta.analyze_completed` must be `true` (ANALYZE required gate).
-- Query plan regression gate runs `scripts/query-plan-gate.sh` in CI.
+- Query plan regression gate runs `bijux dev atlas check run --suite ci_fast --json` in CI.
 
 Query classes:
 - `Cheap`: exact id lookups.

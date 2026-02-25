@@ -17,7 +17,6 @@ Docs:
 - [Purity policy](PURITY.md)
 - [Effects policy](effects.md)
 - [Strict ordering rules](ORDERING_RULES.md)
-- [Migration notes](MIGRATION.md)
 - [Optional fields policy](OPTIONAL_FIELDS.md)
 - [What is NOT in model](NOT_IN_MODEL.md)
 - [Compatibility with bijux-dna](COMPAT_BIJUX_DNA.md)

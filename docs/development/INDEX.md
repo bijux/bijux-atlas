@@ -26,7 +26,6 @@ List and maintain links to section pages in this directory.
 - [Makefiles Surface](makefiles/surface.md)
 - [Make Targets](make-targets.md)
 - [Control Plane Commands](tooling/control-plane.md)
-- [Control Plane Migration Rationale](tooling/control-plane-migration-rationale.md)
 - [control-plane Tooling](tooling/control-plane.md)
 - [Tooling Index](tooling/INDEX.md)
 - [Script Naming](script-naming.md)

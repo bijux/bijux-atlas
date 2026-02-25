@@ -8,7 +8,7 @@ Define durable API and module stability language used across crate docs.
 
 ## Levels
 
-- `experimental`: no compatibility promise; may change or be removed between patch releases.
+- `incubating`: no compatibility promise; may change or be removed between patch releases.
 - `provisional`: limited compatibility promise; additive changes preferred, breaking changes require explicit release note.
 - `stable`: compatibility contract enforced; breaking changes require major version path/process.
 
@@ -16,10 +16,10 @@ Define durable API and module stability language used across crate docs.
 
 - Every crate `docs/public-api.md` must reference this page.
 - Avoid temporal labels (`phase`, `stage`, `iteration`) in stability statements.
-- Use level + scope, for example: `public symbols: provisional`, `internal modules: experimental`.
+- Use level + scope, for example: `public symbols: provisional`, `internal modules: incubating`.
 
 ## Example
 
 - `Public API: provisional`
-- `Internal module layout: experimental`
+- `Internal module layout: incubating`
 - `Error code set: stable`

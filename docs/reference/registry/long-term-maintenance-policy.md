@@ -7,7 +7,7 @@
   - policy gates remain mandatory for merges
 - EOL policy:
   - announced at least one minor release ahead
-  - migration path documented before EOL date
+  - compatibility path documented before EOL date
 
 ## What
 

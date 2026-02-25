@@ -14,4 +14,4 @@
 ## Release Notes
 
 - [ ] Telemetry contract version changes documented.
-- [ ] Breaking telemetry changes include migration notes.
+- [ ] Breaking telemetry changes include compatibility notes.

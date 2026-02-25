@@ -11,5 +11,5 @@ Decision:
 - Track shadowing and expose registry health.
 
 Consequences:
-- Improved resilience and migration flexibility.
+- Improved resilience and compatibility flexibility.
 - Additional operational complexity around signatures and TTL/freeze modes.
