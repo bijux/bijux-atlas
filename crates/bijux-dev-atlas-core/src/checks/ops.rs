@@ -159,6 +159,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_ssot_manifests_schema_versions" => {
             Some(check_ops_ssot_manifests_schema_versions)
         }
+        "checks_ops_required_files_contracts" => Some(check_ops_required_files_contracts),
         "checks_crates_dev_atlas_final_crate_set_contract" => {
             Some(check_final_dev_atlas_crate_set_contract)
         }
@@ -245,6 +246,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_control_plane_naming_contract",
         "checks_docs_removed_system_references_absent",
         "checks_ops_ssot_manifests_schema_versions",
+        "checks_ops_required_files_contracts",
         "checks_crates_dev_atlas_final_crate_set_contract",
         "checks_docs_scripting_contract_rust_control_plane_lock",
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev",

@@ -616,6 +616,187 @@ pub(super) fn check_ops_no_direct_tool_invocations(
     Ok(violations)
 }
 
+pub(super) fn check_ops_required_files_contracts(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let ops_root = ctx.repo_root.join("ops");
+    if !ops_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut violations = Vec::new();
+    for required_doc in walk_files(&ops_root) {
+        let rel = required_doc
+            .strip_prefix(ctx.repo_root)
+            .unwrap_or(required_doc.as_path());
+        if rel.file_name().and_then(|n| n.to_str()) != Some("REQUIRED_FILES.md") {
+            continue;
+        }
+        let content = fs::read_to_string(&required_doc)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let (required_files, required_directories) =
+            parse_required_files_markdown_yaml(&content, rel)?;
+        for file_rel in required_files {
+            let file_path = ctx.repo_root.join(&file_rel);
+            if !file_path.exists() {
+                violations.push(violation(
+                    "OPS_REQUIRED_FILE_MISSING",
+                    format!("required file missing: `{}`", file_rel.display()),
+                    "create missing required file or remove stale declaration from REQUIRED_FILES.md",
+                    Some(rel),
+                ));
+                continue;
+            }
+            let metadata =
+                fs::metadata(&file_path).map_err(|err| CheckError::Failed(err.to_string()))?;
+            if metadata.len() == 0 {
+                violations.push(violation(
+                    "OPS_REQUIRED_FILE_EMPTY",
+                    format!("required file is empty: `{}`", file_rel.display()),
+                    "populate required file with non-empty contract content",
+                    Some(&file_rel),
+                ));
+            }
+            if file_rel.extension().and_then(|v| v.to_str()) == Some("md") {
+                let domain_root = rel.parent().unwrap_or(Path::new("ops"));
+                let domain_index = domain_root.join("INDEX.md");
+                if ctx.adapters.fs.exists(ctx.repo_root, &domain_index)
+                    && file_rel.starts_with(domain_root)
+                    && file_rel.file_name().and_then(|v| v.to_str()) != Some("INDEX.md")
+                {
+                    let index_text = fs::read_to_string(ctx.repo_root.join(&domain_index))
+                        .map_err(|err| CheckError::Failed(err.to_string()))?;
+                    let file_name = file_rel.file_name().and_then(|v| v.to_str()).unwrap_or("");
+                    if !index_text.contains(file_name) {
+                        violations.push(violation(
+                            "OPS_REQUIRED_DOC_NOT_INDEXED",
+                            format!(
+                                "required document `{}` is not linked from `{}`",
+                                file_rel.display(),
+                                domain_index.display()
+                            ),
+                            "add required doc link to the domain INDEX.md",
+                            Some(&domain_index),
+                        ));
+                    }
+                }
+            }
+        }
+        for dir_rel in required_directories {
+            let dir_path = ctx.repo_root.join(&dir_rel);
+            if !dir_path.exists() || !dir_path.is_dir() {
+                violations.push(violation(
+                    "OPS_REQUIRED_DIRECTORY_MISSING",
+                    format!("required directory missing: `{}`", dir_rel.display()),
+                    "create required directory or remove stale declaration from REQUIRED_FILES.md",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+
+    let inventory_meta_allowed = [
+        Path::new("ops/inventory/meta/contracts.json"),
+        Path::new("ops/inventory/meta/error-registry.json"),
+        Path::new("ops/inventory/meta/layer-contract.json"),
+    ]
+    .into_iter()
+    .collect::<std::collections::BTreeSet<_>>();
+    for file in walk_files(&ctx.repo_root.join("ops/inventory/meta")) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        if !inventory_meta_allowed.contains(rel) {
+            violations.push(violation(
+                "OPS_INVENTORY_META_UNKNOWN_FILE",
+                format!("unexpected file in tight inventory meta surface: `{}`", rel.display()),
+                "remove unknown file or update tight inventory meta contract",
+                Some(rel),
+            ));
+        }
+    }
+
+    for file in walk_files(&ctx.repo_root.join("ops/schema")) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        let ext = rel.extension().and_then(|v| v.to_str()).unwrap_or("");
+        if rel.starts_with(Path::new("ops/schema/generated")) {
+            continue;
+        }
+        let is_allowed_doc = matches!(
+            rel.file_name().and_then(|n| n.to_str()),
+            Some("README.md" | "OWNER.md" | "REQUIRED_FILES.md" | "INDEX.md" | ".gitkeep")
+        );
+        let is_schema = ext == "json"
+            && rel
+                .file_name()
+                .and_then(|n| n.to_str())
+                .is_some_and(|n| n.ends_with(".schema.json"));
+        if !is_allowed_doc && !is_schema {
+            violations.push(violation(
+                "OPS_SCHEMA_UNKNOWN_FILE",
+                format!("unexpected file in tight schema surface: `{}`", rel.display()),
+                "keep ops/schema constrained to .schema.json and canonical docs only",
+                Some(rel),
+            ));
+        }
+    }
+
+    Ok(violations)
+}
+
+fn parse_required_files_markdown_yaml(
+    content: &str,
+    rel: &Path,
+) -> Result<(Vec<PathBuf>, Vec<PathBuf>), CheckError> {
+    let mut in_yaml = false;
+    let mut yaml_block = String::new();
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed == "```yaml" {
+            in_yaml = true;
+            continue;
+        }
+        if trimmed == "```" && in_yaml {
+            break;
+        }
+        if in_yaml {
+            yaml_block.push_str(line);
+            yaml_block.push('\n');
+        }
+    }
+    if yaml_block.trim().is_empty() {
+        return Ok((Vec::new(), Vec::new()));
+    }
+    let parsed: serde_yaml::Value =
+        serde_yaml::from_str(&yaml_block).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let required_files = parsed
+        .get("required_files")
+        .and_then(|v| v.as_sequence())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|v| v.as_str())
+                .map(PathBuf::from)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let required_directories = parsed
+        .get("required_directories")
+        .and_then(|v| v.as_sequence())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|v| v.as_str())
+                .map(PathBuf::from)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    if required_files.is_empty() {
+        return Err(CheckError::Failed(format!(
+            "{} must define non-empty `required_files` YAML list",
+            rel.display()
+        )));
+    }
+    Ok((required_files, required_directories))
+}
+
 pub(super) fn check_ops_quarantine_shim_expiration_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
