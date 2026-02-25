@@ -24,6 +24,16 @@
       "detail": "ops/_generated.example/registry-drift-report.json status=pass",
       "name": "inventory-registry-drift",
       "status": "pass"
+    },
+    {
+      "detail": "ops_markdown_files=103, budget=103",
+      "name": "ops-markdown-file-budget",
+      "status": "pass"
+    },
+    {
+      "detail": "ops_markdown_lines<=2800",
+      "name": "ops-markdown-line-budget",
+      "status": "pass"
     }
   ],
   "generated_at": "2026-02-22T17:49:51.443033+00:00",
@@ -33,7 +43,7 @@
   "status": "fail",
   "summary": {
     "failed": 5,
-    "passed": 3,
-    "total": 8
+    "passed": 5,
+    "total": 10
   }
 }
