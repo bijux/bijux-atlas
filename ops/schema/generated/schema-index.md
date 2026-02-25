@@ -64,6 +64,7 @@
 | `ops/schema/meta/layer-contract.schema.json` |
 | `ops/schema/meta/namespaces.schema.json` |
 | `ops/schema/meta/ops-index.schema.json` |
+| `ops/schema/meta/ops-ledger.schema.json` |
 | `ops/schema/meta/ownership.schema.json` |
 | `ops/schema/meta/pins.schema.json` |
 | `ops/schema/meta/ports.schema.json` |

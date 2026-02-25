@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/ops/schema/meta/ops-ledger.schema.json",
+  "title": "Ops Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_by",
+    "entries"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "type",
+          "reasons",
+          "owner",
+          "required_by",
+          "deletion_allowed"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^ops\\/"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "authored",
+              "generated",
+              "curated_evidence",
+              "asset"
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "schema_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "generator_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "required_by": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "deletion_allowed": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
