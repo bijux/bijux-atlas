@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "role": "generated",
   "generated_from": "ops/inventory/contracts-map.json",
   "contracts": [
     {
