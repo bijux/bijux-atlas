@@ -23,7 +23,7 @@
       },
       {
         "path": "ops/inventory/gates.json",
-        "sha256": "0987e44a445b9db55ef61aa4f09041b3ffbdf706df13ec94baf21eccdc3b1789"
+        "sha256": "6f3113cfffa6797ae569ea289223e34aa0b7279c524da09fe40e8a2ed6719084"
       },
       {
         "path": "ops/inventory/pin-freeze.json",
@@ -36,16 +36,176 @@
     }
   },
   "gates": [
-    {"id": "ops.doctor", "status": "unknown", "last_run": null},
-    {"id": "ops.validate", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.directory-completeness", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.schema-validation", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.pin-drift", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.stack-reproducibility", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.k8s-determinism", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.observe-coverage", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.dataset-lifecycle", "status": "unknown", "last_run": null},
-    {"id": "ops.gate.unified-readiness", "status": "unknown", "last_run": null}
+    {
+      "id": "ops.doctor",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.validate",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.directory-completeness",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.schema-validation",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.schema-locality",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.no-external-schema-files",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.pin-drift",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.stack-reproducibility",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.k8s-determinism",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.observe-coverage",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.observe-naming",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-registry-role",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-registry-uniqueness",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-registry-ordering",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-schema-coverage",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-schema-index-coverage",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-owner-fragments-live",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-tool-registry-uniqueness",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-pin-format",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.canonical-directory-names",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.control-plane-drift",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.no-stale-locked-claims",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.dataset-lifecycle",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.unified-readiness",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.ssot",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.validate",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.structure",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.docs",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.generated",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.evidence",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.fixtures",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.naming",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.schema",
+      "status": "unknown",
+      "last_run": null
+    }
   ],
   "pin_freeze_status": {
     "state": "frozen",

@@ -24,6 +24,16 @@
     {"id": "ops.gate.control-plane-drift", "action_id": "ops.root.contracts-check", "category": "docs", "description": "ops/CONTROL_PLANE.md must match control-plane snapshot contract or avoid hardcoded crate lists"},
     {"id": "ops.gate.no-stale-locked-claims", "action_id": "ops.root.contracts-check", "category": "docs", "description": "non-generated contract docs must not contain stale locked list claims"},
     {"id": "ops.gate.dataset-lifecycle", "action_id": "ops.datasets.validate", "category": "datasets", "description": "dataset lifecycle and manifest checks"},
-    {"id": "ops.gate.unified-readiness", "action_id": "ops.observe.report", "category": "report", "description": "unified readiness report publication gate"}
+    {"id": "ops.gate.unified-readiness", "action_id": "ops.observe.report", "category": "report", "description": "unified readiness report publication gate"},
+    {"id": "ops.gate.ssot", "action_id": "ops.root.check", "category": "governance", "description": "ssot invariants: no duplicate authored truth, no obs domain, and no schemas outside ops/schema"},
+    {"id": "ops.gate.validate", "action_id": "ops.root.check", "category": "governance", "description": "validate all json/yaml/toml artifacts and schema contracts"},
+    {"id": "ops.gate.structure", "action_id": "ops.root.contracts-check", "category": "governance", "description": "enforce required files contracts and placeholder directory declarations"},
+    {"id": "ops.gate.docs", "action_id": "ops.root.contracts-check", "category": "docs", "description": "block orphan docs, broken links, and stale contract lists"},
+    {"id": "ops.gate.generated", "action_id": "ops.gen.check", "category": "generated", "description": "require generated outputs to declare generated_by and schema_version"},
+    {"id": "ops.gate.evidence", "action_id": "ops.root.contracts-check", "category": "report", "description": "enforce curated evidence allowlist and bundle validity"},
+    {"id": "ops.gate.fixtures", "action_id": "ops.datasets.validate", "category": "datasets", "description": "enforce fixture allowlists, locks, version hashes, and inventory drift checks"},
+    {"id": "ops.gate.naming", "action_id": "ops.root.naming-check", "category": "governance", "description": "enforce canonical naming and forbid legacy aliases"},
+    {"id": "ops.gate.inventory", "action_id": "ops.root.contracts-check", "category": "inventory", "description": "enforce deterministic inventory registries and prevent semantic duplicates"},
+    {"id": "ops.gate.schema", "action_id": "ops.root.schema-check", "category": "schema", "description": "enforce schema index, compatibility lock, reference policy, and schema budget"}
   ]
 }
