@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "pins_source": "ops/inventory/pins.yaml",
+  "manifest_lock": "ops/datasets/manifest.lock",
+  "environments": ["dev", "ci", "prod"],
+  "rules": [
+    "dataset_id_must_exist_in_manifest",
+    "dataset_id_must_exist_in_pins",
+    "promotion_is_append_only"
+  ]
+}

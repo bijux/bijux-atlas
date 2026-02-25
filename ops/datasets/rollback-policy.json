@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "strategy": "manifest-lock-pointer",
+  "rollback_steps": [
+    "select_previous_dataset_id",
+    "validate_manifest_lock_integrity",
+    "publish_previous_pointer_without_mutating_old_artifacts"
+  ],
+  "requires": ["manifest.lock", "promotion-rules", "dataset-index"],
+  "max_rollback_depth": 3
+}

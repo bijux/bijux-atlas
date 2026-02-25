@@ -14,6 +14,7 @@
 - [E2E Philosophy](e2e-philosophy.md)
 - [Observability Verification](observability-verification.md)
 - [Observability Pack Definition](observability-pack-definition.md)
+- [Dataset Lifecycle Contract](dataset-lifecycle-contract.md)
 - [Toolchain Pins Explanation](toolchain-pins-explanation.md)
 - [Pin Lifecycle](pin-lifecycle.md)
 - [Pin Promotion Workflow](pin-promotion-workflow.md)

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "source_manifest": "ops/datasets/manifest.json",
+  "source_lock": "ops/datasets/manifest.lock",
+  "dataset_ids": [
+    "110/homo_sapiens/GRCh38",
+    "111/homo_sapiens/GRCh38"
+  ],
+  "missing_dataset_ids": [],
+  "stale_dataset_ids": []
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "stale_after_days": 90,
+  "required_metrics": [
+    "counts.genes",
+    "counts.transcripts",
+    "duplicate_gene_ids",
+    "unknown_contig_feature_ratio"
+  ],
+  "golden_summary": "ops/datasets/tests/goldens/qc-summary.sample.json"
+}

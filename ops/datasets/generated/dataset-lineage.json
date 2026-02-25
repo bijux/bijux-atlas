@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "nodes": [
+    {"id": "110/homo_sapiens/GRCh38", "kind": "fixture"},
+    {"id": "111/homo_sapiens/GRCh38", "kind": "real"}
+  ],
+  "edges": [
+    {
+      "from": "110/homo_sapiens/GRCh38",
+      "to": "111/homo_sapiens/GRCh38",
+      "relation": "derived"
+    }
+  ]
+}
