@@ -30,8 +30,10 @@ Thumbs.db
 # -----------------------------------------------------------------------------
 /artifacts/
 ops/_artifacts/
-ops/_evidence/
+ops/_evidence/*
+!ops/_evidence/.gitkeep
 ops/_generated/**
+!ops/_generated/.gitkeep
 ops/openapi/v1/openapi.generated.json
 
 # -----------------------------------------------------------------------------
