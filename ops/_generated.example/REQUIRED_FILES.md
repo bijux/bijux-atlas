@@ -15,6 +15,7 @@ required_files:
   - ops/_generated.example/control-plane.snapshot.md
   - ops/_generated.example/docs-drift-report.json
   - ops/_generated.example/contract-coverage-report.json
+  - ops/_generated.example/schema-drift-report.json
 required_dirs: []
 forbidden_patterns:
   - ops/obs/

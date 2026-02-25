@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops schema drift",
+  "status": "clean",
+  "summary": {
+    "indexed_schemas": 89,
+    "compatibility_targets": 15,
+    "unreferenced_schemas": 0
+  },
+  "drift": []
+}

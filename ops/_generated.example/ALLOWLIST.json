@@ -17,6 +17,7 @@
     "ops/_generated.example/pins.index.example.json",
     "ops/_generated.example/report.example.json",
     "ops/_generated.example/report.unified.example.json",
+    "ops/_generated.example/schema-drift-report.json",
     "ops/_generated.example/scorecard.json"
   ]
 }

@@ -10,6 +10,7 @@ Rules:
 - `ops/_generated.example/control-plane.snapshot.md` is the control-plane snapshot used for drift checks.
 - `ops/_generated.example/docs-drift-report.json` is the docs governance drift report artifact.
 - `ops/_generated.example/contract-coverage-report.json` is the generated contract coverage summary.
+- `ops/_generated.example/schema-drift-report.json` is the generated schema governance drift summary.
 - Binary artifacts are forbidden in this directory.
 - Every committed JSON artifact in this directory must include `schema_version`.
 
@@ -34,3 +35,4 @@ Rules:
 - `ops/_generated.example/control-plane.snapshot.md`: generated control-plane snapshot for drift enforcement.
 - `ops/_generated.example/docs-drift-report.json`: generated docs governance drift report.
 - `ops/_generated.example/contract-coverage-report.json`: generated contract coverage report for domain contract invariants and check linkage.
+- `ops/_generated.example/schema-drift-report.json`: generated schema drift report for index, compatibility lock, and allowlist governance.

@@ -1590,6 +1590,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     let ops_index_rel = Path::new("ops/_generated.example/ops-index.json");
     let scorecard_rel = Path::new("ops/_generated.example/scorecard.json");
     let bundle_rel = Path::new("ops/_generated.example/ops-evidence-bundle.json");
+    let schema_drift_rel = Path::new("ops/_generated.example/schema-drift-report.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
 
     for rel in [
@@ -1598,6 +1599,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         ops_index_rel,
         scorecard_rel,
         bundle_rel,
+        schema_drift_rel,
     ] {
         if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
             violations.push(violation(
@@ -1619,6 +1621,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "inventory-index.json",
         "control-plane.snapshot.md",
         "docs-drift-report.json",
+        "schema-drift-report.json",
     ] {
         if !mirror_policy_text.contains(required) {
             violations.push(violation(
@@ -1778,6 +1781,27 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                     Some(bundle_rel),
                 ));
             }
+        }
+    }
+
+    let schema_drift_text = fs::read_to_string(ctx.repo_root.join(schema_drift_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let schema_drift_json: serde_json::Value = serde_json::from_str(&schema_drift_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for key in [
+        "schema_version",
+        "generated_by",
+        "status",
+        "summary",
+        "drift",
+    ] {
+        if schema_drift_json.get(key).is_none() {
+            violations.push(violation(
+                "OPS_SCHEMA_DRIFT_REPORT_INVALID",
+                format!("schema drift report is missing required key `{key}`"),
+                "populate schema drift report with required governance keys",
+                Some(schema_drift_rel),
+            ));
         }
     }
 
