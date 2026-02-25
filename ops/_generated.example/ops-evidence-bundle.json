@@ -2,10 +2,54 @@
   "schema_version": 1,
   "release": "v0.1.0",
   "status": "ready",
-  "evidence": {
+  "sources": {
     "ops_index": "ops/_generated.example/ops-index.json",
-    "report_bundle": "ops/report/generated/release-evidence-bundle.json",
-    "readiness_score": "ops/report/generated/readiness-score.json",
-    "pins_freeze": "ops/inventory/pin-freeze.json"
+    "scorecard": "ops/_generated.example/scorecard.json",
+    "pin_freeze": "ops/inventory/pin-freeze.json"
+  },
+  "hashes": {
+    "inventory": [
+      {
+        "path": "ops/inventory/pins.yaml",
+        "sha256": "1350d136286a14ad5a42d9d8942aa802c1ec72fd1fbb8e217aa0c2efa90fd6fb"
+      },
+      {
+        "path": "ops/inventory/toolchain.json",
+        "sha256": "4962ef88aa8466aaa792b480df5d984bee3cf8d01a91b17dd9784ad15757777a"
+      },
+      {
+        "path": "ops/inventory/contracts-map.json",
+        "sha256": "997e4d1cf9c3e5784119a8705780c72c77f6f87ebf2ee8e940e1c4533111d590"
+      },
+      {
+        "path": "ops/inventory/gates.json",
+        "sha256": "0987e44a445b9db55ef61aa4f09041b3ffbdf706df13ec94baf21eccdc3b1789"
+      },
+      {
+        "path": "ops/inventory/pin-freeze.json",
+        "sha256": "301d8a7b435b24f49033c197d2b0dce36e016129466df403ad43d0ac460fcc06"
+      }
+    ],
+    "schema_index": {
+      "path": "ops/schema/generated/schema-index.json",
+      "sha256": "02364199dffefe17d890007877c7a733578d8573186b120d6f4134dae949365f"
+    }
+  },
+  "gates": [
+    {"id": "ops.doctor", "status": "unknown", "last_run": null},
+    {"id": "ops.validate", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.directory-completeness", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.schema-validation", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.pin-drift", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.stack-reproducibility", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.k8s-determinism", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.observe-coverage", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.dataset-lifecycle", "status": "unknown", "last_run": null},
+    {"id": "ops.gate.unified-readiness", "status": "unknown", "last_run": null}
+  ],
+  "pin_freeze_status": {
+    "state": "frozen",
+    "release": "v0.1.0",
+    "source": "ops/inventory/pin-freeze.json"
   }
 }

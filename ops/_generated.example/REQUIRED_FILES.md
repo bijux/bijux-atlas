@@ -5,6 +5,7 @@ required_files:
   - ops/_generated.example/README.md
   - ops/_generated.example/OWNER.md
   - ops/_generated.example/REQUIRED_FILES.md
+  - ops/_generated.example/MIRROR_POLICY.md
   - ops/_generated.example/ops-index.json
   - ops/_generated.example/ops-evidence-bundle.json
   - ops/_generated.example/scorecard.json
