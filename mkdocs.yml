@@ -118,6 +118,7 @@ nav:
           - Umbrella Contract: contracts/plugin/umbrella-plugin-contract-v1.md
       - Compatibility: contracts/compatibility.md
       - Generated:
+          - Docs Inventory: _generated/docs-inventory.md
   - API:
       - Index: api/INDEX.md
       - V1 Surface: api/v1-surface.md
@@ -257,6 +258,10 @@ nav:
       - Index: science/INDEX.md
       - Reference Science: reference/science/INDEX.md
   - Generated:
+      - Docs Inventory: _generated/docs-inventory.md
+      - Topic Index: _generated/topic-index.md
+      - Crate Docs Governance: _generated/crate-doc-governance.md
+      - Crate API Table: _generated/crate-doc-api-table.md
   - ADRs:
       - ADR Index: adrs/INDEX.md
       - ADR 0001: adrs/ADR-0001-workspace-boundaries-and-effects.md
