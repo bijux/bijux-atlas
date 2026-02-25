@@ -221,8 +221,16 @@ tags_any = ["fast"]
         "{}\n",
     );
     write(
+        &root.join("ops/schema/stack/artifact-metadata.schema.json"),
+        "{}\n",
+    );
+    write(
+        &root.join("ops/schema/stack/dependency-graph.schema.json"),
+        "{}\n",
+    );
+    write(
         &root.join("ops/schema/generated/schema-index.json"),
-        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/env/overlay.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
+        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/env/overlay.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/artifact-metadata.schema.json\",\"ops/schema/stack/dependency-graph.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
     );
     write(
         &root.join("ops/schema/generated/schema-index.md"),
@@ -282,6 +290,18 @@ tags_any = ["fast"]
         "# Required Files\n",
     );
     write(&root.join("ops/_evidence/.gitkeep"), "\n");
+    write(
+        &root.join("ops/stack/generated/stack-index.json"),
+        "{\"schema_version\":1}\n",
+    );
+    write(
+        &root.join("ops/stack/generated/dependency-graph.json"),
+        "{\"schema_version\":1}\n",
+    );
+    write(
+        &root.join("ops/stack/generated/artifact-metadata.json"),
+        "{\"schema_version\":1}\n",
+    );
     write(&root.join("ops/stack/README.md"), "# Stack\n");
     write(&root.join("ops/stack/OWNER.md"), "# Owner\n");
     write(&root.join("ops/stack/REQUIRED_FILES.md"), "# Required Files\n");

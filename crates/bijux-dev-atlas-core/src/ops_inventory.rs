@@ -244,6 +244,13 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             return errors;
         }
     };
+    let pins_manifest = match load_pins_manifest(repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
 
     validate_pins_file_content(
         repo_root,
@@ -320,6 +327,29 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             ));
         }
     }
+    for required_profile in ["minimal", "ci", "perf"] {
+        if !inventory
+            .stack_profiles
+            .profiles
+            .iter()
+            .any(|profile| profile.name == required_profile)
+        {
+            errors.push(format!(
+                "{OPS_STACK_PROFILES_PATH}: missing required profile `{required_profile}`"
+            ));
+        }
+    }
+    for required_cluster in [
+        "ops/stack/kind/cluster-small.yaml",
+        "ops/stack/kind/cluster-dev.yaml",
+        "ops/stack/kind/cluster-perf.yaml",
+    ] {
+        if !repo_root.join(required_cluster).exists() {
+            errors.push(format!(
+                "{OPS_STACK_PROFILES_PATH}: missing required kind cluster config `{required_cluster}`"
+            ));
+        }
+    }
 
     if inventory.toolchain.images.is_empty() {
         errors.push(format!(
@@ -379,6 +409,38 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             errors.push(format!(
                 "pin coverage mismatch: `{name}` is present in {OPS_TOOLCHAIN_PATH} but missing in {OPS_STACK_VERSION_MANIFEST_PATH}"
             ));
+        }
+    }
+    for (name, image) in &pins_manifest.images {
+        if inventory
+            .toolchain
+            .images
+            .get(name)
+            .is_some_and(|toolchain_image| toolchain_image != image)
+        {
+            errors.push(format!(
+                "pin value drift: `{name}` differs between {OPS_PINS_PATH} and {OPS_TOOLCHAIN_PATH}"
+            ));
+        }
+        if inventory
+            .stack_version_manifest
+            .components
+            .get(name)
+            .is_some_and(|stack_image| stack_image != image)
+        {
+            errors.push(format!(
+                "pin value drift: `{name}` differs between {OPS_PINS_PATH} and {OPS_STACK_VERSION_MANIFEST_PATH}"
+            ));
+        }
+    }
+    let stack_generated_paths = [
+        "ops/stack/generated/stack-index.json",
+        "ops/stack/generated/dependency-graph.json",
+        "ops/stack/generated/artifact-metadata.json",
+    ];
+    for rel in stack_generated_paths {
+        if !repo_root.join(rel).exists() {
+            errors.push(format!("missing required stack generated artifact `{rel}`"));
         }
     }
 
@@ -633,6 +695,13 @@ fn validate_pins_file_content(
             ));
         }
     }
+}
+
+fn load_pins_manifest(repo_root: &Path) -> Result<PinsManifest, String> {
+    let path = repo_root.join(OPS_PINS_PATH);
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    serde_yaml::from_str(&text).map_err(|err| format!("failed to parse {}: {err}", path.display()))
 }
 
 fn validate_image_hash(name: &str, image: &str, errors: &mut Vec<String>) {
