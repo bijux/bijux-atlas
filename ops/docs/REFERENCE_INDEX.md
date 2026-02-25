@@ -10,6 +10,7 @@
 - [Observability Verification](observability-verification.md)
 - [Toolchain Pins Explanation](toolchain-pins-explanation.md)
 - [Pin Lifecycle](pin-lifecycle.md)
+- [Pin Promotion Workflow](pin-promotion-workflow.md)
 - [Render Pipeline](render-pipeline.md)
 - [Artifacts Contract](artifacts-contract.md)
 - [Ops Evidence Explanation](ops-evidence-explanation.md)

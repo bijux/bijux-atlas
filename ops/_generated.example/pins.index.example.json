@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "run_id": "example",
+  "generator": "ops generate pins-index",
+  "files": [
+    {
+      "path": "ops/inventory/pins.yaml",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "bytes": 0
+    },
+    {
+      "path": "ops/inventory/toolchain.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "bytes": 0
+    },
+    {
+      "path": "ops/stack/version-manifest.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "bytes": 0
+    }
+  ]
+}
