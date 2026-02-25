@@ -20,6 +20,7 @@ Rules:
 - `ops/_generated.example/schema-coverage-report.json` is the generated schema/contract coverage report for ops data files.
 - `ops/_generated.example/generator-coverage-report.json` is the generated report for generated artifacts missing generator metadata.
 - `ops/_generated.example/placeholder-dirs-report.json` is the generated placeholder directory inventory and drift detector.
+- `ops/_generated.example/registry-drift-report.json` is the generated inventory registry drift summary.
 - `ops/_generated.example/contract-coverage-report.json` is the generated contract coverage summary.
 - `ops/_generated.example/schema-drift-report.json` is the generated schema governance drift summary.
 - `ops/_generated.example/fixture-drift-report.json` is the generated fixture governance drift summary.
@@ -46,6 +47,7 @@ Rules:
 - `ops/_generated.example/schema-coverage-report.json`: `bijux dev atlas ops schema coverage-report --write-example`
 - `ops/_generated.example/generator-coverage-report.json`: `bijux dev atlas ops generated coverage-report --write-example`
 - `ops/_generated.example/placeholder-dirs-report.json`: `bijux dev atlas ops inventory placeholder-dirs-report --write-example`
+- `ops/_generated.example/registry-drift-report.json`: `bijux dev atlas ops inventory registry-drift-report --write-example`
 - `ops/_generated.example/fixture-drift-report.json`: `bijux dev atlas ops fixtures drift --write-example`
 
 ## Mirrored Artifacts
@@ -69,6 +71,7 @@ Rules:
 - `ops/_generated.example/schema-coverage-report.json`: generated schema and contract coverage report for ops artifacts.
 - `ops/_generated.example/generator-coverage-report.json`: generated coverage report for generated artifact metadata.
 - `ops/_generated.example/placeholder-dirs-report.json`: generated placeholder directory report aligned to the inventory allowlist.
+- `ops/_generated.example/registry-drift-report.json`: generated inventory registry drift report for missing or extra inventory artifacts.
 - `ops/_generated.example/contract-coverage-report.json`: generated contract coverage report for domain contract invariants and check linkage.
 - `ops/_generated.example/schema-drift-report.json`: generated schema drift report for index, compatibility lock, and allowlist governance.
 - `ops/_generated.example/fixture-drift-report.json`: generated fixture drift report for fixture inventory, allowlist, and binary policy governance.

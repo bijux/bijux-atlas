@@ -19,6 +19,11 @@
       "detail": "ops/_generated.example/control-plane-surface-list.json status=pass",
       "name": "control-plane-surface-list",
       "status": "pass"
+    },
+    {
+      "detail": "ops/_generated.example/registry-drift-report.json status=pass",
+      "name": "inventory-registry-drift",
+      "status": "pass"
     }
   ],
   "generated_at": "2026-02-22T17:49:51.443033+00:00",

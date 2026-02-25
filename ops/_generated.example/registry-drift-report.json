@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops inventory registry-drift-report --write-example",
+  "status": "pass",
+  "missing_inventory_files": [],
+  "extra_inventory_files": []
+}

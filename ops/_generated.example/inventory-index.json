@@ -3,27 +3,71 @@
   "generated_from": "ops/inventory/contracts-map.json",
   "items": [
     {
-      "path": "ops/inventory/pins.yaml",
-      "sha256": "9b9a0618cdf34c09915977fbdd9e65a1517cfa204a5c1c14f40d98f887c94142"
+      "path": "ops/inventory/contracts/datasets.contract.fragment.json",
+      "sha256": "1e6e2437ab69a470d3ba27376141fb881b826a0ce14d23bc25d53b7dbe638bd4"
     },
     {
-      "path": "ops/inventory/toolchain.json",
-      "sha256": "a28216a6772686704a08fe6b56eee3928b72507fcad63ff91d907072d7631eb5"
+      "path": "ops/inventory/contracts/e2e.contract.fragment.json",
+      "sha256": "628ba9591bea620797d317304546bc9cd9e05e49ad428cb2d639b5da986962fd"
+    },
+    {
+      "path": "ops/inventory/contracts/fixtures.contract.fragment.json",
+      "sha256": "b73388e40d294f95e73ca0a1e717315fc9553cd3292064f66212225befeae953"
+    },
+    {
+      "path": "ops/inventory/contracts/k8s.contract.fragment.json",
+      "sha256": "3410071c63c0059f9ce2cdf60d63978a64e7c1ecfa22205ef795b11c97b76489"
+    },
+    {
+      "path": "ops/inventory/contracts/load.contract.fragment.json",
+      "sha256": "c3fb21b63080b922f162042ad17fd4e3b952c62db2023583e33c765fa34d5ee1"
+    },
+    {
+      "path": "ops/inventory/contracts/observe.contract.fragment.json",
+      "sha256": "85d276da5e0e95b961e0e78358a84f1c607fead72e165e0715f0786602938f2c"
+    },
+    {
+      "path": "ops/inventory/contracts/report.contract.fragment.json",
+      "sha256": "7c52c8350e892dee8a309fe1767dee16f8c1032553dd62bc5df2d9005e498469"
+    },
+    {
+      "path": "ops/inventory/contracts/stack.contract.fragment.json",
+      "sha256": "e8c064d237e5368c5b3b3c3a0044622e17d738d54d3d6a92bba5cbd0963533c1"
     },
     {
       "path": "ops/inventory/contracts-map.json",
       "sha256": "7563131fe03528db8e93114c76f34617b06e882d22138c30b26cbfd3884bae77"
     },
     {
-      "path": "ops/inventory/gates.json",
-      "sha256": "6f3113cfffa6797ae569ea289223e34aa0b7279c524da09fe40e8a2ed6719084"
+      "path": "ops/inventory/contracts.json",
+      "sha256": "af81968627d540a7f6c44684b1e97f3ad4e219790b99b801cb87fd5de63ae6bf"
     },
     {
-      "path": "ops/inventory/surfaces.json",
-      "sha256": "19f69155a7791dcac04896b862bb075049f53750dee4706886587c7599b6da2b"
+      "path": "ops/inventory/drills.json",
+      "sha256": "10c19ef374a1eabdbc2dd651c07e1efb1b94c7428d37a5f9737334ea70d9a1b0"
+    },
+    {
+      "path": "ops/inventory/gates.json",
+      "sha256": "3e16e5ecbb51ab76ccc26afec889042b401b4f70045a5a9e5725ea643fdc32de"
+    },
+    {
+      "path": "ops/inventory/gc-pins.json",
+      "sha256": "39fc670df680665d4ed36aa979b5e4516a2a25a0d7054572c166a2b5423ce1f1"
+    },
+    {
+      "path": "ops/inventory/generated-committed-mirror.json",
+      "sha256": "0e1741eaedadbd96077c3314cc0737d19d1c89a6588e60bd26731a1ba84e9898"
     },
     {
       "path": "ops/inventory/layers.json",
+      "sha256": "32fa45df6b68280fc8a4d9f6798c814e2a2f2d612653394265feb436fc4f7daf"
+    },
+    {
+      "path": "ops/inventory/meta/error-registry.json",
+      "sha256": "f27ff04612120017c988eb0857699e2aafaf33b026203f862378da02c8e36d00"
+    },
+    {
+      "path": "ops/inventory/meta/layer-contract.json",
       "sha256": "32fa45df6b68280fc8a4d9f6798c814e2a2f2d612653394265feb436fc4f7daf"
     },
     {
@@ -31,8 +75,48 @@
       "sha256": "065107a4891b80977890badbdd5cb3a5b34515e0bcd10b6842539481aa9da052"
     },
     {
+      "path": "ops/inventory/owner-docs.fragments.json",
+      "sha256": "8b29ee2febaaf0582ff2e819525a98a0be136051314ae9dca3d844f73a5842bd"
+    },
+    {
+      "path": "ops/inventory/owners.json",
+      "sha256": "754159c812d15287bacf50e0650c6de1add1081a534adf87b18b6c4b5f44853c"
+    },
+    {
       "path": "ops/inventory/pin-freeze.json",
       "sha256": "301d8a7b435b24f49033c197d2b0dce36e016129466df403ad43d0ac460fcc06"
+    },
+    {
+      "path": "ops/inventory/pins.yaml",
+      "sha256": "9b9a0618cdf34c09915977fbdd9e65a1517cfa204a5c1c14f40d98f887c94142"
+    },
+    {
+      "path": "ops/inventory/placeholder-dirs.json",
+      "sha256": "dc90d7eb7ede8b80710a6720b259664767d8808cc9441476727f7c7f5756c5e4"
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.json",
+      "sha256": "000b6cbd36ca1c5d2615f2f75ddae3c6e0047d4b6f9d6640669d5c9504e8f960"
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.schema.json",
+      "sha256": "aa251aabbef0dfbbf48c10a639c358210758f793cb70c2548ae43ea3b1ec6ace"
+    },
+    {
+      "path": "ops/inventory/registry.toml",
+      "sha256": "84c28ad7d334ed612e7db54fdd4c18a196c6561aee2f99d948b053a7c99b50f0"
+    },
+    {
+      "path": "ops/inventory/surfaces.json",
+      "sha256": "19f69155a7791dcac04896b862bb075049f53750dee4706886587c7599b6da2b"
+    },
+    {
+      "path": "ops/inventory/toolchain.json",
+      "sha256": "a28216a6772686704a08fe6b56eee3928b72507fcad63ff91d907072d7631eb5"
+    },
+    {
+      "path": "ops/inventory/tools.toml",
+      "sha256": "ab4c7ff9ecbdf02fc140123d8382adacb90139a7b44f26c7b5375b5275df72d0"
     }
   ]
 }

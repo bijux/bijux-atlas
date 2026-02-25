@@ -6,6 +6,7 @@
     "ops_index": "ops/_generated.example/ops-index.json",
     "scorecard": "ops/_generated.example/scorecard.json",
     "control_plane_surface_list": "ops/_generated.example/control-plane-surface-list.json",
+    "inventory_registry_drift": "ops/_generated.example/registry-drift-report.json",
     "pin_freeze": "ops/inventory/pin-freeze.json"
   },
   "hashes": {
@@ -204,6 +205,11 @@
     },
     {
       "id": "ops.gate.inventory",
+      "status": "unknown",
+      "last_run": null
+    },
+    {
+      "id": "ops.gate.inventory-registry-drift",
       "status": "unknown",
       "last_run": null
     },
