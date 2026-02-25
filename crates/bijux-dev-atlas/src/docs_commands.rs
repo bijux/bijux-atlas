@@ -698,6 +698,99 @@ pub(crate) fn search_synonyms(repo_root: &Path) -> Vec<serde_json::Value> {
         .unwrap_or_default()
 }
 
+fn canonical_reference_checks(
+    repo_root: &Path,
+    docs: &[serde_json::Value],
+) -> (Vec<String>, Vec<String>, serde_json::Value) {
+    let contract_path = repo_root.join("docs/metadata/reference-canonicals.json");
+    if !contract_path.exists() {
+        return (
+            Vec::new(),
+            vec![
+                "DOCS_CANONICAL_CONTRACT_WARN: docs/metadata/reference-canonicals.json is missing"
+                    .to_string(),
+            ],
+            serde_json::json!({"categories": {}, "total_entries": 0}),
+        );
+    }
+    let text = match fs::read_to_string(&contract_path) {
+        Ok(v) => v,
+        Err(e) => {
+            return (
+                vec![format!(
+                    "DOCS_CANONICAL_CONTRACT_ERROR: failed reading `{}`: {e}",
+                    contract_path.display()
+                )],
+                Vec::new(),
+                serde_json::json!({"categories": {}, "total_entries": 0}),
+            );
+        }
+    };
+    let contract: serde_json::Value = match serde_json::from_str(&text) {
+        Ok(v) => v,
+        Err(e) => {
+            return (
+                vec![format!(
+                    "DOCS_CANONICAL_CONTRACT_ERROR: invalid json in `{}`: {e}",
+                    contract_path.display()
+                )],
+                Vec::new(),
+                serde_json::json!({"categories": {}, "total_entries": 0}),
+            );
+        }
+    };
+
+    let mut errors = Vec::new();
+    let mut warnings = Vec::new();
+    let mut category_counts = BTreeMap::<String, usize>::new();
+    let mut total_entries = 0usize;
+    let mut seen_ids = BTreeSet::<String>::new();
+    for category in ["major_subsystems", "commands", "schemas", "policies"] {
+        let entries = contract[category].as_array().cloned().unwrap_or_default();
+        category_counts.insert(category.to_string(), entries.len());
+        for entry in entries {
+            total_entries += 1;
+            let id = entry["id"].as_str().unwrap_or_default();
+            let path = entry["path"].as_str().unwrap_or_default();
+            if id.is_empty() || path.is_empty() {
+                errors.push(format!(
+                    "DOCS_CANONICAL_CONTRACT_ERROR: `{category}` entry must include `id` and `path`"
+                ));
+                continue;
+            }
+            if !seen_ids.insert(format!("{category}:{id}")) {
+                errors.push(format!(
+                    "DOCS_CANONICAL_DUPLICATE_ID: `{category}` id `{id}` is duplicated"
+                ));
+            }
+            if !repo_root.join(path).exists() {
+                errors.push(format!(
+                    "DOCS_CANONICAL_REFERENCE_MISSING_FILE: `{category}` id `{id}` missing `{path}`"
+                ));
+            }
+            let matches = docs
+                .iter()
+                .filter(|doc| doc["path"].as_str() == Some(path))
+                .count();
+            if matches != 1 {
+                errors.push(format!(
+                    "DOCS_CANONICAL_REFERENCE_COUNT_ERROR: `{category}` id `{id}` expected exactly one registry entry for `{path}`, found {matches}"
+                ));
+            }
+        }
+        if category_counts.get(category).copied().unwrap_or(0) == 0 {
+            warnings.push(format!(
+                "DOCS_CANONICAL_CATEGORY_WARN: `{category}` has no canonical references"
+            ));
+        }
+    }
+    (
+        errors,
+        warnings,
+        serde_json::json!({"categories": category_counts, "total_entries": total_entries}),
+    )
+}
+
 pub(crate) fn docs_registry_payload(ctx: &DocsContext) -> serde_json::Value {
     let mut docs = Vec::new();
     for file in scan_registry_markdown_files(&ctx.repo_root) {
@@ -947,6 +1040,10 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
     let (crate_rows, crate_errors, crate_warnings) = crate_doc_contract_status(&ctx.repo_root);
     errors.extend(crate_errors);
     warnings.extend(crate_warnings);
+    let (canonical_errors, canonical_warnings, canonical_summary) =
+        canonical_reference_checks(&ctx.repo_root, &docs);
+    errors.extend(canonical_errors);
+    warnings.extend(canonical_warnings);
     warnings.sort();
     warnings.dedup();
     errors.sort();
@@ -966,6 +1063,7 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         "warnings": warnings,
         "crate_docs": crate_rows,
         "pruning_suggestions": pruning,
+        "canonical_references": canonical_summary,
         "summary": {
             "registered": docs.len(),
             "errors": errors.len(),

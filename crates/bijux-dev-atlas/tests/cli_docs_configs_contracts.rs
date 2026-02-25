@@ -275,6 +275,11 @@ fn slow_docs_registry_build_supports_json_format() {
         .is_some());
     assert!(payload
         .get("artifacts")
+        .and_then(|v| v.get("docs_quality_dashboard"))
+        .and_then(|v| v.as_str())
+        .is_some());
+    assert!(payload
+        .get("artifacts")
         .and_then(|v| v.get("crate_doc_governance"))
         .and_then(|v| v.as_str())
         .is_some());
