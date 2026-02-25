@@ -11,15 +11,15 @@
     "inventory": [
       {
         "path": "ops/inventory/pins.yaml",
-        "sha256": "1350d136286a14ad5a42d9d8942aa802c1ec72fd1fbb8e217aa0c2efa90fd6fb"
+        "sha256": "9b9a0618cdf34c09915977fbdd9e65a1517cfa204a5c1c14f40d98f887c94142"
       },
       {
         "path": "ops/inventory/toolchain.json",
-        "sha256": "4962ef88aa8466aaa792b480df5d984bee3cf8d01a91b17dd9784ad15757777a"
+        "sha256": "a28216a6772686704a08fe6b56eee3928b72507fcad63ff91d907072d7631eb5"
       },
       {
         "path": "ops/inventory/contracts-map.json",
-        "sha256": "997e4d1cf9c3e5784119a8705780c72c77f6f87ebf2ee8e940e1c4533111d590"
+        "sha256": "7563131fe03528db8e93114c76f34617b06e882d22138c30b26cbfd3884bae77"
       },
       {
         "path": "ops/inventory/gates.json",
@@ -32,7 +32,7 @@
     ],
     "schema_index": {
       "path": "ops/schema/generated/schema-index.json",
-      "sha256": "02364199dffefe17d890007877c7a733578d8573186b120d6f4134dae949365f"
+      "sha256": "9712b648a2e528706e0339884ace5ffab97d40e8fefc1b82e4ec7c0f346a26a1"
     }
   },
   "gates": [

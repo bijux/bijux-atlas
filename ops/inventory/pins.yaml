@@ -7,6 +7,7 @@ images:
   otel_collector: "otel/opentelemetry-collector-contrib:0.111.0"
   redis: "redis:7.4-alpine"
   toxiproxy: "ghcr.io/shopify/toxiproxy:2.12.0"
+  generated_by: "bijux dev atlas ops generate"
 dataset_ids:
   - "110/homo_sapiens/GRCh38"
   - "111/homo_sapiens/GRCh38"

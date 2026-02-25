@@ -1,7 +1,10 @@
 {
   "schema_version": 1,
   "allow_runtime_compat": [
+    "ops/_generated.example/ALLOWLIST.json",
     "ops/_generated.example/INDEX.example.md",
+    "ops/_generated.example/contract-coverage-report.json",
+    "ops/_generated.example/fixture-drift-report.json",
     "ops/_generated.example/report.example.json",
     "ops/_generated.example/report.unified.example.json",
     "ops/_generated.example/pins.index.example.json",
@@ -10,7 +13,7 @@
     "ops/_generated.example/inventory-index.json",
     "ops/_generated.example/control-plane.snapshot.md",
     "ops/_generated.example/docs-drift-report.json",
-    "ops/_generated.example/report.unified.json",
+    "ops/_generated.example/schema-drift-report.json",
     "ops/_generated.example/scorecard.json"
   ],
   "mirrors": [

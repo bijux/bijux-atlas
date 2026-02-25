@@ -66,11 +66,11 @@ const EXPECTED_PINS_SCHEMA: u64 = 1;
 
 const INVENTORY_INPUTS: [&str; 8] = [
     OPS_STACK_PROFILES_PATH,
-        OPS_STACK_VERSION_MANIFEST_PATH,
-        OPS_TOOLCHAIN_PATH,
-        OPS_PINS_PATH,
-        OPS_GATES_PATH,
-        OPS_SURFACES_PATH,
+    OPS_STACK_VERSION_MANIFEST_PATH,
+    OPS_TOOLCHAIN_PATH,
+    OPS_PINS_PATH,
+    OPS_GATES_PATH,
+    OPS_SURFACES_PATH,
     OPS_MIRROR_POLICY_PATH,
     OPS_CONTRACTS_PATH,
 ];
@@ -663,14 +663,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             return errors;
         }
     };
-    let k8s_install_matrix = match load_json::<K8sInstallMatrix>(repo_root, OPS_K8S_INSTALL_MATRIX_PATH)
-    {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
+    let k8s_install_matrix =
+        match load_json::<K8sInstallMatrix>(repo_root, OPS_K8S_INSTALL_MATRIX_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
     let observe_alerts =
         match load_json::<ObserveCatalog>(repo_root, OPS_OBSERVE_ALERT_CATALOG_PATH) {
             Ok(value) => value,
@@ -679,26 +679,22 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 return errors;
             }
         };
-    let observe_slos = match load_json::<ObserveSloDefinitions>(
-        repo_root,
-        OPS_OBSERVE_SLO_DEFINITIONS_PATH,
-    ) {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
-    let observe_drills = match load_json::<ObserveDrillCatalog>(
-        repo_root,
-        OPS_OBSERVE_TELEMETRY_DRILLS_PATH,
-    ) {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
+    let observe_slos =
+        match load_json::<ObserveSloDefinitions>(repo_root, OPS_OBSERVE_SLO_DEFINITIONS_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let observe_drills =
+        match load_json::<ObserveDrillCatalog>(repo_root, OPS_OBSERVE_TELEMETRY_DRILLS_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
     let observe_readiness =
         match load_json::<ObserveReadiness>(repo_root, OPS_OBSERVE_READINESS_PATH) {
             Ok(value) => value,
@@ -707,16 +703,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 return errors;
             }
         };
-    let observe_telemetry_index = match load_json::<ObserveTelemetryIndex>(
-        repo_root,
-        OPS_OBSERVE_TELEMETRY_INDEX_PATH,
-    ) {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
+    let observe_telemetry_index =
+        match load_json::<ObserveTelemetryIndex>(repo_root, OPS_OBSERVE_TELEMETRY_INDEX_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
     let datasets_manifest_lock =
         match load_json::<DatasetManifestLock>(repo_root, OPS_DATASETS_MANIFEST_LOCK_PATH) {
             Ok(value) => value,
@@ -785,14 +779,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             return errors;
         }
     };
-    let e2e_expectations =
-        match load_json::<E2eExpectations>(repo_root, OPS_E2E_EXPECTATIONS_PATH) {
-            Ok(value) => value,
-            Err(err) => {
-                errors.push(err);
-                return errors;
-            }
-        };
+    let e2e_expectations = match load_json::<E2eExpectations>(repo_root, OPS_E2E_EXPECTATIONS_PATH)
+    {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
     let e2e_fixture_allowlist =
         match load_json::<E2eFixtureAllowlist>(repo_root, OPS_E2E_FIXTURE_ALLOWLIST_PATH) {
             Ok(value) => value,
@@ -801,16 +795,15 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 return errors;
             }
         };
-    let e2e_reproducibility = match load_json::<E2eReproducibilityPolicy>(
-        repo_root,
-        OPS_E2E_REPRODUCIBILITY_POLICY_PATH,
-    ) {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
+    let e2e_reproducibility =
+        match load_json::<E2eReproducibilityPolicy>(repo_root, OPS_E2E_REPRODUCIBILITY_POLICY_PATH)
+        {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
     let e2e_taxonomy = match load_json::<E2eTaxonomy>(repo_root, OPS_E2E_TAXONOMY_PATH) {
         Ok(value) => value,
         Err(err) => {
@@ -864,24 +857,22 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 return errors;
             }
         };
-    let report_bundle = match load_json::<ReportReleaseEvidenceBundle>(
-        repo_root,
-        OPS_REPORT_RELEASE_BUNDLE_PATH,
-    ) {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
+    let report_bundle =
+        match load_json::<ReportReleaseEvidenceBundle>(repo_root, OPS_REPORT_RELEASE_BUNDLE_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
     let load_suites =
         match load_json::<LoadSuitesManifest>(repo_root, OPS_LOAD_SUITES_MANIFEST_PATH) {
             Ok(value) => value,
             Err(err) => {
                 errors.push(err);
-            return errors;
-        }
-    };
+                return errors;
+            }
+        };
     let load_query_lock = match load_json::<LoadQueryLock>(repo_root, OPS_LOAD_QUERY_LOCK_PATH) {
         Ok(value) => value,
         Err(err) => {
@@ -911,14 +902,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             return errors;
         }
     };
-    let load_drift_report = match load_json::<LoadDriftReport>(repo_root, OPS_LOAD_DRIFT_REPORT_PATH)
-    {
-        Ok(value) => value,
-        Err(err) => {
-            errors.push(err);
-            return errors;
-        }
-    };
+    let load_drift_report =
+        match load_json::<LoadDriftReport>(repo_root, OPS_LOAD_DRIFT_REPORT_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
     let pins_manifest = match load_pins_manifest(repo_root) {
         Ok(value) => value,
         Err(err) => {
@@ -1033,7 +1024,9 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "ops.gate.unified-readiness",
     ] {
         if !seen_gate_ids.contains(required) {
-            errors.push(format!("{OPS_GATES_PATH}: missing required gate `{required}`"));
+            errors.push(format!(
+                "{OPS_GATES_PATH}: missing required gate `{required}`"
+            ));
         }
     }
 
@@ -1211,7 +1204,10 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 profile.name, profile.values_file
             ));
         }
-        if !matches!(profile.suite.as_str(), "install-gate" | "k8s-suite" | "nightly") {
+        if !matches!(
+            profile.suite.as_str(),
+            "install-gate" | "k8s-suite" | "nightly"
+        ) {
             errors.push(format!(
                 "{OPS_K8S_INSTALL_MATRIX_PATH}: profile `{}` uses unsupported suite `{}`",
                 profile.name, profile.suite
@@ -1228,8 +1224,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         }
     }
     if let Ok(chart_yaml) = fs::read_to_string(repo_root.join(OPS_K8S_CHART_PATH)) {
-        if chart_yaml.contains("version: latest") || chart_yaml.contains("appVersion: \"latest\"")
-        {
+        if chart_yaml.contains("version: latest") || chart_yaml.contains("appVersion: \"latest\"") {
             errors.push(format!(
                 "{OPS_K8S_CHART_PATH}: chart version and appVersion must be pinned and cannot be latest"
             ));
@@ -1266,7 +1261,11 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "telemetry-drills",
         "dashboard-index",
     ] {
-        if !observe_readiness.requirements.iter().any(|entry| entry == required) {
+        if !observe_readiness
+            .requirements
+            .iter()
+            .any(|entry| entry == required)
+        {
             errors.push(format!(
                 "ops/observe: readiness requirements missing `{required}`"
             ));
@@ -1355,7 +1354,10 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             "{OPS_DATASETS_QC_METADATA_PATH}: stale_after_days must be > 0"
         ));
     }
-    if !repo_root.join(&datasets_qc_metadata.golden_summary).exists() {
+    if !repo_root
+        .join(&datasets_qc_metadata.golden_summary)
+        .exists()
+    {
         errors.push(format!(
             "{OPS_DATASETS_QC_METADATA_PATH}: golden_summary path is missing `{}`",
             datasets_qc_metadata.golden_summary
@@ -1507,7 +1509,9 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         errors.push(format!("{OPS_E2E_SUITES_PATH}: suites must not be empty"));
     }
     if e2e_scenarios.scenarios.is_empty() {
-        errors.push(format!("{OPS_E2E_SCENARIOS_PATH}: scenarios must not be empty"));
+        errors.push(format!(
+            "{OPS_E2E_SCENARIOS_PATH}: scenarios must not be empty"
+        ));
     }
     let suite_ids = e2e_suites
         .suites
@@ -1529,11 +1533,17 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             "{OPS_E2E_EXPECTATIONS_PATH}: expectation scenario_ids must exactly match {OPS_E2E_SCENARIOS_PATH}"
         ));
     }
-    let allowed_compose_keys: BTreeSet<&str> = ["stack", "obs", "datasets", "load", "k8s"]
+    let allowed_compose_keys: BTreeSet<&str> = ["stack", "observe", "datasets", "load", "k8s"]
         .into_iter()
         .collect();
     for scenario in &e2e_scenarios.scenarios {
-        if scenario.action_id.as_deref().unwrap_or("").trim().is_empty() {
+        if scenario
+            .action_id
+            .as_deref()
+            .unwrap_or("")
+            .trim()
+            .is_empty()
+        {
             errors.push(format!(
                 "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` must define action_id",
                 scenario.id
@@ -1749,7 +1759,9 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         }
     }
     if !repo_root.join(OPS_REPORT_SCHEMA_PATH).exists() {
-        errors.push(format!("missing required report schema `{OPS_REPORT_SCHEMA_PATH}`"));
+        errors.push(format!(
+            "missing required report schema `{OPS_REPORT_SCHEMA_PATH}`"
+        ));
     }
     if !repo_root.join(OPS_REPORT_EXAMPLE_PATH).exists() {
         errors.push(format!(
@@ -1860,7 +1872,11 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     let mut listed_covered = load_summary.scenario_coverage.covered.clone();
     let listed_missing = load_summary.scenario_coverage.missing.clone();
     for scenario in &expected_scenarios {
-        if !repo_root.join(&load_suites.scenarios_dir).join(scenario).exists() {
+        if !repo_root
+            .join(&load_suites.scenarios_dir)
+            .join(scenario)
+            .exists()
+        {
             errors.push(format!(
                 "{OPS_LOAD_SUITES_MANIFEST_PATH}: suite scenario is missing `{}`",
                 scenario
@@ -1870,11 +1886,16 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     for suite in &load_suites.suites {
         let threshold_filename = format!("{}.thresholds.json", suite.name);
         expected_threshold_filenames.insert(threshold_filename.clone());
-        let threshold_path = repo_root.join("ops/load/thresholds").join(&threshold_filename);
+        let threshold_path = repo_root
+            .join("ops/load/thresholds")
+            .join(&threshold_filename);
         if !threshold_path.exists() {
             errors.push(format!(
                 "{OPS_LOAD_SUITES_MANIFEST_PATH}: missing threshold file `{}` for suite `{}`",
-                threshold_path.strip_prefix(repo_root).unwrap_or(threshold_path.as_path()).display(),
+                threshold_path
+                    .strip_prefix(repo_root)
+                    .unwrap_or(threshold_path.as_path())
+                    .display(),
                 suite.name
             ));
             continue;
@@ -1907,7 +1928,9 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             ));
             continue;
         };
-        let scenario_path = repo_root.join(&load_suites.scenarios_dir).join(scenario_file);
+        let scenario_path = repo_root
+            .join(&load_suites.scenarios_dir)
+            .join(scenario_file);
         if let Ok(text) = fs::read_to_string(&scenario_path) {
             if let Ok(scenario_json) = serde_json::from_str::<serde_json::Value>(&text) {
                 let suite_script = scenario_json.get("suite").and_then(|value| value.as_str());
@@ -2281,7 +2304,9 @@ fn validate_pins_file_content(
     let mut seen_dataset_ids = BTreeSet::new();
     for id in &parsed.dataset_ids {
         if id.trim().is_empty() {
-            errors.push(format!("{OPS_PINS_PATH}: dataset_ids must not contain empty entries"));
+            errors.push(format!(
+                "{OPS_PINS_PATH}: dataset_ids must not contain empty entries"
+            ));
             continue;
         }
         if !seen_dataset_ids.insert(id.clone()) {
@@ -2526,8 +2551,14 @@ mod tests {
 
         let text = errors.join("\n");
         assert!(text.contains("unused image pin `orphan`"), "{text}");
-        assert!(text.contains("missing dataset pin `110/homo_sapiens/GRCh38`"), "{text}");
-        assert!(text.contains("unused dataset pin `111/homo_sapiens/GRCh38`"), "{text}");
+        assert!(
+            text.contains("missing dataset pin `110/homo_sapiens/GRCh38`"),
+            "{text}"
+        );
+        assert!(
+            text.contains("unused dataset pin `111/homo_sapiens/GRCh38`"),
+            "{text}"
+        );
         assert!(text.contains("must be semver"), "{text}");
     }
 }
