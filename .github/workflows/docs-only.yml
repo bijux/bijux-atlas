@@ -57,7 +57,7 @@ jobs:
           set -euo pipefail
           report_root="artifacts/${RUN_ID}/reports"
           git fetch --depth=1 origin "${{ github.base_ref }}"
-          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/docs/**' 'docker/**' 'makefiles/**' || true)"
+          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/report/docs/**' 'docker/**' 'makefiles/**' || true)"
           changed_count="$(printf '%s\n' "${changed_docs}" | sed '/^$/d' | wc -l | tr -d ' ')"
           printf '%s\n' "${changed_docs}" | sed '/^$/d' > "${report_root}/docs-diff.txt"
           jq -n \

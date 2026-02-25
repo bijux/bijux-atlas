@@ -6,9 +6,9 @@ Human entry for the ops specification surface.
 
 - Contract: `ops/CONTRACT.md`
 - Control-plane ownership: `docs/development/tooling/dev-atlas-ops.md`
-- Inventory map: `ops/docs/inventory-contracts.md`
-- Migration window: `ops/docs/migration-window.md`
-- Pin lifecycle: `ops/docs/pin-lifecycle.md`
+- Inventory map: `ops/report/docs/inventory-contracts.md`
+- Migration window: `ops/report/docs/migration-window.md`
+- Pin lifecycle: `ops/report/docs/pin-lifecycle.md`
 - Generated index artifact: `ops/_generated.example/ops-index.json`
 - Release evidence bundle: `ops/_generated.example/ops-evidence-bundle.json`
 
@@ -26,7 +26,7 @@ Human entry for the ops specification surface.
 - `ops/report/`
 - `ops/_generated/`
 - `ops/_generated.example/`
-- Rename note: `ops/docs/observe-rename.md`
+- Rename note: `ops/report/docs/observe-rename.md`
 
 ## Make Surface
 

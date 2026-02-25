@@ -7,4 +7,4 @@ Primary glossary:
 - `docs/_style/terms-glossary.md`
 
 Domain glossaries:
-- `ops/docs/ops-glossary.md`
+- `ops/report/docs/ops-glossary.md`

@@ -49,11 +49,11 @@ Does not define product semantics or internal crate APIs.
 - [Policy Violation Triage](policy-violation-triage.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Platform Handover](platform-handover.md)
-- `ops/docs/REFERENCE_INDEX.md`
-- `ops/docs/failure-triage-guide.md`
-- `ops/docs/troubleshooting-runbook.md`
-- `ops/docs/ops-glossary.md`
-- `ops/docs/cross-area-navigation.md`
+- `ops/report/docs/REFERENCE_INDEX.md`
+- `ops/report/docs/failure-triage-guide.md`
+- `ops/report/docs/troubleshooting-runbook.md`
+- `ops/report/docs/ops-glossary.md`
+- `ops/report/docs/cross-area-navigation.md`
 
 ## Topic Registry
 

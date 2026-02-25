@@ -15541,7 +15541,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/README.md",
+      "path": "ops/report/docs/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15561,7 +15561,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/REFERENCE_INDEX.md",
+      "path": "ops/report/docs/REFERENCE_INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15581,7 +15581,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/artifacts-contract.md",
+      "path": "ops/report/docs/artifacts-contract.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15601,7 +15601,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/config-compiler-contract.md",
+      "path": "ops/report/docs/config-compiler-contract.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15621,7 +15621,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/config-migration-cutoff.md",
+      "path": "ops/report/docs/config-migration-cutoff.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15641,7 +15641,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/cross-area-navigation.md",
+      "path": "ops/report/docs/cross-area-navigation.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15661,7 +15661,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/deterministic-runs.md",
+      "path": "ops/report/docs/deterministic-runs.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15681,7 +15681,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/e2e-philosophy.md",
+      "path": "ops/report/docs/e2e-philosophy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15701,7 +15701,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/failure-triage-guide.md",
+      "path": "ops/report/docs/failure-triage-guide.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15721,7 +15721,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/generated-committed-policy.md",
+      "path": "ops/report/docs/generated-committed-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15741,7 +15741,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/inventory-contracts.md",
+      "path": "ops/report/docs/inventory-contracts.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15761,7 +15761,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/k8s-conformance.md",
+      "path": "ops/report/docs/k8s-conformance.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15781,7 +15781,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/layout-migration.md",
+      "path": "ops/report/docs/layout-migration.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15801,7 +15801,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/load-testing.md",
+      "path": "ops/report/docs/load-testing.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15821,7 +15821,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/migration-window.md",
+      "path": "ops/report/docs/migration-window.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15841,7 +15841,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/observability-verification.md",
+      "path": "ops/report/docs/observability-verification.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15861,7 +15861,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/offline-mode.md",
+      "path": "ops/report/docs/offline-mode.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15881,7 +15881,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/docs/ops-api-contract.md",
+      "path": "ops/report/docs/ops-api-contract.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15901,7 +15901,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/ops-diagrams.md",
+      "path": "ops/report/docs/ops-diagrams.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15921,7 +15921,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/ops-evidence-explanation.md",
+      "path": "ops/report/docs/ops-evidence-explanation.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15941,7 +15941,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/ops-glossary.md",
+      "path": "ops/report/docs/ops-glossary.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15961,7 +15961,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/ops-safety-guarantees.md",
+      "path": "ops/report/docs/ops-safety-guarantees.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -15981,7 +15981,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/policy-relaxations.md",
+      "path": "ops/report/docs/policy-relaxations.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16001,7 +16001,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/render-pipeline.md",
+      "path": "ops/report/docs/render-pipeline.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16021,7 +16021,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/stack-lifecycle.md",
+      "path": "ops/report/docs/stack-lifecycle.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16041,7 +16041,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/toolchain-pins-explanation.md",
+      "path": "ops/report/docs/toolchain-pins-explanation.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16061,7 +16061,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/docs/troubleshooting-runbook.md",
+      "path": "ops/report/docs/troubleshooting-runbook.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
