@@ -1311,6 +1311,165 @@ pub(super) fn check_ops_docs_governance(ctx: &CheckContext<'_>) -> Result<Vec<Vi
     Ok(violations)
 }
 
+pub(super) fn check_ops_evidence_bundle_discipline(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let mirror_policy_rel = Path::new("ops/_generated.example/MIRROR_POLICY.md");
+    let ops_index_rel = Path::new("ops/_generated.example/ops-index.json");
+    let scorecard_rel = Path::new("ops/_generated.example/scorecard.json");
+    let bundle_rel = Path::new("ops/_generated.example/ops-evidence-bundle.json");
+    let gates_rel = Path::new("ops/inventory/gates.json");
+
+    for rel in [mirror_policy_rel, ops_index_rel, scorecard_rel, bundle_rel] {
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "OPS_EVIDENCE_REQUIRED_ARTIFACT_MISSING",
+                format!("missing required evidence artifact `{}`", rel.display()),
+                "generate and commit required evidence artifact",
+                Some(rel),
+            ));
+        }
+    }
+
+    let mirror_policy_text = fs::read_to_string(ctx.repo_root.join(mirror_policy_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for required in [
+        "ops-index.json",
+        "ops-evidence-bundle.json",
+        "scorecard.json",
+        "inventory-index.json",
+        "control-plane.snapshot.md",
+        "docs-drift-report.json",
+    ] {
+        if !mirror_policy_text.contains(required) {
+            violations.push(violation(
+                "OPS_EVIDENCE_MIRROR_POLICY_INCOMPLETE",
+                format!(
+                    "mirror policy must declare mirrored artifact `{required}`"
+                ),
+                "update MIRROR_POLICY.md mirrored artifact list",
+                Some(mirror_policy_rel),
+            ));
+        }
+    }
+
+    let bundle_text = fs::read_to_string(ctx.repo_root.join(bundle_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let bundle_json: serde_json::Value = serde_json::from_str(&bundle_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for key in ["schema_version", "release", "status", "hashes", "gates", "pin_freeze_status"] {
+        if bundle_json.get(key).is_none() {
+            violations.push(violation(
+                "OPS_EVIDENCE_BUNDLE_REQUIRED_KEY_MISSING",
+                format!("evidence bundle missing required key `{key}`"),
+                "populate required evidence bundle key",
+                Some(bundle_rel),
+            ));
+        }
+    }
+
+    if let Some(schema_index) = bundle_json
+        .get("hashes")
+        .and_then(|v| v.get("schema_index"))
+        .and_then(|v| v.as_object())
+    {
+        let Some(path) = schema_index.get("path").and_then(|v| v.as_str()) else {
+            return Ok(violations);
+        };
+        let Some(sha) = schema_index.get("sha256").and_then(|v| v.as_str()) else {
+            return Ok(violations);
+        };
+        let path_rel = Path::new(path);
+        if !ctx.adapters.fs.exists(ctx.repo_root, path_rel) {
+            violations.push(violation(
+                "OPS_EVIDENCE_BUNDLE_SCHEMA_INDEX_PATH_MISSING",
+                format!("schema index path in evidence bundle does not exist: `{path}`"),
+                "fix hashes.schema_index.path in evidence bundle",
+                Some(bundle_rel),
+            ));
+        } else {
+            let actual_sha = sha256_hex(&ctx.repo_root.join(path_rel))?;
+            if actual_sha != sha {
+                violations.push(violation(
+                    "OPS_EVIDENCE_BUNDLE_SCHEMA_INDEX_HASH_DRIFT",
+                    "schema index hash in evidence bundle is stale".to_string(),
+                    "refresh hashes.schema_index.sha256 in ops-evidence-bundle.json",
+                    Some(bundle_rel),
+                ));
+            }
+        }
+    }
+
+    let gates_text = fs::read_to_string(ctx.repo_root.join(gates_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let gates_json: serde_json::Value = serde_json::from_str(&gates_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let expected_gates = gates_json
+        .get("gates")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.get("id").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let bundle_gates = bundle_json
+        .get("gates")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.get("id").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    if expected_gates != bundle_gates {
+        violations.push(violation(
+            "OPS_EVIDENCE_BUNDLE_GATE_LIST_DRIFT",
+            format!(
+                "evidence bundle gates mismatch: expected={expected_gates:?} actual={bundle_gates:?}"
+            ),
+            "synchronize evidence bundle gates list with ops/inventory/gates.json",
+            Some(bundle_rel),
+        ));
+    }
+
+    let generated_root = ctx.repo_root.join("ops/_generated");
+    if generated_root.exists() {
+        let allowed = BTreeSet::from([
+            "ops/_generated/.gitkeep".to_string(),
+            "ops/_generated/OWNER.md".to_string(),
+            "ops/_generated/README.md".to_string(),
+            "ops/_generated/REQUIRED_FILES.md".to_string(),
+        ]);
+        for file in walk_files(&generated_root) {
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            let rel_str = rel.display().to_string();
+            if !allowed.contains(&rel_str) {
+                violations.push(violation(
+                    "OPS_GENERATED_DIRECTORY_COMMITTED_EVIDENCE_FORBIDDEN",
+                    format!("ops/_generated contains unexpected committed file `{}`", rel.display()),
+                    "keep ops/_generated to marker docs only; store curated evidence under ops/_generated.example",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+
+    Ok(violations)
+}
+
+fn sha256_hex(path: &Path) -> Result<String, CheckError> {
+    use sha2::{Digest, Sha256};
+    let bytes = fs::read(path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    let digest = hasher.finalize();
+    Ok(format!("{digest:x}"))
+}
+
 fn parse_required_files_markdown_yaml(
     content: &str,
     rel: &Path,
