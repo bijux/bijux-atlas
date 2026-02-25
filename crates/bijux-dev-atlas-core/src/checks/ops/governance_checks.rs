@@ -1287,6 +1287,32 @@ pub(super) fn check_ops_inventory_contract_integrity(
         })
         .unwrap_or_default();
     if let Some(gates) = gates_json.get("gates").and_then(|v| v.as_array()) {
+        let gate_ids = gates
+            .iter()
+            .filter_map(|gate| gate.get("id").and_then(|v| v.as_str()))
+            .collect::<std::collections::BTreeSet<_>>();
+        let required_release_gates = [
+            "ops.gate.ssot",
+            "ops.gate.validate",
+            "ops.gate.structure",
+            "ops.gate.docs",
+            "ops.gate.generated",
+            "ops.gate.evidence",
+            "ops.gate.fixtures",
+            "ops.gate.naming",
+            "ops.gate.inventory",
+            "ops.gate.schema",
+        ];
+        for required_gate in required_release_gates {
+            if !gate_ids.contains(required_gate) {
+                violations.push(violation(
+                    "OPS_INVENTORY_RELEASE_GATE_MISSING",
+                    format!("required release gate id missing from gates.json: `{required_gate}`"),
+                    "add the missing release gate id to ops/inventory/gates.json",
+                    Some(gates_rel),
+                ));
+            }
+        }
         for gate in gates {
             let Some(action_id) = gate.get("action_id").and_then(|v| v.as_str()) else {
                 continue;
