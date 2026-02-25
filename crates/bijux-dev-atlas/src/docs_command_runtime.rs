@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::docs_commands::{
-    docs_inventory_payload, docs_markdown_files, docs_registry_payload, has_required_section,
-    load_quality_policy, registry_validate_payload, search_synonyms,
+    crate_doc_contract_status, docs_inventory_payload, docs_markdown_files, docs_registry_payload,
+    has_required_section, load_quality_policy, registry_validate_payload, search_synonyms,
 };
 use crate::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -562,6 +562,35 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("crate coverage encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write crate coverage failed: {e}"))?;
+                        let (crate_doc_rows, crate_doc_errors, crate_doc_warnings) =
+                            crate_doc_contract_status(&ctx.repo_root);
+                        fs::write(
+                            generated_dir.join("crate-doc-governance.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "rows": crate_doc_rows,
+                                "errors": crate_doc_errors,
+                                "warnings": crate_doc_warnings
+                            }))
+                            .map_err(|e| format!("crate doc governance encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write crate doc governance failed: {e}"))?;
+                        let mut crate_governance_md = String::from("# Crate Docs Governance\n\n");
+                        crate_governance_md.push_str("| Crate | Root Docs | docs/ Files | Diagrams |\n|---|---:|---:|---:|\n");
+                        for row in &crate_doc_rows {
+                            crate_governance_md.push_str(&format!(
+                                "| `{}` | {} | {} | {} |\n",
+                                row["crate"].as_str().unwrap_or_default(),
+                                row["root_doc_count"].as_u64().unwrap_or(0),
+                                row["docs_dir_count"].as_u64().unwrap_or(0),
+                                row["diagram_count"].as_u64().unwrap_or(0),
+                            ));
+                        }
+                        fs::write(
+                            generated_dir.join("crate-doc-governance.md"),
+                            crate_governance_md,
+                        )
+                        .map_err(|e| format!("write crate doc governance page failed: {e}"))?;
                         let mut inventory_md =
                             String::from("# Docs Inventory\n\nLicense: Apache-2.0\n\n");
                         inventory_md
@@ -682,6 +711,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "dependency_graph": "docs/_generated/docs-dependency-graph.json",
                             "crate_docs_slice": "docs/_generated/crate-docs-slice.json",
                             "crate_doc_coverage": "docs/_generated/crate-doc-coverage.json",
+                            "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "generated_make_targets": "makefiles/GENERATED_TARGETS.md"
