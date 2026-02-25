@@ -727,7 +727,7 @@ pub(super) fn check_ops_ssot_manifests_schema_versions(
 ) -> Result<Vec<Violation>, CheckError> {
     let manifests = [
         "ops/stack/profiles.json",
-        "ops/stack/version-manifest.json",
+        "ops/stack/generated/version-manifest.json",
         "ops/inventory/toolchain.json",
         "ops/inventory/surfaces.json",
         "ops/inventory/contracts.json",

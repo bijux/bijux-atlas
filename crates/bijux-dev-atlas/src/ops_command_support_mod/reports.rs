@@ -243,7 +243,7 @@ pub(crate) fn ops_pins_check_payload(
         "status": status,
         "text": if errors.is_empty() { "ops pins check passed" } else { "ops pins check failed" },
         "rows": [{
-            "pins_path": "ops/stack/pins.toml",
+            "pins_path": "ops/inventory/pins.yaml",
             "errors": errors
         }],
         "summary": {"total": 1, "errors": if status == "ok" {0} else {1}, "warnings": 0}

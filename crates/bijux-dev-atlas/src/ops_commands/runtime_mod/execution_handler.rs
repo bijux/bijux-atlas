@@ -257,11 +257,11 @@ pub(super) fn dispatch_execution(
                     )
                 } else {
                     let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                    let target = repo_root.join("ops/stack/pins.toml");
+                    let target = repo_root.join("ops/inventory/pins.yaml");
                     let old = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
                     let mut updated = old.clone();
                     let stack_manifest: serde_json::Value = serde_json::from_str(
-                        &std::fs::read_to_string(repo_root.join("ops/stack/version-manifest.json"))
+                        &std::fs::read_to_string(repo_root.join("ops/stack/generated/version-manifest.json"))
                             .map_err(|err| format!("failed to read version manifest: {err}"))?,
                     )
                     .map_err(|err| format!("invalid version manifest json: {err}"))?;
@@ -283,15 +283,37 @@ pub(super) fn dispatch_execution(
                                 "key": format!("images.{k}"),
                                 "old": old_v,
                                 "new": v,
-                                "reason": "sync_from_ops_stack_version_manifest"
+                                "reason": "sync_from_generated_stack_version_manifest"
                             }));
                         }
                     }
-                    let serialized = toml::to_string_pretty(&updated)
-                        .map_err(|err| format!("failed to render pins toml: {err}"))?;
-                    std::fs::write(&target, serialized)
+                    let mut pins_yaml = std::fs::read_to_string(&target)
+                        .map_err(|err| format!("failed to read {}: {err}", target.display()))?;
+                    for (key, value) in &updated.images {
+                        let needle = format!("{key}: ");
+                        let mut replaced = false;
+                        let mut lines = Vec::new();
+                        for line in pins_yaml.lines() {
+                            let trimmed = line.trim_start();
+                            if trimmed.starts_with(&needle) {
+                                lines.push(format!("  {key}: \"{value}\""));
+                                replaced = true;
+                            } else {
+                                lines.push(line.to_string());
+                            }
+                        }
+                        if !replaced {
+                            return Err(format!(
+                                "failed to sync image `{key}` into {}; missing key in pins.yaml",
+                                target.display()
+                            ));
+                        }
+                        pins_yaml = lines.join("\n");
+                        pins_yaml.push('\n');
+                    }
+                    std::fs::write(&target, pins_yaml)
                         .map_err(|err| format!("failed to write {}: {err}", target.display()))?;
-                    let text = "ops pins updated from stack version manifest".to_string();
+                    let text = "ops pins updated from generated stack version manifest".to_string();
                     let rendered = emit_payload(
                         common.format,
                         common.out.clone(),
@@ -308,7 +330,7 @@ pub(super) fn dispatch_execution(
                 let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
                 let pins_rel = "ops/inventory/pins.yaml";
                 let toolchain_rel = "ops/inventory/toolchain.json";
-                let stack_rel = "ops/stack/version-manifest.json";
+                let stack_rel = "ops/stack/generated/version-manifest.json";
                 let pins_raw = fs::read_to_string(repo_root.join(pins_rel))
                     .map_err(|err| format!("failed to read {pins_rel}: {err}"))?;
                 let toolchain_raw = fs::read_to_string(repo_root.join(toolchain_rel))

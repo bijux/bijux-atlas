@@ -79,12 +79,45 @@ pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsComm
 }
 
 pub(crate) fn load_stack_pins(repo_root: &Path) -> Result<StackPinsToml, OpsCommandError> {
-    let path = repo_root.join("ops/stack/pins.toml");
+    let path = repo_root.join("ops/inventory/pins.yaml");
     let text = std::fs::read_to_string(&path).map_err(|err| {
         OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
     })?;
-    toml::from_str(&text).map_err(|err| {
+    let value: serde_yaml::Value = serde_yaml::from_str(&text).map_err(|err| {
         OpsCommandError::Schema(format!("failed to parse {}: {err}", path.display()))
+    })?;
+    let images = value
+        .get("images")
+        .and_then(serde_yaml::Value::as_mapping)
+        .map(|mapping| {
+            mapping
+                .iter()
+                .filter_map(|(k, v)| Some((k.as_str()?.to_string(), v.as_str()?.to_string())))
+                .collect::<std::collections::BTreeMap<_, _>>()
+        })
+        .unwrap_or_default();
+    let versions = value
+        .get("versions")
+        .and_then(serde_yaml::Value::as_mapping)
+        .map(|mapping| {
+            mapping
+                .iter()
+                .filter_map(|(k, v)| Some((k.as_str()?.to_string(), v.as_str()?.to_string())))
+                .collect::<std::collections::BTreeMap<_, _>>()
+        })
+        .unwrap_or_default();
+    let mut charts = std::collections::BTreeMap::new();
+    if let Some(chart) = versions.get("chart") {
+        charts.insert("bijux_atlas".to_string(), chart.clone());
+    }
+    let mut crds = std::collections::BTreeMap::new();
+    if let Some(crd) = versions.get("prometheus_operator_crd") {
+        crds.insert("prometheus_operator".to_string(), crd.clone());
+    }
+    Ok(StackPinsToml {
+        charts,
+        images,
+        crds,
     })
 }
 

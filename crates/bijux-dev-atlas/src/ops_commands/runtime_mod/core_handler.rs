@@ -224,7 +224,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                     serde_json::json!([
                         "ops/stack/stack.toml",
                         "ops/stack/profiles.json",
-                        "ops/stack/version-manifest.json",
+                        "ops/stack/generated/version-manifest.json",
                         "ops/inventory/toolchain.json",
                         "ops/inventory/surfaces.json",
                         "ops/inventory/contracts.json"

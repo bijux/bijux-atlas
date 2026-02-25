@@ -1,7 +1,8 @@
 {
   "type": "object",
-  "required": ["kind_node_image", "minio", "minio_mc", "prometheus", "otel_collector", "redis", "toxiproxy"],
+  "required": ["schema_version", "kind_node_image", "minio", "minio_mc", "prometheus", "otel_collector", "redis", "toxiproxy"],
   "properties": {
+    "schema_version": {"type": "integer", "const": 1},
     "kind_node_image": {"type": "string", "minLength": 1},
     "minio": {"type": "string", "minLength": 1},
     "minio_mc": {"type": "string", "minLength": 1},

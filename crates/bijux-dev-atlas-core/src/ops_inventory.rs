@@ -12,7 +12,7 @@ use std::sync::{Mutex, OnceLock};
 use serde::Deserialize;
 
 const OPS_STACK_PROFILES_PATH: &str = "ops/stack/profiles.json";
-const OPS_STACK_VERSION_MANIFEST_PATH: &str = "ops/stack/version-manifest.json";
+const OPS_STACK_VERSION_MANIFEST_PATH: &str = "ops/stack/generated/version-manifest.json";
 const OPS_TOOLCHAIN_PATH: &str = "ops/inventory/toolchain.json";
 const OPS_PINS_PATH: &str = "ops/inventory/pins.yaml";
 const OPS_SURFACES_PATH: &str = "ops/inventory/surfaces.json";
@@ -2435,8 +2435,9 @@ mod tests {
             r#"{"schema_version":1,"profiles":[{"name":"dev","kind_profile":"kind","cluster_config":"ops/kind/dev.yaml"}]}"#,
         )
         .expect("write profiles");
+        fs::create_dir_all(repo.join("ops/stack/generated")).expect("mkdir generated");
         fs::write(
-            repo.join("ops/stack/version-manifest.json"),
+            repo.join("ops/stack/generated/version-manifest.json"),
             r#"{"schema_version":1,"rust":"ghcr.io/x/rust:1"}"#,
         )
         .expect("write version manifest");

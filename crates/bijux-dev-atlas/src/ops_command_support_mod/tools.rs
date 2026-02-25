@@ -66,10 +66,10 @@ pub(crate) fn validate_pins_completeness(
 ) -> Result<Vec<String>, OpsCommandError> {
     let mut errors = Vec::new();
     let stack_manifest: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/stack/version-manifest.json")).map_err(
+        &std::fs::read_to_string(repo_root.join("ops/stack/generated/version-manifest.json")).map_err(
             |err| {
                 OpsCommandError::Manifest(format!(
-                    "failed to read ops/stack/version-manifest.json: {err}"
+                    "failed to read ops/stack/generated/version-manifest.json: {err}"
                 ))
             },
         )?,
@@ -122,7 +122,7 @@ pub(crate) fn validate_pins_completeness(
                 .map(str::to_string)
         })
         .collect::<std::collections::BTreeSet<_>>();
-    for required in ["ops/inventory/tools.toml", "ops/stack/pins.toml"] {
+    for required in ["ops/inventory/tools.toml", "ops/inventory/pins.yaml"] {
         if !contract_paths.contains(required) {
             errors.push(format!(
                 "contracts inventory missing required entry `{required}`"
@@ -245,11 +245,12 @@ mod tests {
     fn pins_validation_rejects_latest_tag() {
         let root = tempfile::tempdir().expect("tempdir");
         std::fs::create_dir_all(root.path().join("ops/stack")).expect("mkdir stack");
+        std::fs::create_dir_all(root.path().join("ops/stack/generated")).expect("mkdir generated");
         std::fs::create_dir_all(root.path().join("ops/k8s/charts/bijux-atlas"))
             .expect("mkdir chart");
         std::fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
         std::fs::write(
-            root.path().join("ops/stack/version-manifest.json"),
+            root.path().join("ops/stack/generated/version-manifest.json"),
             "{\"schema_version\":1,\"redis\":\"redis:latest\"}",
         )
         .expect("write manifest");
@@ -264,7 +265,7 @@ mod tests {
             "image: redis:latest\n",
         )
         .expect("write values offline");
-        std::fs::write(root.path().join("ops/inventory/contracts.json"),"{\"contracts\":[{\"path\":\"ops/inventory/tools.toml\"},{\"path\":\"ops/stack/pins.toml\"}]}").expect("write contracts");
+        std::fs::write(root.path().join("ops/inventory/contracts.json"),"{\"contracts\":[{\"path\":\"ops/inventory/tools.toml\"},{\"path\":\"ops/inventory/pins.yaml\"}]}").expect("write contracts");
         let pins = crate::ops_command_support::StackPinsToml {
             charts: std::collections::BTreeMap::new(),
             images: std::collections::BTreeMap::from([(
