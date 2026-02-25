@@ -13,8 +13,6 @@ required_files:
   - docs/ops/INDEX.md
 required_dirs:
   - ops/report/generated
-  - ops/report/docs/runbooks
-  - ops/report/docs/troubleshooting
 forbidden_patterns:
   - legacy-observe-alias/
   - legacy-observe-schema-alias/

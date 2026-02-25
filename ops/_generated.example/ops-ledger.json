@@ -4643,30 +4643,6 @@
       "deletion_allowed": false
     },
     {
-      "path": "ops/report/docs/runbooks/.gitkeep",
-      "type": "authored",
-      "reasons": [
-        "placeholder"
-      ],
-      "owner": "report",
-      "schema_ref": null,
-      "generator_ref": null,
-      "required_by": [],
-      "deletion_allowed": false
-    },
-    {
-      "path": "ops/report/docs/troubleshooting/.gitkeep",
-      "type": "authored",
-      "reasons": [
-        "placeholder"
-      ],
-      "owner": "report",
-      "schema_ref": null,
-      "generator_ref": null,
-      "required_by": [],
-      "deletion_allowed": false
-    },
-    {
       "path": "ops/report/evidence-levels.json",
       "type": "authored",
       "reasons": [

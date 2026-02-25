@@ -1793,8 +1793,6 @@
       "doc": "ops/report/README.md",
       "ops_paths": [
         "ops/INDEX.md",
-        "ops/report/docs/runbooks",
-        "ops/report/docs/troubleshooting",
         "ops/report/evidence-levels.json",
         "ops/report/examples/unified-report-example.json",
         "ops/report/generated/historical-comparison.json",
@@ -1813,8 +1811,6 @@
         "ops/report/OWNER.md",
         "ops/report/README.md",
         "ops/report/REQUIRED_FILES.md",
-        "ops/report/docs/runbooks",
-        "ops/report/docs/troubleshooting",
         "ops/report/evidence-levels.json",
         "ops/report/examples/unified-report-example.json",
         "ops/report/generated",

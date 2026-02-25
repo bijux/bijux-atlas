@@ -23,8 +23,6 @@
     "ops/observe/otel",
     "ops/observe/prom",
     "ops/observe/rules",
-    "ops/report/docs/runbooks",
-    "ops/report/docs/troubleshooting",
     "ops/schema",
     "ops/schema/generated",
     "ops/schema/inventory"
