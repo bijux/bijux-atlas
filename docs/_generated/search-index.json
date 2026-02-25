@@ -92,12 +92,60 @@
       "topic": "README"
     },
     {
+      "path": "configs/docs/INDEX.md",
+      "tags": [
+        "configs",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
       "path": "configs/docs/README.md",
       "tags": [
         "configs",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "configs/docs/config-diff.md",
+      "tags": [
+        "config-diff",
+        "configs"
+      ],
+      "topic": "config-diff"
+    },
+    {
+      "path": "configs/docs/configs-lifecycle.md",
+      "tags": [
+        "configs",
+        "configs-lifecycle"
+      ],
+      "topic": "configs-lifecycle"
+    },
+    {
+      "path": "configs/docs/environment-contract.md",
+      "tags": [
+        "configs",
+        "environment-contract"
+      ],
+      "topic": "environment-contract"
+    },
+    {
+      "path": "configs/docs/schema-overview.md",
+      "tags": [
+        "configs",
+        "schema-overview"
+      ],
+      "topic": "schema-overview"
+    },
+    {
+      "path": "configs/docs/schema-validation.md",
+      "tags": [
+        "configs",
+        "schema-validation"
+      ],
+      "topic": "schema-validation"
     },
     {
       "path": "configs/inventory/README.md",
@@ -2548,6 +2596,15 @@
       "topic": "README"
     },
     {
+      "path": "docker/contracts/INDEX.md",
+      "tags": [
+        "contracts",
+        "docker",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
       "path": "docker/contracts/README.md",
       "tags": [
         "contracts",
@@ -2555,6 +2612,24 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "docker/contracts/image-policy.md",
+      "tags": [
+        "contracts",
+        "docker",
+        "image-policy"
+      ],
+      "topic": "image-policy"
+    },
+    {
+      "path": "docker/contracts/reproducibility.md",
+      "tags": [
+        "contracts",
+        "docker",
+        "reproducibility"
+      ],
+      "topic": "reproducibility"
     },
     {
       "path": "docs/AUTHORS.md",
@@ -5923,6 +5998,14 @@
       "topic": "taxonomy-map"
     },
     {
+      "path": "makefiles/CI_LANES.md",
+      "tags": [
+        "ci-lanes",
+        "makefiles"
+      ],
+      "topic": "CI_LANES"
+    },
+    {
       "path": "makefiles/CONTRACT.md",
       "tags": [
         "contract",
@@ -5939,12 +6022,28 @@
       "topic": "INDEX"
     },
     {
+      "path": "makefiles/PHILOSOPHY.md",
+      "tags": [
+        "makefiles",
+        "philosophy"
+      ],
+      "topic": "PHILOSOPHY"
+    },
+    {
       "path": "makefiles/README.md",
       "tags": [
         "makefiles",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "makefiles/TARGETS_REGISTRY.md",
+      "tags": [
+        "makefiles",
+        "targets-registry"
+      ],
+      "topic": "TARGETS_REGISTRY"
     },
     {
       "path": "ops/CONTRACT.md",
@@ -6050,6 +6149,22 @@
       "topic": "README"
     },
     {
+      "path": "ops/docs/REFERENCE_INDEX.md",
+      "tags": [
+        "ops",
+        "reference-index"
+      ],
+      "topic": "REFERENCE_INDEX"
+    },
+    {
+      "path": "ops/docs/artifacts-contract.md",
+      "tags": [
+        "artifacts-contract",
+        "ops"
+      ],
+      "topic": "artifacts-contract"
+    },
+    {
       "path": "ops/docs/config-compiler-contract.md",
       "tags": [
         "config-compiler-contract",
@@ -6064,6 +6179,38 @@
         "ops"
       ],
       "topic": "config-migration-cutoff"
+    },
+    {
+      "path": "ops/docs/cross-area-navigation.md",
+      "tags": [
+        "cross-area-navigation",
+        "ops"
+      ],
+      "topic": "cross-area-navigation"
+    },
+    {
+      "path": "ops/docs/deterministic-runs.md",
+      "tags": [
+        "deterministic-runs",
+        "ops"
+      ],
+      "topic": "deterministic-runs"
+    },
+    {
+      "path": "ops/docs/e2e-philosophy.md",
+      "tags": [
+        "e2e-philosophy",
+        "ops"
+      ],
+      "topic": "e2e-philosophy"
+    },
+    {
+      "path": "ops/docs/failure-triage-guide.md",
+      "tags": [
+        "failure-triage-guide",
+        "ops"
+      ],
+      "topic": "failure-triage-guide"
     },
     {
       "path": "ops/docs/generated-committed-policy.md",
@@ -6082,12 +6229,28 @@
       "topic": "inventory-contracts"
     },
     {
+      "path": "ops/docs/k8s-conformance.md",
+      "tags": [
+        "k8s-conformance",
+        "ops"
+      ],
+      "topic": "k8s-conformance"
+    },
+    {
       "path": "ops/docs/layout-migration.md",
       "tags": [
         "layout-migration",
         "ops"
       ],
       "topic": "layout-migration"
+    },
+    {
+      "path": "ops/docs/load-testing.md",
+      "tags": [
+        "load-testing",
+        "ops"
+      ],
+      "topic": "load-testing"
     },
     {
       "path": "ops/docs/migration-window.md",
@@ -6098,12 +6261,100 @@
       "topic": "migration-window"
     },
     {
+      "path": "ops/docs/observability-verification.md",
+      "tags": [
+        "observability-verification",
+        "ops"
+      ],
+      "topic": "observability-verification"
+    },
+    {
+      "path": "ops/docs/offline-mode.md",
+      "tags": [
+        "offline-mode",
+        "ops"
+      ],
+      "topic": "offline-mode"
+    },
+    {
       "path": "ops/docs/ops-api-contract.md",
       "tags": [
         "ops",
         "ops-api-contract"
       ],
       "topic": "ops-api-contract"
+    },
+    {
+      "path": "ops/docs/ops-diagrams.md",
+      "tags": [
+        "ops",
+        "ops-diagrams"
+      ],
+      "topic": "ops-diagrams"
+    },
+    {
+      "path": "ops/docs/ops-evidence-explanation.md",
+      "tags": [
+        "ops",
+        "ops-evidence-explanation"
+      ],
+      "topic": "ops-evidence-explanation"
+    },
+    {
+      "path": "ops/docs/ops-glossary.md",
+      "tags": [
+        "ops",
+        "ops-glossary"
+      ],
+      "topic": "ops-glossary"
+    },
+    {
+      "path": "ops/docs/ops-safety-guarantees.md",
+      "tags": [
+        "ops",
+        "ops-safety-guarantees"
+      ],
+      "topic": "ops-safety-guarantees"
+    },
+    {
+      "path": "ops/docs/policy-relaxations.md",
+      "tags": [
+        "ops",
+        "policy-relaxations"
+      ],
+      "topic": "policy-relaxations"
+    },
+    {
+      "path": "ops/docs/render-pipeline.md",
+      "tags": [
+        "ops",
+        "render-pipeline"
+      ],
+      "topic": "render-pipeline"
+    },
+    {
+      "path": "ops/docs/stack-lifecycle.md",
+      "tags": [
+        "ops",
+        "stack-lifecycle"
+      ],
+      "topic": "stack-lifecycle"
+    },
+    {
+      "path": "ops/docs/toolchain-pins-explanation.md",
+      "tags": [
+        "ops",
+        "toolchain-pins-explanation"
+      ],
+      "topic": "toolchain-pins-explanation"
+    },
+    {
+      "path": "ops/docs/troubleshooting-runbook.md",
+      "tags": [
+        "ops",
+        "troubleshooting-runbook"
+      ],
+      "topic": "troubleshooting-runbook"
     },
     {
       "path": "ops/e2e/CONTRACT.md",
