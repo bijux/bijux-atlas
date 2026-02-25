@@ -1316,12 +1316,19 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     let mirror_policy_rel = Path::new("ops/_generated.example/MIRROR_POLICY.md");
+    let allowlist_rel = Path::new("ops/_generated.example/ALLOWLIST.json");
     let ops_index_rel = Path::new("ops/_generated.example/ops-index.json");
     let scorecard_rel = Path::new("ops/_generated.example/scorecard.json");
     let bundle_rel = Path::new("ops/_generated.example/ops-evidence-bundle.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
 
-    for rel in [mirror_policy_rel, ops_index_rel, scorecard_rel, bundle_rel] {
+    for rel in [
+        mirror_policy_rel,
+        allowlist_rel,
+        ops_index_rel,
+        scorecard_rel,
+        bundle_rel,
+    ] {
         if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
             violations.push(violation(
                 "OPS_EVIDENCE_REQUIRED_ARTIFACT_MISSING",
@@ -1338,6 +1345,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "ops-index.json",
         "ops-evidence-bundle.json",
         "scorecard.json",
+        "ALLOWLIST.json",
         "inventory-index.json",
         "control-plane.snapshot.md",
         "docs-drift-report.json",
@@ -1351,6 +1359,76 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                 "update MIRROR_POLICY.md mirrored artifact list",
                 Some(mirror_policy_rel),
             ));
+        }
+    }
+
+    let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowlist_json: serde_json::Value = serde_json::from_str(&allowlist_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowlisted_files = allowlist_json
+        .get("allowed_files")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.as_str())
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    if allowlisted_files.is_empty() {
+        violations.push(violation(
+            "OPS_EVIDENCE_ALLOWLIST_EMPTY",
+            "ops/_generated.example/ALLOWLIST.json must declare non-empty `allowed_files`"
+                .to_string(),
+            "populate ALLOWLIST.json with exact committed files allowed under ops/_generated.example",
+            Some(allowlist_rel),
+        ));
+    }
+    let generated_example_root = ctx.repo_root.join("ops/_generated.example");
+    if generated_example_root.exists() {
+        for file in walk_files(&generated_example_root) {
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            let rel_str = rel.display().to_string();
+            if !allowlisted_files.contains(&rel_str) {
+                violations.push(violation(
+                    "OPS_EVIDENCE_ALLOWLIST_MISSING_FILE",
+                    format!(
+                        "committed file `{}` is not declared in ops/_generated.example/ALLOWLIST.json",
+                        rel.display()
+                    ),
+                    "update ALLOWLIST.json when adding or removing curated evidence artifacts",
+                    Some(allowlist_rel),
+                ));
+            }
+            if is_binary_like_file(&file)? {
+                violations.push(violation(
+                    "OPS_EVIDENCE_BINARY_FORBIDDEN",
+                    format!(
+                        "binary file is forbidden under ops/_generated.example: `{}`",
+                        rel.display()
+                    ),
+                    "keep _generated.example text-only curated evidence artifacts",
+                    Some(rel),
+                ));
+            }
+            if rel.extension().and_then(|ext| ext.to_str()) == Some("json") {
+                let text = fs::read_to_string(&file)
+                    .map_err(|err| CheckError::Failed(err.to_string()))?;
+                let json: serde_json::Value = serde_json::from_str(&text)
+                    .map_err(|err| CheckError::Failed(err.to_string()))?;
+                if json.get("schema_version").is_none() {
+                    violations.push(violation(
+                        "OPS_EVIDENCE_SCHEMA_VERSION_MISSING",
+                        format!(
+                            "curated evidence json `{}` must include schema_version",
+                            rel.display()
+                        ),
+                        "add schema_version to curated evidence json artifact",
+                        Some(rel),
+                    ));
+                }
+            }
         }
     }
 

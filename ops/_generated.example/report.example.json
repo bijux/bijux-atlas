@@ -1,4 +1,5 @@
 {
+  "schema_version": 1,
   "run_id": "atlas-ops-example",
   "namespace": "atlas-e2e",
   "metadata": {"run_id": "atlas-ops-example", "namespace": "atlas-e2e"},
