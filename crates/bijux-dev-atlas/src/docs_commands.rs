@@ -452,6 +452,12 @@ pub(crate) fn crate_doc_contract_status(
         } else {
             Vec::new()
         };
+        if docs_md.len() > 10 {
+            warnings.push(format!(
+                "CRATE_DOCS_DIR_BUDGET_WARN: `{crate_name}` has {} docs under crate/docs (budget=10)",
+                docs_md.len()
+            ));
+        }
 
         let root_names = root_md
             .iter()
