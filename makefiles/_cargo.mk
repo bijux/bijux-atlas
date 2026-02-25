@@ -32,6 +32,13 @@ test: ## Run workspace tests with cargo nextest
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}"
+	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}"
 
-.PHONY: audit check coverage fmt lint test
+test-slow: ## Run only slow_ tests with cargo nextest
+	@command -v cargo-nextest >/dev/null 2>&1 || { \
+		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
+		exit 1; \
+	}
+	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)"
+
+.PHONY: audit check coverage fmt lint test test-slow
