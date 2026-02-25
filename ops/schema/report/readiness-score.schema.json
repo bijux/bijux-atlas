@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "score", "status", "inputs"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "status": {"type": "string", "enum": ["ready", "blocked"]},
+    "inputs": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}}
+  }
+}
