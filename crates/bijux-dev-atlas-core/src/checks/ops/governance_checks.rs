@@ -635,8 +635,109 @@ pub(super) fn check_ops_required_files_contracts(
         }
         let content =
             fs::read_to_string(&required_doc).map_err(|err| CheckError::Failed(err.to_string()))?;
-        let (required_files, required_directories) =
-            parse_required_files_markdown_yaml(&content, rel)?;
+        let required_contract = parse_required_files_markdown_yaml(&content, rel)?;
+        let required_files = required_contract.required_files.clone();
+        let required_directories = required_contract.required_dirs.clone();
+        let domain_root = rel.parent().unwrap_or(Path::new("ops"));
+
+        for forbidden in ["ops/obs/", "ops/schema/obs/", "ops/load/k6/manifests/suites.json"] {
+            if content.contains(forbidden) {
+                violations.push(violation(
+                    "OPS_REQUIRED_FILES_FORBIDDEN_REFERENCE",
+                    format!(
+                        "`{}` contains forbidden reference `{forbidden}`",
+                        rel.display()
+                    ),
+                    "remove retired path references from REQUIRED_FILES.md",
+                    Some(rel),
+                ));
+            }
+        }
+        for forbidden in &required_contract.forbidden_patterns {
+            if forbidden.is_empty() {
+                continue;
+            }
+            for domain_file in walk_files(&ctx.repo_root.join(domain_root)) {
+                let domain_rel = domain_file
+                    .strip_prefix(ctx.repo_root)
+                    .unwrap_or(domain_file.as_path());
+                if domain_rel == rel {
+                    continue;
+                }
+                let Ok(domain_text) = fs::read_to_string(&domain_file) else {
+                    continue;
+                };
+                if domain_text.contains(forbidden) {
+                    violations.push(violation(
+                        "OPS_REQUIRED_FILES_FORBIDDEN_PATTERN_MATCHED",
+                        format!(
+                            "forbidden pattern `{}` found in `{}`",
+                            forbidden,
+                            domain_rel.display()
+                        ),
+                        "remove forbidden path/pattern references from domain files",
+                        Some(domain_rel),
+                    ));
+                }
+            }
+        }
+        if content.contains("TODO") || content.contains("TBD") {
+            violations.push(violation(
+                "OPS_REQUIRED_FILES_PLACEHOLDER_FORBIDDEN",
+                format!("`{}` contains TODO/TBD placeholder markers", rel.display()),
+                "replace TODO/TBD placeholders with concrete required file contracts",
+                Some(rel),
+            ));
+        }
+        for header_name in ["OWNER.md", "README.md", "INDEX.md", "CONTRACT.md"] {
+            let header_rel = domain_root.join(header_name);
+            if ctx.adapters.fs.exists(ctx.repo_root, &header_rel)
+                && !required_files.iter().any(|file| file == &header_rel)
+            {
+                violations.push(violation(
+                    "OPS_REQUIRED_FILES_DOMAIN_HEADER_MISSING",
+                    format!(
+                        "`{}` must include domain header `{}` in required_files",
+                        rel.display(),
+                        header_rel.display()
+                    ),
+                    "list domain header docs explicitly in required_files",
+                    Some(rel),
+                ));
+            }
+        }
+        if !required_contract
+            .notes
+            .iter()
+            .any(|note| note.starts_with("authored_root:"))
+        {
+            violations.push(violation(
+                "OPS_REQUIRED_FILES_AUTHORED_ROOT_MISSING",
+                format!(
+                    "`{}` must include at least one `authored_root:` note",
+                    rel.display()
+                ),
+                "add authored_root notes that point at canonical authored SSOT artifacts",
+                Some(rel),
+            ));
+        }
+        let generated_dir = domain_root.join("generated");
+        if ctx.adapters.fs.exists(ctx.repo_root, &generated_dir)
+            && !required_contract
+                .notes
+                .iter()
+                .any(|note| note.starts_with("generated_output:"))
+        {
+            violations.push(violation(
+                "OPS_REQUIRED_FILES_GENERATED_OUTPUT_MISSING",
+                format!(
+                    "`{}` must include at least one `generated_output:` note",
+                    rel.display()
+                ),
+                "add generated_output notes for generated artifacts produced in the domain",
+                Some(rel),
+            ));
+        }
         for file_rel in required_files {
             let file_path = ctx.repo_root.join(&file_rel);
             if !file_path.exists() {
@@ -659,7 +760,6 @@ pub(super) fn check_ops_required_files_contracts(
                 ));
             }
             if file_rel.extension().and_then(|v| v.to_str()) == Some("md") {
-                let domain_root = rel.parent().unwrap_or(Path::new("ops"));
                 let domain_index = domain_root.join("INDEX.md");
                 if ctx.adapters.fs.exists(ctx.repo_root, &domain_index)
                     && file_rel.starts_with(domain_root)
@@ -683,13 +783,36 @@ pub(super) fn check_ops_required_files_contracts(
                 }
             }
         }
-        for dir_rel in required_directories {
-            let dir_path = ctx.repo_root.join(&dir_rel);
+        for dir_rel in &required_directories {
+            let dir_path = ctx.repo_root.join(dir_rel);
             if !dir_path.exists() || !dir_path.is_dir() {
                 violations.push(violation(
                     "OPS_REQUIRED_DIRECTORY_MISSING",
                     format!("required directory missing: `{}`", dir_rel.display()),
                     "create required directory or remove stale declaration from REQUIRED_FILES.md",
+                    Some(rel),
+                ));
+            }
+        }
+        for file in walk_files(&ctx.repo_root.join(domain_root)) {
+            if file.file_name().and_then(|n| n.to_str()) != Some(".gitkeep") {
+                continue;
+            }
+            let Some(keep_dir) = file
+                .parent()
+                .and_then(|p| p.strip_prefix(ctx.repo_root).ok())
+                .map(PathBuf::from)
+            else {
+                continue;
+            };
+            if !required_directories.iter().any(|dir| dir == &keep_dir) {
+                violations.push(violation(
+                    "OPS_REQUIRED_FILES_GITKEEP_DIR_UNDECLARED",
+                    format!(
+                        "directory with .gitkeep must be declared in required_dirs: `{}`",
+                        keep_dir.display()
+                    ),
+                    "declare placeholder directories in required_dirs",
                     Some(rel),
                 ));
             }
@@ -2025,10 +2148,17 @@ fn is_binary_like_file(path: &Path) -> Result<bool, CheckError> {
     Ok(std::str::from_utf8(&bytes).is_err())
 }
 
+struct RequiredFilesContract {
+    required_files: Vec<PathBuf>,
+    required_dirs: Vec<PathBuf>,
+    forbidden_patterns: Vec<String>,
+    notes: Vec<String>,
+}
+
 fn parse_required_files_markdown_yaml(
     content: &str,
     rel: &Path,
-) -> Result<(Vec<PathBuf>, Vec<PathBuf>), CheckError> {
+) -> Result<RequiredFilesContract, CheckError> {
     let mut in_yaml = false;
     let mut yaml_block = String::new();
     for line in content.lines() {
@@ -2046,10 +2176,27 @@ fn parse_required_files_markdown_yaml(
         }
     }
     if yaml_block.trim().is_empty() {
-        return Ok((Vec::new(), Vec::new()));
+        return Err(CheckError::Failed(format!(
+            "{} must include a YAML contract block",
+            rel.display()
+        )));
     }
     let parsed: serde_yaml::Value =
         serde_yaml::from_str(&yaml_block).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let parsed_map = parsed.as_mapping().ok_or_else(|| {
+        CheckError::Failed(format!(
+            "{} YAML block must be a mapping with canonical keys",
+            rel.display()
+        ))
+    })?;
+    for key in ["required_files", "required_dirs", "forbidden_patterns", "notes"] {
+        if !parsed_map.contains_key(serde_yaml::Value::from(key)) {
+            return Err(CheckError::Failed(format!(
+                "{} must define `{key}` in REQUIRED_FILES contract YAML",
+                rel.display()
+            )));
+        }
+    }
     let required_files = parsed
         .get("required_files")
         .and_then(|v| v.as_sequence())
@@ -2061,8 +2208,8 @@ fn parse_required_files_markdown_yaml(
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    let required_directories = parsed
-        .get("required_directories")
+    let required_dirs = parsed
+        .get("required_dirs")
         .and_then(|v| v.as_sequence())
         .map(|items| {
             items
@@ -2072,13 +2219,40 @@ fn parse_required_files_markdown_yaml(
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
+    let forbidden_patterns = parsed
+        .get("forbidden_patterns")
+        .and_then(|v| v.as_sequence())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    let notes = parsed
+        .get("notes")
+        .and_then(|v| v.as_sequence())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
     if required_files.is_empty() {
         return Err(CheckError::Failed(format!(
             "{} must define non-empty `required_files` YAML list",
             rel.display()
         )));
     }
-    Ok((required_files, required_directories))
+    Ok(RequiredFilesContract {
+        required_files,
+        required_dirs,
+        forbidden_patterns,
+        notes,
+    })
 }
 
 pub(super) fn check_ops_quarantine_shim_expiration_contract(
