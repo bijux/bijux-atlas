@@ -29,3 +29,6 @@ Failure modes are documented and mapped to stable error handling behavior.
 ## How to extend
 
 Additions must preserve crate boundaries, update `docs/public-api.md`, and add targeted tests.
+
+- Central docs index: docs/index.md
+- Crate README: ../README.md

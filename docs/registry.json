@@ -512,6 +512,86 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-api"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-api"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-api",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-api",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-api",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-api/README.md",
       "review_due": "2026-08-24",
@@ -521,6 +601,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-api",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "crates/bijux-atlas-api/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-api",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-api",
@@ -785,6 +897,102 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-cli"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-cli"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/COMMAND_SURFACE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-cli",
+        "command-surface"
+      ],
+      "topic": "COMMAND_SURFACE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-cli",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-cli",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-cli",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-cli/README.md",
       "review_due": "2026-08-24",
@@ -794,6 +1002,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-cli",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "crates/bijux-atlas-cli/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-cli",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-cli",
@@ -994,6 +1234,86 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-core"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-core"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-core",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-core",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-core",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-core/README.md",
       "review_due": "2026-08-24",
@@ -1003,6 +1323,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-core",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-core",
+      "path": "crates/bijux-atlas-core/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-core",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-core",
@@ -1251,6 +1603,86 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-ingest"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-ingest"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-ingest",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-ingest",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-ingest",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-ingest/README.md",
       "review_due": "2026-08-24",
@@ -1260,6 +1692,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-ingest",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "crates/bijux-atlas-ingest/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-ingest",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-ingest",
@@ -1551,6 +2015,102 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-model"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-model"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/DATA_MODEL.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "data-model"
+      ],
+      "topic": "DATA_MODEL"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-model/README.md",
       "review_due": "2026-08-24",
@@ -1560,6 +2120,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-model",
+      "path": "crates/bijux-atlas-model/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-model",
@@ -1808,6 +2400,102 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-atlas-policies"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-policies"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/EXTENSION_GUIDE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "extension-guide"
+      ],
+      "topic": "EXTENSION_GUIDE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-policies/README.md",
       "review_due": "2026-08-24",
@@ -1817,6 +2505,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-policies",
+      "path": "crates/bijux-atlas-policies/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-policies",
@@ -2065,6 +2785,70 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-query",
+      "path": "crates/bijux-atlas-query/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-query"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-query",
+      "path": "crates/bijux-atlas-query/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-query",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-query",
+      "path": "crates/bijux-atlas-query/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-query",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-query",
+      "path": "crates/bijux-atlas-query/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-query",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-query/README.md",
       "review_due": "2026-08-24",
@@ -2074,6 +2858,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-query",
+      "path": "crates/bijux-atlas-query/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-query",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-query",
+      "path": "crates/bijux-atlas-query/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-query",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-query",
@@ -2322,6 +3138,70 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "crates/bijux-atlas-server/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-server"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "crates/bijux-atlas-server/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "crates/bijux-atlas-server/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "crates/bijux-atlas-server/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-server/README.md",
       "review_due": "2026-08-24",
@@ -2331,6 +3211,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "crates/bijux-atlas-server/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-server",
+      "path": "crates/bijux-atlas-server/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-server",
@@ -2661,6 +3573,70 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "crates/bijux-atlas-store/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-store"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "crates/bijux-atlas-store/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-store",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "crates/bijux-atlas-store/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-store",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "crates/bijux-atlas-store/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-store",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-atlas-store/README.md",
       "review_due": "2026-08-24",
@@ -2670,6 +3646,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "crates/bijux-atlas-store/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-store",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "crates/bijux-atlas-store/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-store",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-atlas-store",
@@ -2918,6 +3926,102 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/ADAPTER_BOUNDARY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "adapter-boundary",
+        "bijux-dev-atlas-adapters"
+      ],
+      "topic": "ADAPTER_BOUNDARY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-adapters"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-adapters"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-dev-atlas-adapters/README.md",
       "review_due": "2026-08-24",
@@ -2927,6 +4031,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-dev-atlas-adapters",
@@ -2945,6 +4081,102 @@
       "topic": "BOUNDARY"
     },
     {
+      "crate": "bijux-dev-atlas-adapters",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-adapters",
+      "path": "crates/bijux-dev-atlas-adapters/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-core"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-core"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -2959,6 +4191,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-dev-atlas-core",
@@ -2977,6 +4241,118 @@
       "topic": "ENGINE_ARCHITECTURE"
     },
     {
+      "crate": "bijux-dev-atlas-core",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-core",
+      "path": "crates/bijux-dev-atlas-core/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-model"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-model"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/DATA_MODEL.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "data-model"
+      ],
+      "topic": "DATA_MODEL"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -2991,6 +4367,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-dev-atlas-model",
@@ -3009,6 +4417,118 @@
       "topic": "CONTRACTS"
     },
     {
+      "crate": "bijux-dev-atlas-model",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-model",
+      "path": "crates/bijux-dev-atlas-model/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-policies"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-policies"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/EXTENSION_GUIDE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "extension-guide"
+      ],
+      "topic": "EXTENSION_GUIDE"
+    },
+    {
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -3023,6 +4543,54 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
+    },
+    {
+      "crate": "bijux-dev-atlas-policies",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas-policies",
+      "path": "crates/bijux-dev-atlas-policies/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "index"
+      ],
+      "topic": "INDEX"
     },
     {
       "crate": "bijux-dev-atlas-policies",
@@ -3046,6 +4614,102 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/ARCHITECTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/BENCHMARKS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/COMMAND_SURFACE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "command-surface"
+      ],
+      "topic": "COMMAND_SURFACE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/ERROR_TAXONOMY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/EXAMPLES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "crates/bijux-dev-atlas/README.md",
       "review_due": "2026-08-24",
@@ -3055,6 +4719,38 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/TESTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/VERSIONING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -3167,6 +4863,22 @@
         "failure-modes"
       ],
       "topic": "FAILURE_MODES"
+    },
+    {
+      "crate": "bijux-dev-atlas",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "index"
+      ],
+      "topic": "INDEX"
     },
     {
       "crate": "bijux-dev-atlas",
