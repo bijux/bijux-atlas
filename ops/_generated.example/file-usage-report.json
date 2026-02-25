@@ -1,0 +1,2262 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops file-usage-report",
+  "summary": {
+    "total_files": 331,
+    "by_category": {
+      "evidence_bundle": 13,
+      "generated_output": 23,
+      "referenced_by_docs": 202,
+      "referenced_by_required_files": 97,
+      "registry_input": 160,
+      "registry_output": 2,
+      "schema": 91
+    }
+  },
+  "files": [
+    {
+      "path": "ops/_generated.example/ALLOWLIST.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/contract-coverage-report.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/docs-drift-report.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/file-usage-report.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/fixture-drift-report.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/inventory-index.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/ops-evidence-bundle.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/ops-index.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/pins.index.example.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/report.example.json",
+      "categories": [
+        "evidence_bundle"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/report.unified.example.json",
+      "categories": [
+        "evidence_bundle"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/schema-drift-report.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/_generated.example/scorecard.json",
+      "categories": [
+        "evidence_bundle",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixture-policy.json",
+      "categories": [
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/api-list-queries.v1.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/api-list-responses.v1.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/diff-queries.v1.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/diff-responses.v1.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/transcript-queries.v1.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/transcript-responses.v1.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/release-diff-queries.v1.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/release-diff-responses.v1.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/src/release110_release_gene_index.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/src/release111_release_gene_index.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/store/release=110/species=homo_sapiens/assembly=GRCh38/derived/release_gene_index.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/store/release=111/species=homo_sapiens/assembly=GRCh38/derived/release_gene_index.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/generated/dataset-index.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/datasets/generated/dataset-lineage.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/datasets/generated/fixture-inventory.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/manifest.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/datasets/promotion-rules.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/qc-metadata.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/real-datasets.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/rollback-policy.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/datasets/tests/goldens/qc-summary.sample.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/expectations/expectations.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/fixtures/allowlist.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/generated/coverage-matrix.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/e2e/generated/e2e-summary.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/e2e/manifests/smoke.manifest.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/e2e/realdata/canonical_queries.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/realdata/scenarios.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/realdata/snapshots/release110_snapshot.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/reproducibility-policy.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/scenarios/scenarios.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/e2e/smoke/goldens/status_codes.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/e2e/suites/suites.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/e2e/taxonomy.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/env/base/overlay.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/env/ci/overlay.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/env/dev/overlay.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/env/prod/overlay.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/datasets.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/e2e.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/fixtures.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/k8s.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/load.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/observe.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/report.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts/stack.contract.fragment.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts-map.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/inventory/contracts.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/drills.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/gates.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/gc-pins.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/generated-committed-mirror.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/layers.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/meta/error-registry.json",
+      "categories": [
+        "registry_output"
+      ]
+    },
+    {
+      "path": "ops/inventory/meta/layer-contract.json",
+      "categories": [
+        "registry_output"
+      ]
+    },
+    {
+      "path": "ops/inventory/namespaces.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/owner-docs.fragments.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/owners.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/pin-freeze.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/pins.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/registry.toml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/surfaces.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/toolchain.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/inventory/tools.toml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/Chart.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/catalog-publish-job.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/configmap.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/dataset-warmup-job.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/deployment.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/hpa.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/ingress.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/networkpolicy.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/pdb.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/prometheusrule.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/pvc.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/rollout.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/secret.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/service.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/servicemonitor.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/values-offline.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/values.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/values.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/generated/inventory-index.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/k8s/generated/release-snapshot.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/k8s/generated/render-artifact-index.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/k8s/install-matrix.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/k8s/tests/goldens/k8s-conformance-report.sample.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/k8s/tests/goldens/render-kind.summary.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/k8s/tests/manifest.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/k8s/tests/ownership.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/k8s/tests/suites.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/ci.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/dev.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/ingress.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/kind.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/local.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/multi-registry.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/offline.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/perf.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/k8s/values/prod.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/baselines/ci-runner.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/baselines/local.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/compose/docker-compose.perf.redis.yml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/compose/docker-compose.perf.yml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/contracts/deterministic-seed-policy.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/contracts/k6-thresholds.v1.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/contracts/query-pack-catalog.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/contracts/result-schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/contracts/suite-schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/generated/load-drift-report.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/load/generated/load-summary.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/load/generated/suites.manifest.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/load/load.toml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/load/queries/pinned-v1.json",
+      "categories": [
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/catalog-federated.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/cheap-only-survival.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/cold-start.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/diff-heavy.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/hpa-validation-short.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/large-dataset-simulation.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/load-under-rollback.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/load-under-rollout.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/mixed-gene-sequence.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/mixed.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/multi-dataset-hotset.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/multi-release.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/noisy-neighbor-cpu-throttle.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/pod-churn.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/redis-optional.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/response-size-abuse.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/sharded-fanout.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/soak-30m.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/spike-overload-proof.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/spike.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/stampede.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/store-outage-under-spike.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/store-outage.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/scenarios/warm-steady-state-p99.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/suites/suites.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/cheap-only-survival.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/cold-start-p99.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/cold-start-prefetch-5pods.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/diff-heavy.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/hpa-validation-short.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/load-under-rollback.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/load-under-rollout.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/mixed-gene-sequence.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/mixed.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/multi-release.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/noisy-neighbor-cpu-throttle.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/pod-churn.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/redis-optional.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/response-size-abuse.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/sharded-fanout.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/soak-30m.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/spike-overload-proof.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/stampede.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/store-outage-under-spike.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/load/thresholds/warm-steady-state-p99.thresholds.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/alert-catalog.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/observe/alerts/atlas-alert-rules.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/alerts/slo-burn-rules.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/alerts-contract.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/dashboard-panels-contract.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/endpoint-observability-contract.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/goldens/local/trace-structure.golden.json",
+      "categories": [
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/goldens/offline/trace-structure.golden.json",
+      "categories": [
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/goldens/perf/trace-structure.golden.json",
+      "categories": [
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/goldens/profiles.json",
+      "categories": [
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/logs-fields-contract.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/metrics-contract.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/overload-behavior-contract.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/contracts/trace-structure.golden.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/dashboards/atlas-observability-dashboard.golden.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/dashboards/atlas-observability-dashboard.json",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/drills/drills.json",
+      "categories": [
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/observe/drills/result.schema.json",
+      "categories": [
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/observe/generated/telemetry-index.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/compose/docker-compose.yml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/compose/otel-collector.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/compose/prometheus.yml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/compose.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/grafana-config.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/grafana-pvc.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/grafana.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/namespace.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/otel.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/prometheus-config.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/prometheus-pvc.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/prometheus.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/k8s/rbac.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/pack/otel/config.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/readiness.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/observe/rules/public-surface-coverage.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/slo-definitions.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/observe/suites/suites.json",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/observe/telemetry-drills.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/observe/tests/suites.json",
+      "categories": [
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/report/evidence-levels.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/report/examples/unified-report-example.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/report/generated/historical-comparison.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/report/generated/readiness-score.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/report/generated/release-evidence-bundle.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/report/generated/report-diff.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs"
+      ]
+    },
+    {
+      "path": "ops/report/schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ]
+    },
+    {
+      "path": "ops/schema/configs/public-surface.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/corruption-drill-report.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/dataset-index.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/dataset-lineage.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/fixture-inventory.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/fixture-policy.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/manifest-lock.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/manifest.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/promotion-report.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/promotion-rules.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/qc-metadata.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/qc-summary.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/datasets/rollback-policy.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e/coverage-matrix.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e/expectations.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e/fixture-allowlist.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e/reproducibility-policy.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e/summary.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e/taxonomy.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e-realdata-scenarios.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e-scenarios-unified.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e-scenarios.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/e2e-suites.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/env/overlay.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/generated/compatibility-lock.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/generated/schema-index.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/contracts-map.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/contracts.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/drills.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/gates.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/gc-pins.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/generated-committed-mirror.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/layers.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/namespaces.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/owner-docs.fragments.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/owners.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/pin-freeze.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/pins.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/registry.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/surfaces.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/toolchain.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/inventory/tools.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/k8s/conformance-report.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/k8s/install-matrix.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/k8s/inventory-index.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/k8s/release-snapshot.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/k8s/render-artifact-index.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/k8s/suite-report.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/deterministic-seed-policy.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/k6-suite.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/load-drift-report.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/load-summary.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/perf-baseline.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/pinned-queries-lock.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/query-pack-catalog.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/suite-manifest.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/load/thresholds.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/artifact-allowlist.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/budgets.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/inventory-index.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/layer-contract.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/namespaces.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/ops-index.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/ownership.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/pins.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/ports.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/required-files-contract.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/meta/scorecard.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/alert-catalog.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/budgets.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/drill-manifest.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/readiness.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/slo-definitions.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/suites.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/telemetry-drills.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/observe/telemetry-index.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/evidence-levels.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/historical-comparison.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/lane.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/readiness-score.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/release-evidence-bundle.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/report-diff.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/stack-contract.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/stack-health-report.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/stack-ports-inventory.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/report/unified.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/stack/artifact-metadata.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/stack/dependency-graph.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/stack/profile-manifest.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/schema/stack/version-manifest.schema.json",
+      "categories": [
+        "referenced_by_docs",
+        "schema"
+      ]
+    },
+    {
+      "path": "ops/stack/generated/artifact-metadata.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/generated/dependency-graph.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/generated/stack-index.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/generated/version-manifest.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/generated/versions.json",
+      "categories": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/grafana/grafana.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/kind/cluster-dev.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/kind/cluster-perf.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/kind/cluster-small.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/kind/cluster.yaml",
+      "categories": [
+        "referenced_by_docs",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/minio/minio.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/otel/otel-collector.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/profiles.json",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/prometheus/prometheus.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/redis/redis.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/stack.toml",
+      "categories": [
+        "referenced_by_docs",
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/tests/goldens/stack-health-report.sample.json",
+      "categories": [
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/tests/goldens/stack-ports-inventory.sample.json",
+      "categories": [
+        "referenced_by_required_files",
+        "registry_input"
+      ]
+    },
+    {
+      "path": "ops/stack/toxiproxy/toxiproxy.yaml",
+      "categories": [
+        "registry_input"
+      ]
+    }
+  ],
+  "orphans": []
+}

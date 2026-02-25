@@ -14,6 +14,7 @@ required_files:
   - ops/_generated.example/inventory-index.json
   - ops/_generated.example/control-plane.snapshot.md
   - ops/_generated.example/docs-drift-report.json
+  - ops/_generated.example/file-usage-report.json
   - ops/_generated.example/fixture-drift-report.json
   - ops/_generated.example/contract-coverage-report.json
   - ops/_generated.example/schema-drift-report.json
