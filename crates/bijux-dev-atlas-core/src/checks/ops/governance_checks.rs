@@ -1325,6 +1325,52 @@ pub(super) fn check_ops_domain_contract_structure(
                 ));
             }
         }
+        let contracts = coverage_json
+            .get("contracts")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        if contracts.is_empty() {
+            violations.push(violation(
+                "OPS_CONTRACT_COVERAGE_EMPTY",
+                "contract coverage report has no contracts entries".to_string(),
+                "populate contract-coverage-report.json with domain contract entries",
+                Some(coverage_rel),
+            ));
+        } else {
+            let covered = contracts
+                .iter()
+                .filter(|entry| {
+                    entry
+                        .get("authored_vs_generated")
+                        .and_then(|v| v.as_bool())
+                        .unwrap_or(false)
+                        && entry
+                            .get("invariants")
+                            .and_then(|v| v.as_i64())
+                            .unwrap_or(0)
+                            >= 8
+                        && entry
+                            .get("enforcement_links")
+                            .and_then(|v| v.as_i64())
+                            .unwrap_or(0)
+                            >= 1
+                })
+                .count();
+            let threshold = 80usize;
+            let coverage_percent = covered * 100 / contracts.len();
+            if coverage_percent < threshold {
+                violations.push(violation(
+                    "OPS_CONTRACT_COVERAGE_THRESHOLD_NOT_MET",
+                    format!(
+                        "contract coverage threshold not met: {}% < {}%",
+                        coverage_percent, threshold
+                    ),
+                    "raise contract coverage evidence to at least 80% before merge",
+                    Some(coverage_rel),
+                ));
+            }
+        }
     }
     Ok(violations)
 }
@@ -1340,10 +1386,13 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let layers_rel = Path::new("ops/inventory/layers.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
     let surfaces_rel = Path::new("ops/inventory/surfaces.json");
+    let owners_rel = Path::new("ops/inventory/owners.json");
     let policy_rel = Path::new("ops/inventory/policies/dev-atlas-policy.json");
     let policy_schema_rel = Path::new("ops/inventory/policies/dev-atlas-policy.schema.json");
     let pins_rel = Path::new("ops/inventory/pins.yaml");
     let stack_manifest_rel = Path::new("ops/stack/generated/version-manifest.json");
+    let stack_toml_rel = Path::new("ops/stack/stack.toml");
+    let stack_dependency_graph_rel = Path::new("ops/stack/generated/dependency-graph.json");
     let registry_rel = Path::new("ops/inventory/registry.toml");
     let tools_rel = Path::new("ops/inventory/tools.toml");
     let inventory_index_rel = Path::new("ops/_generated.example/inventory-index.json");
@@ -1562,6 +1611,60 @@ pub(super) fn check_ops_inventory_contract_integrity(
         }
     }
 
+    let owners_text = fs::read_to_string(ctx.repo_root.join(owners_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let owners_json: serde_json::Value =
+        serde_json::from_str(&owners_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let owner_areas = owners_json
+        .get("areas")
+        .and_then(|v| v.as_object())
+        .cloned()
+        .unwrap_or_default();
+    let required_owner_prefixes = [
+        "ops/datasets",
+        "ops/e2e",
+        "ops/env",
+        "ops/inventory",
+        "ops/k8s",
+        "ops/load",
+        "ops/observe",
+        "ops/report",
+        "ops/schema",
+        "ops/stack",
+    ];
+    for prefix in required_owner_prefixes {
+        if !owner_areas.contains_key(prefix) {
+            violations.push(violation(
+                "OPS_OWNER_DOMAIN_MAPPING_MISSING",
+                format!("owners.json is missing required area mapping `{prefix}`"),
+                "add owner mapping for each top-level ops domain",
+                Some(owners_rel),
+            ));
+        }
+    }
+    let owner_prefixes = owner_areas.keys().cloned().collect::<Vec<_>>();
+    for file in walk_files(&ctx.repo_root.join("ops")) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        let rel_str = rel.display().to_string();
+        if rel_str.starts_with("ops/_generated/") {
+            continue;
+        }
+        let has_owner = owner_prefixes.iter().any(|prefix| {
+            rel_str == *prefix
+                || rel_str
+                    .strip_prefix(prefix)
+                    .is_some_and(|suffix| suffix.starts_with('/'))
+        });
+        if !has_owner {
+            violations.push(violation(
+                "OPS_OWNER_ASSIGNMENT_MISSING",
+                format!("ops file has no owner mapping in owners.json: `{rel_str}`"),
+                "add an owners.json area mapping that covers this file path",
+                Some(owners_rel),
+            ));
+        }
+    }
+
     let registry_text = fs::read_to_string(ctx.repo_root.join(registry_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let tools_text = fs::read_to_string(ctx.repo_root.join(tools_rel))
@@ -1680,6 +1783,41 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 format!("inventory-index.json is missing inventory artifact `{rel}`"),
                 "regenerate ops/_generated.example/inventory-index.json to include every ops/inventory data artifact",
                 Some(inventory_index_rel),
+            ));
+        }
+    }
+
+    if ctx.adapters.fs.exists(ctx.repo_root, stack_toml_rel)
+        && ctx.adapters.fs.exists(ctx.repo_root, stack_dependency_graph_rel)
+    {
+        let stack_toml_text = fs::read_to_string(ctx.repo_root.join(stack_toml_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let stack_toml: toml::Value =
+            toml::from_str(&stack_toml_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let graph_text = fs::read_to_string(ctx.repo_root.join(stack_dependency_graph_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let graph_json: serde_json::Value =
+            serde_json::from_str(&graph_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let toml_profiles = stack_toml
+            .get("profiles")
+            .and_then(|v| v.as_table())
+            .cloned()
+            .unwrap_or_default();
+        let graph_profiles = graph_json
+            .get("profiles")
+            .and_then(|v| v.as_object())
+            .cloned()
+            .unwrap_or_default();
+        let toml_profile_keys = toml_profiles.keys().cloned().collect::<BTreeSet<_>>();
+        let graph_profile_keys = graph_profiles.keys().cloned().collect::<BTreeSet<_>>();
+        if toml_profile_keys != graph_profile_keys {
+            violations.push(violation(
+                "OPS_STACK_DEPENDENCY_GRAPH_PROFILE_DRIFT",
+                format!(
+                    "dependency-graph profile keys drift from stack.toml: stack={toml_profile_keys:?} graph={graph_profile_keys:?}"
+                ),
+                "regenerate ops/stack/generated/dependency-graph.json from ops/stack/stack.toml",
+                Some(stack_dependency_graph_rel),
             ));
         }
     }
@@ -2138,6 +2276,38 @@ pub(super) fn check_ops_docs_governance(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
+    let forbidden_transitional_tokens = ["phase", "task"];
+    for root in ["ops", "docs"] {
+        for file in walk_files(&ctx.repo_root.join(root)) {
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            let rel_str = rel.display().to_string();
+            let has_forbidden_segment = rel
+                .components()
+                .filter_map(|c| c.as_os_str().to_str())
+                .any(|segment| {
+                    let lowercase = segment.to_ascii_lowercase();
+                    forbidden_transitional_tokens.iter().any(|token| {
+                        lowercase == *token
+                            || lowercase.starts_with(&format!("{token}-"))
+                            || lowercase.ends_with(&format!("-{token}"))
+                            || lowercase.contains(&format!("-{token}-"))
+                            || lowercase.starts_with(&format!("{token}_"))
+                            || lowercase.ends_with(&format!("_{token}"))
+                            || lowercase.contains(&format!("_{token}_"))
+                    })
+                });
+            if has_forbidden_segment {
+                violations.push(violation(
+                    "OPS_NAMING_TRANSITIONAL_TOKEN_FORBIDDEN",
+                    format!(
+                        "path uses transitional naming token (`phase`/`task`): `{rel_str}`"
+                    ),
+                    "rename files/directories to durable intent-based names",
+                    Some(rel),
+                ));
+            }
+        }
+    }
 
     let domain_dirs = [
         "ops/datasets",
@@ -3518,11 +3688,67 @@ pub(super) fn check_ops_fixture_governance(
     }
 
     let suites_rel = Path::new("ops/e2e/suites/suites.json");
+    let scenarios_rel = Path::new("ops/e2e/scenarios/scenarios.json");
+    let expectations_rel = Path::new("ops/e2e/expectations/expectations.json");
     if ctx.adapters.fs.exists(ctx.repo_root, suites_rel) {
         let suites_text = fs::read_to_string(ctx.repo_root.join(suites_rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
         let suites_json: serde_json::Value = serde_json::from_str(&suites_text)
             .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let suite_ids = suites_json
+            .get("suites")
+            .and_then(|v| v.as_array())
+            .map(|suites| {
+                suites
+                    .iter()
+                    .filter_map(|suite| suite.get("id").and_then(|v| v.as_str()))
+                    .map(ToString::to_string)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        let scenario_ids = if ctx.adapters.fs.exists(ctx.repo_root, scenarios_rel) {
+            let scenarios_text = fs::read_to_string(ctx.repo_root.join(scenarios_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let scenarios_json: serde_json::Value = serde_json::from_str(&scenarios_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            scenarios_json
+                .get("scenarios")
+                .and_then(|v| v.as_array())
+                .map(|scenarios| {
+                    scenarios
+                        .iter()
+                        .filter_map(|entry| entry.get("id").and_then(|v| v.as_str()))
+                        .map(ToString::to_string)
+                        .collect::<BTreeSet<_>>()
+                })
+                .unwrap_or_default()
+        } else {
+            BTreeSet::new()
+        };
+        if ctx.adapters.fs.exists(ctx.repo_root, expectations_rel) {
+            let expectations_text = fs::read_to_string(ctx.repo_root.join(expectations_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let expectations_json: serde_json::Value = serde_json::from_str(&expectations_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            for scenario_id in expectations_json
+                .get("expectations")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(|entry| entry.get("scenario_id").and_then(|v| v.as_str()))
+            {
+                if !suite_ids.contains(scenario_id) && !scenario_ids.contains(scenario_id) {
+                    violations.push(violation(
+                        "OPS_E2E_EXPECTATION_REFERENCE_MISSING",
+                        format!(
+                            "expectations.json scenario_id `{scenario_id}` is missing from suites/scenarios registries"
+                        ),
+                        "align expectations entries with canonical suite ids or scenario ids",
+                        Some(expectations_rel),
+                    ));
+                }
+            }
+        }
         if let Some(suites) = suites_json.get("suites").and_then(|v| v.as_array()) {
             for suite in suites {
                 let Some(id) = suite.get("id").and_then(|v| v.as_str()) else {
@@ -3548,6 +3774,99 @@ pub(super) fn check_ops_fixture_governance(
                             Some(suites_rel),
                         ));
                     }
+                }
+            }
+        }
+    }
+
+    let smoke_manifest_rel = Path::new("ops/e2e/manifests/smoke.manifest.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, smoke_manifest_rel) {
+        let smoke_manifest_text = fs::read_to_string(ctx.repo_root.join(smoke_manifest_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let smoke_manifest_json: serde_json::Value = serde_json::from_str(&smoke_manifest_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let queries_lock_rel = Path::new("ops/e2e/smoke/queries.lock");
+        if smoke_manifest_json
+            .get("queries_lock")
+            .and_then(|v| v.as_str())
+            .is_none()
+        {
+            violations.push(violation(
+                "OPS_E2E_SMOKE_MANIFEST_PINNED_QUERIES_MISSING",
+                "smoke.manifest.json must define `queries_lock`".to_string(),
+                "reference the pinned query lock file from smoke.manifest.json",
+                Some(smoke_manifest_rel),
+            ));
+        }
+        if let Some(queries_lock_ref) = smoke_manifest_json
+            .get("queries_lock")
+            .and_then(|v| v.as_str())
+        {
+            if queries_lock_ref != queries_lock_rel.display().to_string() {
+                violations.push(violation(
+                    "OPS_E2E_SMOKE_MANIFEST_PINNED_QUERIES_PATH_INVALID",
+                    format!(
+                        "smoke manifest queries_lock must be `{}`; found `{queries_lock_ref}`",
+                        queries_lock_rel.display()
+                    ),
+                    "point smoke manifest queries_lock to ops/e2e/smoke/queries.lock",
+                    Some(smoke_manifest_rel),
+                ));
+            }
+            if !ctx.adapters.fs.exists(ctx.repo_root, queries_lock_rel) {
+                violations.push(violation(
+                    "OPS_E2E_SMOKE_QUERIES_LOCK_MISSING",
+                    format!("missing pinned query lock file `{}`", queries_lock_rel.display()),
+                    "restore ops/e2e/smoke/queries.lock",
+                    Some(smoke_manifest_rel),
+                ));
+            }
+        }
+    }
+
+    let load_suites_rel = Path::new("ops/load/suites/suites.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, load_suites_rel) {
+        let load_suites_text = fs::read_to_string(ctx.repo_root.join(load_suites_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let load_suites_json: serde_json::Value = serde_json::from_str(&load_suites_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for suite in load_suites_json
+            .get("suites")
+            .and_then(|v| v.as_array())
+            .into_iter()
+            .flatten()
+        {
+            let suite_name = suite
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("unknown");
+            if suite.get("kind").and_then(|v| v.as_str()) == Some("k6") {
+                if let Some(scenario_name) = suite.get("scenario").and_then(|v| v.as_str()) {
+                    let scenario_rel = Path::new("ops/load/scenarios").join(scenario_name);
+                    if !ctx.adapters.fs.exists(ctx.repo_root, &scenario_rel) {
+                        violations.push(violation(
+                            "OPS_LOAD_SUITE_SCENARIO_MISSING",
+                            format!(
+                                "load suite `{suite_name}` references missing scenario `{}`",
+                                scenario_rel.display()
+                            ),
+                            "add missing scenario file or fix suite scenario reference",
+                            Some(load_suites_rel),
+                        ));
+                    }
+                }
+            }
+            if let Some(threshold_file) = suite.get("threshold_file").and_then(|v| v.as_str()) {
+                let threshold_rel = Path::new(threshold_file);
+                if !ctx.adapters.fs.exists(ctx.repo_root, threshold_rel) {
+                    violations.push(violation(
+                        "OPS_LOAD_SUITE_THRESHOLD_FILE_MISSING",
+                        format!(
+                            "load suite `{suite_name}` references missing threshold file `{threshold_file}`"
+                        ),
+                        "add threshold file or remove stale threshold_file reference",
+                        Some(load_suites_rel),
+                    ));
                 }
             }
         }
@@ -3729,6 +4048,32 @@ pub(super) fn check_ops_fixture_governance(
             "generate and commit fixture drift report under ops/_generated.example",
             Some(fixture_drift_rel),
         ));
+    } else {
+        let fixture_drift_text = fs::read_to_string(ctx.repo_root.join(fixture_drift_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let fixture_drift_json: serde_json::Value = serde_json::from_str(&fixture_drift_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for key in ["schema_version", "generated_by", "status", "summary", "drift"] {
+            if fixture_drift_json.get(key).is_none() {
+                violations.push(violation(
+                    "OPS_FIXTURE_DRIFT_REPORT_INVALID",
+                    format!("fixture drift report is missing required key `{key}`"),
+                    "populate fixture drift report with required governance keys",
+                    Some(fixture_drift_rel),
+                ));
+            }
+        }
+        if !matches!(
+            fixture_drift_json.get("status").and_then(|v| v.as_str()),
+            Some("clean" | "pass")
+        ) {
+            violations.push(violation(
+                "OPS_FIXTURE_DRIFT_REPORT_BLOCKING",
+                "fixture drift report status must be `clean` or `pass`".to_string(),
+                "resolve fixture drift and regenerate fixture-drift-report.json",
+                Some(fixture_drift_rel),
+            ));
+        }
     }
 
     Ok(violations)
