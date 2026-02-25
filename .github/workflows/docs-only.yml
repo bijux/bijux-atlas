@@ -51,8 +51,42 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
           mkdir -p "${report_root}" "${logs_root}"
           make docs > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
+      - name: Build docs diff summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          git fetch --depth=1 origin "${{ github.base_ref }}"
+          changed_docs="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD -- 'docs/**' 'configs/docs/**' 'ops/docs/**' 'docker/**' 'makefiles/**' || true)"
+          changed_count="$(printf '%s\n' "${changed_docs}" | sed '/^$/d' | wc -l | tr -d ' ')"
+          printf '%s\n' "${changed_docs}" | sed '/^$/d' > "${report_root}/docs-diff.txt"
+          jq -n \
+            --arg run_id "${RUN_ID}" \
+            --argjson changed_count "${changed_count:-0}" \
+            --rawfile changed "${report_root}/docs-diff.txt" \
+            '{
+              schema_version: 1,
+              kind: "docs_diff_summary_v1",
+              run_id: $run_id,
+              changed_count: $changed_count,
+              changed_paths: ($changed | split("\n") | map(select(length > 0)))
+            }' > "${report_root}/docs-diff-summary.json"
+      - name: Build docs quality summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          test -f docs/_generated/docs-test-coverage.json
+          cp docs/_generated/docs-test-coverage.json "${report_root}/docs-test-coverage.json"
+      - name: Publish summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
           printf "- lane: docs\n- report: %s\n- cache target hit: %s\n" \
             "${report_root}/docs.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          printf "- docs diff: %s\n- docs coverage: %s\n" \
+            "${report_root}/docs-diff-summary.json" "${report_root}/docs-test-coverage.json" >> "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo cache
         if: success()
