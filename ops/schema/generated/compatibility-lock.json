@@ -45,6 +45,24 @@
         "stack_artifacts",
         "retention"
       ]
+    },
+    {
+      "schema_path": "ops/schema/k8s/inventory-index.schema.json",
+      "required_fields": ["schema_version", "source", "files"]
+    },
+    {
+      "schema_path": "ops/schema/k8s/render-artifact-index.schema.json",
+      "required_fields": ["schema_version", "render_outputs", "determinism"]
+    },
+    {
+      "schema_path": "ops/schema/k8s/release-snapshot.schema.json",
+      "required_fields": [
+        "schema_version",
+        "release",
+        "chart",
+        "install_profiles",
+        "generated_at"
+      ]
     }
   ]
 }
