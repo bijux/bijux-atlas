@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "ordering": "stable",
+  "seed_source": "ops/load/contracts/deterministic-seed-policy.json",
+  "artifact_contract": "artifacts/ops/<run-id>/e2e",
+  "required_checks": [
+    "scenario-order-deterministic",
+    "fixture-allowlist-enforced",
+    "expectation-catalog-complete"
+  ]
+}

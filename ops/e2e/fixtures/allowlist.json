@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "allowed_paths": [
+    "ops/e2e/fixtures/fixtures.lock",
+    "ops/e2e/fixtures/README.md",
+    "ops/e2e/fixtures/allowlist.json"
+  ],
+  "policy": "only declared fixture files are allowed under ops/e2e/fixtures"
+}

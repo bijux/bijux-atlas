@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "expectations": [
+    {"scenario_id": "smoke", "must_pass": true, "max_duration_seconds": 300},
+    {"scenario_id": "k8s-suite", "must_pass": true, "max_duration_seconds": 900},
+    {"scenario_id": "realdata", "must_pass": true, "max_duration_seconds": 1800},
+    {"scenario_id": "perf-e2e", "must_pass": true, "max_duration_seconds": 2400}
+  ]
+}

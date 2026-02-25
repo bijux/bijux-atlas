@@ -12,6 +12,7 @@
 - [Kubernetes CRD Compatibility Policy](k8s-crd-compatibility-policy.md)
 - [Load Testing](load-testing.md)
 - [E2E Philosophy](e2e-philosophy.md)
+- [E2E Composition Contract](e2e-composition-contract.md)
 - [Observability Verification](observability-verification.md)
 - [Observability Pack Definition](observability-pack-definition.md)
 - [Dataset Lifecycle Contract](dataset-lifecycle-contract.md)

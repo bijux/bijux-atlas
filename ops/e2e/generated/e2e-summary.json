@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "status": "stable",
+  "suite_count": 7,
+  "scenario_count": 4,
+  "suite_ids": [
+    "fixture-medium",
+    "k8s-suite",
+    "realdata",
+    "release-diff-fixture",
+    "rollback-drill",
+    "smoke",
+    "upgrade-drill"
+  ],
+  "scenario_ids": [
+    "k8s-suite",
+    "perf-e2e",
+    "realdata",
+    "smoke"
+  ]
+}

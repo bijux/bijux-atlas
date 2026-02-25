@@ -15,6 +15,14 @@ Own composition-only end-to-end scenarios across stack, k8s, obs, load, and data
 ## Contracts
 - `ops/e2e/CONTRACT.md`
 - `ops/e2e/suites/suites.json`
+- `ops/e2e/expectations/expectations.json`
+- `ops/e2e/fixtures/allowlist.json`
+- `ops/e2e/reproducibility-policy.json`
+- `ops/e2e/taxonomy.json`
+
+## Generated
+- `ops/e2e/generated/e2e-summary.json`
+- `ops/e2e/generated/coverage-matrix.json`
 
 ## Artifacts
 - `ops/_artifacts/<run_id>/e2e/`

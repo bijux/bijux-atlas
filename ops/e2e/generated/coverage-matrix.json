@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "rows": [
+    {"scenario_id": "smoke", "covers": ["stack", "obs", "datasets", "load"]},
+    {"scenario_id": "k8s-suite", "covers": ["stack", "obs", "k8s"]},
+    {"scenario_id": "realdata", "covers": ["stack", "obs", "datasets"]},
+    {"scenario_id": "perf-e2e", "covers": ["stack", "obs", "datasets", "load"]}
+  ],
+  "missing_domains": []
+}
