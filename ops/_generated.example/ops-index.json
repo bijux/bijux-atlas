@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "domains": [
+    "inventory",
+    "schema",
+    "env",
+    "stack",
+    "k8s",
+    "observe",
+    "load",
+    "datasets",
+    "e2e",
+    "report",
+    "_generated",
+    "_generated.example"
+  ],
+  "reports": [
+    "ops/report/generated/readiness-score.json",
+    "ops/report/generated/release-evidence-bundle.json",
+    "ops/report/generated/report-diff.json",
+    "ops/report/generated/historical-comparison.json"
+  ]
+}

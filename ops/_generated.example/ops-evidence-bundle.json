@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "release": "v0.1.0",
+  "status": "ready",
+  "evidence": {
+    "ops_index": "ops/_generated.example/ops-index.json",
+    "report_bundle": "ops/report/generated/release-evidence-bundle.json",
+    "readiness_score": "ops/report/generated/readiness-score.json",
+    "pins_freeze": "ops/inventory/pin-freeze.json"
+  }
+}

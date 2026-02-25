@@ -2,6 +2,8 @@
   "schema_version": 1,
   "allow_runtime_compat": [
     "ops/_generated.example/pins.index.example.json",
+    "ops/_generated.example/ops-index.json",
+    "ops/_generated.example/ops-evidence-bundle.json",
     "ops/_generated.example/report.unified.json",
     "ops/_generated.example/scorecard.json"
   ],
