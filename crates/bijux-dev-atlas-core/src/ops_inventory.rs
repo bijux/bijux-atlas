@@ -41,6 +41,13 @@ const OPS_E2E_REPRODUCIBILITY_POLICY_PATH: &str = "ops/e2e/reproducibility-polic
 const OPS_E2E_TAXONOMY_PATH: &str = "ops/e2e/taxonomy.json";
 const OPS_E2E_SUMMARY_PATH: &str = "ops/e2e/generated/e2e-summary.json";
 const OPS_E2E_COVERAGE_MATRIX_PATH: &str = "ops/e2e/generated/coverage-matrix.json";
+const OPS_REPORT_SCHEMA_PATH: &str = "ops/report/schema.json";
+const OPS_REPORT_EVIDENCE_LEVELS_PATH: &str = "ops/report/evidence-levels.json";
+const OPS_REPORT_EXAMPLE_PATH: &str = "ops/report/examples/unified-report-example.json";
+const OPS_REPORT_READINESS_SCORE_PATH: &str = "ops/report/generated/readiness-score.json";
+const OPS_REPORT_DIFF_PATH: &str = "ops/report/generated/report-diff.json";
+const OPS_REPORT_HISTORY_PATH: &str = "ops/report/generated/historical-comparison.json";
+const OPS_REPORT_RELEASE_BUNDLE_PATH: &str = "ops/report/generated/release-evidence-bundle.json";
 const OPS_LOAD_SUITES_MANIFEST_PATH: &str = "ops/load/k6/manifests/suites.json";
 const OPS_LOAD_QUERY_LOCK_PATH: &str = "ops/load/queries/pinned-v1.lock";
 const OPS_LOAD_SEED_POLICY_PATH: &str = "ops/load/contracts/deterministic-seed-policy.json";
@@ -476,6 +483,46 @@ struct E2eCoverageRow {
     pub covers: Vec<String>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct ReportEvidenceLevels {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub levels: Vec<ReportEvidenceLevel>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ReportEvidenceLevel {
+    pub id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ReportReadinessScore {
+    pub schema_version: u64,
+    pub score: u64,
+    pub status: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ReportDiff {
+    pub schema_version: u64,
+    pub status: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ReportHistoricalComparison {
+    pub schema_version: u64,
+    pub status: String,
+    pub trend: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ReportReleaseEvidenceBundle {
+    pub schema_version: u64,
+    pub status: String,
+    #[serde(default)]
+    pub bundle_paths: Vec<String>,
+}
+
 fn load_json<T: for<'de> Deserialize<'de>>(repo_root: &Path, rel: &str) -> Result<T, String> {
     let path = repo_root.join(rel);
     let text = fs::read_to_string(&path)
@@ -573,6 +620,13 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_E2E_TAXONOMY_PATH,
         OPS_E2E_SUMMARY_PATH,
         OPS_E2E_COVERAGE_MATRIX_PATH,
+        OPS_REPORT_SCHEMA_PATH,
+        OPS_REPORT_EVIDENCE_LEVELS_PATH,
+        OPS_REPORT_EXAMPLE_PATH,
+        OPS_REPORT_READINESS_SCORE_PATH,
+        OPS_REPORT_DIFF_PATH,
+        OPS_REPORT_HISTORY_PATH,
+        OPS_REPORT_RELEASE_BUNDLE_PATH,
         OPS_LOAD_SUITES_MANIFEST_PATH,
         OPS_LOAD_QUERY_LOCK_PATH,
         OPS_LOAD_SEED_POLICY_PATH,
@@ -757,6 +811,47 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     };
     let e2e_coverage = match load_json::<E2eCoverageMatrix>(repo_root, OPS_E2E_COVERAGE_MATRIX_PATH)
     {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let report_evidence_levels =
+        match load_json::<ReportEvidenceLevels>(repo_root, OPS_REPORT_EVIDENCE_LEVELS_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let report_readiness =
+        match load_json::<ReportReadinessScore>(repo_root, OPS_REPORT_READINESS_SCORE_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let report_diff = match load_json::<ReportDiff>(repo_root, OPS_REPORT_DIFF_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let report_history =
+        match load_json::<ReportHistoricalComparison>(repo_root, OPS_REPORT_HISTORY_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let report_bundle = match load_json::<ReportReleaseEvidenceBundle>(
+        repo_root,
+        OPS_REPORT_RELEASE_BUNDLE_PATH,
+    ) {
         Ok(value) => value,
         Err(err) => {
             errors.push(err);
@@ -1491,6 +1586,98 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 row.scenario_id
             ));
         }
+    }
+    if report_evidence_levels.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_REPORT_EVIDENCE_LEVELS_PATH}: expected schema_version=1, got {}",
+            report_evidence_levels.schema_version
+        ));
+    }
+    let report_levels = report_evidence_levels
+        .levels
+        .iter()
+        .map(|entry| entry.id.clone())
+        .collect::<BTreeSet<_>>();
+    for required in ["minimal", "standard", "forensic"] {
+        if !report_levels.contains(required) {
+            errors.push(format!(
+                "{OPS_REPORT_EVIDENCE_LEVELS_PATH}: missing required level `{required}`"
+            ));
+        }
+    }
+    if report_readiness.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_REPORT_READINESS_SCORE_PATH}: expected schema_version=1, got {}",
+            report_readiness.schema_version
+        ));
+    }
+    if report_readiness.score > 100 {
+        errors.push(format!(
+            "{OPS_REPORT_READINESS_SCORE_PATH}: score must be between 0 and 100"
+        ));
+    }
+    if report_readiness.status != "ready" && report_readiness.status != "blocked" {
+        errors.push(format!(
+            "{OPS_REPORT_READINESS_SCORE_PATH}: status must be `ready` or `blocked`"
+        ));
+    }
+    if report_diff.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_REPORT_DIFF_PATH}: expected schema_version=1, got {}",
+            report_diff.schema_version
+        ));
+    }
+    if report_diff.status != "stable" && report_diff.status != "changed" {
+        errors.push(format!(
+            "{OPS_REPORT_DIFF_PATH}: status must be `stable` or `changed`"
+        ));
+    }
+    if report_history.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_REPORT_HISTORY_PATH}: expected schema_version=1, got {}",
+            report_history.schema_version
+        ));
+    }
+    if report_history.status != "stable" && report_history.status != "regressed" {
+        errors.push(format!(
+            "{OPS_REPORT_HISTORY_PATH}: status must be `stable` or `regressed`"
+        ));
+    }
+    if !matches!(report_history.trend.as_str(), "up" | "flat" | "down") {
+        errors.push(format!(
+            "{OPS_REPORT_HISTORY_PATH}: trend must be one of `up`, `flat`, `down`"
+        ));
+    }
+    if report_bundle.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_REPORT_RELEASE_BUNDLE_PATH}: expected schema_version=1, got {}",
+            report_bundle.schema_version
+        ));
+    }
+    if report_bundle.status != "ready" && report_bundle.status != "blocked" {
+        errors.push(format!(
+            "{OPS_REPORT_RELEASE_BUNDLE_PATH}: status must be `ready` or `blocked`"
+        ));
+    }
+    if report_bundle.bundle_paths.is_empty() {
+        errors.push(format!(
+            "{OPS_REPORT_RELEASE_BUNDLE_PATH}: bundle_paths must not be empty"
+        ));
+    }
+    for path in &report_bundle.bundle_paths {
+        if !repo_root.join(path).exists() {
+            errors.push(format!(
+                "{OPS_REPORT_RELEASE_BUNDLE_PATH}: bundle path is missing `{path}`"
+            ));
+        }
+    }
+    if !repo_root.join(OPS_REPORT_SCHEMA_PATH).exists() {
+        errors.push(format!("missing required report schema `{OPS_REPORT_SCHEMA_PATH}`"));
+    }
+    if !repo_root.join(OPS_REPORT_EXAMPLE_PATH).exists() {
+        errors.push(format!(
+            "missing required report example `{OPS_REPORT_EXAMPLE_PATH}`"
+        ));
     }
     if load_suites.schema_version != 2 {
         errors.push(format!(
