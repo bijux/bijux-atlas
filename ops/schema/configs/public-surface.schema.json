@@ -1,4 +1,10 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schema_version"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1}
+  },
   "schema_version": 1,
   "owner": "bijux-atlas-operations",
   "make_target_prefixes": [
