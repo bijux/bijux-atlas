@@ -346,7 +346,7 @@ pub(super) fn check_docs_index_reachability_ledger(
 pub(super) fn check_docs_ops_operations_duplicate_titles(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let mut ops_titles = BTreeMap::<String, String>::new();
+    let mut seen_titles = BTreeMap::<String, String>::new();
     let mut violations = Vec::new();
     for path in docs_markdown_paths(ctx) {
         let rel = path
@@ -354,7 +354,7 @@ pub(super) fn check_docs_ops_operations_duplicate_titles(
             .unwrap_or(&path)
             .display()
             .to_string();
-        if !rel.starts_with("docs/ops/") && !rel.starts_with("docs/operations/") {
+        if !rel.starts_with("docs/operations/") {
             continue;
         }
         let text = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -362,18 +362,15 @@ pub(super) fn check_docs_ops_operations_duplicate_titles(
         if title.is_empty() {
             continue;
         }
-        if rel.starts_with("docs/ops/") {
-            ops_titles.insert(title.to_ascii_lowercase(), rel);
-        } else if let Some(dup) = ops_titles.get(&title.to_ascii_lowercase()) {
+        if let Some(dup) = seen_titles.get(&title.to_ascii_lowercase()) {
             violations.push(violation(
                 "DOCS_DUPLICATE_TITLE_ACROSS_OPS_GROUPS",
-                format!(
-                    "duplicate title across docs groups: `{}` in `{dup}` and `{rel}`",
-                    title
-                ),
-                "keep one canonical page title and convert duplicate page to a redirect stub",
+                format!("duplicate title in docs/operations: `{}` in `{dup}` and `{rel}`", title),
+                "keep one canonical page title per concept in docs/operations",
                 Some(Path::new(&rel)),
             ));
+        } else {
+            seen_titles.insert(title.to_ascii_lowercase(), rel);
         }
     }
     Ok(violations)
