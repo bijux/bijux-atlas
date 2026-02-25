@@ -2206,6 +2206,19 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     if repo_root.join("ops/_lib").exists() {
         errors.push("forbidden retired path exists: ops/_lib".to_string());
     }
+    if repo_root.join("ops/schema/obs").exists() {
+        errors.push("forbidden retired path exists: ops/schema/obs".to_string());
+    }
+    if let Ok(entries) = fs::read_dir(repo_root.join("ops/inventory/contracts")) {
+        for entry in entries.flatten() {
+            let file_name = entry.file_name().to_string_lossy().to_string();
+            if file_name.contains("obs.") {
+                errors.push(format!(
+                    "forbidden retired contract fragment name in ops/inventory/contracts: `{file_name}`"
+                ));
+            }
+        }
+    }
 
     errors.sort();
     errors.dedup();

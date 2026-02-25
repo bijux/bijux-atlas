@@ -61,6 +61,32 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
             ));
         }
     }
+    let ops_docs_root = ctx.repo_root.join("ops");
+    if ops_docs_root.exists() {
+        for file in walk_files(&ops_docs_root) {
+            if file.extension().and_then(|ext| ext.to_str()) != Some("md") {
+                continue;
+            }
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            if rel == Path::new("ops/report/docs/observe-rename.md") {
+                continue;
+            }
+            let Ok(content) = fs::read_to_string(&file) else {
+                continue;
+            };
+            if content.contains("ops/schema/obs/") || content.contains("ops/obs/") {
+                violations.push(violation(
+                    "OPS_LEGACY_REFERENCE_FOUND",
+                    format!(
+                        "retired observability path reference found in {}",
+                        rel.display()
+                    ),
+                    "replace legacy observability paths with canonical ops/observe paths",
+                    Some(rel),
+                ));
+            }
+        }
+    }
     Ok(violations)
 }
 
