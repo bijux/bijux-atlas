@@ -1420,20 +1420,12 @@ pub(super) fn check_ops_inventory_contract_integrity(
             Some(contracts_rel),
         ));
     }
-    let contracts_meta_text = fs::read_to_string(ctx.repo_root.join(contracts_meta_rel))
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let contracts_meta_json: serde_json::Value = serde_json::from_str(&contracts_meta_text)
-        .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if contracts_meta_json
-        .get("generated_from")
-        .and_then(|v| v.as_str())
-        != Some("ops/inventory/contracts-map.json")
-    {
+    if ctx.adapters.fs.exists(ctx.repo_root, contracts_meta_rel) {
         violations.push(violation(
-            "OPS_INVENTORY_META_CONTRACTS_GENERATION_METADATA_MISSING",
-            "ops/inventory/meta/contracts.json must declare `generated_from: ops/inventory/contracts-map.json`"
+            "OPS_INVENTORY_DUPLICATE_CONTRACT_REGISTRY_FORBIDDEN",
+            "legacy duplicate contract registry `ops/inventory/meta/contracts.json` is forbidden"
                 .to_string(),
-            "mark meta/contracts.json as generated mirror metadata",
+            "remove ops/inventory/meta/contracts.json and keep ops/inventory/contracts.json as the single contracts registry",
             Some(contracts_meta_rel),
         ));
     }
@@ -1657,6 +1649,65 @@ pub(super) fn check_ops_inventory_contract_integrity(
             "generate and commit ops/_generated.example/inventory-index.json",
             Some(inventory_index_rel),
         ));
+    } else {
+        let inventory_index_text = fs::read_to_string(ctx.repo_root.join(inventory_index_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let inventory_index_json: serde_json::Value =
+            serde_json::from_str(&inventory_index_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let indexed_paths = inventory_index_json
+            .get("items")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|item| item.get("path").and_then(|v| v.as_str()))
+                    .map(ToString::to_string)
+                    .collect::<std::collections::BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        let expected_inventory_paths = walk_files(&inventory_root)
+            .into_iter()
+            .filter_map(|file| file.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
+            .filter(|rel| {
+                rel.extension()
+                    .and_then(|v| v.to_str())
+                    .is_some_and(|ext| matches!(ext, "json" | "yaml" | "yml" | "toml"))
+            })
+            .map(|rel| rel.display().to_string())
+            .collect::<std::collections::BTreeSet<_>>();
+        for rel in expected_inventory_paths.difference(&indexed_paths) {
+            violations.push(violation(
+                "OPS_INVENTORY_INDEX_COVERAGE_MISSING",
+                format!("inventory-index.json is missing inventory artifact `{rel}`"),
+                "regenerate ops/_generated.example/inventory-index.json to include every ops/inventory data artifact",
+                Some(inventory_index_rel),
+            ));
+        }
+    }
+
+    let registry_drift_rel = Path::new("ops/_generated.example/registry-drift-report.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, registry_drift_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_REGISTRY_DRIFT_REPORT_MISSING",
+            format!(
+                "missing registry drift report `{}`",
+                registry_drift_rel.display()
+            ),
+            "generate and commit ops/_generated.example/registry-drift-report.json",
+            Some(registry_drift_rel),
+        ));
+    } else {
+        let registry_drift_text = fs::read_to_string(ctx.repo_root.join(registry_drift_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let registry_drift_json: serde_json::Value = serde_json::from_str(&registry_drift_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if registry_drift_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_INVENTORY_REGISTRY_DRIFT_REPORT_BLOCKING",
+                "registry-drift-report.json status is not `pass`".to_string(),
+                "resolve inventory registry drift and regenerate registry-drift-report.json",
+                Some(registry_drift_rel),
+            ));
+        }
     }
 
     Ok(violations)
