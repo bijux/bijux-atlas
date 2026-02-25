@@ -10,6 +10,7 @@ Use this page as the only docs entrypoint.
 ## Start Here
 
 - Product framing: [docs/product/what-is-bijux-atlas.md](product/what-is-bijux-atlas.md)
+- Root reference map: [docs/root/INDEX.md](root/INDEX.md)
 - Compatibility promise: [docs/product/compatibility-promise.md](product/compatibility-promise.md)
 - Deprecation policy: [docs/reference/registry/deprecation-policy.md](reference/registry/deprecation-policy.md)
 - Contract system (SSOT): [docs/contracts/INDEX.md](contracts/INDEX.md)
