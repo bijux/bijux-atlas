@@ -885,16 +885,94 @@ pub(super) fn check_ops_required_files_contracts(
             .map_err(|err| CheckError::Failed(err.to_string()))?;
         let allowlist_json: serde_json::Value = serde_json::from_str(&allowlist_text)
             .map_err(|err| CheckError::Failed(err.to_string()))?;
-        let allowlisted_dirs = allowlist_json
-            .get("placeholder_dirs")
+        let mut allowlisted_dirs = BTreeSet::new();
+        if let Some(entries) = allowlist_json
+            .get("placeholder_entries")
             .and_then(|v| v.as_array())
-            .map(|arr| {
-                arr.iter()
-                    .filter_map(|item| item.as_str())
-                    .map(PathBuf::from)
-                    .collect::<BTreeSet<_>>()
-            })
-            .unwrap_or_default();
+        {
+            for entry in entries {
+                let path = entry
+                    .get("path")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let owner = entry
+                    .get("owner")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let purpose = entry
+                    .get("purpose")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let expected_contents = entry
+                    .get("expected_contents")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let lifecycle_policy = entry
+                    .get("lifecycle_policy")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .to_ascii_lowercase();
+
+                if path.is_empty() {
+                    violations.push(violation(
+                        "OPS_PLACEHOLDER_DIR_ENTRY_PATH_MISSING",
+                        "placeholder entry is missing `path`".to_string(),
+                        "set placeholder_entries[].path in ops/inventory/placeholder-dirs.json",
+                        Some(placeholder_allowlist_rel),
+                    ));
+                    continue;
+                }
+                allowlisted_dirs.insert(PathBuf::from(path));
+                if owner.is_empty() {
+                    violations.push(violation(
+                        "OPS_PLACEHOLDER_DIR_ENTRY_OWNER_MISSING",
+                        format!("placeholder entry `{path}` is missing owner"),
+                        "set placeholder_entries[].owner for every placeholder directory",
+                        Some(placeholder_allowlist_rel),
+                    ));
+                }
+                if purpose.is_empty() {
+                    violations.push(violation(
+                        "OPS_PLACEHOLDER_DIR_ENTRY_PURPOSE_MISSING",
+                        format!("placeholder entry `{path}` is missing purpose"),
+                        "set placeholder_entries[].purpose for every placeholder directory",
+                        Some(placeholder_allowlist_rel),
+                    ));
+                }
+                if expected_contents.is_empty() {
+                    violations.push(violation(
+                        "OPS_PLACEHOLDER_DIR_ENTRY_EXPECTED_CONTENTS_MISSING",
+                        format!("placeholder entry `{path}` is missing expected_contents"),
+                        "set placeholder_entries[].expected_contents for every placeholder directory",
+                        Some(placeholder_allowlist_rel),
+                    ));
+                }
+                let has_permanent = lifecycle_policy.contains("permanent extension point");
+                let has_sunset = lifecycle_policy.contains("sunset");
+                if !has_permanent && !has_sunset {
+                    violations.push(violation(
+                        "OPS_PLACEHOLDER_DIR_ENTRY_LIFECYCLE_INVALID",
+                        format!(
+                            "placeholder entry `{path}` lifecycle_policy must declare sunset or permanent extension point"
+                        ),
+                        "set placeholder_entries[].lifecycle_policy to include `sunset` or `permanent extension point`",
+                        Some(placeholder_allowlist_rel),
+                    ));
+                }
+            }
+        }
+        if allowlisted_dirs.is_empty() {
+            allowlisted_dirs = allowlist_json
+                .get("placeholder_dirs")
+                .and_then(|v| v.as_array())
+                .map(|arr| {
+                    arr.iter()
+                        .filter_map(|item| item.as_str())
+                        .map(PathBuf::from)
+                        .collect::<BTreeSet<_>>()
+                })
+                .unwrap_or_default();
+        }
         for dir in &actual_gitkeep_dirs {
             if !allowlisted_dirs.contains(dir) {
                 violations.push(violation(
@@ -964,6 +1042,14 @@ pub(super) fn check_ops_required_files_contracts(
                 "placeholder-dirs-report.json does not match current ops .gitkeep directory set"
                     .to_string(),
                 "regenerate placeholder-dirs-report.json with deterministic sorted placeholder directories",
+                Some(placeholder_report_rel),
+            ));
+        }
+        if report_json.get("placeholder_debt_score").is_none() {
+            violations.push(violation(
+                "OPS_PLACEHOLDER_DIR_REPORT_DEBT_SCORE_MISSING",
+                "placeholder-dirs-report.json must include placeholder_debt_score".to_string(),
+                "add placeholder_debt_score metrics to the placeholder directory report",
                 Some(placeholder_report_rel),
             ));
         }
