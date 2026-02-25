@@ -973,6 +973,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let docs_rows = generated["documents"].as_array().cloned().unwrap_or_default();
                     let mut search_index = Vec::new();
                     let mut graph = Vec::new();
+                    let mut crate_slice = BTreeMap::<String, Vec<serde_json::Value>>::new();
                     for doc in &docs_rows {
                         let path = doc["path"].as_str().unwrap_or_default().to_string();
                         let tags = doc["tags"].as_array().cloned().unwrap_or_default();
@@ -986,7 +987,20 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "crate": doc["crate"],
                             "doc_type": doc["doc_type"]
                         }));
+                        if let Some(crate_name) = doc["crate"].as_str() {
+                            crate_slice
+                                .entry(crate_name.to_string())
+                                .or_default()
+                                .push(doc.clone());
+                        }
                     }
+                    let crate_coverage = crate_slice
+                        .iter()
+                        .map(|(name, rows)| serde_json::json!({
+                            "crate": name,
+                            "doc_count": rows.len()
+                        }))
+                        .collect::<Vec<_>>();
                     if common.allow_write {
                         let generated_dir = ctx.repo_root.join("docs/_generated");
                         fs::create_dir_all(&generated_dir)
@@ -1009,6 +1023,24 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("graph encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write dependency graph failed: {e}"))?;
+                        fs::write(
+                            generated_dir.join("crate-docs-slice.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "crates": crate_slice
+                            }))
+                            .map_err(|e| format!("crate docs slice encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write crate docs slice failed: {e}"))?;
+                        fs::write(
+                            generated_dir.join("crate-doc-coverage.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "rows": crate_coverage
+                            }))
+                            .map_err(|e| format!("crate coverage encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write crate coverage failed: {e}"))?;
                         let mut inventory_md =
                             String::from("# Docs Inventory\n\nLicense: Apache-2.0\n\n");
                         inventory_md.push_str("| Path | Type | Owner | Stability |\n|---|---|---|---|\n");
@@ -1040,7 +1072,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "registry": "docs/registry.json",
                             "inventory_page": "docs/_generated/docs-inventory.md",
                             "search_index": "docs/_generated/search-index.json",
-                            "dependency_graph": "docs/_generated/docs-dependency-graph.json"
+                            "dependency_graph": "docs/_generated/docs-dependency-graph.json",
+                            "crate_docs_slice": "docs/_generated/crate-docs-slice.json",
+                            "crate_doc_coverage": "docs/_generated/crate-doc-coverage.json"
                         },
                         "changes_summary": {
                             "message": "docs registry updated",

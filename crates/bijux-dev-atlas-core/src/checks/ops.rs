@@ -129,6 +129,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         }
         "checks_docs_file_naming_conventions" => Some(check_docs_file_naming_conventions),
         "checks_docs_command_surface_docs_exist" => Some(check_docs_command_surface_docs_exist),
+        "checks_crate_docs_governance_contract" => Some(check_crate_docs_governance_contract),
         "checks_make_docs_wrappers_delegate_dev_atlas" => {
             Some(check_make_docs_wrappers_delegate_dev_atlas)
         }
@@ -225,6 +226,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_readme_index_contract_presence",
         "checks_docs_file_naming_conventions",
         "checks_docs_command_surface_docs_exist",
+        "checks_crate_docs_governance_contract",
         "checks_make_docs_wrappers_delegate_dev_atlas",
         "checks_configs_required_surface_paths",
         "checks_configs_schema_paths_present",

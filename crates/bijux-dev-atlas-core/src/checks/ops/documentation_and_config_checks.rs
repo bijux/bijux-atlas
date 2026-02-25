@@ -212,6 +212,178 @@ pub(super) fn check_docs_command_surface_docs_exist(
     Ok(violations)
 }
 
+pub(super) fn check_crate_docs_governance_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let policy_path = Path::new("docs/metadata/crate-doc-governance.json");
+    let policy_text = fs::read_to_string(ctx.repo_root.join(policy_path))
+        .map_err(|err| CheckError::Failed(format!("failed to read {}: {err}", policy_path.display())))?;
+    let policy: serde_json::Value = serde_json::from_str(&policy_text)
+        .map_err(|err| CheckError::Failed(format!("failed to parse {}: {err}", policy_path.display())))?;
+    let max_docs = policy
+        .get("max_docs_per_crate")
+        .and_then(|v| v.as_u64())
+        .unwrap_or(10) as usize;
+    let allowed_doc_types = policy
+        .get("allowed_doc_types")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    let public_crates = policy
+        .get("public_crates")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+
+    let mut violations = Vec::new();
+    let crates_root = ctx.repo_root.join("crates");
+    for crate_dir in read_dir_entries(&crates_root) {
+        if !crate_dir.is_dir() {
+            continue;
+        }
+        let crate_name = crate_dir
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default()
+            .to_string();
+        if crate_name.is_empty() {
+            continue;
+        }
+
+        for required in ["README.md", "ARCHITECTURE.md", "CONTRACT.md", "TESTING.md"] {
+            let rel = Path::new("crates").join(&crate_name).join(required);
+            if !ctx.repo_root.join(&rel).exists() {
+                violations.push(violation(
+                    "CRATE_DOC_REQUIRED_FILE_MISSING",
+                    format!("crate `{crate_name}` missing required doc `{required}`"),
+                    "add required crate-level governance docs",
+                    Some(&rel),
+                ));
+            }
+        }
+
+        if public_crates.contains(&crate_name) {
+            let examples_rel = Path::new("crates").join(&crate_name).join("EXAMPLES.md");
+            if !ctx.repo_root.join(&examples_rel).exists() {
+                violations.push(violation(
+                    "CRATE_DOC_PUBLIC_EXAMPLES_MISSING",
+                    format!("public crate `{crate_name}` must provide EXAMPLES.md"),
+                    "add EXAMPLES.md with runnable snippets",
+                    Some(&examples_rel),
+                ));
+            }
+        }
+
+        let docs_dir = crate_dir.join("docs");
+        if !docs_dir.exists() {
+            continue;
+        }
+        let docs = walk_files(&docs_dir)
+            .into_iter()
+            .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+            .collect::<Vec<_>>();
+        if docs.len() > max_docs {
+            let rel = docs_dir.strip_prefix(ctx.repo_root).unwrap_or(&docs_dir);
+            violations.push(violation(
+                "CRATE_DOC_BUDGET_EXCEEDED",
+                format!(
+                    "crate `{crate_name}` has {} docs in docs/ (max {})",
+                    docs.len(),
+                    max_docs
+                ),
+                "prune duplicate docs or move details into canonical central docs",
+                Some(rel),
+            ));
+        }
+
+        for path in docs {
+            let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
+            let stem = path.file_stem().and_then(|v| v.to_str()).unwrap_or_default();
+            let inferred = if stem.eq_ignore_ascii_case("index") {
+                "index"
+            } else if stem.to_ascii_lowercase().contains("architecture") {
+                "architecture"
+            } else if stem.to_ascii_lowercase().contains("contract")
+                || stem.to_ascii_lowercase().contains("public-api")
+            {
+                "contract"
+            } else if stem.to_ascii_lowercase().contains("testing") {
+                "testing"
+            } else if stem.to_ascii_lowercase().contains("perf")
+                || stem.to_ascii_lowercase().contains("bench")
+            {
+                "performance"
+            } else if stem.to_ascii_lowercase().contains("error")
+                || stem.to_ascii_lowercase().contains("failure")
+            {
+                "error-taxonomy"
+            } else if stem.to_ascii_lowercase().contains("effect")
+                || stem.to_ascii_lowercase().contains("boundary")
+            {
+                "boundary"
+            } else if stem.to_ascii_lowercase().contains("version") {
+                "versioning"
+            } else if stem.to_ascii_lowercase().contains("example") {
+                "examples"
+            } else {
+                "concept"
+            };
+            if !allowed_doc_types.contains(inferred) {
+                violations.push(violation(
+                    "CRATE_DOC_TYPE_FORBIDDEN",
+                    format!(
+                        "crate `{crate_name}` doc `{}` inferred type `{inferred}` is not allowed",
+                        rel.display()
+                    ),
+                    "rename or consolidate docs to allowed governance types",
+                    Some(rel),
+                ));
+            }
+            let Ok(text) = fs::read_to_string(&path) else {
+                continue;
+            };
+            let header = text.lines().take(40).collect::<Vec<_>>().join("\n");
+            if !header.contains("- Owner:") {
+                violations.push(violation(
+                    "CRATE_DOC_OWNER_METADATA_MISSING",
+                    format!("crate doc missing `- Owner:` metadata: `{}`", rel.display()),
+                    "add owner metadata in doc header",
+                    Some(rel),
+                ));
+            }
+        }
+
+        let index_rel = Path::new("crates").join(&crate_name).join("docs/INDEX.md");
+        if ctx.repo_root.join(&index_rel).exists() {
+            let text = fs::read_to_string(ctx.repo_root.join(&index_rel)).unwrap_or_default();
+            if !text.contains("README.md") && !text.contains("../README.md") {
+                violations.push(violation(
+                    "CRATE_DOC_INDEX_README_LINK_MISSING",
+                    format!("crate `{crate_name}` docs/INDEX.md should link to crate README"),
+                    "add crate README link to docs index",
+                    Some(&index_rel),
+                ));
+            }
+            if !text.contains("docs/index.md") && !text.contains("docs/INDEX.md") {
+                violations.push(violation(
+                    "CRATE_DOC_CENTRAL_LINK_MISSING",
+                    format!("crate `{crate_name}` docs/INDEX.md should link to central docs index"),
+                    "add link to docs/index.md for cross-navigation",
+                    Some(&index_rel),
+                ));
+            }
+        }
+    }
+
+    Ok(violations)
+}
+
 pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
