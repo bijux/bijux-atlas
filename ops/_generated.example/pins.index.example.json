@@ -14,7 +14,7 @@
       "bytes": 0
     },
     {
-      "path": "ops/stack/version-manifest.json",
+      "path": "ops/stack/generated/version-manifest.json",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "bytes": 0
     }

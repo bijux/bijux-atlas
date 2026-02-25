@@ -45,7 +45,7 @@ Runbook index: `ops/INDEX.md`.
 These files are treated as frozen ops inventory inputs and are validated by
 `bijux dev atlas ops doctor` / `ops validate`:
 
-- `ops/stack/version-manifest.json`
+- `ops/stack/generated/version-manifest.json`
 - `ops/inventory/pins.yaml`
 - `ops/inventory/toolchain.json`
 - `ops/stack/profiles.json`

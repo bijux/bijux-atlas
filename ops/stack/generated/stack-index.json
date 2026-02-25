@@ -2,9 +2,10 @@
   "schema_version": 1,
   "source": "ops/stack",
   "artifacts": [
-    "ops/stack/pins.toml",
+    "ops/inventory/pins.yaml",
     "ops/stack/profiles.json",
     "ops/stack/stack.toml",
-    "ops/stack/version-manifest.json"
+    "ops/stack/generated/version-manifest.json",
+    "ops/stack/generated/versions.json"
   ]
 }

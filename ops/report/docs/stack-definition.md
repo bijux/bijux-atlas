@@ -7,7 +7,7 @@
 
 - Image pins: `ops/inventory/pins.yaml`
 - Toolchain images: `ops/inventory/toolchain.json`
-- Stack image mirror: `ops/stack/version-manifest.json`
+- Stack image mirror: `ops/stack/generated/version-manifest.json`
 - Profile inventory: `ops/stack/profiles.json`
 
 ## Validation

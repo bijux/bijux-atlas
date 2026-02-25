@@ -16,7 +16,7 @@ Stack lifecycle is controlled only through `bijux dev atlas ops stack ...`.
 - `ops/stack/CONTRACT.md`
 - `ops/inventory/pins.yaml` (canonical image pin source)
 - `ops/inventory/toolchain.json`
-- `ops/stack/version-manifest.json` (derived mirror)
+- `ops/stack/generated/version-manifest.json` (derived mirror)
 
 ## Artifacts
 - `ops/_artifacts/<run_id>/stack/`

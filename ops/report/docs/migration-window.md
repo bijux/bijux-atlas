@@ -10,8 +10,8 @@ Legacy paths scheduled for removal after cutoff:
 - `ops/schema/**`
 - `ops/inventory/meta/{ownership,surface,contracts,layer-contract}.json`
 - `ops/inventory/gc-pins.json`
-- `ops/stack/version-manifest.json`
-- `ops/stack/versions.json`
+- `ops/stack/generated/version-manifest.json`
+- `ops/stack/generated/versions.json`
 - `ops/_generated.example/`
 
 ## Deletion Plan

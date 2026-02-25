@@ -5,5 +5,7 @@ Generated stack metadata artifacts for deterministic validation and documentatio
 - `stack-index.json`: canonical list of stack source artifacts.
 - `dependency-graph.json`: profile to component dependency graph.
 - `artifact-metadata.json`: stack artifact metadata contract.
+- `version-manifest.json`: generated stack image mirror derived from inventory pins.
+- `versions.json`: generated stack version summary.
 
 Do not edit manually.

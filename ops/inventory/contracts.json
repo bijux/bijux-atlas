@@ -30,7 +30,7 @@
       "version": 1
     },
     {
-      "path": "ops/stack/pins.toml",
+      "path": "ops/inventory/pins.yaml",
       "version": 1
     },
     {
