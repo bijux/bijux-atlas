@@ -34,6 +34,31 @@
       "detail": "ops_markdown_lines<=2800",
       "name": "ops-markdown-line-budget",
       "status": "pass"
+    },
+    {
+      "detail": "ops/_generated contains only .gitkeep + OWNER/README/REQUIRED_FILES",
+      "name": "ops-generated-runtime-minimality",
+      "status": "pass"
+    },
+    {
+      "detail": "ALLOWLIST + MIRROR_POLICY enforcement active via checks_ops_evidence_bundle_discipline",
+      "name": "evidence-allowlist-enforcement",
+      "status": "pass"
+    },
+    {
+      "detail": "contract coverage threshold >=80% from ops/_generated.example/contract-coverage-report.json",
+      "name": "contract-coverage-threshold",
+      "status": "pass"
+    },
+    {
+      "detail": "orphan-files-report status=fail; orphan files are not zero yet",
+      "name": "orphan-files-zero",
+      "status": "fail"
+    },
+    {
+      "detail": "schema-coverage-report status=fail; 100% coverage pending explicit exception cleanup",
+      "name": "schema-coverage-100",
+      "status": "fail"
     }
   ],
   "generated_at": "2026-02-22T17:49:51.443033+00:00",
@@ -42,8 +67,8 @@
   "score": 0,
   "status": "fail",
   "summary": {
-    "failed": 5,
-    "passed": 5,
-    "total": 10
+    "failed": 7,
+    "passed": 8,
+    "total": 15
   }
 }
