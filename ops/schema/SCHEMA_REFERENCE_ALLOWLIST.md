@@ -15,7 +15,14 @@ Schemas that are intentionally not referenced directly by current runtime artifa
 - `ops/schema/load/k6-suite.schema.json`: reserved for suite-level publication payloads.
 - `ops/schema/load/perf-baseline.schema.json`: reserved for baseline exchange payloads.
 - `ops/schema/load/pinned-queries-lock.schema.json`: reserved for pinned query lock publication.
+- `ops/schema/configs/public-surface.schema.json`: inventory surface schema retained under schema locality contract.
+- `ops/schema/inventory/contracts-map.schema.json`: authored inventory map schema validated by dedicated inventory contract checks.
 - `ops/schema/observe/budgets.schema.json`: reserved for observability budget policies.
+- `ops/schema/observe/drill-manifest.schema.json`: compatibility schema retained while inventory drills use inventory-local schema.
+- `ops/schema/meta/artifact-allowlist.schema.json`: retained for compatibility wrappers and report policy references.
+- `ops/schema/meta/namespaces.schema.json`: retained for compatibility wrappers and governance policy history.
+- `ops/schema/meta/ownership.schema.json`: retained for compatibility wrappers and governance policy history.
+- `ops/schema/meta/pins.schema.json`: retained for compatibility wrappers and governance policy history.
 - `ops/schema/report/lane.schema.json`: reserved for lane-scoped report fragments.
 - `ops/schema/report/stack-contract.schema.json`: reserved for stack contract report fragments.
 - `ops/schema/report/stack-health-report.schema.json`: reserved for stack health snapshots.

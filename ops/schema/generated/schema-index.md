@@ -41,8 +41,8 @@
 | `ops/schema/inventory/pins.schema.json` |
 | `ops/schema/inventory/registry.schema.json` |
 | `ops/schema/inventory/surfaces.schema.json` |
-| `ops/schema/inventory/tools.schema.json` |
 | `ops/schema/inventory/toolchain.schema.json` |
+| `ops/schema/inventory/tools.schema.json` |
 | `ops/schema/k8s/conformance-report.schema.json` |
 | `ops/schema/k8s/install-matrix.schema.json` |
 | `ops/schema/k8s/inventory-index.schema.json` |
