@@ -595,6 +595,11 @@ pub(crate) fn crate_doc_contract_status(
                 "CRATE_DOC_OWNER_METADATA_WARN: `{crate_name}` owner metadata present in {docs_with_owner}/{total_docs} docs"
             ));
         }
+        if docs_with_owner == 0 && total_docs > 0 {
+            errors.push(format!(
+                "CRATE_DOC_OWNER_ESCALATION_ERROR: `{crate_name}` has no owner metadata in crate docs"
+            ));
+        }
         if docs_with_last_reviewed == 0 {
             warnings.push(format!(
                 "CRATE_DOC_FRESHNESS_WARN: `{crate_name}` has no `Last Reviewed:` metadata in crate docs"

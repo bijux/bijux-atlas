@@ -79,6 +79,8 @@ pub(crate) fn docs_lint_payload(
     let policy = load_quality_policy(&ctx.repo_root);
     let mut errors = Vec::<String>::new();
     let adr_filename_re = Regex::new(r"^ADR-\d{4}-[a-z0-9-]+\.md$").map_err(|e| e.to_string())?;
+    let schema_ref_re =
+        Regex::new(r"`([^`\n]*schema[^`\n]*\.(json|ya?ml))`").map_err(|e| e.to_string())?;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
             .strip_prefix(&ctx.docs_root)
@@ -155,6 +157,24 @@ pub(crate) fn docs_lint_payload(
                     ));
                 }
             }
+            for cap in schema_ref_re.captures_iter(line) {
+                let schema_ref = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
+                if !schema_ref.is_empty() && !ctx.repo_root.join(schema_ref).exists() {
+                    errors.push(format!(
+                        "DOCS_SCHEMA_REF_ERROR: `{rel}` line {} references missing schema `{schema_ref}`",
+                        idx + 1
+                    ));
+                }
+            }
+        }
+        let fence_count = text
+            .lines()
+            .filter(|line| line.trim_start().starts_with("```"))
+            .count();
+        if fence_count % 2 != 0 {
+            errors.push(format!(
+                "DOCS_EXAMPLE_FENCE_ERROR: `{rel}` has unbalanced fenced code blocks"
+            ));
         }
         let mut table_width: Option<usize> = None;
         for (idx, line) in text.lines().enumerate() {
@@ -554,6 +574,31 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("crate docs slice encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write crate docs slice failed: {e}"))?;
+                        let docs_with_owner = docs_rows
+                            .iter()
+                            .filter(|row| {
+                                row["owner"]
+                                    .as_str()
+                                    .is_some_and(|owner| !owner.is_empty() && owner != "unknown")
+                            })
+                            .count();
+                        let docs_with_stability = docs_rows
+                            .iter()
+                            .filter(|row| row["stability"].as_str().is_some_and(|v| !v.is_empty()))
+                            .count();
+                        fs::write(
+                            generated_dir.join("docs-test-coverage.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "documents_total": docs_rows.len(),
+                                "owner_metadata_count": docs_with_owner,
+                                "stability_metadata_count": docs_with_stability,
+                                "owner_metadata_ratio": if docs_rows.is_empty() { 1.0 } else { docs_with_owner as f64 / docs_rows.len() as f64 },
+                                "stability_metadata_ratio": if docs_rows.is_empty() { 1.0 } else { docs_with_stability as f64 / docs_rows.len() as f64 }
+                            }))
+                            .map_err(|e| format!("docs test coverage encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write docs test coverage failed: {e}"))?;
                         fs::write(
                             generated_dir.join("crate-doc-coverage.json"),
                             serde_json::to_string_pretty(&serde_json::json!({
@@ -757,6 +802,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "breadcrumbs": "docs/_generated/breadcrumbs.json",
                             "dependency_graph": "docs/_generated/docs-dependency-graph.json",
                             "crate_docs_slice": "docs/_generated/crate-docs-slice.json",
+                            "docs_test_coverage": "docs/_generated/docs-test-coverage.json",
                             "crate_doc_coverage": "docs/_generated/crate-doc-coverage.json",
                             "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
                             "crate_doc_api_table": "docs/_generated/crate-doc-api-table.md",
