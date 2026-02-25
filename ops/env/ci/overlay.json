@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "environment": "ci",
+  "values": {
+    "allow_write": false,
+    "allow_subprocess": false,
+    "network_mode": "restricted"
+  }
+}

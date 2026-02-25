@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "environment": "prod",
+  "values": {
+    "allow_write": false,
+    "allow_subprocess": true,
+    "network_mode": "restricted"
+  }
+}

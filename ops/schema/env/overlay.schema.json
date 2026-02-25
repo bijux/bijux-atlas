@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["schema_version", "environment", "values"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "environment": {
+      "type": "string",
+      "enum": ["base", "dev", "ci", "prod"]
+    },
+    "values": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

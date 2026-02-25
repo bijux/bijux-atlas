@@ -28,6 +28,10 @@
     {
       "schema_path": "ops/schema/load/perf-baseline.schema.json",
       "required_fields": ["schema_version", "name", "metadata", "rows"]
+    },
+    {
+      "schema_path": "ops/schema/env/overlay.schema.json",
+      "required_fields": ["schema_version", "environment", "values"]
     }
   ]
 }

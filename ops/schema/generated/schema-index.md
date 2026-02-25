@@ -14,6 +14,7 @@
 | `ops/schema/e2e-scenarios-unified.schema.json` |
 | `ops/schema/e2e-scenarios.schema.json` |
 | `ops/schema/e2e-suites.schema.json` |
+| `ops/schema/env/overlay.schema.json` |
 | `ops/schema/inventory/pins.schema.json` |
 | `ops/schema/inventory/toolchain.schema.json` |
 | `ops/schema/k8s/conformance-report.schema.json` |

@@ -12,6 +12,7 @@
 - [Pin Lifecycle](pin-lifecycle.md)
 - [Pin Promotion Workflow](pin-promotion-workflow.md)
 - [Schema Compatibility Policy](schema-compatibility-policy.md)
+- [Environment Overlays](environment-overlays.md)
 - [Render Pipeline](render-pipeline.md)
 - [Artifacts Contract](artifacts-contract.md)
 - [Ops Evidence Explanation](ops-evidence-explanation.md)
