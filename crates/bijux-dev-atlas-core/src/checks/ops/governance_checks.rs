@@ -1433,7 +1433,7 @@ pub(super) fn check_ops_docs_governance(
                 }
             }
 
-            for required_doc in ["README.md", "CONTRACT.md"] {
+            for required_doc in ["README.md", "CONTRACT.md", "REQUIRED_FILES.md", "OWNER.md"] {
                 let doc_rel = Path::new(domain).join(required_doc);
                 if ctx.adapters.fs.exists(ctx.repo_root, &doc_rel)
                     && !index_text.contains(required_doc)
@@ -1499,6 +1499,20 @@ pub(super) fn check_ops_docs_governance(
             ));
         }
     }
+    for target in markdown_link_targets(&reference_index_text) {
+        let rel = Path::new("ops/report/docs").join(&target);
+        if !ctx.adapters.fs.exists(ctx.repo_root, &rel) {
+            violations.push(violation(
+                "OPS_REPORT_DOC_REFERENCE_BROKEN_LINK",
+                format!(
+                    "REFERENCE_INDEX.md links missing report doc `{}`",
+                    rel.display()
+                ),
+                "fix broken report docs links in REFERENCE_INDEX.md",
+                Some(reference_index_rel),
+            ));
+        }
+    }
 
     let control_plane_rel = Path::new("ops/CONTROL_PLANE.md");
     let control_plane_snapshot_rel = Path::new("ops/_generated.example/control-plane.snapshot.md");
@@ -1540,6 +1554,39 @@ pub(super) fn check_ops_docs_governance(
             "generate and commit docs drift report artifact",
             Some(docs_drift_rel),
         ));
+    } else {
+        let docs_drift_text = fs::read_to_string(ctx.repo_root.join(docs_drift_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let docs_drift_json: serde_json::Value = serde_json::from_str(&docs_drift_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if docs_drift_json
+            .get("status")
+            .and_then(|v| v.as_str())
+            != Some("pass")
+        {
+            violations.push(violation(
+                "OPS_DOCS_DRIFT_REPORT_BLOCKING",
+                "docs-drift-report.json status is not `pass`".to_string(),
+                "resolve docs drift and regenerate docs-drift-report.json",
+                Some(docs_drift_rel),
+            ));
+        }
+        if let Some(checks) = docs_drift_json.get("checks").and_then(|v| v.as_array()) {
+            for check in checks {
+                if check.get("status").and_then(|v| v.as_str()) != Some("pass") {
+                    let id = check
+                        .get("id")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("unknown");
+                    violations.push(violation(
+                        "OPS_DOCS_DRIFT_CHECK_BLOCKING",
+                        format!("docs-drift-report check `{id}` is not pass"),
+                        "fix the failing docs drift check and regenerate docs-drift-report.json",
+                        Some(docs_drift_rel),
+                    ));
+                }
+            }
+        }
     }
 
     let forbidden_doc_refs = [
@@ -1568,17 +1615,150 @@ pub(super) fn check_ops_docs_governance(
                 ));
             }
         }
-        if text.contains("TODO") {
+        if text.contains("TODO") || text.contains("TBD") {
             violations.push(violation(
                 "OPS_DOC_TODO_MARKER_FORBIDDEN",
-                format!("doc `{}` contains TODO marker", rel.display()),
-                "remove TODO markers from ops docs for release-ready contracts",
+                format!("doc `{}` contains TODO/TBD marker", rel.display()),
+                "remove TODO/TBD markers from ops docs for release-ready contracts",
                 Some(rel),
             ));
         }
     }
 
+    let surfaces_text = fs::read_to_string(ctx.repo_root.join("ops/inventory/surfaces.json"))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let surfaces_json: serde_json::Value = serde_json::from_str(&surfaces_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowed_commands = surfaces_json
+        .get("bijux-dev-atlas_commands")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.as_str())
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    for doc in walk_files(&ctx.repo_root.join("ops/report/docs")) {
+        let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
+        if rel.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        let text = fs::read_to_string(&doc).map_err(|err| CheckError::Failed(err.to_string()))?;
+        for command in extract_ops_command_refs(&text) {
+            if !allowed_commands.contains(&command) {
+                violations.push(violation(
+                    "OPS_DOC_COMMAND_SURFACE_UNKNOWN",
+                    format!(
+                        "doc `{}` references command not in surfaces.json: `{command}`",
+                        rel.display()
+                    ),
+                    "replace stale command references with canonical surfaces.json commands",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+
+    let ops_index_rel = Path::new("ops/INDEX.md");
+    let ops_index_text = fs::read_to_string(ctx.repo_root.join(ops_index_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for root_doc in [
+        "CONTRACT.md",
+        "CONTROL_PLANE.md",
+        "DRIFT.md",
+        "ERRORS.md",
+        "NAMING.md",
+        "README.md",
+        "SSOT.md",
+    ] {
+        let rel = Path::new("ops").join(root_doc);
+        if ctx.adapters.fs.exists(ctx.repo_root, &rel) && !ops_index_text.contains(root_doc) {
+            violations.push(violation(
+                "OPS_ROOT_DOC_INDEX_LINK_MISSING",
+                format!(
+                    "ops root document `{}` must be linked from `ops/INDEX.md`",
+                    rel.display()
+                ),
+                "link all root ops docs from ops/INDEX.md",
+                Some(ops_index_rel),
+            ));
+        }
+    }
+    let index_line_count = ops_index_text.lines().count();
+    if index_line_count > 80 {
+        violations.push(violation(
+            "OPS_ROOT_INDEX_SIZE_BUDGET_EXCEEDED",
+            format!(
+                "ops/INDEX.md exceeds max line budget (80): {} lines",
+                index_line_count
+            ),
+            "keep ops/INDEX.md compact and move details to linked docs",
+            Some(ops_index_rel),
+        ));
+    }
+
     Ok(violations)
+}
+
+fn markdown_link_targets(content: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    for line in content.lines() {
+        let mut cursor = line;
+        while let Some(start) = cursor.find('(') {
+            let after_start = &cursor[start + 1..];
+            let Some(end) = after_start.find(')') else {
+                break;
+            };
+            let target = &after_start[..end];
+            if target.ends_with(".md") && !target.contains("://") {
+                out.push(target.to_string());
+            }
+            cursor = &after_start[end + 1..];
+        }
+    }
+    out
+}
+
+fn extract_ops_command_refs(content: &str) -> BTreeSet<String> {
+    let mut commands = BTreeSet::new();
+    for line in content.lines() {
+        let mut cursor = line;
+        while let Some(pos) = cursor.find("bijux dev atlas ops ") {
+            let after = &cursor[pos + "bijux dev atlas ops ".len()..];
+            let mut tokens = Vec::new();
+            for token in after.split_whitespace() {
+                if token.starts_with("--")
+                    || token.starts_with('`')
+                    || token.starts_with('|')
+                    || token.starts_with('(')
+                {
+                    break;
+                }
+                let clean = token
+                    .trim_matches(|ch: char| ",.;:()[]`".contains(ch))
+                    .to_string();
+                if clean.is_empty() {
+                    break;
+                }
+                if !clean
+                    .chars()
+                    .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
+                {
+                    break;
+                }
+                tokens.push(clean);
+                if tokens.len() >= 3 {
+                    break;
+                }
+            }
+            if !tokens.is_empty() {
+                commands.insert(format!("bijux dev atlas ops {}", tokens.join(" ")));
+            }
+            cursor = after;
+        }
+    }
+    commands
 }
 
 pub(super) fn check_ops_evidence_bundle_discipline(
