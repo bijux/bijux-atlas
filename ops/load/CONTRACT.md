@@ -16,6 +16,16 @@
 | `ops/load/generated/load-summary.json` | Generated summary |
 | `ops/load/generated/load-drift-report.json` | Generated drift report |
 
+## Schema References
+
+| Artifact | Schema |
+| --- | --- |
+| `ops/load/suites/suites.json` | `ops/schema/load/suite-manifest.schema.json` |
+| `ops/load/thresholds/*.thresholds.json` | `ops/schema/load/thresholds.schema.json` |
+| `ops/load/contracts/deterministic-seed-policy.json` | `ops/schema/load/deterministic-seed-policy.schema.json` |
+| `ops/load/generated/load-summary.json` | `ops/schema/load/load-summary.schema.json` |
+| `ops/load/generated/load-drift-report.json` | `ops/schema/load/load-drift-report.schema.json` |
+
 ## Invariants
 
 - Canonical suite manifest is `ops/load/suites/suites.json`.

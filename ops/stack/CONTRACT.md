@@ -18,6 +18,16 @@ Canonical parent contract: `ops/CONTRACT.md`.
 | `ops/stack/generated/artifact-metadata.json` | Generated artifact metadata |
 | `ops/stack/generated/versions.json` | Generated stack version summary |
 
+## Schema References
+
+| Artifact | Schema |
+| --- | --- |
+| `ops/stack/profiles.json` | `ops/schema/stack/profile-manifest.schema.json` |
+| `ops/stack/generated/version-manifest.json` | `ops/schema/stack/version-manifest.schema.json` |
+| `ops/stack/generated/dependency-graph.json` | `ops/schema/stack/dependency-graph.schema.json` |
+| `ops/stack/generated/artifact-metadata.json` | `ops/schema/stack/artifact-metadata.schema.json` |
+| `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` |
+
 ## Invariants
 
 - Canonical image pin source is `ops/inventory/pins.yaml`.
