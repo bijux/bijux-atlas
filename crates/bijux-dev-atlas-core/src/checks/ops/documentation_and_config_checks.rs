@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
+use std::collections::BTreeMap;
 
 pub(super) fn parse_mkdocs_yaml(ctx: &CheckContext<'_>) -> Result<YamlValue, CheckError> {
     let rel = Path::new("mkdocs.yml");
@@ -51,6 +52,25 @@ fn docs_markdown_paths(ctx: &CheckContext<'_>) -> Vec<PathBuf> {
         .into_iter()
         .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
         .collect()
+}
+
+fn markdown_link_targets(content: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    for line in content.lines() {
+        let mut cursor = line;
+        while let Some(start) = cursor.find('(') {
+            let after_start = &cursor[start + 1..];
+            let Some(end) = after_start.find(')') else {
+                break;
+            };
+            let target = &after_start[..end];
+            if target.ends_with(".md") && !target.contains("://") {
+                out.push(target.to_string());
+            }
+            cursor = &after_start[end + 1..];
+        }
+    }
+    out
 }
 
 pub(super) fn check_docs_mkdocs_yaml_parseable(
@@ -128,6 +148,88 @@ pub(super) fn check_docs_no_duplicate_nav_titles(
                 format!("mkdocs nav title `{title}` is duplicated {count} times"),
                 "rename nav titles to be globally distinct",
                 Some(Path::new("mkdocs.yml")),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_markdown_link_targets_exist(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
+        let text =
+            fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
+        for target in markdown_link_targets(&text) {
+            let clean = target
+                .split('#')
+                .next()
+                .unwrap_or_default()
+                .trim()
+                .to_string();
+            if clean.is_empty() {
+                continue;
+            }
+            let candidate = path
+                .parent()
+                .unwrap_or_else(|| Path::new("docs"))
+                .join(&clean)
+                .components()
+                .as_path()
+                .to_path_buf();
+            let target_path = if candidate.exists() {
+                candidate
+            } else {
+                ctx.repo_root.join("docs").join(&clean)
+            };
+            if !target_path.exists() {
+                violations.push(violation(
+                    "DOCS_MARKDOWN_LINK_TARGET_MISSING",
+                    format!(
+                        "docs markdown `{}` links missing target `{}`",
+                        rel.display(),
+                        clean
+                    ),
+                    "fix broken markdown link targets in docs markdown content",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_markdown_directory_budgets(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let budgets = BTreeMap::from([
+        ("docs/operations".to_string(), 200usize),
+        ("docs/reference".to_string(), 200usize),
+        ("docs/development".to_string(), 160usize),
+        ("docs/contracts".to_string(), 120usize),
+        ("docs/ops".to_string(), 120usize),
+    ]);
+    let mut counts = BTreeMap::<String, usize>::new();
+    for path in docs_markdown_paths(ctx) {
+        let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
+        let rel_str = rel.display().to_string();
+        for (prefix, _) in &budgets {
+            if rel_str == *prefix || rel_str.starts_with(&(prefix.clone() + "/")) {
+                *counts.entry(prefix.clone()).or_default() += 1;
+            }
+        }
+    }
+    let mut violations = Vec::new();
+    for (prefix, max) in budgets {
+        let count = *counts.get(&prefix).unwrap_or(&0usize);
+        if count > max {
+            violations.push(violation(
+                "DOCS_MARKDOWN_DIRECTORY_BUDGET_EXCEEDED",
+                format!("docs markdown budget exceeded for `{prefix}`: {count} > {max}"),
+                "consolidate duplicate docs and keep one canonical page per concept",
+                Some(Path::new(&prefix)),
             ));
         }
     }

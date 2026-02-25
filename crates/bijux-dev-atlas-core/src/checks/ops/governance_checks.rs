@@ -2093,7 +2093,7 @@ pub(super) fn check_ops_docs_governance(
                 .collect::<BTreeSet<_>>()
         })
         .unwrap_or_default();
-    for doc in walk_files(&ctx.repo_root.join("docs/ops")) {
+    for doc in walk_files(&ctx.repo_root.join("docs")) {
         let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
         if rel.extension().and_then(|v| v.to_str()) != Some("md") {
             continue;
