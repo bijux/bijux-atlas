@@ -21,6 +21,11 @@ const OPS_CONTRACTS_PATH: &str = "ops/inventory/contracts.json";
 const OPS_DATASETS_MANIFEST_PATH: &str = "ops/datasets/manifest.json";
 const OPS_K8S_INSTALL_MATRIX_PATH: &str = "ops/k8s/install-matrix.json";
 const OPS_K8S_CHART_PATH: &str = "ops/k8s/charts/bijux-atlas/Chart.yaml";
+const OPS_OBSERVE_ALERT_CATALOG_PATH: &str = "ops/observe/alert-catalog.json";
+const OPS_OBSERVE_SLO_DEFINITIONS_PATH: &str = "ops/observe/slo-definitions.json";
+const OPS_OBSERVE_TELEMETRY_DRILLS_PATH: &str = "ops/observe/telemetry-drills.json";
+const OPS_OBSERVE_READINESS_PATH: &str = "ops/observe/readiness.json";
+const OPS_OBSERVE_TELEMETRY_INDEX_PATH: &str = "ops/observe/generated/telemetry-index.json";
 
 const EXPECTED_TOOLCHAIN_SCHEMA: u64 = 1;
 const EXPECTED_SURFACES_SCHEMA: u64 = 2;
@@ -171,6 +176,42 @@ struct K8sInstallProfile {
     pub suite: String,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct ObserveCatalog {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub alerts: Vec<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ObserveSloDefinitions {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub slos: Vec<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ObserveDrillCatalog {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub drills: Vec<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ObserveReadiness {
+    pub schema_version: u64,
+    pub status: String,
+    #[serde(default)]
+    pub requirements: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ObserveTelemetryIndex {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub artifacts: Vec<String>,
+}
+
 fn load_json<T: for<'de> Deserialize<'de>>(repo_root: &Path, rel: &str) -> Result<T, String> {
     let path = repo_root.join(rel);
     let text = fs::read_to_string(&path)
@@ -247,6 +288,11 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_CONTRACTS_PATH,
         OPS_K8S_INSTALL_MATRIX_PATH,
         OPS_K8S_CHART_PATH,
+        OPS_OBSERVE_ALERT_CATALOG_PATH,
+        OPS_OBSERVE_SLO_DEFINITIONS_PATH,
+        OPS_OBSERVE_TELEMETRY_DRILLS_PATH,
+        OPS_OBSERVE_READINESS_PATH,
+        OPS_OBSERVE_TELEMETRY_INDEX_PATH,
     ] {
         let path = repo_root.join(rel);
         if !path.exists() {
@@ -263,6 +309,52 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     };
     let k8s_install_matrix = match load_json::<K8sInstallMatrix>(repo_root, OPS_K8S_INSTALL_MATRIX_PATH)
     {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let observe_alerts =
+        match load_json::<ObserveCatalog>(repo_root, OPS_OBSERVE_ALERT_CATALOG_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let observe_slos = match load_json::<ObserveSloDefinitions>(
+        repo_root,
+        OPS_OBSERVE_SLO_DEFINITIONS_PATH,
+    ) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let observe_drills = match load_json::<ObserveDrillCatalog>(
+        repo_root,
+        OPS_OBSERVE_TELEMETRY_DRILLS_PATH,
+    ) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let observe_readiness =
+        match load_json::<ObserveReadiness>(repo_root, OPS_OBSERVE_READINESS_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let observe_telemetry_index = match load_json::<ObserveTelemetryIndex>(
+        repo_root,
+        OPS_OBSERVE_TELEMETRY_INDEX_PATH,
+    ) {
         Ok(value) => value,
         Err(err) => {
             errors.push(err);
@@ -521,6 +613,60 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         {
             errors.push(format!(
                 "{OPS_K8S_CHART_PATH}: chart version and appVersion must be pinned and cannot be latest"
+            ));
+        }
+    }
+    for (name, version) in [
+        ("alerts", observe_alerts.schema_version),
+        ("slos", observe_slos.schema_version),
+        ("drills", observe_drills.schema_version),
+        ("readiness", observe_readiness.schema_version),
+        ("telemetry-index", observe_telemetry_index.schema_version),
+    ] {
+        if version != 1 {
+            errors.push(format!(
+                "ops/observe: `{name}` manifest must use schema_version=1, got {version}"
+            ));
+        }
+    }
+    if observe_alerts.alerts.is_empty() {
+        errors.push("ops/observe: alert catalog must not be empty".to_string());
+    }
+    if observe_slos.slos.is_empty() {
+        errors.push("ops/observe: slo definitions must not be empty".to_string());
+    }
+    if observe_drills.drills.is_empty() {
+        errors.push("ops/observe: telemetry drill catalog must not be empty".to_string());
+    }
+    if observe_readiness.status.trim() != "ready" {
+        errors.push("ops/observe: readiness status must be `ready`".to_string());
+    }
+    for required in [
+        "slo-definitions",
+        "alert-catalog",
+        "telemetry-drills",
+        "dashboard-index",
+    ] {
+        if !observe_readiness.requirements.iter().any(|entry| entry == required) {
+            errors.push(format!(
+                "ops/observe: readiness requirements missing `{required}`"
+            ));
+        }
+    }
+    let mut sorted_artifacts = observe_telemetry_index.artifacts.clone();
+    let listed_artifacts = observe_telemetry_index.artifacts.clone();
+    sorted_artifacts.sort();
+    sorted_artifacts.dedup();
+    if listed_artifacts != sorted_artifacts {
+        errors.push(
+            "ops/observe/generated/telemetry-index.json: artifacts must be unique and sorted"
+                .to_string(),
+        );
+    }
+    for artifact in &observe_telemetry_index.artifacts {
+        if !repo_root.join(artifact).exists() {
+            errors.push(format!(
+                "ops/observe/generated/telemetry-index.json: missing referenced artifact `{artifact}`"
             ));
         }
     }
