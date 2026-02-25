@@ -1,5 +1,5 @@
-# Default owner fallback (Bijan Mousavi)
-* @bijan
+# Repository owner: Bijan Mousavi
+* @bijan # Bijan Mousavi
 
 # Ops layer ownership boundaries
 /ops/stack/ @bijan
@@ -13,3 +13,6 @@
 /configs/policy/ @bijan
 /ops/_lint/ @bijan
 /.github/workflows/ @bijan
+/docs/ @bijan
+/crates/*/docs/ @bijan
+/configs/ @bijan

@@ -2,8 +2,12 @@
 name = "bijux-atlas-store"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Storage contracts and backends for atlas artifacts"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "storage", "s3", "contracts", "artifacts"]
 
 [features]
 default = ["backend-s3"]

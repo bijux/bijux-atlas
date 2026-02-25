@@ -22,8 +22,10 @@ edition = "2021"
 version = "0.1.0"
 license = "Apache-2.0"
 rust-version = "1.84.1"
+description = "Deterministic atlas data platform and Rust control-plane"
 repository = "https://github.com/bijux/bijux-atlas.git"
 homepage = "https://github.com/bijux/bijux-atlas"
+keywords = ["atlas", "bioinformatics", "genomics", "deterministic", "cli"]
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

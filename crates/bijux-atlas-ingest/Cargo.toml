@@ -2,8 +2,12 @@
 name = "bijux-atlas-ingest"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Deterministic ingestion pipeline for atlas artifacts"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "ingest", "gff", "fasta", "deterministic"]
 
 [features]
 default = []

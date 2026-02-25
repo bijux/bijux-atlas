@@ -2,8 +2,12 @@
 name = "bijux-atlas-cli"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "End-user atlas CLI for dataset and query workflows"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "cli", "datasets", "query", "contracts"]
 
 [dependencies]
 bijux-atlas-core.workspace = true

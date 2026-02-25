@@ -2,8 +2,12 @@
 name = "bijux-dev-atlas-core"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Deterministic checks runner and governance engine"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["bijux", "checks", "governance", "deterministic", "engine"]
 
 [dependencies]
 bijux-dev-atlas-model.workspace = true

@@ -1,5 +1,7 @@
 # OpenAPI
 
+- License: Apache-2.0
+
 - Source of truth:
   - Paths registry: `docs/contracts/ENDPOINTS.json`
   - Error codes: `docs/contracts/ERROR_CODES.json`

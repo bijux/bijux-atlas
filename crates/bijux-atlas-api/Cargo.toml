@@ -2,8 +2,12 @@
 name = "bijux-atlas-api"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "OpenAPI and wire contract crate for atlas APIs"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "api", "openapi", "contracts", "serde"]
 
 [dependencies]
 bijux-atlas-core.workspace = true
