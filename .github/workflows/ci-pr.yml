@@ -55,7 +55,7 @@ jobs:
           toolchain: 1.84.1
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             .cache/cargo/home/ci-pr-minimal/registry
@@ -63,7 +63,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -81,7 +81,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: |
             .cache/cargo/home/ci-pr-minimal/registry
@@ -89,7 +89,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -121,7 +121,7 @@ jobs:
           toolchain: 1.84.1
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             .cache/cargo/home/ci-pr/registry
@@ -129,7 +129,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -147,7 +147,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: |
             .cache/cargo/home/ci-pr/registry
@@ -155,7 +155,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -185,7 +185,7 @@ jobs:
           toolchain: 1.84.1
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             .cache/cargo/home/ci-supply-chain/registry
@@ -193,7 +193,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -212,7 +212,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: |
             .cache/cargo/home/ci-supply-chain/registry
@@ -220,7 +220,7 @@ jobs:
           key: cargo-registry-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}

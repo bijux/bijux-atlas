@@ -39,7 +39,7 @@ jobs:
           toolchain: 1.84.1
       - name: Restore cargo cache
         id: cache-target
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .cache/cargo/target/ops-validate
           key: cargo-target-pr-ops-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -56,7 +56,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo cache
         if: success()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .cache/cargo/target/ops-validate
           key: cargo-target-pr-ops-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
