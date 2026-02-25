@@ -37,7 +37,7 @@ jobs:
             exit 1
           fi
       - name: Open lockfile PR
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore(deps): refresh Cargo.lock via locked workflow"
           title: "chore(deps): refresh Cargo.lock"
