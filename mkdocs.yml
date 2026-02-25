@@ -54,6 +54,8 @@ nav:
       - Command Index: root/COMMAND_INDEX.md
       - Crate Index: root/CRATE_INDEX.md
       - Schema Index: root/SCHEMA_INDEX.md
+      - Docker Overview: root/DOCKER_OVERVIEW.md
+      - Makefiles Overview: root/MAKEFILES_OVERVIEW.md
   - Product:
       - Home: index.md
       - Style: STYLE.md
