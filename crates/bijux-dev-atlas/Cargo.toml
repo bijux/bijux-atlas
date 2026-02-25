@@ -2,8 +2,12 @@
 name = "bijux-dev-atlas"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Development control-plane binary for bijux-atlas"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["bijux", "control-plane", "cli", "devops", "policy"]
 
 [features]
 kind_integration = []

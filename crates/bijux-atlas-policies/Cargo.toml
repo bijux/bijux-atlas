@@ -2,8 +2,12 @@
 name = "bijux-atlas-policies"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Policy evaluation rules and violation contracts for atlas"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "policy", "validation", "rules", "contracts"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

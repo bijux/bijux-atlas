@@ -2,8 +2,12 @@
 name = "bijux-atlas-server"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Runtime HTTP service implementing atlas API contracts"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "server", "http", "axum", "genomics"]
 
 [dependencies]
 bijux-atlas-api.workspace = true

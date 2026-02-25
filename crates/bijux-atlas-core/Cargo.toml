@@ -2,8 +2,12 @@
 name = "bijux-atlas-core"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Domain primitives and deterministic core contracts for bijux-atlas"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "core", "contracts", "deterministic", "genomics"]
 
 [features]
 default = ["serde"]

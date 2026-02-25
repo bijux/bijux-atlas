@@ -2,8 +2,12 @@
 name = "bijux-atlas-model"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+license = "Apache-2.0"
 rust-version.workspace = true
+description = "Persisted atlas data models and serde contracts"
+repository.workspace = true
+homepage.workspace = true
+keywords = ["atlas", "model", "serde", "contracts", "genomics"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

@@ -1,5 +1,7 @@
 # bijux-atlas-server
 
+![Version](https://img.shields.io/badge/version-0.1.0-informational.svg) ![License: Apache-2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg) ![Docs](https://img.shields.io/badge/docs-contract-stable-brightgreen.svg)
+
 Runtime HTTP service for `bijux-atlas`.
 
 ## Local Run
