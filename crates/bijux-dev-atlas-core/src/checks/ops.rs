@@ -147,6 +147,9 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_control_plane_naming_contract" => {
             Some(check_control_plane_naming_contract_docs)
         }
+        "checks_docs_removed_system_references_absent" => {
+            Some(check_docs_removed_system_references_absent)
+        }
         "checks_ops_ssot_manifests_schema_versions" => {
             Some(check_ops_ssot_manifests_schema_versions)
         }
@@ -230,6 +233,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_ops_command_list_matches_snapshot",
         "checks_docs_configs_command_list_matches_snapshot",
         "checks_docs_control_plane_naming_contract",
+        "checks_docs_removed_system_references_absent",
         "checks_ops_ssot_manifests_schema_versions",
         "checks_crates_dev_atlas_final_crate_set_contract",
         "checks_docs_scripting_contract_rust_control_plane_lock",
@@ -510,4 +514,3 @@ fn checks_ops_artifacts_not_tracked(ctx: &CheckContext<'_>) -> Result<Vec<Violat
         )])
     }
 }
-
