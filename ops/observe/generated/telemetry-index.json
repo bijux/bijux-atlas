@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source": "ops/observe",
+  "artifacts": [
+    "ops/observe/alert-catalog.json",
+    "ops/observe/alerts/atlas-alert-rules.yaml",
+    "ops/observe/dashboards/atlas-observability-dashboard.json",
+    "ops/observe/readiness.json",
+    "ops/observe/slo-definitions.json",
+    "ops/observe/telemetry-drills.json"
+  ]
+}

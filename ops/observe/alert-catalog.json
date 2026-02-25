@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "alerts": [
+    {"id": "api.error-rate-high", "severity": "critical"},
+    {"id": "api.latency-p95-high", "severity": "warning"}
+  ]
+}

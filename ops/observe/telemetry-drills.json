@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "drills": [
+    {"id": "observe.drill.otel_outage", "category": "tracing"},
+    {"id": "observe.drill.prometheus_gap", "category": "metrics"}
+  ]
+}

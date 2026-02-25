@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "status": "ready",
+  "requirements": [
+    "slo-definitions",
+    "alert-catalog",
+    "telemetry-drills",
+    "dashboard-index"
+  ]
+}

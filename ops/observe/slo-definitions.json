@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "slos": [
+    {"id": "api.availability", "target": "99.9", "window": "30d"},
+    {"id": "api.p95_latency", "target": "300ms", "window": "30d"}
+  ]
+}
