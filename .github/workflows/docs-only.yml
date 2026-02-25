@@ -33,7 +33,7 @@ jobs:
       TMP: artifacts/isolates/docs-only/tmp
       TEMP: artifacts/isolates/docs-only/tmp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1

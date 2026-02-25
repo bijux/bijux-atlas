@@ -38,7 +38,7 @@ jobs:
       TMP: artifacts/isolates/ops-kind/tmp
       TEMP: artifacts/isolates/ops-kind/tmp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1

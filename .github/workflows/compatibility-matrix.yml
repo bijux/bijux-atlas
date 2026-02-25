@@ -19,7 +19,7 @@ jobs:
       TMP: artifacts/isolates/compatibility-matrix/tmp
       TEMP: artifacts/isolates/compatibility-matrix/tmp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: main
       - run: make docs

@@ -30,7 +30,7 @@ jobs:
       TMP: artifacts/isolates/ci-nightly/tmp
       TEMP: artifacts/isolates/ci-nightly/tmp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
