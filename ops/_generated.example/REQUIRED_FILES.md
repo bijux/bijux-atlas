@@ -9,4 +9,5 @@ required_files:
   - ops/_generated.example/ops-evidence-bundle.json
   - ops/_generated.example/scorecard.json
   - ops/_generated.example/pins.index.example.json
+  - ops/_generated.example/inventory-index.json
 ```

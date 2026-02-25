@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "generated_from": "ops/inventory/contracts-map.json",
+  "items": [
+    {"path": "ops/inventory/pins.yaml", "sha256": "1350d136286a14ad5a42d9d8942aa802c1ec72fd1fbb8e217aa0c2efa90fd6fb"},
+    {"path": "ops/inventory/toolchain.json", "sha256": "4962ef88aa8466aaa792b480df5d984bee3cf8d01a91b17dd9784ad15757777a"},
+    {"path": "ops/inventory/contracts-map.json", "sha256": "997e4d1cf9c3e5784119a8705780c72c77f6f87ebf2ee8e940e1c4533111d590"},
+    {"path": "ops/inventory/gates.json", "sha256": "0987e44a445b9db55ef61aa4f09041b3ffbdf706df13ec94baf21eccdc3b1789"},
+    {"path": "ops/inventory/surfaces.json", "sha256": "960094d22c6704f5c273edaa62168df5bf032418208e45f31ea3072d597a6f3e"},
+    {"path": "ops/inventory/layers.json", "sha256": "32fa45df6b68280fc8a4d9f6798c814e2a2f2d612653394265feb436fc4f7daf"},
+    {"path": "ops/inventory/namespaces.json", "sha256": "065107a4891b80977890badbdd5cb3a5b34515e0bcd10b6842539481aa9da052"},
+    {"path": "ops/inventory/pin-freeze.json", "sha256": "301d8a7b435b24f49033c197d2b0dce36e016129466df403ad43d0ac460fcc06"}  ]
+}

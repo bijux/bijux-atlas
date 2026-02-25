@@ -1,19 +1,21 @@
 {
   "schema_version": 1,
+  "authoritative": true,
   "items": [
     {"path": "ops/inventory/owners.json", "schema": "ops/schema/meta/ownership.schema.json", "generator": "manual+sync-owner-docs"},
     {"path": "ops/inventory/surfaces.json", "schema": "configs/ops/public-surface.json", "generator": "bijux dev atlas ops gen run"},
-    {"path": "ops/inventory/contracts.json", "schema": "none", "generator": "manual"},
+    {"path": "ops/inventory/contracts.json", "schema": "none", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/layers.json", "schema": "ops/schema/meta/layer-contract.schema.json", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/pins.yaml", "schema": "ops/schema/inventory/pins.schema.json", "generator": "bijux dev atlas ops generate pins-index"},
-    {"path": "ops/inventory/gc-pins.json", "schema": "none", "generator": "manual"},
+    {"path": "ops/inventory/gc-pins.json", "schema": "ops/schema/meta/pins.schema.json", "generator": "manual"},
     {"path": "ops/inventory/pin-freeze.json", "schema": "ops/schema/inventory/pin-freeze.schema.json", "generator": "manual"},
     {"path": "ops/inventory/drills.json", "schema": "ops/schema/observe/drill-manifest.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/gates.json", "schema": "ops/schema/inventory/gates.schema.json", "generator": "manual"},
     {"path": "ops/inventory/namespaces.json", "schema": "ops/schema/meta/namespaces.schema.json", "generator": "manual"},
     {"path": "ops/inventory/toolchain.json", "schema": "ops/schema/inventory/toolchain.schema.json", "generator": "manual"},
-    {"path": "ops/inventory/owner-docs.fragments.json", "schema": "none", "generator": "bijux dev atlas ops migrate inventory-fragments"},
+    {"path": "ops/inventory/owner-docs.fragments.json", "schema": "ops/schema/meta/ownership.schema.json", "generator": "bijux dev atlas ops migrate inventory-fragments"},
     {"path": "ops/inventory/contracts-map.json", "schema": "none", "generator": "manual"},
-    {"path": "ops/inventory/generated-committed-mirror.json", "schema": "none", "generator": "manual"},
+    {"path": "ops/inventory/generated-committed-mirror.json", "schema": "ops/schema/meta/artifact-allowlist.schema.json", "generator": "manual"},
     {"path": "ops/datasets/manifest.json", "schema": "ops/schema/datasets/manifest.schema.json", "generator": "manual"}
   ]
 }
