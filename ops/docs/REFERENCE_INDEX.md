@@ -22,3 +22,4 @@
 - [Ops Glossary](ops-glossary.md)
 - [Cross Area Navigation](cross-area-navigation.md)
 - [Ops Diagrams](ops-diagrams.md)
+- [Observability Directory Rename](observe-rename.md)

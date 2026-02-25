@@ -15,17 +15,16 @@ Runbook index: `ops/INDEX.md`.
 
 - `ops/stack/`: local stack dependency bring-up.
 - `ops/k8s/`: chart, install profiles, and k8s-only gates.
-- `ops/obs/`: observability pack, contracts, and drills.
+- `ops/observe/`: observability pack, contracts, and drills.
 - `ops/load/`: k6 suites, scenarios, contracts, baselines.
 - `ops/datasets/`: dataset manifest, pinning, QC, promotion.
-- `ops/e2e/`: composition-only scenarios over stack/obs/load/datasets.
+- `ops/e2e/`: composition-only scenarios over stack/observe/load/datasets.
 - `bijux dev atlas ops ...` and `make` wrappers: operator entrypoints (no direct script surface).
 - canonical local workflow runs through `bijux-dev-atlas` (`ops render`, `ops install`, `ops status`).
 - `ops/_meta/`: ownership/surface/contracts metadata.
 - `ops/schema/`: ops JSON schemas.
 - `ops/_generated.example/`: deterministic generated ops outputs committed to git.
-- `artifacts/evidence/`: runtime evidence outputs (gitignored).
-- `ops/_artifacts/`: canonical runtime artifacts root.
+- `artifacts/`: runtime evidence outputs (gitignored).
 
 ## Run
 

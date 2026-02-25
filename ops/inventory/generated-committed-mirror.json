@@ -12,6 +12,18 @@
     {
       "committed": "ops/_generated.example/MIRROR_POLICY.md",
       "source": "ops/docs/generated-committed-policy.md"
+    },
+    {
+      "committed": "ops/_generated.example/OWNER.md",
+      "source": "ops/_generated/OWNER.md"
+    },
+    {
+      "committed": "ops/_generated.example/README.md",
+      "source": "ops/_generated/README.md"
+    },
+    {
+      "committed": "ops/_generated.example/REQUIRED_FILES.md",
+      "source": "ops/_generated/REQUIRED_FILES.md"
     }
   ]
 }

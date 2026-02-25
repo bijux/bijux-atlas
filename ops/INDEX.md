@@ -13,13 +13,19 @@ Human entry for the ops specification surface.
 
 ## Domains
 
+- `ops/inventory/`
+- `ops/schema/`
+- `ops/env/`
 - `ops/stack/`
 - `ops/k8s/`
-- `ops/observe/` (target layout) and `ops/obs/` (migration compatibility)
+- `ops/observe/`
 - `ops/load/`
-- `ops/e2e/`
 - `ops/datasets/`
+- `ops/e2e/`
 - `ops/report/`
+- `ops/_generated/`
+- `ops/_generated.example/`
+- Rename note: `ops/docs/observe-rename.md`
 
 ## Make Surface
 
