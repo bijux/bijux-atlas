@@ -2,10 +2,10 @@
 - 
 
 ## Validation
-- [ ] `make dev-fmt`
-- [ ] `make dev-lint`
-- [ ] `make dev-test`
-- [ ] `make dev-audit`
+- [ ] `make fmt`
+- [ ] `make lint`
+- [ ] `make test`
+- [ ] `make audit`
 
 ## Contract / SSOT Checklist
 - [ ] Any API/CLI/metrics/error/chart/trace/config/artifact surface change updates `docs/contracts/*` first.
