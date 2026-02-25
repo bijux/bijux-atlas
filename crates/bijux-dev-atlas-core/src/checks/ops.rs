@@ -396,8 +396,6 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         }
     }
     let allowed_top_level_dirs = BTreeSet::from([
-        "_evidence",
-        "_examples",
         "_generated",
         "_generated.example",
         "_meta",
@@ -407,10 +405,8 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         "e2e",
         "env",
         "fixtures",
-        "helm",
         "inventory",
         "k8s",
-        "kind",
         "load",
         "observe",
         "quarantine",

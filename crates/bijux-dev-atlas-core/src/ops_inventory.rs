@@ -2017,8 +2017,6 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     }
 
     let allowed_top_level: BTreeSet<&str> = [
-        "_evidence",
-        "_examples",
         "_generated",
         "_generated.example",
         "_meta",
@@ -2028,10 +2026,8 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "e2e",
         "env",
         "fixtures",
-        "helm",
         "inventory",
         "k8s",
-        "kind",
         "load",
         "observe",
         "quarantine",
