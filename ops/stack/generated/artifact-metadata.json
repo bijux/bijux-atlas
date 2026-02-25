@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "artifacts_root": "artifacts/ops",
+  "stack_artifacts": [
+    "artifacts/ops/<run-id>/stack/plan.json",
+    "artifacts/ops/<run-id>/stack/status.json"
+  ],
+  "retention": {
+    "policy": "ephemeral",
+    "committed_examples": "ops/_generated.example/"
+  }
+}

@@ -14,10 +14,15 @@ Stack lifecycle is controlled only through `bijux dev atlas ops stack ...`.
 
 ## Contracts
 - `ops/stack/CONTRACT.md`
-- `ops/inventory/toolchain.yaml`
+- `ops/inventory/pins.yaml` (canonical image pin source)
+- `ops/inventory/toolchain.json`
+- `ops/stack/version-manifest.json` (derived mirror)
 
 ## Artifacts
 - `ops/_artifacts/<run_id>/stack/`
+- `ops/stack/generated/stack-index.json`
+- `ops/stack/generated/dependency-graph.json`
+- `ops/stack/generated/artifact-metadata.json`
 
 ## Failure modes
 - Cluster bootstrap fails due to docker/kind toolchain drift.

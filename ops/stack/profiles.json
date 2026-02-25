@@ -1,8 +1,10 @@
 {
   "schema_version": 1,
   "profiles": [
+    {"name": "minimal", "kind_profile": "small", "cluster_config": "ops/stack/kind/cluster-small.yaml"},
     {"name": "small", "kind_profile": "small", "cluster_config": "ops/stack/kind/cluster-small.yaml"},
     {"name": "kind", "kind_profile": "normal", "cluster_config": "ops/stack/kind/cluster.yaml"},
+    {"name": "dev", "kind_profile": "normal", "cluster_config": "ops/stack/kind/cluster-dev.yaml"},
     {"name": "perf", "kind_profile": "perf", "cluster_config": "ops/stack/kind/cluster-perf.yaml"},
     {"name": "ci", "kind_profile": "small", "cluster_config": "ops/stack/kind/cluster-small.yaml"},
     {"name": "developer", "kind_profile": "normal", "cluster_config": "ops/stack/kind/cluster.yaml"}

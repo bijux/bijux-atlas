@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "ci": {
+      "cluster_config": "ops/stack/kind/cluster-small.yaml",
+      "components": [
+        "ops/k8s/charts/bijux-atlas/Chart.yaml",
+        "ops/obs/pack/k8s/namespace.yaml",
+        "ops/stack/minio/minio.yaml",
+        "ops/stack/redis/redis.yaml"
+      ]
+    },
+    "kind": {
+      "cluster_config": "ops/stack/kind/cluster.yaml",
+      "components": [
+        "ops/k8s/charts/bijux-atlas/Chart.yaml",
+        "ops/obs/pack/k8s/namespace.yaml",
+        "ops/stack/grafana/grafana.yaml",
+        "ops/stack/minio/minio.yaml",
+        "ops/stack/otel/otel-collector.yaml",
+        "ops/stack/prometheus/prometheus.yaml",
+        "ops/stack/redis/redis.yaml"
+      ]
+    },
+    "local": {
+      "cluster_config": "ops/stack/kind/cluster-small.yaml",
+      "components": [
+        "ops/k8s/charts/bijux-atlas/Chart.yaml",
+        "ops/obs/pack/k8s/namespace.yaml",
+        "ops/stack/minio/minio.yaml",
+        "ops/stack/redis/redis.yaml"
+      ]
+    }
+  }
+}

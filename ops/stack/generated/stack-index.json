@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "source": "ops/stack",
+  "artifacts": [
+    "ops/stack/pins.toml",
+    "ops/stack/profiles.json",
+    "ops/stack/stack.toml",
+    "ops/stack/version-manifest.json"
+  ]
+}
