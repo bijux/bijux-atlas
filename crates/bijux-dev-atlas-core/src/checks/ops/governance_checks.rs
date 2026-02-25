@@ -1462,9 +1462,11 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     }
     let generated_example_root = ctx.repo_root.join("ops/_generated.example");
     if generated_example_root.exists() {
+        let mut seen_files = BTreeSet::new();
         for file in walk_files(&generated_example_root) {
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
             let rel_str = rel.display().to_string();
+            seen_files.insert(rel_str.clone());
             if !allowlisted_files.contains(&rel_str) {
                 violations.push(violation(
                     "OPS_EVIDENCE_ALLOWLIST_MISSING_FILE",
@@ -1503,6 +1505,31 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                         Some(rel),
                     ));
                 }
+            }
+        }
+        for allowlisted in &allowlisted_files {
+            let rel = Path::new(allowlisted);
+            if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+                violations.push(violation(
+                    "OPS_EVIDENCE_ALLOWLIST_STALE_ENTRY",
+                    format!(
+                        "allowlist entry points to missing curated artifact `{}`",
+                        rel.display()
+                    ),
+                    "remove stale entry from ALLOWLIST.json or restore the artifact",
+                    Some(allowlist_rel),
+                ));
+            }
+            if !seen_files.contains(allowlisted) {
+                violations.push(violation(
+                    "OPS_EVIDENCE_ALLOWLIST_UNUSED_ENTRY",
+                    format!(
+                        "allowlist entry does not match a committed curated artifact `{}`",
+                        rel.display()
+                    ),
+                    "keep ALLOWLIST.json aligned with committed files in ops/_generated.example",
+                    Some(allowlist_rel),
+                ));
             }
         }
     }
@@ -1608,6 +1635,18 @@ pub(super) fn check_ops_evidence_bundle_discipline(
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
             let rel_str = rel.display().to_string();
             if !allowed.contains(&rel_str) {
+                let is_json = rel.extension().and_then(|v| v.to_str()) == Some("json");
+                if is_json {
+                    violations.push(violation(
+                        "OPS_GENERATED_RUNTIME_JSON_COMMITTED_FORBIDDEN",
+                        format!(
+                            "runtime json evidence must not be committed under ops/_generated: `{}`",
+                            rel.display()
+                        ),
+                        "delete committed runtime json and regenerate into runtime-only ignored outputs",
+                        Some(rel),
+                    ));
+                }
                 violations.push(violation(
                     "OPS_GENERATED_DIRECTORY_COMMITTED_EVIDENCE_FORBIDDEN",
                     format!("ops/_generated contains unexpected committed file `{}`", rel.display()),
