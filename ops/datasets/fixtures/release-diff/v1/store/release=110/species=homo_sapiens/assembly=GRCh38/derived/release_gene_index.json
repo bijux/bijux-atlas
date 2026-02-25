@@ -1,0 +1,1 @@
+{"schema_version":"1","dataset":{"release":"110","species":"homo_sapiens","assembly":"GRCh38"},"entries":[{"gene_id":"ENSG000001","seqid":"chr1","start":10,"end":20,"signature_sha256":"aaa"},{"gene_id":"ENSG000002","seqid":"chr1","start":30,"end":40,"signature_sha256":"bbb"}]}

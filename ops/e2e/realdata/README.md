@@ -32,6 +32,11 @@ Compatibility alias:
 - `make ops-dataset-qc`
 - `bijux dev atlas ops e2e run --suite realdata`
 
+## Snapshot Policy
+
+- Files under `ops/e2e/realdata/snapshots/` are example snapshots for contract verification and documentation.
+- Required runtime fixtures are defined through `ops/e2e/fixtures/allowlist.json` and `ops/e2e/fixtures/fixtures.lock`.
+
 ## Full Flows
 
 - `make ops-ref-grade-local`

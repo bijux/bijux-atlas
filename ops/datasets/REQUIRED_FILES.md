@@ -13,6 +13,7 @@ required_files:
   - ops/datasets/qc-metadata.json
   - ops/datasets/rollback-policy.json
   - ops/datasets/real-datasets.json
+  - ops/datasets/generated/fixture-inventory.json
 required_directories:
   - ops/datasets/generated
   - ops/datasets/fixtures

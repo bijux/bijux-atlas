@@ -1,0 +1,4 @@
+url=https://github.com/bijux/bijux-atlas-ops/datasets/fixtures/releases/download/v1/bijux-atlas-release-diff-v1.tar.gz
+sha256=c2d610a5812cf93101b552df408580b0cf9aa5056aadcee2e11bab149e053ea0
+archive=bijux-atlas-release-diff-v1.tar.gz
+extract_dir=ops/datasets/fixtures/release-diff/v1/store
