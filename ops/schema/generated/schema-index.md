@@ -53,12 +53,12 @@
 | `ops/schema/meta/ownership.schema.json` |
 | `ops/schema/meta/pins.schema.json` |
 | `ops/schema/meta/ports.schema.json` |
-| `ops/schema/obs/budgets.schema.json` |
-| `ops/schema/obs/drill-manifest.schema.json` |
-| `ops/schema/obs/suites.schema.json` |
 | `ops/schema/observe/alert-catalog.schema.json` |
+| `ops/schema/observe/budgets.schema.json` |
+| `ops/schema/observe/drill-manifest.schema.json` |
 | `ops/schema/observe/readiness.schema.json` |
 | `ops/schema/observe/slo-definitions.schema.json` |
+| `ops/schema/observe/suites.schema.json` |
 | `ops/schema/observe/telemetry-drills.schema.json` |
 | `ops/schema/observe/telemetry-index.schema.json` |
 | `ops/schema/report/evidence-levels.schema.json` |

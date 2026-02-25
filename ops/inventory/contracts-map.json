@@ -8,7 +8,7 @@
     {"path": "ops/inventory/pins.yaml", "schema": "ops/schema/inventory/pins.schema.json", "generator": "bijux dev atlas ops generate pins-index"},
     {"path": "ops/inventory/gc-pins.json", "schema": "none", "generator": "manual"},
     {"path": "ops/inventory/pin-freeze.json", "schema": "ops/schema/inventory/pin-freeze.schema.json", "generator": "manual"},
-    {"path": "ops/inventory/drills.json", "schema": "ops/schema/obs/drill-manifest.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/drills.json", "schema": "ops/schema/observe/drill-manifest.schema.json", "generator": "manual"},
     {"path": "ops/inventory/namespaces.json", "schema": "ops/schema/meta/namespaces.schema.json", "generator": "manual"},
     {"path": "ops/inventory/toolchain.json", "schema": "ops/schema/inventory/toolchain.schema.json", "generator": "manual"},
     {"path": "ops/inventory/owner-docs.fragments.json", "schema": "none", "generator": "bijux dev atlas ops migrate inventory-fragments"},
