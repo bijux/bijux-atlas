@@ -317,8 +317,7 @@ fn is_allowed_doc_location(path: &str) -> bool {
     matches!(
         path,
         "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md"
-    )
-        || path.starts_with("docs/")
+    ) || path.starts_with("docs/")
         || path.starts_with("crates/")
         || path.starts_with("ops/")
         || path.starts_with("configs/")
@@ -398,6 +397,165 @@ fn crate_association(path: &str) -> Option<String> {
     } else {
         None
     }
+}
+
+fn workspace_crate_roots(repo_root: &Path) -> Vec<PathBuf> {
+    let mut roots = Vec::new();
+    let crates_dir = repo_root.join("crates");
+    if !crates_dir.exists() {
+        return roots;
+    }
+    for entry in read_dir_entries(&crates_dir) {
+        if !entry.is_dir() {
+            continue;
+        }
+        if entry.join("Cargo.toml").exists() {
+            roots.push(entry);
+        }
+    }
+    roots.sort();
+    roots
+}
+
+pub(crate) fn crate_doc_contract_status(
+    repo_root: &Path,
+) -> (Vec<serde_json::Value>, Vec<String>, Vec<String>) {
+    let required_common = [
+        "README.md",
+        "ARCHITECTURE.md",
+        "CONTRACT.md",
+        "TESTING.md",
+        "ERROR_TAXONOMY.md",
+        "EXAMPLES.md",
+        "BENCHMARKS.md",
+        "VERSIONING.md",
+    ];
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut errors = Vec::<String>::new();
+    let mut warnings = Vec::<String>::new();
+
+    for crate_root in workspace_crate_roots(repo_root) {
+        let crate_name = crate_root
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or("unknown");
+        let root_md = read_dir_entries(&crate_root)
+            .into_iter()
+            .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+            .collect::<Vec<_>>();
+        let docs_dir = crate_root.join("docs");
+        let docs_md = if docs_dir.exists() {
+            walk_files_local(&docs_dir)
+                .into_iter()
+                .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+                .collect::<Vec<_>>()
+        } else {
+            Vec::new()
+        };
+
+        let root_names = root_md
+            .iter()
+            .filter_map(|p| p.file_name().and_then(|v| v.to_str()))
+            .map(ToString::to_string)
+            .collect::<BTreeSet<_>>();
+        if root_names.len() > 10 {
+            errors.push(format!(
+                "CRATE_DOC_BUDGET_ERROR: `{crate_name}` has {} root docs (budget=10)",
+                root_names.len()
+            ));
+        }
+
+        for required in &required_common {
+            if !root_names.contains(*required) {
+                errors.push(format!(
+                    "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `{required}`"
+                ));
+            }
+        }
+
+        if crate_name.contains("-model") && !root_names.contains("DATA_MODEL.md") {
+            errors.push(format!(
+                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `DATA_MODEL.md`"
+            ));
+        }
+        if crate_name.contains("-policies") && !root_names.contains("EXTENSION_GUIDE.md") {
+            errors.push(format!(
+                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `EXTENSION_GUIDE.md`"
+            ));
+        }
+        if (crate_name.ends_with("-cli") || crate_name.ends_with("dev-atlas"))
+            && !root_names.contains("COMMAND_SURFACE.md")
+        {
+            errors.push(format!(
+                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `COMMAND_SURFACE.md`"
+            ));
+        }
+        if crate_name.ends_with("-adapters") && !root_names.contains("ADAPTER_BOUNDARY.md") {
+            errors.push(format!(
+                "CRATE_DOC_REQUIRED_ERROR: `{crate_name}` missing `ADAPTER_BOUNDARY.md`"
+            ));
+        }
+
+        if crate_name.contains("-core") {
+            let architecture = crate_root.join("ARCHITECTURE.md");
+            let has_invariants = fs::read_to_string(&architecture)
+                .ok()
+                .is_some_and(|text| text.contains("## Invariants"));
+            if !has_invariants {
+                warnings.push(format!(
+                    "CRATE_DOC_INVARIANTS_WARN: `{crate_name}` ARCHITECTURE.md should include `## Invariants`"
+                ));
+            }
+        }
+
+        let readme_path = crate_root.join("README.md");
+        if let Ok(readme) = fs::read_to_string(&readme_path) {
+            if !readme.contains("docs/") {
+                warnings.push(format!(
+                    "CRATE_DOC_LINK_WARN: `{crate_name}` README.md should link to crate docs/"
+                ));
+            }
+        }
+
+        let mut diagram_count = 0usize;
+        let mut rust_fences = 0usize;
+        let mut rust_fences_tagged = 0usize;
+        for doc in root_md.iter().chain(docs_md.iter()) {
+            let text = fs::read_to_string(doc).unwrap_or_default();
+            diagram_count += text.matches("![").count();
+            for line in text.lines() {
+                if line.trim_start().starts_with("```") {
+                    rust_fences += usize::from(line.trim() == "```");
+                    rust_fences_tagged += usize::from(line.trim().starts_with("```rust"));
+                }
+            }
+        }
+        if diagram_count > 20 {
+            warnings.push(format!(
+                "CRATE_DOC_DIAGRAM_BUDGET_WARN: `{crate_name}` has {diagram_count} diagrams (budget=20)"
+            ));
+        }
+        if rust_fences > rust_fences_tagged {
+            warnings.push(format!(
+                "CRATE_DOC_EXAMPLE_TAG_WARN: `{crate_name}` has untagged code fences; prefer ```rust for examples"
+            ));
+        }
+
+        rows.push(serde_json::json!({
+            "crate": crate_name,
+            "root_doc_count": root_names.len(),
+            "docs_dir_count": docs_md.len(),
+            "required": required_common,
+            "has": root_names,
+            "diagram_count": diagram_count
+        }));
+    }
+    rows.sort_by(|a, b| a["crate"].as_str().cmp(&b["crate"].as_str()));
+    errors.sort();
+    errors.dedup();
+    warnings.sort();
+    warnings.dedup();
+    (rows, errors, warnings)
 }
 
 fn tags_for_path(path: &str) -> Vec<String> {
@@ -642,8 +800,14 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
         .collect::<Vec<_>>();
     for file in root_md {
-        let name = file.file_name().and_then(|v| v.to_str()).unwrap_or_default();
-        if !matches!(name, "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md") {
+        let name = file
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
+        if !matches!(
+            name,
+            "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md"
+        ) {
             errors.push(format!(
                 "DOCS_REGISTRY_ROOT_DOC_FORBIDDEN: allowed root docs are README/CONTRIBUTING/SECURITY/CHANGELOG, found `{}`",
                 name
@@ -668,6 +832,9 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
             ));
         }
     }
+    let (crate_rows, crate_errors, crate_warnings) = crate_doc_contract_status(&ctx.repo_root);
+    errors.extend(crate_errors);
+    warnings.extend(crate_warnings);
     warnings.sort();
     warnings.dedup();
     errors.sort();
@@ -685,6 +852,7 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         "schema_version": 1,
         "errors": errors,
         "warnings": warnings,
+        "crate_docs": crate_rows,
         "pruning_suggestions": pruning,
         "summary": {
             "registered": docs.len(),
