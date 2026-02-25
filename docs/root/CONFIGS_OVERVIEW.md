@@ -8,3 +8,4 @@ Configuration contracts and schemas are maintained in `configs/` with correspond
 Reference:
 - `docs/development/config-versioning.md`
 - `configs/README.md`
+- `configs/docs/INDEX.md`
