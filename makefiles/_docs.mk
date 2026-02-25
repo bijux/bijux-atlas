@@ -9,6 +9,12 @@ docs-doctor: ## Run docs doctor checks
 docs-validate: ## Run docs validation checks
 	@$(DEV_ATLAS) docs validate --format json
 
+docs-registry: ## Build docs registry and generated docs indexes
+	@$(DEV_ATLAS) docs registry build --allow-write --format json
+
+docs-registry-validate: ## Validate docs registry coverage and contracts
+	@$(DEV_ATLAS) docs registry validate --format json
+
 docs-build: ## Build docs into artifacts
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format json
 
@@ -21,4 +27,4 @@ docs-clean: ## Clean docs generated outputs
 docs-lock: ## Refresh docs requirements lock deterministically
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
 
-.PHONY: docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock
+.PHONY: docs docs-doctor docs-validate docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock

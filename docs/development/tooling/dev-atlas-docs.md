@@ -9,6 +9,8 @@
 - `bijux dev atlas docs links --format json`
 - `bijux dev atlas docs lint --format json`
 - `bijux dev atlas docs inventory --format json`
+- `bijux dev atlas docs registry build --allow-write --format json`
+- `bijux dev atlas docs registry validate --format json`
 - `bijux dev atlas docs grep <pattern> --format json`
 - `bijux dev atlas docs build --allow-subprocess --allow-write --format json`
 - `bijux dev atlas docs serve --allow-subprocess --format text`
