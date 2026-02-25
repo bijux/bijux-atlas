@@ -9,10 +9,10 @@ Canonical observability directory name is `ops/observe/`.
 
 ## Compatibility Window
 
-- Legacy compatibility path: `ops/observe/`
+- Legacy compatibility path: `ops/obs/`
 - New references must use `ops/observe/`.
-- Existing references under compatibility scope are tracked and reduced incrementally.
+- Compatibility ended on 2026-02-25.
 
 ## Cutover Rule
 
-After compatibility cutoff, `ops/observe/` is removed and all contracts point to `ops/observe/`.
+Legacy `ops/obs/` is removed. Contracts and schemas must use `ops/observe/` only.
