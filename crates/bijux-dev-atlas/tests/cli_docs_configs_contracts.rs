@@ -278,6 +278,11 @@ fn slow_docs_registry_build_supports_json_format() {
         .and_then(|v| v.get("crate_doc_api_table"))
         .and_then(|v| v.as_str())
         .is_some());
+    assert!(payload
+        .get("artifacts")
+        .and_then(|v| v.get("crate_doc_pruning"))
+        .and_then(|v| v.as_str())
+        .is_some());
 }
 
 #[test]
@@ -370,6 +375,39 @@ fn configs_print_supports_json_format() {
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
+fn crate_doc_governance_snapshot_matches_golden() {
+    let governance_path = repo_root().join("docs/_generated/crate-doc-governance.json");
+    let governance_text = fs::read_to_string(governance_path).expect("governance json");
+    let governance: serde_json::Value =
+        serde_json::from_str(&governance_text).expect("valid governance json");
+    let rows = governance
+        .get("rows")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| {
+            serde_json::json!({
+                "crate": row.get("crate").and_then(|v| v.as_str()).unwrap_or_default(),
+                "root_doc_count": row.get("root_doc_count").and_then(|v| v.as_u64()).unwrap_or(0),
+                "docs_dir_count": row.get("docs_dir_count").and_then(|v| v.as_u64()).unwrap_or(0),
+                "diagram_count": row.get("diagram_count").and_then(|v| v.as_u64()).unwrap_or(0)
+            })
+        })
+        .collect::<Vec<_>>();
+    let actual = serde_json::json!({
+        "schema_version": governance.get("schema_version").and_then(|v| v.as_u64()).unwrap_or(1),
+        "rows": rows
+    });
+
+    let golden_path =
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/crate_doc_governance_snapshot.json");
+    let golden_text = fs::read_to_string(golden_path).expect("governance golden");
+    let golden: serde_json::Value = serde_json::from_str(&golden_text).expect("valid golden");
+    assert_eq!(actual, golden);
 }
 
 #[test]

@@ -1,0 +1,14 @@
+{
+  "rows": [
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `caching.md` appears across crates: bijux-atlas-server, bijux-atlas-store",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `cli_command_list.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `contracts.md` appears across crates: bijux-atlas-api, bijux-atlas-policies, bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas-model",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `errors.md` appears across crates: bijux-atlas-api, bijux-atlas-core",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `exit_codes.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `failure-modes.md` appears across crates: bijux-atlas-ingest, bijux-atlas-server, bijux-atlas-store",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `failure_modes.md` appears across crates: bijux-atlas-server, bijux-atlas-store, bijux-dev-atlas",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `patterns.md` appears across crates: bijux-atlas-api, bijux-atlas-core",
+    "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `purity.md` appears across crates: bijux-atlas-core, bijux-atlas-model"
+  ],
+  "schema_version": 1
+}
