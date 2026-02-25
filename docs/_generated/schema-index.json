@@ -1,0 +1,125 @@
+{
+  "rows": [
+    {
+      "crate": "bijux-atlas-model",
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-model",
+        "schema-evolution-notes"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-model/docs/SCHEMA_EVOLUTION_NOTES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "schema-evolution-notes"
+      ],
+      "topic": "SCHEMA_EVOLUTION_NOTES"
+    },
+    {
+      "crate": "bijux-atlas-model",
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-model",
+        "schema-stability"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-model/docs/SCHEMA_STABILITY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-model",
+        "schema-stability"
+      ],
+      "topic": "SCHEMA_STABILITY"
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-policies",
+        "config-schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-policies/docs/CONFIG_SCHEMA.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "config-schema"
+      ],
+      "topic": "CONFIG_SCHEMA"
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-policies",
+        "schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-policies/docs/SCHEMA.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "schema"
+      ],
+      "topic": "SCHEMA"
+    },
+    {
+      "crate": "bijux-atlas-policies",
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-policies",
+        "schema-evolution"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-policies/docs/SCHEMA_EVOLUTION.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-policies",
+        "schema-evolution"
+      ],
+      "topic": "SCHEMA_EVOLUTION"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "root",
+        "schema-index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/SCHEMA_INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "root",
+        "schema-index"
+      ],
+      "topic": "SCHEMA_INDEX"
+    }
+  ],
+  "schema_version": 1
+}
