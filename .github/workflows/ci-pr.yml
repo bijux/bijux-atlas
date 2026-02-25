@@ -264,6 +264,13 @@ jobs:
           test -f .github/dependabot.yml
           rg -n 'package-ecosystem:\s+"cargo"' .github/dependabot.yml
           rg -n 'package-ecosystem:\s+"github-actions"' .github/dependabot.yml
+      - name: Enforce docs ownership contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .github/CODEOWNERS
+          rg -n '^/docs/ +@bijan' .github/CODEOWNERS
+          rg -n '^/crates/\*/docs/ +@bijan' .github/CODEOWNERS
       - name: Enforce cache size cap
         shell: bash
         run: |
