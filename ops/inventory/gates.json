@@ -29,6 +29,8 @@
     {"id": "ops.gate.validate", "action_id": "ops.root.check", "category": "governance", "description": "validate all json/yaml/toml artifacts and schema contracts"},
     {"id": "ops.gate.structure", "action_id": "ops.root.contracts-check", "category": "governance", "description": "enforce required files contracts and placeholder directory declarations"},
     {"id": "ops.gate.docs", "action_id": "ops.root.contracts-check", "category": "docs", "description": "block orphan docs, broken links, and stale contract lists"},
+    {"id": "ops.gate.docs-paths", "action_id": "ops.root.contracts-check", "category": "docs", "description": "docs markdown path links must resolve to existing targets"},
+    {"id": "ops.gate.docs-budget", "action_id": "ops.root.contracts-check", "category": "docs", "description": "docs markdown directory counts must stay within canonical budget caps"},
     {"id": "ops.gate.generated", "action_id": "ops.gen.check", "category": "generated", "description": "require generated outputs to declare generated_by and schema_version"},
     {"id": "ops.gate.evidence", "action_id": "ops.root.contracts-check", "category": "report", "description": "enforce curated evidence allowlist and bundle validity"},
     {"id": "ops.gate.fixtures", "action_id": "ops.datasets.validate", "category": "datasets", "description": "enforce fixture allowlists, locks, version hashes, and inventory drift checks"},

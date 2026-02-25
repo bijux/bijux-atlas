@@ -224,6 +224,28 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "checks_docs_markdown_directory_budgets"
+domain = "docs"
+title = "docs markdown directory budgets stay within caps"
+docs = "docs/CONTRACT.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
+id = "checks_docs_markdown_link_targets_exist"
+domain = "docs"
+title = "docs markdown link targets exist"
+docs = "docs/CONTRACT.md"
+tags = ["docs", "internal"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
 id = "checks_docs_mkdocs_nav_files_exist"
 domain = "docs"
 title = "mkdocs nav references existing doc files"
