@@ -216,10 +216,12 @@ pub(super) fn check_crate_docs_governance_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let policy_path = Path::new("docs/metadata/crate-doc-governance.json");
-    let policy_text = fs::read_to_string(ctx.repo_root.join(policy_path))
-        .map_err(|err| CheckError::Failed(format!("failed to read {}: {err}", policy_path.display())))?;
-    let policy: serde_json::Value = serde_json::from_str(&policy_text)
-        .map_err(|err| CheckError::Failed(format!("failed to parse {}: {err}", policy_path.display())))?;
+    let policy_text = fs::read_to_string(ctx.repo_root.join(policy_path)).map_err(|err| {
+        CheckError::Failed(format!("failed to read {}: {err}", policy_path.display()))
+    })?;
+    let policy: serde_json::Value = serde_json::from_str(&policy_text).map_err(|err| {
+        CheckError::Failed(format!("failed to parse {}: {err}", policy_path.display()))
+    })?;
     let max_docs = policy
         .get("max_docs_per_crate")
         .and_then(|v| v.as_u64())
@@ -304,7 +306,10 @@ pub(super) fn check_crate_docs_governance_contract(
 
         for path in docs {
             let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
-            let stem = path.file_stem().and_then(|v| v.to_str()).unwrap_or_default();
+            let stem = path
+                .file_stem()
+                .and_then(|v| v.to_str())
+                .unwrap_or_default();
             let inferred = if stem.eq_ignore_ascii_case("index") {
                 "index"
             } else if stem.to_ascii_lowercase().contains("architecture") {
