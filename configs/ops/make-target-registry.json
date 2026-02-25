@@ -1,7 +1,5 @@
 {
   "schema_version": 1,
-  "registry": "make_targets",
-  "description": "SSOT for make target surface, ownership, and workflow usage",
   "targets": [
     {
       "name": "_verification-run",
@@ -416,6 +414,22 @@
         "makefiles/_docs.mk"
       ],
       "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "docs-registry",
+      "defined_in": [
+        "makefiles/_docs.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "docs-registry-validate",
+      "defined_in": [
+        "makefiles/_docs.mk"
+      ],
+      "visibility": "internal",
       "used_in": []
     },
     {

@@ -48,6 +48,17 @@ budget_ms = 600
 visibility = "internal"
 
 [[checks]]
+id = "checks_crate_docs_governance_contract"
+domain = "docs"
+title = "crate documentation governance contract is enforced"
+docs = "docs/metadata/crate-doc-governance.json"
+tags = ["docs", "internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
 id = "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch"
 domain = "crates"
 title = "bijux atlas cli exclusively owns umbrella dispatch metadata"
