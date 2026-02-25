@@ -3483,6 +3483,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/root/COMMAND_INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/root/COMPATIBILITY_POLICY.md"
     },
     {
@@ -3503,7 +3508,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/root/CRATE_INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/DIAGRAM_ALT_TEXT_POLICY.md"
     },
     {
       "crate": null,
@@ -3523,12 +3538,22 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/root/GLOSSARY_CROSSLINKS.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/root/INDEX.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "docs/root/LICENSE_EXPLANATION.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/NAVIGATION_POLICY.md"
     },
     {
       "crate": null,
@@ -3548,6 +3573,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/root/PERSONA_DEVELOPER.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/PERSONA_OPERATOR.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/root/RELEASE_PROCESS_OVERVIEW.md"
     },
     {
@@ -3562,6 +3597,11 @@
     },
     {
       "crate": null,
+      "doc_type": "spec",
+      "from": "docs/root/SCHEMA_INDEX.md"
+    },
+    {
+      "crate": null,
       "doc_type": "concept",
       "from": "docs/root/SECURITY_MODEL.md"
     },
@@ -3569,6 +3609,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/root/STABILITY_GUARANTEES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/START_HERE.md"
     },
     {
       "crate": null,
