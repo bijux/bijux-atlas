@@ -251,7 +251,7 @@ mod tests {
                     namespace: "bijux-atlas".to_string(),
                     components: vec![
                         "ops/stack/redis/redis.yaml".to_string(),
-                        "ops/obs/pack/k8s/namespace.yaml".to_string(),
+                        "ops/observe/pack/k8s/namespace.yaml".to_string(),
                     ],
                 },
             )]),

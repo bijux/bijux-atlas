@@ -7,7 +7,7 @@
     {"path": "ops/inventory/contracts.json", "version": 1},
     {"path": "ops/stack/CONTRACT.md", "version": 1},
     {"path": "ops/k8s/CONTRACT.md", "version": 1},
-    {"path": "ops/obs/CONTRACT.md", "version": 1},
+    {"path": "ops/observe/CONTRACT.md", "version": 1},
     {"path": "ops/load/CONTRACT.md", "version": 1},
     {"path": "ops/datasets/CONTRACT.md", "version": 1},
     {"path": "ops/e2e/CONTRACT.md", "version": 1},

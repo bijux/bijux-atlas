@@ -13,7 +13,7 @@
     "ops/registry": "bijux-atlas-data",
     "ops/stack": "bijux-atlas-operations",
     "ops/k8s": "bijux-atlas-operations",
-    "ops/obs": "bijux-atlas-observability",
+    "ops/observe": "bijux-atlas-observability",
     "ops/load": "bijux-atlas-performance",
     "ops/datasets": "bijux-atlas-data",
     "ops/e2e": "bijux-atlas-operations",

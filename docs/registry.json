@@ -16784,7 +16784,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/obs/CONTRACT.md",
+      "path": "ops/observe/CONTRACT.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16806,7 +16806,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/obs/CONTRACTS.md",
+      "path": "ops/observe/CONTRACTS.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16828,7 +16828,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/obs/INDEX.md",
+      "path": "ops/observe/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16850,7 +16850,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/obs/OWNER.md",
+      "path": "ops/observe/OWNER.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16872,7 +16872,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/obs/README.md",
+      "path": "ops/observe/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16895,7 +16895,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/obs/grafana/README.md",
+      "path": "ops/observe/grafana/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16919,7 +16919,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/obs/otel/INDEX.md",
+      "path": "ops/observe/otel/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16943,7 +16943,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/obs/pack/README.md",
+      "path": "ops/observe/pack/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16967,7 +16967,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/obs/prometheus/INDEX.md",
+      "path": "ops/observe/prometheus/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16992,7 +16992,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/obs/scripts/lib/INDEX.md",
+      "path": "ops/observe/scripts/lib/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -17017,7 +17017,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/obs/tests/README.md",
+      "path": "ops/observe/tests/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [

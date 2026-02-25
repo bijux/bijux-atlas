@@ -62,7 +62,7 @@ Does not define implementation internals outside this contract surface.
 
 Label cardinality rules:
 - User-controlled values must not be used as metric labels.
-- Allowed dynamic labels are constrained by `ops/obs/contract/metrics-contract.json`.
+- Allowed dynamic labels are constrained by `ops/observe/contract/metrics-contract.json`.
 
 ## Failure modes
 

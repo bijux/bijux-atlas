@@ -6,7 +6,7 @@ The canonical SSOT is `ops/CONTRACT.md`.
 
 - `ops/stack/`
 - `ops/k8s/`
-- `ops/obs/`
+- `ops/observe/`
 - `ops/load/`
 - `ops/datasets/`
 - `ops/e2e/`

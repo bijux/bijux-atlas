@@ -53,5 +53,5 @@ Expected output: both targets exit 0 and produce contract checks without warning
 
 - Profile-specific install target: `ops-obs-mode` (`ATLAS_OBS_PROFILE=local-compose|kind|cluster`).
 - Compatibility profile aliases: `ops-obs-mode-minimal`, `ops-obs-mode-full`.
-- Logs schema contract: `ops/obs/contract/logs-fields-contract.json`.
-- Failure artifacts on validation error: `artifacts/ops/obs/validate-fail-<timestamp>/`.
+- Logs schema contract: `ops/observe/contract/logs-fields-contract.json`.
+- Failure artifacts on validation error: `artifacts/ops/observe/validate-fail-<timestamp>/`.

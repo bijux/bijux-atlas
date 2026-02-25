@@ -6,7 +6,7 @@
 
 - Inputs:
   - `configs/ops/observability-pack.json`
-  - `ops/obs/pack/compose/docker-compose.yml`
+  - `ops/observe/pack/compose/docker-compose.yml`
   - `ops/stack/{prometheus,grafana,otel}/*.yaml`
 - Outputs:
   - Running observability pack for the selected profile

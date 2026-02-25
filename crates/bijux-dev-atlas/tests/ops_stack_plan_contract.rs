@@ -40,7 +40,7 @@ fn stack_plan_kind_matches_stack_manifest_components() {
         .expect("resources");
     let expected = vec![
         "ops/k8s/charts/bijux-atlas/Chart.yaml",
-        "ops/obs/pack/k8s/namespace.yaml",
+        "ops/observe/pack/k8s/namespace.yaml",
         "ops/stack/grafana/grafana.yaml",
         "ops/stack/minio/minio.yaml",
         "ops/stack/otel/otel-collector.yaml",

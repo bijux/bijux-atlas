@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source": "ops/obs/drills/drills.json",
+  "source": "ops/observe/drills/drills.json",
   "drills": [
     "ops.drill.memory_growth",
     "ops.drill.otel_outage",

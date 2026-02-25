@@ -15,7 +15,7 @@ Renames should stay explainable for future maintainers and reviewers.
 
 - `ops/load/k6/atlas_phase11.js` -> `ops/load/k6/mixed-80-20.js`
   - Reason: remove phase-based naming; describe traffic shape directly.
-- `ops/obs/run/drill_*.sh` -> noun-led scenario names
+- `ops/observe/run/drill_*.sh` -> noun-led scenario names
   - Examples:
     - `drill_store_outage.sh` -> `store-outage.sh`
     - `drill_prom_outage.sh` -> `prom-outage.sh`

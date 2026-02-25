@@ -31,7 +31,7 @@
             "expected_time_seconds": 120,
             "expected_qps": 1,
             "expected_artifacts": [
-              "artifacts/ops/obs"
+              "artifacts/ops/observe"
             ]
           }
         }

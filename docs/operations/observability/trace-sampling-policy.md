@@ -14,7 +14,7 @@ Bounds telemetry overhead while retaining incident-debugging signal.
 
 - SSOT knob: `telemetry.trace_sampling_per_10k` in `configs/policy/policy.json`.
 - Pack profile sampling contract: `sampling_policy` in `configs/ops/observability-pack.json`.
-- OTEL collector pipeline source: `ops/obs/pack/otel/config.yaml`.
+- OTEL collector pipeline source: `ops/observe/pack/otel/config.yaml`.
 - Validation: `crates/bijux-atlas-policies/src/validate.rs` rejects zero sampling.
 - Runtime tracing remains opt-in via OTEL export wiring in server startup.
 - Verification target: `ops-traces-check`, `ops-observability-pack-verify`.

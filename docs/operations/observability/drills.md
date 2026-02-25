@@ -4,8 +4,8 @@
 
 ## Contract
 
-- Drill manifest SSOT: `ops/obs/drills/drills.json`
-- Drill result schema: `ops/obs/drills/result.schema.json`
+- Drill manifest SSOT: `ops/observe/drills/drills.json`
+- Drill result schema: `ops/observe/drills/result.schema.json`
 - Runner: `bijux dev atlas ops obs drill run <name>`
 - Suite target: `make ops-drill-suite`
 

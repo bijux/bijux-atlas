@@ -20,6 +20,6 @@ Server request handling remains available when OTEL collector is unavailable.
 
 ## Evidence
 
-- `artifacts/ops/obs/traces.snapshot.log`
-- `artifacts/ops/obs/metrics.prom`
+- `artifacts/ops/observe/traces.snapshot.log`
+- `artifacts/ops/observe/metrics.prom`
 - `artifacts/observability/pack-conformance-report.json`

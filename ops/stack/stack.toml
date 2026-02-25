@@ -4,7 +4,7 @@ cluster_config = "ops/stack/kind/cluster.yaml"
 namespace = "bijux-atlas"
 components = [
   "ops/k8s/charts/bijux-atlas/Chart.yaml",
-  "ops/obs/pack/k8s/namespace.yaml",
+  "ops/observe/pack/k8s/namespace.yaml",
   "ops/stack/grafana/grafana.yaml",
   "ops/stack/minio/minio.yaml",
   "ops/stack/otel/otel-collector.yaml",
@@ -18,7 +18,7 @@ cluster_config = "ops/stack/kind/cluster-small.yaml"
 namespace = "bijux-atlas"
 components = [
   "ops/k8s/charts/bijux-atlas/Chart.yaml",
-  "ops/obs/pack/k8s/namespace.yaml",
+  "ops/observe/pack/k8s/namespace.yaml",
   "ops/stack/minio/minio.yaml",
   "ops/stack/redis/redis.yaml",
 ]
@@ -29,7 +29,7 @@ cluster_config = "ops/stack/kind/cluster-small.yaml"
 namespace = "bijux-atlas"
 components = [
   "ops/k8s/charts/bijux-atlas/Chart.yaml",
-  "ops/obs/pack/k8s/namespace.yaml",
+  "ops/observe/pack/k8s/namespace.yaml",
   "ops/stack/minio/minio.yaml",
   "ops/stack/redis/redis.yaml",
 ]

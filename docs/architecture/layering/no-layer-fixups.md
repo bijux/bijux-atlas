@@ -14,7 +14,7 @@ Preserves clear ownership boundaries and prevents hidden coupling.
 
 - `ops/e2e` must not patch cluster resources to "fix" deployment issues.
 - `ops/load` must not mutate k8s values to make perf tests pass.
-- `ops/obs` must not redeploy stack components to recover missing telemetry.
+- `ops/observe` must not redeploy stack components to recover missing telemetry.
 - Boundary gates enforce this rule through lint and contract checks.
 
 ## Failure modes

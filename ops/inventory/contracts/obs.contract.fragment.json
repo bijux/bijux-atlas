@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "path": "ops/obs",
-  "contract_doc": "ops/obs/CONTRACT.md",
+  "path": "ops/observe",
+  "contract_doc": "ops/observe/CONTRACT.md",
   "title": "Contract",
   "version": 1
 }

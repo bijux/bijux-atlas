@@ -12,8 +12,8 @@ Reduces incident response latency by making first-hop telemetry explicit.
 
 ## Contracts
 
-- Dashboard source: `ops/obs/grafana/atlas-observability-dashboard.json`
-- Alert source: `ops/obs/alerts/atlas-alert-rules.yaml`
+- Dashboard source: `ops/observe/grafana/atlas-observability-dashboard.json`
+- Alert source: `ops/observe/alerts/atlas-alert-rules.yaml`
 - Validation target: `ops-observability-validate`.
 - Runbook sources: `docs/operations/runbooks/*.md`
 

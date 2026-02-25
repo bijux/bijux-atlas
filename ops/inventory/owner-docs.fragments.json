@@ -27,8 +27,8 @@
       "declared_owner": "bijux-atlas-operations"
     },
     {
-      "path": "ops/obs",
-      "owner_doc": "ops/obs/OWNER.md",
+      "path": "ops/observe",
+      "owner_doc": "ops/observe/OWNER.md",
       "declared_owner": "bijux-atlas-operations"
     },
     {

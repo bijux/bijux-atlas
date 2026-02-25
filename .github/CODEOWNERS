@@ -5,7 +5,7 @@
 /ops/stack/ @bijan
 /ops/k8s/ @bijan
 /ops/e2e/ @bijan
-/ops/obs/ @bijan
+/ops/observe/ @bijan
 /ops/load/ @bijan
 /ops/run/ @bijan
 

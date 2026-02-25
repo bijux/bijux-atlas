@@ -13,10 +13,10 @@ Keeps dashboards, alerts, and telemetry consumers stable across releases.
 ## Contracts
 
 - Stable contract surfaces:
-  - Metric names and label keys in `ops/obs/contract/metrics-contract.json`
+  - Metric names and label keys in `ops/observe/contract/metrics-contract.json`
   - Span names in `docs/contracts/tracing.md`
-  - Alert names in `ops/obs/contract/alerts-contract.json`
-  - Dashboard panel requirements in `ops/obs/contract/dashboard-panels-contract.json`
+  - Alert names in `ops/observe/contract/alerts-contract.json`
+  - Dashboard panel requirements in `ops/observe/contract/dashboard-panels-contract.json`
 - Additive-only policy for v1:
   - New metrics, labels, spans, and alerts may be added.
   - Existing names and label keys are not renamed or removed in v1.

@@ -12,7 +12,7 @@ Keeps Grafana panels aligned with metric contracts.
 
 ## Scope
 
-`ops/obs/grafana/atlas-observability-dashboard.json` and required metrics.
+`ops/observe/grafana/atlas-observability-dashboard.json` and required metrics.
 
 ## Non-goals
 

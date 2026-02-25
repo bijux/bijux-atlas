@@ -36,8 +36,8 @@ SLO targets and burn math are contractually evaluated from runtime metrics.
 - Strict response-size rejection instead of partial/truncated payloads.
 
 ## Related Contracts
-- Alert rules: `ops/obs/alerts/atlas-alert-rules.yaml`
-- Metrics contract: `ops/obs/contract/metrics-contract.json`
+- Alert rules: `ops/observe/alerts/atlas-alert-rules.yaml`
+- Metrics contract: `ops/observe/contract/metrics-contract.json`
 - Metric cardinality guardrails: `docs/operations/observability/metric-cardinality-guardrails.md`
 
 ## How to verify
@@ -45,7 +45,7 @@ SLO targets and burn math are contractually evaluated from runtime metrics.
 ```bash
 make ops-observability-validate
 make ops-slo-burn
-cat artifacts/ops/obs/slo-burn.json
+cat artifacts/ops/observe/slo-burn.json
 ```
 
 ## Failure modes
