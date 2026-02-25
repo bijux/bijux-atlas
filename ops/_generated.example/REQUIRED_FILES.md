@@ -1,7 +1,12 @@
 # Required Files
 
-Required files for authored content in ops/_generated.example/.
-
-- README.md
-- OWNER.md
-- REQUIRED_FILES.md
+```yaml
+required_files:
+  - ops/_generated.example/README.md
+  - ops/_generated.example/OWNER.md
+  - ops/_generated.example/REQUIRED_FILES.md
+  - ops/_generated.example/ops-index.json
+  - ops/_generated.example/ops-evidence-bundle.json
+  - ops/_generated.example/scorecard.json
+  - ops/_generated.example/pins.index.example.json
+```
