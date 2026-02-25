@@ -9,7 +9,8 @@ Human entry for the ops specification surface.
 - Inventory map: `ops/docs/inventory-contracts.md`
 - Migration window: `ops/docs/migration-window.md`
 - Pin lifecycle: `ops/docs/pin-lifecycle.md`
-- Generated index (compiled): `ops/_generated/INDEX.md`
+- Generated index artifact: `ops/_generated.example/ops-index.json`
+- Release evidence bundle: `ops/_generated.example/ops-evidence-bundle.json`
 
 ## Domains
 

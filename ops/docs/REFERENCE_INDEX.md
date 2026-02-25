@@ -27,6 +27,8 @@
 - [Artifacts Contract](artifacts-contract.md)
 - [Unified Reporting Contract](unified-reporting-contract.md)
 - [Ops Evidence Explanation](ops-evidence-explanation.md)
+- [How Ops Works](how-ops-works.md)
+- [Ops Architecture](ops-architecture.md)
 - [Ops Safety Guarantees](ops-safety-guarantees.md)
 - [Offline Mode](offline-mode.md)
 - [Deterministic Runs](deterministic-runs.md)
