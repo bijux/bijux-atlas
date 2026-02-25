@@ -80,6 +80,26 @@
     },
     {
       "keywords": [
+        "changelog"
+      ],
+      "path": "CHANGELOG.md",
+      "tags": [
+        "changelog"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "contributing"
+      ],
+      "path": "CONTRIBUTING.md",
+      "tags": [
+        "contributing"
+      ],
+      "topic": "CONTRIBUTING"
+    },
+    {
+      "keywords": [
         "readme"
       ],
       "path": "README.md",
@@ -87,6 +107,16 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "keywords": [
+        "security"
+      ],
+      "path": "SECURITY.md",
+      "tags": [
+        "security"
+      ],
+      "topic": "SECURITY"
     },
     {
       "keywords": [

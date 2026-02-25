@@ -14,7 +14,7 @@ fn repo_root() -> PathBuf {
 }
 
 #[test]
-fn docs_validate_supports_json_format() {
+fn slow_docs_validate_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["docs", "validate", "--format", "json"])
@@ -166,7 +166,7 @@ fn docs_inventory_fixture_json_matches_golden() {
 }
 
 #[test]
-fn docs_validate_strict_escalates_warnings_to_errors() {
+fn slow_docs_validate_strict_escalates_warnings_to_errors() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["docs", "validate", "--strict", "--format", "json"])
@@ -247,7 +247,7 @@ fn docs_doctor_fixture_json_matches_golden() {
 }
 
 #[test]
-fn docs_registry_build_supports_json_format() {
+fn slow_docs_registry_build_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
@@ -271,7 +271,7 @@ fn docs_registry_build_supports_json_format() {
 }
 
 #[test]
-fn docs_registry_validate_supports_json_format() {
+fn slow_docs_registry_validate_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["docs", "registry", "validate", "--format", "json"])

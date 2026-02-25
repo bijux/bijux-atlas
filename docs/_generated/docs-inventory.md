@@ -10,7 +10,10 @@ License: Apache-2.0
 | `.github/release-notes-template.md` | `concept` | `docs-governance` | `stable` |
 | `.github/required-status-checks.md` | `concept` | `build-and-release` | `stable` |
 | `.github/templates/scripts-migration-release-note.md` | `concept` | `` | `stable` |
+| `CHANGELOG.md` | `concept` | `docs-governance` | `stable` |
+| `CONTRIBUTING.md` | `concept` | `docs-governance` | `stable` |
 | `README.md` | `concept` | `docs-governance` | `stable` |
+| `SECURITY.md` | `concept` | `docs-governance` | `stable` |
 | `configs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `configs/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `configs/README.md` | `concept` | `docs-governance` | `stable` |

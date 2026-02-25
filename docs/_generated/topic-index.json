@@ -99,6 +99,7 @@
       "crates/bijux-atlas-core/docs/CARGO_DENY_NOTES.md"
     ],
     "CHANGELOG": [
+      "CHANGELOG.md",
       "configs/ops/perf/baselines/CHANGELOG.md",
       "docs/operations/slo/CHANGELOG.md"
     ],
@@ -191,6 +192,9 @@
     ],
     "CONTRACT_COMPATIBILITY": [
       "crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md"
+    ],
+    "CONTRIBUTING": [
+      "CONTRIBUTING.md"
     ],
     "CONTRIBUTION_MODEL": [
       "docs/root/CONTRIBUTION_MODEL.md"
@@ -631,6 +635,9 @@
     ],
     "SCOPE": [
       "docs/operations/slo/SCOPE.md"
+    ],
+    "SECURITY": [
+      "SECURITY.md"
     ],
     "SECURITY_MODEL": [
       "docs/root/SECURITY_MODEL.md"

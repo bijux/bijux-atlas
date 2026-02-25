@@ -47,9 +47,27 @@
     },
     {
       "breadcrumbs": [
+        "CHANGELOG.md"
+      ],
+      "path": "CHANGELOG.md"
+    },
+    {
+      "breadcrumbs": [
+        "CONTRIBUTING.md"
+      ],
+      "path": "CONTRIBUTING.md"
+    },
+    {
+      "breadcrumbs": [
         "README.md"
       ],
       "path": "README.md"
+    },
+    {
+      "breadcrumbs": [
+        "SECURITY.md"
+      ],
+      "path": "SECURITY.md"
     },
     {
       "breadcrumbs": [

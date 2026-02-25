@@ -7,6 +7,7 @@ mod cli;
 mod configs_commands;
 mod control_plane_commands;
 mod dispatch;
+mod docs_command_runtime;
 mod docs_commands;
 #[cfg(test)]
 mod main_tests;
@@ -44,11 +45,11 @@ pub(crate) use control_plane_commands::{
     run_capabilities_command, run_docker_command, run_help_inventory_command, run_policies_command,
     run_print_boundaries_command, run_print_policies, run_version_command,
 };
+pub(crate) use docs_command_runtime::{docs_lint_payload, run_docs_command};
 #[cfg(test)]
 pub(crate) use docs_commands::mkdocs_nav_refs;
 pub(crate) use docs_commands::{
-    docs_context, docs_links_payload, docs_lint_payload, docs_validate_payload, run_docs_command,
-    walk_files_local,
+    docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
 pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
 pub(crate) use ops_support::{
