@@ -9004,6 +9004,18 @@
     },
     {
       "keywords": [
+        "docker-overview",
+        "root"
+      ],
+      "path": "docs/root/DOCKER_OVERVIEW.md",
+      "tags": [
+        "docker-overview",
+        "root"
+      ],
+      "topic": "DOCKER_OVERVIEW"
+    },
+    {
+      "keywords": [
         "docs-philosophy",
         "root"
       ],
@@ -9073,6 +9085,18 @@
         "root"
       ],
       "topic": "LICENSE_EXPLANATION"
+    },
+    {
+      "keywords": [
+        "makefiles-overview",
+        "root"
+      ],
+      "path": "docs/root/MAKEFILES_OVERVIEW.md",
+      "tags": [
+        "makefiles-overview",
+        "root"
+      ],
+      "topic": "MAKEFILES_OVERVIEW"
     },
     {
       "keywords": [

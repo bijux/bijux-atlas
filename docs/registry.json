@@ -14663,6 +14663,26 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "docker-overview",
+        "root"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docker-governance",
+      "path": "docs/root/DOCKER_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docker-overview",
+        "root"
+      ],
+      "topic": "DOCKER_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "docs-philosophy",
         "root"
       ],
@@ -14777,6 +14797,26 @@
         "root"
       ],
       "topic": "LICENSE_EXPLANATION"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "makefiles-overview",
+        "root"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "build-and-release",
+      "path": "docs/root/MAKEFILES_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "makefiles-overview",
+        "root"
+      ],
+      "topic": "MAKEFILES_OVERVIEW"
     },
     {
       "crate": null,

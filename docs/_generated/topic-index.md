@@ -58,6 +58,7 @@
 | `DETERMINISM` | `crates/bijux-atlas-ingest/docs/DETERMINISM.md` |
 | `DEVELOPER_WORKFLOW_QUICKSTART` | `docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md` |
 | `DIAGRAM_ALT_TEXT_POLICY` | `docs/root/DIAGRAM_ALT_TEXT_POLICY.md` |
+| `DOCKER_OVERVIEW` | `docs/root/DOCKER_OVERVIEW.md` |
 | `DOCS_OWNERSHIP` | `docs/governance/DOCS_OWNERSHIP.md` |
 | `DOCS_PHILOSOPHY` | `docs/root/DOCS_PHILOSOPHY.md` |
 | `ENGINE_ARCHITECTURE` | `crates/bijux-dev-atlas-core/docs/ENGINE_ARCHITECTURE.md` |
@@ -80,6 +81,7 @@
 | `INGEST_CONTRACT` | `crates/bijux-atlas-ingest/docs/INGEST_CONTRACT.md` |
 | `KUBERNETES` | `crates/bijux-atlas-server/docs/KUBERNETES.md` |
 | `LICENSE_EXPLANATION` | `docs/root/LICENSE_EXPLANATION.md` |
+| `MAKEFILES_OVERVIEW` | `docs/root/MAKEFILES_OVERVIEW.md` |
 | `MIRROR_POLICY` | `ops/_generated.example/MIRROR_POLICY.md` |
 | `NAVIGATION_POLICY` | `docs/root/NAVIGATION_POLICY.md` |
 | `NON_GOALS` | `docs/operations/slo/NON_GOALS.md` |
