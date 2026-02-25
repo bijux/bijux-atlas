@@ -129,6 +129,15 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_docs_mkdocs_nav_files_exist" => Some(check_docs_mkdocs_nav_files_exist),
         "checks_docs_no_orphan_markdown_pages" => Some(check_docs_no_orphan_markdown_pages),
         "checks_docs_no_duplicate_nav_titles" => Some(check_docs_no_duplicate_nav_titles),
+        "checks_docs_operations_directory_index_contract" => {
+            Some(check_docs_operations_directory_index_contract)
+        }
+        "checks_docs_operations_canonical_concept_paths" => {
+            Some(check_docs_operations_canonical_concept_paths)
+        }
+        "checks_docs_operations_verify_command_quality" => {
+            Some(check_docs_operations_verify_command_quality)
+        }
         "checks_docs_readme_index_contract_presence" => {
             Some(check_docs_readme_index_contract_presence)
         }
@@ -237,6 +246,9 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_docs_mkdocs_nav_files_exist",
         "checks_docs_no_orphan_markdown_pages",
         "checks_docs_no_duplicate_nav_titles",
+        "checks_docs_operations_directory_index_contract",
+        "checks_docs_operations_canonical_concept_paths",
+        "checks_docs_operations_verify_command_quality",
         "checks_docs_readme_index_contract_presence",
         "checks_docs_file_naming_conventions",
         "checks_docs_command_surface_docs_exist",

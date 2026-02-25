@@ -134,6 +134,92 @@ pub(super) fn check_docs_no_duplicate_nav_titles(
     Ok(violations)
 }
 
+pub(super) fn check_docs_operations_directory_index_contract(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let operations_root = ctx.repo_root.join("docs/operations");
+    if !operations_root.exists() {
+        return Ok(Vec::new());
+    }
+    let mut markdown_dirs = BTreeSet::<PathBuf>::new();
+    for file in walk_files(&operations_root) {
+        if file.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        if let Some(parent) = file.parent() {
+            markdown_dirs.insert(parent.to_path_buf());
+        }
+    }
+
+    let mut violations = Vec::new();
+    for dir in markdown_dirs {
+        let rel_dir = dir.strip_prefix(ctx.repo_root).unwrap_or(&dir);
+        let mut index_candidates = 0usize;
+        for name in ["INDEX.md", "index.md"] {
+            if dir.join(name).exists() {
+                index_candidates += 1;
+            }
+        }
+        if index_candidates == 0 {
+            violations.push(violation(
+                "DOCS_OPERATIONS_INDEX_MISSING",
+                format!(
+                    "operations docs directory `{}` is missing INDEX.md",
+                    rel_dir.display()
+                ),
+                "add a single INDEX.md entrypoint for each docs/operations directory",
+                Some(rel_dir),
+            ));
+        } else if index_candidates > 1 {
+            violations.push(violation(
+                "DOCS_OPERATIONS_PARALLEL_INDEX_FORBIDDEN",
+                format!(
+                    "operations docs directory `{}` has multiple index entrypoints",
+                    rel_dir.display()
+                ),
+                "keep exactly one INDEX.md entrypoint per docs/operations directory",
+                Some(rel_dir),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+pub(super) fn check_docs_operations_canonical_concept_paths(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let deprecated = Path::new("docs/operations/full-stack-locally.md");
+    if ctx.repo_root.join(deprecated).exists() {
+        Ok(vec![violation(
+            "DOCS_OPERATIONS_DUPLICATE_CONCEPT_PATH",
+            "deprecated duplicate concept path still exists: docs/operations/full-stack-locally.md"
+                .to_string(),
+            "keep docs/operations/full-stack-local.md as canonical and remove duplicate aliases",
+            Some(deprecated),
+        )])
+    } else {
+        Ok(Vec::new())
+    }
+}
+
+pub(super) fn check_docs_operations_verify_command_quality(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let rel = Path::new("docs/operations/INDEX.md");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if text.contains("$ make docs") || text.contains("`make docs`") {
+        Ok(vec![violation(
+            "DOCS_OPERATIONS_VERIFY_COMMAND_STALE",
+            "docs/operations/INDEX.md uses stale verification command `make docs`".to_string(),
+            "replace with canonical docs doctor command and expected status output",
+            Some(rel),
+        )])
+    } else {
+        Ok(Vec::new())
+    }
+}
+
 pub(super) fn check_docs_readme_index_contract_presence(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {

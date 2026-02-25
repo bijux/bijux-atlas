@@ -73,10 +73,10 @@ Missing operational references causes inconsistent incident response and unsafe 
 ## How to verify
 
 ```bash
-$ make docs
+$ bijux dev atlas docs doctor --format json
 ```
 
-Expected output: operations links resolve and docs checks pass.
+Expected output: docs doctor reports status `ok` and no operations docs drift.
 
 ## See also
 
