@@ -33,7 +33,22 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "CHANGELOG.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "CONTRIBUTING.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "SECURITY.md"
     },
     {
       "crate": null,

@@ -131,6 +131,42 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "changelog"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "CHANGELOG.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "changelog"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contributing"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "CONTRIBUTING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contributing"
+      ],
+      "topic": "CONTRIBUTING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "readme"
       ],
       "last_reviewed": "2026-02-25",
@@ -143,6 +179,24 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "SECURITY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "security"
+      ],
+      "topic": "SECURITY"
     },
     {
       "crate": null,

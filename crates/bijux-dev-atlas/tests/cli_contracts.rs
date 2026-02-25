@@ -145,7 +145,7 @@ fn explain_supports_json_format() {
 }
 
 #[test]
-fn doctor_supports_json_format() {
+fn slow_doctor_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["check", "doctor", "--format", "json"])
@@ -287,7 +287,7 @@ fn check_list_supports_json_alias() {
 }
 
 #[test]
-fn check_doctor_supports_json_format() {
+fn slow_check_doctor_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["check", "doctor", "--format", "json"])

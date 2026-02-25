@@ -25,7 +25,7 @@
 | `CACHING` | `crates/bijux-atlas-server/docs/CACHING.md, crates/bijux-atlas-store/docs/CACHING.md` |
 | `CANONICALIZATION` | `crates/bijux-atlas-core/docs/CANONICALIZATION.md` |
 | `CARGO_DENY_NOTES` | `crates/bijux-atlas-core/docs/CARGO_DENY_NOTES.md` |
-| `CHANGELOG` | `configs/ops/perf/baselines/CHANGELOG.md, docs/operations/slo/CHANGELOG.md` |
+| `CHANGELOG` | `CHANGELOG.md, configs/ops/perf/baselines/CHANGELOG.md, docs/operations/slo/CHANGELOG.md` |
 | `CHANGE_CHECKLIST` | `crates/bijux-atlas-policies/docs/CHANGE_CHECKLIST.md` |
 | `CHANGE_POLICY` | `docs/operations/slo/CHANGE_POLICY.md` |
 | `CI_LANES` | `makefiles/CI_LANES.md` |
@@ -46,6 +46,7 @@
 | `CONTRACT` | `configs/CONTRACT.md, crates/bijux-atlas-api/CONTRACT.md, crates/bijux-atlas-cli/CONTRACT.md, crates/bijux-atlas-core/CONTRACT.md, crates/bijux-atlas-ingest/CONTRACT.md, crates/bijux-atlas-model/CONTRACT.md, crates/bijux-atlas-policies/CONTRACT.md, crates/bijux-atlas-query/CONTRACT.md, crates/bijux-atlas-server/CONTRACT.md, crates/bijux-atlas-store/CONTRACT.md, crates/bijux-dev-atlas-adapters/CONTRACT.md, crates/bijux-dev-atlas-core/CONTRACT.md, crates/bijux-dev-atlas-model/CONTRACT.md, crates/bijux-dev-atlas-policies/CONTRACT.md, crates/bijux-dev-atlas/CONTRACT.md, crates/bijux-dev-atlas/docs/CONTRACT.md, docker/CONTRACT.md, docs/CONTRACT.md, makefiles/CONTRACT.md, ops/CONTRACT.md, ops/datasets/CONTRACT.md, ops/e2e/CONTRACT.md, ops/fixtures/CONTRACT.md, ops/k8s/CONTRACT.md, ops/load/CONTRACT.md, ops/obs/CONTRACT.md, ops/report/CONTRACT.md, ops/stack/CONTRACT.md` |
 | `CONTRACTS` | `crates/bijux-dev-atlas-model/docs/CONTRACTS.md, ops/obs/CONTRACTS.md` |
 | `CONTRACT_COMPATIBILITY` | `crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md` |
+| `CONTRIBUTING` | `CONTRIBUTING.md` |
 | `CONTRIBUTION_MODEL` | `docs/root/CONTRIBUTION_MODEL.md` |
 | `CONTROL_PLANE` | `ops/CONTROL_PLANE.md` |
 | `CONTROL_PLANE_OVERVIEW` | `docs/root/CONTROL_PLANE_OVERVIEW.md` |
@@ -125,6 +126,7 @@
 | `SCHEMA_INDEX` | `docs/root/SCHEMA_INDEX.md` |
 | `SCHEMA_STABILITY` | `crates/bijux-atlas-model/docs/SCHEMA_STABILITY.md` |
 | `SCOPE` | `docs/operations/slo/SCOPE.md` |
+| `SECURITY` | `SECURITY.md` |
 | `SECURITY_MODEL` | `docs/root/SECURITY_MODEL.md` |
 | `SERDE_POLICY` | `crates/bijux-atlas-core/docs/SERDE_POLICY.md` |
 | `SLA_DECISION_ADR_TEMPLATE` | `docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md` |
