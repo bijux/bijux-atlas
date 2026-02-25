@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "owner": "bijux-atlas-operations",
+  "profiles": {
+    "local": {
+      "metrics_golden": "ops/observe/contracts/goldens/local/metrics.golden.prom",
+      "trace_golden": "ops/observe/contracts/goldens/local/trace-structure.golden.json"
+    },
+    "perf": {
+      "metrics_golden": "ops/observe/contracts/goldens/perf/metrics.golden.prom",
+      "trace_golden": "ops/observe/contracts/goldens/perf/trace-structure.golden.json"
+    },
+    "offline": {
+      "metrics_golden": "ops/observe/contracts/goldens/offline/metrics.golden.prom",
+      "trace_golden": "ops/observe/contracts/goldens/offline/trace-structure.golden.json"
+    }
+  }
+}

@@ -37,7 +37,7 @@ SLO targets and burn math are contractually evaluated from runtime metrics.
 
 ## Related Contracts
 - Alert rules: `ops/observe/alerts/atlas-alert-rules.yaml`
-- Metrics contract: `ops/observe/contract/metrics-contract.json`
+- Metrics contract: `ops/observe/contracts/metrics-contract.json`
 - Metric cardinality guardrails: `docs/operations/observability/metric-cardinality-guardrails.md`
 
 ## How to verify

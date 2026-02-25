@@ -1,7 +1,7 @@
 # Metric Cardinality Guardrails
 
 ## Policy
-- Metric names are versioned by contract in `ops/observe/contract/metrics-contract.json`.
+- Metric names are versioned by contract in `ops/observe/contracts/metrics-contract.json`.
 - Labels must be bounded and non-user-controlled.
 - Forbidden labels include request-derived high-cardinality values such as `gene_id`, `name`, `cursor`, `region`, and raw `ip`.
 

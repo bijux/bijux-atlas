@@ -29,7 +29,7 @@
 ## Invariants
 
 - Canonical naming is `observe`; legacy `obs` names and paths are forbidden in authored artifacts.
-- Public telemetry surface is the union of published metrics, alerts, traces, logs fields, and dashboard contracts under `ops/observe/contract/`.
+- Public telemetry surface is the union of published metrics, alerts, traces, logs fields, and dashboard contracts under `ops/observe/contracts/`.
 - Alert catalog coverage must reference SLOs and stable severity semantics.
 - SLO definitions and telemetry drills are authored policy; generated telemetry index is derived evidence.
 - Observability suites must be deterministic for the same drill catalog and contracts.
