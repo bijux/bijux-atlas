@@ -13,7 +13,7 @@ Canonical operational filesystem layout.
 - `ops/k8s/`: charts, values, and tests.
 - `ops/load/`: k6 suites and scoring.
 - `ops/observe/`: dashboards, alerts, and contracts.
-- `ops/datasets/`, `ops/fixtures/`: dataset and fixture assets.
+- `ops/datasets/`, `ops/datasets/fixtures/`: dataset and fixture assets.
 - bijux dev atlas ops helper assets: `crates/bijux-dev-atlas/src/commands/ops/runtime_modules/assets/lib/`.
 
 ## Run full stack

@@ -7,7 +7,7 @@ Entry points:
 - `make ops-e2e-smoke`
 
 Contracts:
-- `ops/fixtures/CONTRACT.md`
+- `ops/datasets/fixtures/CONTRACT.md`
 
 Artifacts:
 - Fixture assets are inputs; generated artifacts are written under `ops/_artifacts/<run_id>/...`.

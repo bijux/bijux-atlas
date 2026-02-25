@@ -5,8 +5,8 @@
       "id": "110/homo_sapiens/GRCh38",
       "kind": "download",
       "archive": "bijux-atlas-medium-fixture-v1.tar.gz",
-      "url": "ops/fixtures/medium/v1/assets/bijux-atlas-medium-fixture-v1.tar.gz",
-      "public_url": "https://github.com/bijux/bijux-atlas-ops/fixtures/releases/download/v1/bijux-atlas-medium-fixture-v1.tar.gz",
+      "url": "ops/datasets/fixtures/medium/v1/assets/bijux-atlas-medium-fixture-v1.tar.gz",
+      "public_url": "https://github.com/bijux/bijux-atlas-ops/datasets/fixtures/releases/download/v1/bijux-atlas-medium-fixture-v1.tar.gz",
       "sha256": "fc883999cf6d4bbe7be36a45ee4f31af06dd1235f5dc6fd1f6f1bdb360bc3ffd",
       "extract_subdir": "",
       "files": {

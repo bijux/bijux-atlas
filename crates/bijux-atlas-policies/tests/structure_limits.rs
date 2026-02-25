@@ -238,7 +238,7 @@ fn runtime_policy_crate_must_not_include_governance_policy_symbols() {
         "RepoPolicy",
         "OpsPolicy",
         "DevAtlasPolicySet",
-        "ops/atlas-dev/policies",
+        "ops/inventory/policies",
         "dev-atlas-policy",
     ];
 

@@ -16286,7 +16286,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/fixtures/CONTRACT.md",
+      "path": "ops/datasets/fixtures/CONTRACT.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16308,7 +16308,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/fixtures/INDEX.md",
+      "path": "ops/datasets/fixtures/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16330,7 +16330,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-atlas-operations",
-      "path": "ops/fixtures/OWNER.md",
+      "path": "ops/datasets/fixtures/OWNER.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -16352,7 +16352,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/fixtures/README.md",
+      "path": "ops/datasets/fixtures/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [

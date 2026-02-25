@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "allow_remote_download": false,
-  "fixture_roots": ["ops/fixtures"],
+  "fixture_roots": ["ops/datasets/fixtures"],
   "allowed_kinds": ["fixture", "real"],
   "policy": "fixtures are local, deterministic, and immutable per release"
 }

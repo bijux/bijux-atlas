@@ -1,4 +1,0 @@
-url=https://github.com/bijux/bijux-atlas-ops/fixtures/releases/download/v1/bijux-atlas-medium-fixture-v1.tar.gz
-sha256=fc883999cf6d4bbe7be36a45ee4f31af06dd1235f5dc6fd1f6f1bdb360bc3ffd
-archive=bijux-atlas-medium-fixture-v1.tar.gz
-extract_dir=ops/fixtures/medium/v1/data

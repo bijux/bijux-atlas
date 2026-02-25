@@ -12,8 +12,8 @@
       "declared_owner": "bijux-atlas-operations"
     },
     {
-      "path": "ops/fixtures",
-      "owner_doc": "ops/fixtures/OWNER.md",
+      "path": "ops/datasets/fixtures",
+      "owner_doc": "ops/datasets/fixtures/OWNER.md",
       "declared_owner": "bijux-atlas-operations"
     },
     {

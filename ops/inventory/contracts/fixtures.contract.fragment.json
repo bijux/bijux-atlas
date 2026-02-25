@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "path": "ops/fixtures",
-  "contract_doc": "ops/fixtures/CONTRACT.md",
+  "path": "ops/datasets/fixtures",
+  "contract_doc": "ops/datasets/fixtures/CONTRACT.md",
   "title": "Contract",
   "version": 1
 }

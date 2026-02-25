@@ -21,9 +21,9 @@ make ops-publish DATASET=medium
 
 ```bash
 cargo run -p bijux-atlas-cli -- atlas ingest-verify-inputs \
-  --gff3 ./ops/fixtures/medium/v1/data/genes.gff3 \
-  --fasta ./ops/fixtures/medium/v1/data/genome.fa \
-  --fai ./ops/fixtures/medium/v1/data/genome.fa.fai \
+  --gff3 ./ops/datasets/fixtures/medium/v1/data/genes.gff3 \
+  --fasta ./ops/datasets/fixtures/medium/v1/data/genome.fa \
+  --fai ./ops/datasets/fixtures/medium/v1/data/genome.fa.fai \
   --output-root ./artifacts/e2e-datasets
 ```
 

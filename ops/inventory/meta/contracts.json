@@ -12,6 +12,6 @@
     {"path": "ops/datasets/CONTRACT.md", "version": 1},
     {"path": "ops/e2e/CONTRACT.md", "version": 1},
     {"path": "ops/report/CONTRACT.md", "version": 1},
-    {"path": "ops/fixtures/CONTRACT.md", "version": 1}
+    {"path": "ops/datasets/fixtures/CONTRACT.md", "version": 1}
   ]
 }

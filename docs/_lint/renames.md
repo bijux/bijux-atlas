@@ -31,8 +31,8 @@ Renames should stay explainable for future maintainers and reviewers.
   - `configs/ops/cache-thresholds.json` -> `configs/ops/cache-budget-thresholds.v1.json`
   - `configs/ops/dataset-qc-thresholds.json` -> `configs/ops/dataset-qc-thresholds.v1.json`
 - Snapshot naming clarity:
-  - `ops/fixtures/medium/v1/golden_queries.json` -> `ops/fixtures/medium/v1/api-list-queries.v1.json`
-  - `ops/fixtures/medium/v1/golden_snapshot.json` -> `ops/fixtures/medium/v1/api-list-responses.v1.json`
+  - `ops/datasets/fixtures/medium/v1/golden_queries.json` -> `ops/datasets/fixtures/medium/v1/api-list-queries.v1.json`
+  - `ops/datasets/fixtures/medium/v1/golden_snapshot.json` -> `ops/datasets/fixtures/medium/v1/api-list-responses.v1.json`
   - `crates/bijux-atlas-server/tests/golden/api_surface_response_snapshots.json` -> `crates/bijux-atlas-server/tests/snapshots/api-surface.responses.v1.json`
 - Test intent renames:
   - `crates/bijux-atlas-server/tests/api_hardening.rs` -> `crates/bijux-atlas-server/tests/api-contracts.rs`

@@ -23,12 +23,12 @@ Does not define scientific curation policy.
 
 - Update [Config Keys Contract](../contracts/config-keys.md) if new config knobs are required.
 - Keep dataset identity release-indexed (`release/species/assembly` compatible).
-- Add/refresh fixtures under `ops/fixtures/`.
+- Add/refresh fixtures under `ops/datasets/fixtures/`.
 
 ## Steps
 
 1. Add parser + ingest support in relevant crates.
-2. Add deterministic fixture(s) in `ops/fixtures/`.
+2. Add deterministic fixture(s) in `ops/datasets/fixtures/`.
 3. Extend tests and golden snapshots.
 4. Update operations docs if behavior changes.
 

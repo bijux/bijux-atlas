@@ -23,7 +23,7 @@
         "ops/datasets": {"type": "string", "minLength": 1},
         "ops/e2e": {"type": "string", "minLength": 1},
         "ops/report": {"type": "string", "minLength": 1},
-        "ops/fixtures": {"type": "string", "minLength": 1},
+        "ops/datasets/fixtures": {"type": "string", "minLength": 1},
         "ops/run": {"type": "string", "minLength": 1}
       },
       "required": [
@@ -44,7 +44,7 @@
         "ops/datasets",
         "ops/e2e",
         "ops/report",
-        "ops/fixtures",
+        "ops/datasets/fixtures",
         "ops/run"
       ],
       "additionalProperties": false
