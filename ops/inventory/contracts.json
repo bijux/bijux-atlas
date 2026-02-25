@@ -22,6 +22,10 @@
       "version": 1
     },
     {
+      "path": "ops/inventory/pin-freeze.json",
+      "version": 1
+    },
+    {
       "path": "ops/stack/CONTRACT.md",
       "version": 1
     },

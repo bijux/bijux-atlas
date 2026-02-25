@@ -614,6 +614,7 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     let required = [
         "ops/schema/README.md",
         "ops/schema/inventory/gates.schema.json",
+        "ops/schema/inventory/pin-freeze.schema.json",
         "ops/schema/inventory/pins.schema.json",
         "ops/schema/inventory/toolchain.schema.json",
         "ops/schema/env/overlay.schema.json",
@@ -655,6 +656,7 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
 
     let schema_contracts = [
         "ops/schema/inventory/gates.schema.json",
+        "ops/schema/inventory/pin-freeze.schema.json",
         "ops/schema/inventory/pins.schema.json",
         "ops/schema/inventory/toolchain.schema.json",
         "ops/schema/datasets/manifest.schema.json",
