@@ -656,6 +656,36 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         }
     }
 
+    let embedded_schema_allowlist = BTreeSet::from([
+        "ops/k8s/charts/bijux-atlas/values.schema.json".to_string(),
+        "ops/observe/drills/result.schema.json".to_string(),
+        "ops/observe/pack/compose.schema.json".to_string(),
+        "ops/inventory/policies/dev-atlas-policy.schema.json".to_string(),
+    ]);
+    for file in walk_files(&ctx.repo_root.join("ops"))
+        .into_iter()
+        .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
+        .filter(|rel| rel.extension().and_then(|ext| ext.to_str()) == Some("json"))
+        .filter(|rel| {
+            rel.file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.ends_with(".schema.json"))
+        })
+    {
+        let rel_str = file.display().to_string();
+        if !file.starts_with("ops/schema") && !embedded_schema_allowlist.contains(&rel_str) {
+            violations.push(violation(
+                "OPS_SCHEMA_OUTSIDE_CANONICAL_TREE",
+                format!(
+                    "schema file must live under ops/schema unless allowlisted tool-native schema: `{}`",
+                    file.display()
+                ),
+                "move schema into ops/schema or explicitly allowlist tool-native embedded schema",
+                Some(&file),
+            ));
+        }
+    }
+
     let schema_contracts = [
         "ops/schema/inventory/gates.schema.json",
         "ops/schema/inventory/pin-freeze.schema.json",
@@ -712,6 +742,25 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
                 Some(rel),
             ));
         }
+
+        if let Some(name) = rel.file_name().and_then(|n| n.to_str()) {
+            let stem = name.trim_end_matches(".schema.json");
+            let naming_valid = !stem.is_empty()
+                && stem.chars().all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
+                && !stem.starts_with('-')
+                && !stem.ends_with('-');
+            if !naming_valid {
+                violations.push(violation(
+                    "OPS_SCHEMA_FILENAME_INVALID",
+                    format!(
+                        "schema filename must use lowercase kebab-case and `.schema.json` suffix: `{}`",
+                        rel.display()
+                    ),
+                    "rename schema file to lowercase kebab-case naming",
+                    Some(rel),
+                ));
+            }
+        }
     }
 
     let mut actual_schema_files = walk_files(&ctx.repo_root.join("ops/schema"))
@@ -760,6 +809,45 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
                     Some(index_rel),
                 ));
             }
+
+            let index_md_rel = Path::new("ops/schema/generated/schema-index.md");
+            let index_md_text = fs::read_to_string(ctx.repo_root.join(index_md_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let mut markdown_paths = Vec::new();
+            for line in index_md_text.lines() {
+                let trimmed = line.trim();
+                if !trimmed.starts_with("| `ops/schema/") {
+                    continue;
+                }
+                let Some(path) = trimmed
+                    .strip_prefix("| `")
+                    .and_then(|v| v.split("` |").next())
+                    .map(ToString::to_string)
+                else {
+                    continue;
+                };
+                markdown_paths.push(path);
+            }
+            if markdown_paths != expected_files {
+                violations.push(violation(
+                    "OPS_SCHEMA_INDEX_MARKDOWN_DRIFT",
+                    "ops/schema/generated/schema-index.md does not match schema-index.json entries"
+                        .to_string(),
+                    "regenerate schema-index.md from schema-index.json",
+                    Some(index_md_rel),
+                ));
+            }
+            for path in &markdown_paths {
+                let rel = Path::new(path);
+                if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+                    violations.push(violation(
+                        "OPS_SCHEMA_INDEX_MARKDOWN_BROKEN_LINK",
+                        format!("schema-index.md references missing schema `{path}`"),
+                        "remove broken markdown entry or restore missing schema file",
+                        Some(index_md_rel),
+                    ));
+                }
+            }
         }
     }
 
@@ -768,6 +856,32 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     if let Ok(text) = fs::read_to_string(&compatibility_path) {
         if let Ok(lock_json) = serde_json::from_str::<serde_json::Value>(&text) {
             if let Some(targets) = lock_json.get("targets").and_then(|v| v.as_array()) {
+                let mut previous = String::new();
+                for target in targets {
+                    let Some(schema_path) = target.get("schema_path").and_then(|v| v.as_str())
+                    else {
+                        continue;
+                    };
+                    if previous.as_str() > schema_path {
+                        violations.push(violation(
+                            "OPS_SCHEMA_COMPATIBILITY_LOCK_ORDER_INVALID",
+                            "compatibility-lock targets must be sorted by schema_path".to_string(),
+                            "sort targets lexicographically by schema_path",
+                            Some(compatibility_rel),
+                        ));
+                    }
+                    previous = schema_path.to_string();
+                    if !actual_schema_files.contains(&schema_path.to_string()) {
+                        violations.push(violation(
+                            "OPS_SCHEMA_COMPATIBILITY_LOCK_STALE_PATH",
+                            format!(
+                                "compatibility-lock references schema not present in schema index: `{schema_path}`"
+                            ),
+                            "remove stale compatibility-lock target or restore schema file",
+                            Some(compatibility_rel),
+                        ));
+                    }
+                }
                 for target in targets {
                     let Some(schema_path) = target.get("schema_path").and_then(|v| v.as_str())
                     else {
@@ -809,6 +923,75 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
             }
         }
     }
+
+    let schema_readme_rel = Path::new("ops/schema/README.md");
+    let schema_readme = fs::read_to_string(ctx.repo_root.join(schema_readme_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for required_link in [
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/schema/BUDGET_POLICY.md",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+    ] {
+        if !schema_readme.contains(required_link) {
+            violations.push(violation(
+                "OPS_SCHEMA_GOVERNANCE_LINK_MISSING",
+                format!("ops/schema/README.md must link `{required_link}`"),
+                "add required governance policy links to ops/schema/README.md",
+                Some(schema_readme_rel),
+            ));
+        }
+    }
+
+    const SCHEMA_BUDGET_CAP: usize = 90;
+    if actual_schema_files.len() > SCHEMA_BUDGET_CAP {
+        let exceptions_rel = Path::new("ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md");
+        let exceptions_text = fs::read_to_string(ctx.repo_root.join(exceptions_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if !exceptions_text.contains("- ") {
+            violations.push(violation(
+                "OPS_SCHEMA_BUDGET_CAP_EXCEEDED",
+                format!(
+                    "schema count {} exceeds budget cap {} without approved exceptions",
+                    actual_schema_files.len(),
+                    SCHEMA_BUDGET_CAP
+                ),
+                "document approved exceptions in ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+                Some(exceptions_rel),
+            ));
+        }
+    }
+
+    let allowlist_rel = Path::new("ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md");
+    let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowed_unreferenced = allowlist_text
+        .lines()
+        .filter_map(|line| line.split('`').nth(1))
+        .map(ToString::to_string)
+        .collect::<BTreeSet<_>>();
+    for schema_path in &actual_schema_files {
+        let references = walk_files(&ctx.repo_root.join("ops"))
+            .into_iter()
+            .filter_map(|path| path.strip_prefix(ctx.repo_root).ok().map(PathBuf::from))
+            .filter(|rel| !rel.starts_with("ops/schema"))
+            .filter(|rel| rel.extension().and_then(|ext| ext.to_str()) != Some("lock"))
+            .filter_map(|rel| {
+                fs::read_to_string(ctx.repo_root.join(&rel))
+                    .ok()
+                    .map(|text| (rel, text))
+            })
+            .any(|(_rel, text)| text.contains(schema_path));
+        if !references && !allowed_unreferenced.contains(schema_path) {
+            violations.push(violation(
+                "OPS_SCHEMA_UNREFERENCED",
+                format!("schema `{schema_path}` is unreferenced outside ops/schema"),
+                "reference schema from contract/config or add a reason in SCHEMA_REFERENCE_ALLOWLIST.md",
+                Some(Path::new(schema_path)),
+            ));
+        }
+    }
+
     Ok(violations)
 }
 

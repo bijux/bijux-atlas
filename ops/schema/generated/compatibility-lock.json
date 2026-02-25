@@ -2,16 +2,71 @@
   "schema_version": 1,
   "targets": [
     {
+      "schema_path": "ops/schema/datasets/manifest.schema.json",
+      "required_fields": [
+        "schema_version",
+        "datasets"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/env/overlay.schema.json",
+      "required_fields": [
+        "schema_version",
+        "environment",
+        "values"
+      ]
+    },
+    {
       "schema_path": "ops/schema/inventory/pins.schema.json",
-      "required_fields": ["schema_version", "images", "dataset_ids", "versions"]
+      "required_fields": [
+        "schema_version",
+        "images",
+        "dataset_ids",
+        "versions"
+      ]
     },
     {
       "schema_path": "ops/schema/inventory/toolchain.schema.json",
-      "required_fields": ["schema_version", "images", "tools"]
+      "required_fields": [
+        "schema_version",
+        "images",
+        "tools"
+      ]
     },
     {
-      "schema_path": "ops/schema/datasets/manifest.schema.json",
-      "required_fields": ["schema_version", "datasets"]
+      "schema_path": "ops/schema/k8s/inventory-index.schema.json",
+      "required_fields": [
+        "schema_version",
+        "source",
+        "files"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/k8s/release-snapshot.schema.json",
+      "required_fields": [
+        "schema_version",
+        "release",
+        "chart",
+        "install_profiles",
+        "generated_at"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/k8s/render-artifact-index.schema.json",
+      "required_fields": [
+        "schema_version",
+        "render_outputs",
+        "determinism"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/load/perf-baseline.schema.json",
+      "required_fields": [
+        "schema_version",
+        "name",
+        "metadata",
+        "rows"
+      ]
     },
     {
       "schema_path": "ops/schema/report/unified.schema.json",
@@ -26,18 +81,6 @@
       ]
     },
     {
-      "schema_path": "ops/schema/load/perf-baseline.schema.json",
-      "required_fields": ["schema_version", "name", "metadata", "rows"]
-    },
-    {
-      "schema_path": "ops/schema/env/overlay.schema.json",
-      "required_fields": ["schema_version", "environment", "values"]
-    },
-    {
-      "schema_path": "ops/schema/stack/dependency-graph.schema.json",
-      "required_fields": ["schema_version", "profiles"]
-    },
-    {
       "schema_path": "ops/schema/stack/artifact-metadata.schema.json",
       "required_fields": [
         "schema_version",
@@ -47,21 +90,10 @@
       ]
     },
     {
-      "schema_path": "ops/schema/k8s/inventory-index.schema.json",
-      "required_fields": ["schema_version", "source", "files"]
-    },
-    {
-      "schema_path": "ops/schema/k8s/render-artifact-index.schema.json",
-      "required_fields": ["schema_version", "render_outputs", "determinism"]
-    },
-    {
-      "schema_path": "ops/schema/k8s/release-snapshot.schema.json",
+      "schema_path": "ops/schema/stack/dependency-graph.schema.json",
       "required_fields": [
         "schema_version",
-        "release",
-        "chart",
-        "install_profiles",
-        "generated_at"
+        "profiles"
       ]
     }
   ]
