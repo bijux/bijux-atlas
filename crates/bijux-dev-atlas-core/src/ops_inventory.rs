@@ -1793,6 +1793,62 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             "{OPS_LOAD_SUITES_MANIFEST_PATH}: suite names must be unique"
         ));
     }
+    let legacy_manifest_dir = repo_root.join("ops/load/k6/manifests");
+    if let Ok(entries) = fs::read_dir(&legacy_manifest_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path
+                .extension()
+                .and_then(|ext| ext.to_str())
+                .is_some_and(|ext| ext == "json")
+            {
+                errors.push(format!(
+                    "ops/load/k6/manifests must not contain authored JSON (`{}`); move authored suites to {OPS_LOAD_SUITES_MANIFEST_PATH}",
+                    path.strip_prefix(repo_root).unwrap_or(path.as_path()).display()
+                ));
+            }
+        }
+    }
+
+    let canonical_thresholds_dir = repo_root.join("ops/load/thresholds");
+    let mut canonical_threshold_filenames = BTreeSet::new();
+    if let Ok(entries) = fs::read_dir(&canonical_thresholds_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path
+                .extension()
+                .and_then(|ext| ext.to_str())
+                .is_some_and(|ext| ext == "json")
+            {
+                if let Some(name) = path.file_name().and_then(|name| name.to_str()) {
+                    canonical_threshold_filenames.insert(name.to_string());
+                }
+            }
+        }
+    }
+
+    let legacy_thresholds_dir = repo_root.join("ops/load/k6/thresholds");
+    if let Ok(entries) = fs::read_dir(&legacy_thresholds_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path
+                .extension()
+                .and_then(|ext| ext.to_str())
+                .is_some_and(|ext| ext == "json")
+            {
+                continue;
+            }
+            if let Some(name) = path.file_name().and_then(|name| name.to_str()) {
+                if canonical_threshold_filenames.contains(name) {
+                    errors.push(format!(
+                        "duplicate thresholds filename `{name}` exists in both ops/load/thresholds and ops/load/k6/thresholds"
+                    ));
+                }
+            }
+        }
+    }
+
+    let mut expected_threshold_filenames = BTreeSet::new();
     let mut expected_scenarios = load_suites
         .suites
         .iter()
@@ -1808,6 +1864,75 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             errors.push(format!(
                 "{OPS_LOAD_SUITES_MANIFEST_PATH}: suite scenario is missing `{}`",
                 scenario
+            ));
+        }
+    }
+    for suite in &load_suites.suites {
+        let threshold_filename = format!("{}.thresholds.json", suite.name);
+        expected_threshold_filenames.insert(threshold_filename.clone());
+        let threshold_path = repo_root.join("ops/load/thresholds").join(&threshold_filename);
+        if !threshold_path.exists() {
+            errors.push(format!(
+                "{OPS_LOAD_SUITES_MANIFEST_PATH}: missing threshold file `{}` for suite `{}`",
+                threshold_path.strip_prefix(repo_root).unwrap_or(threshold_path.as_path()).display(),
+                suite.name
+            ));
+            continue;
+        }
+        if let Ok(text) = fs::read_to_string(&threshold_path) {
+            if let Ok(threshold_json) = serde_json::from_str::<serde_json::Value>(&text) {
+                let declared_suite = threshold_json
+                    .get("suite")
+                    .and_then(|value| value.as_str())
+                    .unwrap_or_default();
+                if declared_suite != suite.name {
+                    errors.push(format!(
+                        "{}: suite field must be `{}`",
+                        threshold_path
+                            .strip_prefix(repo_root)
+                            .unwrap_or(threshold_path.as_path())
+                            .display(),
+                        suite.name
+                    ));
+                }
+            }
+        }
+        if suite.kind != "k6" {
+            continue;
+        }
+        let Some(scenario_file) = suite.scenario.as_ref() else {
+            errors.push(format!(
+                "{OPS_LOAD_SUITES_MANIFEST_PATH}: k6 suite `{}` must define a scenario file",
+                suite.name
+            ));
+            continue;
+        };
+        let scenario_path = repo_root.join(&load_suites.scenarios_dir).join(scenario_file);
+        if let Ok(text) = fs::read_to_string(&scenario_path) {
+            if let Ok(scenario_json) = serde_json::from_str::<serde_json::Value>(&text) {
+                let suite_script = scenario_json.get("suite").and_then(|value| value.as_str());
+                match suite_script {
+                    Some(script) if !script.trim().is_empty() => {
+                        let script_path = repo_root.join("ops/load/k6/suites").join(script);
+                        if !script_path.exists() {
+                            errors.push(format!(
+                                "{OPS_LOAD_SUITES_MANIFEST_PATH}: scenario `{}` for suite `{}` references missing script `ops/load/k6/suites/{}`",
+                                scenario_file, suite.name, script
+                            ));
+                        }
+                    }
+                    _ => errors.push(format!(
+                        "{OPS_LOAD_SUITES_MANIFEST_PATH}: scenario `{}` for suite `{}` must reference a k6 script via `suite`",
+                        scenario_file, suite.name
+                    )),
+                }
+            }
+        }
+    }
+    for threshold_name in &canonical_threshold_filenames {
+        if !expected_threshold_filenames.contains(threshold_name) {
+            errors.push(format!(
+                "unreferenced threshold file `ops/load/thresholds/{threshold_name}` is not mapped by any suite in {OPS_LOAD_SUITES_MANIFEST_PATH}"
             ));
         }
     }

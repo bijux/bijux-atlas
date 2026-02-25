@@ -1,1 +1,1 @@
-{"name":"cold-start","type":"cold_start_benchmark","description":"measure first request p99 equivalent cold latency"}
+{"name":"cold-start","suite":"warm-steady.js","type":"cold_start_benchmark","description":"measure first request p99 equivalent cold latency"}
