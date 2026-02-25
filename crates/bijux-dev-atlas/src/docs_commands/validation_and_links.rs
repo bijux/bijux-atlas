@@ -1,0 +1,279 @@
+pub(crate) fn docs_validate_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
+    let yaml = parse_mkdocs_yaml(&ctx.repo_root)?;
+    let mut issues = DocsIssues::default();
+    let mut nav_max_depth = 0usize;
+    if let Some(nav) = yaml.get("nav") {
+        collect_nav_depth(nav, 1, &mut nav_max_depth);
+    }
+    if nav_max_depth > 8 {
+        issues.warnings.push(format!(
+            "DOCS_NAV_DEPTH_WARN: nav depth {} exceeds limit 8",
+            nav_max_depth
+        ));
+    }
+    let docs_dir = yaml
+        .get("docs_dir")
+        .and_then(|v| v.as_str())
+        .unwrap_or_default();
+    if docs_dir != "docs" {
+        issues.errors.push(format!(
+            "DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"
+        ));
+    }
+    for (_, rel) in mkdocs_nav_refs(&ctx.repo_root)? {
+        if !ctx.docs_root.join(&rel).exists() {
+            issues.errors.push(format!(
+                "DOCS_NAV_ERROR: mkdocs nav references missing file `{rel}`"
+            ));
+        }
+    }
+    let mut body_hashes = BTreeMap::<String, Vec<String>>::new();
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
+        let rel = file
+            .strip_prefix(&ctx.docs_root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&file).unwrap_or_default();
+        let line_count = text.lines().count();
+        if line_count > 500 {
+            issues.warnings.push(format!(
+                "DOCS_SIZE_WARN: `{rel}` has {line_count} lines (budget=500)"
+            ));
+        }
+        let mut sentence_count = 0usize;
+        let mut word_count = 0usize;
+        for sentence in text.split('.') {
+            let words = sentence.split_whitespace().count();
+            if words > 0 {
+                sentence_count += 1;
+                word_count += words;
+            }
+        }
+        if sentence_count > 0 {
+            let avg = word_count as f64 / sentence_count as f64;
+            if avg > 28.0 {
+                issues.warnings.push(format!(
+                    "DOCS_READABILITY_WARN: `{rel}` average sentence length {:.1} words",
+                    avg
+                ));
+            }
+        }
+        let normalized = text
+            .lines()
+            .map(str::trim)
+            .filter(|l| !l.is_empty())
+            .collect::<Vec<_>>()
+            .join("\n");
+        if normalized.len() > 200 {
+            let mut hasher = Sha256::new();
+            hasher.update(normalized.as_bytes());
+            let hash = format!("{:x}", hasher.finalize());
+            body_hashes.entry(hash).or_default().push(rel);
+        }
+    }
+    for paths in body_hashes.values() {
+        if paths.len() > 1 {
+            issues.warnings.push(format!(
+                "DOCS_DUPLICATION_WARN: duplicated content across {}",
+                paths.join(", ")
+            ));
+        }
+    }
+    let inv = docs_inventory_payload(ctx, common)?;
+    for dup in inv["duplicate_nav_titles"].as_array().into_iter().flatten() {
+        if let Some(title) = dup.as_str() {
+            issues.warnings.push(format!(
+                "DOCS_NAV_ERROR: duplicate mkdocs nav title `{title}`"
+            ));
+        }
+    }
+    let registry_checks = registry_validate_payload(ctx)?;
+    for err in registry_checks["errors"].as_array().into_iter().flatten() {
+        if let Some(s) = err.as_str() {
+            issues.errors.push(s.to_string());
+        }
+    }
+    for warn in registry_checks["warnings"].as_array().into_iter().flatten() {
+        if let Some(s) = warn.as_str() {
+            issues.warnings.push(s.to_string());
+        }
+    }
+    if common.strict {
+        issues.errors.append(&mut issues.warnings);
+    }
+    let text = if issues.errors.is_empty() {
+        format!("docs validate passed (warnings={})", issues.warnings.len())
+    } else {
+        format!(
+            "docs validate failed (errors={} warnings={})",
+            issues.errors.len(),
+            issues.warnings.len()
+        )
+    };
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "text": text,
+        "errors": issues.errors,
+        "warnings": issues.warnings,
+        "rows": inv["nav"].as_array().cloned().unwrap_or_default(),
+        "registry": registry_checks,
+        "summary": {"total": inv["nav"].as_array().map(|v| v.len()).unwrap_or(0), "errors": inv["errors"].as_array().map(|v| v.len()).unwrap_or(0), "warnings": inv["warnings"].as_array().map(|v| v.len()).unwrap_or(0), "nav_max_depth": nav_max_depth},
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts}
+    }))
+}
+
+fn markdown_anchors(text: &str) -> std::collections::BTreeSet<String> {
+    let mut out = std::collections::BTreeSet::new();
+    for line in text.lines() {
+        let trimmed = line.trim_start();
+        if let Some(rest) = trimmed.strip_prefix('#') {
+            let heading = rest.trim_start_matches('#').trim();
+            if !heading.is_empty() {
+                out.insert(slugify_anchor(heading));
+            }
+        }
+    }
+    out
+}
+
+pub(crate) fn docs_links_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
+    let mut rows = Vec::<serde_json::Value>::new();
+    let mut issues = DocsIssues::default();
+    let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    let image_re = Regex::new(r"!\[([^\]]*)\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    let mut internal_links = 0usize;
+    let mut external_links = 0usize;
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
+        let rel = file
+            .strip_prefix(&ctx.repo_root)
+            .unwrap_or(&file)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        let anchors = markdown_anchors(&text);
+        for (idx, line) in text.lines().enumerate() {
+            for cap in image_re.captures_iter(line) {
+                let alt = cap.get(1).map(|m| m.as_str()).unwrap_or("").trim();
+                let target = cap.get(2).map(|m| m.as_str()).unwrap_or("").trim();
+                if alt.is_empty() {
+                    issues.warnings.push(format!(
+                        "DOCS_IMAGE_ALT_WARN: {rel}:{} image `{target}` has empty alt text",
+                        idx + 1
+                    ));
+                }
+            }
+            for cap in link_re.captures_iter(line) {
+                let target = cap.get(1).map(|m| m.as_str()).unwrap_or("");
+                if target.starts_with("http://")
+                    || target.starts_with("https://")
+                    || target.starts_with("mailto:")
+                {
+                    external_links += 1;
+                    let mut ok = true;
+                    if common.allow_network
+                        && (target.starts_with("http://") || target.starts_with("https://"))
+                    {
+                        let out = ProcessCommand::new("curl")
+                            .args(["-sS", "--max-time", "5", "-I", target])
+                            .current_dir(&ctx.repo_root)
+                            .output();
+                        ok = out.map(|o| o.status.success()).unwrap_or(false);
+                        if !ok {
+                            issues.warnings.push(format!(
+                                "DOCS_EXTERNAL_LINK_WARN: {rel}:{} external link check failed `{target}`",
+                                idx + 1
+                            ));
+                        }
+                    }
+                    rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok, "external": true, "checked_network": common.allow_network}));
+                    continue;
+                }
+                if let Some(anchor) = target.strip_prefix('#') {
+                    internal_links += 1;
+                    let ok = anchors.contains(anchor);
+                    if !ok {
+                        issues.errors.push(format!(
+                            "DOCS_LINK_ERROR: {rel}:{} missing same-file anchor `#{anchor}`",
+                            idx + 1
+                        ));
+                    }
+                    rows.push(serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}));
+                    continue;
+                }
+                let (path_part, anchor_part) = target
+                    .split_once('#')
+                    .map_or((target, None), |(a, b)| (a, Some(b)));
+                if path_part.is_empty() || path_part.ends_with('/') {
+                    continue;
+                }
+                internal_links += 1;
+                let resolved = file.parent().unwrap_or(&ctx.docs_root).join(path_part);
+                let exists = resolved.exists();
+                let mut ok = exists;
+                if exists {
+                    if let Some(anchor) = anchor_part {
+                        if resolved.extension().and_then(|v| v.to_str()) == Some("md") {
+                            let target_text = fs::read_to_string(&resolved).unwrap_or_default();
+                            ok = markdown_anchors(&target_text).contains(anchor);
+                        }
+                    }
+                }
+                if !ok {
+                    let generated_target =
+                        path_part.starts_with("_generated/") || path_part.contains("/_generated/");
+                    let message = format!(
+                        "DOCS_LINK_ERROR: {rel}:{} unresolved link `{target}`",
+                        idx + 1
+                    );
+                    if generated_target && !common.strict {
+                        issues.warnings.push(message);
+                    } else {
+                        issues.errors.push(message);
+                    }
+                }
+                rows.push(
+                    serde_json::json!({"file": rel, "line": idx + 1, "target": target, "ok": ok}),
+                );
+            }
+        }
+    }
+    rows.sort_by(|a, b| {
+        a["file"]
+            .as_str()
+            .cmp(&b["file"].as_str())
+            .then(a["line"].as_u64().cmp(&b["line"].as_u64()))
+            .then(a["target"].as_str().cmp(&b["target"].as_str()))
+    });
+    issues.errors.sort();
+    issues.errors.dedup();
+    issues.warnings.sort();
+    issues.warnings.dedup();
+    if common.strict && !issues.warnings.is_empty() {
+        issues.errors.append(&mut issues.warnings);
+        issues.errors.sort();
+        issues.errors.dedup();
+    }
+    Ok(serde_json::json!({
+        "schema_version":1,
+        "run_id":ctx.run_id.as_str(),
+        "text": if issues.errors.is_empty() {
+            if issues.warnings.is_empty() {"docs links passed"} else {"docs links passed with warnings"}
+        } else {"docs links failed"},
+        "rows":rows,
+        "stats": {"internal_links": internal_links, "external_links": external_links},
+        "errors":issues.errors,
+        "warnings": issues.warnings,
+        "capabilities": {"network": common.allow_network, "subprocess": common.allow_subprocess, "fs_write": common.allow_write},
+        "options": {"strict": common.strict, "include_drafts": common.include_drafts},
+        "external_link_check": {"enabled": common.allow_network, "mode": "disabled_best_effort"}
+    }))
+}
