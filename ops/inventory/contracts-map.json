@@ -6,6 +6,7 @@
     {"path": "ops/inventory/contracts.json", "schema": "none", "generator": "manual"},
     {"path": "ops/inventory/layers.json", "schema": "ops/schema/meta/layer-contract.schema.json", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/pins.yaml", "schema": "ops/schema/inventory/pins.schema.json", "generator": "bijux dev atlas ops generate pins-index"},
+    {"path": "ops/inventory/gc-pins.json", "schema": "none", "generator": "manual"},
     {"path": "ops/inventory/pin-freeze.json", "schema": "ops/schema/inventory/pin-freeze.schema.json", "generator": "manual"},
     {"path": "ops/inventory/drills.json", "schema": "ops/schema/obs/drill-manifest.schema.json", "generator": "manual"},
     {"path": "ops/inventory/namespaces.json", "schema": "ops/schema/meta/namespaces.schema.json", "generator": "manual"},

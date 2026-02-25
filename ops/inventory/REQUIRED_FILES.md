@@ -9,5 +9,6 @@ Required files for authored content in ops/inventory/.
 - contracts.json
 - toolchain.json
 - pins.yaml
+- gc-pins.json
 - pin-freeze.json
 - gates.json
