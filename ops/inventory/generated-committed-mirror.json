@@ -35,7 +35,7 @@
     },
     {
       "committed": "ops/_generated.example/MIRROR_POLICY.md",
-      "source": "docs/ops/generated-committed-policy.md"
+      "source": "docs/operations/ops-system/evidence.md"
     },
     {
       "committed": "ops/_generated.example/OWNER.md",
