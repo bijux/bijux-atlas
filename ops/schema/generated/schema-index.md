@@ -20,6 +20,12 @@
 | `ops/schema/e2e-scenarios-unified.schema.json` |
 | `ops/schema/e2e-scenarios.schema.json` |
 | `ops/schema/e2e-suites.schema.json` |
+| `ops/schema/e2e/coverage-matrix.schema.json` |
+| `ops/schema/e2e/expectations.schema.json` |
+| `ops/schema/e2e/fixture-allowlist.schema.json` |
+| `ops/schema/e2e/reproducibility-policy.schema.json` |
+| `ops/schema/e2e/summary.schema.json` |
+| `ops/schema/e2e/taxonomy.schema.json` |
 | `ops/schema/env/overlay.schema.json` |
 | `ops/schema/inventory/pins.schema.json` |
 | `ops/schema/inventory/toolchain.schema.json` |

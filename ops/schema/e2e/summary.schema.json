@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "suite_count", "scenario_count", "suite_ids", "scenario_ids"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "status": {"type": "string", "enum": ["stable"]},
+    "suite_count": {"type": "integer", "minimum": 1},
+    "scenario_count": {"type": "integer", "minimum": 1},
+    "suite_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "scenario_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

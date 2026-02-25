@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ordering", "seed_source", "artifact_contract", "required_checks"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "ordering": {"type": "string", "enum": ["stable"]},
+    "seed_source": {"type": "string", "minLength": 1},
+    "artifact_contract": {"type": "string", "minLength": 1},
+    "required_checks": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

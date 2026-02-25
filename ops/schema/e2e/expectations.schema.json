@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "expectations"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "expectations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scenario_id", "must_pass", "max_duration_seconds"],
+        "properties": {
+          "scenario_id": {"type": "string", "minLength": 1},
+          "must_pass": {"type": "boolean"},
+          "max_duration_seconds": {"type": "integer", "minimum": 1}
+        }
+      }
+    }
+  }
+}
