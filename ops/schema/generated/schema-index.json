@@ -35,6 +35,8 @@
     "ops/schema/report/stack-health-report.schema.json",
     "ops/schema/report/stack-ports-inventory.schema.json",
     "ops/schema/report/unified.schema.json",
+    "ops/schema/stack/artifact-metadata.schema.json",
+    "ops/schema/stack/dependency-graph.schema.json",
     "ops/schema/stack/profile-manifest.schema.json",
     "ops/schema/stack/version-manifest.schema.json"
   ]
