@@ -3,6 +3,102 @@
 use crate::*;
 use std::collections::{BTreeMap, BTreeSet};
 
+#[derive(Debug, Clone, serde::Deserialize)]
+struct DocsQualityPolicy {
+    #[serde(default = "default_stale_days")]
+    stale_days: i64,
+    #[serde(default = "default_area_budget")]
+    default_area_budget: usize,
+    #[serde(default)]
+    area_budgets: BTreeMap<String, usize>,
+    #[serde(default)]
+    naming: NamingPolicy,
+    #[serde(default)]
+    terminology: TerminologyPolicy,
+    #[serde(default)]
+    markdown: MarkdownPolicy,
+    #[serde(default)]
+    diagrams: DiagramPolicy,
+}
+
+#[derive(Debug, Clone, Default, serde::Deserialize)]
+struct NamingPolicy {
+    #[serde(default)]
+    forbidden_words: Vec<String>,
+}
+
+#[derive(Debug, Clone, Default, serde::Deserialize)]
+struct TerminologyPolicy {
+    #[serde(default)]
+    forbidden_terms: Vec<String>,
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+struct MarkdownPolicy {
+    #[serde(default = "default_max_line_length")]
+    max_line_length: usize,
+    #[serde(default = "default_require_h1")]
+    require_h1: bool,
+    #[serde(default)]
+    require_sections: Vec<String>,
+}
+
+impl Default for MarkdownPolicy {
+    fn default() -> Self {
+        Self {
+            max_line_length: default_max_line_length(),
+            require_h1: default_require_h1(),
+            require_sections: Vec::new(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Default, serde::Deserialize)]
+struct DiagramPolicy {
+    #[serde(default)]
+    extensions: Vec<String>,
+    #[serde(default)]
+    roots: Vec<String>,
+}
+
+fn default_stale_days() -> i64 {
+    90
+}
+
+fn default_area_budget() -> usize {
+    10
+}
+
+fn default_max_line_length() -> usize {
+    180
+}
+
+fn default_require_h1() -> bool {
+    true
+}
+
+impl Default for DocsQualityPolicy {
+    fn default() -> Self {
+        Self {
+            stale_days: default_stale_days(),
+            default_area_budget: default_area_budget(),
+            area_budgets: BTreeMap::new(),
+            naming: NamingPolicy::default(),
+            terminology: TerminologyPolicy::default(),
+            markdown: MarkdownPolicy::default(),
+            diagrams: DiagramPolicy::default(),
+        }
+    }
+}
+
+fn load_quality_policy(repo_root: &Path) -> DocsQualityPolicy {
+    let path = repo_root.join("configs/docs/quality-policy.json");
+    let Ok(text) = fs::read_to_string(path) else {
+        return DocsQualityPolicy::default();
+    };
+    serde_json::from_str::<DocsQualityPolicy>(&text).unwrap_or_default()
+}
+
 pub(crate) fn docs_context(common: &DocsCommonArgs) -> Result<DocsContext, String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let artifacts_root = common
@@ -374,6 +470,27 @@ fn parse_ymd_date(s: &str) -> Option<(i32, i32, i32)> {
     Some((y, m, d))
 }
 
+fn days_from_civil(y: i32, m: i32, d: i32) -> i64 {
+    let y = y - i32::from(m <= 2);
+    let era = if y >= 0 { y } else { y - 399 } / 400;
+    let yoe = y - era * 400;
+    let mp = m + if m > 2 { -3 } else { 9 };
+    let doy = (153 * mp + 2) / 5 + d - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    (era * 146_097 + doe - 719_468) as i64
+}
+
+fn date_diff_days(older: &str, newer: &str) -> Option<i64> {
+    let (y1, m1, d1) = parse_ymd_date(older)?;
+    let (y2, m2, d2) = parse_ymd_date(newer)?;
+    Some(days_from_civil(y2, m2, d2) - days_from_civil(y1, m1, d1))
+}
+
+fn has_required_section(text: &str, section: &str) -> bool {
+    let needle = format!("## {section}");
+    text.lines().any(|line| line.trim() == needle)
+}
+
 fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, String> {
     let registry_path = ctx.repo_root.join("docs/registry.json");
     if !registry_path.exists() {
@@ -392,6 +509,7 @@ fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, Str
         .as_array()
         .cloned()
         .unwrap_or_default();
+    let policy = load_quality_policy(&ctx.repo_root);
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
     let mut seen_paths = BTreeSet::new();
@@ -419,13 +537,20 @@ fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, Str
             *seen_topics.entry(topic.to_string()).or_default() += 1;
         }
         if let Some(last_reviewed) = entry["last_reviewed"].as_str() {
-            if let Some((y, m, d)) = parse_ymd_date(last_reviewed) {
-                if (y, m, d) < (2025, 8, 1) {
-                    warnings.push(format!("DOCS_REGISTRY_OUTDATED: `{path}` last_reviewed={last_reviewed}"));
+            if let Some(age_days) = date_diff_days(last_reviewed, "2026-02-25") {
+                if age_days > policy.stale_days {
+                    warnings.push(format!(
+                        "DOCS_REGISTRY_OUTDATED: `{path}` last_reviewed={last_reviewed} age_days={age_days}"
+                    ));
                 }
             }
         } else {
             warnings.push(format!("DOCS_REGISTRY_MISSING_LAST_REVIEWED: `{path}`"));
+        }
+        if entry["owner"].as_str().unwrap_or("unknown") == "unknown" {
+            errors.push(format!(
+                "DOCS_REGISTRY_OWNER_REQUIRED: `{path}` requires owner metadata"
+            ));
         }
     }
     for path in scanned.difference(&seen_paths) {
@@ -436,20 +561,77 @@ fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, Str
     }
     for (topic, count) in seen_topics {
         if count > 1 {
-            warnings.push(format!("DOCS_REGISTRY_DUPLICATE_TOPIC: `{topic}` appears {count} times"));
+            warnings.push(format!(
+                "DOCS_REGISTRY_DUPLICATE_TOPIC: `{topic}` appears {count} times"
+            ));
         }
     }
     let mut per_crate = BTreeMap::<String, usize>::new();
     for entry in &docs {
-        let bucket = entry["crate"]
-            .as_str()
-            .unwrap_or("docs-root")
-            .to_string();
+        let bucket = entry["crate"].as_str().unwrap_or("docs-root").to_string();
         *per_crate.entry(bucket).or_default() += 1;
     }
     for (bucket, count) in per_crate {
-        if count > 10 {
-            warnings.push(format!("DOCS_REGISTRY_DOC_BUDGET_WARN: `{bucket}` has {count} docs (budget=10)"));
+        let budget = policy
+            .area_budgets
+            .get(&bucket)
+            .copied()
+            .unwrap_or(policy.default_area_budget);
+        if count > budget {
+            errors.push(format!(
+                "DOCS_REGISTRY_DOC_BUDGET_ERROR: `{bucket}` has {count} docs (budget={budget})"
+            ));
+        }
+    }
+    let registered = docs
+        .iter()
+        .filter_map(|v| v["path"].as_str())
+        .map(ToString::to_string)
+        .collect::<BTreeSet<_>>();
+    let mut incoming = BTreeMap::<String, usize>::new();
+    let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+    for file in scan_registry_markdown_files(&ctx.repo_root) {
+        let source = file
+            .strip_prefix(&ctx.repo_root)
+            .ok()
+            .map(|v| v.display().to_string())
+            .unwrap_or_default();
+        let text = fs::read_to_string(&file).unwrap_or_default();
+        for cap in link_re.captures_iter(&text) {
+            let target = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
+            if target.starts_with("http://")
+                || target.starts_with("https://")
+                || target.starts_with("mailto:")
+                || target.starts_with('#')
+            {
+                continue;
+            }
+            let path_part = target.split('#').next().unwrap_or_default();
+            if path_part.is_empty() {
+                continue;
+            }
+            let resolved = file.parent().unwrap_or(&ctx.repo_root).join(path_part);
+            if let Ok(rel) = resolved.strip_prefix(&ctx.repo_root) {
+                let rels = rel.display().to_string();
+                if registered.contains(&rels) {
+                    *incoming.entry(rels).or_default() += 1;
+                }
+            }
+        }
+        let _ = source;
+    }
+    for path in &registered {
+        let basename = Path::new(path)
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
+        if matches!(basename, "README.md" | "INDEX.md") {
+            continue;
+        }
+        if incoming.get(path).copied().unwrap_or(0) == 0 {
+            warnings.push(format!(
+                "DOCS_REGISTRY_UNUSED_DOC_WARN: `{path}` has no inbound doc links"
+            ));
         }
     }
     let root_md = read_dir_entries(&ctx.repo_root)
@@ -460,7 +642,9 @@ fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, Str
         if file.file_name().and_then(|v| v.to_str()) != Some("README.md") {
             errors.push(format!(
                 "DOCS_REGISTRY_ROOT_DOC_FORBIDDEN: only root README.md allowed, found `{}`",
-                file.file_name().and_then(|v| v.to_str()).unwrap_or_default()
+                file.file_name()
+                    .and_then(|v| v.to_str())
+                    .unwrap_or_default()
             ));
         }
     }
@@ -482,10 +666,24 @@ fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json::Value, Str
             ));
         }
     }
+    warnings.sort();
+    warnings.dedup();
+    errors.sort();
+    errors.dedup();
+    let pruning = warnings
+        .iter()
+        .filter(|w| {
+            w.starts_with("DOCS_REGISTRY_OUTDATED:")
+                || w.starts_with("DOCS_REGISTRY_UNUSED_DOC_WARN:")
+                || w.starts_with("DOCS_REGISTRY_DUPLICATE_TOPIC:")
+        })
+        .cloned()
+        .collect::<Vec<_>>();
     Ok(serde_json::json!({
         "schema_version": 1,
         "errors": errors,
         "warnings": warnings,
+        "pruning_suggestions": pruning,
         "summary": {
             "registered": docs.len(),
             "errors": errors.len(),
@@ -536,9 +734,9 @@ pub(crate) fn docs_validate_payload(
         let text = fs::read_to_string(&file).unwrap_or_default();
         let line_count = text.lines().count();
         if line_count > 500 {
-            issues
-                .warnings
-                .push(format!("DOCS_SIZE_WARN: `{rel}` has {line_count} lines (budget=500)"));
+            issues.warnings.push(format!(
+                "DOCS_SIZE_WARN: `{rel}` has {line_count} lines (budget=500)"
+            ));
         }
         let mut sentence_count = 0usize;
         let mut word_count = 0usize;
@@ -842,6 +1040,7 @@ pub(crate) fn docs_lint_payload(
     ctx: &DocsContext,
     common: &DocsCommonArgs,
 ) -> Result<serde_json::Value, String> {
+    let policy = load_quality_policy(&ctx.repo_root);
     let mut errors = Vec::<String>::new();
     let adr_filename_re = Regex::new(r"^ADR-\d{4}-[a-z0-9-]+\.md$").map_err(|e| e.to_string())?;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
@@ -872,12 +1071,109 @@ pub(crate) fn docs_lint_payload(
                 "docs filename should use lowercase intent-based naming: `{rel}`"
             ));
         }
+        let rel_lower = rel.to_ascii_lowercase();
+        for word in &policy.naming.forbidden_words {
+            if rel_lower.contains(word) {
+                errors.push(format!(
+                    "docs filename uses forbidden transitional term `{word}`: `{rel}`"
+                ));
+            }
+        }
         let text = fs::read_to_string(&file).map_err(|e| format!("failed to read {rel}: {e}"))?;
+        if policy.markdown.require_h1
+            && !text.lines().any(|line| line.trim_start().starts_with("# "))
+        {
+            errors.push(format!("DOCS_MARKDOWN_H1_REQUIRED: `{rel}`"));
+        }
+        for section in &policy.markdown.require_sections {
+            if !has_required_section(&text, section) {
+                errors.push(format!(
+                    "DOCS_SECTION_REQUIRED: `{rel}` missing `## {section}`"
+                ));
+            }
+        }
         for (idx, line) in text.lines().enumerate() {
             if line.ends_with(' ') || line.contains('\t') {
                 errors.push(format!(
                     "{rel}:{} formatting lint failure (tab/trailing-space)",
                     idx + 1
+                ));
+            }
+            if line.len() > policy.markdown.max_line_length
+                && !line.trim_start().starts_with("http")
+            {
+                errors.push(format!(
+                    "DOCS_MARKDOWN_LINE_LENGTH: `{rel}` line {} exceeds {} chars",
+                    idx + 1,
+                    policy.markdown.max_line_length
+                ));
+            }
+            for term in &policy.terminology.forbidden_terms {
+                if line
+                    .to_ascii_lowercase()
+                    .contains(&term.to_ascii_lowercase())
+                {
+                    errors.push(format!(
+                        "DOCS_TERMINOLOGY_ERROR: `{rel}` line {} contains forbidden term `{term}`",
+                        idx + 1
+                    ));
+                }
+            }
+        }
+        let mut table_width: Option<usize> = None;
+        for (idx, line) in text.lines().enumerate() {
+            let trimmed = line.trim();
+            if trimmed.starts_with('|') && trimmed.ends_with('|') {
+                let width = trimmed.matches('|').count() - 1;
+                if let Some(expected) = table_width {
+                    if width != expected {
+                        errors.push(format!(
+                            "DOCS_TABLE_CONSISTENCY_ERROR: `{rel}` line {} has {width} columns expected {expected}",
+                            idx + 1
+                        ));
+                    }
+                } else {
+                    table_width = Some(width);
+                }
+            } else {
+                table_width = None;
+            }
+        }
+    }
+    for root in &policy.diagrams.roots {
+        let base = ctx.repo_root.join(root);
+        if !base.exists() {
+            continue;
+        }
+        for file in walk_files_local(&base) {
+            let ext = file
+                .extension()
+                .and_then(|v| v.to_str())
+                .map(|v| format!(".{}", v.to_ascii_lowercase()))
+                .unwrap_or_default();
+            if !policy
+                .diagrams
+                .extensions
+                .iter()
+                .any(|allowed| allowed == &ext)
+            {
+                continue;
+            }
+            let Ok(rel) = file.strip_prefix(&ctx.repo_root) else {
+                continue;
+            };
+            let rels = rel.display().to_string();
+            let mut referenced = false;
+            for doc in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
+                let text = fs::read_to_string(&doc).unwrap_or_default();
+                if text.contains(&rels) {
+                    referenced = true;
+                    break;
+                }
+            }
+            if !referenced {
+                errors.push(format!(
+                    "DOCS_DIAGRAM_ORPHAN_ERROR: `{rels}` is not referenced by any markdown document"
                 ));
             }
         }
@@ -1096,7 +1392,10 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         .map_err(|e| format!("failed to write {}: {e}", path.display()))?;
                     }
                     let generated = docs_registry_payload(&ctx);
-                    let docs_rows = generated["documents"].as_array().cloned().unwrap_or_default();
+                    let docs_rows = generated["documents"]
+                        .as_array()
+                        .cloned()
+                        .unwrap_or_default();
                     let mut search_index = Vec::new();
                     let mut graph = Vec::new();
                     let mut topic_index = BTreeMap::<String, Vec<String>>::new();
@@ -1131,15 +1430,18 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     }
                     let crate_coverage = crate_slice
                         .iter()
-                        .map(|(name, rows)| serde_json::json!({
-                            "crate": name,
-                            "doc_count": rows.len()
-                        }))
+                        .map(|(name, rows)| {
+                            serde_json::json!({
+                                "crate": name,
+                                "doc_count": rows.len()
+                            })
+                        })
                         .collect::<Vec<_>>();
                     if common.allow_write {
                         let generated_dir = ctx.repo_root.join("docs/_generated");
-                        fs::create_dir_all(&generated_dir)
-                            .map_err(|e| format!("failed to create {}: {e}", generated_dir.display()))?;
+                        fs::create_dir_all(&generated_dir).map_err(|e| {
+                            format!("failed to create {}: {e}", generated_dir.display())
+                        })?;
                         fs::write(
                             generated_dir.join("search-index.json"),
                             serde_json::to_string_pretty(&serde_json::json!({
@@ -1227,7 +1529,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         .map_err(|e| format!("write crate coverage failed: {e}"))?;
                         let mut inventory_md =
                             String::from("# Docs Inventory\n\nLicense: Apache-2.0\n\n");
-                        inventory_md.push_str("| Path | Type | Owner | Stability |\n|---|---|---|---|\n");
+                        inventory_md
+                            .push_str("| Path | Type | Owner | Stability |\n|---|---|---|---|\n");
                         for row in &docs_rows {
                             inventory_md.push_str(&format!(
                                 "| `{}` | `{}` | `{}` | `{}` |\n",
@@ -1242,7 +1545,11 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         let mut topic_md = String::from("# Topic Index\n\n");
                         topic_md.push_str("| Topic | Paths |\n|---|---|\n");
                         for (topic, paths) in &topic_index {
-                            topic_md.push_str(&format!("| `{}` | `{}` |\n", topic, paths.join(", ")));
+                            topic_md.push_str(&format!(
+                                "| `{}` | `{}` |\n",
+                                topic,
+                                paths.join(", ")
+                            ));
                         }
                         fs::write(generated_dir.join("topic-index.md"), topic_md)
                             .map_err(|e| format!("write topic index page failed: {e}"))?;
@@ -1252,19 +1559,16 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             let make_registry_text = fs::read_to_string(&make_registry_path)
                                 .map_err(|e| format!("read make target registry failed: {e}"))?;
                             let make_registry: serde_json::Value =
-                                serde_json::from_str(&make_registry_text)
-                                    .map_err(|e| format!("parse make target registry failed: {e}"))?;
-                            let mut generated_make =
-                                String::from("# Generated Make Targets\n\n");
+                                serde_json::from_str(&make_registry_text).map_err(|e| {
+                                    format!("parse make target registry failed: {e}")
+                                })?;
+                            let mut generated_make = String::from("# Generated Make Targets\n\n");
                             generated_make.push_str(
                                 "This file is generated by `bijux dev atlas docs registry build --allow-write`.\n\n",
                             );
-                            generated_make.push_str("| Target | Visibility | Defined In |\n|---|---|---|\n");
-                            for row in make_registry["targets"]
-                                .as_array()
-                                .into_iter()
-                                .flatten()
-                            {
+                            generated_make
+                                .push_str("| Target | Visibility | Defined In |\n|---|---|---|\n");
+                            for row in make_registry["targets"].as_array().into_iter().flatten() {
                                 let name = row["name"].as_str().unwrap_or_default();
                                 let visibility = row["visibility"].as_str().unwrap_or_default();
                                 let defined_in = row["defined_in"]
@@ -1280,15 +1584,18 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                                     "| `{name}` | `{visibility}` | `{defined_in}` |\n"
                                 ));
                             }
-                            fs::write(ctx.repo_root.join("makefiles/GENERATED_TARGETS.md"), generated_make)
-                                .map_err(|e| format!("write generated make targets failed: {e}"))?;
+                            fs::write(
+                                ctx.repo_root.join("makefiles/GENERATED_TARGETS.md"),
+                                generated_make,
+                            )
+                            .map_err(|e| format!("write generated make targets failed: {e}"))?;
                         }
                         let command_rows = docs_rows
                             .iter()
                             .filter(|row| {
-                                row["path"]
-                                    .as_str()
-                                    .is_some_and(|p| p.contains("COMMAND") || p.contains("CLI_COMMAND"))
+                                row["path"].as_str().is_some_and(|p| {
+                                    p.contains("COMMAND") || p.contains("CLI_COMMAND")
+                                })
                             })
                             .cloned()
                             .collect::<Vec<_>>();
@@ -1303,7 +1610,9 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                         .map_err(|e| format!("write command index failed: {e}"))?;
                         let schema_rows = docs_rows
                             .iter()
-                            .filter(|row| row["path"].as_str().is_some_and(|p| p.contains("SCHEMA")))
+                            .filter(|row| {
+                                row["path"].as_str().is_some_and(|p| p.contains("SCHEMA"))
+                            })
                             .cloned()
                             .collect::<Vec<_>>();
                         fs::write(
@@ -1353,7 +1662,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     let ctx = docs_context(&common)?;
                     let mut payload = registry_validate_payload(&ctx)?;
                     payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
-                    payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                    payload["duration_ms"] =
+                        serde_json::json!(started.elapsed().as_millis() as u64);
                     let code = if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
                         1
                     } else {
