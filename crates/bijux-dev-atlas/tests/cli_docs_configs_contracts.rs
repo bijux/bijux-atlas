@@ -247,6 +247,47 @@ fn docs_doctor_fixture_json_matches_golden() {
 }
 
 #[test]
+fn docs_registry_build_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "docs",
+            "registry",
+            "build",
+            "--allow-write",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("docs registry build");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
+    assert!(payload.get("artifacts").is_some());
+}
+
+#[test]
+fn docs_registry_validate_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["docs", "registry", "validate", "--format", "json"])
+        .output()
+        .expect("docs registry validate");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload.get("schema_version").and_then(|v| v.as_u64()),
+        Some(1)
+    );
+    assert!(payload.get("summary").is_some());
+}
+
+#[test]
 fn configs_inventory_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

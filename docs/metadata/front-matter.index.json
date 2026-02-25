@@ -1,0 +1,5 @@
+{
+  "schema_version": "v1",
+  "description": "Canonical ownership/stability metadata registry for documentation pages",
+  "source": "docs/registry.json"
+}

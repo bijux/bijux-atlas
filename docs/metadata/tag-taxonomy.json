@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "tags": [
+    "api",
+    "architecture",
+    "cli",
+    "config",
+    "contracts",
+    "docs",
+    "governance",
+    "ops",
+    "policy",
+    "reference",
+    "runbook",
+    "security",
+    "testing"
+  ]
+}

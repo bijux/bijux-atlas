@@ -1,0 +1,5614 @@
+{
+  "entries": [
+    {
+      "path": ".github/ISSUE_TEMPLATE/perf-regression.md",
+      "tags": [
+        ".github",
+        "issue-template",
+        "perf-regression"
+      ],
+      "topic": "perf-regression"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md",
+      "tags": [
+        ".github",
+        "ops-e2e-boundary",
+        "pull-request-template"
+      ],
+      "topic": "ops-e2e-boundary"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "tags": [
+        ".github",
+        "pull-request-template"
+      ],
+      "topic": "pull_request_template"
+    },
+    {
+      "path": ".github/release-notes-template.md",
+      "tags": [
+        ".github",
+        "release-notes-template"
+      ],
+      "topic": "release-notes-template"
+    },
+    {
+      "path": ".github/required-status-checks.md",
+      "tags": [
+        ".github",
+        "required-status-checks"
+      ],
+      "topic": "required-status-checks"
+    },
+    {
+      "path": ".github/templates/scripts-migration-release-note.md",
+      "tags": [
+        ".github",
+        "scripts-migration-release-note",
+        "templates"
+      ],
+      "topic": "scripts-migration-release-note"
+    },
+    {
+      "path": "README.md",
+      "tags": [
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/CONTRACT.md",
+      "tags": [
+        "configs",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "configs/INDEX.md",
+      "tags": [
+        "configs",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "configs/README.md",
+      "tags": [
+        "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/coverage/README.md",
+      "tags": [
+        "configs",
+        "coverage",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/docs/README.md",
+      "tags": [
+        "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/inventory/README.md",
+      "tags": [
+        "configs",
+        "inventory",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/layout/README.md",
+      "tags": [
+        "configs",
+        "layout",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/make/README.md",
+      "tags": [
+        "configs",
+        "make",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/nextest/README.md",
+      "tags": [
+        "configs",
+        "nextest",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/openapi/README.md",
+      "tags": [
+        "configs",
+        "openapi",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/ops/README.md",
+      "tags": [
+        "configs",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/ops/perf/baselines/CHANGELOG.md",
+      "tags": [
+        "baselines",
+        "changelog",
+        "configs",
+        "ops",
+        "perf"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "path": "configs/ops/policies/README.md",
+      "tags": [
+        "configs",
+        "ops",
+        "policies",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/ops/runtime/README.md",
+      "tags": [
+        "configs",
+        "ops",
+        "readme",
+        "runtime"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/ops/tools/README.md",
+      "tags": [
+        "configs",
+        "ops",
+        "readme",
+        "tools"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/perf/README.md",
+      "tags": [
+        "configs",
+        "perf",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/policy/README.md",
+      "tags": [
+        "configs",
+        "policy",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/repo/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "repo"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/repo/root-symlink-shims.md",
+      "tags": [
+        "configs",
+        "repo",
+        "root-symlink-shims"
+      ],
+      "topic": "root-symlink-shims"
+    },
+    {
+      "path": "configs/rust/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "rust"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/security/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "security"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/shellcheck/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "shellcheck"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "configs/slo/README.md",
+      "tags": [
+        "configs",
+        "readme",
+        "slo"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-api/README.md",
+      "tags": [
+        "bijux-atlas-api",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/API_CONTRACT.md",
+      "tags": [
+        "api-contract",
+        "bijux-atlas-api"
+      ],
+      "topic": "API_CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/API_STABILITY.md",
+      "tags": [
+        "api-stability",
+        "bijux-atlas-api"
+      ],
+      "topic": "API_STABILITY"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/ERRORS.md",
+      "tags": [
+        "bijux-atlas-api",
+        "errors"
+      ],
+      "topic": "ERRORS"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-api",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/OPENAPI.md",
+      "tags": [
+        "bijux-atlas-api",
+        "openapi"
+      ],
+      "topic": "OPENAPI"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/PATTERNS.md",
+      "tags": [
+        "bijux-atlas-api",
+        "patterns"
+      ],
+      "topic": "PATTERNS"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-api",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-api"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/contracts.md",
+      "tags": [
+        "bijux-atlas-api",
+        "contracts"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-api",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/effects.md",
+      "tags": [
+        "bijux-atlas-api",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/public-api-checklist.md",
+      "tags": [
+        "bijux-atlas-api",
+        "public-api-checklist"
+      ],
+      "topic": "public-api-checklist"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-api",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/testing.md",
+      "tags": [
+        "bijux-atlas-api",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-api/docs/wire-compatibility.md",
+      "tags": [
+        "bijux-atlas-api",
+        "wire-compatibility"
+      ],
+      "topic": "wire-compatibility"
+    },
+    {
+      "path": "crates/bijux-atlas-api/tests/README.md",
+      "tags": [
+        "bijux-atlas-api",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/README.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "cli-command-list"
+      ],
+      "topic": "CLI_COMMAND_LIST"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/CLI_UX_CONTRACT.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "cli-ux-contract"
+      ],
+      "topic": "CLI_UX_CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/CONFIG_DISCOVERY.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "config-discovery"
+      ],
+      "topic": "CONFIG_DISCOVERY"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/EXIT_CODES.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "exit-codes"
+      ],
+      "topic": "EXIT_CODES"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "plugin-contract"
+      ],
+      "topic": "PLUGIN_CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-cli"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/effects.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/docs/testing.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/tests/README.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-core/README.md",
+      "tags": [
+        "bijux-atlas-core",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/CANONICALIZATION.md",
+      "tags": [
+        "bijux-atlas-core",
+        "canonicalization"
+      ],
+      "topic": "CANONICALIZATION"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/CARGO_DENY_NOTES.md",
+      "tags": [
+        "bijux-atlas-core",
+        "cargo-deny-notes"
+      ],
+      "topic": "CARGO_DENY_NOTES"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/ERRORS.md",
+      "tags": [
+        "bijux-atlas-core",
+        "errors"
+      ],
+      "topic": "ERRORS"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/FEATURES.md",
+      "tags": [
+        "bijux-atlas-core",
+        "features"
+      ],
+      "topic": "FEATURES"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/FORMATTING.md",
+      "tags": [
+        "bijux-atlas-core",
+        "formatting"
+      ],
+      "topic": "FORMATTING"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-core",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/PATTERNS.md",
+      "tags": [
+        "bijux-atlas-core",
+        "patterns"
+      ],
+      "topic": "PATTERNS"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/PURITY.md",
+      "tags": [
+        "bijux-atlas-core",
+        "purity"
+      ],
+      "topic": "PURITY"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/SERDE_POLICY.md",
+      "tags": [
+        "bijux-atlas-core",
+        "serde-policy"
+      ],
+      "topic": "SERDE_POLICY"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-core"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-core",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/effects.md",
+      "tags": [
+        "bijux-atlas-core",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-core",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-core/docs/testing.md",
+      "tags": [
+        "bijux-atlas-core",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-core/tests/README.md",
+      "tags": [
+        "bijux-atlas-core",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/README.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/ARTIFACT_OUTPUT_CONTRACT.md",
+      "tags": [
+        "artifact-output-contract",
+        "bijux-atlas-ingest"
+      ],
+      "topic": "ARTIFACT_OUTPUT_CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/DETERMINISM.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "determinism"
+      ],
+      "topic": "DETERMINISM"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ensembl-layout"
+      ],
+      "topic": "ENSEMBL_LAYOUT"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/INGEST_CONTRACT.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "ingest-contract"
+      ],
+      "topic": "INGEST_CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/QC.md",
+      "tags": [
+        "bijux-atlas-ingest"
+      ],
+      "topic": "QC"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-ingest"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/effects.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/failure-modes.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "failure-modes"
+      ],
+      "topic": "failure-modes"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/docs/testing.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/tests/README.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "edgecases",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "fixtures",
+        "minimal",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/tests/fixtures/policies/README.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "fixtures",
+        "policies",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "fixtures",
+        "readme",
+        "realistic",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-model/README.md",
+      "tags": [
+        "bijux-atlas-model",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/COMPAT_BIJUX_DNA.md",
+      "tags": [
+        "bijux-atlas-model",
+        "compat-bijux-dna"
+      ],
+      "topic": "COMPAT_BIJUX_DNA"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md",
+      "tags": [
+        "bijux-atlas-model",
+        "contract-compatibility"
+      ],
+      "topic": "CONTRACT_COMPATIBILITY"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-model",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/NOT_IN_MODEL.md",
+      "tags": [
+        "bijux-atlas-model",
+        "not-in-model"
+      ],
+      "topic": "NOT_IN_MODEL"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/OPTIONAL_FIELDS.md",
+      "tags": [
+        "bijux-atlas-model",
+        "optional-fields"
+      ],
+      "topic": "OPTIONAL_FIELDS"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/ORDERING_RULES.md",
+      "tags": [
+        "bijux-atlas-model",
+        "ordering-rules"
+      ],
+      "topic": "ORDERING_RULES"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/PURITY.md",
+      "tags": [
+        "bijux-atlas-model",
+        "purity"
+      ],
+      "topic": "PURITY"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/SCHEMA_EVOLUTION_NOTES.md",
+      "tags": [
+        "bijux-atlas-model",
+        "schema-evolution-notes"
+      ],
+      "topic": "SCHEMA_EVOLUTION_NOTES"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/SCHEMA_STABILITY.md",
+      "tags": [
+        "bijux-atlas-model",
+        "schema-stability"
+      ],
+      "topic": "SCHEMA_STABILITY"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-model"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-model",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/effects.md",
+      "tags": [
+        "bijux-atlas-model",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-model",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-model/docs/testing.md",
+      "tags": [
+        "bijux-atlas-model",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-model/tests/README.md",
+      "tags": [
+        "bijux-atlas-model",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/README.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/CHANGE_CHECKLIST.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "change-checklist"
+      ],
+      "topic": "CHANGE_CHECKLIST"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/CONFIG_SCHEMA.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "config-schema"
+      ],
+      "topic": "CONFIG_SCHEMA"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/EVOLUTION.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "evolution"
+      ],
+      "topic": "EVOLUTION"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/POLICY_AUTHORING_GUIDE.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "policy-authoring-guide"
+      ],
+      "topic": "POLICY_AUTHORING_GUIDE"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/SCHEMA.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "schema"
+      ],
+      "topic": "SCHEMA"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/SCHEMA_EVOLUTION.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "schema-evolution"
+      ],
+      "topic": "SCHEMA_EVOLUTION"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-policies"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/contracts.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "contracts"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/effects.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/docs/testing.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/tests/README.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-query/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-query"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-query/README.md",
+      "tags": [
+        "bijux-atlas-query",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/ADDING_FILTERS.md",
+      "tags": [
+        "adding-filters",
+        "bijux-atlas-query"
+      ],
+      "topic": "ADDING_FILTERS"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/COST_ESTIMATOR.md",
+      "tags": [
+        "bijux-atlas-query",
+        "cost-estimator"
+      ],
+      "topic": "COST_ESTIMATOR"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-query",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/ORDERING.md",
+      "tags": [
+        "bijux-atlas-query",
+        "ordering"
+      ],
+      "topic": "ORDERING"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/PAGINATION.md",
+      "tags": [
+        "bijux-atlas-query",
+        "pagination"
+      ],
+      "topic": "PAGINATION"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/PERF.md",
+      "tags": [
+        "bijux-atlas-query",
+        "perf"
+      ],
+      "topic": "PERF"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/QUERY_LANGUAGE_SPEC.md",
+      "tags": [
+        "bijux-atlas-query",
+        "query-language-spec"
+      ],
+      "topic": "QUERY_LANGUAGE_SPEC"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/TRANSCRIPT_ORDERING.md",
+      "tags": [
+        "bijux-atlas-query",
+        "transcript-ordering"
+      ],
+      "topic": "TRANSCRIPT_ORDERING"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-query"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-query",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/effects.md",
+      "tags": [
+        "bijux-atlas-query",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-query",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-query/docs/testing.md",
+      "tags": [
+        "bijux-atlas-query",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-query/tests/README.md",
+      "tags": [
+        "bijux-atlas-query",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-server/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-server"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-server/README.md",
+      "tags": [
+        "bijux-atlas-server",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/CACHING.md",
+      "tags": [
+        "bijux-atlas-server",
+        "caching"
+      ],
+      "topic": "CACHING"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/FAILURE_MODES.md",
+      "tags": [
+        "bijux-atlas-server",
+        "failure-modes"
+      ],
+      "topic": "FAILURE_MODES"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md",
+      "tags": [
+        "bijux-atlas-server",
+        "hot-path-checklist"
+      ],
+      "topic": "HOT_PATH_CHECKLIST"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-server",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/KUBERNETES.md",
+      "tags": [
+        "bijux-atlas-server",
+        "kubernetes"
+      ],
+      "topic": "KUBERNETES"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/OPERATIONS_RUNBOOK.md",
+      "tags": [
+        "bijux-atlas-server",
+        "operations-runbook"
+      ],
+      "topic": "OPERATIONS_RUNBOOK"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/PERF_BASELINE.md",
+      "tags": [
+        "bijux-atlas-server",
+        "perf-baseline"
+      ],
+      "topic": "PERF_BASELINE"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/PERF_PROFILING.md",
+      "tags": [
+        "bijux-atlas-server",
+        "perf-profiling"
+      ],
+      "topic": "PERF_PROFILING"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/RUNTIME.md",
+      "tags": [
+        "bijux-atlas-server",
+        "runtime"
+      ],
+      "topic": "RUNTIME"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/TELEMETRY.md",
+      "tags": [
+        "bijux-atlas-server",
+        "telemetry"
+      ],
+      "topic": "TELEMETRY"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-server"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/contracts.md",
+      "tags": [
+        "bijux-atlas-server",
+        "contracts"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-server",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/effects.md",
+      "tags": [
+        "bijux-atlas-server",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/failure-modes.md",
+      "tags": [
+        "bijux-atlas-server",
+        "failure-modes"
+      ],
+      "topic": "failure-modes"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-server",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-server/docs/testing.md",
+      "tags": [
+        "bijux-atlas-server",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-server",
+        "cache",
+        "src"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-server/tests/README.md",
+      "tags": [
+        "bijux-atlas-server",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-store/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-store"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-store/README.md",
+      "tags": [
+        "bijux-atlas-store",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/ARTIFACT_CONTRACT.md",
+      "tags": [
+        "artifact-contract",
+        "bijux-atlas-store"
+      ],
+      "topic": "ARTIFACT_CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md",
+      "tags": [
+        "backends-and-guarantees",
+        "bijux-atlas-store"
+      ],
+      "topic": "BACKENDS_AND_GUARANTEES"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/CACHING.md",
+      "tags": [
+        "bijux-atlas-store",
+        "caching"
+      ],
+      "topic": "CACHING"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/FAILURE_MODES.md",
+      "tags": [
+        "bijux-atlas-store",
+        "failure-modes"
+      ],
+      "topic": "FAILURE_MODES"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/INDEX.md",
+      "tags": [
+        "bijux-atlas-store",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/ROLLBACK.md",
+      "tags": [
+        "bijux-atlas-store",
+        "rollback"
+      ],
+      "topic": "ROLLBACK"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/RUNBOOK_SNIPPET.md",
+      "tags": [
+        "bijux-atlas-store",
+        "runbook-snippet"
+      ],
+      "topic": "RUNBOOK_SNIPPET"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/architecture.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-store"
+      ],
+      "topic": "architecture"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/contracts.md",
+      "tags": [
+        "bijux-atlas-store",
+        "contracts"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/effect-boundary-map.md",
+      "tags": [
+        "bijux-atlas-store",
+        "effect-boundary-map"
+      ],
+      "topic": "effect-boundary-map"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/effects.md",
+      "tags": [
+        "bijux-atlas-store",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/failure-modes.md",
+      "tags": [
+        "bijux-atlas-store",
+        "failure-modes"
+      ],
+      "topic": "failure-modes"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/public-api.md",
+      "tags": [
+        "bijux-atlas-store",
+        "public-api"
+      ],
+      "topic": "public-api"
+    },
+    {
+      "path": "crates/bijux-atlas-store/docs/testing.md",
+      "tags": [
+        "bijux-atlas-store",
+        "testing"
+      ],
+      "topic": "testing"
+    },
+    {
+      "path": "crates/bijux-atlas-store/tests/README.md",
+      "tags": [
+        "bijux-atlas-store",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/README.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/docs/BOUNDARY.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "boundary"
+      ],
+      "topic": "BOUNDARY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/README.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/docs/ENGINE_ARCHITECTURE.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "engine-architecture"
+      ],
+      "topic": "ENGINE_ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/README.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/docs/CONTRACTS.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "contracts"
+      ],
+      "topic": "CONTRACTS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/README.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/docs/POLICY_AUTHORING.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "policy-authoring"
+      ],
+      "topic": "POLICY_AUTHORING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/README.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/ARTIFACTS.md",
+      "tags": [
+        "artifacts",
+        "bijux-dev-atlas"
+      ],
+      "topic": "ARTIFACTS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "cli-command-list"
+      ],
+      "topic": "CLI_COMMAND_LIST"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/COMMANDS.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "commands"
+      ],
+      "topic": "COMMANDS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs-command-list"
+      ],
+      "topic": "CONFIGS_COMMAND_LIST"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/EXIT_CODES.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "exit-codes"
+      ],
+      "topic": "EXIT_CODES"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/FAILURE_MODES.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "failure-modes"
+      ],
+      "topic": "FAILURE_MODES"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "ops-command-list"
+      ],
+      "topic": "OPS_COMMAND_LIST"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "index",
+        "tests"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md",
+      "tags": [
+        "-drafts",
+        "bijux-dev-atlas",
+        "docs-mini",
+        "draft",
+        "fixtures",
+        "tests"
+      ],
+      "topic": "draft"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "index",
+        "tests"
+      ],
+      "topic": "index"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "intro",
+        "sub",
+        "tests"
+      ],
+      "topic": "intro"
+    },
+    {
+      "path": "docker/CONTRACT.md",
+      "tags": [
+        "contract",
+        "docker"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "docker/README.md",
+      "tags": [
+        "docker",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "docker/contracts/README.md",
+      "tags": [
+        "contracts",
+        "docker",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "docs/AUTHORS.md",
+      "tags": [
+        "authors"
+      ],
+      "topic": "AUTHORS"
+    },
+    {
+      "path": "docs/CONTRACT.md",
+      "tags": [
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "docs/PROJECT_DESCRIPTION_SNIPPET.md",
+      "tags": [
+        "project-description-snippet"
+      ],
+      "topic": "PROJECT_DESCRIPTION_SNIPPET"
+    },
+    {
+      "path": "docs/PROJECT_IDENTITY.md",
+      "tags": [
+        "project-identity"
+      ],
+      "topic": "PROJECT_IDENTITY"
+    },
+    {
+      "path": "docs/STYLE.md",
+      "tags": [
+        "style"
+      ],
+      "topic": "STYLE"
+    },
+    {
+      "path": "docs/_assets/INDEX.md",
+      "tags": [
+        "-assets",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/_assets/diagrams/INDEX.md",
+      "tags": [
+        "-assets",
+        "diagrams",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/_lint/INDEX.md",
+      "tags": [
+        "-lint",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/_lint/duplicate-topics.md",
+      "tags": [
+        "-lint",
+        "duplicate-topics"
+      ],
+      "topic": "duplicate-topics"
+    },
+    {
+      "path": "docs/_lint/observability-docs.md",
+      "tags": [
+        "-lint",
+        "observability-docs"
+      ],
+      "topic": "observability-docs"
+    },
+    {
+      "path": "docs/_lint/renames.md",
+      "tags": [
+        "-lint",
+        "renames"
+      ],
+      "topic": "renames"
+    },
+    {
+      "path": "docs/_nav/INDEX.md",
+      "tags": [
+        "-nav",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/_style/CONCEPT_REGISTRY.md",
+      "tags": [
+        "-style",
+        "concept-registry"
+      ],
+      "topic": "CONCEPT_REGISTRY"
+    },
+    {
+      "path": "docs/_style/DEPTH_POLICY.md",
+      "tags": [
+        "-style",
+        "depth-policy"
+      ],
+      "topic": "DEPTH_POLICY"
+    },
+    {
+      "path": "docs/_style/DEPTH_RUBRIC.md",
+      "tags": [
+        "-style",
+        "depth-rubric"
+      ],
+      "topic": "DEPTH_RUBRIC"
+    },
+    {
+      "path": "docs/_style/INDEX.md",
+      "tags": [
+        "-style",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/_style/concept-ids.md",
+      "tags": [
+        "-style",
+        "concept-ids"
+      ],
+      "topic": "concept-ids"
+    },
+    {
+      "path": "docs/_style/crate-docs-depth-rubric.md",
+      "tags": [
+        "-style",
+        "crate-docs-depth-rubric"
+      ],
+      "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "path": "docs/_style/docs-review-checklist.md",
+      "tags": [
+        "-style",
+        "docs-review-checklist"
+      ],
+      "topic": "docs-review-checklist"
+    },
+    {
+      "path": "docs/_style/naming-standard.md",
+      "tags": [
+        "-style",
+        "naming-standard"
+      ],
+      "topic": "naming-standard"
+    },
+    {
+      "path": "docs/_style/placement.md",
+      "tags": [
+        "-style",
+        "placement"
+      ],
+      "topic": "placement"
+    },
+    {
+      "path": "docs/_style/stability-levels.md",
+      "tags": [
+        "-style",
+        "stability-levels"
+      ],
+      "topic": "stability-levels"
+    },
+    {
+      "path": "docs/_style/structure-templates.md",
+      "tags": [
+        "-style",
+        "structure-templates"
+      ],
+      "topic": "structure-templates"
+    },
+    {
+      "path": "docs/_style/style-guide.md",
+      "tags": [
+        "-style",
+        "style-guide"
+      ],
+      "topic": "style-guide"
+    },
+    {
+      "path": "docs/_style/terms-glossary.md",
+      "tags": [
+        "-style",
+        "terms-glossary"
+      ],
+      "topic": "terms-glossary"
+    },
+    {
+      "path": "docs/_style/writing-rules.md",
+      "tags": [
+        "-style",
+        "writing-rules"
+      ],
+      "topic": "writing-rules"
+    },
+    {
+      "path": "docs/adrs/ADR-0001-workspace-boundaries-and-effects.md",
+      "tags": [
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs"
+      ],
+      "topic": "ADR-0001-workspace-boundaries-and-effects"
+    },
+    {
+      "path": "docs/adrs/ADR-0002-sqlite-serving-store.md",
+      "tags": [
+        "adr-0002-sqlite-serving-store",
+        "adrs"
+      ],
+      "topic": "ADR-0002-sqlite-serving-store"
+    },
+    {
+      "path": "docs/adrs/ADR-0003-federated-registry-deterministic-merge.md",
+      "tags": [
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs"
+      ],
+      "topic": "ADR-0003-federated-registry-deterministic-merge"
+    },
+    {
+      "path": "docs/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md",
+      "tags": [
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs"
+      ],
+      "topic": "ADR-0004-plugin-contract-and-umbrella-dispatch"
+    },
+    {
+      "path": "docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md",
+      "tags": [
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs"
+      ],
+      "topic": "ADR-0005-security-defaults-and-enterprise-controls"
+    },
+    {
+      "path": "docs/adrs/INDEX.md",
+      "tags": [
+        "adrs",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/api/INDEX.md",
+      "tags": [
+        "api",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/api/caching.md",
+      "tags": [
+        "api",
+        "caching"
+      ],
+      "topic": "caching"
+    },
+    {
+      "path": "docs/api/compatibility.md",
+      "tags": [
+        "api",
+        "compatibility"
+      ],
+      "topic": "compatibility"
+    },
+    {
+      "path": "docs/api/default-field-set.md",
+      "tags": [
+        "api",
+        "default-field-set"
+      ],
+      "topic": "default-field-set"
+    },
+    {
+      "path": "docs/api/deprecation.md",
+      "tags": [
+        "api",
+        "deprecation"
+      ],
+      "topic": "deprecation"
+    },
+    {
+      "path": "docs/api/errors.md",
+      "tags": [
+        "api",
+        "errors"
+      ],
+      "topic": "errors"
+    },
+    {
+      "path": "docs/api/pagination.md",
+      "tags": [
+        "api",
+        "pagination"
+      ],
+      "topic": "pagination"
+    },
+    {
+      "path": "docs/api/v1-surface.md",
+      "tags": [
+        "api",
+        "v1-surface"
+      ],
+      "topic": "v1-surface"
+    },
+    {
+      "path": "docs/api/v2-plan.md",
+      "tags": [
+        "api",
+        "v2-plan"
+      ],
+      "topic": "v2-plan"
+    },
+    {
+      "path": "docs/api/versioning.md",
+      "tags": [
+        "api",
+        "versioning"
+      ],
+      "topic": "versioning"
+    },
+    {
+      "path": "docs/architecture/INDEX.md",
+      "tags": [
+        "architecture",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/architecture/architecture-map.md",
+      "tags": [
+        "architecture",
+        "architecture-map"
+      ],
+      "topic": "architecture-map"
+    },
+    {
+      "path": "docs/architecture/backend-architecture.md",
+      "tags": [
+        "architecture",
+        "backend-architecture"
+      ],
+      "topic": "backend-architecture"
+    },
+    {
+      "path": "docs/architecture/boundaries.md",
+      "tags": [
+        "architecture",
+        "boundaries"
+      ],
+      "topic": "boundaries"
+    },
+    {
+      "path": "docs/architecture/boundary-maps.md",
+      "tags": [
+        "architecture",
+        "boundary-maps"
+      ],
+      "topic": "boundary-maps"
+    },
+    {
+      "path": "docs/architecture/build-serve-split.md",
+      "tags": [
+        "architecture",
+        "build-serve-split"
+      ],
+      "topic": "build-serve-split"
+    },
+    {
+      "path": "docs/architecture/cache-manager.md",
+      "tags": [
+        "architecture",
+        "cache-manager"
+      ],
+      "topic": "cache-manager"
+    },
+    {
+      "path": "docs/architecture/component-responsibilities.md",
+      "tags": [
+        "architecture",
+        "component-responsibilities"
+      ],
+      "topic": "component-responsibilities"
+    },
+    {
+      "path": "docs/architecture/crate-boundary-dependency-graph.md",
+      "tags": [
+        "architecture",
+        "crate-boundary-dependency-graph"
+      ],
+      "topic": "crate-boundary-dependency-graph"
+    },
+    {
+      "path": "docs/architecture/crate-layout-contract.md",
+      "tags": [
+        "architecture",
+        "crate-layout-contract"
+      ],
+      "topic": "crate-layout-contract"
+    },
+    {
+      "path": "docs/architecture/data-access-patterns.md",
+      "tags": [
+        "architecture",
+        "data-access-patterns"
+      ],
+      "topic": "data-access-patterns"
+    },
+    {
+      "path": "docs/architecture/effects.md",
+      "tags": [
+        "architecture",
+        "effects"
+      ],
+      "topic": "effects"
+    },
+    {
+      "path": "docs/architecture/layering/INDEX.md",
+      "tags": [
+        "architecture",
+        "index",
+        "layering"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/architecture/layering/boundary-rules.md",
+      "tags": [
+        "architecture",
+        "boundary-rules",
+        "layering"
+      ],
+      "topic": "boundary-rules"
+    },
+    {
+      "path": "docs/architecture/layering/no-layer-fixups.md",
+      "tags": [
+        "architecture",
+        "layering",
+        "no-layer-fixups"
+      ],
+      "topic": "no-layer-fixups"
+    },
+    {
+      "path": "docs/architecture/layout-shell-migration.md",
+      "tags": [
+        "architecture",
+        "layout-shell-migration"
+      ],
+      "topic": "layout-shell-migration"
+    },
+    {
+      "path": "docs/architecture/no-layer-fixups.md",
+      "tags": [
+        "architecture",
+        "no-layer-fixups"
+      ],
+      "topic": "no-layer-fixups"
+    },
+    {
+      "path": "docs/architecture/no-serving-writes.md",
+      "tags": [
+        "architecture",
+        "no-serving-writes"
+      ],
+      "topic": "no-serving-writes"
+    },
+    {
+      "path": "docs/architecture/overload-and-degradation.md",
+      "tags": [
+        "architecture",
+        "overload-and-degradation"
+      ],
+      "topic": "overload-and-degradation"
+    },
+    {
+      "path": "docs/architecture/policy-enforcement-map.md",
+      "tags": [
+        "architecture",
+        "policy-enforcement-map"
+      ],
+      "topic": "policy-enforcement-map"
+    },
+    {
+      "path": "docs/architecture/query-connection-strategy.md",
+      "tags": [
+        "architecture",
+        "query-connection-strategy"
+      ],
+      "topic": "query-connection-strategy"
+    },
+    {
+      "path": "docs/architecture/removed-compatibility-paths.md",
+      "tags": [
+        "architecture",
+        "removed-compatibility-paths"
+      ],
+      "topic": "removed-compatibility-paths"
+    },
+    {
+      "path": "docs/architecture/repo-overview.md",
+      "tags": [
+        "architecture",
+        "repo-overview"
+      ],
+      "topic": "repo-overview"
+    },
+    {
+      "path": "docs/architecture/scripting.md",
+      "tags": [
+        "architecture",
+        "scripting"
+      ],
+      "topic": "scripting"
+    },
+    {
+      "path": "docs/architecture/store-and-registry.md",
+      "tags": [
+        "architecture",
+        "store-and-registry"
+      ],
+      "topic": "store-and-registry"
+    },
+    {
+      "path": "docs/architecture/system-graph.md",
+      "tags": [
+        "architecture",
+        "system-graph"
+      ],
+      "topic": "system-graph"
+    },
+    {
+      "path": "docs/contracts/INDEX.md",
+      "tags": [
+        "contracts",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/contracts/README.md",
+      "tags": [
+        "contracts",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "docs/contracts/artifacts/INDEX.md",
+      "tags": [
+        "artifacts",
+        "contracts",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/contracts/artifacts/directory-contract.md",
+      "tags": [
+        "artifacts",
+        "contracts",
+        "directory-contract"
+      ],
+      "topic": "directory-contract"
+    },
+    {
+      "path": "docs/contracts/artifacts/manifest-contract.md",
+      "tags": [
+        "artifacts",
+        "contracts",
+        "manifest-contract"
+      ],
+      "topic": "manifest-contract"
+    },
+    {
+      "path": "docs/contracts/artifacts/sqlite-schema-contract.md",
+      "tags": [
+        "artifacts",
+        "contracts",
+        "sqlite-schema-contract"
+      ],
+      "topic": "sqlite-schema-contract"
+    },
+    {
+      "path": "docs/contracts/artifacts/sqlite-schema-evolution-strategy.md",
+      "tags": [
+        "artifacts",
+        "contracts",
+        "sqlite-schema-evolution-strategy"
+      ],
+      "topic": "sqlite-schema-evolution-strategy"
+    },
+    {
+      "path": "docs/contracts/breaking-change-examples.md",
+      "tags": [
+        "breaking-change-examples",
+        "contracts"
+      ],
+      "topic": "breaking-change-examples"
+    },
+    {
+      "path": "docs/contracts/chart-values.md",
+      "tags": [
+        "chart-values",
+        "contracts"
+      ],
+      "topic": "chart-values"
+    },
+    {
+      "path": "docs/contracts/compatibility.md",
+      "tags": [
+        "compatibility",
+        "contracts"
+      ],
+      "topic": "compatibility"
+    },
+    {
+      "path": "docs/contracts/config-keys.md",
+      "tags": [
+        "config-keys",
+        "contracts"
+      ],
+      "topic": "config-keys"
+    },
+    {
+      "path": "docs/contracts/contract-change-checklist.md",
+      "tags": [
+        "contract-change-checklist",
+        "contracts"
+      ],
+      "topic": "contract-change-checklist"
+    },
+    {
+      "path": "docs/contracts/contract-diff.md",
+      "tags": [
+        "contract-diff",
+        "contracts"
+      ],
+      "topic": "contract-diff"
+    },
+    {
+      "path": "docs/contracts/contracts-index.md",
+      "tags": [
+        "contracts",
+        "contracts-index"
+      ],
+      "topic": "contracts-index"
+    },
+    {
+      "path": "docs/contracts/endpoints.md",
+      "tags": [
+        "contracts",
+        "endpoints"
+      ],
+      "topic": "endpoints"
+    },
+    {
+      "path": "docs/contracts/errors.md",
+      "tags": [
+        "contracts",
+        "errors"
+      ],
+      "topic": "errors"
+    },
+    {
+      "path": "docs/contracts/examples/INDEX.md",
+      "tags": [
+        "contracts",
+        "examples",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/contracts/fasta-derived-metrics.md",
+      "tags": [
+        "contracts",
+        "fasta-derived-metrics"
+      ],
+      "topic": "fasta-derived-metrics"
+    },
+    {
+      "path": "docs/contracts/gff3-acceptance.md",
+      "tags": [
+        "contracts",
+        "gff3-acceptance"
+      ],
+      "topic": "gff3-acceptance"
+    },
+    {
+      "path": "docs/contracts/metrics.md",
+      "tags": [
+        "contracts",
+        "metrics"
+      ],
+      "topic": "metrics"
+    },
+    {
+      "path": "docs/contracts/normalized-format.md",
+      "tags": [
+        "contracts",
+        "normalized-format"
+      ],
+      "topic": "normalized-format"
+    },
+    {
+      "path": "docs/contracts/plugin/INDEX.md",
+      "tags": [
+        "contracts",
+        "index",
+        "plugin"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/contracts/plugin/conformance-checklist.md",
+      "tags": [
+        "conformance-checklist",
+        "contracts",
+        "plugin"
+      ],
+      "topic": "conformance-checklist"
+    },
+    {
+      "path": "docs/contracts/plugin/mode.md",
+      "tags": [
+        "contracts",
+        "mode",
+        "plugin"
+      ],
+      "topic": "mode"
+    },
+    {
+      "path": "docs/contracts/plugin/spec.md",
+      "tags": [
+        "contracts",
+        "plugin",
+        "spec"
+      ],
+      "topic": "spec"
+    },
+    {
+      "path": "docs/contracts/plugin/umbrella-plugin-contract-v1.md",
+      "tags": [
+        "contracts",
+        "plugin",
+        "umbrella-plugin-contract-v1"
+      ],
+      "topic": "umbrella-plugin-contract-v1"
+    },
+    {
+      "path": "docs/contracts/qc.md",
+      "tags": [
+        "contracts"
+      ],
+      "topic": "qc"
+    },
+    {
+      "path": "docs/contracts/ssot-workflow.md",
+      "tags": [
+        "contracts",
+        "ssot-workflow"
+      ],
+      "topic": "ssot-workflow"
+    },
+    {
+      "path": "docs/contracts/tracing.md",
+      "tags": [
+        "contracts",
+        "tracing"
+      ],
+      "topic": "tracing"
+    },
+    {
+      "path": "docs/control-plane/ops-boundary.md",
+      "tags": [
+        "control-plane",
+        "ops-boundary"
+      ],
+      "topic": "ops-boundary"
+    },
+    {
+      "path": "docs/dev/check-failures.md",
+      "tags": [
+        "check-failures",
+        "dev"
+      ],
+      "topic": "check-failures"
+    },
+    {
+      "path": "docs/development/INDEX.md",
+      "tags": [
+        "development",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/development/add-dataset-type.md",
+      "tags": [
+        "add-dataset-type",
+        "development"
+      ],
+      "topic": "add-dataset-type"
+    },
+    {
+      "path": "docs/development/add-endpoint.md",
+      "tags": [
+        "add-endpoint",
+        "development"
+      ],
+      "topic": "add-endpoint"
+    },
+    {
+      "path": "docs/development/add-metric-span.md",
+      "tags": [
+        "add-metric-span",
+        "development"
+      ],
+      "topic": "add-metric-span"
+    },
+    {
+      "path": "docs/development/cargo-profiles-ssot.md",
+      "tags": [
+        "cargo-profiles-ssot",
+        "development"
+      ],
+      "topic": "cargo-profiles-ssot"
+    },
+    {
+      "path": "docs/development/cargo.md",
+      "tags": [
+        "cargo",
+        "development"
+      ],
+      "topic": "cargo"
+    },
+    {
+      "path": "docs/development/ci/INDEX.md",
+      "tags": [
+        "development",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/development/ci/cache-policy.md",
+      "tags": [
+        "cache-policy",
+        "development"
+      ],
+      "topic": "cache-policy"
+    },
+    {
+      "path": "docs/development/ci/ci.md",
+      "tags": [
+        "development"
+      ],
+      "topic": "ci"
+    },
+    {
+      "path": "docs/development/ci/coverage.md",
+      "tags": [
+        "coverage",
+        "development"
+      ],
+      "topic": "coverage"
+    },
+    {
+      "path": "docs/development/ci/dependency-update-policy.md",
+      "tags": [
+        "dependency-update-policy",
+        "development"
+      ],
+      "topic": "dependency-update-policy"
+    },
+    {
+      "path": "docs/development/ci/reproducible-build-hints.md",
+      "tags": [
+        "development",
+        "reproducible-build-hints"
+      ],
+      "topic": "reproducible-build-hints"
+    },
+    {
+      "path": "docs/development/ci/security-audit-policy.md",
+      "tags": [
+        "development",
+        "security-audit-policy"
+      ],
+      "topic": "security-audit-policy"
+    },
+    {
+      "path": "docs/development/ci/supply-chain-and-runtime-security.md",
+      "tags": [
+        "development",
+        "supply-chain-and-runtime-security"
+      ],
+      "topic": "supply-chain-and-runtime-security"
+    },
+    {
+      "path": "docs/development/config-versioning.md",
+      "tags": [
+        "config-versioning",
+        "development"
+      ],
+      "topic": "config-versioning"
+    },
+    {
+      "path": "docs/development/configs-layout.md",
+      "tags": [
+        "configs-layout",
+        "development"
+      ],
+      "topic": "configs-layout"
+    },
+    {
+      "path": "docs/development/contributing.md",
+      "tags": [
+        "contributing",
+        "development"
+      ],
+      "topic": "contributing"
+    },
+    {
+      "path": "docs/development/crates-map.md",
+      "tags": [
+        "crates-map",
+        "development"
+      ],
+      "topic": "crates-map"
+    },
+    {
+      "path": "docs/development/dataset-identity.md",
+      "tags": [
+        "dataset-identity",
+        "development"
+      ],
+      "topic": "dataset-identity"
+    },
+    {
+      "path": "docs/development/docs-depth-contract.md",
+      "tags": [
+        "development",
+        "docs-depth-contract"
+      ],
+      "topic": "docs-depth-contract"
+    },
+    {
+      "path": "docs/development/local-noise.md",
+      "tags": [
+        "development",
+        "local-noise"
+      ],
+      "topic": "local-noise"
+    },
+    {
+      "path": "docs/development/make-targets-inventory.md",
+      "tags": [
+        "development",
+        "make-targets-inventory"
+      ],
+      "topic": "make-targets-inventory"
+    },
+    {
+      "path": "docs/development/make-targets.md",
+      "tags": [
+        "development",
+        "make-targets"
+      ],
+      "topic": "make-targets"
+    },
+    {
+      "path": "docs/development/makefiles/INDEX.md",
+      "tags": [
+        "development",
+        "index",
+        "makefiles"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/development/makefiles/surface.md",
+      "tags": [
+        "development",
+        "makefiles",
+        "surface"
+      ],
+      "topic": "surface"
+    },
+    {
+      "path": "docs/development/naming-and-wording-conventions.md",
+      "tags": [
+        "development",
+        "naming-and-wording-conventions"
+      ],
+      "topic": "naming-and-wording-conventions"
+    },
+    {
+      "path": "docs/development/normalized-format.md",
+      "tags": [
+        "development",
+        "normalized-format"
+      ],
+      "topic": "normalized-format"
+    },
+    {
+      "path": "docs/development/ops-canonical-layout.md",
+      "tags": [
+        "development",
+        "ops-canonical-layout"
+      ],
+      "topic": "ops-canonical-layout"
+    },
+    {
+      "path": "docs/development/ops-intent-naming.md",
+      "tags": [
+        "development",
+        "ops-intent-naming"
+      ],
+      "topic": "ops-intent-naming"
+    },
+    {
+      "path": "docs/development/reorg-plan.md",
+      "tags": [
+        "development",
+        "reorg-plan"
+      ],
+      "topic": "reorg-plan"
+    },
+    {
+      "path": "docs/development/repo-layout.md",
+      "tags": [
+        "development",
+        "repo-layout"
+      ],
+      "topic": "repo-layout"
+    },
+    {
+      "path": "docs/development/repo-surface.md",
+      "tags": [
+        "development",
+        "repo-surface"
+      ],
+      "topic": "repo-surface"
+    },
+    {
+      "path": "docs/development/root-inventory.md",
+      "tags": [
+        "development",
+        "root-inventory"
+      ],
+      "topic": "root-inventory"
+    },
+    {
+      "path": "docs/development/script-naming.md",
+      "tags": [
+        "development",
+        "script-naming"
+      ],
+      "topic": "script-naming"
+    },
+    {
+      "path": "docs/development/scripts-graph.md",
+      "tags": [
+        "development",
+        "scripts-graph"
+      ],
+      "topic": "scripts-graph"
+    },
+    {
+      "path": "docs/development/snapshot-test-policy.md",
+      "tags": [
+        "development",
+        "snapshot-test-policy"
+      ],
+      "topic": "snapshot-test-policy"
+    },
+    {
+      "path": "docs/development/style/INDEX.md",
+      "tags": [
+        "development",
+        "index",
+        "style"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/development/style/why-this-layout.md",
+      "tags": [
+        "development",
+        "style",
+        "why-this-layout"
+      ],
+      "topic": "why-this-layout"
+    },
+    {
+      "path": "docs/development/symlinks.md",
+      "tags": [
+        "development",
+        "symlinks"
+      ],
+      "topic": "symlinks"
+    },
+    {
+      "path": "docs/development/task-runner-removal-map.md",
+      "tags": [
+        "development",
+        "task-runner-removal-map"
+      ],
+      "topic": "task-runner-removal-map"
+    },
+    {
+      "path": "docs/development/tool-config-shims.md",
+      "tags": [
+        "development",
+        "tool-config-shims"
+      ],
+      "topic": "tool-config-shims"
+    },
+    {
+      "path": "docs/development/tooling/INDEX.md",
+      "tags": [
+        "development",
+        "index",
+        "tooling"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/development/tooling/build-outputs.md",
+      "tags": [
+        "build-outputs",
+        "development",
+        "tooling"
+      ],
+      "topic": "build-outputs"
+    },
+    {
+      "path": "docs/development/tooling/command-inventory.md",
+      "tags": [
+        "command-inventory",
+        "development",
+        "tooling"
+      ],
+      "topic": "command-inventory"
+    },
+    {
+      "path": "docs/development/tooling/compat-matrix.md",
+      "tags": [
+        "compat-matrix",
+        "development",
+        "tooling"
+      ],
+      "topic": "compat-matrix"
+    },
+    {
+      "path": "docs/development/tooling/control-plane.md",
+      "tags": [
+        "control-plane",
+        "development",
+        "tooling"
+      ],
+      "topic": "control-plane"
+    },
+    {
+      "path": "docs/development/tooling/dev-atlas-docs.md",
+      "tags": [
+        "dev-atlas-docs",
+        "development",
+        "tooling"
+      ],
+      "topic": "dev-atlas-docs"
+    },
+    {
+      "path": "docs/development/tooling/dev-atlas-ops.md",
+      "tags": [
+        "dev-atlas-ops",
+        "development",
+        "tooling"
+      ],
+      "topic": "dev-atlas-ops"
+    },
+    {
+      "path": "docs/development/tooling/make-workflow-governance-entrypoints.md",
+      "tags": [
+        "development",
+        "make-workflow-governance-entrypoints",
+        "tooling"
+      ],
+      "topic": "make-workflow-governance-entrypoints"
+    },
+    {
+      "path": "docs/development/tooling/naming-policy.md",
+      "tags": [
+        "development",
+        "naming-policy",
+        "tooling"
+      ],
+      "topic": "naming-policy"
+    },
+    {
+      "path": "docs/development/tooling/ops-command-inventory.md",
+      "tags": [
+        "development",
+        "ops-command-inventory",
+        "tooling"
+      ],
+      "topic": "ops-command-inventory"
+    },
+    {
+      "path": "docs/development/tooling/release-packaging-plan.md",
+      "tags": [
+        "development",
+        "release-packaging-plan",
+        "tooling"
+      ],
+      "topic": "release-packaging-plan"
+    },
+    {
+      "path": "docs/development/tooling/rust-toolchain.md",
+      "tags": [
+        "development",
+        "rust-toolchain",
+        "tooling"
+      ],
+      "topic": "rust-toolchain"
+    },
+    {
+      "path": "docs/development/tooling/scripts-compat-policy.md",
+      "tags": [
+        "development",
+        "scripts-compat-policy",
+        "tooling"
+      ],
+      "topic": "scripts-compat-policy"
+    },
+    {
+      "path": "docs/development/tooling/tools.md",
+      "tags": [
+        "development",
+        "tooling",
+        "tools"
+      ],
+      "topic": "tools"
+    },
+    {
+      "path": "docs/development/tooling/versioning-alignment.md",
+      "tags": [
+        "development",
+        "tooling",
+        "versioning-alignment"
+      ],
+      "topic": "versioning-alignment"
+    },
+    {
+      "path": "docs/docs/checks.md",
+      "tags": [
+        "checks"
+      ],
+      "topic": "checks"
+    },
+    {
+      "path": "docs/examples/INDEX.md",
+      "tags": [
+        "examples",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/examples/catalog-example.md",
+      "tags": [
+        "catalog-example",
+        "examples"
+      ],
+      "topic": "catalog-example"
+    },
+    {
+      "path": "docs/examples/curl-requests.md",
+      "tags": [
+        "curl-requests",
+        "examples"
+      ],
+      "topic": "curl-requests"
+    },
+    {
+      "path": "docs/governance/DOCS_OWNERSHIP.md",
+      "tags": [
+        "docs-ownership",
+        "governance"
+      ],
+      "topic": "DOCS_OWNERSHIP"
+    },
+    {
+      "path": "docs/index.md",
+      "tags": [
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "path": "docs/operations/INDEX.md",
+      "tags": [
+        "index",
+        "operations"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/air-gapped-install.md",
+      "tags": [
+        "air-gapped-install",
+        "operations"
+      ],
+      "topic": "air-gapped-install"
+    },
+    {
+      "path": "docs/operations/cache-topology.md",
+      "tags": [
+        "cache-topology",
+        "operations"
+      ],
+      "topic": "cache-topology"
+    },
+    {
+      "path": "docs/operations/cached-only-slo.md",
+      "tags": [
+        "cached-only-slo",
+        "operations"
+      ],
+      "topic": "cached-only-slo"
+    },
+    {
+      "path": "docs/operations/canonical-workflows.md",
+      "tags": [
+        "canonical-workflows",
+        "operations"
+      ],
+      "topic": "canonical-workflows"
+    },
+    {
+      "path": "docs/operations/config.md",
+      "tags": [
+        "config",
+        "operations"
+      ],
+      "topic": "config"
+    },
+    {
+      "path": "docs/operations/container.md",
+      "tags": [
+        "container",
+        "operations"
+      ],
+      "topic": "container"
+    },
+    {
+      "path": "docs/operations/dataset-promotion-pipeline.md",
+      "tags": [
+        "dataset-promotion-pipeline",
+        "operations"
+      ],
+      "topic": "dataset-promotion-pipeline"
+    },
+    {
+      "path": "docs/operations/datasets.md",
+      "tags": [
+        "datasets",
+        "operations"
+      ],
+      "topic": "datasets"
+    },
+    {
+      "path": "docs/operations/e2e/INDEX.md",
+      "tags": [
+        "e2e",
+        "index",
+        "operations"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/e2e/fixtures.md",
+      "tags": [
+        "e2e",
+        "fixtures",
+        "operations"
+      ],
+      "topic": "fixtures"
+    },
+    {
+      "path": "docs/operations/e2e/k8s-tests.md",
+      "tags": [
+        "e2e",
+        "k8s-tests",
+        "operations"
+      ],
+      "topic": "k8s-tests"
+    },
+    {
+      "path": "docs/operations/e2e/realdata-drills.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "realdata-drills"
+      ],
+      "topic": "realdata-drills"
+    },
+    {
+      "path": "docs/operations/e2e/stack.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "stack"
+      ],
+      "topic": "stack"
+    },
+    {
+      "path": "docs/operations/e2e/what-e2e-is-not.md",
+      "tags": [
+        "e2e",
+        "operations",
+        "what-e2e-is-not"
+      ],
+      "topic": "what-e2e-is-not"
+    },
+    {
+      "path": "docs/operations/evidence-policy.md",
+      "tags": [
+        "evidence-policy",
+        "operations"
+      ],
+      "topic": "evidence-policy"
+    },
+    {
+      "path": "docs/operations/full-stack-local.md",
+      "tags": [
+        "full-stack-local",
+        "operations"
+      ],
+      "topic": "full-stack-local"
+    },
+    {
+      "path": "docs/operations/full-stack-locally.md",
+      "tags": [
+        "full-stack-locally",
+        "operations"
+      ],
+      "topic": "full-stack-locally"
+    },
+    {
+      "path": "docs/operations/health-endpoint-semantics.md",
+      "tags": [
+        "health-endpoint-semantics",
+        "operations"
+      ],
+      "topic": "health-endpoint-semantics"
+    },
+    {
+      "path": "docs/operations/how-to-run-locally.md",
+      "tags": [
+        "how-to-run-locally",
+        "operations"
+      ],
+      "topic": "how-to-run-locally"
+    },
+    {
+      "path": "docs/operations/input-sources.md",
+      "tags": [
+        "input-sources",
+        "operations"
+      ],
+      "topic": "input-sources"
+    },
+    {
+      "path": "docs/operations/k8s/INDEX.md",
+      "tags": [
+        "index",
+        "k8s",
+        "operations"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/k8s/autoscaling-contract.md",
+      "tags": [
+        "autoscaling-contract",
+        "k8s",
+        "operations"
+      ],
+      "topic": "autoscaling-contract"
+    },
+    {
+      "path": "docs/operations/k8s/canary-progressive-delivery.md",
+      "tags": [
+        "canary-progressive-delivery",
+        "k8s",
+        "operations"
+      ],
+      "topic": "canary-progressive-delivery"
+    },
+    {
+      "path": "docs/operations/k8s/chart.md",
+      "tags": [
+        "chart",
+        "k8s",
+        "operations"
+      ],
+      "topic": "chart"
+    },
+    {
+      "path": "docs/operations/k8s/cluster-resource-profile.md",
+      "tags": [
+        "cluster-resource-profile",
+        "k8s",
+        "operations"
+      ],
+      "topic": "cluster-resource-profile"
+    },
+    {
+      "path": "docs/operations/k8s/crd-dependency-policy.md",
+      "tags": [
+        "crd-dependency-policy",
+        "k8s",
+        "operations"
+      ],
+      "topic": "crd-dependency-policy"
+    },
+    {
+      "path": "docs/operations/k8s/dataset-locality-and-shard-scaling.md",
+      "tags": [
+        "dataset-locality-and-shard-scaling",
+        "k8s",
+        "operations"
+      ],
+      "topic": "dataset-locality-and-shard-scaling"
+    },
+    {
+      "path": "docs/operations/k8s/k8s-test-contract.md",
+      "tags": [
+        "k8s",
+        "k8s-test-contract",
+        "operations"
+      ],
+      "topic": "k8s-test-contract"
+    },
+    {
+      "path": "docs/operations/k8s/kustomize-policy.md",
+      "tags": [
+        "k8s",
+        "kustomize-policy",
+        "operations"
+      ],
+      "topic": "kustomize-policy"
+    },
+    {
+      "path": "docs/operations/k8s/network-policy-correctness.md",
+      "tags": [
+        "k8s",
+        "network-policy-correctness",
+        "operations"
+      ],
+      "topic": "network-policy-correctness"
+    },
+    {
+      "path": "docs/operations/k8s/node-local-shared-cache-profile.md",
+      "tags": [
+        "k8s",
+        "node-local-shared-cache-profile",
+        "operations"
+      ],
+      "topic": "node-local-shared-cache-profile"
+    },
+    {
+      "path": "docs/operations/k8s/packaging-and-ops.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "packaging-and-ops"
+      ],
+      "topic": "packaging-and-ops"
+    },
+    {
+      "path": "docs/operations/k8s/plugin-mode-entrypoint.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "plugin-mode-entrypoint"
+      ],
+      "topic": "plugin-mode-entrypoint"
+    },
+    {
+      "path": "docs/operations/k8s/rbac-minimalism.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "rbac-minimalism"
+      ],
+      "topic": "rbac-minimalism"
+    },
+    {
+      "path": "docs/operations/k8s/release-install-matrix.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "release-install-matrix"
+      ],
+      "topic": "release-install-matrix"
+    },
+    {
+      "path": "docs/operations/k8s/values-schema.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "values-schema"
+      ],
+      "topic": "values-schema"
+    },
+    {
+      "path": "docs/operations/k8s/values.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "values"
+      ],
+      "topic": "values"
+    },
+    {
+      "path": "docs/operations/k8s/warm-on-rollout.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "warm-on-rollout"
+      ],
+      "topic": "warm-on-rollout"
+    },
+    {
+      "path": "docs/operations/k8s/when-layer-drift-fails.md",
+      "tags": [
+        "k8s",
+        "operations",
+        "when-layer-drift-fails"
+      ],
+      "topic": "when-layer-drift-fails"
+    },
+    {
+      "path": "docs/operations/kubernetes.md",
+      "tags": [
+        "kubernetes",
+        "operations"
+      ],
+      "topic": "kubernetes"
+    },
+    {
+      "path": "docs/operations/load/INDEX.md",
+      "tags": [
+        "index",
+        "load",
+        "operations"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/load/baseline-update-policy.md",
+      "tags": [
+        "baseline-update-policy",
+        "load",
+        "operations"
+      ],
+      "topic": "baseline-update-policy"
+    },
+    {
+      "path": "docs/operations/load/ci-policy.md",
+      "tags": [
+        "ci-policy",
+        "load",
+        "operations"
+      ],
+      "topic": "ci-policy"
+    },
+    {
+      "path": "docs/operations/load/k6.md",
+      "tags": [
+        "load",
+        "operations"
+      ],
+      "topic": "k6"
+    },
+    {
+      "path": "docs/operations/load/perf-acceptance-checklist.md",
+      "tags": [
+        "load",
+        "operations",
+        "perf-acceptance-checklist"
+      ],
+      "topic": "perf-acceptance-checklist"
+    },
+    {
+      "path": "docs/operations/load/reproducibility.md",
+      "tags": [
+        "load",
+        "operations",
+        "reproducibility"
+      ],
+      "topic": "reproducibility"
+    },
+    {
+      "path": "docs/operations/load/result-contract.md",
+      "tags": [
+        "load",
+        "operations",
+        "result-contract"
+      ],
+      "topic": "result-contract"
+    },
+    {
+      "path": "docs/operations/load/runtime-policy.md",
+      "tags": [
+        "load",
+        "operations",
+        "runtime-policy"
+      ],
+      "topic": "runtime-policy"
+    },
+    {
+      "path": "docs/operations/load/suites.md",
+      "tags": [
+        "load",
+        "operations",
+        "suites"
+      ],
+      "topic": "suites"
+    },
+    {
+      "path": "docs/operations/local-stack.md",
+      "tags": [
+        "local-stack",
+        "operations"
+      ],
+      "topic": "local-stack"
+    },
+    {
+      "path": "docs/operations/no-direct-path-usage.md",
+      "tags": [
+        "no-direct-path-usage",
+        "operations"
+      ],
+      "topic": "no-direct-path-usage"
+    },
+    {
+      "path": "docs/operations/observability/INDEX.md",
+      "tags": [
+        "index",
+        "observability",
+        "operations"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/observability/acceptance-checklist.md",
+      "tags": [
+        "acceptance-checklist",
+        "observability",
+        "operations"
+      ],
+      "topic": "acceptance-checklist"
+    },
+    {
+      "path": "docs/operations/observability/acceptance-gates.md",
+      "tags": [
+        "acceptance-gates",
+        "observability",
+        "operations"
+      ],
+      "topic": "acceptance-gates"
+    },
+    {
+      "path": "docs/operations/observability/alerts.md",
+      "tags": [
+        "alerts",
+        "observability",
+        "operations"
+      ],
+      "topic": "alerts"
+    },
+    {
+      "path": "docs/operations/observability/compatibility.md",
+      "tags": [
+        "compatibility",
+        "observability",
+        "operations"
+      ],
+      "topic": "compatibility"
+    },
+    {
+      "path": "docs/operations/observability/dashboard.md",
+      "tags": [
+        "dashboard",
+        "observability",
+        "operations"
+      ],
+      "topic": "dashboard"
+    },
+    {
+      "path": "docs/operations/observability/debug-overload.md",
+      "tags": [
+        "debug-overload",
+        "observability",
+        "operations"
+      ],
+      "topic": "debug-overload"
+    },
+    {
+      "path": "docs/operations/observability/debug-p99-latency.md",
+      "tags": [
+        "debug-p99-latency",
+        "observability",
+        "operations"
+      ],
+      "topic": "debug-p99-latency"
+    },
+    {
+      "path": "docs/operations/observability/drills.md",
+      "tags": [
+        "drills",
+        "observability",
+        "operations"
+      ],
+      "topic": "drills"
+    },
+    {
+      "path": "docs/operations/observability/error-budget-policy.md",
+      "tags": [
+        "error-budget-policy",
+        "observability",
+        "operations"
+      ],
+      "topic": "error-budget-policy"
+    },
+    {
+      "path": "docs/operations/observability/metric-cardinality-guardrails.md",
+      "tags": [
+        "metric-cardinality-guardrails",
+        "observability",
+        "operations"
+      ],
+      "topic": "metric-cardinality-guardrails"
+    },
+    {
+      "path": "docs/operations/observability/metric-ownership.md",
+      "tags": [
+        "metric-ownership",
+        "observability",
+        "operations"
+      ],
+      "topic": "metric-ownership"
+    },
+    {
+      "path": "docs/operations/observability/otel-outage-behavior.md",
+      "tags": [
+        "observability",
+        "operations",
+        "otel-outage-behavior"
+      ],
+      "topic": "otel-outage-behavior"
+    },
+    {
+      "path": "docs/operations/observability/perf-regression-policy.md",
+      "tags": [
+        "observability",
+        "operations",
+        "perf-regression-policy"
+      ],
+      "topic": "perf-regression-policy"
+    },
+    {
+      "path": "docs/operations/observability/performance-baseline.md",
+      "tags": [
+        "observability",
+        "operations",
+        "performance-baseline"
+      ],
+      "topic": "performance-baseline"
+    },
+    {
+      "path": "docs/operations/observability/profiles.md",
+      "tags": [
+        "observability",
+        "operations",
+        "profiles"
+      ],
+      "topic": "profiles"
+    },
+    {
+      "path": "docs/operations/observability/runbook-dashboard-alert-map.md",
+      "tags": [
+        "observability",
+        "operations",
+        "runbook-dashboard-alert-map"
+      ],
+      "topic": "runbook-dashboard-alert-map"
+    },
+    {
+      "path": "docs/operations/observability/slo-critical-metrics.md",
+      "tags": [
+        "observability",
+        "operations",
+        "slo-critical-metrics"
+      ],
+      "topic": "slo-critical-metrics"
+    },
+    {
+      "path": "docs/operations/observability/slo.md",
+      "tags": [
+        "observability",
+        "operations",
+        "slo"
+      ],
+      "topic": "slo"
+    },
+    {
+      "path": "docs/operations/observability/startup-warm-cache-strategy.md",
+      "tags": [
+        "observability",
+        "operations",
+        "startup-warm-cache-strategy"
+      ],
+      "topic": "startup-warm-cache-strategy"
+    },
+    {
+      "path": "docs/operations/observability/telemetry-compatibility.md",
+      "tags": [
+        "observability",
+        "operations",
+        "telemetry-compatibility"
+      ],
+      "topic": "telemetry-compatibility"
+    },
+    {
+      "path": "docs/operations/observability/trace-sampling-policy.md",
+      "tags": [
+        "observability",
+        "operations",
+        "trace-sampling-policy"
+      ],
+      "topic": "trace-sampling-policy"
+    },
+    {
+      "path": "docs/operations/observability/tracing.md",
+      "tags": [
+        "observability",
+        "operations",
+        "tracing"
+      ],
+      "topic": "tracing"
+    },
+    {
+      "path": "docs/operations/ops-acceptance-checklist.md",
+      "tags": [
+        "operations",
+        "ops-acceptance-checklist"
+      ],
+      "topic": "ops-acceptance-checklist"
+    },
+    {
+      "path": "docs/operations/ops-layout.md",
+      "tags": [
+        "operations",
+        "ops-layout"
+      ],
+      "topic": "ops-layout"
+    },
+    {
+      "path": "docs/operations/performance/INDEX.md",
+      "tags": [
+        "index",
+        "operations",
+        "performance"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/performance/budgets.md",
+      "tags": [
+        "budgets",
+        "operations",
+        "performance"
+      ],
+      "topic": "budgets"
+    },
+    {
+      "path": "docs/operations/platform-handover.md",
+      "tags": [
+        "operations",
+        "platform-handover"
+      ],
+      "topic": "platform-handover"
+    },
+    {
+      "path": "docs/operations/policy-violation-triage.md",
+      "tags": [
+        "operations",
+        "policy-violation-triage"
+      ],
+      "topic": "policy-violation-triage"
+    },
+    {
+      "path": "docs/operations/production-readiness-checklist.md",
+      "tags": [
+        "operations",
+        "production-readiness-checklist"
+      ],
+      "topic": "production-readiness-checklist"
+    },
+    {
+      "path": "docs/operations/release-workflows.md",
+      "tags": [
+        "operations",
+        "release-workflows"
+      ],
+      "topic": "release-workflows"
+    },
+    {
+      "path": "docs/operations/retention-and-gc.md",
+      "tags": [
+        "operations",
+        "retention-and-gc"
+      ],
+      "topic": "retention-and-gc"
+    },
+    {
+      "path": "docs/operations/runbooks/INDEX.md",
+      "tags": [
+        "index",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/runbooks/dataset-corruption.md",
+      "tags": [
+        "dataset-corruption",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "dataset-corruption"
+    },
+    {
+      "path": "docs/operations/runbooks/high-memory.md",
+      "tags": [
+        "high-memory",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "high-memory"
+    },
+    {
+      "path": "docs/operations/runbooks/incident-playbook.md",
+      "tags": [
+        "incident-playbook",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "incident-playbook"
+    },
+    {
+      "path": "docs/operations/runbooks/k8s-perf-chaos.md",
+      "tags": [
+        "k8s-perf-chaos",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "k8s-perf-chaos"
+    },
+    {
+      "path": "docs/operations/runbooks/load-failure-triage.md",
+      "tags": [
+        "load-failure-triage",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "load-failure-triage"
+    },
+    {
+      "path": "docs/operations/runbooks/memory-profile-under-load.md",
+      "tags": [
+        "memory-profile-under-load",
+        "operations",
+        "runbooks"
+      ],
+      "topic": "memory-profile-under-load"
+    },
+    {
+      "path": "docs/operations/runbooks/pod-churn.md",
+      "tags": [
+        "operations",
+        "pod-churn",
+        "runbooks"
+      ],
+      "topic": "pod-churn"
+    },
+    {
+      "path": "docs/operations/runbooks/profile-under-load.md",
+      "tags": [
+        "operations",
+        "profile-under-load",
+        "runbooks"
+      ],
+      "topic": "profile-under-load"
+    },
+    {
+      "path": "docs/operations/runbooks/registry-federation.md",
+      "tags": [
+        "operations",
+        "registry-federation",
+        "runbooks"
+      ],
+      "topic": "registry-federation"
+    },
+    {
+      "path": "docs/operations/runbooks/rollback-playbook.md",
+      "tags": [
+        "operations",
+        "rollback-playbook",
+        "runbooks"
+      ],
+      "topic": "rollback-playbook"
+    },
+    {
+      "path": "docs/operations/runbooks/slo-cheap-burn.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-cheap-burn"
+      ],
+      "topic": "slo-cheap-burn"
+    },
+    {
+      "path": "docs/operations/runbooks/slo-overload-survival.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-overload-survival"
+      ],
+      "topic": "slo-overload-survival"
+    },
+    {
+      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-registry-refresh-stale"
+      ],
+      "topic": "slo-registry-refresh-stale"
+    },
+    {
+      "path": "docs/operations/runbooks/slo-standard-burn.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-standard-burn"
+      ],
+      "topic": "slo-standard-burn"
+    },
+    {
+      "path": "docs/operations/runbooks/slo-store-backend-error-spike.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "slo-store-backend-error-spike"
+      ],
+      "topic": "slo-store-backend-error-spike"
+    },
+    {
+      "path": "docs/operations/runbooks/store-outage.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "store-outage"
+      ],
+      "topic": "store-outage"
+    },
+    {
+      "path": "docs/operations/runbooks/traffic-spike.md",
+      "tags": [
+        "operations",
+        "runbooks",
+        "traffic-spike"
+      ],
+      "topic": "traffic-spike"
+    },
+    {
+      "path": "docs/operations/security/INDEX.md",
+      "tags": [
+        "index",
+        "operations",
+        "security"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/security/advisories/INDEX.md",
+      "tags": [
+        "advisories",
+        "index",
+        "operations",
+        "security"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/security/advisory-process.md",
+      "tags": [
+        "advisory-process",
+        "operations",
+        "security"
+      ],
+      "topic": "advisory-process"
+    },
+    {
+      "path": "docs/operations/security/security-posture.md",
+      "tags": [
+        "operations",
+        "security",
+        "security-posture"
+      ],
+      "topic": "security-posture"
+    },
+    {
+      "path": "docs/operations/slo/BASELINE_UPDATE_POLICY.md",
+      "tags": [
+        "baseline-update-policy",
+        "operations",
+        "slo"
+      ],
+      "topic": "BASELINE_UPDATE_POLICY"
+    },
+    {
+      "path": "docs/operations/slo/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "operations",
+        "slo"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "path": "docs/operations/slo/CHANGE_POLICY.md",
+      "tags": [
+        "change-policy",
+        "operations",
+        "slo"
+      ],
+      "topic": "CHANGE_POLICY"
+    },
+    {
+      "path": "docs/operations/slo/GLOSSARY.md",
+      "tags": [
+        "glossary",
+        "operations",
+        "slo"
+      ],
+      "topic": "GLOSSARY"
+    },
+    {
+      "path": "docs/operations/slo/INDEX.md",
+      "tags": [
+        "index",
+        "operations",
+        "slo"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/operations/slo/NON_GOALS.md",
+      "tags": [
+        "non-goals",
+        "operations",
+        "slo"
+      ],
+      "topic": "NON_GOALS"
+    },
+    {
+      "path": "docs/operations/slo/RELEASE_GATE.md",
+      "tags": [
+        "operations",
+        "release-gate",
+        "slo"
+      ],
+      "topic": "RELEASE_GATE"
+    },
+    {
+      "path": "docs/operations/slo/SCOPE.md",
+      "tags": [
+        "operations",
+        "scope",
+        "slo"
+      ],
+      "topic": "SCOPE"
+    },
+    {
+      "path": "docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md",
+      "tags": [
+        "operations",
+        "sla-decision-adr-template",
+        "slo"
+      ],
+      "topic": "SLA_DECISION_ADR_TEMPLATE"
+    },
+    {
+      "path": "docs/operations/slo/SLA_EXCLUSIONS_PLANNED.md",
+      "tags": [
+        "operations",
+        "sla-exclusions-planned",
+        "slo"
+      ],
+      "topic": "SLA_EXCLUSIONS_PLANNED"
+    },
+    {
+      "path": "docs/operations/slo/SLA_POLICY.md",
+      "tags": [
+        "operations",
+        "sla-policy",
+        "slo"
+      ],
+      "topic": "SLA_POLICY"
+    },
+    {
+      "path": "docs/operations/slo/SLIS.md",
+      "tags": [
+        "operations",
+        "slis",
+        "slo"
+      ],
+      "topic": "SLIS"
+    },
+    {
+      "path": "docs/operations/slo/SLOS.md",
+      "tags": [
+        "operations",
+        "slo",
+        "slos"
+      ],
+      "topic": "SLOS"
+    },
+    {
+      "path": "docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md",
+      "tags": [
+        "operations",
+        "slo",
+        "what-we-dont-measure-yet"
+      ],
+      "topic": "WHAT_WE_DONT_MEASURE_YET"
+    },
+    {
+      "path": "docs/operations/slo/WHY_THESE_SLIS.md",
+      "tags": [
+        "operations",
+        "slo",
+        "why-these-slis"
+      ],
+      "topic": "WHY_THESE_SLIS"
+    },
+    {
+      "path": "docs/operations/unified-report.md",
+      "tags": [
+        "operations",
+        "unified-report"
+      ],
+      "topic": "unified-report"
+    },
+    {
+      "path": "docs/ops/checks.md",
+      "tags": [
+        "checks",
+        "ops"
+      ],
+      "topic": "checks"
+    },
+    {
+      "path": "docs/policies/checks.md",
+      "tags": [
+        "checks",
+        "policies"
+      ],
+      "topic": "checks"
+    },
+    {
+      "path": "docs/product/INDEX.md",
+      "tags": [
+        "index",
+        "product"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/product/compatibility-promise.md",
+      "tags": [
+        "compatibility-promise",
+        "product"
+      ],
+      "topic": "compatibility-promise"
+    },
+    {
+      "path": "docs/product/diffs-v1.md",
+      "tags": [
+        "diffs-v1",
+        "product"
+      ],
+      "topic": "diffs-v1"
+    },
+    {
+      "path": "docs/product/immutability-and-aliases.md",
+      "tags": [
+        "immutability-and-aliases",
+        "product"
+      ],
+      "topic": "immutability-and-aliases"
+    },
+    {
+      "path": "docs/product/non-goals.md",
+      "tags": [
+        "non-goals",
+        "product"
+      ],
+      "topic": "non-goals"
+    },
+    {
+      "path": "docs/product/release-contract-checklist.md",
+      "tags": [
+        "product",
+        "release-contract-checklist"
+      ],
+      "topic": "release-contract-checklist"
+    },
+    {
+      "path": "docs/product/sequence-threat-model.md",
+      "tags": [
+        "product",
+        "sequence-threat-model"
+      ],
+      "topic": "sequence-threat-model"
+    },
+    {
+      "path": "docs/product/sequence-v1.md",
+      "tags": [
+        "product",
+        "sequence-v1"
+      ],
+      "topic": "sequence-v1"
+    },
+    {
+      "path": "docs/product/slo-targets.md",
+      "tags": [
+        "product",
+        "slo-targets"
+      ],
+      "topic": "slo-targets"
+    },
+    {
+      "path": "docs/product/transcripts-v1.md",
+      "tags": [
+        "product",
+        "transcripts-v1"
+      ],
+      "topic": "transcripts-v1"
+    },
+    {
+      "path": "docs/product/user-stories.md",
+      "tags": [
+        "product",
+        "user-stories"
+      ],
+      "topic": "user-stories"
+    },
+    {
+      "path": "docs/product/what-is-bijux-atlas.md",
+      "tags": [
+        "product",
+        "what-is-bijux-atlas"
+      ],
+      "topic": "what-is-bijux-atlas"
+    },
+    {
+      "path": "docs/quickstart/INDEX.md",
+      "tags": [
+        "index",
+        "quickstart"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/quickstart/client-sdk-examples.md",
+      "tags": [
+        "client-sdk-examples",
+        "quickstart"
+      ],
+      "topic": "client-sdk-examples"
+    },
+    {
+      "path": "docs/quickstart/local-cluster-setup.md",
+      "tags": [
+        "local-cluster-setup",
+        "quickstart"
+      ],
+      "topic": "local-cluster-setup"
+    },
+    {
+      "path": "docs/quickstart/ops-local-full.md",
+      "tags": [
+        "ops-local-full",
+        "quickstart"
+      ],
+      "topic": "ops-local-full"
+    },
+    {
+      "path": "docs/reference/INDEX.md",
+      "tags": [
+        "index",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/compatibility/INDEX.md",
+      "tags": [
+        "compatibility",
+        "index",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/compatibility/bijux-dna-atlas.md",
+      "tags": [
+        "bijux-dna-atlas",
+        "compatibility",
+        "reference"
+      ],
+      "topic": "bijux-dna-atlas"
+    },
+    {
+      "path": "docs/reference/compatibility/cross-project-compatibility-policy.md",
+      "tags": [
+        "compatibility",
+        "cross-project-compatibility-policy",
+        "reference"
+      ],
+      "topic": "cross-project-compatibility-policy"
+    },
+    {
+      "path": "docs/reference/compatibility/json-wire-compatibility.md",
+      "tags": [
+        "compatibility",
+        "json-wire-compatibility",
+        "reference"
+      ],
+      "topic": "json-wire-compatibility"
+    },
+    {
+      "path": "docs/reference/compatibility/umbrella-atlas-matrix.md",
+      "tags": [
+        "compatibility",
+        "reference",
+        "umbrella-atlas-matrix"
+      ],
+      "topic": "umbrella-atlas-matrix"
+    },
+    {
+      "path": "docs/reference/datasets/INDEX.md",
+      "tags": [
+        "datasets",
+        "index",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/datasets/lifecycle.md",
+      "tags": [
+        "datasets",
+        "lifecycle",
+        "reference"
+      ],
+      "topic": "lifecycle"
+    },
+    {
+      "path": "docs/reference/datasets/mirroring.md",
+      "tags": [
+        "datasets",
+        "mirroring",
+        "reference"
+      ],
+      "topic": "mirroring"
+    },
+    {
+      "path": "docs/reference/datasets/offline-mode.md",
+      "tags": [
+        "datasets",
+        "offline-mode",
+        "reference"
+      ],
+      "topic": "offline-mode"
+    },
+    {
+      "path": "docs/reference/datasets/promotion.md",
+      "tags": [
+        "datasets",
+        "promotion",
+        "reference"
+      ],
+      "topic": "promotion"
+    },
+    {
+      "path": "docs/reference/datasets/rollback.md",
+      "tags": [
+        "datasets",
+        "reference",
+        "rollback"
+      ],
+      "topic": "rollback"
+    },
+    {
+      "path": "docs/reference/evolution/INDEX.md",
+      "tags": [
+        "evolution",
+        "index",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/evolution/api-versioning.md",
+      "tags": [
+        "api-versioning",
+        "evolution",
+        "reference"
+      ],
+      "topic": "api-versioning"
+    },
+    {
+      "path": "docs/reference/evolution/release-diffs.md",
+      "tags": [
+        "evolution",
+        "reference",
+        "release-diffs"
+      ],
+      "topic": "release-diffs"
+    },
+    {
+      "path": "docs/reference/evolution/roadmap.md",
+      "tags": [
+        "evolution",
+        "reference",
+        "roadmap"
+      ],
+      "topic": "roadmap"
+    },
+    {
+      "path": "docs/reference/evolution/sharding.md",
+      "tags": [
+        "evolution",
+        "reference",
+        "sharding"
+      ],
+      "topic": "sharding"
+    },
+    {
+      "path": "docs/reference/fixtures/INDEX.md",
+      "tags": [
+        "fixtures",
+        "index",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/fixtures/medium-fixture.md",
+      "tags": [
+        "fixtures",
+        "medium-fixture",
+        "reference"
+      ],
+      "topic": "medium-fixture"
+    },
+    {
+      "path": "docs/reference/fixtures/real-datasets.md",
+      "tags": [
+        "fixtures",
+        "real-datasets",
+        "reference"
+      ],
+      "topic": "real-datasets"
+    },
+    {
+      "path": "docs/reference/ingestion/INDEX.md",
+      "tags": [
+        "index",
+        "ingestion",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/ingestion/determinism.md",
+      "tags": [
+        "determinism",
+        "ingestion",
+        "reference"
+      ],
+      "topic": "determinism"
+    },
+    {
+      "path": "docs/reference/ingestion/parser-semantics.md",
+      "tags": [
+        "ingestion",
+        "parser-semantics",
+        "reference"
+      ],
+      "topic": "parser-semantics"
+    },
+    {
+      "path": "docs/reference/ingestion/qc-report-schema.md",
+      "tags": [
+        "ingestion",
+        "qc-report-schema",
+        "reference"
+      ],
+      "topic": "qc-report-schema"
+    },
+    {
+      "path": "docs/reference/ingestion/supported-layouts.md",
+      "tags": [
+        "ingestion",
+        "reference",
+        "supported-layouts"
+      ],
+      "topic": "supported-layouts"
+    },
+    {
+      "path": "docs/reference/performance/INDEX.md",
+      "tags": [
+        "index",
+        "performance",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/performance/bulkheads.md",
+      "tags": [
+        "bulkheads",
+        "performance",
+        "reference"
+      ],
+      "topic": "bulkheads"
+    },
+    {
+      "path": "docs/reference/performance/caching-model.md",
+      "tags": [
+        "caching-model",
+        "performance",
+        "reference"
+      ],
+      "topic": "caching-model"
+    },
+    {
+      "path": "docs/reference/performance/p99-strategy.md",
+      "tags": [
+        "p99-strategy",
+        "performance",
+        "reference"
+      ],
+      "topic": "p99-strategy"
+    },
+    {
+      "path": "docs/reference/performance/perf-regression-policy.md",
+      "tags": [
+        "perf-regression-policy",
+        "performance",
+        "reference"
+      ],
+      "topic": "perf-regression-policy"
+    },
+    {
+      "path": "docs/reference/performance/profiling.md",
+      "tags": [
+        "performance",
+        "profiling",
+        "reference"
+      ],
+      "topic": "profiling"
+    },
+    {
+      "path": "docs/reference/performance/query-benchmarks.md",
+      "tags": [
+        "performance",
+        "query-benchmarks",
+        "reference"
+      ],
+      "topic": "query-benchmarks"
+    },
+    {
+      "path": "docs/reference/performance/redis.md",
+      "tags": [
+        "performance",
+        "redis",
+        "reference"
+      ],
+      "topic": "redis"
+    },
+    {
+      "path": "docs/reference/querying/INDEX.md",
+      "tags": [
+        "index",
+        "querying",
+        "reference"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/querying/cost-estimator.md",
+      "tags": [
+        "cost-estimator",
+        "querying",
+        "reference"
+      ],
+      "topic": "cost-estimator"
+    },
+    {
+      "path": "docs/reference/querying/filters.md",
+      "tags": [
+        "filters",
+        "querying",
+        "reference"
+      ],
+      "topic": "filters"
+    },
+    {
+      "path": "docs/reference/querying/ordering.md",
+      "tags": [
+        "ordering",
+        "querying",
+        "reference"
+      ],
+      "topic": "ordering"
+    },
+    {
+      "path": "docs/reference/querying/pagination.md",
+      "tags": [
+        "pagination",
+        "querying",
+        "reference"
+      ],
+      "topic": "pagination"
+    },
+    {
+      "path": "docs/reference/querying/sharding.md",
+      "tags": [
+        "querying",
+        "reference",
+        "sharding"
+      ],
+      "topic": "sharding"
+    },
+    {
+      "path": "docs/reference/registry/INDEX.md",
+      "tags": [
+        "index",
+        "reference",
+        "registry"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/registry/config-schema-versioning.md",
+      "tags": [
+        "config-schema-versioning",
+        "reference",
+        "registry"
+      ],
+      "topic": "config-schema-versioning"
+    },
+    {
+      "path": "docs/reference/registry/conflict-resolution.md",
+      "tags": [
+        "conflict-resolution",
+        "reference",
+        "registry"
+      ],
+      "topic": "conflict-resolution"
+    },
+    {
+      "path": "docs/reference/registry/deprecation-policy.md",
+      "tags": [
+        "deprecation-policy",
+        "reference",
+        "registry"
+      ],
+      "topic": "deprecation-policy"
+    },
+    {
+      "path": "docs/reference/registry/deterministic-merge.md",
+      "tags": [
+        "deterministic-merge",
+        "reference",
+        "registry"
+      ],
+      "topic": "deterministic-merge"
+    },
+    {
+      "path": "docs/reference/registry/error-code-registry.md",
+      "tags": [
+        "error-code-registry",
+        "reference",
+        "registry"
+      ],
+      "topic": "error-code-registry"
+    },
+    {
+      "path": "docs/reference/registry/federation-semantics.md",
+      "tags": [
+        "federation-semantics",
+        "reference",
+        "registry"
+      ],
+      "topic": "federation-semantics"
+    },
+    {
+      "path": "docs/reference/registry/latest-release-alias-policy.md",
+      "tags": [
+        "latest-release-alias-policy",
+        "reference",
+        "registry"
+      ],
+      "topic": "latest-release-alias-policy"
+    },
+    {
+      "path": "docs/reference/registry/long-term-maintenance-policy.md",
+      "tags": [
+        "long-term-maintenance-policy",
+        "reference",
+        "registry"
+      ],
+      "topic": "long-term-maintenance-policy"
+    },
+    {
+      "path": "docs/reference/registry/no-dna-dependency-policy.md",
+      "tags": [
+        "no-dna-dependency-policy",
+        "reference",
+        "registry"
+      ],
+      "topic": "no-dna-dependency-policy"
+    },
+    {
+      "path": "docs/reference/registry/plugin-versioning-and-release-independence.md",
+      "tags": [
+        "plugin-versioning-and-release-independence",
+        "reference",
+        "registry"
+      ],
+      "topic": "plugin-versioning-and-release-independence"
+    },
+    {
+      "path": "docs/reference/registry/security-response-coordination.md",
+      "tags": [
+        "reference",
+        "registry",
+        "security-response-coordination"
+      ],
+      "topic": "security-response-coordination"
+    },
+    {
+      "path": "docs/reference/registry/shared-core-extraction.md",
+      "tags": [
+        "reference",
+        "registry",
+        "shared-core-extraction"
+      ],
+      "topic": "shared-core-extraction"
+    },
+    {
+      "path": "docs/reference/science/INDEX.md",
+      "tags": [
+        "index",
+        "reference",
+        "science"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/science/gene-summary-semantics.md",
+      "tags": [
+        "gene-summary-semantics",
+        "reference",
+        "science"
+      ],
+      "topic": "gene-summary-semantics"
+    },
+    {
+      "path": "docs/reference/science/transcript-semantics.md",
+      "tags": [
+        "reference",
+        "science",
+        "transcript-semantics"
+      ],
+      "topic": "transcript-semantics"
+    },
+    {
+      "path": "docs/reference/security/INDEX.md",
+      "tags": [
+        "index",
+        "reference",
+        "security"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/security/auth-hmac.md",
+      "tags": [
+        "auth-hmac",
+        "reference",
+        "security"
+      ],
+      "topic": "auth-hmac"
+    },
+    {
+      "path": "docs/reference/security/limits.md",
+      "tags": [
+        "limits",
+        "reference",
+        "security"
+      ],
+      "topic": "limits"
+    },
+    {
+      "path": "docs/reference/security/ssrf.md",
+      "tags": [
+        "reference",
+        "security",
+        "ssrf"
+      ],
+      "topic": "ssrf"
+    },
+    {
+      "path": "docs/reference/security/threat-model.md",
+      "tags": [
+        "reference",
+        "security",
+        "threat-model"
+      ],
+      "topic": "threat-model"
+    },
+    {
+      "path": "docs/reference/store/INDEX.md",
+      "tags": [
+        "index",
+        "reference",
+        "store"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/reference/store/backends.md",
+      "tags": [
+        "backends",
+        "reference",
+        "store"
+      ],
+      "topic": "backends"
+    },
+    {
+      "path": "docs/reference/store/dataset-lifecycle.md",
+      "tags": [
+        "dataset-lifecycle",
+        "reference",
+        "store"
+      ],
+      "topic": "dataset-lifecycle"
+    },
+    {
+      "path": "docs/reference/store/etag-caching.md",
+      "tags": [
+        "etag-caching",
+        "reference",
+        "store"
+      ],
+      "topic": "etag-caching"
+    },
+    {
+      "path": "docs/reference/store/fixtures-policy.md",
+      "tags": [
+        "fixtures-policy",
+        "reference",
+        "store"
+      ],
+      "topic": "fixtures-policy"
+    },
+    {
+      "path": "docs/reference/store/immutability-guarantee.md",
+      "tags": [
+        "immutability-guarantee",
+        "reference",
+        "store"
+      ],
+      "topic": "immutability-guarantee"
+    },
+    {
+      "path": "docs/reference/store/ingestion-purity-rule.md",
+      "tags": [
+        "ingestion-purity-rule",
+        "reference",
+        "store"
+      ],
+      "topic": "ingestion-purity-rule"
+    },
+    {
+      "path": "docs/reference/store/integrity-model.md",
+      "tags": [
+        "integrity-model",
+        "reference",
+        "store"
+      ],
+      "topic": "integrity-model"
+    },
+    {
+      "path": "docs/reference/store/logging-and-tracing.md",
+      "tags": [
+        "logging-and-tracing",
+        "reference",
+        "store"
+      ],
+      "topic": "logging-and-tracing"
+    },
+    {
+      "path": "docs/reference/store/metrics-conventions.md",
+      "tags": [
+        "metrics-conventions",
+        "reference",
+        "store"
+      ],
+      "topic": "metrics-conventions"
+    },
+    {
+      "path": "docs/reference/store/no-implicit-default-dataset.md",
+      "tags": [
+        "no-implicit-default-dataset",
+        "reference",
+        "store"
+      ],
+      "topic": "no-implicit-default-dataset"
+    },
+    {
+      "path": "docs/science/INDEX.md",
+      "tags": [
+        "index",
+        "science"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/taxonomy-map.md",
+      "tags": [
+        "taxonomy-map"
+      ],
+      "topic": "taxonomy-map"
+    },
+    {
+      "path": "makefiles/CONTRACT.md",
+      "tags": [
+        "contract",
+        "makefiles"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "makefiles/INDEX.md",
+      "tags": [
+        "index",
+        "makefiles"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "makefiles/README.md",
+      "tags": [
+        "makefiles",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/CONTRACT.md",
+      "tags": [
+        "contract",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/CONTROL_PLANE.md",
+      "tags": [
+        "control-plane",
+        "ops"
+      ],
+      "topic": "CONTROL_PLANE"
+    },
+    {
+      "path": "ops/ERRORS.md",
+      "tags": [
+        "errors",
+        "ops"
+      ],
+      "topic": "ERRORS"
+    },
+    {
+      "path": "ops/INDEX.md",
+      "tags": [
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/README.md",
+      "tags": [
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/_examples/generated/INDEX.example.md",
+      "tags": [
+        "-examples",
+        "generated",
+        "index.example",
+        "ops"
+      ],
+      "topic": "INDEX.example"
+    },
+    {
+      "path": "ops/_generated.example/MIRROR_POLICY.md",
+      "tags": [
+        "-generated.example",
+        "mirror-policy",
+        "ops"
+      ],
+      "topic": "MIRROR_POLICY"
+    },
+    {
+      "path": "ops/datasets/CONTRACT.md",
+      "tags": [
+        "contract",
+        "datasets",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/datasets/INDEX.md",
+      "tags": [
+        "datasets",
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/datasets/OWNER.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/datasets/README.md",
+      "tags": [
+        "datasets",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/docs/README.md",
+      "tags": [
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/docs/config-compiler-contract.md",
+      "tags": [
+        "config-compiler-contract",
+        "ops"
+      ],
+      "topic": "config-compiler-contract"
+    },
+    {
+      "path": "ops/docs/config-migration-cutoff.md",
+      "tags": [
+        "config-migration-cutoff",
+        "ops"
+      ],
+      "topic": "config-migration-cutoff"
+    },
+    {
+      "path": "ops/docs/generated-committed-policy.md",
+      "tags": [
+        "generated-committed-policy",
+        "ops"
+      ],
+      "topic": "generated-committed-policy"
+    },
+    {
+      "path": "ops/docs/inventory-contracts.md",
+      "tags": [
+        "inventory-contracts",
+        "ops"
+      ],
+      "topic": "inventory-contracts"
+    },
+    {
+      "path": "ops/docs/layout-migration.md",
+      "tags": [
+        "layout-migration",
+        "ops"
+      ],
+      "topic": "layout-migration"
+    },
+    {
+      "path": "ops/docs/migration-window.md",
+      "tags": [
+        "migration-window",
+        "ops"
+      ],
+      "topic": "migration-window"
+    },
+    {
+      "path": "ops/docs/ops-api-contract.md",
+      "tags": [
+        "ops",
+        "ops-api-contract"
+      ],
+      "topic": "ops-api-contract"
+    },
+    {
+      "path": "ops/e2e/CONTRACT.md",
+      "tags": [
+        "contract",
+        "e2e",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/e2e/INDEX.md",
+      "tags": [
+        "e2e",
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/e2e/OWNER.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/e2e/README.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/e2e/fixtures/README.md",
+      "tags": [
+        "e2e",
+        "fixtures",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/e2e/k6/README.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/e2e/k8s/README.md",
+      "tags": [
+        "e2e",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/e2e/realdata/README.md",
+      "tags": [
+        "e2e",
+        "ops",
+        "readme",
+        "realdata"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/env/README.md",
+      "tags": [
+        "env",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/fixtures/CONTRACT.md",
+      "tags": [
+        "contract",
+        "fixtures",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/fixtures/INDEX.md",
+      "tags": [
+        "fixtures",
+        "index",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/fixtures/OWNER.md",
+      "tags": [
+        "fixtures",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/fixtures/README.md",
+      "tags": [
+        "fixtures",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/helm/README.md",
+      "tags": [
+        "helm",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/inventory/README.md",
+      "tags": [
+        "inventory",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/k8s/CONTRACT.md",
+      "tags": [
+        "contract",
+        "k8s",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/k8s/INDEX.md",
+      "tags": [
+        "index",
+        "k8s",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/k8s/OWNER.md",
+      "tags": [
+        "k8s",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/k8s/README.md",
+      "tags": [
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/README.md",
+      "tags": [
+        "bijux-atlas",
+        "charts",
+        "k8s",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/k8s/tests/INDEX.md",
+      "tags": [
+        "index",
+        "k8s",
+        "ops",
+        "tests"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/kind/README.md",
+      "tags": [
+        "kind",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/load/CONTRACT.md",
+      "tags": [
+        "contract",
+        "load",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/load/INDEX.md",
+      "tags": [
+        "index",
+        "load",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/load/OWNER.md",
+      "tags": [
+        "load",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/load/README.md",
+      "tags": [
+        "load",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/load/baselines/README.md",
+      "tags": [
+        "baselines",
+        "load",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/load/compose/README.md",
+      "tags": [
+        "compose",
+        "load",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/load/evaluations/POLICY.md",
+      "tags": [
+        "evaluations",
+        "load",
+        "ops",
+        "policy"
+      ],
+      "topic": "POLICY"
+    },
+    {
+      "path": "ops/load/k6/README.md",
+      "tags": [
+        "load",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/load/k6/queries/INDEX.md",
+      "tags": [
+        "index",
+        "load",
+        "ops",
+        "queries"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/obs/CONTRACT.md",
+      "tags": [
+        "contract",
+        "obs",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/obs/CONTRACTS.md",
+      "tags": [
+        "contracts",
+        "obs",
+        "ops"
+      ],
+      "topic": "CONTRACTS"
+    },
+    {
+      "path": "ops/obs/INDEX.md",
+      "tags": [
+        "index",
+        "obs",
+        "ops"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/obs/OWNER.md",
+      "tags": [
+        "obs",
+        "ops",
+        "owner"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/obs/README.md",
+      "tags": [
+        "obs",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/obs/grafana/README.md",
+      "tags": [
+        "grafana",
+        "obs",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/obs/otel/INDEX.md",
+      "tags": [
+        "index",
+        "obs",
+        "ops",
+        "otel"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/obs/pack/README.md",
+      "tags": [
+        "obs",
+        "ops",
+        "pack",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/obs/prometheus/INDEX.md",
+      "tags": [
+        "index",
+        "obs",
+        "ops",
+        "prometheus"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/obs/scripts/lib/INDEX.md",
+      "tags": [
+        "index",
+        "lib",
+        "obs",
+        "ops",
+        "scripts"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/obs/tests/README.md",
+      "tags": [
+        "obs",
+        "ops",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/observe/README.md",
+      "tags": [
+        "observe",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/observe/dashboards/README.md",
+      "tags": [
+        "dashboards",
+        "observe",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/quarantine/legacy-ops-shell/README.md",
+      "tags": [
+        "legacy-ops-shell",
+        "ops",
+        "quarantine",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/report/CONTRACT.md",
+      "tags": [
+        "contract",
+        "ops",
+        "report"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/report/INDEX.md",
+      "tags": [
+        "index",
+        "ops",
+        "report"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/report/OWNER.md",
+      "tags": [
+        "ops",
+        "owner",
+        "report"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/report/README.md",
+      "tags": [
+        "ops",
+        "readme",
+        "report"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/schema/README.md",
+      "tags": [
+        "ops",
+        "readme",
+        "schema"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/schemas/configs/INDEX.md",
+      "tags": [
+        "configs",
+        "index",
+        "ops",
+        "schemas"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/schemas/configs/README.md",
+      "tags": [
+        "configs",
+        "ops",
+        "readme",
+        "schemas"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/stack/CONTRACT.md",
+      "tags": [
+        "contract",
+        "ops",
+        "stack"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "ops/stack/INDEX.md",
+      "tags": [
+        "index",
+        "ops",
+        "stack"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "ops/stack/OWNER.md",
+      "tags": [
+        "ops",
+        "owner",
+        "stack"
+      ],
+      "topic": "OWNER"
+    },
+    {
+      "path": "ops/stack/README.md",
+      "tags": [
+        "ops",
+        "readme",
+        "stack"
+      ],
+      "topic": "README"
+    },
+    {
+      "path": "ops/stack/dependencies.md",
+      "tags": [
+        "dependencies",
+        "ops",
+        "stack"
+      ],
+      "topic": "dependencies"
+    },
+    {
+      "path": "ops/stack/kind/README.md",
+      "tags": [
+        "kind",
+        "ops",
+        "readme",
+        "stack"
+      ],
+      "topic": "README"
+    }
+  ],
+  "schema_version": 1
+}
