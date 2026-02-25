@@ -10,7 +10,7 @@ The canonical SSOT is `ops/CONTRACT.md`.
 - `ops/load/`
 - `ops/datasets/`
 - `ops/e2e/`
-- `ops/_meta/`
+- `ops/inventory/meta/`
 - `ops/schema/`
 - `ops/_generated/`
 - `ops/_artifacts/`

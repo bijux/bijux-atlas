@@ -21,7 +21,7 @@ Runbook index: `ops/INDEX.md`.
 - `ops/e2e/`: composition-only scenarios over stack/observe/load/datasets.
 - `bijux dev atlas ops ...` and `make` wrappers: operator entrypoints (no direct script surface).
 - canonical local workflow runs through `bijux-dev-atlas` (`ops render`, `ops install`, `ops status`).
-- `ops/_meta/`: ownership/surface/contracts metadata.
+- `ops/inventory/meta/`: ownership/surface/contracts metadata.
 - `ops/schema/`: ops JSON schemas.
 - `ops/_generated.example/`: deterministic generated ops outputs committed to git.
 - `artifacts/`: runtime evidence outputs (gitignored).

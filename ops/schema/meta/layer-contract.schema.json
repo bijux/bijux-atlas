@@ -95,8 +95,8 @@
       "additionalProperties": false,
       "required": ["layer", "stack"],
       "properties": {
-        "layer": {"type": "string", "pattern": "^ops/_meta/layer-contract-literal-allowlist\\.json$"},
-        "stack": {"type": "string", "pattern": "^ops/_meta/stack-layer-literal-allowlist\\.json$"}
+        "layer": {"type": "string", "pattern": "^ops/inventory/meta/layer-contract-literal-allowlist\\.json$"},
+        "stack": {"type": "string", "pattern": "^ops/inventory/meta/stack-layer-literal-allowlist\\.json$"}
       }
     }
   },
