@@ -486,7 +486,9 @@ License: Apache-2.0
 | `docs/examples/INDEX.md` | `concept` | `bijux-atlas-docs` | `stable` |
 | `docs/examples/catalog-example.md` | `concept` | `bijux-atlas-store` | `stable` |
 | `docs/examples/curl-requests.md` | `concept` | `bijux-atlas-api` | `stable` |
+| `docs/governance/DOCS_FRONT_MATTER.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/DOCS_OWNERSHIP.md` | `concept` | `docs-governance` | `stable` |
+| `docs/governance/DOCS_QUALITY_POLICY.md` | `concept` | `docs-governance` | `stable` |
 | `docs/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/INDEX.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/air-gapped-install.md` | `concept` | `docs-governance` | `stable` |

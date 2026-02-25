@@ -59,8 +59,10 @@
 | `DEVELOPER_WORKFLOW_QUICKSTART` | `docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md` |
 | `DIAGRAM_ALT_TEXT_POLICY` | `docs/root/DIAGRAM_ALT_TEXT_POLICY.md` |
 | `DOCKER_OVERVIEW` | `docs/root/DOCKER_OVERVIEW.md` |
+| `DOCS_FRONT_MATTER` | `docs/governance/DOCS_FRONT_MATTER.md` |
 | `DOCS_OWNERSHIP` | `docs/governance/DOCS_OWNERSHIP.md` |
 | `DOCS_PHILOSOPHY` | `docs/root/DOCS_PHILOSOPHY.md` |
+| `DOCS_QUALITY_POLICY` | `docs/governance/DOCS_QUALITY_POLICY.md` |
 | `ENGINE_ARCHITECTURE` | `crates/bijux-dev-atlas-core/docs/ENGINE_ARCHITECTURE.md` |
 | `ENSEMBL_LAYOUT` | `crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md` |
 | `ERRORS` | `crates/bijux-atlas-api/docs/ERRORS.md, crates/bijux-atlas-core/docs/ERRORS.md, ops/ERRORS.md` |

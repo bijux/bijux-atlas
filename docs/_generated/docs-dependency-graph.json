@@ -2413,7 +2413,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/governance/DOCS_FRONT_MATTER.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/governance/DOCS_OWNERSHIP.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/governance/DOCS_QUALITY_POLICY.md"
     },
     {
       "crate": null,
