@@ -533,8 +533,11 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
 pub(super) fn check_ops_control_plane_doc_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("ops/CONTROL_PLANE.md");
-    let text = fs::read_to_string(ctx.repo_root.join(rel))
+    let rel_control_plane = Path::new("ops/CONTROL_PLANE.md");
+    let text_control_plane = fs::read_to_string(ctx.repo_root.join(rel_control_plane))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let rel_contract = Path::new("ops/CONTRACT.md");
+    let text_contract = fs::read_to_string(ctx.repo_root.join(rel_contract))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     for required in [
@@ -546,12 +549,33 @@ pub(super) fn check_ops_control_plane_doc_contract(
         "bijux dev atlas doctor",
         "check run --suite ci",
     ] {
-        if !text.contains(required) {
+        if !text_control_plane.contains(required) {
             violations.push(violation(
                 "OPS_CONTROL_PLANE_DOC_INCOMPLETE",
-                format!("ops/CONTROL_PLANE.md is missing required content `{required}`"),
+                format!(
+                    "ops/CONTROL_PLANE.md is missing required content `{required}`"
+                ),
                 "update the control plane definition document with the required invariant/entrypoint text",
-                Some(rel),
+                Some(rel_control_plane),
+            ));
+        }
+    }
+    for required in [
+        "Ops is specification-only.",
+        "Schemas under `ops/schema/` are versioned APIs",
+        "Release pins are immutable after release publication",
+        "_generated/` is ephemeral output only",
+        "_generated.example/` is curated evidence",
+        "Use `observe` as the canonical observability domain name",
+        "Compatibility migrations must be timeboxed and include explicit cutoff dates",
+        "Canonical directory budget:",
+    ] {
+        if !text_contract.contains(required) {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_DOC_INCOMPLETE",
+                format!("ops/CONTRACT.md is missing required content `{required}`"),
+                "update ops contract to keep SSOT/evolution invariants explicit and enforceable",
+                Some(rel_contract),
             ));
         }
     }
