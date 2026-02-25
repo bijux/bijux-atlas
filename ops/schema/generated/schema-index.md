@@ -6,10 +6,16 @@
 | Schema Path |
 |---|
 | `ops/schema/datasets/corruption-drill-report.schema.json` |
+| `ops/schema/datasets/dataset-index.schema.json` |
+| `ops/schema/datasets/dataset-lineage.schema.json` |
+| `ops/schema/datasets/fixture-policy.schema.json` |
 | `ops/schema/datasets/manifest-lock.schema.json` |
 | `ops/schema/datasets/manifest.schema.json` |
 | `ops/schema/datasets/promotion-report.schema.json` |
+| `ops/schema/datasets/promotion-rules.schema.json` |
+| `ops/schema/datasets/qc-metadata.schema.json` |
 | `ops/schema/datasets/qc-summary.schema.json` |
+| `ops/schema/datasets/rollback-policy.schema.json` |
 | `ops/schema/e2e-realdata-scenarios.schema.json` |
 | `ops/schema/e2e-scenarios-unified.schema.json` |
 | `ops/schema/e2e-scenarios.schema.json` |

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "pins_source", "manifest_lock", "environments", "rules"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "pins_source": {"type": "string", "minLength": 1},
+    "manifest_lock": {"type": "string", "minLength": 1},
+    "environments": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "rules": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "allow_remote_download", "fixture_roots", "allowed_kinds", "policy"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "allow_remote_download": {"type": "boolean"},
+    "fixture_roots": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "allowed_kinds": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "policy": {"type": "string", "minLength": 1}
+  }
+}
