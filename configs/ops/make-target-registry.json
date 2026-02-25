@@ -720,7 +720,7 @@
       "used_in": []
     },
     {
-      "name": "ops-obs",
+      "name": "ops-observability",
       "defined_in": [
         "makefiles/_ops.mk"
       ],

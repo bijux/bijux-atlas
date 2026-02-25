@@ -15,8 +15,8 @@ Profiles express deployment context without temporal or install-step wording.
 - `local-compose`: single-node local development footprint via docker compose.
 - `kind`: kind-compatible profile with CRD-aware optional features.
 - `cluster`: full cluster profile with ServiceMonitor/PrometheusRule contracts enabled.
-- Install target: `make ops-obs-mode ATLAS_OBS_PROFILE=<profile>`.
-- Teardown target: `make ops-obs-down`.
+- Install target: `make ops-observability-mode ATLAS_OBS_PROFILE=<profile>`.
+- Teardown target: `make ops-observability-down`.
 - Validation target: `make ops-observability-validate`.
 - Namespace convention: `atlas-observability`.
 - Storage mode default: `ATLAS_OBS_STORAGE_MODE=ephemeral` (optional `persistent`).
@@ -30,13 +30,13 @@ Profiles express deployment context without temporal or install-step wording.
 ## How to verify
 
 ```bash
-make ops-obs-mode ATLAS_OBS_PROFILE=kind
+make ops-observability-mode ATLAS_OBS_PROFILE=kind
 make ops-observability-pack-verify
 make ops-observability-pack-health
 make ops-observability-pack-smoke
 make ops-observability-pack-export
 make ops-observability-pack-conformance-report
-make ops-obs-down
+make ops-observability-down
 ```
 
 Expected output: profile install/validate succeeds or fails with deterministic profile-specific diagnostics.

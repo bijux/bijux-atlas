@@ -3,7 +3,7 @@
   "profiles": {
     "local-compose": {
       "runtime": "compose",
-      "compose_file": "ops/obs/pack/compose/docker-compose.yml",
+      "compose_file": "ops/observe/pack/compose/docker-compose.yml",
       "offline_supported": true
     },
     "kind": {

@@ -34,15 +34,15 @@ Namespace/storage conventions:
 
 ## Commands
 
-- `make ops-obs-mode ATLAS_OBS_PROFILE=local-compose`
-- `make ops-obs-mode ATLAS_OBS_PROFILE=kind`
-- `make ops-obs-mode ATLAS_OBS_PROFILE=cluster`
+- `make ops-observability-mode ATLAS_OBS_PROFILE=local-compose`
+- `make ops-observability-mode ATLAS_OBS_PROFILE=kind`
+- `make ops-observability-mode ATLAS_OBS_PROFILE=cluster`
 - `make ops-observability-pack-verify`
 - `make ops-observability-pack-health`
 - `make ops-observability-pack-smoke`
 - `make ops-observability-pack-export`
 - `make ops-observability-pack-upgrade-check`
 - `make ops-observability-pack-conformance-report`
-- `make ops-obs-down`
+- `make ops-observability-down`
 
 Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

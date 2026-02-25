@@ -5,5 +5,5 @@
 
 Observability verification checks metrics, traces, and runbook compatibility.
 
-- `make ops-obs`
-- `bijux dev atlas ops obs verify`
+- `make ops-observability`
+- `bijux dev atlas ops observe verify`

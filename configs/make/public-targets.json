@@ -106,7 +106,7 @@
       "area": "ops"
     },
     {
-      "name": "obs",
+      "name": "observe",
       "description": "Run canonical observability verification lane",
       "lanes": [
         "dev",

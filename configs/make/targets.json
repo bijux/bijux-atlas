@@ -109,7 +109,7 @@
         "dev",
         "ci"
       ],
-      "name": "obs",
+      "name": "observe",
       "owner": "ops-platform"
     },
     {

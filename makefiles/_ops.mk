@@ -1,5 +1,5 @@
 # Scope: ops area wrappers only.
-# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-obs
+# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-observability
 # All external tools are invoked through bijux dev atlas command surfaces.
 SHELL := /bin/sh
 PROFILE ?= kind
@@ -62,8 +62,8 @@ ops-load-plan: ## Resolve load suite into script and thresholds
 ops-load-run: ## Execute load suite through canonical control plane
 	@$(DEV_ATLAS) ops load run $(or $(SUITE),mixed) --profile $(PROFILE) --allow-subprocess --allow-network --allow-write --format json
 
-ops-obs: ## Run observability verification wrapper through grouped ops namespace
-	@$(DEV_ATLAS) ops obs verify --profile $(PROFILE) --format json
+ops-observability: ## Run observability verification wrapper through grouped ops namespace
+	@$(DEV_ATLAS) ops observe verify --profile $(PROFILE) --format json
 
 ops-tools-verify: ## Verify required ops external tools
 	@$(DEV_ATLAS) ops verify-tools --allow-subprocess --format json
@@ -74,4 +74,4 @@ ops-pins-check: ## Validate unified reproducibility pins
 ops-pins-update: ## Refresh unified reproducibility pins
 	@$(DEV_ATLAS) ops pins update --i-know-what-im-doing --allow-subprocess --format text
 
-.PHONY: ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-obs ops-tools-verify ops-pins-check ops-pins-update
+.PHONY: ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-observability ops-tools-verify ops-pins-check ops-pins-update

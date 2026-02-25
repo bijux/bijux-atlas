@@ -30,7 +30,7 @@ CURATED_TARGETS := \
 	policies \
 	docs docs-doctor docs-validate docs-build docs-serve docs-clean docs-lock \
 	configs configs-doctor configs-validate configs-lint \
-	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-stack ops-k8s ops-e2e ops-load ops-obs ops-tools-verify ops-pins-check ops-pins-update \
+	ops ops-help ops-doctor ops-validate ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-status ops-stack ops-k8s ops-e2e ops-load ops-observability ops-tools-verify ops-pins-check ops-pins-update \
 	ops-k8s-tests ops-k8s-suite ops-k8s-template-tests ops-k8s-contracts \
 	make-gate-no-retired-cli-refs make-gate-no-retired-cli-shim
 

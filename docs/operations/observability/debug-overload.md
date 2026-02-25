@@ -10,6 +10,6 @@
 
 ## Commands
 
-- `bijux dev atlas ops obs drill run overload-admission-control`
+- `bijux dev atlas ops observe drill run overload-admission-control`
 - `make observability-pack-drills`
 - `make ops-report`
