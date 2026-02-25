@@ -1498,6 +1498,76 @@ pub(super) fn check_ops_inventory_contract_integrity(
             "restore authority-index.json with authoritative and generated registry roles",
             Some(authority_index_rel),
         ));
+    } else {
+        let authority_index_text = fs::read_to_string(ctx.repo_root.join(authority_index_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let authority_index_json: serde_json::Value = serde_json::from_str(&authority_index_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+
+        let hierarchy = authority_index_json
+            .get("authority_hierarchy")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let expected_hierarchy = ["ops/inventory", "ops/schema", "docs"];
+        for (position, expected) in expected_hierarchy.iter().enumerate() {
+            let actual = hierarchy
+                .get(position)
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if actual != *expected {
+                violations.push(violation(
+                    "OPS_INVENTORY_AUTHORITY_HIERARCHY_DRIFT",
+                    format!(
+                        "authority_hierarchy[{position}] must be `{expected}` but found `{actual}`"
+                    ),
+                    "keep authority hierarchy stable as ops/inventory -> ops/schema -> docs",
+                    Some(authority_index_rel),
+                ));
+            }
+        }
+
+        let entries = authority_index_json
+            .get("authoritative_files")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let mut has_contracts_map_authoritative = false;
+        let mut has_contracts_generated = false;
+        for entry in entries {
+            let path = entry.get("path").and_then(|v| v.as_str()).unwrap_or_default();
+            let role = entry.get("role").and_then(|v| v.as_str()).unwrap_or_default();
+            if path == "ops/inventory/contracts-map.json" && role == "authoritative" {
+                has_contracts_map_authoritative = true;
+            }
+            if path == "ops/inventory/contracts.json" && role == "generated" {
+                let derived_from = entry
+                    .get("derived_from")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                if derived_from == "ops/inventory/contracts-map.json" {
+                    has_contracts_generated = true;
+                }
+            }
+        }
+        if !has_contracts_map_authoritative {
+            violations.push(violation(
+                "OPS_INVENTORY_AUTHORITY_INDEX_CONTRACTS_MAP_ROLE_MISSING",
+                "authority-index must mark ops/inventory/contracts-map.json as authoritative"
+                    .to_string(),
+                "add contracts-map authoritative role to authority-index",
+                Some(authority_index_rel),
+            ));
+        }
+        if !has_contracts_generated {
+            violations.push(violation(
+                "OPS_INVENTORY_AUTHORITY_INDEX_CONTRACTS_MIRROR_ROLE_MISSING",
+                "authority-index must mark ops/inventory/contracts.json as generated from contracts-map"
+                    .to_string(),
+                "set contracts.json role=generated and derived_from=ops/inventory/contracts-map.json",
+                Some(authority_index_rel),
+            ));
+        }
     }
     if ctx.adapters.fs.exists(ctx.repo_root, contracts_meta_rel) {
         violations.push(violation(
