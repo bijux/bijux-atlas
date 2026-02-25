@@ -381,6 +381,7 @@
       "visibility": "public",
       "used_in": [
         ".github/workflows/compatibility-matrix.yml",
+        ".github/workflows/docs-audit.yml",
         ".github/workflows/docs-only.yml"
       ]
     },
@@ -818,6 +819,14 @@
     },
     {
       "name": "test",
+      "defined_in": [
+        "makefiles/_cargo.mk"
+      ],
+      "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "test-slow",
       "defined_in": [
         "makefiles/_cargo.mk"
       ],
