@@ -7,3 +7,5 @@ Rules:
 - Only explicit update commands may write `ops/_generated.example/`.
 - Every committed file in `ops/_generated.example/` (except `.gitkeep` and runtime compatibility outputs explicitly allowlisted) must be declared in `ops/inventory/generated-committed-mirror.json`.
 - `ops/_generated.example/inventory-index.json` is the generated inventory checksum index used for drift comparisons.
+- `ops/_generated.example/control-plane.snapshot.md` is the control-plane snapshot used for drift checks.
+- `ops/_generated.example/docs-drift-report.json` is the docs governance drift report artifact.

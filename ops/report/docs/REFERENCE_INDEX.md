@@ -4,6 +4,7 @@
 - Stability: stable
 
 - [Stack Lifecycle](stack-lifecycle.md)
+- [Report Docs README](README.md)
 - [Kubernetes Conformance](k8s-conformance.md)
 - [Kubernetes Install Contract](k8s-install-contract.md)
 - [Kubernetes Uninstall Contract](k8s-uninstall-contract.md)
@@ -39,3 +40,10 @@
 - [Cross Area Navigation](cross-area-navigation.md)
 - [Ops Diagrams](ops-diagrams.md)
 - [Observability Directory Rename](observe-rename.md)
+- [Config Compiler Contract](config-compiler-contract.md)
+- [Config Migration Cutoff](config-migration-cutoff.md)
+- [Generated Committed Policy](generated-committed-policy.md)
+- [Inventory Contracts](inventory-contracts.md)
+- [Layout Migration](layout-migration.md)
+- [Migration Window](migration-window.md)
+- [Ops API Contract](ops-api-contract.md)

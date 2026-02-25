@@ -10,4 +10,6 @@ required_files:
   - ops/_generated.example/scorecard.json
   - ops/_generated.example/pins.index.example.json
   - ops/_generated.example/inventory-index.json
+  - ops/_generated.example/control-plane.snapshot.md
+  - ops/_generated.example/docs-drift-report.json
 ```

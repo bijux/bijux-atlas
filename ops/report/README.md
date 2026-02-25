@@ -1,21 +1,13 @@
 # Ops Reporting
 
-- Owner: `bijux-atlas-operations`
+Report assembly and evidence publishing across stack, observe, load, datasets, and e2e.
 
-Generic reporting surface for stack, observability, and load evidence.
-
-## Scope
-
-- Report generation and normalization for stack/obs/load evidence.
-- Readiness scoring across contract outputs.
-- Incident repro-kit bundle assembly.
-- Historical comparison and diff outputs for release readiness.
-
-## Contracts
+## Start Here
 
 - `ops/report/schema.json`
 - `ops/report/evidence-levels.json`
 - `ops/report/examples/unified-report-example.json`
+- `ops/report/docs/REFERENCE_INDEX.md`
 
 ## Generated
 
@@ -24,10 +16,8 @@ Generic reporting surface for stack, observability, and load evidence.
 - `ops/report/generated/historical-comparison.json`
 - `ops/report/generated/release-evidence-bundle.json`
 
-## Commands
+## Entrypoints
 
 - `make ops-report`
 - `make ops-readiness-scorecard`
 - `make ops-incident-repro-kit`
-
-Canonical docs: `ops/README.md`, `docs/operations/INDEX.md`.

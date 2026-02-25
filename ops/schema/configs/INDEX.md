@@ -1,8 +1,7 @@
 # Configs Schema Registry Index
 
-Schema files used by `bijux dev atlas configs validate` should be registered under this directory.
+## Docs
+- `ops/schema/configs/README.md`
 
-Current status:
-
-- registry root exists
-- schema engine integration is incremental
+## Registry
+- `ops/schema/configs/`

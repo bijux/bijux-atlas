@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "checks": [
+    {
+      "id": "domain_index_links_only",
+      "status": "pass"
+    },
+    {
+      "id": "domain_readme_size_budget",
+      "status": "pass"
+    },
+    {
+      "id": "report_docs_reference_index_coverage",
+      "status": "pass"
+    },
+    {
+      "id": "control_plane_snapshot_match",
+      "status": "pass"
+    },
+    {
+      "id": "forbidden_doc_path_references",
+      "status": "pass"
+    },
+    {
+      "id": "todo_marker_absence",
+      "status": "pass"
+    }
+  ]
+}
