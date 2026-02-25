@@ -1762,6 +1762,7 @@ pub(super) fn check_ops_docs_governance(
 
     let control_plane_rel = Path::new("ops/CONTROL_PLANE.md");
     let control_plane_snapshot_rel = Path::new("ops/_generated.example/control-plane.snapshot.md");
+    let control_plane_drift_rel = Path::new("ops/_generated.example/control-plane-drift-report.json");
     if !ctx
         .adapters
         .fs
@@ -1788,6 +1789,52 @@ pub(super) fn check_ops_docs_governance(
                     .to_string(),
                 "refresh control-plane snapshot to match current control-plane contract",
                 Some(control_plane_snapshot_rel),
+            ));
+        }
+        for line in current.lines() {
+            let lower = line.to_ascii_lowercase();
+            if (lower.contains("example") || lower.contains("examples")) || !line.contains("bijux-")
+            {
+                continue;
+            }
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_CRATE_LIST_FORBIDDEN",
+                format!(
+                    "ops/CONTROL_PLANE.md contains crate reference outside example context: `{}`",
+                    line.trim()
+                ),
+                "keep ops/CONTROL_PLANE.md policy-only; move current crate inventory to ops/_generated.example/control-plane.snapshot.md",
+                Some(control_plane_rel),
+            ));
+            break;
+        }
+    }
+
+    if !ctx
+        .adapters
+        .fs
+        .exists(ctx.repo_root, control_plane_drift_rel)
+    {
+        violations.push(violation(
+            "OPS_CONTROL_PLANE_DRIFT_REPORT_MISSING",
+            format!(
+                "missing control-plane drift report `{}`",
+                control_plane_drift_rel.display()
+            ),
+            "generate and commit control-plane drift report artifact",
+            Some(control_plane_drift_rel),
+        ));
+    } else {
+        let drift_text = fs::read_to_string(ctx.repo_root.join(control_plane_drift_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let drift_json: serde_json::Value =
+            serde_json::from_str(&drift_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        if drift_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_DRIFT_REPORT_BLOCKING",
+                "control-plane-drift-report.json status is not `pass`".to_string(),
+                "resolve control-plane drift and regenerate control-plane-drift-report.json",
+                Some(control_plane_drift_rel),
             ));
         }
     }
@@ -1864,6 +1911,26 @@ pub(super) fn check_ops_docs_governance(
                 "remove TODO/TBD markers from ops docs for release-ready contracts",
                 Some(rel),
             ));
+        }
+        if !rel.starts_with("ops/_generated")
+            && !rel.starts_with("ops/_generated.example")
+            && !rel.starts_with("ops/schema/generated")
+        {
+            let lower = text.to_ascii_lowercase();
+            if lower.contains("final crate set")
+                || lower.contains("crate set (locked)")
+                || lower.contains("final crate list")
+            {
+                violations.push(violation(
+                    "OPS_STALE_LOCKED_LANGUAGE",
+                    format!(
+                        "authored ops markdown `{}` contains stale locked/final wording",
+                        rel.display()
+                    ),
+                    "remove stale locked/final claims from authored ops docs and keep current-state lists in generated artifacts",
+                    Some(rel),
+                ));
+            }
         }
     }
 
@@ -2076,6 +2143,37 @@ pub(super) fn check_ops_docs_governance(
             "keep ops/INDEX.md compact and move details to linked docs",
             Some(ops_index_rel),
         ));
+    }
+    let root_doc_line_budgets = [
+        ("ops/README.md", 80usize),
+        ("ops/CONTRACT.md", 140usize),
+        ("ops/CONTROL_PLANE.md", 80usize),
+        ("ops/DRIFT.md", 80usize),
+        ("ops/ERRORS.md", 80usize),
+        ("ops/NAMING.md", 80usize),
+        ("ops/SSOT.md", 80usize),
+    ];
+    for (rel_str, max_lines) in root_doc_line_budgets {
+        let rel = Path::new(rel_str);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            continue;
+        }
+        let text = fs::read_to_string(ctx.repo_root.join(rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let line_count = text.lines().count();
+        if line_count > max_lines {
+            violations.push(violation(
+                "OPS_ROOT_DOC_SIZE_BUDGET_EXCEEDED",
+                format!(
+                    "ops root doc exceeds line budget: `{}` has {} lines (max {})",
+                    rel.display(),
+                    line_count,
+                    max_lines
+                ),
+                "keep root governance docs compact and move extended narrative into docs/",
+                Some(rel),
+            ));
+        }
     }
 
     Ok(violations)
