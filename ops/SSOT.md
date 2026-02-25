@@ -23,3 +23,9 @@ This page defines authored truth versus generated truth in `ops/`.
 - Any additional copy must be generated from the authored source and documented as generated.
 - Ops markdown is spec-oriented: keep only canonical headers (`README.md`, `INDEX.md`, `CONTRACT.md`, `REQUIRED_FILES.md`, `OWNER.md`) plus explicit governance allowlist files.
 - `ops/` is not a handbook surface; workflow and tutorial prose belongs under `docs/`.
+
+## Authority Graph
+
+- `ops/inventory/**`: authoritative operational graph and registry metadata.
+- `ops/schema/**`: validation and compatibility contracts for inventory/domain artifacts.
+- `docs/**`: human-readable guidance that must reference inventory/schema truth, never redefine it.

@@ -35,6 +35,7 @@
 ## Invariants
 
 - No duplicate authored truth is allowed; authoritative inventory registry is `ops/inventory/contracts-map.json`.
+- `ops/inventory/contracts.json` is a generated output and must never become authored truth.
 - Schema references for this domain must resolve only to `ops/schema/**`.
 - Behavior source is forbidden in `ops/inventory`; inventory artifacts are declarative only.
 - The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
@@ -42,6 +43,12 @@
 - Inventory docs must be linked from `ops/inventory/INDEX.md` or top-level `ops/INDEX.md`.
 - Pin keys and values must follow canonical format and be deterministic under `pins.schema.json`.
 - Registry outputs must be deterministic and stable for identical authored inventory inputs.
+
+## Ownership Semantics
+
+- `OWNER.md` files identify accountable teams for review and drift response only.
+- Effective machine ownership source is `ops/inventory/owners.json`.
+- New ownership semantics must be added in `owners.json` first, then reflected in human-readable docs.
 
 ## Enforcement Links
 

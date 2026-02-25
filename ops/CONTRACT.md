@@ -10,6 +10,13 @@
 `bijux-dev-atlas` executes generation, validation, and orchestration against this contract.
 Ops is specification-only. Runtime behavior and orchestration logic live in `crates/bijux-dev-atlas`.
 
+## Authority Hierarchy
+
+- Authoritative order is strict: `ops/inventory/**` (registry truth) -> `ops/schema/**` (validation contracts) -> `docs/**` (human explanation).
+- When two artifacts overlap semantically, the higher level in this hierarchy is authoritative and the lower level must reference it.
+- `ops/inventory/contracts-map.json` is the canonical authority index for inventory artifacts; `ops/inventory/contracts.json` is a generated mirror only.
+- `REQUIRED_FILES.md` is a presence contract only; field semantics are defined by `ops/schema/meta/required-files-contract.schema.json`.
+
 ## Ownership
 
 - `ops/` stores specifications and contracts only.
@@ -64,6 +71,7 @@ Generated truth:
 - No duplicate authored truth is allowed.
 - If the same semantic data appears in two paths, exactly one path must be authored and the other must be generated from it.
 - Generated copies must be explicitly marked in contract and generator policy documents.
+- Parallel authored registries that represent the same contract set are forbidden.
 
 ## Fixture Policy
 
@@ -76,6 +84,7 @@ Generated truth:
 
 - Command surface metadata is declared in `ops/inventory/surfaces.json`.
 - Ownership metadata is declared in `ops/inventory/owners.json`.
+- Policy registry source is `ops/inventory/policies/dev-atlas-policy.json`.
 - No semantic domain `obs` exists; only `observe` is valid across ids, keys, commands, and paths.
 - Gate requirement: forbid pattern `ops\.obs\.` and forbid `"obs"` domain keys after 2026-02-25.
 - Schemas live only under `ops/schema/`.
