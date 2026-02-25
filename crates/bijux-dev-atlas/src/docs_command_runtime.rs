@@ -780,6 +780,19 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("schema index encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write schema index failed: {e}"))?;
+                        let registry_checks = registry_validate_payload(&ctx)?;
+                        fs::write(
+                            generated_dir.join("docs-quality-dashboard.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "kind": "docs_quality_dashboard_v1",
+                                "summary": registry_checks["summary"].clone(),
+                                "canonical_references": registry_checks["canonical_references"].clone(),
+                                "pruning_suggestions": registry_checks["pruning_suggestions"].clone()
+                            }))
+                            .map_err(|e| format!("docs quality dashboard encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write docs quality dashboard failed: {e}"))?;
                     }
                     let payload = serde_json::json!({
                         "schema_version": 1,
@@ -809,6 +822,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "crate_doc_pruning": "docs/_generated/crate-doc-pruning.json",
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
+                            "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
                             "generated_make_targets": "makefiles/GENERATED_TARGETS.md"
                         },
                         "changes_summary": {
