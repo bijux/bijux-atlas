@@ -48,3 +48,4 @@
 - [Migration Window](migration-window.md)
 - [Ops API Contract](ops-api-contract.md)
 - [Ops Docs Update Workflow](ops-docs-update-workflow.md)
+- [v0.1.0 Ops Readiness Checklist](v0.1.0-ops-readiness-checklist.md)
