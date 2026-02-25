@@ -3,6 +3,7 @@
 use crate::docs_commands::{
     crate_doc_contract_status, docs_inventory_payload, docs_markdown_files, docs_registry_payload,
     has_required_section, load_quality_policy, registry_validate_payload, search_synonyms,
+    workspace_crate_roots,
 };
 use crate::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -591,6 +592,34 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             crate_governance_md,
                         )
                         .map_err(|e| format!("write crate doc governance page failed: {e}"))?;
+                        let mut crate_api_table = String::from(
+                            "# Crate Public API Table\n\n| Crate | Public API Doc |\n|---|---|\n",
+                        );
+                        for crate_root in workspace_crate_roots(&ctx.repo_root) {
+                            let crate_name = crate_root
+                                .file_name()
+                                .and_then(|v| v.to_str())
+                                .unwrap_or("unknown");
+                            let public_api = crate_root.join("docs/public-api.md");
+                            let public_api_value = if public_api.exists() {
+                                format!(
+                                    "`{}`",
+                                    public_api
+                                        .strip_prefix(&ctx.repo_root)
+                                        .unwrap_or(&public_api)
+                                        .display()
+                                )
+                            } else {
+                                "`missing`".to_string()
+                            };
+                            crate_api_table
+                                .push_str(&format!("| `{crate_name}` | {public_api_value} |\n"));
+                        }
+                        fs::write(
+                            generated_dir.join("crate-doc-api-table.md"),
+                            crate_api_table,
+                        )
+                        .map_err(|e| format!("write crate doc api table failed: {e}"))?;
                         let mut inventory_md =
                             String::from("# Docs Inventory\n\nLicense: Apache-2.0\n\n");
                         inventory_md
@@ -712,6 +741,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "crate_docs_slice": "docs/_generated/crate-docs-slice.json",
                             "crate_doc_coverage": "docs/_generated/crate-doc-coverage.json",
                             "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
+                            "crate_doc_api_table": "docs/_generated/crate-doc-api-table.md",
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "generated_make_targets": "makefiles/GENERATED_TARGETS.md"
