@@ -1569,6 +1569,32 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
+    let ledger_rel = Path::new("ops/_generated.example/ops-ledger.json");
+    let ledger_text = fs::read_to_string(ctx.repo_root.join(ledger_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let ledger_json: serde_json::Value =
+        serde_json::from_str(&ledger_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    if ledger_json.get("schema_version").and_then(|v| v.as_i64()) != Some(1)
+        || ledger_json.get("generated_by").is_none()
+    {
+        violations.push(violation(
+            "OPS_LEDGER_METADATA_INVALID",
+            "ops-ledger.json must include schema_version=1 and generated_by".to_string(),
+            "regenerate ops/_generated.example/ops-ledger.json with required metadata",
+            Some(ledger_rel),
+        ));
+    }
+    let ledger_entries = ledger_json
+        .get("entries")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    let ledger_paths = ledger_entries
+        .iter()
+        .filter_map(|entry| entry.get("path").and_then(|v| v.as_str()))
+        .map(ToString::to_string)
+        .collect::<BTreeSet<_>>();
+
     let usage_report_rel = Path::new("ops/_generated.example/file-usage-report.json");
     let usage_report_text = fs::read_to_string(ctx.repo_root.join(usage_report_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -1644,17 +1670,19 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
     }
 
     let mut computed_orphans = Vec::new();
+    let mut ops_all_files = BTreeSet::new();
     let mut registry_count_by_domain = BTreeMap::<String, usize>::new();
     let mut generated_count_by_domain = BTreeMap::<String, usize>::new();
     for file in walk_files(&ctx.repo_root.join("ops")) {
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+        let rel_str = rel.display().to_string();
+        ops_all_files.insert(rel_str.clone());
         let Some(ext) = rel.extension().and_then(|v| v.to_str()) else {
             continue;
         };
         if !matches!(ext, "json" | "yaml" | "yml" | "toml") {
             continue;
         }
-        let rel_str = rel.display().to_string();
         let domain = rel
             .components()
             .nth(1)
@@ -1715,6 +1743,143 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
             "remove orphan data files or classify them through contracts-map, schema-index, docs, and REQUIRED_FILES",
             Some(Path::new("ops")),
         ));
+    }
+
+    let ledger_missing = ops_all_files
+        .iter()
+        .filter(|path| !ledger_paths.contains(*path))
+        .cloned()
+        .collect::<Vec<_>>();
+    if !ledger_missing.is_empty() {
+        violations.push(violation(
+            "OPS_LEDGER_FILE_MISSING",
+            format!(
+                "ops ledger is missing {} file entries",
+                ledger_missing.len()
+            ),
+            "regenerate ops-ledger.json and include every ops file",
+            Some(ledger_rel),
+        ));
+    }
+    for entry in &ledger_entries {
+        let path = entry.get("path").and_then(|v| v.as_str()).unwrap_or_default();
+        if path.is_empty() || !ctx.adapters.fs.exists(ctx.repo_root, Path::new(path)) {
+            violations.push(violation(
+                "OPS_LEDGER_REFERENCE_MISSING",
+                format!("ops ledger references missing path `{path}`"),
+                "remove stale ledger entries or restore referenced files",
+                Some(ledger_rel),
+            ));
+            continue;
+        }
+        let reasons = entry
+            .get("reasons")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        if reasons.is_empty() {
+            violations.push(violation(
+                "OPS_LEDGER_REASON_MISSING",
+                format!("ops ledger entry has empty reasons: `{path}`"),
+                "add at least one necessity reason per ledger entry",
+                Some(ledger_rel),
+            ));
+        }
+        if let Some(schema_ref) = entry.get("schema_ref").and_then(|v| v.as_str()) {
+            if !schema_ref.is_empty() && !ctx.adapters.fs.exists(ctx.repo_root, Path::new(schema_ref)) {
+                violations.push(violation(
+                    "OPS_LEDGER_SCHEMA_REFERENCE_MISSING",
+                    format!("ledger schema reference is missing: `{schema_ref}`"),
+                    "fix or remove stale schema_ref values in ops ledger",
+                    Some(ledger_rel),
+                ));
+            }
+        }
+        for required_by in entry
+            .get("required_by")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .filter_map(|v| v.as_str())
+        {
+            if !required_by.is_empty() && !ctx.adapters.fs.exists(ctx.repo_root, Path::new(required_by)) {
+                violations.push(violation(
+                    "OPS_LEDGER_REQUIRED_BY_MISSING",
+                    format!("ledger required_by reference is missing: `{required_by}`"),
+                    "fix required_by references in ops ledger",
+                    Some(ledger_rel),
+                ));
+            }
+        }
+        let entry_type = entry.get("type").and_then(|v| v.as_str()).unwrap_or_default();
+        if entry_type == "authored" && path.contains("/generated/") {
+            violations.push(violation(
+                "OPS_LEDGER_AUTHORED_IN_GENERATED_PATH",
+                format!("authored ledger entry lives under generated path: `{path}`"),
+                "mark generated-path entries as generated or move authored files out of generated directories",
+                Some(ledger_rel),
+            ));
+        }
+        if entry_type == "generated"
+            && !path.contains("/generated/")
+            && !path.starts_with("ops/_generated.example/")
+        {
+            violations.push(violation(
+                "OPS_LEDGER_GENERATED_OUTSIDE_GENERATED_PATH",
+                format!("generated ledger entry is outside generated paths: `{path}`"),
+                "move generated artifacts under ops/**/generated or ops/_generated.example",
+                Some(ledger_rel),
+            ));
+        }
+    }
+
+    let allowlist_rel = Path::new("ops/_generated.example/ALLOWLIST.json");
+    let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowlist_json: serde_json::Value = serde_json::from_str(&allowlist_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let allowlist_set = allowlist_json
+        .get("allowed_files")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    for entry in &ledger_entries {
+        let path = entry.get("path").and_then(|v| v.as_str()).unwrap_or_default();
+        let entry_type = entry.get("type").and_then(|v| v.as_str()).unwrap_or_default();
+        if entry_type == "curated_evidence" && !allowlist_set.contains(path) {
+            violations.push(violation(
+                "OPS_LEDGER_CURATED_NOT_ALLOWLISTED",
+                format!("curated evidence path is not in allowlist: `{path}`"),
+                "add curated evidence paths to ops/_generated.example/ALLOWLIST.json",
+                Some(allowlist_rel),
+            ));
+        }
+    }
+
+    let binary_allowed = [".json", ".yaml", ".yml", ".toml", ".md", ".txt", ".lock", ".js"];
+    for path in &ops_all_files {
+        if path.contains("/assets/") {
+            continue;
+        }
+        let ext = Path::new(path)
+            .extension()
+            .and_then(|v| v.to_str())
+            .map(|e| format!(".{e}"))
+            .unwrap_or_default();
+        if !binary_allowed.iter().any(|allowed| *allowed == ext) && !path.ends_with(".gitkeep") {
+            violations.push(violation(
+                "OPS_BINARY_OUTSIDE_ASSETS_FORBIDDEN",
+                format!("potential binary or unsupported file outside assets: `{path}`"),
+                "keep non-text artifacts only under ops/**/assets and declare them in fixture contracts",
+                Some(Path::new(path)),
+            ));
+        }
     }
 
     if let Some(orphan_arr) = usage_report_json.get("orphans").and_then(|v| v.as_array()) {

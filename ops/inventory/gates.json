@@ -36,6 +36,9 @@
     {"id": "ops.gate.fixtures", "action_id": "ops.datasets.validate", "category": "datasets", "description": "enforce fixture allowlists, locks, version hashes, and inventory drift checks"},
     {"id": "ops.gate.naming", "action_id": "ops.root.naming-check", "category": "governance", "description": "enforce canonical naming and forbid legacy aliases"},
     {"id": "ops.gate.inventory", "action_id": "ops.root.contracts-check", "category": "inventory", "description": "enforce deterministic inventory registries and prevent semantic duplicates"},
-    {"id": "ops.gate.schema", "action_id": "ops.root.schema-check", "category": "schema", "description": "enforce schema index, compatibility lock, reference policy, and schema budget"}
+    {"id": "ops.gate.schema", "action_id": "ops.root.schema-check", "category": "schema", "description": "enforce schema index, compatibility lock, reference policy, and schema budget"},
+    {"id": "ops.gate.ledger", "action_id": "ops.root.contracts-check", "category": "governance", "description": "enforce ops ledger coverage, necessity reasons, and reference integrity"},
+    {"id": "ops.gate.orphan-report", "action_id": "ops.root.contracts-check", "category": "governance", "description": "orphan-files-report and file-usage-report must match live repository state"},
+    {"id": "ops.gate.binary-policy", "action_id": "ops.root.contracts-check", "category": "governance", "description": "forbid binary or unsupported artifact formats outside ops/**/assets"}
   ]
 }
