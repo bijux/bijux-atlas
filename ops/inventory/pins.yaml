@@ -1,3 +1,16 @@
-# Canonical ops inventory pins (compat source remains ops/registry/pins.json during migration)
+schema_version: 1
+images:
+  kind_node_image: "kindest/node:v1.31.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f"
+  minio: "minio/minio:RELEASE.2025-01-20T14-49-07Z"
+  minio_mc: "minio/mc:RELEASE.2025-01-17T23-25-50Z"
+  prometheus: "prom/prometheus:v2.54.1"
+  otel_collector: "otel/opentelemetry-collector-contrib:0.111.0"
+  redis: "redis:7.4-alpine"
+  toxiproxy: "ghcr.io/shopify/toxiproxy:2.12.0"
 dataset_ids:
-artifact_hashes:
+  - "110/homo_sapiens/GRCh38"
+  - "111/homo_sapiens/GRCh38"
+versions:
+  chart: "0.1.0"
+  app: "0.1.0"
+  prometheus_operator_crd: "0.76.0"
