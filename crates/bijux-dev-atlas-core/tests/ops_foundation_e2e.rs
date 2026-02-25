@@ -192,10 +192,41 @@ tags_any = ["fast"]
         "# Required Files\n",
     );
     write(&root.join("ops/schema/meta/ownership.schema.json"), "{}\n");
-    write(&root.join("ops/schema/report/unified.schema.json"), "{}\n");
+    write(
+        &root.join("ops/schema/inventory/pins.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/inventory/toolchain.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/datasets/manifest.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/load/perf-baseline.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/report/unified.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
     write(
         &root.join("ops/schema/stack/profile-manifest.schema.json"),
         "{}\n",
+    );
+    write(
+        &root.join("ops/schema/generated/schema-index.json"),
+        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
+    );
+    write(
+        &root.join("ops/schema/generated/schema-index.md"),
+        "# Schema Index\n",
+    );
+    write(
+        &root.join("ops/schema/generated/compatibility-lock.json"),
+        "{\"schema_version\":1,\"targets\":[{\"schema_path\":\"ops/schema/inventory/pins.schema.json\",\"required_fields\":[]}]}\n",
     );
     write(&root.join("ops/inventory/README.md"), "# Inventory\n");
     write(&root.join("ops/env/README.md"), "# Env\n");
