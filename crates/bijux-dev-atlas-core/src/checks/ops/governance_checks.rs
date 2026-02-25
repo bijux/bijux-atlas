@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
     ctx: &CheckContext<'_>,
@@ -43,7 +43,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
         Path::new("ops/CONTRACT.md"),
         Path::new("ops/INDEX.md"),
         Path::new("ops/README.md"),
-        Path::new("ops/report/docs/REFERENCE_INDEX.md"),
+        Path::new("docs/ops/INDEX.md"),
     ];
     for rel in canonical_docs {
         let path = ctx.repo_root.join(rel);
@@ -1499,10 +1499,10 @@ pub(super) fn check_ops_docs_governance(
         }
     }
 
-    let reference_index_rel = Path::new("ops/report/docs/REFERENCE_INDEX.md");
+    let reference_index_rel = Path::new("docs/ops/INDEX.md");
     let reference_index_text = fs::read_to_string(ctx.repo_root.join(reference_index_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let docs_root = ctx.repo_root.join("ops/report/docs");
+    let docs_root = ctx.repo_root.join("docs/ops");
     for doc in walk_files(&docs_root) {
         let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
         if rel.extension().and_then(|v| v.to_str()) != Some("md") {
@@ -1511,31 +1511,28 @@ pub(super) fn check_ops_docs_governance(
         let Some(name) = rel.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
-        if name == "REFERENCE_INDEX.md" {
+        if name == "INDEX.md" {
             continue;
         }
         if !reference_index_text.contains(&format!("({name})")) {
             violations.push(violation(
                 "OPS_REPORT_DOC_ORPHAN",
                 format!(
-                    "report doc `{}` is not linked from ops/report/docs/REFERENCE_INDEX.md",
+                    "ops doc `{}` is not linked from docs/ops/INDEX.md",
                     rel.display()
                 ),
-                "add doc link to REFERENCE_INDEX.md or remove orphan report doc",
+                "add doc link to docs/ops/INDEX.md or remove orphan docs/ops doc",
                 Some(reference_index_rel),
             ));
         }
     }
     for target in markdown_link_targets(&reference_index_text) {
-        let rel = Path::new("ops/report/docs").join(&target);
+        let rel = Path::new("docs/ops").join(&target);
         if !ctx.adapters.fs.exists(ctx.repo_root, &rel) {
             violations.push(violation(
                 "OPS_REPORT_DOC_REFERENCE_BROKEN_LINK",
-                format!(
-                    "REFERENCE_INDEX.md links missing report doc `{}`",
-                    rel.display()
-                ),
-                "fix broken report docs links in REFERENCE_INDEX.md",
+                format!("docs/ops/INDEX.md links missing ops doc `{}`", rel.display()),
+                "fix broken docs links in docs/ops/INDEX.md",
                 Some(reference_index_rel),
             ));
         }
@@ -1662,7 +1659,7 @@ pub(super) fn check_ops_docs_governance(
                 .collect::<BTreeSet<_>>()
         })
         .unwrap_or_default();
-    for doc in walk_files(&ctx.repo_root.join("ops/report/docs")) {
+    for doc in walk_files(&ctx.repo_root.join("docs/ops")) {
         let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
         if rel.extension().and_then(|v| v.to_str()) != Some("md") {
             continue;
@@ -1680,6 +1677,33 @@ pub(super) fn check_ops_docs_governance(
                     Some(rel),
                 ));
             }
+        }
+    }
+    let mut seen_docs_dirs = BTreeSet::new();
+    for file in walk_files(&ctx.repo_root.join("ops")) {
+        let mut parent = file.parent();
+        while let Some(dir) = parent {
+            let rel = dir.strip_prefix(ctx.repo_root).unwrap_or(dir);
+            if rel == Path::new("ops/report/docs") {
+                break;
+            }
+            if rel
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name == "docs")
+                && seen_docs_dirs.insert(rel.to_path_buf())
+            {
+                violations.push(violation(
+                    "OPS_DOCS_DIRECTORY_FORBIDDEN",
+                    format!(
+                        "forbidden ops docs subtree `{}`; ops docs must live under docs/ops",
+                        rel.display()
+                    ),
+                    "remove ops/**/docs/** subtree or migrate docs into docs/ops",
+                    Some(rel),
+                ));
+            }
+            parent = dir.parent();
         }
     }
 
