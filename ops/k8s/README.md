@@ -4,10 +4,11 @@
 Own Helm chart delivery, install profiles, and Kubernetes-only validation gates.
 
 ## Entry points
-- `make ops-deploy PROFILE=kind`
-- `make ops-undeploy PROFILE=kind`
 - `make ops-k8s-suite PROFILE=kind`
 - `make ops-k8s-contracts`
+- `make ops-k8s-tests PROFILE=kind`
+- `make ops-k8s-template-tests PROFILE=kind`
+- `bijux dev atlas ops k8s apply --profile kind --apply --allow-subprocess --allow-write`
 
 ## Contracts
 - `ops/k8s/CONTRACT.md`
