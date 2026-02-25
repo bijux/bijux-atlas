@@ -640,7 +640,11 @@ pub(super) fn check_ops_required_files_contracts(
         let required_directories = required_contract.required_dirs.clone();
         let domain_root = rel.parent().unwrap_or(Path::new("ops"));
 
-        for forbidden in ["ops/obs/", "ops/schema/obs/", "ops/load/k6/manifests/suites.json"] {
+        for forbidden in [
+            "ops/obs/",
+            "ops/schema/obs/",
+            "ops/load/k6/manifests/suites.json",
+        ] {
             if content.contains(forbidden) {
                 violations.push(violation(
                     "OPS_REQUIRED_FILES_FORBIDDEN_REFERENCE",
@@ -943,10 +947,13 @@ pub(super) fn check_ops_domain_contract_structure(
     let contract_files = [
         "ops/datasets/CONTRACT.md",
         "ops/e2e/CONTRACT.md",
+        "ops/env/CONTRACT.md",
+        "ops/inventory/CONTRACT.md",
         "ops/k8s/CONTRACT.md",
         "ops/load/CONTRACT.md",
         "ops/observe/CONTRACT.md",
         "ops/report/CONTRACT.md",
+        "ops/schema/CONTRACT.md",
         "ops/stack/CONTRACT.md",
     ];
     let mut violations = Vec::new();
@@ -986,6 +993,39 @@ pub(super) fn check_ops_domain_contract_structure(
             ));
             continue;
         }
+        if !text.contains("## Enforcement Links") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_ENFORCEMENT_LINKS_MISSING",
+                format!(
+                    "domain contract `{}` must include `## Enforcement Links`",
+                    rel.display()
+                ),
+                "add enforcement links section that references concrete check ids",
+                Some(rel),
+            ));
+        }
+        if text.contains("locked") || text.contains("Locked") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_STALE_LOCKED_REFERENCE",
+                format!(
+                    "domain contract `{}` contains stale `locked` wording",
+                    rel.display()
+                ),
+                "remove stale locked-list language from authored domain contracts",
+                Some(rel),
+            ));
+        }
+        if !text.contains("checks_") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_ENFORCEMENT_LINK_EMPTY",
+                format!(
+                    "domain contract `{}` must reference at least one concrete check id",
+                    rel.display()
+                ),
+                "add at least one `checks_*` identifier under enforcement links",
+                Some(rel),
+            ));
+        }
         let mut in_invariants = false;
         let mut invariant_count = 0usize;
         for line in text.lines() {
@@ -1000,17 +1040,47 @@ pub(super) fn check_ops_domain_contract_structure(
                 }
             }
         }
-        if invariant_count < 6 {
+        if invariant_count < 8 {
             violations.push(violation(
                 "OPS_DOMAIN_CONTRACT_INVARIANT_COUNT_TOO_LOW",
                 format!(
-                    "domain contract `{}` must define at least 6 invariants; found {}",
+                    "domain contract `{}` must define at least 8 invariants; found {}",
                     rel.display(),
                     invariant_count
                 ),
                 "add concrete invariants until the minimum count is satisfied",
                 Some(rel),
             ));
+        }
+    }
+    let coverage_rel = Path::new("ops/_generated.example/contract-coverage-report.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, coverage_rel) {
+        violations.push(violation(
+            "OPS_CONTRACT_COVERAGE_REPORT_MISSING",
+            format!(
+                "missing contract coverage report `{}`",
+                coverage_rel.display()
+            ),
+            "generate and commit contract coverage report artifact",
+            Some(coverage_rel),
+        ));
+    } else {
+        let coverage_text = fs::read_to_string(ctx.repo_root.join(coverage_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let coverage_json: serde_json::Value = serde_json::from_str(&coverage_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for key in ["schema_version", "generated_by", "contracts"] {
+            if coverage_json.get(key).is_none() {
+                violations.push(violation(
+                    "OPS_CONTRACT_COVERAGE_REPORT_INVALID",
+                    format!(
+                        "contract coverage report `{}` is missing `{key}`",
+                        coverage_rel.display()
+                    ),
+                    "include schema_version, generated_by, and contracts fields in coverage report",
+                    Some(coverage_rel),
+                ));
+            }
         }
     }
     Ok(violations)
@@ -2189,7 +2259,12 @@ fn parse_required_files_markdown_yaml(
             rel.display()
         ))
     })?;
-    for key in ["required_files", "required_dirs", "forbidden_patterns", "notes"] {
+    for key in [
+        "required_files",
+        "required_dirs",
+        "forbidden_patterns",
+        "notes",
+    ] {
         if !parsed_map.contains_key(serde_yaml::Value::from(key)) {
             return Err(CheckError::Failed(format!(
                 "{} must define `{key}` in REQUIRED_FILES contract YAML",
