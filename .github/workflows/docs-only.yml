@@ -94,7 +94,7 @@ jobs:
         with:
           path: .cache/cargo/target/docs-only
           key: cargo-target-pr-docs-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: docs-${{ env.RUN_ID }}

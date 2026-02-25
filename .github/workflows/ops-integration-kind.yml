@@ -72,7 +72,7 @@ jobs:
         with:
           path: .cache/cargo/target/ops-kind
           key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: ops-kind-${{ env.RUN_ID }}

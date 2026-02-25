@@ -93,7 +93,7 @@ jobs:
         with:
           path: .cache/cargo/target/ci-pr-minimal
           key: cargo-target-pr-minimal-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: ci-pr-minimal-${{ env.RUN_ID }}
@@ -159,7 +159,7 @@ jobs:
         with:
           path: .cache/cargo/target/ci-pr
           key: cargo-target-pr-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: ci-pr-${{ env.RUN_ID }}
@@ -224,7 +224,7 @@ jobs:
         with:
           path: .cache/cargo/target/ci-supply-chain
           key: cargo-target-pr-supply-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: ci-supply-chain-${{ env.RUN_ID }}
