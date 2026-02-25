@@ -14,6 +14,7 @@ required_files:
   - ops/_generated.example/inventory-index.json
   - ops/_generated.example/control-plane.snapshot.md
   - ops/_generated.example/docs-drift-report.json
+  - ops/_generated.example/contract-coverage-report.json
 required_dirs: []
 forbidden_patterns:
   - ops/obs/
