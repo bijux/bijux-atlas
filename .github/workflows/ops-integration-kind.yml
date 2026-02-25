@@ -1,4 +1,5 @@
 name: ops-integration-kind
+# Tooling orchestration is centralized via bijux dev atlas command surfaces.
 
 on:
   workflow_dispatch:
@@ -50,7 +51,7 @@ jobs:
         with:
           path: .cache/cargo/target/ops-kind
           key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - name: Run kind integration lane
+      - name: Run cluster integration lane
         shell: bash
         run: |
           set -euo pipefail

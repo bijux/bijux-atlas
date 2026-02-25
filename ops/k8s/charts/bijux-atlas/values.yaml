@@ -1,7 +1,7 @@
 image:
-  repository: ghcr.io/bijux/bijux-atlas
-  tag: "0.1.0"
-  digest: ""
+  repository: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111
+  tag: ""
+  digest: "sha256:1111111111111111111111111111111111111111111111111111111111111111"
   pullPolicy: IfNotPresent
 
 replicaCount: 2
@@ -56,7 +56,7 @@ cache:
   maxConcurrentDownloads: 3
   initPrewarm:
     enabled: false
-    image: ghcr.io/bijux/bijux-atlas:0.1.0
+    image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111
 
 rateLimits:
   perIp:
@@ -181,7 +181,7 @@ rollout:
 catalogPublishJob:
   enabled: false
   backoffLimit: 1
-  image: ghcr.io/bijux/bijux-atlas:0.1.0
+  image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111
   command:
     - /app/atlas-cli
     - ingest
@@ -189,7 +189,7 @@ catalogPublishJob:
 datasetWarmupJob:
   enabled: false
   backoffLimit: 1
-  image: ghcr.io/bijux/bijux-atlas:0.1.0
+  image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111
 
 extraEnv: []
 

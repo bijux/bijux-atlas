@@ -1,5 +1,6 @@
 # Scope: ops area wrappers only.
 # Public targets: ops, ops-help, ops-doctor, ops-validate, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-obs
+# All external tools are invoked through bijux dev atlas command surfaces.
 SHELL := /bin/sh
 PROFILE ?= kind
 OPS_RESET_RUN_ID ?= ops_reset
