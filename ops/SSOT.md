@@ -21,3 +21,5 @@ This page defines authored truth versus generated truth in `ops/`.
 
 - Semantic data can have one authored source only.
 - Any additional copy must be generated from the authored source and documented as generated.
+- Ops markdown is spec-oriented: keep only canonical headers (`README.md`, `INDEX.md`, `CONTRACT.md`, `REQUIRED_FILES.md`, `OWNER.md`) plus explicit governance allowlist files.
+- `ops/` is not a handbook surface; workflow and tutorial prose belongs under `docs/`.

@@ -1901,6 +1901,117 @@ pub(super) fn check_ops_docs_governance(
             }
         }
     }
+    let ops_markdown_files = walk_files(&ctx.repo_root.join("ops"))
+        .into_iter()
+        .filter(|path| path.extension().and_then(|v| v.to_str()) == Some("md"))
+        .collect::<Vec<_>>();
+    let ops_markdown_file_budget = 110usize;
+    if ops_markdown_files.len() > ops_markdown_file_budget {
+        violations.push(violation(
+            "OPS_MARKDOWN_FILE_BUDGET_EXCEEDED",
+            format!(
+                "ops markdown file budget exceeded: {} > {}",
+                ops_markdown_files.len(),
+                ops_markdown_file_budget
+            ),
+            "reduce ops markdown sprawl or move handbook content into docs/",
+            Some(Path::new("ops")),
+        ));
+    }
+    let ops_markdown_line_budget = 2800usize;
+    let mut ops_markdown_lines = 0usize;
+    let allowed_standard_names = BTreeSet::from([
+        "README.md".to_string(),
+        "INDEX.md".to_string(),
+        "CONTRACT.md".to_string(),
+        "REQUIRED_FILES.md".to_string(),
+        "OWNER.md".to_string(),
+    ]);
+    let allowed_nonstandard_paths = BTreeSet::from([
+        "ops/CONTROL_PLANE.md".to_string(),
+        "ops/DRIFT.md".to_string(),
+        "ops/ERRORS.md".to_string(),
+        "ops/NAMING.md".to_string(),
+        "ops/SSOT.md".to_string(),
+        "ops/_generated.example/INDEX.example.md".to_string(),
+        "ops/_generated.example/MIRROR_POLICY.md".to_string(),
+        "ops/_generated.example/control-plane.snapshot.md".to_string(),
+        "ops/datasets/FIXTURE_LIFECYCLE.md".to_string(),
+        "ops/load/evaluations/POLICY.md".to_string(),
+        "ops/observe/drills/templates/incident-template.md".to_string(),
+        "ops/schema/BUDGET_POLICY.md".to_string(),
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md".to_string(),
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md".to_string(),
+        "ops/schema/VERSIONING_POLICY.md".to_string(),
+        "ops/schema/generated/schema-index.md".to_string(),
+        "ops/stack/dependencies.md".to_string(),
+    ]);
+    for doc in &ops_markdown_files {
+        let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
+        let rel_str = rel.display().to_string();
+        let name = rel
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default()
+            .to_string();
+        let text = fs::read_to_string(doc).map_err(|err| CheckError::Failed(err.to_string()))?;
+        ops_markdown_lines += text.lines().count();
+        if rel.starts_with(Path::new("ops/report/docs/")) {
+            if name != "README.md" && name != "REFERENCE_INDEX.md" {
+                violations.push(violation(
+                    "OPS_MARKDOWN_FILENAME_FORBIDDEN",
+                    format!("non-canonical markdown file under redirect-only area: `{rel_str}`"),
+                    "keep only redirect stubs under ops/report/docs or migrate docs to docs/ops",
+                    Some(rel),
+                ));
+            }
+        } else if !allowed_standard_names.contains(&name)
+            && !allowed_nonstandard_paths.contains(&rel_str)
+        {
+            violations.push(violation(
+                "OPS_MARKDOWN_FILENAME_FORBIDDEN",
+                format!("non-canonical markdown file under ops: `{rel_str}`"),
+                "rename to canonical doc filenames or add explicit governance allowlist entry",
+                Some(rel),
+            ));
+        }
+        for line in text.lines() {
+            let trimmed = line.trim_start();
+            if trimmed.starts_with('#') && trimmed.to_ascii_lowercase().contains("how to") {
+                violations.push(violation(
+                    "OPS_MARKDOWN_HOW_TO_HEADING_FORBIDDEN",
+                    format!("ops markdown contains workflow-style heading in `{rel_str}`"),
+                    "move tutorial/workflow prose to docs/operations and keep ops markdown normative",
+                    Some(rel),
+                ));
+                break;
+            }
+        }
+        for command in extract_ops_command_refs(&text) {
+            if !allowed_commands.contains(&command) {
+                violations.push(violation(
+                    "OPS_MARKDOWN_COMMAND_SURFACE_UNKNOWN",
+                    format!(
+                        "ops markdown `{}` references command not in surfaces.json: `{command}`",
+                        rel.display()
+                    ),
+                    "replace stale command references with canonical surfaces.json commands",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+    if ops_markdown_lines > ops_markdown_line_budget {
+        violations.push(violation(
+            "OPS_MARKDOWN_LINE_BUDGET_EXCEEDED",
+            format!(
+                "ops markdown line budget exceeded: {} > {}",
+                ops_markdown_lines, ops_markdown_line_budget
+            ),
+            "move handbook-style content into docs/ and keep ops markdown concise",
+            Some(Path::new("ops")),
+        ));
+    }
     let mut seen_docs_dirs = BTreeSet::new();
     for file in walk_files(&ctx.repo_root.join("ops")) {
         let mut parent = file.parent();

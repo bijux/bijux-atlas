@@ -20,7 +20,7 @@ Avoids experimental drift from blocking production gates.
 
 Running experiments as gates can create unstable CI signal.
 
-## How to verify
+## Verification
 
 ```bash
 rg -n "experiments" ops/load/suites/suites.json
