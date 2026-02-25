@@ -17221,7 +17221,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/schemas/configs/INDEX.md",
+      "path": "ops/schema/configs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -17245,7 +17245,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "ops/schemas/configs/README.md",
+      "path": "ops/schema/configs/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [

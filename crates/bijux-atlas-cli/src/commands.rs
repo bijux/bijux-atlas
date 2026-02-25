@@ -127,7 +127,7 @@ pub(crate) enum GcCommand {
         store_root: PathBuf,
         #[arg(long)]
         catalog: Vec<PathBuf>,
-        #[arg(long, default_value = "ops/registry/pins.json")]
+        #[arg(long, default_value = "ops/inventory/gc-pins.json")]
         pins: PathBuf,
     },
     Apply {
@@ -135,7 +135,7 @@ pub(crate) enum GcCommand {
         store_root: PathBuf,
         #[arg(long)]
         catalog: Vec<PathBuf>,
-        #[arg(long, default_value = "ops/registry/pins.json")]
+        #[arg(long, default_value = "ops/inventory/gc-pins.json")]
         pins: PathBuf,
         #[arg(long, default_value_t = false)]
         confirm: bool,
