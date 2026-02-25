@@ -8,3 +8,5 @@ Canonical inventory documents for ops ownership, command surface, namespaces, to
   - `ops/inventory/surfaces.json`
   - `ops/inventory/owners.json`
   - `ops/inventory/drills.json`
+- Gate definitions are canonical in:
+  - `ops/inventory/gates.json`

@@ -20,6 +20,7 @@
 - [Pin Lifecycle](pin-lifecycle.md)
 - [Pin Promotion Workflow](pin-promotion-workflow.md)
 - [Schema Compatibility Policy](schema-compatibility-policy.md)
+- [Ops Gates Contract](ops-gates-contract.md)
 - [Environment Overlays](environment-overlays.md)
 - [Stack Definition](stack-definition.md)
 - [Render Pipeline](render-pipeline.md)
