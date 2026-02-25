@@ -4,7 +4,7 @@
 Keep repository operations discoverable and stable by capping public surface and enforcing SSOT-driven contracts.
 
 ## Invariants
-1. Public surface is SSOT in `configs/ops/public-surface.json`.
+1. Public surface is SSOT in `ops/schema/configs/public-surface.schema.json`.
 2. Human entrypoints are only `make <public-target>` and `bijux dev atlas ...`.
 3. Docs may reference only public make targets and bijux dev atlas command surfaces (allowlist exceptions only).
 4. Shell script naming is kebab-case; Python naming is snake_case.

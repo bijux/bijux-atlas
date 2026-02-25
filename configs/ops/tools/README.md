@@ -3,4 +3,4 @@
 Toolchain pinning and public run surface.
 
 - `configs/ops/tool-versions.json`
-- `configs/ops/public-surface.json`
+- `ops/schema/configs/public-surface.schema.json`

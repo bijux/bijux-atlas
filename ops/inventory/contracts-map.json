@@ -3,7 +3,7 @@
   "authoritative": true,
   "items": [
     {"path": "ops/inventory/owners.json", "schema": "ops/schema/meta/ownership.schema.json", "generator": "manual+sync-owner-docs"},
-    {"path": "ops/inventory/surfaces.json", "schema": "configs/ops/public-surface.json", "generator": "bijux dev atlas ops gen run"},
+    {"path": "ops/inventory/surfaces.json", "schema": "ops/schema/configs/public-surface.schema.json", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/contracts.json", "schema": "none", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/layers.json", "schema": "ops/schema/meta/layer-contract.schema.json", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/pins.yaml", "schema": "ops/schema/inventory/pins.schema.json", "generator": "bijux dev atlas ops generate pins-index"},

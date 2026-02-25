@@ -5,7 +5,7 @@ Canonical inventory SSOT files and their schemas/generators.
 | Inventory file | Schema | Generator / owner | Notes |
 |---|---|---|---|
 | `ops/inventory/owners.json` | `ops/schema/meta/ownership.schema.json` | manual + owner docs sync | Replaces `ops/inventory/owners.json` |
-| `ops/inventory/surfaces.json` | `configs/ops/public-surface.json` (surface semantics) | `bijux dev atlas ops gen run` / surface generator | Canonical ops surface inventory |
+| `ops/inventory/surfaces.json` | `ops/schema/configs/public-surface.schema.json` (surface semantics) | `bijux dev atlas ops gen run` / surface generator | Canonical ops surface inventory |
 | `ops/inventory/contracts.json` | `ops/schema/meta/artifact-allowlist.schema.json` (structure checked separately) | manual | References top-level + domain contract artifacts |
 | `ops/inventory/layers.json` | `ops/schema/meta/layer-contract.schema.json` | `bijux dev atlas ops gen run` / layer contract generator | Canonical layer contract inventory |
 | `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` | `bijux dev atlas ops generate pins-index` | Canonical image and dataset pin SSOT |

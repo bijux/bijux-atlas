@@ -4,7 +4,7 @@
 Define stable boundaries between public make surface and internal make implementation details.
 
 ## Public surface rules
-- `configs/ops/public-surface.json` is the SSOT for public make targets.
+- `ops/schema/configs/public-surface.schema.json` is the SSOT for public make targets.
 - `makefiles/root.mk` is the publication surface for public targets (`.PHONY` includes public targets).
 - `make help` prints only curated public targets from SSOT.
 - Make recipes must call stable `bijux` command surfaces only.

@@ -5,6 +5,8 @@
     {"id": "ops.validate", "action_id": "ops.root.check", "category": "root", "description": "full contract validation lane"},
     {"id": "ops.gate.directory-completeness", "action_id": "ops.root.directory-budgets-check", "category": "governance", "description": "directory completeness and budget checks"},
     {"id": "ops.gate.schema-validation", "action_id": "ops.root.schema-check", "category": "schema", "description": "schema validation and drift detection"},
+    {"id": "ops.gate.schema-locality", "action_id": "ops.root.schema-check", "category": "schema", "description": "schema references must start with ops/schema/"},
+    {"id": "ops.gate.no-external-schema-files", "action_id": "ops.root.schema-check", "category": "schema", "description": "schema files are allowed only under ops/schema/**"},
     {"id": "ops.gate.pin-drift", "action_id": "ops.pins.check", "category": "inventory", "description": "pin drift and coverage checks"},
     {"id": "ops.gate.stack-reproducibility", "action_id": "ops.stack.validate", "category": "stack", "description": "stack reproducibility and profile validation"},
     {"id": "ops.gate.k8s-determinism", "action_id": "ops.k8s.check", "category": "k8s", "description": "k8s render/install determinism checks"},

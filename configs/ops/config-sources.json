@@ -19,7 +19,7 @@
       "allow": []
     },
     "public_surface": {
-      "canonical": "configs/ops/public-surface.json",
+      "canonical": "ops/schema/configs/public-surface.schema.json",
       "forbid_globs": [
         "ops/**/*public-surface*.json"
       ],

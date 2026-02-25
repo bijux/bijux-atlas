@@ -1,6 +1,6 @@
 # Makefiles Public Surface
 
-Generated from `configs/ops/public-surface.json`. Do not edit manually.
+Generated from `ops/schema/configs/public-surface.schema.json`. Do not edit manually.
 
 ## Core Gates
 - `make root`
