@@ -2204,6 +2204,8 @@ pub(super) fn check_ops_docs_governance(
     let control_plane_rel = Path::new("ops/CONTROL_PLANE.md");
     let control_plane_snapshot_rel = Path::new("ops/_generated.example/control-plane.snapshot.md");
     let control_plane_drift_rel = Path::new("ops/_generated.example/control-plane-drift-report.json");
+    let control_plane_surface_list_rel =
+        Path::new("ops/_generated.example/control-plane-surface-list.json");
     if !ctx
         .adapters
         .fs
@@ -2277,6 +2279,76 @@ pub(super) fn check_ops_docs_governance(
                 "resolve control-plane drift and regenerate control-plane-drift-report.json",
                 Some(control_plane_drift_rel),
             ));
+        }
+        let has_surface_check = drift_json
+            .get("checks")
+            .and_then(|v| v.as_array())
+            .map(|checks| {
+                checks.iter().any(|item| {
+                    item.get("id").and_then(|v| v.as_str())
+                        == Some("control-plane-surface-list-present")
+                        && item.get("status").and_then(|v| v.as_str()) == Some("pass")
+                })
+            })
+            .unwrap_or(false);
+        if !has_surface_check {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_SURFACE_LIST_CHECK_MISSING",
+                "control-plane-drift-report.json must include passing `control-plane-surface-list-present` check"
+                    .to_string(),
+                "regenerate control-plane drift report with control-plane surface-list status",
+                Some(control_plane_drift_rel),
+            ));
+        }
+    }
+
+    if !ctx
+        .adapters
+        .fs
+        .exists(ctx.repo_root, control_plane_surface_list_rel)
+    {
+        violations.push(violation(
+            "OPS_CONTROL_PLANE_SURFACE_LIST_MISSING",
+            format!(
+                "missing control-plane surface list report `{}`",
+                control_plane_surface_list_rel.display()
+            ),
+            "generate and commit control-plane-surface-list report",
+            Some(control_plane_surface_list_rel),
+        ));
+    } else {
+        let surface_text = fs::read_to_string(ctx.repo_root.join(control_plane_surface_list_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let surface_json: serde_json::Value = serde_json::from_str(&surface_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if surface_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_CONTROL_PLANE_SURFACE_LIST_BLOCKING",
+                "control-plane-surface-list.json status is not `pass`".to_string(),
+                "resolve control-plane surface-list drift and regenerate the report",
+                Some(control_plane_surface_list_rel),
+            ));
+        }
+        let surfaces = surface_json
+            .get("surfaces")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let expected = ["check", "docs", "configs", "ops"];
+        for required in expected {
+            if !surfaces
+                .iter()
+                .any(|value| value.as_str() == Some(required))
+            {
+                violations.push(violation(
+                    "OPS_CONTROL_PLANE_SURFACE_LIST_INCOMPLETE",
+                    format!(
+                        "control-plane-surface-list.json missing required surface `{required}`"
+                    ),
+                    "regenerate control-plane surface list report from command ownership source",
+                    Some(control_plane_surface_list_rel),
+                ));
+            }
         }
     }
 
