@@ -17,8 +17,8 @@ required_files:
 required_dirs:
   - ops/k8s/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/k8s/install-matrix.json
   - generated_output: ops/k8s/generated/release-snapshot.json

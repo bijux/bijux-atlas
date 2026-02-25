@@ -25,8 +25,8 @@ required_dirs:
   - ops/schema/configs
   - ops/schema/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/schema/inventory/pins.schema.json
   - generated_output: ops/schema/generated/schema-index.json

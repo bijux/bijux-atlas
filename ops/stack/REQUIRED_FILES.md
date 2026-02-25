@@ -17,8 +17,8 @@ required_files:
 required_dirs:
   - ops/stack/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/stack/profiles.json
   - generated_output: ops/stack/generated/version-manifest.json

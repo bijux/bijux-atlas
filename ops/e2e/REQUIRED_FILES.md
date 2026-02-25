@@ -16,8 +16,8 @@ required_files:
 required_dirs:
   - ops/e2e/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/e2e/suites/suites.json
   - authored_root: ops/e2e/scenarios/scenarios.json

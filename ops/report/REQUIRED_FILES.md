@@ -14,8 +14,8 @@ required_files:
 required_dirs:
   - ops/report/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/report/schema.json
   - generated_output: ops/report/generated/readiness-score.json

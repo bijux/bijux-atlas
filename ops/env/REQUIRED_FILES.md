@@ -12,8 +12,8 @@ required_files:
   - ops/schema/env/overlay.schema.json
 required_dirs: []
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/env/base/overlay.json
   - authored_root: ops/env/prod/overlay.json

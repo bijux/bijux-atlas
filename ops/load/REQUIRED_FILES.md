@@ -19,8 +19,8 @@ required_dirs:
   - ops/load/k6/thresholds
   - ops/load/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
   - ops/load/k6/manifests/suites.json
 notes:
   - authored_root: ops/load/suites/suites.json

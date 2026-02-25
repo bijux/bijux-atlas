@@ -20,8 +20,8 @@ required_dirs:
   - ops/observe/otel
   - ops/observe/generated
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/observe/alert-catalog.json
   - generated_output: ops/observe/generated/telemetry-index.json

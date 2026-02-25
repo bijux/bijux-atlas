@@ -21,8 +21,8 @@ required_files:
   - ops/inventory/policies/dev-atlas-policy.schema.json
 required_dirs: []
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/inventory/pins.yaml
   - authored_root: ops/inventory/contracts-map.json

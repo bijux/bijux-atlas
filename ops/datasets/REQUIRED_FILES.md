@@ -19,8 +19,8 @@ required_dirs:
   - ops/datasets/generated
   - ops/datasets/fixtures
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/datasets/manifest.json
   - authored_root: ops/datasets/promotion-rules.json

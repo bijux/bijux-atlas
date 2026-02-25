@@ -16,5 +16,5 @@
 
 - `ops/report/docs/` may not contain orphan files.
 - `TODO`/`TBD` markers are forbidden in release docs.
-- Removed or retired paths (for example `ops/obs/`) must not appear in docs.
+- Removed or retired legacy observability aliases must not appear in docs.
 - `ops/INDEX.md` is the root navigation page for top-level ops docs.

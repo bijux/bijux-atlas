@@ -19,8 +19,8 @@ required_files:
   - ops/_generated.example/schema-drift-report.json
 required_dirs: []
 forbidden_patterns:
-  - ops/obs/
-  - ops/schema/obs/
+  - legacy-observe-alias/
+  - legacy-observe-schema-alias/
   - ops/load/k6/manifests/suites.json
 notes:
   - authored_root: ops/_generated.example/MIRROR_POLICY.md
