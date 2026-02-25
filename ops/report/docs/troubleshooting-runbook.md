@@ -5,5 +5,5 @@
 
 Common actions:
 - `bijux dev atlas ops doctor --strict --format json`
-- `bijux dev atlas ops validate --strict --format json`
-- `bijux dev atlas ops inventory --format json`
+- `bijux dev atlas ops check --strict --format json`
+- `bijux dev atlas ops surface --format json`

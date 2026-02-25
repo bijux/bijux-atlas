@@ -13,8 +13,8 @@
 ## Validation
 
 - `bijux dev atlas ops doctor --format json`
-- `bijux dev atlas ops validate --format json`
-- `bijux dev atlas ops stack plan --profile kind --format json`
+- `bijux dev atlas ops check --format json`
+- `bijux dev atlas ops stack check --profile kind --format json`
 
 ## Generated Artifacts
 

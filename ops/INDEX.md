@@ -4,15 +4,20 @@ Human entry for the ops specification surface.
 
 ## Start Here
 
-- Contract: `ops/CONTRACT.md`
-- SSOT and generated policy: `ops/SSOT.md`
-- Control-plane ownership: `docs/development/tooling/dev-atlas-ops.md`
-- Inventory map: `ops/report/docs/inventory-contracts.md`
-- Migration window: `ops/report/docs/migration-window.md`
-- Pin lifecycle: `ops/report/docs/pin-lifecycle.md`
-- Schema versioning policy: `ops/schema/VERSIONING_POLICY.md`
-- Generated index artifact: `ops/_generated.example/ops-index.json`
-- Release evidence bundle: `ops/_generated.example/ops-evidence-bundle.json`
+- `ops/README.md`
+- `ops/CONTRACT.md`
+- `ops/CONTROL_PLANE.md`
+- `ops/ERRORS.md`
+- `ops/SSOT.md`
+- `ops/NAMING.md`
+- `ops/DRIFT.md`
+- `ops/schema/VERSIONING_POLICY.md`
+- `ops/report/docs/inventory-contracts.md`
+- `ops/report/docs/migration-window.md`
+- `ops/report/docs/pin-lifecycle.md`
+- `ops/report/docs/ops-docs-update-workflow.md`
+- `ops/_generated.example/ops-index.json`
+- `ops/_generated.example/ops-evidence-bundle.json`
 
 ## Domains
 
@@ -28,7 +33,7 @@ Human entry for the ops specification surface.
 - `ops/report/`
 - `ops/_generated/`
 - `ops/_generated.example/`
-- Rename note: `ops/report/docs/observe-rename.md`
+- `ops/report/docs/observe-rename.md`
 
 ## Make Surface
 

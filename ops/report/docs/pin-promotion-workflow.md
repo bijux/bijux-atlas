@@ -7,7 +7,7 @@
 
 1. Edit candidate values in `ops/inventory/pins.yaml`.
 2. Run `bijux dev atlas ops doctor --format json`.
-3. Run `bijux dev atlas ops generate pins-index --format json --allow-write`.
+3. Run `bijux dev atlas ops pins update --format json --allow-write`.
 4. Review inventory drift and confirm image/dataset coverage.
 5. Commit pin updates and generated index evidence together.
 6. Promote release with immutable pins for that release line.

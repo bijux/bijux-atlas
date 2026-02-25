@@ -5,5 +5,5 @@
 
 Conformance checks validate readiness and core resource health after apply.
 
-- `bijux dev atlas ops k8s conformance`
-- `bijux dev atlas ops k8s wait`
+- `bijux dev atlas ops k8s check`
+- `bijux dev atlas ops k8s validate`

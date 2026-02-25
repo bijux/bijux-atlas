@@ -5,7 +5,7 @@
 
 ## Command
 
-- `bijux dev atlas ops install --profile <name> --allow-subprocess --allow-write --allow-network`
+- `bijux dev atlas ops deploy apply --profile <name> --allow-subprocess --allow-write --allow-network`
 
 ## Rules
 

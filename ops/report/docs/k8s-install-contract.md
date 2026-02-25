@@ -5,7 +5,7 @@
 
 ## Command
 
-- `bijux dev atlas ops k8s apply --profile <name> --apply --allow-subprocess --allow-write`
+- `bijux dev atlas ops k8s apply-config --profile <name> --allow-subprocess --allow-write`
 
 ## Rules
 

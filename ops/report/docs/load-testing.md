@@ -5,6 +5,6 @@
 
 Load suites are declared in SSOT manifests and executed via `ops load` commands.
 
-- Plan: `bijux dev atlas ops load plan --suite <name>`
+- Validate inputs: `bijux dev atlas ops load check --suite <name>`
 - Run: `bijux dev atlas ops load run --suite <name>`
-- Report: `bijux dev atlas ops load report --suite <name>`
+- Compare outcomes: `bijux dev atlas ops load compare --suite <name>`
