@@ -209,6 +209,10 @@ tags_any = ["fast"]
         "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
     );
     write(
+        &root.join("ops/schema/env/overlay.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
         &root.join("ops/schema/report/unified.schema.json"),
         "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
     );
@@ -218,7 +222,7 @@ tags_any = ["fast"]
     );
     write(
         &root.join("ops/schema/generated/schema-index.json"),
-        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
+        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/env/overlay.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
     );
     write(
         &root.join("ops/schema/generated/schema-index.md"),
@@ -232,6 +236,22 @@ tags_any = ["fast"]
     write(&root.join("ops/env/README.md"), "# Env\n");
     write(&root.join("ops/env/OWNER.md"), "# Owner\n");
     write(&root.join("ops/env/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/env/base/overlay.json"),
+        "{\"schema_version\":1,\"environment\":\"base\",\"values\":{\"namespace\":\"atlas-e2e\",\"cluster_profile\":\"kind\",\"allow_write\":false,\"allow_subprocess\":false,\"network_mode\":\"restricted\"}}\n",
+    );
+    write(
+        &root.join("ops/env/dev/overlay.json"),
+        "{\"schema_version\":1,\"environment\":\"dev\",\"values\":{\"allow_write\":true,\"allow_subprocess\":true,\"network_mode\":\"local\"}}\n",
+    );
+    write(
+        &root.join("ops/env/ci/overlay.json"),
+        "{\"schema_version\":1,\"environment\":\"ci\",\"values\":{\"allow_write\":false,\"allow_subprocess\":false,\"network_mode\":\"restricted\"}}\n",
+    );
+    write(
+        &root.join("ops/env/prod/overlay.json"),
+        "{\"schema_version\":1,\"environment\":\"prod\",\"values\":{\"allow_write\":false,\"allow_subprocess\":true,\"network_mode\":\"restricted\"}}\n",
+    );
     write(
         &root.join("ops/inventory/surfaces.json"),
         "{\"schema_version\":1,\"entrypoints\":[]}\n",

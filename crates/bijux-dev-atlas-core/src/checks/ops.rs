@@ -436,7 +436,124 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
             ));
         }
     }
+
+    let env_required = [
+        "ops/env/base/overlay.json",
+        "ops/env/dev/overlay.json",
+        "ops/env/ci/overlay.json",
+        "ops/env/prod/overlay.json",
+    ];
+    for path in env_required {
+        let rel = Path::new(path);
+        if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
+            violations.push(violation(
+                "OPS_ENV_OVERLAY_FILE_MISSING",
+                format!("missing required environment overlay file `{path}`"),
+                "add the required overlay.json file for each canonical environment",
+                Some(rel),
+            ));
+        }
+    }
+
+    for file in walk_files(&ctx.repo_root.join("ops/env")) {
+        let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
+        let rel_str = rel.display().to_string();
+        if rel_str.ends_with(".sh")
+            || rel_str.ends_with(".bash")
+            || rel_str.ends_with(".py")
+            || rel_str.ends_with(".rs")
+        {
+            violations.push(violation(
+                "OPS_ENV_RUNTIME_LOGIC_FORBIDDEN",
+                format!("runtime logic file is forbidden in ops/env: `{}`", rel.display()),
+                "keep ops/env overlays as pure data only",
+                Some(rel),
+            ));
+            continue;
+        }
+        if rel_str.ends_with(".json") {
+            let Ok(text) = fs::read_to_string(&file) else {
+                continue;
+            };
+            let Ok(value) = serde_json::from_str::<serde_json::Value>(&text) else {
+                violations.push(violation(
+                    "OPS_ENV_OVERLAY_INVALID_JSON",
+                    format!("overlay file is not valid JSON: `{}`", rel.display()),
+                    "fix JSON syntax in environment overlay file",
+                    Some(rel),
+                ));
+                continue;
+            };
+            if value.get("schema_version").is_none() {
+                violations.push(violation(
+                    "OPS_ENV_OVERLAY_SCHEMA_VERSION_MISSING",
+                    format!("overlay file missing schema_version: `{}`", rel.display()),
+                    "add schema_version field to overlay.json",
+                    Some(rel),
+                ));
+            }
+            if value.get("values").and_then(|v| v.as_object()).is_none() {
+                violations.push(violation(
+                    "OPS_ENV_OVERLAY_VALUES_MISSING",
+                    format!("overlay file missing object `values`: `{}`", rel.display()),
+                    "add values object to overlay.json",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+
+    if let Ok(merged) = merged_env_overlay(ctx.repo_root) {
+        for required in [
+            "namespace",
+            "cluster_profile",
+            "allow_write",
+            "allow_subprocess",
+            "network_mode",
+        ] {
+            if !merged.contains_key(required) {
+                violations.push(violation(
+                    "OPS_ENV_OVERLAY_MERGE_INCOMPLETE",
+                    format!("merged env overlay is missing required key `{required}`"),
+                    "ensure base and environment overlays provide required keys after merge",
+                    Some(Path::new("ops/env")),
+                ));
+            }
+        }
+    }
     Ok(violations)
+}
+
+fn merged_env_overlay(repo_root: &Path) -> Result<serde_json::Map<String, serde_json::Value>, String> {
+    let base = parse_overlay_values(repo_root, "ops/env/base/overlay.json")?;
+    let mut merged = base;
+    for rel in [
+        "ops/env/dev/overlay.json",
+        "ops/env/ci/overlay.json",
+        "ops/env/prod/overlay.json",
+    ] {
+        let current = parse_overlay_values(repo_root, rel)?;
+        for (key, value) in current {
+            merged.insert(key, value);
+        }
+    }
+    Ok(merged)
+}
+
+fn parse_overlay_values(
+    repo_root: &Path,
+    rel: &str,
+) -> Result<serde_json::Map<String, serde_json::Value>, String> {
+    let path = repo_root.join(rel);
+    let text = fs::read_to_string(&path)
+        .map_err(|err| format!("failed to read {}: {err}", path.display()))?;
+    let value = serde_json::from_str::<serde_json::Value>(&text)
+        .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    value
+        .get("values")
+        .and_then(|v| v.as_object())
+        .cloned()
+        .ok_or_else(|| format!("{rel}: missing `values` object"))
 }
 
 fn checks_ops_generated_readonly_markers(
@@ -495,6 +612,7 @@ fn checks_ops_schema_presence(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         "ops/schema/README.md",
         "ops/schema/inventory/pins.schema.json",
         "ops/schema/inventory/toolchain.schema.json",
+        "ops/schema/env/overlay.schema.json",
         "ops/schema/datasets/manifest.schema.json",
         "ops/schema/load/perf-baseline.schema.json",
         "ops/schema/meta/ownership.schema.json",
