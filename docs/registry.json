@@ -186,6 +186,22 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
+      "path": "configs/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
       "path": "configs/docs/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -194,6 +210,86 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/docs/config-diff.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "config-diff",
+        "configs"
+      ],
+      "topic": "config-diff"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/docs/configs-lifecycle.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "configs-lifecycle"
+      ],
+      "topic": "configs-lifecycle"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/docs/environment-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "environment-contract"
+      ],
+      "topic": "environment-contract"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/docs/schema-overview.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "schema-overview"
+      ],
+      "topic": "schema-overview"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/docs/schema-validation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "schema-validation"
+      ],
+      "topic": "schema-validation"
     },
     {
       "crate": null,
@@ -5033,6 +5129,23 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "docker-governance",
+      "path": "docker/contracts/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "docker",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "docker/contracts/README.md",
       "review_due": "2026-08-24",
@@ -5043,6 +5156,40 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docker-governance",
+      "path": "docker/contracts/image-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "docker",
+        "image-policy"
+      ],
+      "topic": "image-policy"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docker-governance",
+      "path": "docker/contracts/reproducibility.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "docker",
+        "reproducibility"
+      ],
+      "topic": "reproducibility"
     },
     {
       "crate": null,
@@ -11592,6 +11739,22 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "build-and-release",
+      "path": "makefiles/CI_LANES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ci-lanes",
+        "makefiles"
+      ],
+      "topic": "CI_LANES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "makefiles/CONTRACT.md",
       "review_due": "2026-08-24",
@@ -11625,6 +11788,22 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
+      "path": "makefiles/PHILOSOPHY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "makefiles",
+        "philosophy"
+      ],
+      "topic": "PHILOSOPHY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
       "path": "makefiles/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11633,6 +11812,22 @@
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "makefiles/TARGETS_REGISTRY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "makefiles",
+        "targets-registry"
+      ],
+      "topic": "TARGETS_REGISTRY"
     },
     {
       "crate": null,
@@ -11839,6 +12034,38 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/REFERENCE_INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "reference-index"
+      ],
+      "topic": "REFERENCE_INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/artifacts-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "artifacts-contract",
+        "ops"
+      ],
+      "topic": "artifacts-contract"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "ops/docs/config-compiler-contract.md",
       "review_due": "2026-08-24",
@@ -11864,6 +12091,70 @@
         "ops"
       ],
       "topic": "config-migration-cutoff"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/docs/cross-area-navigation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "cross-area-navigation",
+        "ops"
+      ],
+      "topic": "cross-area-navigation"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/deterministic-runs.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deterministic-runs",
+        "ops"
+      ],
+      "topic": "deterministic-runs"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/e2e-philosophy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e-philosophy",
+        "ops"
+      ],
+      "topic": "e2e-philosophy"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/failure-triage-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "failure-triage-guide",
+        "ops"
+      ],
+      "topic": "failure-triage-guide"
     },
     {
       "crate": null,
@@ -11903,6 +12194,22 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/k8s-conformance.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "k8s-conformance",
+        "ops"
+      ],
+      "topic": "k8s-conformance"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "ops/docs/layout-migration.md",
       "review_due": "2026-08-24",
@@ -11912,6 +12219,22 @@
         "ops"
       ],
       "topic": "layout-migration"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/load-testing.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "load-testing",
+        "ops"
+      ],
+      "topic": "load-testing"
     },
     {
       "crate": null,
@@ -11935,6 +12258,38 @@
       "doc_version": "v1",
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/observability-verification.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "observability-verification",
+        "ops"
+      ],
+      "topic": "observability-verification"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/offline-mode.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "offline-mode",
+        "ops"
+      ],
+      "topic": "offline-mode"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "ops/docs/ops-api-contract.md",
       "review_due": "2026-08-24",
@@ -11944,6 +12299,150 @@
         "ops-api-contract"
       ],
       "topic": "ops-api-contract"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/ops-diagrams.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "ops-diagrams"
+      ],
+      "topic": "ops-diagrams"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/ops-evidence-explanation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "ops-evidence-explanation"
+      ],
+      "topic": "ops-evidence-explanation"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/ops-glossary.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "ops-glossary"
+      ],
+      "topic": "ops-glossary"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/ops-safety-guarantees.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "ops-safety-guarantees"
+      ],
+      "topic": "ops-safety-guarantees"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/policy-relaxations.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "policy-relaxations"
+      ],
+      "topic": "policy-relaxations"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/render-pipeline.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "render-pipeline"
+      ],
+      "topic": "render-pipeline"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/stack-lifecycle.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "stack-lifecycle"
+      ],
+      "topic": "stack-lifecycle"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/toolchain-pins-explanation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "toolchain-pins-explanation"
+      ],
+      "topic": "toolchain-pins-explanation"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/docs/troubleshooting-runbook.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "troubleshooting-runbook"
+      ],
+      "topic": "troubleshooting-runbook"
     },
     {
       "crate": null,
