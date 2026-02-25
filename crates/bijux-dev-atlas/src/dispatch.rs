@@ -133,9 +133,7 @@ fn force_json_docs(command: &mut DocsCommand) {
         DocsCommand::Grep(args) => args.common.format = FormatArg::Json,
         DocsCommand::Registry { command } => match command {
             crate::cli::DocsRegistryCommand::Build(common)
-            | crate::cli::DocsRegistryCommand::Validate(common) => {
-                common.format = FormatArg::Json
-            }
+            | crate::cli::DocsRegistryCommand::Validate(common) => common.format = FormatArg::Json,
         },
     }
 }
