@@ -1461,6 +1461,318 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     Ok(violations)
 }
 
+pub(super) fn check_ops_fixture_governance(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+
+    let fixtures_root = ctx.repo_root.join("ops/datasets/fixtures");
+    if fixtures_root.exists() {
+        let allowed_root_docs = BTreeSet::from([
+            "ops/datasets/fixtures/README.md".to_string(),
+            "ops/datasets/fixtures/CONTRACT.md".to_string(),
+            "ops/datasets/fixtures/INDEX.md".to_string(),
+            "ops/datasets/fixtures/OWNER.md".to_string(),
+        ]);
+        for file in walk_files(&fixtures_root) {
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            let rel_str = rel.display().to_string();
+            if allowed_root_docs.contains(&rel_str) {
+                continue;
+            }
+            if is_binary_like_file(&file)? && !rel_str.contains("/assets/") {
+                violations.push(violation(
+                    "OPS_FIXTURE_BINARY_OUTSIDE_ASSETS",
+                    format!("binary fixture file must be under assets/: `{}`", rel.display()),
+                    "move binary fixture payloads under versioned assets/ directories",
+                    Some(rel),
+                ));
+            }
+        }
+
+        for entry in fs::read_dir(&fixtures_root).map_err(|err| CheckError::Failed(err.to_string()))? {
+            let entry = entry.map_err(|err| CheckError::Failed(err.to_string()))?;
+            let path = entry.path();
+            if !path.is_dir() {
+                continue;
+            }
+            let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
+                continue;
+            };
+            if name == "." || name == ".." {
+                continue;
+            }
+            let mut has_version_dir = false;
+            for child in fs::read_dir(&path).map_err(|err| CheckError::Failed(err.to_string()))? {
+                let child = child.map_err(|err| CheckError::Failed(err.to_string()))?;
+                let child_path = child.path();
+                let Some(child_name) = child_path.file_name().and_then(|v| v.to_str()) else {
+                    continue;
+                };
+                if child_path.is_dir() && child_name.starts_with('v') {
+                    has_version_dir = true;
+                } else if child_path.is_file() {
+                    let rel = child_path.strip_prefix(ctx.repo_root).unwrap_or(child_path.as_path());
+                    violations.push(violation(
+                        "OPS_FIXTURE_LOOSE_FILE_FORBIDDEN",
+                        format!(
+                            "fixture family `{name}` has loose file outside versioned subtree: `{}`",
+                            rel.display()
+                        ),
+                        "place fixture files under versioned directories like v1/",
+                        Some(rel),
+                    ));
+                }
+            }
+            if !has_version_dir {
+                let rel = path.strip_prefix(ctx.repo_root).unwrap_or(path.as_path());
+                violations.push(violation(
+                    "OPS_FIXTURE_VERSION_DIRECTORY_MISSING",
+                    format!("fixture family `{name}` must contain versioned directories (v1, v2, ...)"),
+                    "create versioned fixture subdirectory and move fixture payloads into it",
+                    Some(rel),
+                ));
+            }
+        }
+
+        for manifest in walk_files(&fixtures_root)
+            .into_iter()
+            .filter(|p| p.file_name().and_then(|v| v.to_str()) == Some("manifest.lock"))
+        {
+            let manifest_rel = manifest.strip_prefix(ctx.repo_root).unwrap_or(manifest.as_path());
+            let content = fs::read_to_string(&manifest)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let mut archive_name = None::<String>;
+            let mut sha256 = None::<String>;
+            for line in content.lines() {
+                if let Some(v) = line.strip_prefix("archive=") {
+                    archive_name = Some(v.trim().to_string());
+                }
+                if let Some(v) = line.strip_prefix("sha256=") {
+                    sha256 = Some(v.trim().to_string());
+                }
+            }
+            let Some(archive_name) = archive_name else {
+                violations.push(violation(
+                    "OPS_FIXTURE_MANIFEST_ARCHIVE_MISSING",
+                    format!("manifest lock missing archive= entry: `{}`", manifest_rel.display()),
+                    "add archive=<filename> to fixture manifest.lock",
+                    Some(manifest_rel),
+                ));
+                continue;
+            };
+            let Some(expected_sha) = sha256 else {
+                violations.push(violation(
+                    "OPS_FIXTURE_MANIFEST_SHA_MISSING",
+                    format!("manifest lock missing sha256= entry: `{}`", manifest_rel.display()),
+                    "add sha256=<digest> to fixture manifest.lock",
+                    Some(manifest_rel),
+                ));
+                continue;
+            };
+            let version_dir = manifest
+                .parent()
+                .ok_or_else(|| CheckError::Failed("manifest.lock parent not found".to_string()))?;
+            let tarball_path = version_dir.join("assets").join(&archive_name);
+            let tarball_rel = tarball_path
+                .strip_prefix(ctx.repo_root)
+                .unwrap_or(tarball_path.as_path());
+            if !tarball_path.exists() {
+                violations.push(violation(
+                    "OPS_FIXTURE_TARBALL_MISSING",
+                    format!(
+                        "fixture tarball declared by manifest.lock is missing: `{}`",
+                        tarball_rel.display()
+                    ),
+                    "restore tarball under versioned assets/ directory",
+                    Some(manifest_rel),
+                ));
+                continue;
+            }
+            let actual_sha = sha256_hex(&tarball_path)?;
+            if actual_sha != expected_sha {
+                violations.push(violation(
+                    "OPS_FIXTURE_TARBALL_HASH_MISMATCH",
+                    format!(
+                        "fixture tarball hash mismatch for `{}`: expected={} actual={}",
+                        tarball_rel.display(),
+                        expected_sha,
+                        actual_sha
+                    ),
+                    "refresh manifest.lock sha256 after tarball update",
+                    Some(manifest_rel),
+                ));
+            }
+
+            let src_dir = version_dir.join("src");
+            if !src_dir.exists() || !src_dir.is_dir() {
+                violations.push(violation(
+                    "OPS_FIXTURE_SRC_DIRECTORY_MISSING",
+                    format!(
+                        "fixture version missing src/ directory: `{}`",
+                        src_dir
+                            .strip_prefix(ctx.repo_root)
+                            .unwrap_or(src_dir.as_path())
+                            .display()
+                    ),
+                    "add src/ copies for fixture version inputs",
+                    Some(manifest_rel),
+                ));
+            }
+            let has_queries = walk_files(version_dir)
+                .iter()
+                .any(|p| p.file_name().and_then(|v| v.to_str()).is_some_and(|n| n.contains("queries")));
+            let has_responses = walk_files(version_dir)
+                .iter()
+                .any(|p| p.file_name().and_then(|v| v.to_str()).is_some_and(|n| n.contains("responses")));
+            if !has_queries || !has_responses {
+                violations.push(violation(
+                    "OPS_FIXTURE_GOLDENS_MISSING",
+                    format!(
+                        "fixture version must include query/response goldens: `{}`",
+                        version_dir
+                            .strip_prefix(ctx.repo_root)
+                            .unwrap_or(version_dir)
+                            .display()
+                    ),
+                    "add *queries*.json and *responses*.json goldens in fixture version",
+                    Some(manifest_rel),
+                ));
+            }
+        }
+    }
+
+    let e2e_fixture_root = ctx.repo_root.join("ops/e2e/fixtures");
+    let allowlist_rel = Path::new("ops/e2e/fixtures/allowlist.json");
+    let lock_rel = Path::new("ops/e2e/fixtures/fixtures.lock");
+    if e2e_fixture_root.exists() && ctx.adapters.fs.exists(ctx.repo_root, allowlist_rel) {
+        let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let allowlist_json: serde_json::Value = serde_json::from_str(&allowlist_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let allowed_paths = allowlist_json
+            .get("allowed_paths")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|i| i.as_str())
+                    .map(ToString::to_string)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+        let actual_fixture_paths = walk_files(&e2e_fixture_root)
+            .into_iter()
+            .filter_map(|p| p.strip_prefix(ctx.repo_root).ok().map(|r| r.display().to_string()))
+            .collect::<BTreeSet<_>>();
+        for path in &actual_fixture_paths {
+            if !allowed_paths.contains(path) {
+                violations.push(violation(
+                    "OPS_E2E_FIXTURE_ALLOWLIST_VIOLATION",
+                    format!("e2e fixture file not allowlisted: `{path}`"),
+                    "add fixture path to ops/e2e/fixtures/allowlist.json",
+                    Some(allowlist_rel),
+                ));
+            }
+        }
+        for path in &allowed_paths {
+            if !actual_fixture_paths.contains(path) {
+                violations.push(violation(
+                    "OPS_E2E_FIXTURE_ALLOWLIST_STALE_ENTRY",
+                    format!("allowlist references missing e2e fixture file: `{path}`"),
+                    "remove stale path from allowlist or restore file",
+                    Some(allowlist_rel),
+                ));
+            }
+        }
+
+        if ctx.adapters.fs.exists(ctx.repo_root, lock_rel) {
+            let lock_text = fs::read_to_string(ctx.repo_root.join(lock_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let lock_json: serde_json::Value = serde_json::from_str(&lock_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let expected = lock_json
+                .get("allowlist_sha256")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            let actual = sha256_hex(&ctx.repo_root.join(allowlist_rel))?;
+            if expected != actual {
+                violations.push(violation(
+                    "OPS_E2E_FIXTURE_LOCK_DRIFT",
+                    "fixtures.lock allowlist_sha256 does not match allowlist.json".to_string(),
+                    "update fixtures.lock allowlist_sha256 when allowlist changes",
+                    Some(lock_rel),
+                ));
+            }
+        }
+    }
+
+    let suites_rel = Path::new("ops/e2e/suites/suites.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, suites_rel) {
+        let suites_text = fs::read_to_string(ctx.repo_root.join(suites_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let suites_json: serde_json::Value = serde_json::from_str(&suites_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if let Some(suites) = suites_json.get("suites").and_then(|v| v.as_array()) {
+            for suite in suites {
+                let Some(id) = suite.get("id").and_then(|v| v.as_str()) else {
+                    continue;
+                };
+                let maybe_fixture = if id.starts_with("fixture-") {
+                    id.strip_prefix("fixture-")
+                } else if id.ends_with("-fixture") {
+                    id.strip_suffix("-fixture")
+                } else {
+                    None
+                };
+                if let Some(name) = maybe_fixture {
+                    let fixture_dir = Path::new("ops/datasets/fixtures").join(name);
+                    if !ctx.adapters.fs.exists(ctx.repo_root, &fixture_dir) {
+                        violations.push(violation(
+                            "OPS_E2E_FIXTURE_REFERENCE_MISSING",
+                            format!(
+                                "e2e suite `{id}` references missing fixture family `{}`",
+                                fixture_dir.display()
+                            ),
+                            "create fixture family directory or rename e2e suite id",
+                            Some(suites_rel),
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
+    let realdata_readme_rel = Path::new("ops/e2e/realdata/README.md");
+    if ctx.adapters.fs.exists(ctx.repo_root, realdata_readme_rel) {
+        let text = fs::read_to_string(ctx.repo_root.join(realdata_readme_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if !(text.to_lowercase().contains("example") && text.to_lowercase().contains("required")) {
+            violations.push(violation(
+                "OPS_E2E_REALDATA_SNAPSHOT_POLICY_MISSING",
+                "realdata README must distinguish example snapshots from required fixtures"
+                    .to_string(),
+                "document example vs required snapshot policy in ops/e2e/realdata/README.md",
+                Some(realdata_readme_rel),
+            ));
+        }
+    }
+
+    let fixture_inventory_rel = Path::new("ops/datasets/generated/fixture-inventory.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, fixture_inventory_rel) {
+        violations.push(violation(
+            "OPS_FIXTURE_INVENTORY_ARTIFACT_MISSING",
+            format!(
+                "missing fixture inventory generated artifact `{}`",
+                fixture_inventory_rel.display()
+            ),
+            "generate and commit ops/datasets/generated/fixture-inventory.json",
+            Some(fixture_inventory_rel),
+        ));
+    }
+
+    Ok(violations)
+}
+
 fn sha256_hex(path: &Path) -> Result<String, CheckError> {
     use sha2::{Digest, Sha256};
     let bytes = fs::read(path).map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -1468,6 +1780,23 @@ fn sha256_hex(path: &Path) -> Result<String, CheckError> {
     hasher.update(bytes);
     let digest = hasher.finalize();
     Ok(format!("{digest:x}"))
+}
+
+fn is_binary_like_file(path: &Path) -> Result<bool, CheckError> {
+    let ext = path
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or_default()
+        .to_ascii_lowercase();
+    let known_binary_ext = ["gz", "zip", "zst", "tar", "sqlite", "db", "bin", "png", "jpg", "jpeg"];
+    if known_binary_ext.contains(&ext.as_str()) {
+        return Ok(true);
+    }
+    let bytes = fs::read(path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    if bytes.contains(&0) {
+        return Ok(true);
+    }
+    Ok(std::str::from_utf8(&bytes).is_err())
 }
 
 fn parse_required_files_markdown_yaml(

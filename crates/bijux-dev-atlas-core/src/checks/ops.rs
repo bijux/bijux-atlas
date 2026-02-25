@@ -164,6 +164,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_inventory_contract_integrity" => Some(check_ops_inventory_contract_integrity),
         "checks_ops_docs_governance" => Some(check_ops_docs_governance),
         "checks_ops_evidence_bundle_discipline" => Some(check_ops_evidence_bundle_discipline),
+        "checks_ops_fixture_governance" => Some(check_ops_fixture_governance),
         "checks_crates_dev_atlas_final_crate_set_contract" => {
             Some(check_final_dev_atlas_crate_set_contract)
         }
@@ -255,6 +256,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_ops_inventory_contract_integrity",
         "checks_ops_docs_governance",
         "checks_ops_evidence_bundle_discipline",
+        "checks_ops_fixture_governance",
         "checks_crates_dev_atlas_final_crate_set_contract",
         "checks_docs_scripting_contract_rust_control_plane_lock",
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev",
