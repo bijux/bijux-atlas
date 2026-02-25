@@ -30,6 +30,7 @@ Final crate set (locked):
 - `docs/` and `mkdocs.yml` hold documentation SSOT structure.
 - Makefiles and workflows are wrappers and entrypoints only; they must delegate to `bijux dev atlas ...`.
 - `ops/` is data-only for repository-owned ops assets (yaml/json/toml/md/charts/k6 scripts); executable entrypoints must be provided by `bijux dev atlas`.
+- `ops/` must not contain `Makefile` files; make wrappers belong under `makefiles/*.mk`.
 - Helm charts may live under `ops/`, but rendering/apply flows are owned by `bijux dev atlas ops k8s ...` / `bijux dev atlas ops render ...`.
 - k6 scripts may live under `ops/`, but execution is owned by `bijux dev atlas ops load ...`.
 - Shell is not a repository entrypoint. If third-party shell assets remain, they must be treated as vendor/third_party assets and never invoked as in-tree control-plane entrypoints.

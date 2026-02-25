@@ -71,6 +71,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         }
         "checks_ops_no_executable_bit_files" => Some(check_ops_no_executable_bit_files),
         "checks_ops_no_behavior_source_files" => Some(check_ops_no_behavior_source_files),
+        "checks_ops_no_makefiles" => Some(check_ops_no_makefiles),
+        "checks_ops_no_direct_tool_invocations" => Some(check_ops_no_direct_tool_invocations),
         "checks_ops_quarantine_shim_expiration_contract" => {
             Some(check_ops_quarantine_shim_expiration_contract)
         }
@@ -212,6 +214,8 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_workflows_no_direct_docker_build_execution",
         "checks_ops_no_executable_bit_files",
         "checks_ops_no_behavior_source_files",
+        "checks_ops_no_makefiles",
+        "checks_ops_no_direct_tool_invocations",
         "checks_ops_quarantine_shim_expiration_contract",
         "checks_root_no_scripts_areas_presence_or_references",
         "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch",
