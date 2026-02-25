@@ -495,3 +495,22 @@ pub(super) fn check_ops_no_bash_lib_execution(
     Ok(violations)
 }
 
+pub(super) fn check_docs_removed_system_references_absent(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let needles = [
+        "atlasctl",
+        "packages/atlasctl",
+        "script migration",
+        "xtask migration",
+        "python era",
+        "new control plane",
+        "control-plane migration",
+    ];
+    check_no_any_string_references_under(
+        ctx,
+        "docs",
+        &needles,
+        "DOCS_REMOVED_SYSTEM_REFERENCE_FOUND",
+    )
+}
