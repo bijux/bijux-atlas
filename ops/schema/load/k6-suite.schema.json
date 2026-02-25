@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "query_set", "scenarios_dir", "suites"],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "query_set": { "type": "string", "minLength": 1 },
+    "scenarios_dir": { "type": "string", "minLength": 1 },
+    "suites": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "kind", "must_pass", "run_in", "thresholds"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "enum": ["k6", "script"] },
+          "scenario": { "type": "string" },
+          "runner": { "type": "string" },
+          "must_pass": { "type": "boolean" },
+          "run_in": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "thresholds": { "type": "object", "minProperties": 1 },
+          "expected_metrics": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}
