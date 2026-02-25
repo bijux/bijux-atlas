@@ -1,0 +1,2156 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops docs links-report --write-example",
+  "links": [
+    {
+      "doc": "docs/_generated/docs-inventory.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/CONTROL_PLANE.md",
+        "ops/DRIFT.md",
+        "ops/ERRORS.md",
+        "ops/INDEX.md",
+        "ops/NAMING.md",
+        "ops/README.md",
+        "ops/SSOT.md",
+        "ops/_generated.example/INDEX.example.md",
+        "ops/_generated.example/MIRROR_POLICY.md",
+        "ops/_generated.example/OWNER.md",
+        "ops/_generated.example/README.md",
+        "ops/_generated.example/REQUIRED_FILES.md",
+        "ops/_generated.example/control-plane.snapshot.md",
+        "ops/_generated/OWNER.md",
+        "ops/_generated/README.md",
+        "ops/_generated/REQUIRED_FILES.md",
+        "ops/datasets/CONTRACT.md",
+        "ops/datasets/INDEX.md",
+        "ops/datasets/OWNER.md",
+        "ops/datasets/README.md",
+        "ops/datasets/REQUIRED_FILES.md",
+        "ops/datasets/fixtures/CONTRACT.md",
+        "ops/datasets/fixtures/INDEX.md",
+        "ops/datasets/fixtures/OWNER.md",
+        "ops/datasets/fixtures/README.md",
+        "ops/e2e/CONTRACT.md",
+        "ops/e2e/INDEX.md",
+        "ops/e2e/OWNER.md",
+        "ops/e2e/README.md",
+        "ops/e2e/REQUIRED_FILES.md",
+        "ops/e2e/fixtures/README.md",
+        "ops/e2e/k6/README.md",
+        "ops/e2e/k8s/README.md",
+        "ops/e2e/realdata/README.md",
+        "ops/env/OWNER.md",
+        "ops/env/README.md",
+        "ops/env/REQUIRED_FILES.md",
+        "ops/inventory/OWNER.md",
+        "ops/inventory/README.md",
+        "ops/inventory/REQUIRED_FILES.md",
+        "ops/k8s/CONTRACT.md",
+        "ops/k8s/INDEX.md",
+        "ops/k8s/OWNER.md",
+        "ops/k8s/README.md",
+        "ops/k8s/REQUIRED_FILES.md",
+        "ops/k8s/charts/bijux-atlas/README.md",
+        "ops/k8s/generated/README.md",
+        "ops/k8s/tests/INDEX.md",
+        "ops/load/CONTRACT.md",
+        "ops/load/INDEX.md",
+        "ops/load/OWNER.md",
+        "ops/load/README.md",
+        "ops/load/REQUIRED_FILES.md",
+        "ops/load/baselines/README.md",
+        "ops/load/compose/README.md",
+        "ops/load/evaluations/POLICY.md",
+        "ops/load/generated/README.md",
+        "ops/load/k6/README.md",
+        "ops/load/k6/queries/INDEX.md",
+        "ops/observe/CONTRACT.md",
+        "ops/observe/INDEX.md",
+        "ops/observe/OWNER.md",
+        "ops/observe/README.md",
+        "ops/observe/REQUIRED_FILES.md",
+        "ops/observe/dashboards/README.md",
+        "ops/observe/drills/templates/incident-template.md",
+        "ops/observe/pack/README.md",
+        "ops/report/CONTRACT.md",
+        "ops/report/INDEX.md",
+        "ops/report/OWNER.md",
+        "ops/report/README.md",
+        "ops/report/REQUIRED_FILES.md",
+        "ops/report/docs/README.md",
+        "ops/report/docs/REFERENCE_INDEX.md",
+        "ops/schema/BUDGET_POLICY.md",
+        "ops/schema/OWNER.md",
+        "ops/schema/README.md",
+        "ops/schema/REQUIRED_FILES.md",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/schema/configs/INDEX.md",
+        "ops/schema/configs/README.md",
+        "ops/schema/generated/schema-index.md",
+        "ops/stack/CONTRACT.md",
+        "ops/stack/INDEX.md",
+        "ops/stack/OWNER.md",
+        "ops/stack/README.md",
+        "ops/stack/REQUIRED_FILES.md",
+        "ops/stack/dependencies.md",
+        "ops/stack/generated/README.md",
+        "ops/stack/kind/README.md"
+      ]
+    },
+    {
+      "doc": "docs/_generated/topic-index.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/CONTROL_PLANE.md",
+        "ops/DRIFT.md",
+        "ops/ERRORS.md",
+        "ops/INDEX.md",
+        "ops/NAMING.md",
+        "ops/README.md",
+        "ops/SSOT.md",
+        "ops/_generated.example/INDEX.example.md",
+        "ops/_generated.example/MIRROR_POLICY.md",
+        "ops/_generated.example/OWNER.md",
+        "ops/_generated.example/README.md",
+        "ops/_generated.example/REQUIRED_FILES.md",
+        "ops/_generated.example/control-plane.snapshot.md",
+        "ops/_generated/OWNER.md",
+        "ops/_generated/README.md",
+        "ops/_generated/REQUIRED_FILES.md",
+        "ops/datasets/CONTRACT.md",
+        "ops/datasets/INDEX.md",
+        "ops/datasets/OWNER.md",
+        "ops/datasets/README.md",
+        "ops/datasets/REQUIRED_FILES.md",
+        "ops/datasets/fixtures/CONTRACT.md",
+        "ops/datasets/fixtures/INDEX.md",
+        "ops/datasets/fixtures/OWNER.md",
+        "ops/datasets/fixtures/README.md",
+        "ops/e2e/CONTRACT.md",
+        "ops/e2e/INDEX.md",
+        "ops/e2e/OWNER.md",
+        "ops/e2e/README.md",
+        "ops/e2e/REQUIRED_FILES.md",
+        "ops/e2e/fixtures/README.md",
+        "ops/e2e/k6/README.md",
+        "ops/e2e/k8s/README.md",
+        "ops/e2e/realdata/README.md",
+        "ops/env/OWNER.md",
+        "ops/env/README.md",
+        "ops/env/REQUIRED_FILES.md",
+        "ops/inventory/OWNER.md",
+        "ops/inventory/README.md",
+        "ops/inventory/REQUIRED_FILES.md",
+        "ops/k8s/CONTRACT.md",
+        "ops/k8s/INDEX.md",
+        "ops/k8s/OWNER.md",
+        "ops/k8s/README.md",
+        "ops/k8s/REQUIRED_FILES.md",
+        "ops/k8s/charts/bijux-atlas/README.md",
+        "ops/k8s/generated/README.md",
+        "ops/k8s/tests/INDEX.md",
+        "ops/load/CONTRACT.md",
+        "ops/load/INDEX.md",
+        "ops/load/OWNER.md",
+        "ops/load/README.md",
+        "ops/load/REQUIRED_FILES.md",
+        "ops/load/baselines/README.md",
+        "ops/load/compose/README.md",
+        "ops/load/evaluations/POLICY.md",
+        "ops/load/generated/README.md",
+        "ops/load/k6/README.md",
+        "ops/load/k6/queries/INDEX.md",
+        "ops/observe/CONTRACT.md",
+        "ops/observe/INDEX.md",
+        "ops/observe/OWNER.md",
+        "ops/observe/README.md",
+        "ops/observe/REQUIRED_FILES.md",
+        "ops/observe/dashboards/README.md",
+        "ops/observe/drills/templates/incident-template.md",
+        "ops/observe/pack/README.md",
+        "ops/report/CONTRACT.md",
+        "ops/report/INDEX.md",
+        "ops/report/OWNER.md",
+        "ops/report/README.md",
+        "ops/report/REQUIRED_FILES.md",
+        "ops/report/docs/README.md",
+        "ops/report/docs/REFERENCE_INDEX.md",
+        "ops/schema/BUDGET_POLICY.md",
+        "ops/schema/OWNER.md",
+        "ops/schema/README.md",
+        "ops/schema/REQUIRED_FILES.md",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/schema/configs/INDEX.md",
+        "ops/schema/configs/README.md",
+        "ops/schema/generated/schema-index.md",
+        "ops/stack/CONTRACT.md",
+        "ops/stack/INDEX.md",
+        "ops/stack/OWNER.md",
+        "ops/stack/README.md",
+        "ops/stack/REQUIRED_FILES.md",
+        "ops/stack/dependencies.md",
+        "ops/stack/generated/README.md",
+        "ops/stack/kind/README.md"
+      ]
+    },
+    {
+      "doc": "docs/_lint/renames.md",
+      "ops_paths": [
+        "ops/datasets/fixtures/medium/v1/api-list-queries.v1.json",
+        "ops/datasets/fixtures/medium/v1/api-list-responses.v1.json",
+        "ops/load/evaluations/",
+        "ops/load/k6/mixed-80-20.js"
+      ]
+    },
+    {
+      "doc": "docs/architecture/layering/no-layer-fixups.md",
+      "ops_paths": [
+        "ops/e2e",
+        "ops/load",
+        "ops/observe"
+      ]
+    },
+    {
+      "doc": "docs/contracts/metrics.md",
+      "ops_paths": [
+        "ops/observe/contracts/metrics-contract.json"
+      ]
+    },
+    {
+      "doc": "docs/control-plane/ops-boundary.md",
+      "ops_paths": [
+        "ops/inventory/meta/",
+        "ops/schema/"
+      ]
+    },
+    {
+      "doc": "docs/development/add-dataset-type.md",
+      "ops_paths": [
+        "ops/datasets/fixtures/"
+      ]
+    },
+    {
+      "doc": "docs/development/makefiles/surface.md",
+      "ops_paths": [
+        "ops/schema/configs/public-surface.schema.json"
+      ]
+    },
+    {
+      "doc": "docs/development/ops-canonical-layout.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/_generated/",
+        "ops/datasets/",
+        "ops/e2e/",
+        "ops/inventory/meta/",
+        "ops/k8s/",
+        "ops/k8s/tests/",
+        "ops/load/",
+        "ops/observe/",
+        "ops/schema/",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "docs/development/reorg-plan.md",
+      "ops_paths": [
+        "ops/_generated",
+        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/report/unified.schema.json"
+      ]
+    },
+    {
+      "doc": "docs/development/symlinks.md",
+      "ops_paths": [
+        "ops/stack"
+      ]
+    },
+    {
+      "doc": "docs/development/tooling/dev-atlas-ops.md",
+      "ops_paths": [
+        "ops/"
+      ]
+    },
+    {
+      "doc": "docs/operations/INDEX.md",
+      "ops_paths": [
+        "ops/INDEX.md"
+      ]
+    },
+    {
+      "doc": "docs/operations/config.md",
+      "ops_paths": [
+        "ops/k8s/charts/bijux-atlas/templates/configmap.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/e2e/fixtures.md",
+      "ops_paths": [
+        "ops/e2e/fixtures/README.md"
+      ]
+    },
+    {
+      "doc": "docs/operations/e2e/k8s-tests.md",
+      "ops_paths": [
+        "ops/k8s/tests"
+      ]
+    },
+    {
+      "doc": "docs/operations/e2e/stack.md",
+      "ops_paths": [
+        "ops/inventory/toolchain.json",
+        "ops/k8s/values/local.yaml",
+        "ops/k8s/values/offline.yaml",
+        "ops/k8s/values/perf.yaml",
+        "ops/stack/",
+        "ops/stack/dependencies.md",
+        "ops/stack/kind/cluster.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/e2e/what-e2e-is-not.md",
+      "ops_paths": [
+        "ops/k8s/",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "docs/operations/evidence-policy.md",
+      "ops_paths": [
+        "ops/_generated.example/"
+      ]
+    },
+    {
+      "doc": "docs/operations/input-sources.md",
+      "ops_paths": [
+        "ops/datasets/fixtures/medium/v1/data/genes.gff3",
+        "ops/datasets/fixtures/medium/v1/data/genome.fa",
+        "ops/datasets/fixtures/medium/v1/data/genome.fa.fai"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/autoscaling-contract.md",
+      "ops_paths": [
+        "ops/k8s/tests"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/chart.md",
+      "ops_paths": [
+        "ops/k8s/charts/bijux-atlas",
+        "ops/k8s/charts/bijux-atlas/",
+        "ops/k8s/charts/bijux-atlas/values.schema.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/cluster-resource-profile.md",
+      "ops_paths": [
+        "ops/k8s/values/perf.yaml",
+        "ops/stack/kind/cluster.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/crd-dependency-policy.md",
+      "ops_paths": [
+        "ops/k8s/values/local.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/k8s-test-contract.md",
+      "ops_paths": [
+        "ops/k8s/tests/manifest.json",
+        "ops/k8s/tests/suites.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/node-local-shared-cache-profile.md",
+      "ops_paths": [
+        "ops/load/k6/suites/regional-spike-10x-60s.js",
+        "ops/load/k6/suites/warm-steady.js"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/packaging-and-ops.md",
+      "ops_paths": [
+        "ops/k8s/charts/bijux-atlas/",
+        "ops/load/k6/suites/regional-spike-10x-60s.js",
+        "ops/load/k6/suites/warm-steady.js"
+      ]
+    },
+    {
+      "doc": "docs/operations/k8s/when-layer-drift-fails.md",
+      "ops_paths": [
+        "ops/inventory/layers.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/INDEX.md",
+      "ops_paths": [
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/baseline-update-policy.md",
+      "ops_paths": [
+        "ops/load/baselines/"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/ci-policy.md",
+      "ops_paths": [
+        "ops/load/contracts/suite-schema.json",
+        "ops/load/suites/suites.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/k6.md",
+      "ops_paths": [
+        "ops/load/suites/suites.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/reproducibility.md",
+      "ops_paths": [
+        "ops/load/baselines/",
+        "ops/load/queries/pinned-v1.json",
+        "ops/load/queries/pinned-v1.lock",
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/result-contract.md",
+      "ops_paths": [
+        "ops/load/contracts/result-schema.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/runtime-policy.md",
+      "ops_paths": [
+        "ops/load/compose/"
+      ]
+    },
+    {
+      "doc": "docs/operations/load/suites.md",
+      "ops_paths": [
+        "ops/load/contracts/result-schema.json",
+        "ops/load/contracts/suite-schema.json",
+        "ops/load/evaluations/",
+        "ops/load/queries/pinned-v1.json",
+        "ops/load/queries/pinned-v1.lock",
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/acceptance-gates.md",
+      "ops_paths": [
+        "ops/observe/contracts/logs-fields-contract.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/alerts.md",
+      "ops_paths": [
+        "ops/observe/alerts/atlas-alert-rules.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/compatibility.md",
+      "ops_paths": [
+        "ops/observe/contracts/alerts-contract.json",
+        "ops/observe/contracts/dashboard-panels-contract.json",
+        "ops/observe/contracts/metrics-contract.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/drills.md",
+      "ops_paths": [
+        "ops/observe/drills/drills.json",
+        "ops/observe/drills/result.schema.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/metric-cardinality-guardrails.md",
+      "ops_paths": [
+        "ops/observe/contracts/metrics-contract.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/performance-baseline.md",
+      "ops_paths": [
+        "ops/load/k6/atlas_1000qps.js"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/runbook-dashboard-alert-map.md",
+      "ops_paths": [
+        "ops/observe/alerts/atlas-alert-rules.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/slo.md",
+      "ops_paths": [
+        "ops/observe/alerts/atlas-alert-rules.yaml",
+        "ops/observe/contracts/metrics-contract.json"
+      ]
+    },
+    {
+      "doc": "docs/operations/observability/trace-sampling-policy.md",
+      "ops_paths": [
+        "ops/observe/pack/otel/config.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/ops-layout.md",
+      "ops_paths": [
+        "ops/datasets/",
+        "ops/datasets/fixtures/",
+        "ops/e2e/",
+        "ops/k8s/",
+        "ops/load/",
+        "ops/observe/",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "docs/operations/retention-and-gc.md",
+      "ops_paths": [
+        "ops/inventory/pins.yaml"
+      ]
+    },
+    {
+      "doc": "docs/operations/runbooks/k8s-perf-chaos.md",
+      "ops_paths": [
+        "ops/load/k6/suites/warm-steady.js"
+      ]
+    },
+    {
+      "doc": "docs/operations/runbooks/load-failure-triage.md",
+      "ops_paths": [
+        "ops/load/baselines/"
+      ]
+    },
+    {
+      "doc": "docs/operations/runbooks/memory-profile-under-load.md",
+      "ops_paths": [
+        "ops/load/k6/atlas_1000qps.js"
+      ]
+    },
+    {
+      "doc": "docs/operations/runbooks/profile-under-load.md",
+      "ops_paths": [
+        "ops/load/k6/mixed-80-20.js"
+      ]
+    },
+    {
+      "doc": "docs/operations/unified-report.md",
+      "ops_paths": [
+        "ops/schema/report/unified.schema.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/INDEX.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "docs/ops/README.md",
+      "ops_paths": [
+        "ops/INDEX.md"
+      ]
+    },
+    {
+      "doc": "docs/ops/architecture.md",
+      "ops_paths": [
+        "ops/_generated.example/",
+        "ops/datasets/",
+        "ops/e2e/",
+        "ops/inventory/",
+        "ops/k8s/",
+        "ops/load/",
+        "ops/observe/",
+        "ops/schema/",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "docs/ops/config-compiler-contract.md",
+      "ops_paths": [
+        "ops/env/overlays/",
+        "ops/inventory/"
+      ]
+    },
+    {
+      "doc": "docs/ops/config-migration-cutoff.md",
+      "ops_paths": [
+        "ops/inventory/"
+      ]
+    },
+    {
+      "doc": "docs/ops/contracts.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/datasets/CONTRACT.md",
+        "ops/e2e/CONTRACT.md",
+        "ops/inventory/CONTRACT.md",
+        "ops/k8s/CONTRACT.md",
+        "ops/load/CONTRACT.md",
+        "ops/observe/CONTRACT.md",
+        "ops/report/CONTRACT.md",
+        "ops/schema/CONTRACT.md",
+        "ops/stack/CONTRACT.md"
+      ]
+    },
+    {
+      "doc": "docs/ops/cross-area-navigation.md",
+      "ops_paths": [
+        "ops/INDEX.md"
+      ]
+    },
+    {
+      "doc": "docs/ops/dataset-lifecycle-contract.md",
+      "ops_paths": [
+        "ops/datasets/",
+        "ops/datasets/fixture-policy.json",
+        "ops/datasets/generated/dataset-index.json",
+        "ops/datasets/generated/dataset-lineage.json",
+        "ops/datasets/manifest.json",
+        "ops/datasets/manifest.lock",
+        "ops/datasets/promotion-rules.json",
+        "ops/datasets/qc-metadata.json",
+        "ops/datasets/rollback-policy.json",
+        "ops/inventory/pins.yaml"
+      ]
+    },
+    {
+      "doc": "docs/ops/e2e-composition-contract.md",
+      "ops_paths": [
+        "ops/e2e/expectations/expectations.json",
+        "ops/e2e/fixtures/allowlist.json",
+        "ops/e2e/generated/coverage-matrix.json",
+        "ops/e2e/generated/e2e-summary.json",
+        "ops/e2e/reproducibility-policy.json",
+        "ops/e2e/scenarios/scenarios.json",
+        "ops/e2e/suites/suites.json",
+        "ops/e2e/taxonomy.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/environment-overlays.md",
+      "ops_paths": [
+        "ops/env/",
+        "ops/env/base/overlay.json",
+        "ops/env/ci/overlay.json",
+        "ops/env/dev/overlay.json",
+        "ops/env/prod/overlay.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/generated-committed-policy.md",
+      "ops_paths": [
+        "ops/_generated.example/",
+        "ops/_generated/",
+        "ops/inventory/generated-committed-mirror.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/how-ops-works.md",
+      "ops_paths": [
+        "ops/_generated.example/",
+        "ops/inventory/",
+        "ops/inventory/pin-freeze.json",
+        "ops/report/generated/",
+        "ops/schema/"
+      ]
+    },
+    {
+      "doc": "docs/ops/inventory-contracts.md",
+      "ops_paths": [
+        "ops/inventory/contracts.json",
+        "ops/inventory/contracts/",
+        "ops/inventory/layers.json",
+        "ops/inventory/owner-docs.fragments.json",
+        "ops/inventory/owners.json",
+        "ops/inventory/pins.yaml",
+        "ops/inventory/registry.toml",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/toolchain.json",
+        "ops/inventory/tools.toml",
+        "ops/schema/inventory/contracts.schema.json",
+        "ops/schema/inventory/layers.schema.json",
+        "ops/schema/inventory/owner-docs.fragments.schema.json",
+        "ops/schema/inventory/owners.schema.json",
+        "ops/schema/inventory/pins.schema.json",
+        "ops/schema/inventory/registry.schema.json",
+        "ops/schema/inventory/surfaces.schema.json",
+        "ops/schema/inventory/toolchain.schema.json",
+        "ops/schema/inventory/tools.schema.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/k8s-install-contract.md",
+      "ops_paths": [
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/"
+      ]
+    },
+    {
+      "doc": "docs/ops/layout-migration.md",
+      "ops_paths": [
+        "ops/_generated/"
+      ]
+    },
+    {
+      "doc": "docs/ops/migration-window.md",
+      "ops_paths": [
+        "ops/_generated.example/",
+        "ops/inventory/",
+        "ops/inventory/gc-pins.json",
+        "ops/inventory/meta/",
+        "ops/schema/",
+        "ops/stack/generated/version-manifest.json",
+        "ops/stack/generated/versions.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/observability-pack-definition.md",
+      "ops_paths": [
+        "ops/observe/alert-catalog.json",
+        "ops/observe/generated/telemetry-index.json",
+        "ops/observe/readiness.json",
+        "ops/observe/slo-definitions.json",
+        "ops/observe/telemetry-drills.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/observe-rename.md",
+      "ops_paths": [
+        "ops/observe/"
+      ]
+    },
+    {
+      "doc": "docs/ops/ops-api-contract.md",
+      "ops_paths": [
+        "ops/inventory/layers.json",
+        "ops/inventory/toolchain.json",
+        "ops/load/thresholds/"
+      ]
+    },
+    {
+      "doc": "docs/ops/ops-architecture.md",
+      "ops_paths": [
+        "ops/_generated.example",
+        "ops/inventory"
+      ]
+    },
+    {
+      "doc": "docs/ops/ops-docs-update-workflow.md",
+      "ops_paths": [
+        "ops/INDEX.md",
+        "ops/_generated.example/docs-drift-report.json",
+        "ops/inventory/surfaces.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/ops-gates-contract.md",
+      "ops_paths": [
+        "ops/inventory/gates.json",
+        "ops/inventory/surfaces.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/pin-promotion-workflow.md",
+      "ops_paths": [
+        "ops/inventory/pins.yaml"
+      ]
+    },
+    {
+      "doc": "docs/ops/schema-compatibility-policy.md",
+      "ops_paths": [
+        "ops/schema/"
+      ]
+    },
+    {
+      "doc": "docs/ops/stack-definition.md",
+      "ops_paths": [
+        "ops/inventory/pins.yaml",
+        "ops/inventory/toolchain.json",
+        "ops/stack/generated/artifact-metadata.json",
+        "ops/stack/generated/dependency-graph.json",
+        "ops/stack/generated/stack-index.json",
+        "ops/stack/generated/version-manifest.json",
+        "ops/stack/profiles.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/toolchain-pins-explanation.md",
+      "ops_paths": [
+        "ops/inventory/pins.yaml",
+        "ops/inventory/tools.toml"
+      ]
+    },
+    {
+      "doc": "docs/ops/unified-reporting-contract.md",
+      "ops_paths": [
+        "ops/report/evidence-levels.json",
+        "ops/report/examples/unified-report-example.json",
+        "ops/report/generated/historical-comparison.json",
+        "ops/report/generated/readiness-score.json",
+        "ops/report/generated/release-evidence-bundle.json",
+        "ops/report/generated/report-diff.json",
+        "ops/report/schema.json"
+      ]
+    },
+    {
+      "doc": "docs/ops/v0.1.0-ops-readiness-checklist.md",
+      "ops_paths": [
+        "ops/CONTROL_PLANE.md",
+        "ops/INDEX.md",
+        "ops/_generated.example/",
+        "ops/_generated.example/control-plane.snapshot.md",
+        "ops/_generated.example/fixture-drift-report.json",
+        "ops/_generated.example/ops-evidence-bundle.json",
+        "ops/_generated.example/scorecard.json",
+        "ops/datasets/generated/fixture-inventory.json",
+        "ops/inventory/pin-freeze.json"
+      ]
+    },
+    {
+      "doc": "docs/quickstart/local-cluster-setup.md",
+      "ops_paths": [
+        "ops/k8s/charts/bijux-atlas/"
+      ]
+    },
+    {
+      "doc": "docs/reference/fixtures/medium-fixture.md",
+      "ops_paths": [
+        "ops/datasets/fixtures/medium/v1/api-list-queries.v1.json",
+        "ops/datasets/fixtures/medium/v1/api-list-responses.v1.json"
+      ]
+    },
+    {
+      "doc": "docs/reference/store/fixtures-policy.md",
+      "ops_paths": [
+        "ops/datasets/fixtures/medium/v1/api-list-queries.v1.json",
+        "ops/datasets/fixtures/medium/v1/api-list-responses.v1.json",
+        "ops/datasets/fixtures/medium/v1/manifest.lock"
+      ]
+    },
+    {
+      "doc": "docs/root/OPS_OVERVIEW.md",
+      "ops_paths": [
+        "ops/INDEX.md"
+      ]
+    },
+    {
+      "doc": "docs/root/PERSONA_OPERATOR.md",
+      "ops_paths": [
+        "ops/INDEX.md"
+      ]
+    },
+    {
+      "doc": "ops/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/_generated.example/",
+        "ops/_generated/",
+        "ops/datasets/",
+        "ops/datasets/fixtures/",
+        "ops/datasets/generated/",
+        "ops/datasets/manifest.json",
+        "ops/datasets/promotion-rules.json",
+        "ops/datasets/qc-metadata.json",
+        "ops/datasets/real-datasets.json",
+        "ops/datasets/rollback-policy.json",
+        "ops/e2e/",
+        "ops/e2e/expectations/expectations.json",
+        "ops/e2e/generated/",
+        "ops/e2e/reproducibility-policy.json",
+        "ops/e2e/suites/suites.json",
+        "ops/e2e/taxonomy.json",
+        "ops/env/",
+        "ops/inventory/",
+        "ops/inventory/contracts-map.json",
+        "ops/inventory/drills.json",
+        "ops/inventory/gates.json",
+        "ops/inventory/owners.json",
+        "ops/inventory/pin-freeze.json",
+        "ops/inventory/pins.yaml",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/toolchain.json",
+        "ops/k8s/generated/",
+        "ops/load/",
+        "ops/load/generated/",
+        "ops/load/load.toml",
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json",
+        "ops/load/thresholds/",
+        "ops/observe/",
+        "ops/observe/alert-catalog.json",
+        "ops/observe/alerts/",
+        "ops/observe/generated/telemetry-index.json",
+        "ops/observe/slo-definitions.json",
+        "ops/observe/telemetry-drills.json",
+        "ops/report/",
+        "ops/report/generated/",
+        "ops/schema/",
+        "ops/schema/generated/compatibility-lock.json",
+        "ops/schema/generated/schema-index.json",
+        "ops/schema/generated/schema-index.md",
+        "ops/stack/generated/"
+      ]
+    },
+    {
+      "doc": "ops/CONTROL_PLANE.md",
+      "ops_paths": [
+        "ops/CONTROL_PLANE.md",
+        "ops/_generated.example/control-plane.snapshot.md"
+      ]
+    },
+    {
+      "doc": "ops/INDEX.md",
+      "ops_paths": [
+        "ops/INDEX.md",
+        "ops/_generated.example/",
+        "ops/_generated/",
+        "ops/datasets/",
+        "ops/e2e/",
+        "ops/env/",
+        "ops/inventory/",
+        "ops/k8s/",
+        "ops/load/",
+        "ops/observe/",
+        "ops/report/",
+        "ops/schema/",
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "ops/README.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/_generated.example/",
+        "ops/datasets/",
+        "ops/e2e/",
+        "ops/inventory/meta/",
+        "ops/inventory/pins.yaml",
+        "ops/inventory/toolchain.json",
+        "ops/k8s/",
+        "ops/load/",
+        "ops/observe/",
+        "ops/schema/",
+        "ops/stack/",
+        "ops/stack/generated/version-manifest.json",
+        "ops/stack/profiles.json"
+      ]
+    },
+    {
+      "doc": "ops/SSOT.md",
+      "ops_paths": [
+        "ops/_generated.example/",
+        "ops/_generated/",
+        "ops/datasets/",
+        "ops/e2e/",
+        "ops/env/",
+        "ops/inventory/",
+        "ops/k8s/",
+        "ops/load/",
+        "ops/observe/",
+        "ops/report/",
+        "ops/schema/",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "ops/_generated/README.md",
+      "ops_paths": [
+        "ops/_generated",
+        "ops/_generated.example/"
+      ]
+    },
+    {
+      "doc": "ops/_generated/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/_generated",
+        "ops/_generated/OWNER.md",
+        "ops/_generated/README.md",
+        "ops/_generated/REQUIRED_FILES.md"
+      ]
+    },
+    {
+      "doc": "ops/_generated.example/MIRROR_POLICY.md",
+      "ops_paths": [
+        "ops/_generated.example/",
+        "ops/_generated.example/ALLOWLIST.json",
+        "ops/_generated.example/contract-coverage-report.json",
+        "ops/_generated.example/control-plane-drift-report.json",
+        "ops/_generated.example/control-plane.snapshot.md",
+        "ops/_generated.example/docs-drift-report.json",
+        "ops/_generated.example/file-usage-report.json",
+        "ops/_generated.example/fixture-drift-report.json",
+        "ops/_generated.example/inventory-index.json",
+        "ops/_generated.example/ops-evidence-bundle.json",
+        "ops/_generated.example/ops-index.json",
+        "ops/_generated.example/pins.index.example.json",
+        "ops/_generated.example/placeholder-dirs-report.json",
+        "ops/_generated.example/schema-drift-report.json",
+        "ops/_generated.example/scorecard.json",
+        "ops/_generated/"
+      ]
+    },
+    {
+      "doc": "ops/_generated.example/README.md",
+      "ops_paths": [
+        "ops/_generated.example",
+        "ops/_generated.example/ALLOWLIST.json",
+        "ops/_generated.example/MIRROR_POLICY.md"
+      ]
+    },
+    {
+      "doc": "ops/_generated.example/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/_generated.example",
+        "ops/_generated.example/ALLOWLIST.json",
+        "ops/_generated.example/MIRROR_POLICY.md",
+        "ops/_generated.example/OWNER.md",
+        "ops/_generated.example/README.md",
+        "ops/_generated.example/REQUIRED_FILES.md",
+        "ops/_generated.example/contract-coverage-report.json",
+        "ops/_generated.example/control-plane-drift-report.json",
+        "ops/_generated.example/control-plane.snapshot.md",
+        "ops/_generated.example/docs-drift-report.json",
+        "ops/_generated.example/file-usage-report.json",
+        "ops/_generated.example/fixture-drift-report.json",
+        "ops/_generated.example/inventory-index.json",
+        "ops/_generated.example/ops-evidence-bundle.json",
+        "ops/_generated.example/ops-index.json",
+        "ops/_generated.example/pins.index.example.json",
+        "ops/_generated.example/placeholder-dirs-report.json",
+        "ops/_generated.example/schema-drift-report.json",
+        "ops/_generated.example/scorecard.json"
+      ]
+    },
+    {
+      "doc": "ops/_generated.example/control-plane.snapshot.md",
+      "ops_paths": [
+        "ops/CONTROL_PLANE.md",
+        "ops/_generated.example/control-plane.snapshot.md"
+      ]
+    },
+    {
+      "doc": "ops/datasets/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/datasets",
+        "ops/datasets/",
+        "ops/datasets/INDEX.md",
+        "ops/datasets/fixtures/",
+        "ops/datasets/generated/dataset-index.json",
+        "ops/datasets/generated/dataset-lineage.json",
+        "ops/datasets/generated/fixture-inventory.json",
+        "ops/datasets/manifest.json",
+        "ops/datasets/manifest.lock",
+        "ops/datasets/promotion-rules.json",
+        "ops/datasets/qc-metadata.json",
+        "ops/datasets/real-datasets.json",
+        "ops/datasets/rollback-policy.json",
+        "ops/schema/",
+        "ops/schema/datasets/dataset-index.schema.json",
+        "ops/schema/datasets/dataset-lineage.schema.json",
+        "ops/schema/datasets/fixture-inventory.schema.json",
+        "ops/schema/datasets/manifest-lock.schema.json",
+        "ops/schema/datasets/manifest.schema.json",
+        "ops/schema/datasets/promotion-rules.schema.json",
+        "ops/schema/datasets/qc-metadata.schema.json",
+        "ops/schema/datasets/rollback-policy.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/FIXTURE_LIFECYCLE.md",
+      "ops_paths": [
+        "ops/_generated.example/fixture-drift-report.json",
+        "ops/datasets/fixtures/",
+        "ops/datasets/generated/fixture-inventory.json",
+        "ops/e2e/fixtures/fixtures.lock"
+      ]
+    },
+    {
+      "doc": "ops/datasets/INDEX.md",
+      "ops_paths": [
+        "ops/datasets/CONTRACT.md",
+        "ops/datasets/FIXTURE_LIFECYCLE.md",
+        "ops/datasets/OWNER.md",
+        "ops/datasets/README.md",
+        "ops/datasets/REQUIRED_FILES.md",
+        "ops/datasets/fixture-policy.json",
+        "ops/datasets/generated/dataset-index.json",
+        "ops/datasets/generated/dataset-lineage.json",
+        "ops/datasets/manifest.json",
+        "ops/datasets/manifest.lock",
+        "ops/datasets/promotion-rules.json",
+        "ops/datasets/qc-metadata.json",
+        "ops/datasets/real-datasets.json",
+        "ops/datasets/rollback-policy.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/OWNER.md",
+      "ops_paths": [
+        "ops/datasets",
+        "ops/inventory/owners.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/README.md",
+      "ops_paths": [
+        "ops/datasets/CONTRACT.md",
+        "ops/datasets/fixture-policy.json",
+        "ops/datasets/generated/dataset-index.json",
+        "ops/datasets/generated/dataset-lineage.json",
+        "ops/datasets/manifest.lock",
+        "ops/datasets/promotion-rules.json",
+        "ops/datasets/qc-metadata.json",
+        "ops/datasets/rollback-policy.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/datasets/CONTRACT.md",
+        "ops/datasets/FIXTURE_LIFECYCLE.md",
+        "ops/datasets/INDEX.md",
+        "ops/datasets/OWNER.md",
+        "ops/datasets/README.md",
+        "ops/datasets/REQUIRED_FILES.md",
+        "ops/datasets/fixtures",
+        "ops/datasets/generated",
+        "ops/datasets/generated/fixture-inventory.json",
+        "ops/datasets/manifest.json",
+        "ops/datasets/manifest.lock",
+        "ops/datasets/promotion-rules.json",
+        "ops/datasets/qc-metadata.json",
+        "ops/datasets/real-datasets.json",
+        "ops/datasets/rollback-policy.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/fixtures/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/datasets/fixtures"
+      ]
+    },
+    {
+      "doc": "ops/datasets/fixtures/INDEX.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/inventory/owners.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/fixtures/OWNER.md",
+      "ops_paths": [
+        "ops/datasets/fixtures",
+        "ops/inventory/owners.json"
+      ]
+    },
+    {
+      "doc": "ops/datasets/fixtures/README.md",
+      "ops_paths": [
+        "ops/datasets/fixtures/CONTRACT.md"
+      ]
+    },
+    {
+      "doc": "ops/datasets/generated/README.md",
+      "ops_paths": [
+        "ops/datasets/generated"
+      ]
+    },
+    {
+      "doc": "ops/e2e/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/e2e",
+        "ops/e2e/INDEX.md",
+        "ops/e2e/expectations/expectations.json",
+        "ops/e2e/fixtures/allowlist.json",
+        "ops/e2e/generated/coverage-matrix.json",
+        "ops/e2e/generated/e2e-summary.json",
+        "ops/e2e/reproducibility-policy.json",
+        "ops/e2e/scenarios/scenarios.json",
+        "ops/e2e/suites/suites.json",
+        "ops/e2e/taxonomy.json",
+        "ops/schema/",
+        "ops/schema/e2e-scenarios.schema.json",
+        "ops/schema/e2e-suites.schema.json",
+        "ops/schema/e2e/coverage-matrix.schema.json",
+        "ops/schema/e2e/expectations.schema.json",
+        "ops/schema/e2e/fixture-allowlist.schema.json",
+        "ops/schema/e2e/reproducibility-policy.schema.json",
+        "ops/schema/e2e/summary.schema.json",
+        "ops/schema/e2e/taxonomy.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/e2e/INDEX.md",
+      "ops_paths": [
+        "ops/e2e/CONTRACT.md",
+        "ops/e2e/OWNER.md",
+        "ops/e2e/README.md",
+        "ops/e2e/REQUIRED_FILES.md",
+        "ops/e2e/expectations/expectations.json",
+        "ops/e2e/fixtures/allowlist.json",
+        "ops/e2e/generated/coverage-matrix.json",
+        "ops/e2e/generated/e2e-summary.json",
+        "ops/e2e/reproducibility-policy.json",
+        "ops/e2e/scenarios/scenarios.json",
+        "ops/e2e/suites/suites.json",
+        "ops/e2e/taxonomy.json"
+      ]
+    },
+    {
+      "doc": "ops/e2e/OWNER.md",
+      "ops_paths": [
+        "ops/e2e",
+        "ops/inventory/owners.json"
+      ]
+    },
+    {
+      "doc": "ops/e2e/README.md",
+      "ops_paths": [
+        "ops/e2e/CONTRACT.md",
+        "ops/e2e/datasets",
+        "ops/e2e/expectations",
+        "ops/e2e/expectations/expectations.json",
+        "ops/e2e/fixtures/allowlist.json",
+        "ops/e2e/generated/coverage-matrix.json",
+        "ops/e2e/generated/e2e-summary.json",
+        "ops/e2e/manifests",
+        "ops/e2e/reproducibility-policy.json",
+        "ops/e2e/scenarios/scenarios.json",
+        "ops/e2e/suites/suites.json",
+        "ops/e2e/taxonomy.json"
+      ]
+    },
+    {
+      "doc": "ops/e2e/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/e2e/CONTRACT.md",
+        "ops/e2e/INDEX.md",
+        "ops/e2e/OWNER.md",
+        "ops/e2e/README.md",
+        "ops/e2e/REQUIRED_FILES.md",
+        "ops/e2e/datasets",
+        "ops/e2e/expectations",
+        "ops/e2e/expectations/expectations.json",
+        "ops/e2e/fixtures/allowlist.json",
+        "ops/e2e/generated",
+        "ops/e2e/generated/e2e-summary.json",
+        "ops/e2e/manifests",
+        "ops/e2e/reproducibility-policy.json",
+        "ops/e2e/scenarios/scenarios.json",
+        "ops/e2e/suites/suites.json",
+        "ops/e2e/taxonomy.json"
+      ]
+    },
+    {
+      "doc": "ops/e2e/fixtures/README.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/e2e/generated/README.md",
+      "ops_paths": [
+        "ops/e2e/generated"
+      ]
+    },
+    {
+      "doc": "ops/e2e/k6/README.md",
+      "ops_paths": [
+        "ops/README.md",
+        "ops/load/scenarios/"
+      ]
+    },
+    {
+      "doc": "ops/e2e/k8s/README.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/e2e/realdata/README.md",
+      "ops_paths": [
+        "ops/README.md",
+        "ops/e2e/fixtures/allowlist.json",
+        "ops/e2e/fixtures/fixtures.lock",
+        "ops/e2e/realdata/snapshots/"
+      ]
+    },
+    {
+      "doc": "ops/env/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/env",
+        "ops/env/",
+        "ops/env/base/overlay.json",
+        "ops/env/ci/overlay.json",
+        "ops/env/dev/overlay.json",
+        "ops/env/prod/overlay.json",
+        "ops/schema/",
+        "ops/schema/env/overlay.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/env/README.md",
+      "ops_paths": [
+        "ops/env",
+        "ops/env/base",
+        "ops/env/base/",
+        "ops/env/ci",
+        "ops/env/ci/",
+        "ops/env/dev",
+        "ops/env/dev/",
+        "ops/env/overlays",
+        "ops/env/prod",
+        "ops/env/prod/"
+      ]
+    },
+    {
+      "doc": "ops/env/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/env/OWNER.md",
+        "ops/env/README.md",
+        "ops/env/REQUIRED_FILES.md",
+        "ops/env/base",
+        "ops/env/base/overlay.json",
+        "ops/env/ci",
+        "ops/env/ci/overlay.json",
+        "ops/env/dev",
+        "ops/env/dev/overlay.json",
+        "ops/env/overlays",
+        "ops/env/prod",
+        "ops/env/prod/overlay.json",
+        "ops/schema/env/overlay.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/inventory/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/inventory",
+        "ops/inventory/contracts-map.json",
+        "ops/inventory/contracts.json",
+        "ops/inventory/gates.json",
+        "ops/inventory/layers.json",
+        "ops/inventory/namespaces.json",
+        "ops/inventory/pin-freeze.json",
+        "ops/inventory/pins.yaml",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/toolchain.json",
+        "ops/schema/",
+        "ops/schema/inventory/contracts-map.schema.json",
+        "ops/schema/inventory/contracts.schema.json",
+        "ops/schema/inventory/gates.schema.json",
+        "ops/schema/inventory/layers.schema.json",
+        "ops/schema/inventory/namespaces.schema.json",
+        "ops/schema/inventory/pin-freeze.schema.json",
+        "ops/schema/inventory/pins.schema.json",
+        "ops/schema/inventory/surfaces.schema.json",
+        "ops/schema/inventory/toolchain.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/inventory/README.md",
+      "ops_paths": [
+        "ops/inventory",
+        "ops/inventory/contracts-map.json",
+        "ops/inventory/contracts.json",
+        "ops/inventory/drills.json",
+        "ops/inventory/gates.json",
+        "ops/inventory/gc-pins.json",
+        "ops/inventory/owners.json",
+        "ops/inventory/pin-freeze.json",
+        "ops/inventory/pins.yaml",
+        "ops/inventory/registry.toml",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/toolchain.json",
+        "ops/inventory/tools.toml"
+      ]
+    },
+    {
+      "doc": "ops/inventory/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/inventory/OWNER.md",
+        "ops/inventory/README.md",
+        "ops/inventory/REQUIRED_FILES.md",
+        "ops/inventory/contracts-map.json",
+        "ops/inventory/contracts.json",
+        "ops/inventory/drills.json",
+        "ops/inventory/gates.json",
+        "ops/inventory/generated-committed-mirror.json",
+        "ops/inventory/layers.json",
+        "ops/inventory/namespaces.json",
+        "ops/inventory/owners.json",
+        "ops/inventory/pin-freeze.json",
+        "ops/inventory/pins.yaml",
+        "ops/inventory/placeholder-dirs.json",
+        "ops/inventory/policies/dev-atlas-policy.json",
+        "ops/inventory/policies/dev-atlas-policy.schema.json",
+        "ops/inventory/surfaces.json",
+        "ops/inventory/toolchain.json"
+      ]
+    },
+    {
+      "doc": "ops/k8s/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/k8s",
+        "ops/k8s/INDEX.md",
+        "ops/k8s/charts/bijux-atlas/Chart.yaml",
+        "ops/k8s/charts/bijux-atlas/values.yaml",
+        "ops/k8s/generated/inventory-index.json",
+        "ops/k8s/generated/release-snapshot.json",
+        "ops/k8s/generated/render-artifact-index.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/tests/suites.json",
+        "ops/k8s/values/ci.yaml",
+        "ops/k8s/values/dev.yaml",
+        "ops/k8s/values/kind.yaml",
+        "ops/k8s/values/prod.yaml",
+        "ops/schema/",
+        "ops/schema/k8s/install-matrix.schema.json",
+        "ops/schema/k8s/inventory-index.schema.json",
+        "ops/schema/k8s/release-snapshot.schema.json",
+        "ops/schema/k8s/render-artifact-index.schema.json",
+        "ops/schema/k8s/suite-report.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/k8s/INDEX.md",
+      "ops_paths": [
+        "ops/k8s/CONTRACT.md",
+        "ops/k8s/OWNER.md",
+        "ops/k8s/README.md",
+        "ops/k8s/REQUIRED_FILES.md",
+        "ops/k8s/charts/bijux-atlas/Chart.yaml",
+        "ops/k8s/charts/bijux-atlas/values.yaml",
+        "ops/k8s/generated/inventory-index.json",
+        "ops/k8s/generated/release-snapshot.json",
+        "ops/k8s/generated/render-artifact-index.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/values/ci.yaml",
+        "ops/k8s/values/dev.yaml",
+        "ops/k8s/values/kind.yaml",
+        "ops/k8s/values/prod.yaml"
+      ]
+    },
+    {
+      "doc": "ops/k8s/OWNER.md",
+      "ops_paths": [
+        "ops/inventory/owners.json",
+        "ops/k8s"
+      ]
+    },
+    {
+      "doc": "ops/k8s/README.md",
+      "ops_paths": [
+        "ops/k8s/CONTRACT.md",
+        "ops/k8s/generated/inventory-index.json",
+        "ops/k8s/generated/release-snapshot.json",
+        "ops/k8s/generated/render-artifact-index.json",
+        "ops/k8s/tests/checks/perf",
+        "ops/schema/k8s/install-matrix.schema.json",
+        "ops/schema/k8s/inventory-index.schema.json",
+        "ops/schema/k8s/release-snapshot.schema.json",
+        "ops/schema/k8s/render-artifact-index.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/k8s/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/k8s/CONTRACT.md",
+        "ops/k8s/INDEX.md",
+        "ops/k8s/OWNER.md",
+        "ops/k8s/README.md",
+        "ops/k8s/REQUIRED_FILES.md",
+        "ops/k8s/generated",
+        "ops/k8s/generated/release-snapshot.json",
+        "ops/k8s/install-matrix.json",
+        "ops/k8s/tests/checks/perf",
+        "ops/k8s/tests/manifest.json",
+        "ops/k8s/tests/suites.json",
+        "ops/k8s/values/ci.yaml",
+        "ops/k8s/values/dev.yaml",
+        "ops/k8s/values/kind.yaml",
+        "ops/k8s/values/prod.yaml"
+      ]
+    },
+    {
+      "doc": "ops/k8s/charts/bijux-atlas/README.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/k8s/generated/README.md",
+      "ops_paths": [
+        "ops/k8s/generated"
+      ]
+    },
+    {
+      "doc": "ops/k8s/tests/INDEX.md",
+      "ops_paths": [
+        "ops/k8s/tests/manifest.json"
+      ]
+    },
+    {
+      "doc": "ops/load/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/load",
+        "ops/load/INDEX.md",
+        "ops/load/contracts/deterministic-seed-policy.json",
+        "ops/load/generated/load-drift-report.json",
+        "ops/load/generated/load-summary.json",
+        "ops/load/generated/suites.manifest.json",
+        "ops/load/k6/manifests/",
+        "ops/load/k6/suites/",
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json",
+        "ops/load/thresholds/",
+        "ops/schema/",
+        "ops/schema/load/deterministic-seed-policy.schema.json",
+        "ops/schema/load/load-drift-report.schema.json",
+        "ops/schema/load/load-summary.schema.json",
+        "ops/schema/load/suite-manifest.schema.json",
+        "ops/schema/load/thresholds.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/load/INDEX.md",
+      "ops_paths": [
+        "ops/load/CONTRACT.md",
+        "ops/load/OWNER.md",
+        "ops/load/README.md",
+        "ops/load/REQUIRED_FILES.md",
+        "ops/load/contracts/deterministic-seed-policy.json",
+        "ops/load/generated/load-drift-report.json",
+        "ops/load/generated/load-summary.json",
+        "ops/load/generated/suites.manifest.json",
+        "ops/load/k6/suites/",
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json",
+        "ops/load/thresholds/"
+      ]
+    },
+    {
+      "doc": "ops/load/OWNER.md",
+      "ops_paths": [
+        "ops/inventory/owners.json",
+        "ops/load"
+      ]
+    },
+    {
+      "doc": "ops/load/README.md",
+      "ops_paths": [
+        "ops/load/CONTRACT.md",
+        "ops/load/contracts/deterministic-seed-policy.json",
+        "ops/load/data",
+        "ops/load/generated/load-drift-report.json",
+        "ops/load/generated/load-summary.json",
+        "ops/load/generated/suites.manifest.json",
+        "ops/load/k6/manifests",
+        "ops/load/k6/suites/",
+        "ops/load/k6/thresholds",
+        "ops/load/scenarios/",
+        "ops/load/suites/suites.json",
+        "ops/load/thresholds",
+        "ops/load/thresholds/"
+      ]
+    },
+    {
+      "doc": "ops/load/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/load/CONTRACT.md",
+        "ops/load/INDEX.md",
+        "ops/load/OWNER.md",
+        "ops/load/README.md",
+        "ops/load/REQUIRED_FILES.md",
+        "ops/load/contracts/deterministic-seed-policy.json",
+        "ops/load/contracts/query-pack-catalog.json",
+        "ops/load/data",
+        "ops/load/generated",
+        "ops/load/generated/suites.manifest.json",
+        "ops/load/k6/manifests",
+        "ops/load/k6/suites",
+        "ops/load/k6/thresholds",
+        "ops/load/load.toml",
+        "ops/load/scenarios",
+        "ops/load/suites/suites.json",
+        "ops/load/thresholds"
+      ]
+    },
+    {
+      "doc": "ops/load/baselines/README.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/load/compose/README.md",
+      "ops_paths": [
+        "ops/README.md",
+        "ops/load/compose/",
+        "ops/observe/pack/compose",
+        "ops/observe/pack/compose/"
+      ]
+    },
+    {
+      "doc": "ops/load/evaluations/POLICY.md",
+      "ops_paths": [
+        "ops/load/evaluations/",
+        "ops/load/suites/suites.json"
+      ]
+    },
+    {
+      "doc": "ops/load/generated/README.md",
+      "ops_paths": [
+        "ops/load/scenarios/",
+        "ops/load/suites/",
+        "ops/load/thresholds/"
+      ]
+    },
+    {
+      "doc": "ops/load/k6/README.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/load/k6/queries/INDEX.md",
+      "ops_paths": [
+        "ops/load/queries/"
+      ]
+    },
+    {
+      "doc": "ops/observe/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/observe",
+        "ops/observe/",
+        "ops/observe/INDEX.md",
+        "ops/observe/alert-catalog.json",
+        "ops/observe/contracts/",
+        "ops/observe/generated/telemetry-index.json",
+        "ops/observe/readiness.json",
+        "ops/observe/slo-definitions.json",
+        "ops/observe/suites/",
+        "ops/observe/suites/suites.json",
+        "ops/observe/telemetry-drills.json",
+        "ops/schema/",
+        "ops/schema/observe/alert-catalog.schema.json",
+        "ops/schema/observe/readiness.schema.json",
+        "ops/schema/observe/slo-definitions.schema.json",
+        "ops/schema/observe/suites.schema.json",
+        "ops/schema/observe/telemetry-drills.schema.json",
+        "ops/schema/observe/telemetry-index.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/observe/INDEX.md",
+      "ops_paths": [
+        "ops/observe/CONTRACT.md",
+        "ops/observe/OWNER.md",
+        "ops/observe/README.md",
+        "ops/observe/REQUIRED_FILES.md",
+        "ops/observe/alert-catalog.json",
+        "ops/observe/generated/telemetry-index.json",
+        "ops/observe/readiness.json",
+        "ops/observe/slo-definitions.json",
+        "ops/observe/suites/suites.json",
+        "ops/observe/telemetry-drills.json"
+      ]
+    },
+    {
+      "doc": "ops/observe/README.md",
+      "ops_paths": [
+        "ops/observe",
+        "ops/observe/alert-catalog.json",
+        "ops/observe/alerts",
+        "ops/observe/dashboards",
+        "ops/observe/drills/templates/incident-template.md",
+        "ops/observe/generated/telemetry-index.json",
+        "ops/observe/otel",
+        "ops/observe/prom",
+        "ops/observe/readiness.json",
+        "ops/observe/rules",
+        "ops/observe/slo-definitions.json",
+        "ops/observe/telemetry-drills.json"
+      ]
+    },
+    {
+      "doc": "ops/observe/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/observe/CONTRACT.md",
+        "ops/observe/INDEX.md",
+        "ops/observe/OWNER.md",
+        "ops/observe/README.md",
+        "ops/observe/REQUIRED_FILES.md",
+        "ops/observe/alert-catalog.json",
+        "ops/observe/dashboards",
+        "ops/observe/drills",
+        "ops/observe/generated",
+        "ops/observe/generated/telemetry-index.json",
+        "ops/observe/otel",
+        "ops/observe/prom",
+        "ops/observe/readiness.json",
+        "ops/observe/rules",
+        "ops/observe/slo-definitions.json",
+        "ops/observe/telemetry-drills.json"
+      ]
+    },
+    {
+      "doc": "ops/observe/dashboards/README.md",
+      "ops_paths": [
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/observe/generated/README.md",
+      "ops_paths": [
+        "ops/observe/generated"
+      ]
+    },
+    {
+      "doc": "ops/observe/pack/README.md",
+      "ops_paths": [
+        "ops/README.md",
+        "ops/observe/pack/compose/docker-compose.yml",
+        "ops/stack/"
+      ]
+    },
+    {
+      "doc": "ops/report/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/report",
+        "ops/report/evidence-levels.json",
+        "ops/report/examples/unified-report-example.json",
+        "ops/report/generated/historical-comparison.json",
+        "ops/report/generated/readiness-score.json",
+        "ops/report/generated/release-evidence-bundle.json",
+        "ops/report/generated/report-diff.json",
+        "ops/report/schema.json",
+        "ops/schema/",
+        "ops/schema/report/evidence-levels.schema.json",
+        "ops/schema/report/historical-comparison.schema.json",
+        "ops/schema/report/readiness-score.schema.json",
+        "ops/schema/report/release-evidence-bundle.schema.json",
+        "ops/schema/report/report-diff.schema.json",
+        "ops/schema/report/schema.json"
+      ]
+    },
+    {
+      "doc": "ops/report/INDEX.md",
+      "ops_paths": [
+        "ops/INDEX.md",
+        "ops/report/CONTRACT.md",
+        "ops/report/OWNER.md",
+        "ops/report/README.md",
+        "ops/report/REQUIRED_FILES.md",
+        "ops/report/evidence-levels.json",
+        "ops/report/examples/unified-report-example.json",
+        "ops/report/generated/historical-comparison.json",
+        "ops/report/generated/readiness-score.json",
+        "ops/report/generated/release-evidence-bundle.json",
+        "ops/report/generated/report-diff.json",
+        "ops/report/schema.json"
+      ]
+    },
+    {
+      "doc": "ops/report/OWNER.md",
+      "ops_paths": [
+        "ops/inventory/owners.json",
+        "ops/report"
+      ]
+    },
+    {
+      "doc": "ops/report/README.md",
+      "ops_paths": [
+        "ops/INDEX.md",
+        "ops/report/docs/runbooks",
+        "ops/report/docs/troubleshooting",
+        "ops/report/evidence-levels.json",
+        "ops/report/examples/unified-report-example.json",
+        "ops/report/generated/historical-comparison.json",
+        "ops/report/generated/readiness-score.json",
+        "ops/report/generated/release-evidence-bundle.json",
+        "ops/report/generated/report-diff.json",
+        "ops/report/schema.json"
+      ]
+    },
+    {
+      "doc": "ops/report/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/INDEX.md",
+        "ops/report/CONTRACT.md",
+        "ops/report/INDEX.md",
+        "ops/report/OWNER.md",
+        "ops/report/README.md",
+        "ops/report/REQUIRED_FILES.md",
+        "ops/report/docs/runbooks",
+        "ops/report/docs/troubleshooting",
+        "ops/report/evidence-levels.json",
+        "ops/report/examples/unified-report-example.json",
+        "ops/report/generated",
+        "ops/report/generated/readiness-score.json",
+        "ops/report/schema.json"
+      ]
+    },
+    {
+      "doc": "ops/report/docs/README.md",
+      "ops_paths": [
+        "ops/INDEX.md"
+      ]
+    },
+    {
+      "doc": "ops/report/docs/REFERENCE_INDEX.md",
+      "ops_paths": [
+        "ops/INDEX.md",
+        "ops/README.md"
+      ]
+    },
+    {
+      "doc": "ops/report/generated/README.md",
+      "ops_paths": [
+        "ops/report/generated"
+      ]
+    },
+    {
+      "doc": "ops/schema/BUDGET_POLICY.md",
+      "ops_paths": [
+        "ops/schema/",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
+      ]
+    },
+    {
+      "doc": "ops/schema/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/INDEX.md",
+        "ops/schema",
+        "ops/schema/",
+        "ops/schema/BUDGET_POLICY.md",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/schema/generated/compatibility-lock.json",
+        "ops/schema/generated/schema-index.json",
+        "ops/schema/generated/schema-index.md"
+      ]
+    },
+    {
+      "doc": "ops/schema/README.md",
+      "ops_paths": [
+        "ops/schema",
+        "ops/schema/BUDGET_POLICY.md",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/schema/generated",
+        "ops/schema/generated/compatibility-lock.json",
+        "ops/schema/generated/schema-index.json",
+        "ops/schema/generated/schema-index.md",
+        "ops/schema/inventory"
+      ]
+    },
+    {
+      "doc": "ops/schema/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/schema",
+        "ops/schema/BUDGET_POLICY.md",
+        "ops/schema/OWNER.md",
+        "ops/schema/README.md",
+        "ops/schema/REQUIRED_FILES.md",
+        "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+        "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+        "ops/schema/VERSIONING_POLICY.md",
+        "ops/schema/configs",
+        "ops/schema/datasets",
+        "ops/schema/e2e",
+        "ops/schema/env",
+        "ops/schema/generated",
+        "ops/schema/generated/compatibility-lock.json",
+        "ops/schema/generated/schema-index.json",
+        "ops/schema/generated/schema-index.md",
+        "ops/schema/inventory",
+        "ops/schema/inventory/pins.schema.json",
+        "ops/schema/k8s",
+        "ops/schema/load",
+        "ops/schema/observe",
+        "ops/schema/report",
+        "ops/schema/stack"
+      ]
+    },
+    {
+      "doc": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+      "ops_paths": [
+        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/datasets/corruption-drill-report.schema.json",
+        "ops/schema/datasets/fixture-policy.schema.json",
+        "ops/schema/datasets/promotion-report.schema.json",
+        "ops/schema/datasets/qc-summary.schema.json",
+        "ops/schema/e2e-realdata-scenarios.schema.json",
+        "ops/schema/e2e-scenarios-unified.schema.json",
+        "ops/schema/inventory/contracts-map.schema.json",
+        "ops/schema/k8s/conformance-report.schema.json",
+        "ops/schema/load/k6-suite.schema.json",
+        "ops/schema/load/perf-baseline.schema.json",
+        "ops/schema/load/pinned-queries-lock.schema.json",
+        "ops/schema/load/query-pack-catalog.schema.json",
+        "ops/schema/meta/artifact-allowlist.schema.json",
+        "ops/schema/meta/budgets.schema.json",
+        "ops/schema/meta/inventory-index.schema.json",
+        "ops/schema/meta/namespaces.schema.json",
+        "ops/schema/meta/ops-index.schema.json",
+        "ops/schema/meta/ownership.schema.json",
+        "ops/schema/meta/pins.schema.json",
+        "ops/schema/meta/ports.schema.json",
+        "ops/schema/meta/required-files-contract.schema.json",
+        "ops/schema/meta/scorecard.schema.json",
+        "ops/schema/observe/budgets.schema.json",
+        "ops/schema/observe/drill-manifest.schema.json",
+        "ops/schema/report/lane.schema.json",
+        "ops/schema/report/stack-contract.schema.json",
+        "ops/schema/report/stack-health-report.schema.json",
+        "ops/schema/report/stack-ports-inventory.schema.json",
+        "ops/schema/report/unified.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/schema/VERSIONING_POLICY.md",
+      "ops_paths": [
+        "ops/inventory/policies/dev-atlas-policy.schema.json",
+        "ops/k8s/charts/bijux-atlas/values.schema.json",
+        "ops/observe/drills/result.schema.json",
+        "ops/observe/pack/compose.schema.json",
+        "ops/schema/",
+        "ops/schema/generated/compatibility-lock.json",
+        "ops/schema/generated/schema-index.json",
+        "ops/schema/generated/schema-index.md"
+      ]
+    },
+    {
+      "doc": "ops/schema/configs/INDEX.md",
+      "ops_paths": [
+        "ops/schema/configs/",
+        "ops/schema/configs/README.md"
+      ]
+    },
+    {
+      "doc": "ops/schema/generated/README.md",
+      "ops_paths": [
+        "ops/schema/generated"
+      ]
+    },
+    {
+      "doc": "ops/schema/generated/schema-index.md",
+      "ops_paths": [
+        "ops/schema/configs/public-surface.schema.json",
+        "ops/schema/datasets/corruption-drill-report.schema.json",
+        "ops/schema/datasets/dataset-index.schema.json",
+        "ops/schema/datasets/dataset-lineage.schema.json",
+        "ops/schema/datasets/fixture-inventory.schema.json",
+        "ops/schema/datasets/fixture-policy.schema.json",
+        "ops/schema/datasets/manifest-lock.schema.json",
+        "ops/schema/datasets/manifest.schema.json",
+        "ops/schema/datasets/promotion-report.schema.json",
+        "ops/schema/datasets/promotion-rules.schema.json",
+        "ops/schema/datasets/qc-metadata.schema.json",
+        "ops/schema/datasets/qc-summary.schema.json",
+        "ops/schema/datasets/rollback-policy.schema.json",
+        "ops/schema/e2e-realdata-scenarios.schema.json",
+        "ops/schema/e2e-scenarios-unified.schema.json",
+        "ops/schema/e2e-scenarios.schema.json",
+        "ops/schema/e2e-suites.schema.json",
+        "ops/schema/e2e/coverage-matrix.schema.json",
+        "ops/schema/e2e/expectations.schema.json",
+        "ops/schema/e2e/fixture-allowlist.schema.json",
+        "ops/schema/e2e/reproducibility-policy.schema.json",
+        "ops/schema/e2e/summary.schema.json",
+        "ops/schema/e2e/taxonomy.schema.json",
+        "ops/schema/env/overlay.schema.json",
+        "ops/schema/inventory/contracts-map.schema.json",
+        "ops/schema/inventory/contracts.schema.json",
+        "ops/schema/inventory/drills.schema.json",
+        "ops/schema/inventory/gates.schema.json",
+        "ops/schema/inventory/gc-pins.schema.json",
+        "ops/schema/inventory/generated-committed-mirror.schema.json",
+        "ops/schema/inventory/layers.schema.json",
+        "ops/schema/inventory/namespaces.schema.json",
+        "ops/schema/inventory/owner-docs.fragments.schema.json",
+        "ops/schema/inventory/owners.schema.json",
+        "ops/schema/inventory/pin-freeze.schema.json",
+        "ops/schema/inventory/pins.schema.json",
+        "ops/schema/inventory/placeholder-dirs.schema.json",
+        "ops/schema/inventory/registry.schema.json",
+        "ops/schema/inventory/surfaces.schema.json",
+        "ops/schema/inventory/toolchain.schema.json",
+        "ops/schema/inventory/tools.schema.json",
+        "ops/schema/k8s/conformance-report.schema.json",
+        "ops/schema/k8s/install-matrix.schema.json",
+        "ops/schema/k8s/inventory-index.schema.json",
+        "ops/schema/k8s/release-snapshot.schema.json",
+        "ops/schema/k8s/render-artifact-index.schema.json",
+        "ops/schema/k8s/suite-report.schema.json",
+        "ops/schema/load/deterministic-seed-policy.schema.json",
+        "ops/schema/load/k6-suite.schema.json",
+        "ops/schema/load/load-drift-report.schema.json",
+        "ops/schema/load/load-summary.schema.json",
+        "ops/schema/load/perf-baseline.schema.json",
+        "ops/schema/load/pinned-queries-lock.schema.json",
+        "ops/schema/load/query-pack-catalog.schema.json",
+        "ops/schema/load/suite-manifest.schema.json",
+        "ops/schema/load/thresholds.schema.json",
+        "ops/schema/meta/artifact-allowlist.schema.json",
+        "ops/schema/meta/budgets.schema.json",
+        "ops/schema/meta/inventory-index.schema.json",
+        "ops/schema/meta/layer-contract.schema.json",
+        "ops/schema/meta/namespaces.schema.json",
+        "ops/schema/meta/ops-index.schema.json",
+        "ops/schema/meta/ownership.schema.json",
+        "ops/schema/meta/pins.schema.json",
+        "ops/schema/meta/ports.schema.json",
+        "ops/schema/meta/required-files-contract.schema.json",
+        "ops/schema/meta/scorecard.schema.json",
+        "ops/schema/observe/alert-catalog.schema.json",
+        "ops/schema/observe/budgets.schema.json",
+        "ops/schema/observe/drill-manifest.schema.json",
+        "ops/schema/observe/readiness.schema.json",
+        "ops/schema/observe/slo-definitions.schema.json",
+        "ops/schema/observe/suites.schema.json",
+        "ops/schema/observe/telemetry-drills.schema.json",
+        "ops/schema/observe/telemetry-index.schema.json",
+        "ops/schema/report/evidence-levels.schema.json",
+        "ops/schema/report/historical-comparison.schema.json",
+        "ops/schema/report/lane.schema.json",
+        "ops/schema/report/readiness-score.schema.json",
+        "ops/schema/report/release-evidence-bundle.schema.json",
+        "ops/schema/report/report-diff.schema.json",
+        "ops/schema/report/stack-contract.schema.json",
+        "ops/schema/report/stack-health-report.schema.json",
+        "ops/schema/report/stack-ports-inventory.schema.json",
+        "ops/schema/report/unified.schema.json",
+        "ops/schema/stack/artifact-metadata.schema.json",
+        "ops/schema/stack/dependency-graph.schema.json",
+        "ops/schema/stack/profile-manifest.schema.json",
+        "ops/schema/stack/version-manifest.schema.json"
+      ]
+    },
+    {
+      "doc": "ops/stack/CONTRACT.md",
+      "ops_paths": [
+        "ops/CONTRACT.md",
+        "ops/inventory/pin-freeze.json",
+        "ops/inventory/pins.yaml",
+        "ops/schema/",
+        "ops/schema/inventory/pins.schema.json",
+        "ops/schema/stack/artifact-metadata.schema.json",
+        "ops/schema/stack/dependency-graph.schema.json",
+        "ops/schema/stack/profile-manifest.schema.json",
+        "ops/schema/stack/version-manifest.schema.json",
+        "ops/stack",
+        "ops/stack/INDEX.md",
+        "ops/stack/generated/artifact-metadata.json",
+        "ops/stack/generated/dependency-graph.json",
+        "ops/stack/generated/stack-index.json",
+        "ops/stack/generated/version-manifest.json",
+        "ops/stack/generated/versions.json",
+        "ops/stack/profiles.json",
+        "ops/stack/stack.toml"
+      ]
+    },
+    {
+      "doc": "ops/stack/INDEX.md",
+      "ops_paths": [
+        "ops/stack/CONTRACT.md",
+        "ops/stack/OWNER.md",
+        "ops/stack/README.md",
+        "ops/stack/REQUIRED_FILES.md",
+        "ops/stack/generated/artifact-metadata.json",
+        "ops/stack/generated/dependency-graph.json",
+        "ops/stack/generated/stack-index.json",
+        "ops/stack/generated/version-manifest.json",
+        "ops/stack/kind/cluster-dev.yaml",
+        "ops/stack/kind/cluster-perf.yaml",
+        "ops/stack/kind/cluster-small.yaml",
+        "ops/stack/profiles.json",
+        "ops/stack/stack.toml"
+      ]
+    },
+    {
+      "doc": "ops/stack/OWNER.md",
+      "ops_paths": [
+        "ops/inventory/owners.json",
+        "ops/stack"
+      ]
+    },
+    {
+      "doc": "ops/stack/README.md",
+      "ops_paths": [
+        "ops/inventory/pins.yaml",
+        "ops/inventory/toolchain.json",
+        "ops/stack/CONTRACT.md",
+        "ops/stack/generated/artifact-metadata.json",
+        "ops/stack/generated/dependency-graph.json",
+        "ops/stack/generated/stack-index.json",
+        "ops/stack/generated/version-manifest.json"
+      ]
+    },
+    {
+      "doc": "ops/stack/REQUIRED_FILES.md",
+      "ops_paths": [
+        "ops/stack/CONTRACT.md",
+        "ops/stack/INDEX.md",
+        "ops/stack/OWNER.md",
+        "ops/stack/README.md",
+        "ops/stack/REQUIRED_FILES.md",
+        "ops/stack/generated",
+        "ops/stack/generated/artifact-metadata.json",
+        "ops/stack/generated/dependency-graph.json",
+        "ops/stack/generated/stack-index.json",
+        "ops/stack/generated/version-manifest.json",
+        "ops/stack/generated/versions.json",
+        "ops/stack/profiles.json",
+        "ops/stack/stack.toml"
+      ]
+    },
+    {
+      "doc": "ops/stack/generated/README.md",
+      "ops_paths": [
+        "ops/stack/generated"
+      ]
+    },
+    {
+      "doc": "ops/stack/kind/README.md",
+      "ops_paths": [
+        "ops/README.md",
+        "ops/stack/kind/cluster.yaml"
+      ]
+    }
+  ]
+}

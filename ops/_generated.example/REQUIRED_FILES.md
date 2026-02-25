@@ -14,8 +14,15 @@ required_files:
   - ops/_generated.example/inventory-index.json
   - ops/_generated.example/control-plane.snapshot.md
   - ops/_generated.example/docs-drift-report.json
+  - ops/_generated.example/docs-links-report.json
   - ops/_generated.example/file-usage-report.json
+  - ops/_generated.example/generator-coverage-report.json
+  - ops/_generated.example/ops-ledger.json
+  - ops/_generated.example/ops-ledger.md
+  - ops/_generated.example/orphan-files-report.json
   - ops/_generated.example/placeholder-dirs-report.json
+  - ops/_generated.example/registry-graph.json
+  - ops/_generated.example/schema-coverage-report.json
   - ops/_generated.example/fixture-drift-report.json
   - ops/_generated.example/contract-coverage-report.json
   - ops/_generated.example/control-plane-drift-report.json

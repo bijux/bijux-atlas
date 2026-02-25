@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops generated coverage-report --write-example",
+  "status": "fail",
+  "missing_generated_by": [
+    "ops/_generated.example/docs-drift-report.json",
+    "ops/_generated.example/inventory-index.json",
+    "ops/_generated.example/ops-evidence-bundle.json",
+    "ops/_generated.example/ops-index.json",
+    "ops/_generated.example/pins.index.example.json",
+    "ops/_generated.example/report.example.json",
+    "ops/_generated.example/report.unified.example.json",
+    "ops/_generated.example/scorecard.json"
+  ]
+}

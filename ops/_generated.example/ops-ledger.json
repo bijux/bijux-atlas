@@ -1,0 +1,6573 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops inventory ledger --write-example",
+  "entries": [
+    {
+      "path": "ops/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "CONTRACT.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/CONTROL_PLANE.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "CONTROL_PLANE.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/DRIFT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "DRIFT.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/ERRORS.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "ERRORS.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "INDEX.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/NAMING.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "NAMING.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "README.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/SSOT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "SSOT.md",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "_generated",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/.gitkeep",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "placeholder"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/ALLOWLIST.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/INDEX.example.md",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/MIRROR_POLICY.md",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/OWNER.md",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/README.md",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/REQUIRED_FILES.md",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/contract-coverage-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/control-plane-drift-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/control-plane.snapshot.md",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/docs-drift-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/file-usage-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/fixture-drift-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/inventory-index.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/ops-evidence-bundle.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/ops-index.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/pins.index.example.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/placeholder-dirs-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/report.example.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/report.unified.example.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/schema-drift-report.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/_generated.example/scorecard.json",
+      "type": "curated_evidence",
+      "reasons": [
+        "curated_evidence",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "_generated.example",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/FIXTURE_LIFECYCLE.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixture-policy.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/api-list-queries.v1.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/api-list-responses.v1.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/assets/bijux-atlas-medium-fixture-v1.tar.gz",
+      "type": "asset",
+      "reasons": [
+        "binary_asset_exception"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/data/genes.gff3",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/data/genome.fa",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/data/genome.fa.fai",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/diff-queries.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/diff-responses.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/manifest.lock",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/src/genes.gff3",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/src/genome.fa",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/src/genome.fa.fai",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/transcript-queries.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/medium/v1/transcript-responses.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/assets/bijux-atlas-release-diff-v1.tar.gz",
+      "type": "asset",
+      "reasons": [
+        "binary_asset_exception"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/manifest.lock",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/release-diff-queries.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/release-diff-responses.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/src/release110_gene_summary.sqlite",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/src/release110_release_gene_index.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/src/release111_gene_summary.sqlite",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/src/release111_release_gene_index.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/store/release=110/species=homo_sapiens/assembly=GRCh38/assets/gene_summary.sqlite",
+      "type": "asset",
+      "reasons": [
+        "binary_asset_exception"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/store/release=110/species=homo_sapiens/assembly=GRCh38/derived/release_gene_index.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/store/release=111/species=homo_sapiens/assembly=GRCh38/assets/gene_summary.sqlite",
+      "type": "asset",
+      "reasons": [
+        "binary_asset_exception"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/fixtures/release-diff/v1/store/release=111/species=homo_sapiens/assembly=GRCh38/derived/release_gene_index.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/datasets/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/generated/dataset-index.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/generated/dataset-lineage.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/generated/fixture-inventory.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/manifest.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/manifest.lock",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/promotion-rules.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/qc-metadata.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/real-datasets.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/rollback-policy.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/datasets/tests/goldens/qc-summary.sample.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "datasets",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/datasets/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/expectations/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/expectations/expectations.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/fixtures/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/fixtures/allowlist.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/fixtures/fixtures.lock",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/generated/coverage-matrix.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/generated/e2e-summary.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/k6/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/k8s/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/manifests/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/manifests/smoke.manifest.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/realdata/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/realdata/canonical_queries.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/realdata/scenarios.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/realdata/snapshots/release110_snapshot.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/reproducibility-policy.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/scenarios/scenarios.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/smoke/goldens/status_codes.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/smoke/queries.lock",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/e2e/suites/suites.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/e2e/taxonomy.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "e2e",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/env/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/base/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/base/overlay.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/ci/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/ci/overlay.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/dev/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/dev/overlay.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/overlays/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/prod/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/env/prod/overlay.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "env",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/contracts/datasets.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/e2e.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/fixtures.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/k8s.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/load.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/observe.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/report.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts/stack.contract.fragment.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/contracts-map.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/contracts.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/drills.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/gates.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/gc-pins.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/generated-committed-mirror.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/layers.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/meta/error-registry.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/meta/layer-contract.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/inventory/namespaces.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/owner-docs.fragments.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/owners.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/pin-freeze.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/pins.yaml",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/placeholder-dirs.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/policies/dev-atlas-policy.schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/registry.toml",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/surfaces.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/toolchain.json",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/inventory/tools.toml",
+      "type": "authored",
+      "reasons": [
+        "registry_input",
+        "referenced_by_docs"
+      ],
+      "owner": "inventory",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/Chart.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/_helpers.tpl",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/catalog-publish-job.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/configmap.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/dataset-warmup-job.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/deployment.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/hpa.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/ingress.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/networkpolicy.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/pdb.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/prometheusrule.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/pvc.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/rollout.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/secret.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/service.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/templates/servicemonitor.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/values-offline.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/values.schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/charts/bijux-atlas/values.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/generated/inventory-index.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/generated/release-snapshot.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/generated/render-artifact-index.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/install-matrix.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/tests/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/tests/checks/perf/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/tests/goldens/k8s-conformance-report.sample.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/tests/goldens/render-kind.summary.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/tests/manifest.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/tests/ownership.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/tests/suites.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/ci.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/dev.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/ingress.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/values/kind.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/local.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/multi-registry.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/k8s/values/offline.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/perf.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/k8s/values/prod.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "k8s",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/baselines/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/baselines/ci-runner.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/baselines/local.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/compose/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/compose/docker-compose.perf.redis.yml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/compose/docker-compose.perf.yml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/contracts/deterministic-seed-policy.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/contracts/k6-thresholds.v1.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/contracts/query-pack-catalog.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/contracts/result-schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/contracts/suite-schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/data/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/evaluations/POLICY.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/generated/load-drift-report.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/generated/load-summary.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/generated/suites.manifest.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/atlas_1000qps.js",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/manifests/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/mixed-80-20.js",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/queries/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/suites/cache-stampede.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/diff-heavy.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/hpa-validation-short.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/mixed-80-20.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/mixed-gene-sequence.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/noisy-neighbor-cpu-throttle.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/regional-spike-10x-60s.js",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/suites/soak-30m.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/spike-overload-proof.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/store-outage-under-spike.js",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/k6/suites/warm-steady.js",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/k6/thresholds/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/load.toml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/queries/pinned-v1.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/queries/pinned-v1.lock",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/scenarios/catalog-federated.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/cheap-only-survival.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/cold-start.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/diff-heavy.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/hpa-validation-short.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/large-dataset-simulation.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/load-under-rollback.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/load-under-rollout.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/mixed-gene-sequence.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/mixed.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/multi-dataset-hotset.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/multi-release.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/noisy-neighbor-cpu-throttle.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/pod-churn.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/redis-optional.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/response-size-abuse.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/sharded-fanout.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/soak-30m.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/spike-overload-proof.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/spike.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/stampede.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/store-outage-under-spike.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/store-outage.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/scenarios/warm-steady-state-p99.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/suites/suites.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/thresholds/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/load/thresholds/cheap-only-survival.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/cold-start-p99.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/cold-start-prefetch-5pods.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/diff-heavy.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/hpa-validation-short.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/load-under-rollback.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/load-under-rollout.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/mixed-gene-sequence.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/mixed.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/multi-release.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/noisy-neighbor-cpu-throttle.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/pod-churn.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/redis-optional.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/response-size-abuse.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/sharded-fanout.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/soak-30m.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/spike-overload-proof.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/stampede.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/store-outage-under-spike.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/load/thresholds/warm-steady-state-p99.thresholds.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "load",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/alert-catalog.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/alerts/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/alerts/atlas-alert-rules.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/alerts/slo-burn-rules.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/alerts-contract.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/contracts/dashboard-panels-contract.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/contracts/endpoint-observability-contract.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/local/metrics.golden.prom",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/local/trace-structure.golden.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/offline/metrics.golden.prom",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/offline/trace-structure.golden.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/perf/metrics.golden.prom",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/perf/trace-structure.golden.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/goldens/profiles.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/logs-fields-contract.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/contracts/logs.example.jsonl",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/metrics-contract.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/contracts/metrics.golden.prom",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/overload-behavior-contract.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/contracts/trace-structure.golden.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/dashboards/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/dashboards/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/dashboards/atlas-observability-dashboard.golden.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/dashboards/atlas-observability-dashboard.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/drills/drills.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/drills/result.schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/drills/templates/incident-template.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/generated/telemetry-index.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/otel/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/pack/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/pack/compose/docker-compose.yml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/pack/compose/otel-collector.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/compose/ports.env",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/compose/prometheus.yml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/compose.schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/pack/k8s/grafana-config.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/grafana-pvc.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/grafana.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/namespace.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/otel.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/prometheus-config.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/prometheus-pvc.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/prometheus.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/k8s/rbac.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/pack/otel/config.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/prom/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/readiness.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/rules/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/rules/public-surface-coverage.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/observe/slo-definitions.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/suites/suites.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/telemetry-drills.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/observe/tests/suites.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "observe",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/report/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/docs/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/docs/REFERENCE_INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/docs/runbooks/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/docs/troubleshooting/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "placeholder"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/evidence-levels.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/examples/unified-report-example.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/generated/historical-comparison.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/generated/readiness-score.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/generated/release-evidence-bundle.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/generated/report-diff.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/report/schema.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "report",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "placeholder"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/BUDGET_POLICY.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/README.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/VERSIONING_POLICY.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/configs/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/configs/README.md",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/configs/public-surface.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/configs/public-surface.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/corruption-drill-report.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/corruption-drill-report.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/dataset-index.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/dataset-index.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/dataset-lineage.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/dataset-lineage.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/fixture-inventory.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/fixture-inventory.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/fixture-policy.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/fixture-policy.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/manifest-lock.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/manifest-lock.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/manifest.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/manifest.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/promotion-report.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/promotion-report.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/promotion-rules.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/promotion-rules.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/qc-metadata.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/qc-metadata.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/qc-summary.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/qc-summary.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/datasets/rollback-policy.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/datasets/rollback-policy.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e/coverage-matrix.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e/coverage-matrix.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e/expectations.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e/expectations.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e/fixture-allowlist.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e/fixture-allowlist.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e/reproducibility-policy.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e/reproducibility-policy.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e/summary.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e/summary.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e/taxonomy.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e/taxonomy.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e-realdata-scenarios.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e-realdata-scenarios.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e-scenarios-unified.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e-scenarios-unified.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e-scenarios.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e-scenarios.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/e2e-suites.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/e2e-suites.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/env/overlay.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/env/overlay.schema.json",
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/generated/.gitkeep",
+      "type": "generated",
+      "reasons": [
+        "schema",
+        "generated_output",
+        "placeholder"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "schema",
+        "generated_output"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/generated/compatibility-lock.json",
+      "type": "generated",
+      "reasons": [
+        "schema",
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/generated/compatibility-lock.json",
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/generated/schema-index.json",
+      "type": "generated",
+      "reasons": [
+        "schema",
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/generated/schema-index.json",
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/generated/schema-index.md",
+      "type": "generated",
+      "reasons": [
+        "schema",
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/.gitkeep",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "placeholder"
+      ],
+      "owner": "schema",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/contracts-map.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/contracts-map.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/contracts.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/contracts.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/drills.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/drills.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/gates.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/gates.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/gc-pins.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/gc-pins.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/generated-committed-mirror.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/generated-committed-mirror.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/layers.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/layers.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/namespaces.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/namespaces.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/owner-docs.fragments.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/owner-docs.fragments.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/owners.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/owners.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/pin-freeze.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/pin-freeze.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/pins.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/pins.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/placeholder-dirs.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/placeholder-dirs.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/registry.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/registry.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/surfaces.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/surfaces.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/toolchain.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/toolchain.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/inventory/tools.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/inventory/tools.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/k8s/conformance-report.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/k8s/conformance-report.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/k8s/install-matrix.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/k8s/install-matrix.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/k8s/inventory-index.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/k8s/inventory-index.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/k8s/release-snapshot.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/k8s/release-snapshot.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/k8s/render-artifact-index.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/k8s/render-artifact-index.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/k8s/suite-report.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/k8s/suite-report.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/deterministic-seed-policy.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/deterministic-seed-policy.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/k6-suite.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/k6-suite.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/load-drift-report.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/load-drift-report.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/load-summary.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/load-summary.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/perf-baseline.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/perf-baseline.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/pinned-queries-lock.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/pinned-queries-lock.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/query-pack-catalog.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/query-pack-catalog.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/suite-manifest.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/suite-manifest.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/load/thresholds.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/load/thresholds.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/artifact-allowlist.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/artifact-allowlist.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/budgets.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/budgets.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/inventory-index.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/inventory-index.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/layer-contract.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/layer-contract.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/namespaces.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/namespaces.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/ops-index.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/ops-index.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/ownership.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/ownership.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/pins.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/pins.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/ports.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/ports.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/required-files-contract.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/required-files-contract.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/meta/scorecard.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/meta/scorecard.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/alert-catalog.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/alert-catalog.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/budgets.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/budgets.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/drill-manifest.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/drill-manifest.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/readiness.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/readiness.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/slo-definitions.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/slo-definitions.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/suites.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/suites.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/telemetry-drills.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/telemetry-drills.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/observe/telemetry-index.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/observe/telemetry-index.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/evidence-levels.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/evidence-levels.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/historical-comparison.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/historical-comparison.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/lane.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/lane.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/readiness-score.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/readiness-score.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/release-evidence-bundle.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/release-evidence-bundle.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/report-diff.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/report-diff.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/stack-contract.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/stack-contract.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/stack-health-report.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/stack-health-report.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/stack-ports-inventory.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/stack-ports-inventory.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/report/unified.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/report/unified.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/stack/artifact-metadata.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/stack/artifact-metadata.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/stack/dependency-graph.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/stack/dependency-graph.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/stack/profile-manifest.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/stack/profile-manifest.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/schema/stack/version-manifest.schema.json",
+      "type": "authored",
+      "reasons": [
+        "schema",
+        "referenced_by_docs"
+      ],
+      "owner": "schema",
+      "schema_ref": "ops/schema/stack/version-manifest.schema.json",
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/CONTRACT.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/INDEX.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/OWNER.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/REQUIRED_FILES.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/dependencies.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/generated/README.md",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/generated/artifact-metadata.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/generated/dependency-graph.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/generated/stack-index.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/generated/version-manifest.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/generated/versions.json",
+      "type": "generated",
+      "reasons": [
+        "generated_output",
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": "bijux dev atlas ops generate",
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/grafana/grafana.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/kind/README.md",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/kind/cluster-dev.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/kind/cluster-perf.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/kind/cluster-small.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/kind/cluster.yaml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/minio/minio.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/otel/otel-collector.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/profiles.json",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/prometheus/prometheus.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/redis/redis.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/stack.toml",
+      "type": "authored",
+      "reasons": [
+        "referenced_by_docs",
+        "referenced_by_required_files"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [
+        "REQUIRED_FILES.md"
+      ],
+      "deletion_allowed": false
+    },
+    {
+      "path": "ops/stack/tests/goldens/stack-health-report.sample.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/tests/goldens/stack-ports-inventory.sample.json",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    },
+    {
+      "path": "ops/stack/toxiproxy/toxiproxy.yaml",
+      "type": "authored",
+      "reasons": [
+        "orphan"
+      ],
+      "owner": "stack",
+      "schema_ref": null,
+      "generator_ref": null,
+      "required_by": [],
+      "deletion_allowed": true
+    }
+  ]
+}
