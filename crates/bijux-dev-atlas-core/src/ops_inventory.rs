@@ -19,6 +19,8 @@ const OPS_SURFACES_PATH: &str = "ops/inventory/surfaces.json";
 const OPS_MIRROR_POLICY_PATH: &str = "ops/inventory/generated-committed-mirror.json";
 const OPS_CONTRACTS_PATH: &str = "ops/inventory/contracts.json";
 const OPS_DATASETS_MANIFEST_PATH: &str = "ops/datasets/manifest.json";
+const OPS_K8S_INSTALL_MATRIX_PATH: &str = "ops/k8s/install-matrix.json";
+const OPS_K8S_CHART_PATH: &str = "ops/k8s/charts/bijux-atlas/Chart.yaml";
 
 const EXPECTED_TOOLCHAIN_SCHEMA: u64 = 1;
 const EXPECTED_SURFACES_SCHEMA: u64 = 2;
@@ -156,6 +158,19 @@ struct DatasetEntry {
     pub id: String,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct K8sInstallMatrix {
+    pub schema_version: u64,
+    pub profiles: Vec<K8sInstallProfile>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct K8sInstallProfile {
+    pub name: String,
+    pub values_file: String,
+    pub suite: String,
+}
+
 fn load_json<T: for<'de> Deserialize<'de>>(repo_root: &Path, rel: &str) -> Result<T, String> {
     let path = repo_root.join(rel);
     let text = fs::read_to_string(&path)
@@ -230,6 +245,8 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_SURFACES_PATH,
         OPS_MIRROR_POLICY_PATH,
         OPS_CONTRACTS_PATH,
+        OPS_K8S_INSTALL_MATRIX_PATH,
+        OPS_K8S_CHART_PATH,
     ] {
         let path = repo_root.join(rel);
         if !path.exists() {
@@ -238,6 +255,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
     }
 
     let inventory = match load_ops_inventory(repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let k8s_install_matrix = match load_json::<K8sInstallMatrix>(repo_root, OPS_K8S_INSTALL_MATRIX_PATH)
+    {
         Ok(value) => value,
         Err(err) => {
             errors.push(err);
@@ -430,6 +455,72 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         {
             errors.push(format!(
                 "pin value drift: `{name}` differs between {OPS_PINS_PATH} and {OPS_STACK_VERSION_MANIFEST_PATH}"
+            ));
+        }
+    }
+    if k8s_install_matrix.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_K8S_INSTALL_MATRIX_PATH}: expected schema_version=1, got {}",
+            k8s_install_matrix.schema_version
+        ));
+    }
+    if k8s_install_matrix.profiles.is_empty() {
+        errors.push(format!(
+            "{OPS_K8S_INSTALL_MATRIX_PATH}: profiles must not be empty"
+        ));
+    }
+    let names = k8s_install_matrix
+        .profiles
+        .iter()
+        .map(|profile| profile.name.clone())
+        .collect::<Vec<_>>();
+    let mut sorted_names = names.clone();
+    sorted_names.sort();
+    sorted_names.dedup();
+    if sorted_names != names {
+        errors.push(format!(
+            "{OPS_K8S_INSTALL_MATRIX_PATH}: profile names must be unique and lexicographically sorted"
+        ));
+    }
+    for required in ["kind", "dev", "ci", "prod"] {
+        if !k8s_install_matrix
+            .profiles
+            .iter()
+            .any(|profile| profile.name == required)
+        {
+            errors.push(format!(
+                "{OPS_K8S_INSTALL_MATRIX_PATH}: missing required install profile `{required}`"
+            ));
+        }
+    }
+    for profile in &k8s_install_matrix.profiles {
+        if !repo_root.join(&profile.values_file).exists() {
+            errors.push(format!(
+                "{OPS_K8S_INSTALL_MATRIX_PATH}: profile `{}` references missing values file `{}`",
+                profile.name, profile.values_file
+            ));
+        }
+        if !matches!(profile.suite.as_str(), "install-gate" | "k8s-suite" | "nightly") {
+            errors.push(format!(
+                "{OPS_K8S_INSTALL_MATRIX_PATH}: profile `{}` uses unsupported suite `{}`",
+                profile.name, profile.suite
+            ));
+        }
+    }
+    for rel in [
+        "ops/k8s/generated/inventory-index.json",
+        "ops/k8s/generated/render-artifact-index.json",
+        "ops/k8s/generated/release-snapshot.json",
+    ] {
+        if !repo_root.join(rel).exists() {
+            errors.push(format!("missing required k8s generated artifact `{rel}`"));
+        }
+    }
+    if let Ok(chart_yaml) = fs::read_to_string(repo_root.join(OPS_K8S_CHART_PATH)) {
+        if chart_yaml.contains("version: latest") || chart_yaml.contains("appVersion: \"latest\"")
+        {
+            errors.push(format!(
+                "{OPS_K8S_CHART_PATH}: chart version and appVersion must be pinned and cannot be latest"
             ));
         }
     }
