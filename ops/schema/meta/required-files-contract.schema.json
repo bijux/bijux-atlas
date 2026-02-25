@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Required Files Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["required_files", "required_dirs", "forbidden_patterns", "notes"],
+  "properties": {
+    "required_files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^ops/.+"
+      }
+    },
+    "required_dirs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ops/.+"
+      }
+    },
+    "forbidden_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

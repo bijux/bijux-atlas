@@ -1,10 +1,8 @@
-# Ops Schema Index
+# Schema Index
 
-- Generated from `ops/schema/`
-- Source of truth for schema drift checks
-
-| Schema Path |
-|---|
+| Path |
+| --- |
+| `ops/schema/configs/public-surface.schema.json` |
 | `ops/schema/datasets/corruption-drill-report.schema.json` |
 | `ops/schema/datasets/dataset-index.schema.json` |
 | `ops/schema/datasets/dataset-lineage.schema.json` |
@@ -60,11 +58,15 @@
 | `ops/schema/load/thresholds.schema.json` |
 | `ops/schema/meta/artifact-allowlist.schema.json` |
 | `ops/schema/meta/budgets.schema.json` |
+| `ops/schema/meta/inventory-index.schema.json` |
 | `ops/schema/meta/layer-contract.schema.json` |
 | `ops/schema/meta/namespaces.schema.json` |
+| `ops/schema/meta/ops-index.schema.json` |
 | `ops/schema/meta/ownership.schema.json` |
 | `ops/schema/meta/pins.schema.json` |
 | `ops/schema/meta/ports.schema.json` |
+| `ops/schema/meta/required-files-contract.schema.json` |
+| `ops/schema/meta/scorecard.schema.json` |
 | `ops/schema/observe/alert-catalog.schema.json` |
 | `ops/schema/observe/budgets.schema.json` |
 | `ops/schema/observe/drill-manifest.schema.json` |

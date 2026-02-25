@@ -69,6 +69,46 @@
       ]
     },
     {
+      "schema_path": "ops/schema/meta/inventory-index.schema.json",
+      "required_fields": [
+        "schema_version",
+        "generated_from",
+        "generated_by",
+        "items"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/meta/ops-index.schema.json",
+      "required_fields": [
+        "schema_version",
+        "generated_by",
+        "domains",
+        "reports"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/meta/required-files-contract.schema.json",
+      "required_fields": [
+        "required_files",
+        "required_dirs",
+        "forbidden_patterns",
+        "notes"
+      ]
+    },
+    {
+      "schema_path": "ops/schema/meta/scorecard.schema.json",
+      "required_fields": [
+        "schema_version",
+        "generated_by",
+        "run_id",
+        "generated_at",
+        "status",
+        "score",
+        "summary",
+        "budgets"
+      ]
+    },
+    {
       "schema_path": "ops/schema/report/unified.schema.json",
       "required_fields": [
         "schema_version",
