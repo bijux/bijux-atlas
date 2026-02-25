@@ -12,7 +12,7 @@ required_files:
   - ops/schema/generated/schema-index.json
   - ops/schema/generated/schema-index.md
   - ops/schema/generated/compatibility-lock.json
-required_directories:
+required_dirs:
   - ops/schema/inventory
   - ops/schema/env
   - ops/schema/k8s
@@ -22,4 +22,12 @@ required_directories:
   - ops/schema/datasets
   - ops/schema/report
   - ops/schema/stack
+  - ops/schema/configs
+  - ops/schema/generated
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/schema/inventory/pins.schema.json
+  - generated_output: ops/schema/generated/schema-index.json
 ```

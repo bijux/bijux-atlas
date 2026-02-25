@@ -14,4 +14,12 @@ required_files:
   - ops/k8s/values/dev.yaml
   - ops/k8s/values/ci.yaml
   - ops/k8s/values/prod.yaml
+required_dirs:
+  - ops/k8s/generated
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/k8s/install-matrix.json
+  - generated_output: ops/k8s/generated/release-snapshot.json
 ```

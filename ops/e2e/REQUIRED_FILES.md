@@ -13,6 +13,13 @@ required_files:
   - ops/e2e/fixtures/allowlist.json
   - ops/e2e/reproducibility-policy.json
   - ops/e2e/taxonomy.json
-required_directories:
+required_dirs:
   - ops/e2e/generated
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/e2e/suites/suites.json
+  - authored_root: ops/e2e/scenarios/scenarios.json
+  - generated_output: ops/e2e/generated/e2e-summary.json
 ```

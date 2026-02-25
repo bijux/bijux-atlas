@@ -14,4 +14,13 @@ required_files:
   - ops/_generated.example/inventory-index.json
   - ops/_generated.example/control-plane.snapshot.md
   - ops/_generated.example/docs-drift-report.json
+required_dirs: []
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+  - ops/load/k6/manifests/suites.json
+notes:
+  - authored_root: ops/_generated.example/MIRROR_POLICY.md
+  - generated_output: ops/_generated.example/ops-index.json
+  - generated_output: ops/_generated.example/ops-evidence-bundle.json
 ```

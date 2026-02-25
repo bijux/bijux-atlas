@@ -10,4 +10,11 @@ required_files:
   - ops/env/ci/overlay.json
   - ops/env/prod/overlay.json
   - ops/schema/env/overlay.schema.json
+required_dirs: []
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/env/base/overlay.json
+  - authored_root: ops/env/prod/overlay.json
 ```

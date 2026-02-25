@@ -19,4 +19,11 @@ required_files:
   - ops/inventory/generated-committed-mirror.json
   - ops/inventory/policies/dev-atlas-policy.json
   - ops/inventory/policies/dev-atlas-policy.schema.json
+required_dirs: []
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/inventory/pins.yaml
+  - authored_root: ops/inventory/contracts-map.json
 ```

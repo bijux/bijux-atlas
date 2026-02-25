@@ -12,8 +12,17 @@ required_files:
   - ops/observe/readiness.json
   - ops/observe/telemetry-drills.json
   - ops/observe/generated/telemetry-index.json
-required_directories:
+required_dirs:
   - ops/observe/dashboards
   - ops/observe/drills
   - ops/observe/rules
+  - ops/observe/prom
+  - ops/observe/otel
+  - ops/observe/generated
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/observe/alert-catalog.json
+  - generated_output: ops/observe/generated/telemetry-index.json
 ```

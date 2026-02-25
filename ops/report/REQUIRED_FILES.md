@@ -11,4 +11,12 @@ required_files:
   - ops/report/evidence-levels.json
   - ops/report/examples/unified-report-example.json
   - ops/report/docs/REFERENCE_INDEX.md
+required_dirs:
+  - ops/report/generated
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/report/schema.json
+  - generated_output: ops/report/generated/readiness-score.json
 ```

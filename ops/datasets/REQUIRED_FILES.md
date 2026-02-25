@@ -14,7 +14,14 @@ required_files:
   - ops/datasets/rollback-policy.json
   - ops/datasets/real-datasets.json
   - ops/datasets/generated/fixture-inventory.json
-required_directories:
+required_dirs:
   - ops/datasets/generated
   - ops/datasets/fixtures
+forbidden_patterns:
+  - ops/obs/
+  - ops/schema/obs/
+notes:
+  - authored_root: ops/datasets/manifest.json
+  - authored_root: ops/datasets/promotion-rules.json
+  - generated_output: ops/datasets/generated/fixture-inventory.json
 ```
