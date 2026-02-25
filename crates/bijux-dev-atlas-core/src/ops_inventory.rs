@@ -33,6 +33,14 @@ const OPS_DATASETS_FIXTURE_POLICY_PATH: &str = "ops/datasets/fixture-policy.json
 const OPS_DATASETS_ROLLBACK_POLICY_PATH: &str = "ops/datasets/rollback-policy.json";
 const OPS_DATASETS_INDEX_PATH: &str = "ops/datasets/generated/dataset-index.json";
 const OPS_DATASETS_LINEAGE_PATH: &str = "ops/datasets/generated/dataset-lineage.json";
+const OPS_E2E_SUITES_PATH: &str = "ops/e2e/suites/suites.json";
+const OPS_E2E_SCENARIOS_PATH: &str = "ops/e2e/scenarios/scenarios.json";
+const OPS_E2E_EXPECTATIONS_PATH: &str = "ops/e2e/expectations/expectations.json";
+const OPS_E2E_FIXTURE_ALLOWLIST_PATH: &str = "ops/e2e/fixtures/allowlist.json";
+const OPS_E2E_REPRODUCIBILITY_POLICY_PATH: &str = "ops/e2e/reproducibility-policy.json";
+const OPS_E2E_TAXONOMY_PATH: &str = "ops/e2e/taxonomy.json";
+const OPS_E2E_SUMMARY_PATH: &str = "ops/e2e/generated/e2e-summary.json";
+const OPS_E2E_COVERAGE_MATRIX_PATH: &str = "ops/e2e/generated/coverage-matrix.json";
 const OPS_LOAD_SUITES_MANIFEST_PATH: &str = "ops/load/k6/manifests/suites.json";
 const OPS_LOAD_QUERY_LOCK_PATH: &str = "ops/load/queries/pinned-v1.lock";
 const OPS_LOAD_SEED_POLICY_PATH: &str = "ops/load/contracts/deterministic-seed-policy.json";
@@ -373,6 +381,101 @@ struct LoadQueryLock {
     pub query_hashes: BTreeMap<String, String>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct E2eSuitesManifest {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub suites: Vec<E2eSuite>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eSuite {
+    pub id: String,
+    #[serde(default)]
+    pub required_capabilities: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eScenariosManifest {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub scenarios: Vec<E2eScenario>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eScenario {
+    pub id: String,
+    pub action_id: Option<String>,
+    #[serde(default)]
+    pub compose: BTreeMap<String, bool>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eExpectations {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub expectations: Vec<E2eExpectation>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eExpectation {
+    pub scenario_id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eFixtureAllowlist {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub allowed_paths: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eReproducibilityPolicy {
+    pub schema_version: u64,
+    pub ordering: String,
+    pub seed_source: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eTaxonomy {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub categories: Vec<E2eCategory>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eCategory {
+    pub id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eSummary {
+    pub schema_version: u64,
+    pub status: String,
+    pub suite_count: u64,
+    pub scenario_count: u64,
+    #[serde(default)]
+    pub suite_ids: Vec<String>,
+    #[serde(default)]
+    pub scenario_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eCoverageMatrix {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub rows: Vec<E2eCoverageRow>,
+    #[serde(default)]
+    pub missing_domains: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct E2eCoverageRow {
+    pub scenario_id: String,
+    #[serde(default)]
+    pub covers: Vec<String>,
+}
+
 fn load_json<T: for<'de> Deserialize<'de>>(repo_root: &Path, rel: &str) -> Result<T, String> {
     let path = repo_root.join(rel);
     let text = fs::read_to_string(&path)
@@ -462,6 +565,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_DATASETS_ROLLBACK_POLICY_PATH,
         OPS_DATASETS_INDEX_PATH,
         OPS_DATASETS_LINEAGE_PATH,
+        OPS_E2E_SUITES_PATH,
+        OPS_E2E_SCENARIOS_PATH,
+        OPS_E2E_EXPECTATIONS_PATH,
+        OPS_E2E_FIXTURE_ALLOWLIST_PATH,
+        OPS_E2E_REPRODUCIBILITY_POLICY_PATH,
+        OPS_E2E_TAXONOMY_PATH,
+        OPS_E2E_SUMMARY_PATH,
+        OPS_E2E_COVERAGE_MATRIX_PATH,
         OPS_LOAD_SUITES_MANIFEST_PATH,
         OPS_LOAD_QUERY_LOCK_PATH,
         OPS_LOAD_SEED_POLICY_PATH,
@@ -584,6 +695,68 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         }
     };
     let datasets_lineage = match load_json::<DatasetLineage>(repo_root, OPS_DATASETS_LINEAGE_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let e2e_suites = match load_json::<E2eSuitesManifest>(repo_root, OPS_E2E_SUITES_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let e2e_scenarios = match load_json::<E2eScenariosManifest>(repo_root, OPS_E2E_SCENARIOS_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let e2e_expectations =
+        match load_json::<E2eExpectations>(repo_root, OPS_E2E_EXPECTATIONS_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let e2e_fixture_allowlist =
+        match load_json::<E2eFixtureAllowlist>(repo_root, OPS_E2E_FIXTURE_ALLOWLIST_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let e2e_reproducibility = match load_json::<E2eReproducibilityPolicy>(
+        repo_root,
+        OPS_E2E_REPRODUCIBILITY_POLICY_PATH,
+    ) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let e2e_taxonomy = match load_json::<E2eTaxonomy>(repo_root, OPS_E2E_TAXONOMY_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let e2e_summary = match load_json::<E2eSummary>(repo_root, OPS_E2E_SUMMARY_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let e2e_coverage = match load_json::<E2eCoverageMatrix>(repo_root, OPS_E2E_COVERAGE_MATRIX_PATH)
+    {
         Ok(value) => value,
         Err(err) => {
             errors.push(err);
@@ -1107,6 +1280,215 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             errors.push(format!(
                 "{OPS_DATASETS_LINEAGE_PATH}: edge `{} -> {}` references unknown dataset node",
                 edge.from, edge.to
+            ));
+        }
+    }
+    if e2e_suites.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_SUITES_PATH}: expected schema_version=1, got {}",
+            e2e_suites.schema_version
+        ));
+    }
+    if e2e_scenarios.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_SCENARIOS_PATH}: expected schema_version=1, got {}",
+            e2e_scenarios.schema_version
+        ));
+    }
+    if e2e_expectations.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_EXPECTATIONS_PATH}: expected schema_version=1, got {}",
+            e2e_expectations.schema_version
+        ));
+    }
+    if e2e_fixture_allowlist.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_FIXTURE_ALLOWLIST_PATH}: expected schema_version=1, got {}",
+            e2e_fixture_allowlist.schema_version
+        ));
+    }
+    if e2e_reproducibility.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_REPRODUCIBILITY_POLICY_PATH}: expected schema_version=1, got {}",
+            e2e_reproducibility.schema_version
+        ));
+    }
+    if e2e_taxonomy.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_TAXONOMY_PATH}: expected schema_version=1, got {}",
+            e2e_taxonomy.schema_version
+        ));
+    }
+    if e2e_summary.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_SUMMARY_PATH}: expected schema_version=1, got {}",
+            e2e_summary.schema_version
+        ));
+    }
+    if e2e_coverage.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_E2E_COVERAGE_MATRIX_PATH}: expected schema_version=1, got {}",
+            e2e_coverage.schema_version
+        ));
+    }
+    if e2e_suites.suites.is_empty() {
+        errors.push(format!("{OPS_E2E_SUITES_PATH}: suites must not be empty"));
+    }
+    if e2e_scenarios.scenarios.is_empty() {
+        errors.push(format!("{OPS_E2E_SCENARIOS_PATH}: scenarios must not be empty"));
+    }
+    let suite_ids = e2e_suites
+        .suites
+        .iter()
+        .map(|suite| suite.id.clone())
+        .collect::<BTreeSet<_>>();
+    let scenario_ids = e2e_scenarios
+        .scenarios
+        .iter()
+        .map(|scenario| scenario.id.clone())
+        .collect::<BTreeSet<_>>();
+    let expectation_ids = e2e_expectations
+        .expectations
+        .iter()
+        .map(|entry| entry.scenario_id.clone())
+        .collect::<BTreeSet<_>>();
+    if expectation_ids != scenario_ids {
+        errors.push(format!(
+            "{OPS_E2E_EXPECTATIONS_PATH}: expectation scenario_ids must exactly match {OPS_E2E_SCENARIOS_PATH}"
+        ));
+    }
+    let allowed_compose_keys: BTreeSet<&str> = ["stack", "obs", "datasets", "load", "k8s"]
+        .into_iter()
+        .collect();
+    for scenario in &e2e_scenarios.scenarios {
+        if scenario.action_id.as_deref().unwrap_or("").trim().is_empty() {
+            errors.push(format!(
+                "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` must define action_id",
+                scenario.id
+            ));
+        }
+        for key in scenario.compose.keys() {
+            if !allowed_compose_keys.contains(key.as_str()) {
+                errors.push(format!(
+                    "{OPS_E2E_SCENARIOS_PATH}: scenario `{}` compose key `{}` is not allowed",
+                    scenario.id, key
+                ));
+            }
+        }
+    }
+    for suite in &e2e_suites.suites {
+        if suite.required_capabilities.is_empty() {
+            errors.push(format!(
+                "{OPS_E2E_SUITES_PATH}: suite `{}` must define required_capabilities",
+                suite.id
+            ));
+        }
+    }
+    if e2e_fixture_allowlist.allowed_paths.is_empty() {
+        errors.push(format!(
+            "{OPS_E2E_FIXTURE_ALLOWLIST_PATH}: allowed_paths must not be empty"
+        ));
+    }
+    let allowlisted = e2e_fixture_allowlist
+        .allowed_paths
+        .iter()
+        .cloned()
+        .collect::<BTreeSet<_>>();
+    for file in collect_files_recursive(repo_root.join("ops/e2e/fixtures")) {
+        let rel = file
+            .strip_prefix(repo_root)
+            .unwrap_or(file.as_path())
+            .display()
+            .to_string();
+        if !allowlisted.contains(&rel) {
+            errors.push(format!(
+                "{OPS_E2E_FIXTURE_ALLOWLIST_PATH}: file `{rel}` is not allowlisted"
+            ));
+        }
+    }
+    if e2e_reproducibility.ordering != "stable" {
+        errors.push(format!(
+            "{OPS_E2E_REPRODUCIBILITY_POLICY_PATH}: ordering must be `stable`"
+        ));
+    }
+    if !repo_root.join(&e2e_reproducibility.seed_source).exists() {
+        errors.push(format!(
+            "{OPS_E2E_REPRODUCIBILITY_POLICY_PATH}: seed_source path is missing `{}`",
+            e2e_reproducibility.seed_source
+        ));
+    }
+    if e2e_taxonomy.categories.is_empty() {
+        errors.push(format!(
+            "{OPS_E2E_TAXONOMY_PATH}: categories must not be empty"
+        ));
+    }
+    let taxonomy_ids = e2e_taxonomy
+        .categories
+        .iter()
+        .map(|entry| entry.id.clone())
+        .collect::<BTreeSet<_>>();
+    for expected in ["smoke", "kubernetes", "realdata", "performance"] {
+        if !taxonomy_ids.contains(expected) {
+            errors.push(format!(
+                "{OPS_E2E_TAXONOMY_PATH}: missing expected category `{expected}`"
+            ));
+        }
+    }
+    if e2e_summary.status != "stable" {
+        errors.push(format!("{OPS_E2E_SUMMARY_PATH}: status must be `stable`"));
+    }
+    if e2e_summary.suite_count != suite_ids.len() as u64 {
+        errors.push(format!(
+            "{OPS_E2E_SUMMARY_PATH}: suite_count must match suite ids count"
+        ));
+    }
+    if e2e_summary.scenario_count != scenario_ids.len() as u64 {
+        errors.push(format!(
+            "{OPS_E2E_SUMMARY_PATH}: scenario_count must match scenario ids count"
+        ));
+    }
+    if e2e_summary
+        .suite_ids
+        .iter()
+        .cloned()
+        .collect::<BTreeSet<_>>()
+        != suite_ids
+    {
+        errors.push(format!(
+            "{OPS_E2E_SUMMARY_PATH}: suite_ids must match {OPS_E2E_SUITES_PATH}"
+        ));
+    }
+    if e2e_summary
+        .scenario_ids
+        .iter()
+        .cloned()
+        .collect::<BTreeSet<_>>()
+        != scenario_ids
+    {
+        errors.push(format!(
+            "{OPS_E2E_SUMMARY_PATH}: scenario_ids must match {OPS_E2E_SCENARIOS_PATH}"
+        ));
+    }
+    if !e2e_coverage.missing_domains.is_empty() {
+        errors.push(format!(
+            "{OPS_E2E_COVERAGE_MATRIX_PATH}: missing_domains must be empty"
+        ));
+    }
+    let covered_scenarios = e2e_coverage
+        .rows
+        .iter()
+        .map(|row| row.scenario_id.clone())
+        .collect::<BTreeSet<_>>();
+    if covered_scenarios != scenario_ids {
+        errors.push(format!(
+            "{OPS_E2E_COVERAGE_MATRIX_PATH}: coverage rows must match scenario ids"
+        ));
+    }
+    for row in &e2e_coverage.rows {
+        if row.covers.is_empty() {
+            errors.push(format!(
+                "{OPS_E2E_COVERAGE_MATRIX_PATH}: scenario `{}` must cover at least one domain",
+                row.scenario_id
             ));
         }
     }
