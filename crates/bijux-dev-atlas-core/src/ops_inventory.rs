@@ -26,6 +26,12 @@ const OPS_OBSERVE_SLO_DEFINITIONS_PATH: &str = "ops/observe/slo-definitions.json
 const OPS_OBSERVE_TELEMETRY_DRILLS_PATH: &str = "ops/observe/telemetry-drills.json";
 const OPS_OBSERVE_READINESS_PATH: &str = "ops/observe/readiness.json";
 const OPS_OBSERVE_TELEMETRY_INDEX_PATH: &str = "ops/observe/generated/telemetry-index.json";
+const OPS_LOAD_SUITES_MANIFEST_PATH: &str = "ops/load/k6/manifests/suites.json";
+const OPS_LOAD_QUERY_LOCK_PATH: &str = "ops/load/queries/pinned-v1.lock";
+const OPS_LOAD_SEED_POLICY_PATH: &str = "ops/load/contracts/deterministic-seed-policy.json";
+const OPS_LOAD_QUERY_PACK_CATALOG_PATH: &str = "ops/load/contracts/query-pack-catalog.json";
+const OPS_LOAD_SUMMARY_PATH: &str = "ops/load/generated/load-summary.json";
+const OPS_LOAD_DRIFT_REPORT_PATH: &str = "ops/load/generated/load-drift-report.json";
 
 const EXPECTED_TOOLCHAIN_SCHEMA: u64 = 1;
 const EXPECTED_SURFACES_SCHEMA: u64 = 2;
@@ -212,6 +218,79 @@ struct ObserveTelemetryIndex {
     pub artifacts: Vec<String>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct LoadSuitesManifest {
+    pub schema_version: u64,
+    pub query_set: String,
+    pub scenarios_dir: String,
+    #[serde(default)]
+    pub suites: Vec<LoadSuiteEntry>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadSuiteEntry {
+    pub name: String,
+    #[serde(default)]
+    pub kind: String,
+    pub scenario: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadSeedPolicy {
+    pub schema_version: u64,
+    pub deterministic_seed: u64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadQueryPackCatalog {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub packs: Vec<LoadQueryPack>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadQueryPack {
+    pub id: String,
+    pub query_file: String,
+    pub lock_file: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadSummary {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub suites: Vec<String>,
+    pub deterministic_seed: u64,
+    #[serde(default)]
+    pub query_pack: String,
+    pub scenario_coverage: LoadScenarioCoverage,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadScenarioCoverage {
+    #[serde(default)]
+    pub covered: Vec<String>,
+    #[serde(default)]
+    pub missing: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadDriftReport {
+    pub schema_version: u64,
+    pub status: String,
+    #[serde(default)]
+    pub checks: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct LoadQueryLock {
+    pub schema_version: u64,
+    pub source: String,
+    pub file_sha256: String,
+    #[serde(default)]
+    pub query_hashes: BTreeMap<String, String>,
+}
+
 fn load_json<T: for<'de> Deserialize<'de>>(repo_root: &Path, rel: &str) -> Result<T, String> {
     let path = repo_root.join(rel);
     let text = fs::read_to_string(&path)
@@ -293,6 +372,12 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_OBSERVE_TELEMETRY_DRILLS_PATH,
         OPS_OBSERVE_READINESS_PATH,
         OPS_OBSERVE_TELEMETRY_INDEX_PATH,
+        OPS_LOAD_SUITES_MANIFEST_PATH,
+        OPS_LOAD_QUERY_LOCK_PATH,
+        OPS_LOAD_SEED_POLICY_PATH,
+        OPS_LOAD_QUERY_PACK_CATALOG_PATH,
+        OPS_LOAD_SUMMARY_PATH,
+        OPS_LOAD_DRIFT_REPORT_PATH,
     ] {
         let path = repo_root.join(rel);
         if !path.exists() {
@@ -355,6 +440,51 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         repo_root,
         OPS_OBSERVE_TELEMETRY_INDEX_PATH,
     ) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let load_suites =
+        match load_json::<LoadSuitesManifest>(repo_root, OPS_LOAD_SUITES_MANIFEST_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+            return errors;
+        }
+    };
+    let load_query_lock = match load_json::<LoadQueryLock>(repo_root, OPS_LOAD_QUERY_LOCK_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let load_seed_policy = match load_json::<LoadSeedPolicy>(repo_root, OPS_LOAD_SEED_POLICY_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let load_query_catalog =
+        match load_json::<LoadQueryPackCatalog>(repo_root, OPS_LOAD_QUERY_PACK_CATALOG_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let load_summary = match load_json::<LoadSummary>(repo_root, OPS_LOAD_SUMMARY_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let load_drift_report = match load_json::<LoadDriftReport>(repo_root, OPS_LOAD_DRIFT_REPORT_PATH)
+    {
         Ok(value) => value,
         Err(err) => {
             errors.push(err);
@@ -669,6 +799,187 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
                 "ops/observe/generated/telemetry-index.json: missing referenced artifact `{artifact}`"
             ));
         }
+    }
+    if load_suites.schema_version != 2 {
+        errors.push(format!(
+            "{OPS_LOAD_SUITES_MANIFEST_PATH}: expected schema_version=2, got {}",
+            load_suites.schema_version
+        ));
+    }
+    if load_suites.suites.is_empty() {
+        errors.push(format!(
+            "{OPS_LOAD_SUITES_MANIFEST_PATH}: suites must not be empty"
+        ));
+    }
+    if !repo_root.join(&load_suites.query_set).exists() {
+        errors.push(format!(
+            "{OPS_LOAD_SUITES_MANIFEST_PATH}: query_set path is missing `{}`",
+            load_suites.query_set
+        ));
+    }
+    let scenarios_dir = repo_root.join(&load_suites.scenarios_dir);
+    if !scenarios_dir.exists() {
+        errors.push(format!(
+            "{OPS_LOAD_SUITES_MANIFEST_PATH}: scenarios_dir path is missing `{}`",
+            load_suites.scenarios_dir
+        ));
+    }
+    let mut suite_names = load_suites
+        .suites
+        .iter()
+        .map(|suite| suite.name.clone())
+        .collect::<Vec<_>>();
+    let listed_suite_names_len = suite_names.len();
+    suite_names.sort();
+    suite_names.dedup();
+    if listed_suite_names_len != suite_names.len() {
+        errors.push(format!(
+            "{OPS_LOAD_SUITES_MANIFEST_PATH}: suite names must be unique"
+        ));
+    }
+    let mut expected_scenarios = load_suites
+        .suites
+        .iter()
+        .filter(|suite| suite.kind == "k6")
+        .filter_map(|suite| suite.scenario.clone())
+        .collect::<Vec<_>>();
+    expected_scenarios.sort();
+    expected_scenarios.dedup();
+    let mut listed_covered = load_summary.scenario_coverage.covered.clone();
+    let listed_missing = load_summary.scenario_coverage.missing.clone();
+    for scenario in &expected_scenarios {
+        if !repo_root.join(&load_suites.scenarios_dir).join(scenario).exists() {
+            errors.push(format!(
+                "{OPS_LOAD_SUITES_MANIFEST_PATH}: suite scenario is missing `{}`",
+                scenario
+            ));
+        }
+    }
+    listed_covered.sort();
+    listed_covered.dedup();
+    if listed_covered != expected_scenarios {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: scenario coverage mismatch, expected {expected_scenarios:?} got {listed_covered:?}"
+        ));
+    }
+    if !listed_missing.is_empty() {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: missing scenarios must be empty for stable load catalog"
+        ));
+    }
+    if load_seed_policy.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_LOAD_SEED_POLICY_PATH}: expected schema_version=1, got {}",
+            load_seed_policy.schema_version
+        ));
+    }
+    if load_query_lock.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_LOAD_QUERY_LOCK_PATH}: expected schema_version=1, got {}",
+            load_query_lock.schema_version
+        ));
+    }
+    if load_query_lock.source != load_suites.query_set {
+        errors.push(format!(
+            "{OPS_LOAD_QUERY_LOCK_PATH}: source must match suite manifest query_set `{}`",
+            load_suites.query_set
+        ));
+    }
+    if load_query_lock.file_sha256.len() != 64
+        || !load_query_lock
+            .file_sha256
+            .chars()
+            .all(|ch| ch.is_ascii_hexdigit())
+    {
+        errors.push(format!(
+            "{OPS_LOAD_QUERY_LOCK_PATH}: file_sha256 must be a 64-character hex digest"
+        ));
+    }
+    if load_query_lock.query_hashes.is_empty() {
+        errors.push(format!(
+            "{OPS_LOAD_QUERY_LOCK_PATH}: query_hashes must not be empty"
+        ));
+    }
+    if load_seed_policy.deterministic_seed == 0 {
+        errors.push(format!(
+            "{OPS_LOAD_SEED_POLICY_PATH}: deterministic_seed must be > 0"
+        ));
+    }
+    if load_query_catalog.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_LOAD_QUERY_PACK_CATALOG_PATH}: expected schema_version=1, got {}",
+            load_query_catalog.schema_version
+        ));
+    }
+    if load_query_catalog.packs.is_empty() {
+        errors.push(format!(
+            "{OPS_LOAD_QUERY_PACK_CATALOG_PATH}: packs must not be empty"
+        ));
+    }
+    for pack in &load_query_catalog.packs {
+        if pack.id.trim().is_empty() {
+            errors.push(format!(
+                "{OPS_LOAD_QUERY_PACK_CATALOG_PATH}: pack id must not be empty"
+            ));
+        }
+        if !repo_root.join(&pack.query_file).exists() {
+            errors.push(format!(
+                "{OPS_LOAD_QUERY_PACK_CATALOG_PATH}: missing query_file `{}`",
+                pack.query_file
+            ));
+        }
+        if !repo_root.join(&pack.lock_file).exists() {
+            errors.push(format!(
+                "{OPS_LOAD_QUERY_PACK_CATALOG_PATH}: missing lock_file `{}`",
+                pack.lock_file
+            ));
+        }
+    }
+    if load_summary.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: expected schema_version=1, got {}",
+            load_summary.schema_version
+        ));
+    }
+    if load_summary.query_pack.trim().is_empty() {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: query_pack must not be empty"
+        ));
+    }
+    if load_summary.deterministic_seed != load_seed_policy.deterministic_seed {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: deterministic_seed must match {OPS_LOAD_SEED_POLICY_PATH}"
+        ));
+    }
+    let mut summary_suites = load_summary.suites.clone();
+    let listed_summary_suites = summary_suites.clone();
+    summary_suites.sort();
+    summary_suites.dedup();
+    if listed_summary_suites != summary_suites {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: suites must be unique and lexicographically sorted"
+        ));
+    }
+    if summary_suites != suite_names {
+        errors.push(format!(
+            "{OPS_LOAD_SUMMARY_PATH}: suites mismatch from {OPS_LOAD_SUITES_MANIFEST_PATH}"
+        ));
+    }
+    if load_drift_report.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_LOAD_DRIFT_REPORT_PATH}: expected schema_version=1, got {}",
+            load_drift_report.schema_version
+        ));
+    }
+    if load_drift_report.status != "stable" {
+        errors.push(format!(
+            "{OPS_LOAD_DRIFT_REPORT_PATH}: status must be `stable`"
+        ));
+    }
+    if load_drift_report.checks.is_empty() {
+        errors.push(format!(
+            "{OPS_LOAD_DRIFT_REPORT_PATH}: checks must not be empty"
+        ));
     }
     let stack_generated_paths = [
         "ops/stack/generated/stack-index.json",
