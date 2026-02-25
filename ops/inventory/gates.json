@@ -8,8 +8,8 @@
     {"id": "ops.gate.pin-drift", "action_id": "ops.pins.check", "category": "inventory", "description": "pin drift and coverage checks"},
     {"id": "ops.gate.stack-reproducibility", "action_id": "ops.stack.validate", "category": "stack", "description": "stack reproducibility and profile validation"},
     {"id": "ops.gate.k8s-determinism", "action_id": "ops.k8s.check", "category": "k8s", "description": "k8s render/install determinism checks"},
-    {"id": "ops.gate.observe-coverage", "action_id": "ops.obs.validate", "category": "observe", "description": "observability coverage and readiness checks"},
+    {"id": "ops.gate.observe-coverage", "action_id": "ops.observe.validate", "category": "observe", "description": "observability coverage and readiness checks"},
     {"id": "ops.gate.dataset-lifecycle", "action_id": "ops.datasets.validate", "category": "datasets", "description": "dataset lifecycle and manifest checks"},
-    {"id": "ops.gate.unified-readiness", "action_id": "ops.obs.report", "category": "report", "description": "unified readiness report publication gate"}
+    {"id": "ops.gate.unified-readiness", "action_id": "ops.observe.report", "category": "report", "description": "unified readiness report publication gate"}
   ]
 }

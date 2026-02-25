@@ -18,10 +18,10 @@
           "script": {"type": "string"},
           "compose": {
             "type": "object",
-            "required": ["stack", "obs", "datasets", "load"],
+            "required": ["stack", "observe", "datasets", "load"],
             "properties": {
               "stack": {"type": "boolean"},
-              "obs": {"type": "boolean"},
+              "observe": {"type": "boolean"},
               "datasets": {"type": "boolean"},
               "load": {"type": "boolean"}
             },

@@ -25,7 +25,7 @@
           "id": "metrics-smoke",
           "description": "Validate metrics contract against running stack.",
           "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/runtime/verify_metrics.py",
-          "capabilities": ["obs"],
+          "capabilities": ["observe"],
           "destructive": false,
           "budget": {
             "expected_time_seconds": 120,
@@ -110,7 +110,7 @@
           "id": "upgrade-drill",
           "description": "Run upgrade drill against realdata fixtures.",
           "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/upgrade_drill.py",
-          "capabilities": ["datasets", "obs"],
+          "capabilities": ["datasets", "observe"],
           "destructive": true,
           "budget": {
             "expected_time_seconds": 240,
@@ -124,7 +124,7 @@
           "id": "rollback-drill",
           "description": "Run rollback drill against realdata fixtures.",
           "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/rollback_drill.py",
-          "capabilities": ["datasets", "obs"],
+          "capabilities": ["datasets", "observe"],
           "destructive": true,
           "budget": {
             "expected_time_seconds": 240,
@@ -185,13 +185,13 @@
     {
       "id": "rollback-drill",
       "description": "Rollback drill suite with deterministic report outputs.",
-      "required_capabilities": ["k8s", "stack", "datasets", "obs"],
+      "required_capabilities": ["k8s", "stack", "datasets", "observe"],
       "scenarios": [
         {
           "id": "realdata-rollback-drill",
           "description": "Run rollback drill and emit deterministic drill report artifacts.",
           "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/rollback_drill.py",
-          "capabilities": ["datasets", "obs"],
+          "capabilities": ["datasets", "observe"],
           "destructive": true,
           "budget": {
             "expected_time_seconds": 300,
@@ -207,13 +207,13 @@
     {
       "id": "upgrade-drill",
       "description": "Upgrade drill suite verifying schema evolution rules with deterministic reports.",
-      "required_capabilities": ["k8s", "stack", "datasets", "obs"],
+      "required_capabilities": ["k8s", "stack", "datasets", "observe"],
       "scenarios": [
         {
           "id": "realdata-upgrade-drill",
           "description": "Run upgrade drill and verify schema evolution with report artifacts.",
           "runner": "python3 crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/e2e/realdata/upgrade_drill.py",
-          "capabilities": ["datasets", "obs"],
+          "capabilities": ["datasets", "observe"],
           "destructive": true,
           "budget": {
             "expected_time_seconds": 300,

@@ -29,7 +29,7 @@
       "may_reference": [
         "k8s",
         "stack",
-        "obs",
+        "observe",
         "e2e",
         "_lib",
         "run",
@@ -45,9 +45,9 @@
         "configs"
       ]
     },
-    "obs": {
+    "observe": {
       "may_reference": [
-        "obs",
+        "observe",
         "k8s",
         "stack",
         "load",

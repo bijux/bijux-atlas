@@ -17,7 +17,7 @@
           "description": {"type": "string", "minLength": 8},
           "required_capabilities": {
             "type": "array",
-            "items": {"type": "string", "enum": ["k8s", "stack", "obs", "toxiproxy", "redis", "datasets", "deploy"]}
+            "items": {"type": "string", "enum": ["k8s", "stack", "observe", "toxiproxy", "redis", "datasets", "deploy"]}
           },
           "scenarios": {
             "type": "array",
@@ -32,7 +32,7 @@
                 "runner": {"type": "string", "minLength": 1},
                 "capabilities": {
                   "type": "array",
-                  "items": {"type": "string", "enum": ["k8s", "stack", "obs", "toxiproxy", "redis", "datasets", "deploy"]}
+                  "items": {"type": "string", "enum": ["k8s", "stack", "observe", "toxiproxy", "redis", "datasets", "deploy"]}
                 },
                 "destructive": {"type": "boolean"},
                 "budget": {

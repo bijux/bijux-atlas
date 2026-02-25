@@ -719,100 +719,100 @@
       ]
     },
     {
-      "id": "ops.obs.check",
-      "domain": "obs",
+      "id": "ops.observe.check",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "check"
       ],
       "argv": [
-        "obs",
+        "observe",
         "check"
       ]
     },
     {
-      "id": "ops.obs.drill",
-      "domain": "obs",
+      "id": "ops.observe.drill",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "drill"
       ],
       "argv": [
-        "obs",
+        "observe",
         "drill"
       ]
     },
     {
-      "id": "ops.obs.lint",
-      "domain": "obs",
+      "id": "ops.observe.lint",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "lint"
       ],
       "argv": [
-        "obs",
+        "observe",
         "lint"
       ]
     },
     {
-      "id": "ops.obs.report",
-      "domain": "obs",
+      "id": "ops.observe.report",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "report"
       ],
       "argv": [
-        "obs",
+        "observe",
         "report"
       ]
     },
     {
-      "id": "ops.obs.up",
-      "domain": "obs",
+      "id": "ops.observe.up",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "up"
       ],
       "argv": [
-        "obs",
+        "observe",
         "up"
       ]
     },
     {
-      "id": "ops.obs.validate",
-      "domain": "obs",
+      "id": "ops.observe.validate",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "validate"
       ],
       "argv": [
-        "obs",
+        "observe",
         "validate"
       ]
     },
     {
-      "id": "ops.obs.verify",
-      "domain": "obs",
+      "id": "ops.observe.verify",
+      "domain": "observe",
       "command": [
         "bijux-dev-atlas",
         "ops",
-        "obs",
+        "observe",
         "verify"
       ],
       "argv": [
-        "obs",
+        "observe",
         "verify"
       ]
     },

@@ -28,13 +28,13 @@
     },
     "layer_dependencies": {
       "type": "object",
-      "required": ["stack", "k8s", "e2e", "obs", "load"],
+      "required": ["stack", "k8s", "e2e", "observe", "load"],
       "additionalProperties": false,
       "properties": {
         "stack": {"$ref": "#/definitions/deps"},
         "k8s": {"$ref": "#/definitions/deps"},
         "e2e": {"$ref": "#/definitions/deps"},
-        "obs": {"$ref": "#/definitions/deps"},
+        "observe": {"$ref": "#/definitions/deps"},
         "load": {"$ref": "#/definitions/deps"}
       }
     },
@@ -117,7 +117,7 @@
       "properties": {
         "may_reference": {
           "type": "array",
-          "items": {"type": "string", "enum": ["stack", "k8s", "e2e", "obs", "load", "run", "_lib", "configs"]},
+          "items": {"type": "string", "enum": ["stack", "k8s", "e2e", "observe", "load", "run", "_lib", "configs"]},
           "minItems": 1
         }
       }
