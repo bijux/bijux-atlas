@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "items"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "owner_doc", "declared_owner"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "owner_doc": {"type": "string", "pattern": "^ops/.+/OWNER\\.md$"},
+          "declared_owner": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

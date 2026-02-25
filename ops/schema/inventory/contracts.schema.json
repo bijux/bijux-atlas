@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "role", "generated_from", "contracts"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "role": {"type": "string", "const": "generated"},
+    "generated_from": {"type": "string", "const": "ops/inventory/contracts-map.json"},
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "version"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "version": {
+            "oneOf": [
+              {"type": "integer", "minimum": 1},
+              {"type": "string", "minLength": 1}
+            ]
+          }
+        }
+      }
+    }
+  }
+}

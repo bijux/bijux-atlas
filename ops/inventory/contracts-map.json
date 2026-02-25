@@ -4,18 +4,19 @@
   "role": "authored",
   "registry_meaning": "authoritative list of authored inventory artifacts and their schema contracts",
   "items": [
-    {"path": "ops/inventory/owners.json", "schema": "ops/schema/meta/ownership.schema.json", "generator": "manual+sync-owner-docs"},
-    {"path": "ops/inventory/surfaces.json", "schema": "ops/schema/configs/public-surface.schema.json", "generator": "bijux dev atlas ops gen run"},
-    {"path": "ops/inventory/layers.json", "schema": "ops/schema/meta/layer-contract.schema.json", "generator": "bijux dev atlas ops gen run"},
+    {"path": "ops/inventory/owners.json", "schema": "ops/schema/inventory/owners.schema.json", "generator": "manual+sync-owner-docs"},
+    {"path": "ops/inventory/surfaces.json", "schema": "ops/schema/inventory/surfaces.schema.json", "generator": "bijux dev atlas ops gen run"},
+    {"path": "ops/inventory/contracts.json", "schema": "ops/schema/inventory/contracts.schema.json", "generator": "bijux dev atlas ops gen run"},
+    {"path": "ops/inventory/layers.json", "schema": "ops/schema/inventory/layers.schema.json", "generator": "bijux dev atlas ops gen run"},
     {"path": "ops/inventory/pins.yaml", "schema": "ops/schema/inventory/pins.schema.json", "generator": "bijux dev atlas ops generate pins-index"},
-    {"path": "ops/inventory/gc-pins.json", "schema": "ops/schema/meta/pins.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/gc-pins.json", "schema": "ops/schema/inventory/gc-pins.schema.json", "generator": "manual"},
     {"path": "ops/inventory/pin-freeze.json", "schema": "ops/schema/inventory/pin-freeze.schema.json", "generator": "manual"},
-    {"path": "ops/inventory/drills.json", "schema": "ops/schema/observe/drill-manifest.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/drills.json", "schema": "ops/schema/inventory/drills.schema.json", "generator": "manual"},
     {"path": "ops/inventory/gates.json", "schema": "ops/schema/inventory/gates.schema.json", "generator": "manual"},
-    {"path": "ops/inventory/namespaces.json", "schema": "ops/schema/meta/namespaces.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/namespaces.json", "schema": "ops/schema/inventory/namespaces.schema.json", "generator": "manual"},
     {"path": "ops/inventory/toolchain.json", "schema": "ops/schema/inventory/toolchain.schema.json", "generator": "manual"},
-    {"path": "ops/inventory/owner-docs.fragments.json", "schema": "ops/schema/meta/ownership.schema.json", "generator": "bijux dev atlas ops migrate inventory-fragments"},
-    {"path": "ops/inventory/generated-committed-mirror.json", "schema": "ops/schema/meta/artifact-allowlist.schema.json", "generator": "manual"},
+    {"path": "ops/inventory/owner-docs.fragments.json", "schema": "ops/schema/inventory/owner-docs.fragments.schema.json", "generator": "bijux dev atlas ops migrate inventory-fragments"},
+    {"path": "ops/inventory/generated-committed-mirror.json", "schema": "ops/schema/inventory/generated-committed-mirror.schema.json", "generator": "manual"},
     {"path": "ops/datasets/manifest.json", "schema": "ops/schema/datasets/manifest.schema.json", "generator": "manual"}
   ]
 }

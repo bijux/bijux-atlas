@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "drills"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "source": {"type": "string", "minLength": 1},
+    "drills": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^ops\\.drill\\.[a-z0-9_]+$"}
+    }
+  }
+}

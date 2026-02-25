@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "namespaces"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "namespaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stack", "k8s", "e2e"],
+      "properties": {
+        "stack": {"type": "string", "minLength": 1},
+        "k8s": {"type": "string", "minLength": 1},
+        "e2e": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["dataset_ids", "artifact_hashes"],
+  "properties": {
+    "dataset_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "artifact_hashes": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}
