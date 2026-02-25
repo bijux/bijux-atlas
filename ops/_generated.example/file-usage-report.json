@@ -13,6 +13,7 @@
       "schema": 91
     }
   },
+  "orphan_allowlist_prefixes": [],
   "files": [
     {
       "path": "ops/_generated.example/ALLOWLIST.json",

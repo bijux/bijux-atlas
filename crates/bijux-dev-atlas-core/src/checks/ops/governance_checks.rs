@@ -1081,6 +1081,17 @@ pub(super) fn check_ops_required_files_contracts(
                     Some(rel),
                 ));
             }
+            if value.get("schema_version").is_none() {
+                violations.push(violation(
+                    "OPS_GENERATED_SCHEMA_VERSION_MISSING",
+                    format!(
+                        "generated artifact `{}` must include `schema_version` metadata",
+                        rel.display()
+                    ),
+                    "add schema_version field to generated JSON artifacts",
+                    Some(rel),
+                ));
+            }
         }
     }
 
@@ -1600,16 +1611,40 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let usage_report_json: serde_json::Value = serde_json::from_str(&usage_report_text)
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    if usage_report_json.get("schema_version").is_none()
+    if usage_report_json.get("schema_version").and_then(|v| v.as_i64()) != Some(1)
         || usage_report_json.get("generated_by").is_none()
     {
         violations.push(violation(
             "OPS_FILE_USAGE_REPORT_METADATA_MISSING",
-            "ops/_generated.example/file-usage-report.json must include schema_version and generated_by"
+            "ops/_generated.example/file-usage-report.json must include schema_version=1 and generated_by"
                 .to_string(),
             "add schema_version and generated_by to file usage report",
             Some(usage_report_rel),
         ));
+    }
+    let orphan_allowlist_prefixes = usage_report_json
+        .get("orphan_allowlist_prefixes")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    for prefix in &orphan_allowlist_prefixes {
+        let is_fixture_prefix = prefix.contains("/fixtures/");
+        let is_curated_example_prefix = prefix.contains("/examples/");
+        if !is_fixture_prefix && !is_curated_example_prefix {
+            violations.push(violation(
+                "OPS_FILE_USAGE_ALLOWLIST_SCOPE_INVALID",
+                format!(
+                    "orphan allowlist prefix `{prefix}` is outside fixture/example scope"
+                ),
+                "limit orphan allowlist prefixes to fixture payloads and curated examples",
+                Some(usage_report_rel),
+            ));
+        }
     }
 
     let contracts_map_rel = Path::new("ops/inventory/contracts-map.json");
@@ -1733,12 +1768,22 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
         }
     }
 
-    if !computed_orphans.is_empty() {
+    let effective_orphans = computed_orphans
+        .iter()
+        .filter(|path| {
+            !orphan_allowlist_prefixes
+                .iter()
+                .any(|prefix| path.starts_with(prefix))
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+
+    if !effective_orphans.is_empty() {
         violations.push(violation(
             "OPS_DATA_FILE_ORPHAN_FOUND",
             format!(
                 "orphan ops data artifacts detected: {}",
-                computed_orphans.join(", ")
+                effective_orphans.join(", ")
             ),
             "remove orphan data files or classify them through contracts-map, schema-index, docs, and REQUIRED_FILES",
             Some(Path::new("ops")),
@@ -1888,7 +1933,7 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
             .filter_map(|v| v.as_str())
             .map(ToString::to_string)
             .collect::<BTreeSet<_>>();
-        let computed_orphan_set = computed_orphans.into_iter().collect::<BTreeSet<_>>();
+        let computed_orphan_set = effective_orphans.into_iter().collect::<BTreeSet<_>>();
         if report_orphans != computed_orphan_set {
             violations.push(violation(
                 "OPS_FILE_USAGE_REPORT_ORPHAN_MISMATCH",
