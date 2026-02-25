@@ -18,6 +18,7 @@ const OPS_PINS_PATH: &str = "ops/inventory/pins.yaml";
 const OPS_SURFACES_PATH: &str = "ops/inventory/surfaces.json";
 const OPS_MIRROR_POLICY_PATH: &str = "ops/inventory/generated-committed-mirror.json";
 const OPS_CONTRACTS_PATH: &str = "ops/inventory/contracts.json";
+const OPS_GATES_PATH: &str = "ops/inventory/gates.json";
 const OPS_DATASETS_MANIFEST_PATH: &str = "ops/datasets/manifest.json";
 const OPS_K8S_INSTALL_MATRIX_PATH: &str = "ops/k8s/install-matrix.json";
 const OPS_K8S_CHART_PATH: &str = "ops/k8s/charts/bijux-atlas/Chart.yaml";
@@ -63,12 +64,13 @@ const EXPECTED_STACK_PROFILES_SCHEMA: u64 = 1;
 const EXPECTED_STACK_VERSION_SCHEMA: u64 = 1;
 const EXPECTED_PINS_SCHEMA: u64 = 1;
 
-const INVENTORY_INPUTS: [&str; 7] = [
+const INVENTORY_INPUTS: [&str; 8] = [
     OPS_STACK_PROFILES_PATH,
-    OPS_STACK_VERSION_MANIFEST_PATH,
-    OPS_TOOLCHAIN_PATH,
-    OPS_PINS_PATH,
-    OPS_SURFACES_PATH,
+        OPS_STACK_VERSION_MANIFEST_PATH,
+        OPS_TOOLCHAIN_PATH,
+        OPS_PINS_PATH,
+        OPS_GATES_PATH,
+        OPS_SURFACES_PATH,
     OPS_MIRROR_POLICY_PATH,
     OPS_CONTRACTS_PATH,
 ];
@@ -166,6 +168,19 @@ pub struct MirrorEntry {
 #[derive(Debug, Clone, Deserialize)]
 pub struct ContractsManifest {
     pub schema_version: u64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct GatesManifest {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub gates: Vec<GateEntry>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct GateEntry {
+    pub id: String,
+    pub action_id: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -594,6 +609,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_STACK_VERSION_MANIFEST_PATH,
         OPS_TOOLCHAIN_PATH,
         OPS_PINS_PATH,
+        OPS_GATES_PATH,
         OPS_SURFACES_PATH,
         OPS_MIRROR_POLICY_PATH,
         OPS_CONTRACTS_PATH,
@@ -910,6 +926,13 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             return errors;
         }
     };
+    let gates_manifest = match load_json::<GatesManifest>(repo_root, OPS_GATES_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
 
     validate_pins_file_content(
         repo_root,
@@ -958,6 +981,60 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
             "{OPS_CONTRACTS_PATH}: expected schema_version={EXPECTED_CONTRACTS_SCHEMA}, got {}",
             inventory.contracts.schema_version
         ));
+    }
+    if gates_manifest.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_GATES_PATH}: expected schema_version=1, got {}",
+            gates_manifest.schema_version
+        ));
+    }
+    if gates_manifest.gates.is_empty() {
+        errors.push(format!("{OPS_GATES_PATH}: gates must not be empty"));
+    }
+    let known_actions = inventory
+        .surfaces
+        .actions
+        .iter()
+        .map(|action| action.id.clone())
+        .collect::<BTreeSet<_>>();
+    let mut seen_gate_ids = BTreeSet::new();
+    for gate in &gates_manifest.gates {
+        if gate.id.trim().is_empty() {
+            errors.push(format!("{OPS_GATES_PATH}: gate id must not be empty"));
+            continue;
+        }
+        if !seen_gate_ids.insert(gate.id.clone()) {
+            errors.push(format!("{OPS_GATES_PATH}: duplicate gate id `{}`", gate.id));
+        }
+        if gate.action_id.trim().is_empty() {
+            errors.push(format!(
+                "{OPS_GATES_PATH}: gate `{}` must define action_id",
+                gate.id
+            ));
+            continue;
+        }
+        if !known_actions.contains(&gate.action_id) {
+            errors.push(format!(
+                "{OPS_GATES_PATH}: gate `{}` references unknown action_id `{}`",
+                gate.id, gate.action_id
+            ));
+        }
+    }
+    for required in [
+        "ops.doctor",
+        "ops.validate",
+        "ops.gate.directory-completeness",
+        "ops.gate.schema-validation",
+        "ops.gate.pin-drift",
+        "ops.gate.stack-reproducibility",
+        "ops.gate.k8s-determinism",
+        "ops.gate.observe-coverage",
+        "ops.gate.dataset-lifecycle",
+        "ops.gate.unified-readiness",
+    ] {
+        if !seen_gate_ids.contains(required) {
+            errors.push(format!("{OPS_GATES_PATH}: missing required gate `{required}`"));
+        }
     }
 
     if inventory.stack_profiles.profiles.is_empty() {
@@ -2265,6 +2342,11 @@ mod tests {
             r#"{"schema_version":1}"#,
         )
         .expect("write contracts");
+        fs::write(
+            repo.join("ops/inventory/gates.json"),
+            r#"{"schema_version":1,"gates":[]}"#,
+        )
+        .expect("write gates");
 
         let first = load_ops_inventory_cached(repo).expect("first");
         assert_eq!(
