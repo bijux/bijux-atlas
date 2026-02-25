@@ -69,7 +69,7 @@ fn load_toolchain_inventory(ops_root: &Path) -> Result<ToolchainInventory, OpsCo
 }
 
 pub(crate) fn load_tools_manifest(repo_root: &Path) -> Result<ToolsToml, OpsCommandError> {
-    let path = repo_root.join("ops/tools/tools.toml");
+    let path = repo_root.join("ops/inventory/tools.toml");
     let text = std::fs::read_to_string(&path).map_err(|err| {
         OpsCommandError::Manifest(format!("failed to read {}: {err}", path.display()))
     })?;

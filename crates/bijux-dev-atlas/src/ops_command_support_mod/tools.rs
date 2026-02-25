@@ -122,7 +122,7 @@ pub(crate) fn validate_pins_completeness(
                 .map(str::to_string)
         })
         .collect::<std::collections::BTreeSet<_>>();
-    for required in ["ops/tools/tools.toml", "ops/stack/pins.toml"] {
+    for required in ["ops/inventory/tools.toml", "ops/stack/pins.toml"] {
         if !contract_paths.contains(required) {
             errors.push(format!(
                 "contracts inventory missing required entry `{required}`"
@@ -264,7 +264,7 @@ mod tests {
             "image: redis:latest\n",
         )
         .expect("write values offline");
-        std::fs::write(root.path().join("ops/inventory/contracts.json"),"{\"contracts\":[{\"path\":\"ops/tools/tools.toml\"},{\"path\":\"ops/stack/pins.toml\"}]}").expect("write contracts");
+        std::fs::write(root.path().join("ops/inventory/contracts.json"),"{\"contracts\":[{\"path\":\"ops/inventory/tools.toml\"},{\"path\":\"ops/stack/pins.toml\"}]}").expect("write contracts");
         let pins = crate::ops_command_support::StackPinsToml {
             charts: std::collections::BTreeMap::new(),
             images: std::collections::BTreeMap::from([(

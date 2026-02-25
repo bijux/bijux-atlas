@@ -5,5 +5,5 @@
 
 Toolchain versions and image pins are SSOT and must avoid floating references.
 
-- Tool manifest: `ops/tools/tools.toml`
+- Tool manifest: `ops/inventory/tools.toml`
 - Stack pins: `ops/stack/pins.toml`
