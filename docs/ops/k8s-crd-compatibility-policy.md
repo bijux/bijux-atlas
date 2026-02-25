@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Kubernetes CRD Compatibility Policy
 
 - Owner: bijux-atlas-operations

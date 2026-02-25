@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Ops Inventory Contract Map
 
 Canonical inventory SSOT files and their schemas/generators.

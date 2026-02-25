@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Observability Pack Definition
 
 - Owner: bijux-atlas-operations

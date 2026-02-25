@@ -1,8 +1,11 @@
 # Ops Docs Index
 
 - `docs/ops/README.md`
-- `docs/ops/architecture.md`
-- `docs/ops/contracts.md`
-- `docs/ops/workflows.md`
-- `docs/ops/gates.md`
 - `docs/operations/INDEX.md`
+- `docs/operations/ops-system/INDEX.md`
+- `docs/operations/ops-system/contracts.md`
+- `docs/operations/ops-system/gates.md`
+- `docs/operations/ops-system/evidence.md`
+- `docs/operations/ops-system/registry.md`
+- `docs/operations/ops-system/schema.md`
+- `docs/operations/ops-system/generators.md`

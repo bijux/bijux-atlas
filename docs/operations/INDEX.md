@@ -5,7 +5,7 @@
 
 ## What
 
-Canonical entrypoint for operating atlas in production.
+Canonical operations handbook for this repository. Human-facing operations guidance lives under `docs/operations/**`.
 
 ## Why
 
@@ -48,11 +48,7 @@ Does not define product semantics or internal crate APIs.
 - [Policy Violation Triage](policy-violation-triage.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Platform Handover](platform-handover.md)
-- `docs/ops/INDEX.md`
-- `docs/ops/failure-triage-guide.md`
-- `docs/ops/troubleshooting-runbook.md`
-- `docs/ops/ops-glossary.md`
-- `docs/ops/cross-area-navigation.md`
+- [Ops System](ops-system/INDEX.md)
 
 ## Topic Registry
 

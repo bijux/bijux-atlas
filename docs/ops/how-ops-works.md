@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # How Ops Works
 
 - Owner: bijux-atlas-operations

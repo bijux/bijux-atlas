@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Toolchain Pins Explanation
 
 - Owner: bijux-atlas-operations

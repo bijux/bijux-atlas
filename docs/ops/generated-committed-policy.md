@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Generated Committed Policy
 
 Primary generated outputs are written under `ops/_generated/`.

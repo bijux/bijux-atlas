@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Kubernetes Upgrade Contract
 
 - Owner: bijux-atlas-operations

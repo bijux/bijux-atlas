@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Dataset Lifecycle Contract
 
 Dataset lifecycle is governed by declarative contracts in `ops/datasets/`.

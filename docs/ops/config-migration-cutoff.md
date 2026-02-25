@@ -1,3 +1,5 @@
+> Redirect Notice: canonical handbook content lives under `docs/operations/` (see `docs/operations/ops-system/INDEX.md`).
+
 # Config Pipeline Migration Cutoff
 
 - Canonical config compiler pipeline target: `bijux-dev-atlas config validate|gen|diff|fmt`
