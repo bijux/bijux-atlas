@@ -43,7 +43,7 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
         Path::new("ops/CONTRACT.md"),
         Path::new("ops/INDEX.md"),
         Path::new("ops/README.md"),
-        Path::new("docs/ops/INDEX.md"),
+        Path::new("docs/operations/ops-system/INDEX.md"),
     ];
     for rel in canonical_docs {
         let path = ctx.repo_root.join(rel);
@@ -2383,10 +2383,10 @@ pub(super) fn check_ops_docs_governance(
         }
     }
 
-    let reference_index_rel = Path::new("docs/ops/INDEX.md");
+    let reference_index_rel = Path::new("docs/operations/ops-system/INDEX.md");
     let reference_index_text = fs::read_to_string(ctx.repo_root.join(reference_index_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
-    let docs_root = ctx.repo_root.join("docs/ops");
+    let docs_root = ctx.repo_root.join("docs/operations/ops-system");
     for doc in walk_files(&docs_root) {
         let rel = doc.strip_prefix(ctx.repo_root).unwrap_or(doc.as_path());
         if rel.extension().and_then(|v| v.to_str()) != Some("md") {
@@ -2402,21 +2402,24 @@ pub(super) fn check_ops_docs_governance(
             violations.push(violation(
                 "OPS_REPORT_DOC_ORPHAN",
                 format!(
-                    "ops doc `{}` is not linked from docs/ops/INDEX.md",
+                    "ops doc `{}` is not linked from docs/operations/ops-system/INDEX.md",
                     rel.display()
                 ),
-                "add doc link to docs/ops/INDEX.md or remove orphan docs/ops doc",
+                "add doc link to docs/operations/ops-system/INDEX.md or remove orphan ops-system doc",
                 Some(reference_index_rel),
             ));
         }
     }
     for target in markdown_link_targets(&reference_index_text) {
-        let rel = Path::new("docs/ops").join(&target);
+        let rel = Path::new("docs/operations/ops-system").join(&target);
         if !ctx.adapters.fs.exists(ctx.repo_root, &rel) {
             violations.push(violation(
                 "OPS_REPORT_DOC_REFERENCE_BROKEN_LINK",
-                format!("docs/ops/INDEX.md links missing ops doc `{}`", rel.display()),
-                "fix broken docs links in docs/ops/INDEX.md",
+                format!(
+                    "docs/operations/ops-system/INDEX.md links missing ops doc `{}`",
+                    rel.display()
+                ),
+                "fix broken docs links in docs/operations/ops-system/INDEX.md",
                 Some(reference_index_rel),
             ));
         }
