@@ -10,6 +10,13 @@ Stable error identifiers for `bijux dev atlas ops ...` command surfaces.
 - Human-readable messages may evolve, but identifiers should not churn without a migration update.
 - Ops commands are capability-gated; missing flags should fail with explicit effect requirements.
 
+## Namespace Convention
+
+- Error IDs follow `OPS_<DOMAIN>_<CODE>`.
+- `<DOMAIN>` is uppercase and intent-based (for example `CONTRACT`, `TOOL`, `RENDER`, `INSTALL`, `STATUS`, `PINS`, `REPORT`).
+- `<CODE>` is uppercase and stable for machine consumers.
+- Deprecated IDs require a compatibility window and explicit migration note.
+
 ## Current Error IDs
 
 - `OPS_CONTRACT_ERROR`: Ops SSOT contract violation or missing required inputs

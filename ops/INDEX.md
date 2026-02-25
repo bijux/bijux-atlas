@@ -5,6 +5,7 @@ Human entry for the ops specification surface.
 ## Start Here
 
 - Contract: `ops/CONTRACT.md`
+- SSOT and generated policy: `ops/SSOT.md`
 - Control-plane ownership: `docs/development/tooling/dev-atlas-ops.md`
 - Inventory map: `ops/report/docs/inventory-contracts.md`
 - Migration window: `ops/report/docs/migration-window.md`

@@ -1,5 +1,7 @@
 # Control Plane Definition
 
+> Contract warning: this document must match the current command and repository reality; mismatches are contract drift and must be fixed immediately.
+
 Control plane version: `1`
 
 ## Scope
