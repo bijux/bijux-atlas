@@ -8,6 +8,7 @@ Rules:
 - Every committed file in `ops/_generated.example/` must be declared in `ops/_generated.example/ALLOWLIST.json`.
 - `ops/_generated.example/inventory-index.json` is the generated inventory checksum index used for drift comparisons.
 - `ops/_generated.example/control-plane.snapshot.md` is the control-plane snapshot used for drift checks.
+- `ops/_generated.example/control-plane-drift-report.json` is the control-plane contract drift status artifact.
 - `ops/_generated.example/docs-drift-report.json` is the docs governance drift report artifact.
 - `ops/_generated.example/file-usage-report.json` is the generated usage graph and orphan detector for ops JSON/YAML/TOML artifacts.
 - `ops/_generated.example/contract-coverage-report.json` is the generated contract coverage summary.
@@ -24,6 +25,7 @@ Rules:
 - `ops/_generated.example/pins.index.example.json`: `bijux dev atlas inventory pins index --write-example`
 - `ops/_generated.example/inventory-index.json`: `bijux dev atlas inventory index --write-example`
 - `ops/_generated.example/control-plane.snapshot.md`: `bijux dev atlas ops control-plane snapshot --write-example`
+- `ops/_generated.example/control-plane-drift-report.json`: `bijux dev atlas ops control-plane drift-report --write-example`
 - `ops/_generated.example/docs-drift-report.json`: `bijux dev atlas docs drift --write-example`
 - `ops/_generated.example/file-usage-report.json`: `bijux dev atlas ops inventory file-usage --write-example`
 - `ops/_generated.example/fixture-drift-report.json`: `bijux dev atlas ops fixtures drift --write-example`
@@ -37,6 +39,7 @@ Rules:
 - `ops/_generated.example/pins.index.example.json`: generated pins-index example contract.
 - `ops/_generated.example/inventory-index.json`: generated checksum index for inventory SSOT files.
 - `ops/_generated.example/control-plane.snapshot.md`: generated control-plane snapshot for drift enforcement.
+- `ops/_generated.example/control-plane-drift-report.json`: generated control-plane drift report covering policy-only doc contract and cargo-metadata alignment.
 - `ops/_generated.example/docs-drift-report.json`: generated docs governance drift report.
 - `ops/_generated.example/file-usage-report.json`: generated file usage graph with orphan classifications across ops data artifacts.
 - `ops/_generated.example/contract-coverage-report.json`: generated contract coverage report for domain contract invariants and check linkage.

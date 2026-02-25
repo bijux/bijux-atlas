@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops control-plane drift-report --write-example",
+  "status": "pass",
+  "checks": [
+    {
+      "id": "control-plane-doc-policy-only",
+      "status": "pass"
+    },
+    {
+      "id": "control-plane-snapshot-present",
+      "status": "pass"
+    },
+    {
+      "id": "control-plane-cargo-metadata-alignment",
+      "status": "pass"
+    }
+  ]
+}

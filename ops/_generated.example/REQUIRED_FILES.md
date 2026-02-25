@@ -17,6 +17,7 @@ required_files:
   - ops/_generated.example/file-usage-report.json
   - ops/_generated.example/fixture-drift-report.json
   - ops/_generated.example/contract-coverage-report.json
+  - ops/_generated.example/control-plane-drift-report.json
   - ops/_generated.example/schema-drift-report.json
 required_dirs: []
 forbidden_patterns:

@@ -19,7 +19,8 @@ Covered command groups:
 - `ops`
 
 Control plane truth is derived from `cargo metadata` and synchronized to `ops/_generated.example/control-plane.snapshot.md`.
-This page must either match that snapshot or contain only stable contract statements with no hardcoded crate lists.
+This page is a normative contract and must not contain hardcoded crate lists.
+Current-state crate inventory must live only in `ops/_generated.example/control-plane.snapshot.md`.
 
 ## SSOT Rules
 
@@ -40,6 +41,9 @@ This page must either match that snapshot or contain only stable contract statem
 - Control-plane artifacts follow `artifacts/<run-kind>/<run-id>/...`; current dev-atlas run kinds are rooted at `artifacts/atlas-dev/<domain>/<run-id>/...`.
 - Artifacts must not be tracked by git.
 - Internal checks stay hidden unless `--include-internal` is provided.
+- `ops/CONTROL_PLANE.md` must stay policy-only; crate names are forbidden outside explicit examples.
+- `ops/_generated.example/control-plane.snapshot.md` is the only committed current-state crate snapshot.
+- Docs that name repository crates must match `cargo metadata` package names.
 
 ## Effect Rules
 
@@ -52,6 +56,12 @@ This page must either match that snapshot or contain only stable contract statem
 
 - CI entrypoints: `bijux dev atlas doctor` and `bijux dev atlas check run --suite ci`
 - Local entrypoints: `bijux dev atlas doctor` and `bijux dev atlas check run --suite local`
+
+## Merge Strategy For Dev Crates
+
+- Dev control-plane crate merges or splits must preserve command-surface compatibility and schema-versioned artifact contracts.
+- Structural crate decisions are policy inputs; authoritative current crate inventory is always generated from `cargo metadata`.
+- Any merge changing command ownership requires updating command snapshots and registry contracts in the same change set.
 
 ## Output And Exit Contracts
 
