@@ -267,12 +267,68 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-atlas-api/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-api"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-api/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-api"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-api/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-api",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-api/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-api",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-api/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-api",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-api/README.md",
       "tags": [
         "bijux-atlas-api",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-api/TESTING.md",
+      "tags": [
+        "bijux-atlas-api",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-api/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-api",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-api/docs/API_CONTRACT.md",
@@ -404,12 +460,76 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-atlas-cli/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-cli"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-cli"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/COMMAND_SURFACE.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "command-surface"
+      ],
+      "topic": "COMMAND_SURFACE"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-cli/README.md",
       "tags": [
         "bijux-atlas-cli",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/TESTING.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-cli/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-cli",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
@@ -509,12 +629,68 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-atlas-core/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-core"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-core/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-core"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-core/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-core",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-core/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-core",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-core/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-core",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-core/README.md",
       "tags": [
         "bijux-atlas-core",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-core/TESTING.md",
+      "tags": [
+        "bijux-atlas-core",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-core/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-core",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-core/docs/CANONICALIZATION.md",
@@ -638,12 +814,68 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-atlas-ingest/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-ingest"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-ingest"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-ingest/README.md",
       "tags": [
         "bijux-atlas-ingest",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/TESTING.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-ingest/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-ingest",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-ingest/docs/ARTIFACT_OUTPUT_CONTRACT.md",
@@ -794,12 +1026,76 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-atlas-model/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-model"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-model/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-model"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-model/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-model",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-model/DATA_MODEL.md",
+      "tags": [
+        "bijux-atlas-model",
+        "data-model"
+      ],
+      "topic": "DATA_MODEL"
+    },
+    {
+      "path": "crates/bijux-atlas-model/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-model",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-model/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-model",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-model/README.md",
       "tags": [
         "bijux-atlas-model",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-model/TESTING.md",
+      "tags": [
+        "bijux-atlas-model",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-model/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-model",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-model/docs/COMPAT_BIJUX_DNA.md",
@@ -923,12 +1219,76 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-atlas-policies/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-atlas-policies"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-policies"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/EXTENSION_GUIDE.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "extension-guide"
+      ],
+      "topic": "EXTENSION_GUIDE"
+    },
+    {
       "path": "crates/bijux-atlas-policies/README.md",
       "tags": [
         "bijux-atlas-policies",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/TESTING.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-policies/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-policies",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-policies/docs/CHANGE_CHECKLIST.md",
@@ -1052,12 +1412,60 @@
       "topic": "ARCHITECTURE"
     },
     {
+      "path": "crates/bijux-atlas-query/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-query"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-query/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-query",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-query/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-query",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-query/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-query",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-query/README.md",
       "tags": [
         "bijux-atlas-query",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-query/TESTING.md",
+      "tags": [
+        "bijux-atlas-query",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-query/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-query",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-query/docs/ADDING_FILTERS.md",
@@ -1181,12 +1589,60 @@
       "topic": "ARCHITECTURE"
     },
     {
+      "path": "crates/bijux-atlas-server/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-server"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-server/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-server",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-server/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-server",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-server/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-server",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-server/README.md",
       "tags": [
         "bijux-atlas-server",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-server/TESTING.md",
+      "tags": [
+        "bijux-atlas-server",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-server/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-server",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-server/docs/CACHING.md",
@@ -1352,12 +1808,60 @@
       "topic": "ARCHITECTURE"
     },
     {
+      "path": "crates/bijux-atlas-store/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-atlas-store"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-atlas-store/CONTRACT.md",
+      "tags": [
+        "bijux-atlas-store",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-atlas-store/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-atlas-store",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-atlas-store/EXAMPLES.md",
+      "tags": [
+        "bijux-atlas-store",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-atlas-store/README.md",
       "tags": [
         "bijux-atlas-store",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-atlas-store/TESTING.md",
+      "tags": [
+        "bijux-atlas-store",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-atlas-store/VERSIONING.md",
+      "tags": [
+        "bijux-atlas-store",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-atlas-store/docs/ARTIFACT_CONTRACT.md",
@@ -1481,12 +1985,76 @@
       "topic": "README"
     },
     {
+      "path": "crates/bijux-dev-atlas-adapters/ADAPTER_BOUNDARY.md",
+      "tags": [
+        "adapter-boundary",
+        "bijux-dev-atlas-adapters"
+      ],
+      "topic": "ADAPTER_BOUNDARY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-adapters"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-adapters"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/EXAMPLES.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-dev-atlas-adapters/README.md",
       "tags": [
         "bijux-dev-atlas-adapters",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/TESTING.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-adapters/VERSIONING.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-dev-atlas-adapters/docs/BOUNDARY.md",
@@ -1497,12 +2065,76 @@
       "topic": "BOUNDARY"
     },
     {
+      "path": "crates/bijux-dev-atlas-adapters/docs/INDEX.md",
+      "tags": [
+        "bijux-dev-atlas-adapters",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-core"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-core"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/EXAMPLES.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-dev-atlas-core/README.md",
       "tags": [
         "bijux-dev-atlas-core",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/TESTING.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-core/VERSIONING.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-dev-atlas-core/docs/ENGINE_ARCHITECTURE.md",
@@ -1513,12 +2145,84 @@
       "topic": "ENGINE_ARCHITECTURE"
     },
     {
+      "path": "crates/bijux-dev-atlas-core/docs/INDEX.md",
+      "tags": [
+        "bijux-dev-atlas-core",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-model"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-model"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/DATA_MODEL.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "data-model"
+      ],
+      "topic": "DATA_MODEL"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/EXAMPLES.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-dev-atlas-model/README.md",
       "tags": [
         "bijux-dev-atlas-model",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/TESTING.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-model/VERSIONING.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-dev-atlas-model/docs/CONTRACTS.md",
@@ -1529,12 +2233,92 @@
       "topic": "CONTRACTS"
     },
     {
+      "path": "crates/bijux-dev-atlas-model/docs/INDEX.md",
+      "tags": [
+        "bijux-dev-atlas-model",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas-policies"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas-policies"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/EXAMPLES.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/EXTENSION_GUIDE.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "extension-guide"
+      ],
+      "topic": "EXTENSION_GUIDE"
+    },
+    {
       "path": "crates/bijux-dev-atlas-policies/README.md",
       "tags": [
         "bijux-dev-atlas-policies",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/TESTING.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/VERSIONING.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas-policies/docs/INDEX.md",
+      "tags": [
+        "bijux-dev-atlas-policies",
+        "index"
+      ],
+      "topic": "INDEX"
     },
     {
       "path": "crates/bijux-dev-atlas-policies/docs/POLICY_AUTHORING.md",
@@ -1545,12 +2329,76 @@
       "topic": "POLICY_AUTHORING"
     },
     {
+      "path": "crates/bijux-dev-atlas/ARCHITECTURE.md",
+      "tags": [
+        "architecture",
+        "bijux-dev-atlas"
+      ],
+      "topic": "ARCHITECTURE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/BENCHMARKS.md",
+      "tags": [
+        "benchmarks",
+        "bijux-dev-atlas"
+      ],
+      "topic": "BENCHMARKS"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/COMMAND_SURFACE.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "command-surface"
+      ],
+      "topic": "COMMAND_SURFACE"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/ERROR_TAXONOMY.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "error-taxonomy"
+      ],
+      "topic": "ERROR_TAXONOMY"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/EXAMPLES.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "examples"
+      ],
+      "topic": "EXAMPLES"
+    },
+    {
       "path": "crates/bijux-dev-atlas/README.md",
       "tags": [
         "bijux-dev-atlas",
         "readme"
       ],
       "topic": "README"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/TESTING.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "testing"
+      ],
+      "topic": "TESTING"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/VERSIONING.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "versioning"
+      ],
+      "topic": "VERSIONING"
     },
     {
       "path": "crates/bijux-dev-atlas/docs/ARTIFACTS.md",
@@ -1607,6 +2455,14 @@
         "failure-modes"
       ],
       "topic": "FAILURE_MODES"
+    },
+    {
+      "path": "crates/bijux-dev-atlas/docs/INDEX.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "index"
+      ],
+      "topic": "INDEX"
     },
     {
       "path": "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md",
