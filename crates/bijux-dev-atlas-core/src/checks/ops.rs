@@ -412,7 +412,6 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         "k8s",
         "kind",
         "load",
-        "obs",
         "observe",
         "quarantine",
         "registry",

@@ -2033,8 +2033,6 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "k8s",
         "kind",
         "load",
-        "manifests",
-        "obs",
         "observe",
         "quarantine",
         "registry",
