@@ -8,7 +8,7 @@
       ],
       "allow": [
         "ops/stack/versions.json",
-        "ops/inventory/toolchain.yaml"
+        "ops/inventory/toolchain.json"
       ]
     },
     "observability_pack": {

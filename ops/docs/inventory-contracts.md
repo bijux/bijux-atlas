@@ -10,6 +10,5 @@ Canonical inventory SSOT files and their schemas/generators.
 | `ops/inventory/layers.json` | `ops/schema/meta/layer-contract.schema.json` | `bijux dev atlas ops gen run` / layer contract generator | Canonical layer contract inventory |
 | `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` | `bijux dev atlas ops generate pins-index` | Canonical image and dataset pin SSOT |
 | `ops/inventory/toolchain.json` | `ops/schema/inventory/toolchain.schema.json` | manual (validated in `ops doctor`) | Canonical toolchain probe and image inventory |
-| `ops/inventory/toolchain.yaml` | `ops/schema/stack/version-manifest.schema.json` + tool-versions SSOT | `bijux dev atlas ops stack versions-sync` + migration tooling | Compatibility mirror during migration window |
 | `ops/inventory/owner-docs.fragments.json` | n/a (generated fragment inventory) | `bijux dev atlas ops migrate` | Derived from `ops/*/OWNER.md` during migration window |
 | `ops/inventory/contracts/*.contract.fragment.json` | n/a (fragment contract format) | `bijux dev atlas ops migrate` | Structured fragments replacing per-domain free-form contract docs over time |

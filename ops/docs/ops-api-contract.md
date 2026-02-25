@@ -12,6 +12,6 @@
 
 ## Examples
 
-- Update inventory/toolchain pins in `ops/inventory/toolchain.yaml`, then run `bijux dev atlas ops env doctor`.
+- Update inventory/toolchain pins in `ops/inventory/toolchain.json`, then run `bijux dev atlas ops env doctor`.
 - Update load suite thresholds in `ops/load/thresholds/*.thresholds.json`, then run `bijux dev atlas ops test load`.
 - Update namespace/port contracts in `ops/inventory/layers.json`, then run repo checks for ops namespace/ports invariants.
