@@ -1,8 +1,0 @@
-{
-  "kind": "ops-load-suite-thresholds",
-  "schema_version": 1,
-  "suite": "cold-start-p99",
-  "thresholds": {
-    "cold_start_p99_ms_max": 2500
-  }
-}

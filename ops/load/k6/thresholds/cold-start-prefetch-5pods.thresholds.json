@@ -1,8 +1,0 @@
-{
-  "kind": "ops-load-suite-thresholds",
-  "schema_version": 1,
-  "suite": "cold-start-prefetch-5pods",
-  "thresholds": {
-    "max_pod_cold_start_ms_max": 4000
-  }
-}

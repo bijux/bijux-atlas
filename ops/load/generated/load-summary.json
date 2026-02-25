@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "suite_manifest": "ops/load/k6/manifests/suites.json",
+  "suite_manifest": "ops/load/suites/suites.json",
   "deterministic_seed": 11001,
   "query_pack": "pinned-v1",
   "suites": [
