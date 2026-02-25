@@ -338,6 +338,104 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
             ));
         }
     }
+    let canonical_dirs = [
+        "inventory",
+        "schema",
+        "env",
+        "stack",
+        "k8s",
+        "observe",
+        "load",
+        "datasets",
+        "e2e",
+        "report",
+        "_generated",
+        "_generated.example",
+    ];
+    for dir in canonical_dirs {
+        let rel = Path::new("ops").join(dir);
+        if !ctx.adapters.fs.exists(ctx.repo_root, &rel) {
+            violations.push(violation(
+                "OPS_CANONICAL_DIRECTORY_MISSING",
+                format!("missing canonical ops directory `{}`", rel.display()),
+                "restore the canonical ops directory set",
+                Some(&rel),
+            ));
+            continue;
+        }
+        for required_file in ["README.md", "OWNER.md", "REQUIRED_FILES.md"] {
+            let target = rel.join(required_file);
+            if !ctx.adapters.fs.exists(ctx.repo_root, &target) {
+                violations.push(violation(
+                    "OPS_CANONICAL_DIRECTORY_REQUIRED_FILE_MISSING",
+                    format!(
+                        "missing required file `{}` in canonical ops directory",
+                        target.display()
+                    ),
+                    "add required README/OWNER/REQUIRED_FILES marker files for canonical ops directories",
+                    Some(&target),
+                ));
+            }
+        }
+        let full = ctx.repo_root.join(&rel);
+        let has_any_entry = fs::read_dir(&full)
+            .ok()
+            .map(|mut entries| entries.next().is_some())
+            .unwrap_or(false);
+        if !has_any_entry {
+            violations.push(violation(
+                "OPS_CANONICAL_DIRECTORY_EMPTY",
+                format!("canonical ops directory is empty: `{}`", rel.display()),
+                "add required marker files and committed contract content",
+                Some(&rel),
+            ));
+        }
+    }
+    let allowed_top_level_dirs = BTreeSet::from([
+        "_evidence",
+        "_examples",
+        "_generated",
+        "_generated.example",
+        "_meta",
+        "atlas-dev",
+        "datasets",
+        "docs",
+        "e2e",
+        "env",
+        "fixtures",
+        "helm",
+        "inventory",
+        "k8s",
+        "kind",
+        "load",
+        "manifests",
+        "obs",
+        "observe",
+        "quarantine",
+        "registry",
+        "report",
+        "schema",
+        "schemas",
+        "stack",
+        "tools",
+    ]);
+    for entry in read_dir_entries(&ctx.repo_root.join("ops")) {
+        if !entry.is_dir() {
+            continue;
+        }
+        let Some(name) = entry.file_name().and_then(|v| v.to_str()) else {
+            continue;
+        };
+        if !allowed_top_level_dirs.contains(name) {
+            let rel = Path::new("ops").join(name);
+            violations.push(violation(
+                "OPS_TOP_LEVEL_DIRECTORY_FORBIDDEN",
+                format!("non-canonical top-level ops directory found: `{}`", rel.display()),
+                "remove stray directories or update contract and checks if the directory is intentional",
+                Some(&rel),
+            ));
+        }
+    }
     Ok(violations)
 }
 
@@ -466,10 +564,22 @@ fn checks_ops_surface_inventory(ctx: &CheckContext<'_>) -> Result<Vec<Violation>
     let index_text =
         fs::read_to_string(&index).map_err(|err| CheckError::Failed(err.to_string()))?;
     let required_entries = [
-        "stack", "k8s", "observe", "load", "e2e", "datasets", "report",
+        "inventory",
+        "schema",
+        "env",
+        "stack",
+        "k8s",
+        "observe",
+        "load",
+        "datasets",
+        "e2e",
+        "report",
+        "_generated",
+        "_generated.example",
     ];
     let listed_dirs: BTreeSet<String> = index_text
         .lines()
+        .filter(|line| line.trim_start().starts_with("- `ops/"))
         .filter_map(|line| line.split("`ops/").nth(1))
         .filter_map(|tail| tail.split('/').next())
         .map(|name| name.to_string())
@@ -485,6 +595,27 @@ fn checks_ops_surface_inventory(ctx: &CheckContext<'_>) -> Result<Vec<Violation>
                 Some(index_rel),
             ));
         }
+    }
+    let listed_order = index_text
+        .lines()
+        .filter(|line| line.trim_start().starts_with("- `ops/"))
+        .filter_map(|line| line.split("`ops/").nth(1))
+        .filter_map(|tail| tail.split('/').next())
+        .map(|name| name.to_string())
+        .collect::<Vec<_>>();
+    let expected_order = required_entries
+        .iter()
+        .map(|v| (*v).to_string())
+        .collect::<Vec<_>>();
+    if listed_order != expected_order {
+        violations.push(violation(
+            "OPS_INDEX_DIRECTORY_ORDER_INVALID",
+            format!(
+                "ops/INDEX.md canonical directory order mismatch: listed={listed_order:?} expected={expected_order:?}"
+            ),
+            "list canonical ops directories in stable contract order",
+            Some(index_rel),
+        ));
     }
     Ok(violations)
 }

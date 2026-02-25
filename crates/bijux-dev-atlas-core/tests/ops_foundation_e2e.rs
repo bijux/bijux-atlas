@@ -177,10 +177,20 @@ tags_any = ["fast"]
     write(&root.join("ops/ERRORS.md"), "# Errors\n");
     write(
         &root.join("ops/INDEX.md"),
-        "# Ops\n- `ops/stack/`\n- `ops/k8s/`\n- `ops/observe/`\n- `ops/load/`\n- `ops/e2e/`\n- `ops/datasets/`\n- `ops/report/`\n",
+        "# Ops\n- `ops/inventory/`\n- `ops/schema/`\n- `ops/env/`\n- `ops/stack/`\n- `ops/k8s/`\n- `ops/observe/`\n- `ops/load/`\n- `ops/datasets/`\n- `ops/e2e/`\n- `ops/report/`\n- `ops/_generated/`\n- `ops/_generated.example/`\n",
     );
     write(&root.join("ops/README.md"), "# Ops\n");
+    write(&root.join("ops/inventory/OWNER.md"), "# Owner\n");
+    write(
+        &root.join("ops/inventory/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/schema/README.md"), "# Schema\n");
+    write(&root.join("ops/schema/OWNER.md"), "# Owner\n");
+    write(
+        &root.join("ops/schema/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/schema/meta/ownership.schema.json"), "{}\n");
     write(&root.join("ops/schema/report/unified.schema.json"), "{}\n");
     write(
@@ -188,6 +198,9 @@ tags_any = ["fast"]
         "{}\n",
     );
     write(&root.join("ops/inventory/README.md"), "# Inventory\n");
+    write(&root.join("ops/env/README.md"), "# Env\n");
+    write(&root.join("ops/env/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/env/REQUIRED_FILES.md"), "# Required Files\n");
     write(
         &root.join("ops/inventory/surfaces.json"),
         "{\"schema_version\":1,\"entrypoints\":[]}\n",
@@ -202,17 +215,43 @@ tags_any = ["fast"]
     );
     write(
         &root.join("ops/inventory/generated-committed-mirror.json"),
-        "{\"schema_version\":1,\"allow_runtime_compat\":[],\"mirrors\":[{\"committed\":\"ops/_generated.example/.gitkeep\",\"source\":\"ops/_generated/.gitkeep\"}]}\n",
+        "{\"schema_version\":1,\"allow_runtime_compat\":[],\"mirrors\":[{\"committed\":\"ops/_generated.example/.gitkeep\",\"source\":\"ops/_generated/.gitkeep\"},{\"committed\":\"ops/_generated.example/README.md\",\"source\":\"ops/_generated/README.md\"},{\"committed\":\"ops/_generated.example/OWNER.md\",\"source\":\"ops/_generated/OWNER.md\"},{\"committed\":\"ops/_generated.example/REQUIRED_FILES.md\",\"source\":\"ops/_generated/REQUIRED_FILES.md\"}]}\n",
     );
     write(&root.join("ops/_generated.example/.gitkeep"), "\n");
+    write(&root.join("ops/_generated/README.md"), "# Generated\n");
+    write(&root.join("ops/_generated/OWNER.md"), "# Owner\n");
+    write(
+        &root.join("ops/_generated/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
+    write(&root.join("ops/_generated.example/README.md"), "# Generated Example\n");
+    write(&root.join("ops/_generated.example/OWNER.md"), "# Owner\n");
+    write(
+        &root.join("ops/_generated.example/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/_evidence/.gitkeep"), "\n");
-    write(&root.join("ops/stack/.gitkeep"), "\n");
-    write(&root.join("ops/k8s/.gitkeep"), "\n");
-    write(&root.join("ops/observe/.gitkeep"), "\n");
-    write(&root.join("ops/load/.gitkeep"), "\n");
-    write(&root.join("ops/e2e/.gitkeep"), "\n");
-    write(&root.join("ops/datasets/.gitkeep"), "\n");
-    write(&root.join("ops/report/.gitkeep"), "\n");
+    write(&root.join("ops/stack/README.md"), "# Stack\n");
+    write(&root.join("ops/stack/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/stack/REQUIRED_FILES.md"), "# Required Files\n");
+    write(&root.join("ops/k8s/README.md"), "# K8s\n");
+    write(&root.join("ops/k8s/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/k8s/REQUIRED_FILES.md"), "# Required Files\n");
+    write(&root.join("ops/observe/README.md"), "# Observe\n");
+    write(&root.join("ops/observe/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/observe/REQUIRED_FILES.md"), "# Required Files\n");
+    write(&root.join("ops/load/README.md"), "# Load\n");
+    write(&root.join("ops/load/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/load/REQUIRED_FILES.md"), "# Required Files\n");
+    write(&root.join("ops/e2e/README.md"), "# E2E\n");
+    write(&root.join("ops/e2e/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/e2e/REQUIRED_FILES.md"), "# Required Files\n");
+    write(&root.join("ops/datasets/README.md"), "# Datasets\n");
+    write(&root.join("ops/datasets/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/datasets/REQUIRED_FILES.md"), "# Required Files\n");
+    write(&root.join("ops/report/README.md"), "# Report\n");
+    write(&root.join("ops/report/OWNER.md"), "# Owner\n");
+    write(&root.join("ops/report/REQUIRED_FILES.md"), "# Required Files\n");
     write(
         &root.join("configs/ops/ops-surface-manifest.json"),
         "{\"schema_version\":1}\n",

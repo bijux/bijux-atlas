@@ -38,6 +38,29 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
             }
         }
     }
+    let canonical_docs = [
+        Path::new("ops/CONTRACT.md"),
+        Path::new("ops/INDEX.md"),
+        Path::new("ops/README.md"),
+        Path::new("ops/docs/REFERENCE_INDEX.md"),
+    ];
+    for rel in canonical_docs {
+        let path = ctx.repo_root.join(rel);
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+        if content.contains("ops/obs/") {
+            violations.push(violation(
+                "OPS_LEGACY_REFERENCE_FOUND",
+                format!(
+                    "legacy observability path `ops/obs/` found in canonical document {}",
+                    rel.display()
+                ),
+                "use canonical `ops/observe/` path and keep migration notes in dedicated migration docs only",
+                Some(rel),
+            ));
+        }
+    }
     Ok(violations)
 }
 
