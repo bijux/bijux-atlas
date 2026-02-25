@@ -12,6 +12,12 @@ Own k6 suites/manifests, perf baselines, and load reporting.
 ## Contracts
 - `ops/load/CONTRACT.md`
 - `ops/load/suites/suites.json`
+- `ops/load/contracts/deterministic-seed-policy.json`
+- `ops/load/contracts/query-pack-catalog.json`
+
+## Generated
+- `ops/load/generated/load-summary.json`
+- `ops/load/generated/load-drift-report.json`
 
 ## Artifacts
 - `ops/_artifacts/<run_id>/load/`

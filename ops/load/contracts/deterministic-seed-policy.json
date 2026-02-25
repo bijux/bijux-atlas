@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "deterministic_seed": 11001,
+  "seed_source": "ops/load/contracts/deterministic-seed-policy.json",
+  "applies_to": ["k6", "suite-expansion", "report-generation"],
+  "policy": "all load planning and report generation must use this fixed seed unless explicitly overridden by approved profile policy"
+}

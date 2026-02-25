@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "suite_manifest": "ops/load/k6/manifests/suites.json",
+  "deterministic_seed": 11001,
+  "query_pack": "pinned-v1",
+  "suites": [
+    "cheap-only-survival",
+    "cold-start-p99",
+    "cold-start-prefetch-5pods",
+    "diff-heavy",
+    "hpa-validation-short",
+    "load-under-rollback",
+    "load-under-rollout",
+    "mixed",
+    "mixed-gene-sequence",
+    "multi-release",
+    "noisy-neighbor-cpu-throttle",
+    "pod-churn",
+    "redis-optional",
+    "response-size-abuse",
+    "sharded-fanout",
+    "soak-30m",
+    "spike-overload-proof",
+    "stampede",
+    "store-outage-under-spike",
+    "warm-steady-state-p99"
+  ],
+  "scenario_coverage": {
+    "covered": [
+      "cheap-only-survival.json",
+      "cold-start.json",
+      "diff-heavy.json",
+      "hpa-validation-short.json",
+      "mixed-gene-sequence.json",
+      "mixed.json",
+      "multi-release.json",
+      "noisy-neighbor-cpu-throttle.json",
+      "pod-churn.json",
+      "redis-optional.json",
+      "response-size-abuse.json",
+      "sharded-fanout.json",
+      "soak-30m.json",
+      "spike-overload-proof.json",
+      "stampede.json",
+      "store-outage-under-spike.json",
+      "warm-steady-state-p99.json"
+    ],
+    "missing": []
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "packs": [
+    {
+      "id": "pinned-v1",
+      "query_file": "ops/load/queries/pinned-v1.json",
+      "lock_file": "ops/load/queries/pinned-v1.lock",
+      "status": "active"
+    }
+  ]
+}
