@@ -9833,6 +9833,26 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "docs-front-matter",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/DOCS_FRONT_MATTER.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-front-matter",
+        "governance"
+      ],
+      "topic": "DOCS_FRONT_MATTER"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "docs-ownership",
         "governance"
       ],
@@ -9847,6 +9867,26 @@
         "governance"
       ],
       "topic": "DOCS_OWNERSHIP"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-quality-policy",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/DOCS_QUALITY_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-quality-policy",
+        "governance"
+      ],
+      "topic": "DOCS_QUALITY_POLICY"
     },
     {
       "crate": null,

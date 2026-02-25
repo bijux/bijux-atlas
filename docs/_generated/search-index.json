@@ -5974,6 +5974,18 @@
     },
     {
       "keywords": [
+        "docs-front-matter",
+        "governance"
+      ],
+      "path": "docs/governance/DOCS_FRONT_MATTER.md",
+      "tags": [
+        "docs-front-matter",
+        "governance"
+      ],
+      "topic": "DOCS_FRONT_MATTER"
+    },
+    {
+      "keywords": [
         "docs-ownership",
         "governance"
       ],
@@ -5983,6 +5995,18 @@
         "governance"
       ],
       "topic": "DOCS_OWNERSHIP"
+    },
+    {
+      "keywords": [
+        "docs-quality-policy",
+        "governance"
+      ],
+      "path": "docs/governance/DOCS_QUALITY_POLICY.md",
+      "tags": [
+        "docs-quality-policy",
+        "governance"
+      ],
+      "topic": "DOCS_QUALITY_POLICY"
     },
     {
       "keywords": [
