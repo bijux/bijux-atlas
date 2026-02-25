@@ -13,3 +13,5 @@ Observability assets (dashboards, alerts, rules, otel, prometheus) in the target
 ## Drill Templates
 
 - `ops/observe/drills/templates/incident-template.md`
+
+Placeholder extension directories tracked with `.gitkeep`: `ops/observe/alerts`, `ops/observe/dashboards`, `ops/observe/prom`, `ops/observe/otel`, `ops/observe/rules`.

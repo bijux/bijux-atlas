@@ -10,7 +10,12 @@ required_files:
   - ops/env/ci/overlay.json
   - ops/env/prod/overlay.json
   - ops/schema/env/overlay.schema.json
-required_dirs: []
+required_dirs:
+  - ops/env/base
+  - ops/env/ci
+  - ops/env/dev
+  - ops/env/overlays
+  - ops/env/prod
 forbidden_patterns:
   - legacy-observe-alias/
   - legacy-observe-schema-alias/

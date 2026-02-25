@@ -14,3 +14,5 @@ Canonical ops schemas. Generated and validation tooling should reference this di
 - `ops/schema/BUDGET_POLICY.md`: schema count growth budget policy.
 - `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md`: approved cap exceptions with rationale.
 - `ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md`: documented non-runtime schema references.
+
+Placeholder extension directories tracked with `.gitkeep`: `ops/schema`, `ops/schema/generated`, `ops/schema/inventory`.

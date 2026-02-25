@@ -21,3 +21,5 @@ Report assembly and evidence publishing across stack, observe, load, datasets, a
 - `make ops-report`
 - `make ops-readiness-scorecard`
 - `make ops-incident-repro-kit`
+
+Placeholder extension directories tracked with `.gitkeep`: `ops/report/docs/runbooks`, `ops/report/docs/troubleshooting`.

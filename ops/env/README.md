@@ -20,3 +20,5 @@ Environment overlays for ops deployment variants.
   - `allow_write`
   - `allow_subprocess`
   - `network_mode`
+
+Placeholder extension directories tracked with `.gitkeep`: `ops/env/base`, `ops/env/dev`, `ops/env/ci`, `ops/env/prod`, `ops/env/overlays`.

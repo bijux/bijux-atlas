@@ -11,6 +11,7 @@ required_files:
   - ops/inventory/toolchain.json
   - ops/inventory/pins.yaml
   - ops/inventory/pin-freeze.json
+  - ops/inventory/placeholder-dirs.json
   - ops/inventory/gates.json
   - ops/inventory/drills.json
   - ops/inventory/owners.json

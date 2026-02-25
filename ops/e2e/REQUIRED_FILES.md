@@ -15,6 +15,9 @@ required_files:
   - ops/e2e/taxonomy.json
 required_dirs:
   - ops/e2e/generated
+  - ops/e2e/datasets
+  - ops/e2e/expectations
+  - ops/e2e/manifests
 forbidden_patterns:
   - legacy-observe-alias/
   - legacy-observe-schema-alias/

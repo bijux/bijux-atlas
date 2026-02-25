@@ -27,3 +27,5 @@ Own Helm chart delivery, install profiles, and Kubernetes-only validation gates.
 - Chart/value schema mismatch.
 - Install matrix drift from declared profiles.
 - Cluster policy regression in test suite.
+
+Placeholder extension directory tracked with `.gitkeep`: `ops/k8s/tests/checks/perf`.

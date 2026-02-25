@@ -18,3 +18,5 @@ Composition-only end-to-end scenarios across stack, k8s, observe, load, and data
 ## Entrypoints
 - `make ops-e2e SUITE=smoke|k8s-suite|realdata`
 - `make ops-e2e-validate`
+
+Placeholder extension directories tracked with `.gitkeep`: `ops/e2e/datasets`, `ops/e2e/expectations`, `ops/e2e/manifests`.

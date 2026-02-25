@@ -13,6 +13,7 @@ required_files:
   - ops/schema/generated/schema-index.md
   - ops/schema/generated/compatibility-lock.json
 required_dirs:
+  - ops/schema
   - ops/schema/inventory
   - ops/schema/env
   - ops/schema/k8s

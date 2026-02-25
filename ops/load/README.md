@@ -20,3 +20,5 @@ Load suites, thresholds, scenarios, and generated reporting artifacts.
 - `make ops-load-suite SUITE=mixed PROFILE=kind`
 - `make ops-load-smoke`
 - `make ops-load-full`
+
+Placeholder extension directories tracked with `.gitkeep`: `ops/load/data`, `ops/load/thresholds`, `ops/load/k6/manifests`, `ops/load/k6/thresholds`.

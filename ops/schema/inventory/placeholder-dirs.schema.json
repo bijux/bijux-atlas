@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/ops/schema/inventory/placeholder-dirs.schema.json",
+  "title": "Inventory Placeholder Directories",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "owner", "placeholder_dirs"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "placeholder_dirs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ops\\/[a-z0-9._\\/-]+$"
+      },
+      "uniqueItems": true
+    }
+  }
+}

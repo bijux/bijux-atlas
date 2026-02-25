@@ -1,0 +1,32 @@
+{
+  "$schema": "ops/schema/inventory/placeholder-dirs.schema.json",
+  "schema_version": 1,
+  "owner": "ops/inventory",
+  "placeholder_dirs": [
+    "ops/_generated",
+    "ops/_generated.example",
+    "ops/e2e/datasets",
+    "ops/e2e/expectations",
+    "ops/e2e/manifests",
+    "ops/env/base",
+    "ops/env/ci",
+    "ops/env/dev",
+    "ops/env/overlays",
+    "ops/env/prod",
+    "ops/k8s/tests/checks/perf",
+    "ops/load/data",
+    "ops/load/k6/manifests",
+    "ops/load/k6/thresholds",
+    "ops/load/thresholds",
+    "ops/observe/alerts",
+    "ops/observe/dashboards",
+    "ops/observe/otel",
+    "ops/observe/prom",
+    "ops/observe/rules",
+    "ops/report/docs/runbooks",
+    "ops/report/docs/troubleshooting",
+    "ops/schema",
+    "ops/schema/generated",
+    "ops/schema/inventory"
+  ]
+}

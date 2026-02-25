@@ -12,6 +12,7 @@ required_files:
   - ops/load/contracts/deterministic-seed-policy.json
   - ops/load/contracts/query-pack-catalog.json
 required_dirs:
+  - ops/load/data
   - ops/load/scenarios
   - ops/load/thresholds
   - ops/load/k6/suites

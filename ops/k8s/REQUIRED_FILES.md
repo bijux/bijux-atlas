@@ -16,6 +16,7 @@ required_files:
   - ops/k8s/values/prod.yaml
 required_dirs:
   - ops/k8s/generated
+  - ops/k8s/tests/checks/perf
 forbidden_patterns:
   - legacy-observe-alias/
   - legacy-observe-schema-alias/

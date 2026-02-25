@@ -15,11 +15,13 @@ required_files:
   - ops/_generated.example/control-plane.snapshot.md
   - ops/_generated.example/docs-drift-report.json
   - ops/_generated.example/file-usage-report.json
+  - ops/_generated.example/placeholder-dirs-report.json
   - ops/_generated.example/fixture-drift-report.json
   - ops/_generated.example/contract-coverage-report.json
   - ops/_generated.example/control-plane-drift-report.json
   - ops/_generated.example/schema-drift-report.json
-required_dirs: []
+required_dirs:
+  - ops/_generated.example
 forbidden_patterns:
   - legacy-observe-alias/
   - legacy-observe-schema-alias/

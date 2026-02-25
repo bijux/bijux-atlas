@@ -11,6 +11,7 @@ Rules:
 - `ops/_generated.example/control-plane-drift-report.json` is the control-plane contract drift status artifact.
 - `ops/_generated.example/docs-drift-report.json` is the docs governance drift report artifact.
 - `ops/_generated.example/file-usage-report.json` is the generated usage graph and orphan detector for ops JSON/YAML/TOML artifacts.
+- `ops/_generated.example/placeholder-dirs-report.json` is the generated placeholder directory inventory and drift detector.
 - `ops/_generated.example/contract-coverage-report.json` is the generated contract coverage summary.
 - `ops/_generated.example/schema-drift-report.json` is the generated schema governance drift summary.
 - `ops/_generated.example/fixture-drift-report.json` is the generated fixture governance drift summary.
@@ -28,6 +29,7 @@ Rules:
 - `ops/_generated.example/control-plane-drift-report.json`: `bijux dev atlas ops control-plane drift-report --write-example`
 - `ops/_generated.example/docs-drift-report.json`: `bijux dev atlas docs drift --write-example`
 - `ops/_generated.example/file-usage-report.json`: `bijux dev atlas ops inventory file-usage --write-example`
+- `ops/_generated.example/placeholder-dirs-report.json`: `bijux dev atlas ops inventory placeholder-dirs-report --write-example`
 - `ops/_generated.example/fixture-drift-report.json`: `bijux dev atlas ops fixtures drift --write-example`
 
 ## Mirrored Artifacts
@@ -42,6 +44,7 @@ Rules:
 - `ops/_generated.example/control-plane-drift-report.json`: generated control-plane drift report covering policy-only doc contract and cargo-metadata alignment.
 - `ops/_generated.example/docs-drift-report.json`: generated docs governance drift report.
 - `ops/_generated.example/file-usage-report.json`: generated file usage graph with orphan classifications across ops data artifacts.
+- `ops/_generated.example/placeholder-dirs-report.json`: generated placeholder directory report aligned to the inventory allowlist.
 - `ops/_generated.example/contract-coverage-report.json`: generated contract coverage report for domain contract invariants and check linkage.
 - `ops/_generated.example/schema-drift-report.json`: generated schema drift report for index, compatibility lock, and allowlist governance.
 - `ops/_generated.example/fixture-drift-report.json`: generated fixture drift report for fixture inventory, allowlist, and binary policy governance.

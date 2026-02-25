@@ -39,6 +39,7 @@
     "ops/schema/inventory/owners.schema.json",
     "ops/schema/inventory/pin-freeze.schema.json",
     "ops/schema/inventory/pins.schema.json",
+    "ops/schema/inventory/placeholder-dirs.schema.json",
     "ops/schema/inventory/registry.schema.json",
     "ops/schema/inventory/surfaces.schema.json",
     "ops/schema/inventory/toolchain.schema.json",
