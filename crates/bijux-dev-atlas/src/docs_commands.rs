@@ -399,7 +399,7 @@ fn crate_association(path: &str) -> Option<String> {
     }
 }
 
-fn workspace_crate_roots(repo_root: &Path) -> Vec<PathBuf> {
+pub(crate) fn workspace_crate_roots(repo_root: &Path) -> Vec<PathBuf> {
     let mut roots = Vec::new();
     let crates_dir = repo_root.join("crates");
     if !crates_dir.exists() {
@@ -458,11 +458,40 @@ pub(crate) fn crate_doc_contract_status(
             .filter_map(|p| p.file_name().and_then(|v| v.to_str()))
             .map(ToString::to_string)
             .collect::<BTreeSet<_>>();
+        let mut allowed_root = BTreeSet::from([
+            "README.md".to_string(),
+            "ARCHITECTURE.md".to_string(),
+            "CONTRACT.md".to_string(),
+            "TESTING.md".to_string(),
+            "ERROR_TAXONOMY.md".to_string(),
+            "EXAMPLES.md".to_string(),
+            "BENCHMARKS.md".to_string(),
+            "VERSIONING.md".to_string(),
+        ]);
+        if crate_name.contains("-model") {
+            allowed_root.insert("DATA_MODEL.md".to_string());
+        }
+        if crate_name.contains("-policies") {
+            allowed_root.insert("EXTENSION_GUIDE.md".to_string());
+        }
+        if crate_name.ends_with("-adapters") {
+            allowed_root.insert("ADAPTER_BOUNDARY.md".to_string());
+        }
+        if crate_name.ends_with("-cli") || crate_name.ends_with("dev-atlas") {
+            allowed_root.insert("COMMAND_SURFACE.md".to_string());
+        }
         if root_names.len() > 10 {
             errors.push(format!(
                 "CRATE_DOC_BUDGET_ERROR: `{crate_name}` has {} root docs (budget=10)",
                 root_names.len()
             ));
+        }
+        for root_name in &root_names {
+            if !allowed_root.contains(root_name) {
+                warnings.push(format!(
+                    "CRATE_DOC_ALLOWED_TYPE_WARN: `{crate_name}` has non-canonical root doc `{root_name}`"
+                ));
+            }
         }
 
         for required in &required_common {
@@ -516,13 +545,27 @@ pub(crate) fn crate_doc_contract_status(
                 ));
             }
         }
+        let index_path = crate_root.join("docs/INDEX.md");
+        if let Ok(index) = fs::read_to_string(&index_path) {
+            for expected in ["architecture.md", "public-api.md", "testing.md"] {
+                if !index.contains(expected) {
+                    warnings.push(format!(
+                        "CRATE_DOC_CROSSLINK_WARN: `{crate_name}` docs/INDEX.md should reference `{expected}`"
+                    ));
+                }
+            }
+        }
 
         let mut diagram_count = 0usize;
         let mut rust_fences = 0usize;
         let mut rust_fences_tagged = 0usize;
+        let mut docs_with_owner = 0usize;
+        let mut docs_with_last_reviewed = 0usize;
         for doc in root_md.iter().chain(docs_md.iter()) {
             let text = fs::read_to_string(doc).unwrap_or_default();
             diagram_count += text.matches("![").count();
+            docs_with_owner += usize::from(text.contains("- Owner:"));
+            docs_with_last_reviewed += usize::from(text.contains("Last Reviewed:"));
             for line in text.lines() {
                 if line.trim_start().starts_with("```") {
                     rust_fences += usize::from(line.trim() == "```");
@@ -540,6 +583,17 @@ pub(crate) fn crate_doc_contract_status(
                 "CRATE_DOC_EXAMPLE_TAG_WARN: `{crate_name}` has untagged code fences; prefer ```rust for examples"
             ));
         }
+        let total_docs = root_md.len() + docs_md.len();
+        if docs_with_owner < total_docs {
+            warnings.push(format!(
+                "CRATE_DOC_OWNER_METADATA_WARN: `{crate_name}` owner metadata present in {docs_with_owner}/{total_docs} docs"
+            ));
+        }
+        if docs_with_last_reviewed == 0 {
+            warnings.push(format!(
+                "CRATE_DOC_FRESHNESS_WARN: `{crate_name}` has no `Last Reviewed:` metadata in crate docs"
+            ));
+        }
 
         rows.push(serde_json::json!({
             "crate": crate_name,
@@ -547,8 +601,55 @@ pub(crate) fn crate_doc_contract_status(
             "docs_dir_count": docs_md.len(),
             "required": required_common,
             "has": root_names,
-            "diagram_count": diagram_count
+            "diagram_count": diagram_count,
+            "owner_metadata_docs": docs_with_owner,
+            "freshness_docs": docs_with_last_reviewed
         }));
+    }
+    let mut concept_index = BTreeMap::<String, Vec<String>>::new();
+    for crate_root in workspace_crate_roots(repo_root) {
+        let crate_name = crate_root
+            .file_name()
+            .and_then(|v| v.to_str())
+            .unwrap_or("unknown")
+            .to_string();
+        let docs_dir = crate_root.join("docs");
+        if !docs_dir.exists() {
+            continue;
+        }
+        for file in walk_files_local(&docs_dir) {
+            if file.extension().and_then(|v| v.to_str()) != Some("md") {
+                continue;
+            }
+            let Some(name) = file.file_name().and_then(|v| v.to_str()) else {
+                continue;
+            };
+            let concept = name.to_ascii_lowercase();
+            if matches!(
+                concept.as_str(),
+                "index.md"
+                    | "architecture.md"
+                    | "public-api.md"
+                    | "testing.md"
+                    | "effects.md"
+                    | "effect-boundary-map.md"
+            ) {
+                continue;
+            }
+            concept_index
+                .entry(concept)
+                .or_default()
+                .push(crate_name.clone());
+        }
+    }
+    for (concept, crates) in concept_index {
+        let distinct = crates.into_iter().collect::<BTreeSet<_>>();
+        if distinct.len() > 1 {
+            warnings.push(format!(
+                "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `{concept}` appears across crates: {}",
+                distinct.into_iter().collect::<Vec<_>>().join(", ")
+            ));
+        }
     }
     rows.sort_by(|a, b| a["crate"].as_str().cmp(&b["crate"].as_str()));
     errors.sort();
