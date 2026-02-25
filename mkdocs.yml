@@ -47,6 +47,13 @@ not_in_nav: |
   contracts/**/*.json
 
 nav:
+  - Start Here:
+      - Start: root/START_HERE.md
+      - Developer Entrypoint: root/PERSONA_DEVELOPER.md
+      - Operator Entrypoint: root/PERSONA_OPERATOR.md
+      - Command Index: root/COMMAND_INDEX.md
+      - Crate Index: root/CRATE_INDEX.md
+      - Schema Index: root/SCHEMA_INDEX.md
   - Product:
       - Home: index.md
       - Style: STYLE.md
@@ -132,7 +139,6 @@ nav:
       - Canonical Workflows: operations/canonical-workflows.md
       - Runtime Config: operations/config.md
       - Unified Report: operations/unified-report.md
-      - Migration Note: operations/migration-note.md
       - Production Readiness: operations/production-readiness-checklist.md
       - No Direct Path Usage: operations/no-direct-path-usage.md
       - Air-Gapped Install: operations/air-gapped-install.md
@@ -214,7 +220,6 @@ nav:
           - Index: development/tooling/INDEX.md
           - dev atlas docs: development/tooling/dev-atlas-docs.md
           - control plane: development/tooling/control-plane.md
-          - control-plane migration rationale: development/tooling/control-plane-migration-rationale.md
           - command inventory: development/tooling/command-inventory.md
           - build outputs: development/tooling/build-outputs.md
           - ops command inventory: development/tooling/ops-command-inventory.md
