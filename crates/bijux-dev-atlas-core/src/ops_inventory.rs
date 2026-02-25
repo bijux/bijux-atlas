@@ -26,6 +26,13 @@ const OPS_OBSERVE_SLO_DEFINITIONS_PATH: &str = "ops/observe/slo-definitions.json
 const OPS_OBSERVE_TELEMETRY_DRILLS_PATH: &str = "ops/observe/telemetry-drills.json";
 const OPS_OBSERVE_READINESS_PATH: &str = "ops/observe/readiness.json";
 const OPS_OBSERVE_TELEMETRY_INDEX_PATH: &str = "ops/observe/generated/telemetry-index.json";
+const OPS_DATASETS_MANIFEST_LOCK_PATH: &str = "ops/datasets/manifest.lock";
+const OPS_DATASETS_PROMOTION_RULES_PATH: &str = "ops/datasets/promotion-rules.json";
+const OPS_DATASETS_QC_METADATA_PATH: &str = "ops/datasets/qc-metadata.json";
+const OPS_DATASETS_FIXTURE_POLICY_PATH: &str = "ops/datasets/fixture-policy.json";
+const OPS_DATASETS_ROLLBACK_POLICY_PATH: &str = "ops/datasets/rollback-policy.json";
+const OPS_DATASETS_INDEX_PATH: &str = "ops/datasets/generated/dataset-index.json";
+const OPS_DATASETS_LINEAGE_PATH: &str = "ops/datasets/generated/dataset-lineage.json";
 const OPS_LOAD_SUITES_MANIFEST_PATH: &str = "ops/load/k6/manifests/suites.json";
 const OPS_LOAD_QUERY_LOCK_PATH: &str = "ops/load/queries/pinned-v1.lock";
 const OPS_LOAD_SEED_POLICY_PATH: &str = "ops/load/contracts/deterministic-seed-policy.json";
@@ -167,6 +174,81 @@ struct DatasetsManifest {
 #[derive(Debug, Clone, Deserialize)]
 struct DatasetEntry {
     pub id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetManifestLock {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub entries: Vec<DatasetManifestLockEntry>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetManifestLockEntry {
+    pub id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetPromotionRules {
+    pub schema_version: u64,
+    pub pins_source: String,
+    pub manifest_lock: String,
+    #[serde(default)]
+    pub environments: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetQcMetadata {
+    pub schema_version: u64,
+    pub stale_after_days: u64,
+    pub golden_summary: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetFixturePolicy {
+    pub schema_version: u64,
+    pub allow_remote_download: bool,
+    #[serde(default)]
+    pub fixture_roots: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetRollbackPolicy {
+    pub schema_version: u64,
+    pub strategy: String,
+    #[serde(default)]
+    pub rollback_steps: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetIndex {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub dataset_ids: Vec<String>,
+    #[serde(default)]
+    pub missing_dataset_ids: Vec<String>,
+    #[serde(default)]
+    pub stale_dataset_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetLineage {
+    pub schema_version: u64,
+    #[serde(default)]
+    pub nodes: Vec<DatasetLineageNode>,
+    #[serde(default)]
+    pub edges: Vec<DatasetLineageEdge>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetLineageNode {
+    pub id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct DatasetLineageEdge {
+    pub from: String,
+    pub to: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -372,6 +454,14 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         OPS_OBSERVE_TELEMETRY_DRILLS_PATH,
         OPS_OBSERVE_READINESS_PATH,
         OPS_OBSERVE_TELEMETRY_INDEX_PATH,
+        OPS_DATASETS_MANIFEST_PATH,
+        OPS_DATASETS_MANIFEST_LOCK_PATH,
+        OPS_DATASETS_PROMOTION_RULES_PATH,
+        OPS_DATASETS_QC_METADATA_PATH,
+        OPS_DATASETS_FIXTURE_POLICY_PATH,
+        OPS_DATASETS_ROLLBACK_POLICY_PATH,
+        OPS_DATASETS_INDEX_PATH,
+        OPS_DATASETS_LINEAGE_PATH,
         OPS_LOAD_SUITES_MANIFEST_PATH,
         OPS_LOAD_QUERY_LOCK_PATH,
         OPS_LOAD_SEED_POLICY_PATH,
@@ -440,6 +530,60 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         repo_root,
         OPS_OBSERVE_TELEMETRY_INDEX_PATH,
     ) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let datasets_manifest_lock =
+        match load_json::<DatasetManifestLock>(repo_root, OPS_DATASETS_MANIFEST_LOCK_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let datasets_promotion_rules =
+        match load_json::<DatasetPromotionRules>(repo_root, OPS_DATASETS_PROMOTION_RULES_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let datasets_qc_metadata =
+        match load_json::<DatasetQcMetadata>(repo_root, OPS_DATASETS_QC_METADATA_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let datasets_fixture_policy =
+        match load_json::<DatasetFixturePolicy>(repo_root, OPS_DATASETS_FIXTURE_POLICY_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let datasets_rollback_policy =
+        match load_json::<DatasetRollbackPolicy>(repo_root, OPS_DATASETS_ROLLBACK_POLICY_PATH) {
+            Ok(value) => value,
+            Err(err) => {
+                errors.push(err);
+                return errors;
+            }
+        };
+    let datasets_index = match load_json::<DatasetIndex>(repo_root, OPS_DATASETS_INDEX_PATH) {
+        Ok(value) => value,
+        Err(err) => {
+            errors.push(err);
+            return errors;
+        }
+    };
+    let datasets_lineage = match load_json::<DatasetLineage>(repo_root, OPS_DATASETS_LINEAGE_PATH) {
         Ok(value) => value,
         Err(err) => {
             errors.push(err);
@@ -797,6 +941,172 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         if !repo_root.join(artifact).exists() {
             errors.push(format!(
                 "ops/observe/generated/telemetry-index.json: missing referenced artifact `{artifact}`"
+            ));
+        }
+    }
+    let manifest_ids = match load_json::<DatasetsManifest>(repo_root, OPS_DATASETS_MANIFEST_PATH) {
+        Ok(manifest) => {
+            if manifest.schema_version < 1 {
+                errors.push(format!(
+                    "{OPS_DATASETS_MANIFEST_PATH}: schema_version must be >= 1"
+                ));
+            }
+            manifest
+                .datasets
+                .iter()
+                .map(|entry| entry.id.clone())
+                .collect::<BTreeSet<_>>()
+        }
+        Err(err) => {
+            errors.push(err);
+            BTreeSet::new()
+        }
+    };
+    if datasets_manifest_lock.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_MANIFEST_LOCK_PATH}: expected schema_version=1, got {}",
+            datasets_manifest_lock.schema_version
+        ));
+    }
+    let locked_ids = datasets_manifest_lock
+        .entries
+        .iter()
+        .map(|entry| entry.id.clone())
+        .collect::<BTreeSet<_>>();
+    if locked_ids != manifest_ids {
+        errors.push(format!(
+            "{OPS_DATASETS_MANIFEST_LOCK_PATH}: manifest lock ids must match {OPS_DATASETS_MANIFEST_PATH}"
+        ));
+    }
+    if datasets_promotion_rules.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_PROMOTION_RULES_PATH}: expected schema_version=1, got {}",
+            datasets_promotion_rules.schema_version
+        ));
+    }
+    if datasets_promotion_rules.pins_source != OPS_PINS_PATH {
+        errors.push(format!(
+            "{OPS_DATASETS_PROMOTION_RULES_PATH}: pins_source must be `{OPS_PINS_PATH}`"
+        ));
+    }
+    if datasets_promotion_rules.manifest_lock != OPS_DATASETS_MANIFEST_LOCK_PATH {
+        errors.push(format!(
+            "{OPS_DATASETS_PROMOTION_RULES_PATH}: manifest_lock must be `{OPS_DATASETS_MANIFEST_LOCK_PATH}`"
+        ));
+    }
+    if datasets_promotion_rules.environments.is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_PROMOTION_RULES_PATH}: environments must not be empty"
+        ));
+    }
+    if datasets_qc_metadata.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_QC_METADATA_PATH}: expected schema_version=1, got {}",
+            datasets_qc_metadata.schema_version
+        ));
+    }
+    if datasets_qc_metadata.stale_after_days == 0 {
+        errors.push(format!(
+            "{OPS_DATASETS_QC_METADATA_PATH}: stale_after_days must be > 0"
+        ));
+    }
+    if !repo_root.join(&datasets_qc_metadata.golden_summary).exists() {
+        errors.push(format!(
+            "{OPS_DATASETS_QC_METADATA_PATH}: golden_summary path is missing `{}`",
+            datasets_qc_metadata.golden_summary
+        ));
+    }
+    if datasets_fixture_policy.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_FIXTURE_POLICY_PATH}: expected schema_version=1, got {}",
+            datasets_fixture_policy.schema_version
+        ));
+    }
+    if datasets_fixture_policy.fixture_roots.is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_FIXTURE_POLICY_PATH}: fixture_roots must not be empty"
+        ));
+    }
+    if datasets_fixture_policy.allow_remote_download {
+        errors.push(format!(
+            "{OPS_DATASETS_FIXTURE_POLICY_PATH}: allow_remote_download must be false"
+        ));
+    }
+    for root in &datasets_fixture_policy.fixture_roots {
+        if !repo_root.join(root).exists() {
+            errors.push(format!(
+                "{OPS_DATASETS_FIXTURE_POLICY_PATH}: fixture root is missing `{root}`"
+            ));
+        }
+    }
+    if datasets_rollback_policy.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_ROLLBACK_POLICY_PATH}: expected schema_version=1, got {}",
+            datasets_rollback_policy.schema_version
+        ));
+    }
+    if datasets_rollback_policy.strategy.trim().is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_ROLLBACK_POLICY_PATH}: strategy must not be empty"
+        ));
+    }
+    if datasets_rollback_policy.rollback_steps.is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_ROLLBACK_POLICY_PATH}: rollback_steps must not be empty"
+        ));
+    }
+    if datasets_index.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_INDEX_PATH}: expected schema_version=1, got {}",
+            datasets_index.schema_version
+        ));
+    }
+    let indexed_ids = datasets_index
+        .dataset_ids
+        .iter()
+        .cloned()
+        .collect::<BTreeSet<_>>();
+    if indexed_ids != manifest_ids {
+        errors.push(format!(
+            "{OPS_DATASETS_INDEX_PATH}: dataset_ids must match {OPS_DATASETS_MANIFEST_PATH}"
+        ));
+    }
+    if !datasets_index.missing_dataset_ids.is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_INDEX_PATH}: missing_dataset_ids must be empty"
+        ));
+    }
+    if !datasets_index.stale_dataset_ids.is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_INDEX_PATH}: stale_dataset_ids must be empty"
+        ));
+    }
+    if datasets_lineage.schema_version != 1 {
+        errors.push(format!(
+            "{OPS_DATASETS_LINEAGE_PATH}: expected schema_version=1, got {}",
+            datasets_lineage.schema_version
+        ));
+    }
+    if datasets_lineage.nodes.is_empty() {
+        errors.push(format!(
+            "{OPS_DATASETS_LINEAGE_PATH}: nodes must not be empty"
+        ));
+    }
+    let node_ids = datasets_lineage
+        .nodes
+        .iter()
+        .map(|node| node.id.clone())
+        .collect::<BTreeSet<_>>();
+    if node_ids != manifest_ids {
+        errors.push(format!(
+            "{OPS_DATASETS_LINEAGE_PATH}: lineage nodes must match {OPS_DATASETS_MANIFEST_PATH}"
+        ));
+    }
+    for edge in &datasets_lineage.edges {
+        if !node_ids.contains(&edge.from) || !node_ids.contains(&edge.to) {
+            errors.push(format!(
+                "{OPS_DATASETS_LINEAGE_PATH}: edge `{} -> {}` references unknown dataset node",
+                edge.from, edge.to
             ));
         }
     }
