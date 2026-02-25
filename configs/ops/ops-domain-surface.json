@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "ops-domain-surface",
-  "public_domains": ["artifacts", "orchestrate", "stack", "k8s", "obs", "load", "e2e", "datasets"],
+  "public_domains": ["artifacts", "orchestrate", "stack", "k8s", "observe", "load", "e2e", "datasets"],
   "max_public_domains": 8,
   "transitional_public_domains": ["contracts", "ports", "scenario"]
 }

@@ -30,10 +30,10 @@
       "owner": "ops"
     },
     {
-      "id": "ops.obs.suites",
-      "path": "ops/obs/suites/suites.json",
-      "schema_path": "ops/schema/obs/suites.schema.json",
-      "domain": "obs",
+      "id": "ops.observe.suites",
+      "path": "ops/observe/suites/suites.json",
+      "schema_path": "ops/schema/observe/suites.schema.json",
+      "domain": "observe",
       "owner": "ops"
     },
     {

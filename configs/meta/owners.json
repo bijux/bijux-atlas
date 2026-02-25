@@ -63,7 +63,7 @@
     "load": "ops",
     "make": "platform",
     "ops": "ops",
-    "obs": "ops",
+    "observe": "ops",
     "owners": "platform",
     "packages": "platform",
     "policies": "platform",

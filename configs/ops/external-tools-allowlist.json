@@ -5,7 +5,7 @@
     "stack": ["docker", "kind", "kubectl", "helm", "kubeconform"],
     "deploy": ["helm", "kubectl"],
     "k8s": ["kubectl", "helm", "curl"],
-    "obs": ["curl", "docker", "kubectl", "promtool", "rg"],
+    "observe": ["curl", "docker", "kubectl", "promtool", "rg"],
     "load": ["k6", "docker", "curl"],
     "e2e": ["curl", "kubectl", "git", "bash"],
     "datasets": ["curl", "cargo", "python3", "du"],

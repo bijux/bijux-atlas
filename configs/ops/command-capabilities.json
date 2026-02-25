@@ -641,7 +641,7 @@
       "tools": []
     },
     {
-      "action": "obs.check",
+      "action": "observe.check",
       "allow_network_required": false,
       "network": false,
       "profiles": [
@@ -654,7 +654,7 @@
       ]
     },
     {
-      "action": "obs.drill",
+      "action": "observe.drill",
       "allow_network_required": false,
       "network": false,
       "profiles": [
@@ -667,7 +667,7 @@
       ]
     },
     {
-      "action": "obs.lint",
+      "action": "observe.lint",
       "allow_network_required": false,
       "network": false,
       "profiles": [
@@ -680,7 +680,7 @@
       ]
     },
     {
-      "action": "obs.report",
+      "action": "observe.report",
       "allow_network_required": false,
       "network": false,
       "profiles": [
@@ -693,7 +693,7 @@
       ]
     },
     {
-      "action": "obs.up",
+      "action": "observe.up",
       "allow_network_required": true,
       "network": true,
       "profiles": [
@@ -706,7 +706,7 @@
       ]
     },
     {
-      "action": "obs.validate",
+      "action": "observe.validate",
       "allow_network_required": false,
       "network": false,
       "profiles": [
@@ -719,7 +719,7 @@
       ]
     },
     {
-      "action": "obs.verify",
+      "action": "observe.verify",
       "allow_network_required": true,
       "network": true,
       "profiles": [

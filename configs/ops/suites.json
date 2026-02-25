@@ -120,22 +120,22 @@
     },
     {
       "actions": [
-        "obs.up",
-        "obs.verify",
-        "obs.validate",
-        "obs.check",
-        "obs.lint",
-        "obs.report",
-        "obs.drill"
+        "observe.up",
+        "observe.verify",
+        "observe.validate",
+        "observe.check",
+        "observe.lint",
+        "observe.report",
+        "observe.drill"
       ],
       "dev_atlas_suite": "ops-obs",
-      "evidence_area": "obs",
+      "evidence_area": "observe",
       "markers": [
         "ops",
-        "obs",
+        "observe",
         "slow"
       ],
-      "name": "ops.obs",
+      "name": "ops.observe",
       "reduction_plan": "separate static contract lint from live drill execution and shard drill suites",
       "slow_reason": "observability verification runs drills and conformance checks against running services",
       "speed": "slow"
@@ -170,7 +170,7 @@
         "warm",
         "stack.up",
         "deploy.apply",
-        "obs.verify",
+        "observe.verify",
         "stack.down"
       ],
       "dev_atlas_suite": "ops",

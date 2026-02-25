@@ -4,7 +4,7 @@
     "stack": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py", "runtime": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/runtime.py"},
     "deploy": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
     "k8s": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
-    "obs": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py", "runtime": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/observability/runtime.py"},
+    "observe": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py", "runtime": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/observability/runtime.py"},
     "load": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
     "e2e": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
     "datasets": {"entrypoint": "crates/bijux dev atlas/src/bijux dev atlas/commands/ops/command.py"},
