@@ -5,6 +5,10 @@ required_files:
   - ops/schema/README.md
   - ops/schema/OWNER.md
   - ops/schema/REQUIRED_FILES.md
+  - ops/schema/VERSIONING_POLICY.md
+  - ops/schema/BUDGET_POLICY.md
+  - ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md
+  - ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md
   - ops/schema/generated/schema-index.json
   - ops/schema/generated/schema-index.md
   - ops/schema/generated/compatibility-lock.json
