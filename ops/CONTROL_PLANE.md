@@ -18,10 +18,8 @@ Covered command groups:
 - `configs`
 - `ops`
 
-Final crate set (locked):
-- `bijux-dev-atlas`
-- `bijux-dev-atlas-core`
-- `bijux-dev-atlas-policies`
+Control plane truth is derived from `cargo metadata` and synchronized to `ops/_generated.example/control-plane.snapshot.md`.
+This page must either match that snapshot or contain only stable contract statements with no hardcoded crate lists.
 
 ## SSOT Rules
 

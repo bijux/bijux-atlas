@@ -12,6 +12,8 @@
     {"id": "ops.gate.k8s-determinism", "action_id": "ops.k8s.check", "category": "k8s", "description": "k8s render/install determinism checks"},
     {"id": "ops.gate.observe-coverage", "action_id": "ops.observe.validate", "category": "observe", "description": "observability coverage and readiness checks"},
     {"id": "ops.gate.observe-naming", "action_id": "ops.naming-check", "category": "governance", "description": "forbid legacy obs domain keys and ids; only observe is allowed after 2026-02-25"},
+    {"id": "ops.gate.control-plane-drift", "action_id": "ops.contracts-check", "category": "docs", "description": "ops/CONTROL_PLANE.md must match control-plane snapshot contract or avoid hardcoded crate lists"},
+    {"id": "ops.gate.no-stale-locked-claims", "action_id": "ops.contracts-check", "category": "docs", "description": "non-generated contract docs must not contain stale locked list claims"},
     {"id": "ops.gate.dataset-lifecycle", "action_id": "ops.datasets.validate", "category": "datasets", "description": "dataset lifecycle and manifest checks"},
     {"id": "ops.gate.unified-readiness", "action_id": "ops.observe.report", "category": "report", "description": "unified readiness report publication gate"}
   ]
