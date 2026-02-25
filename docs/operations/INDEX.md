@@ -48,7 +48,6 @@ Does not define product semantics or internal crate APIs.
 - [Cache Topology](cache-topology.md)
 - [Policy Violation Triage](policy-violation-triage.md)
 - [No Direct Path Usage](no-direct-path-usage.md)
-- [Migration Note](migration-note.md)
 - [Platform Handover](platform-handover.md)
 
 ## Topic Registry

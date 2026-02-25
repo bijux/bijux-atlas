@@ -15,7 +15,7 @@ This crate owns persisted model contracts consumed across atlas components.
 
 - New fields are additive and must include safe defaults for older artifacts.
 - `ModelVersion` exists on persisted top-level artifacts and defaults to `v1` when absent.
-- Field names remain stable unless accompanied by explicit migration notes.
+- Field names remain stable unless accompanied by explicit compatibility notes.
 - `#[serde(deny_unknown_fields)]` is used on strict contracts where rejecting unexpected input is safer.
 
 ## Validation Boundary

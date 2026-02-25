@@ -7,4 +7,4 @@ Rules for v1 public types:
 
 Strictness:
 - `ArtifactManifest` and `Catalog` use `deny_unknown_fields` for strict contract validation.
-- Breaking schema moves require version bump + migration notes update.
+- Breaking schema moves require version bump + compatibility notes update.

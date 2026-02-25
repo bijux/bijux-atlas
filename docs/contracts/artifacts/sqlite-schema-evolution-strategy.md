@@ -1,4 +1,4 @@
-# SQLite Schema Migration Strategy
+# SQLite Schema Evolution Strategy
 
 - Owner: `bijux-atlas-ingest`
 - Stability: `stable`
@@ -6,7 +6,7 @@
 ## Strategy
 
 - SQLite schema SSOT lives in `crates/bijux-atlas-ingest/sql/schema_v4.sql`.
-- Migrations are forward-only; downgrades are rejected.
+- Schema upgrades are forward-only; downgrades are rejected.
 - `schema_version` table is authoritative in DB.
 - `atlas_meta.schema_version` is kept for compatibility reads.
 
@@ -16,7 +16,7 @@
 1. Increment `SQLITE_SCHEMA_VERSION`.
 2. Update SSOT schema hash (`SQLITE_SCHEMA_SSOT_SHA256`).
 3. Update schema drift digest test.
-4. Add/adjust compatibility tests for forward migration.
+4. Add/adjust compatibility tests for forward upgrades.
 
 ## Compatibility Contract
 
@@ -29,4 +29,4 @@
 - `schema_ssot_hash_is_stable`
 - `schema_drift_gate_sqlite_master_digest_is_stable`
 - `index_drift_gate_required_indexes_exist`
-- `forward_only_migration_rejects_downgrade`
+- `forward_only_upgrade_rejects_downgrade`

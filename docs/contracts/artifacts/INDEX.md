@@ -24,7 +24,7 @@ List and maintain links to section pages in this directory.
 
 - [Manifest Contract](manifest-contract.md)
 - [SQLite Schema Contract](sqlite-schema-contract.md)
-- [SQLite Migration Strategy](sqlite-migration-strategy.md)
+- [SQLite Schema Evolution Strategy](sqlite-schema-evolution-strategy.md)
 
 ## Examples
 

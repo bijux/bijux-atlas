@@ -7,7 +7,7 @@
 Telemetry contract changes are additive by default.
 Breaking changes require:
 - contract version bump
-- migration notes in docs
+- compatibility notes in docs
 - regenerated server telemetry artifacts
 
 ## Required process
@@ -15,7 +15,7 @@ Breaking changes require:
 1. Update `docs/contracts/metrics.md` or `docs/contracts/tracing.md`.
 2. Run `make telemetry-contracts`.
 3. Run `make telemetry-verify`.
-4. Document migration in `docs/operations/observability/acceptance-checklist.md` release notes section.
+4. Document compatibility notes in `docs/operations/observability/acceptance-checklist.md` release notes section.
 
 ## Verification
 
