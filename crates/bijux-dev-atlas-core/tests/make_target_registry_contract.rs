@@ -177,8 +177,11 @@ fn workflow_make_invocations_are_registered_and_tracked() {
     )
     .expect("parse registry");
 
-    let by_target: BTreeMap<String, &MakeTargetEntry> =
-        registry.targets.iter().map(|e| (e.name.clone(), e)).collect();
+    let by_target: BTreeMap<String, &MakeTargetEntry> = registry
+        .targets
+        .iter()
+        .map(|e| (e.name.clone(), e))
+        .collect();
     let workflow_uses = parse_workflow_make_uses(&repo);
 
     for (target, files) in workflow_uses {
