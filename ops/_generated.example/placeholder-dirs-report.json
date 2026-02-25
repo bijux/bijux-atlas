@@ -2,6 +2,13 @@
   "schema_version": 1,
   "generated_by": "bijux dev atlas ops inventory placeholder-dirs-report --write-example",
   "status": "pass",
+  "placeholder_debt_score": {
+    "total_placeholders": 23,
+    "undeclared_placeholders": 0,
+    "missing_readme_notes": 0,
+    "missing_lifecycle_policy": 0,
+    "score": 0
+  },
   "placeholder_dirs": [
     "ops/_generated",
     "ops/_generated.example",

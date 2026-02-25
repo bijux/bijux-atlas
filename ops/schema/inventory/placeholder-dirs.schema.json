@@ -4,7 +4,7 @@
   "title": "Inventory Placeholder Directories",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "owner", "placeholder_dirs"],
+  "required": ["schema_version", "owner", "placeholder_entries"],
   "properties": {
     "$schema": {
       "type": "string",
@@ -18,7 +18,46 @@
       "type": "string",
       "minLength": 1
     },
+    "placeholder_entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "owner",
+          "purpose",
+          "expected_contents",
+          "lifecycle_policy"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^ops\\/[a-z0-9._\\/-]+$"
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_contents": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lifecycle_policy": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
     "placeholder_dirs": {
+      "description": "Deprecated compatibility field; use placeholder_entries[].path.",
       "type": "array",
       "items": {
         "type": "string",
