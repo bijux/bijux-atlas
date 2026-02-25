@@ -9,6 +9,7 @@
 - [E2E Philosophy](e2e-philosophy.md)
 - [Observability Verification](observability-verification.md)
 - [Toolchain Pins Explanation](toolchain-pins-explanation.md)
+- [Pin Lifecycle](pin-lifecycle.md)
 - [Render Pipeline](render-pipeline.md)
 - [Artifacts Contract](artifacts-contract.md)
 - [Ops Evidence Explanation](ops-evidence-explanation.md)

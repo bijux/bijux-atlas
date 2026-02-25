@@ -8,15 +8,25 @@
 
 `ops/` is the source of truth for operational inventory, schemas, environment overlays, observability configuration, load profiles, and end-to-end manifests.
 `bijux-dev-atlas` executes generation, validation, and orchestration against this contract.
+Ops is specification-only. Runtime behavior and orchestration logic live in `crates/bijux-dev-atlas`.
 
 ## Ownership
 
 - `ops/` stores specifications and contracts only.
 - Operational behavior is owned by `bijux-dev-atlas` and routed through `bijux dev atlas ops ...`.
 - New shell, python, or executable behavior under `ops/` is forbidden.
-- Fixture-like test helpers are allowed only as non-executable data under explicit test fixture paths.
+- Fixture-like test helpers are allowed only as non-executable data under explicit fixture paths.
 - `makefiles/ops.mk` is a thin delegator to `bijux dev atlas ...` commands.
 - CI workflows must invoke ops behavior through `make` wrappers or `bijux dev atlas ops ...` commands only.
+
+## Evolution Policy
+
+- Schemas under `ops/schema/` are versioned APIs and require explicit compatibility handling.
+- Release pins are immutable after release publication; changes require a promoted replacement.
+- `_generated/` is ephemeral output only and must never be edited manually.
+- `_generated.example/` is curated evidence and is the only committed generated surface.
+- Naming uses intent nouns and canonical names. Use `observe` as the canonical observability domain name.
+- Compatibility migrations must be timeboxed and include explicit cutoff dates.
 
 ## Canonical Tree
 
@@ -28,6 +38,7 @@
 - `ops/e2e/`: datasets, manifests, fixtures, expectations, and suites.
 - `ops/_generated/`: runtime generated outputs.
 - `ops/_generated.example/`: committed generated examples only.
+- Canonical directory budget: keep the top-level canonical tree intentionally small; additions require contract updates and ownership review.
 
 ## Invariants
 

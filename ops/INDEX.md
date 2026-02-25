@@ -8,6 +8,7 @@ Human entry for the ops specification surface.
 - Control-plane ownership: `docs/development/tooling/dev-atlas-ops.md`
 - Inventory map: `ops/docs/inventory-contracts.md`
 - Migration window: `ops/docs/migration-window.md`
+- Pin lifecycle: `ops/docs/pin-lifecycle.md`
 - Generated index (compiled): `ops/_generated/INDEX.md`
 
 ## Domains
