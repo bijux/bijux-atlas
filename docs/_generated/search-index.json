@@ -4868,6 +4868,190 @@
       "topic": "no-implicit-default-dataset"
     },
     {
+      "path": "docs/root/ARCHITECTURE_OVERVIEW.md",
+      "tags": [
+        "architecture-overview",
+        "root"
+      ],
+      "topic": "ARCHITECTURE_OVERVIEW"
+    },
+    {
+      "path": "docs/root/BUILD_OUTPUTS_REFERENCE.md",
+      "tags": [
+        "build-outputs-reference",
+        "root"
+      ],
+      "topic": "BUILD_OUTPUTS_REFERENCE"
+    },
+    {
+      "path": "docs/root/CI_WORKFLOW_EXPLANATION.md",
+      "tags": [
+        "ci-workflow-explanation",
+        "root"
+      ],
+      "topic": "CI_WORKFLOW_EXPLANATION"
+    },
+    {
+      "path": "docs/root/COMMANDS_REFERENCE.md",
+      "tags": [
+        "commands-reference",
+        "root"
+      ],
+      "topic": "COMMANDS_REFERENCE"
+    },
+    {
+      "path": "docs/root/COMPATIBILITY_POLICY.md",
+      "tags": [
+        "compatibility-policy",
+        "root"
+      ],
+      "topic": "COMPATIBILITY_POLICY"
+    },
+    {
+      "path": "docs/root/CONFIGS_OVERVIEW.md",
+      "tags": [
+        "configs-overview",
+        "root"
+      ],
+      "topic": "CONFIGS_OVERVIEW"
+    },
+    {
+      "path": "docs/root/CONTRIBUTION_MODEL.md",
+      "tags": [
+        "contribution-model",
+        "root"
+      ],
+      "topic": "CONTRIBUTION_MODEL"
+    },
+    {
+      "path": "docs/root/CONTROL_PLANE_OVERVIEW.md",
+      "tags": [
+        "control-plane-overview",
+        "root"
+      ],
+      "topic": "CONTROL_PLANE_OVERVIEW"
+    },
+    {
+      "path": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md",
+      "tags": [
+        "developer-workflow-quickstart",
+        "root"
+      ],
+      "topic": "DEVELOPER_WORKFLOW_QUICKSTART"
+    },
+    {
+      "path": "docs/root/DOCS_PHILOSOPHY.md",
+      "tags": [
+        "docs-philosophy",
+        "root"
+      ],
+      "topic": "DOCS_PHILOSOPHY"
+    },
+    {
+      "path": "docs/root/FAQ.md",
+      "tags": [
+        "faq",
+        "root"
+      ],
+      "topic": "FAQ"
+    },
+    {
+      "path": "docs/root/GLOSSARY.md",
+      "tags": [
+        "glossary",
+        "root"
+      ],
+      "topic": "GLOSSARY"
+    },
+    {
+      "path": "docs/root/INDEX.md",
+      "tags": [
+        "index",
+        "root"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "path": "docs/root/LICENSE_EXPLANATION.md",
+      "tags": [
+        "license-explanation",
+        "root"
+      ],
+      "topic": "LICENSE_EXPLANATION"
+    },
+    {
+      "path": "docs/root/OBSERVABILITY_OVERVIEW.md",
+      "tags": [
+        "observability-overview",
+        "root"
+      ],
+      "topic": "OBSERVABILITY_OVERVIEW"
+    },
+    {
+      "path": "docs/root/OPS_OVERVIEW.md",
+      "tags": [
+        "ops-overview",
+        "root"
+      ],
+      "topic": "OPS_OVERVIEW"
+    },
+    {
+      "path": "docs/root/PERFORMANCE_PHILOSOPHY.md",
+      "tags": [
+        "performance-philosophy",
+        "root"
+      ],
+      "topic": "PERFORMANCE_PHILOSOPHY"
+    },
+    {
+      "path": "docs/root/RELEASE_PROCESS_OVERVIEW.md",
+      "tags": [
+        "release-process-overview",
+        "root"
+      ],
+      "topic": "RELEASE_PROCESS_OVERVIEW"
+    },
+    {
+      "path": "docs/root/REPOSITORY_STRUCTURE.md",
+      "tags": [
+        "repository-structure",
+        "root"
+      ],
+      "topic": "REPOSITORY_STRUCTURE"
+    },
+    {
+      "path": "docs/root/REPRODUCIBILITY_GUARANTEES.md",
+      "tags": [
+        "reproducibility-guarantees",
+        "root"
+      ],
+      "topic": "REPRODUCIBILITY_GUARANTEES"
+    },
+    {
+      "path": "docs/root/SECURITY_MODEL.md",
+      "tags": [
+        "root",
+        "security-model"
+      ],
+      "topic": "SECURITY_MODEL"
+    },
+    {
+      "path": "docs/root/STABILITY_GUARANTEES.md",
+      "tags": [
+        "root",
+        "stability-guarantees"
+      ],
+      "topic": "STABILITY_GUARANTEES"
+    },
+    {
+      "path": "docs/root/TERMINOLOGY_RULES.md",
+      "tags": [
+        "root",
+        "terminology-rules"
+      ],
+      "topic": "TERMINOLOGY_RULES"
+    },
+    {
       "path": "docs/science/INDEX.md",
       "tags": [
         "index",

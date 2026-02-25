@@ -2883,6 +2883,121 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/root/ARCHITECTURE_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/BUILD_OUTPUTS_REFERENCE.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/CI_WORKFLOW_EXPLANATION.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/COMMANDS_REFERENCE.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/COMPATIBILITY_POLICY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/CONFIGS_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/CONTRIBUTION_MODEL.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/CONTROL_PLANE_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/DOCS_PHILOSOPHY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/FAQ.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/GLOSSARY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/LICENSE_EXPLANATION.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/OBSERVABILITY_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/OPS_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/PERFORMANCE_PHILOSOPHY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/RELEASE_PROCESS_OVERVIEW.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/REPOSITORY_STRUCTURE.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/REPRODUCIBILITY_GUARANTEES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/SECURITY_MODEL.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/STABILITY_GUARANTEES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/root/TERMINOLOGY_RULES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/science/INDEX.md"
     },
     {

@@ -9482,6 +9482,374 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
+      "path": "docs/root/ARCHITECTURE_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture-overview",
+        "root"
+      ],
+      "topic": "ARCHITECTURE_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/BUILD_OUTPUTS_REFERENCE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "build-outputs-reference",
+        "root"
+      ],
+      "topic": "BUILD_OUTPUTS_REFERENCE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "build-and-release",
+      "path": "docs/root/CI_WORKFLOW_EXPLANATION.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ci-workflow-explanation",
+        "root"
+      ],
+      "topic": "CI_WORKFLOW_EXPLANATION"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/COMMANDS_REFERENCE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "commands-reference",
+        "root"
+      ],
+      "topic": "COMMANDS_REFERENCE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/COMPATIBILITY_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "compatibility-policy",
+        "root"
+      ],
+      "topic": "COMPATIBILITY_POLICY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/CONFIGS_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs-overview",
+        "root"
+      ],
+      "topic": "CONFIGS_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/CONTRIBUTION_MODEL.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contribution-model",
+        "root"
+      ],
+      "topic": "CONTRIBUTION_MODEL"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/CONTROL_PLANE_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "control-plane-overview",
+        "root"
+      ],
+      "topic": "CONTROL_PLANE_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "developer-workflow-quickstart",
+        "root"
+      ],
+      "topic": "DEVELOPER_WORKFLOW_QUICKSTART"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/DOCS_PHILOSOPHY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-philosophy",
+        "root"
+      ],
+      "topic": "DOCS_PHILOSOPHY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/FAQ.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "faq",
+        "root"
+      ],
+      "topic": "FAQ"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/GLOSSARY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "glossary",
+        "root"
+      ],
+      "topic": "GLOSSARY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "root"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/LICENSE_EXPLANATION.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "license-explanation",
+        "root"
+      ],
+      "topic": "LICENSE_EXPLANATION"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/root/OBSERVABILITY_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "observability-overview",
+        "root"
+      ],
+      "topic": "OBSERVABILITY_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/root/OPS_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops-overview",
+        "root"
+      ],
+      "topic": "OPS_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/PERFORMANCE_PHILOSOPHY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "performance-philosophy",
+        "root"
+      ],
+      "topic": "PERFORMANCE_PHILOSOPHY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "build-and-release",
+      "path": "docs/root/RELEASE_PROCESS_OVERVIEW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "release-process-overview",
+        "root"
+      ],
+      "topic": "RELEASE_PROCESS_OVERVIEW"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/REPOSITORY_STRUCTURE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "repository-structure",
+        "root"
+      ],
+      "topic": "REPOSITORY_STRUCTURE"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/REPRODUCIBILITY_GUARANTEES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reproducibility-guarantees",
+        "root"
+      ],
+      "topic": "REPRODUCIBILITY_GUARANTEES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/root/SECURITY_MODEL.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "root",
+        "security-model"
+      ],
+      "topic": "SECURITY_MODEL"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/STABILITY_GUARANTEES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "root",
+        "stability-guarantees"
+      ],
+      "topic": "STABILITY_GUARANTEES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/root/TERMINOLOGY_RULES.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "root",
+        "terminology-rules"
+      ],
+      "topic": "TERMINOLOGY_RULES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
       "path": "docs/science/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "evolving",
