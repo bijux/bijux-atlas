@@ -27,6 +27,7 @@ Ops is specification-only. Runtime behavior and orchestration logic live in `cra
 - `_generated.example/` is curated evidence and is the only committed generated surface.
 - Naming uses intent nouns and canonical names. Use `observe` as the canonical observability domain name.
 - Compatibility migrations must be timeboxed and include explicit cutoff dates.
+- Legacy shell compatibility deadline: 2026-06-30.
 
 ## Canonical Tree
 

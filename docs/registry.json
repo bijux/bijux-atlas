@@ -17079,30 +17079,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "legacy-ops-shell",
-        "ops",
-        "quarantine",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "ops/quarantine/legacy-ops-shell/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "legacy-ops-shell",
-        "ops",
-        "quarantine",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "contract",
         "ops",
         "report"
