@@ -6,6 +6,7 @@ mod build_commands;
 mod cli;
 mod configs_commands;
 mod control_plane_commands;
+#[path = "commands/dispatch.rs"]
 mod dispatch;
 mod docs_command_runtime;
 mod docs_commands;
@@ -25,6 +26,8 @@ use crate::cli::{
     GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
     OpsStatusTarget, WorkflowsCommand,
 };
+#[cfg(test)]
+pub(crate) use crate::cli::Cli;
 use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas_core::{
