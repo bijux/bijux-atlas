@@ -34,14 +34,14 @@ use crate::cli::{
 };
 #[cfg(test)]
 pub(crate) use crate::cli::Cli;
-use bijux_dev_atlas_adapters::{Capabilities, RealFs, RealProcessRunner};
-use bijux_dev_atlas_core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
-use bijux_dev_atlas_core::{
+use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner};
+use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
+use bijux_dev_atlas::core::{
     exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
     render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
     Selectors,
 };
-use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
 pub(crate) use build_commands::run_build_command;
 #[cfg(test)]
 pub(crate) use configs_commands::parse_config_file;

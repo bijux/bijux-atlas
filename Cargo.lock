@@ -399,9 +399,6 @@ name = "bijux-dev-atlas"
 version = "0.1.0"
 dependencies = [
  "assert_cmd",
- "bijux-dev-atlas-adapters",
- "bijux-dev-atlas-core",
- "bijux-dev-atlas-model",
  "clap",
  "criterion",
  "regex",

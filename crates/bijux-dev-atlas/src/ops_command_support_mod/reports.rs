@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use bijux_dev_atlas_model::OpsRunReport;
+use bijux_dev_atlas::model::OpsRunReport;
 
 use super::manifests::{load_stack_pins, resolve_ops_root, run_id_or_default};
 use super::tools::validate_pins_completeness;
@@ -86,7 +86,7 @@ pub(crate) fn build_ops_run_report(
     summary.insert("errors".to_string(), errors.len() as u64);
     summary.insert("rows".to_string(), rows.len() as u64);
     OpsRunReport {
-        schema_version: bijux_dev_atlas_model::schema_version(),
+        schema_version: bijux_dev_atlas::model::schema_version(),
         kind: "ops_run_report_v1".to_string(),
         command: command.to_string(),
         run_id: run_id.clone(),
@@ -231,7 +231,7 @@ pub(crate) fn ops_pins_check_payload(
         resolve_ops_root(repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
     let mut errors = Vec::new();
     if let Err(err) =
-        bijux_dev_atlas_core::ops_inventory::OpsInventory::load_and_validate(&ops_root)
+        bijux_dev_atlas::core::ops_inventory::OpsInventory::load_and_validate(&ops_root)
     {
         errors.push(err);
     }

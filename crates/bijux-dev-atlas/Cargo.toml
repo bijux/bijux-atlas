@@ -20,9 +20,6 @@ serde_yaml = "0.9"
 sha2 = "0.10"
 regex = "1"
 toml = "0.8"
-bijux-dev-atlas-core.workspace = true
-bijux-dev-atlas-model.workspace = true
-bijux-dev-atlas-adapters.workspace = true
 
 [dev-dependencies]
 assert_cmd = "2"
