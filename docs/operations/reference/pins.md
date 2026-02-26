@@ -9,6 +9,7 @@
 
 | Section | Key | Value |
 | --- | --- | --- |
+| `root` | `schema_version` | `1` |
 | `images` | `generated_by` | `bijux dev atlas ops generate` |
 | `images` | `kind_node_image` | `kindest/node:v1.31.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f` |
 | `images` | `minio` | `minio/minio:RELEASE.2025-01-20T14-49-07Z@sha256:ed9be66eb5f2636c18289c34c3b725ddf57815f2777c77b5938543b78a44f144` |
@@ -17,6 +18,8 @@
 | `images` | `prometheus` | `prom/prometheus:v2.54.1@sha256:f6639335d34a77d9d9db382b92eeb7fc00934be8eae81dbc03b31cfe90411a94` |
 | `images` | `redis` | `redis:7.4-alpine@sha256:8b81dd37ff027bec4e516d41acfbe9fe2460070dc6d4a4570a2ac5b9d59df065` |
 | `images` | `toxiproxy` | `ghcr.io/shopify/toxiproxy:2.12.0@sha256:9378ed52a28bc50edc1350f936f518f31fa95f0d15917d6eb40b8e376d1a214e` |
+| `dataset_ids` | `0` | `110/homo_sapiens/GRCh38` |
+| `dataset_ids` | `1` | `111/homo_sapiens/GRCh38` |
 | `versions` | `app` | `0.1.0` |
 | `versions` | `chart` | `0.1.0` |
 | `versions` | `prometheus_operator_crd` | `0.76.0` |

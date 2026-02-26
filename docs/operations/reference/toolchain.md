@@ -20,6 +20,7 @@
 
 | Image Key | Reference |
 | --- | --- |
+| `generated_by` | `bijux dev atlas ops generate` |
 | `kind_node_image` | `kindest/node:v1.31.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f` |
 | `minio` | `minio/minio:RELEASE.2025-01-20T14-49-07Z@sha256:ed9be66eb5f2636c18289c34c3b725ddf57815f2777c77b5938543b78a44f144` |
 | `minio_mc` | `minio/mc:RELEASE.2025-01-17T23-25-50Z@sha256:b55b1283c0b81b8bb473c94133d4e00a552518c4796a954ddb04bb7b6e05927d` |

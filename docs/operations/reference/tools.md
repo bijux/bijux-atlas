@@ -9,11 +9,11 @@
 
 | Tool | Required | Probe Args | Version Regex |
 | --- | --- | --- | --- |
-| `helm` | `true` | `version --short` | `(\\d+\\.\\d+\\.\\d+)` |
-| `k6` | `false` | `version` | `(\\d+\\.\\d+\\.\\d+)` |
-| `kind` | `true` | `--version` | `(\\d+\\.\\d+\\.\\d+)` |
-| `kubectl` | `true` | `version --client --short` | `(\\d+\\.\\d+\\.\\d+)` |
+| `helm` | `true` | `version --short` | `(\d+\.\d+\.\d+)` |
+| `k6` | `false` | `version` | `(\d+\.\d+\.\d+)` |
+| `kind` | `true` | `--version` | `(\d+\.\d+\.\d+)` |
+| `kubectl` | `true` | `version --client --short` | `(\d+\.\d+\.\d+)` |
 
 ## Regenerate
 
-- derive from `ops/inventory/tools.toml` (generated reference page)
+- `python3 scripts/docs/generate_operations_references.py --write`
