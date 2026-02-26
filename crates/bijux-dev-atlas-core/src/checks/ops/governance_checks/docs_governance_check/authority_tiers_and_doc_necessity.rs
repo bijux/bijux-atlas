@@ -32,6 +32,36 @@ fn validate_ops_authority_tiers_and_doc_necessity(
         }
     }
 
+    for (rel, required_snippets) in [
+        (
+            Path::new("docs/operations/reference/commands.md"),
+            ["- Tier: `generated`", "## bijux-dev-atlas", "## bijux-dev-atlas ops"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/ops-surface.md"),
+            ["- Tier: `generated`", "ops/inventory/surfaces.json", "ops/_generated.example/control-plane.snapshot.md"]
+                .as_slice(),
+        ),
+        (
+            Path::new("docs/operations/entrypoints.md"),
+            ["- Tier: `tier2`", "## Canonical Entrypoints", "reference/commands.md", "reference/ops-surface.md"]
+                .as_slice(),
+        ),
+    ] {
+        let text = fs::read_to_string(ctx.repo_root.join(rel))
+            .map_err(|err| CheckError::Failed(format!("read {}: {err}", rel.display())))?;
+        for snippet in required_snippets {
+            if !text.contains(snippet) {
+                violations.push(violation(
+                    "OPS_DOCS_REFERENCE_ENTRYPOINT_INCOMPLETE",
+                    format!("documentation page `{}` is missing `{snippet}`", rel.display()),
+                    "restore the generated reference/entrypoints docs and required links",
+                    Some(rel),
+                ));
+            }
+        }
+    }
+
     let authority_tiers_rel = Path::new("ops/AUTHORITY_TIERS.md");
     let authority_tiers_text = fs::read_to_string(ctx.repo_root.join(authority_tiers_rel))
         .map_err(|err| CheckError::Failed(format!("read {}: {err}", authority_tiers_rel.display())))?;
@@ -339,6 +369,42 @@ fn validate_ops_authority_tiers_and_doc_necessity(
                     "OPS_TIER2_DOC_COMMAND_LIST_BANNED",
                     format!("tier2 page `{}` contains ops command surface examples without exception", rel.display()),
                     "use generated command reference pages or add a temporary exception with expiry",
+                    Some(rel),
+                ));
+            }
+
+            let top_level_docs_page = rel.components().count() == 3;
+            let allowed_top_level_command_docs = [
+                "docs/operations/entrypoints.md",
+                "docs/operations/INDEX.md",
+                "docs/operations/reference/commands.md",
+                "docs/operations/reference/ops-surface.md",
+            ];
+            let contains_make_ops = text.contains("make ops-") || text.contains("$ make ops-");
+            let contains_cli_ops = text.contains("bijux-dev-atlas ops") || text.contains("bijux dev atlas ops");
+            if top_level_docs_page
+                && (contains_make_ops || contains_cli_ops)
+                && !allowed_top_level_command_docs.contains(&rel_s.as_str())
+            {
+                violations.push(violation(
+                    "OPS_TOP_LEVEL_TIER2_DOC_COMMAND_SURFACE_DUPLICATION",
+                    format!(
+                        "top-level tier2 docs page `{}` embeds command-surface examples; link to generated references instead",
+                        rel.display()
+                    ),
+                    "move command lists to docs/operations/reference/commands.md or docs/operations/reference/ops-surface.md",
+                    Some(rel),
+                ));
+            }
+
+            if text.contains("edit ops/_generated") || text.contains("edit ops/_generated.example") {
+                violations.push(violation(
+                    "OPS_DOCS_DIRECT_GENERATED_EDIT_INSTRUCTION_BANNED",
+                    format!(
+                        "tier2 docs page `{}` instructs editing generated dirs directly",
+                        rel.display()
+                    ),
+                    "describe regeneration commands or authoritative sources instead of manual edits in ops/_generated*",
                     Some(rel),
                 ));
             }
