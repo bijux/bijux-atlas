@@ -21,7 +21,9 @@ use std::borrow::Cow;
 mod check_runner;
 pub mod checks;
 pub mod logging;
+#[path = "inventory.rs"]
 pub mod ops_inventory;
+#[path = "report.rs"]
 mod report_rendering;
 pub use crate::ports::{Capabilities, Fs, ProcessRunner};
 
@@ -548,4 +550,5 @@ pub use report_rendering::{
 };
 
 #[cfg(test)]
+#[path = "../../tests/support/core_engine_tests.rs"]
 mod lib_tests;

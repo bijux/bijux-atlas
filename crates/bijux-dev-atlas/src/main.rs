@@ -15,6 +15,7 @@ mod docs_command_runtime;
 #[path = "commands/docs.rs"]
 mod docs_commands;
 #[cfg(test)]
+#[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
 #[path = "commands/ops_support.rs"]
 mod ops_command_support;
