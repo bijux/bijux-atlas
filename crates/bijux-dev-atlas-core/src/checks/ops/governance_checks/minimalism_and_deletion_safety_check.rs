@@ -8,6 +8,8 @@ pub(super) fn checks_ops_minimalism_and_deletion_safety(
     validate_minimal_release_surface_contract(ctx, &mut violations)?;
     validate_load_scenario_retention(ctx, &mut violations)?;
     validate_inventory_drill_usage_contract(ctx, &mut violations)?;
+    validate_unused_schema_detection(ctx, &mut violations)?;
+    validate_deletion_impact_example_report(ctx, &mut violations)?;
     Ok(violations)
 }
 
@@ -240,6 +242,142 @@ fn validate_inventory_drill_usage_contract(
             "link every inventory drill id in ops/inventory/drill-contract-links.json or remove it from ops/inventory/drills.json",
             Some(links_rel),
         ));
+    }
+    Ok(())
+}
+
+fn validate_unused_schema_detection(
+    ctx: &CheckContext<'_>,
+    violations: &mut Vec<Violation>,
+) -> Result<(), CheckError> {
+    let allowlist_rel = Path::new("ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md");
+    let allowlist_text = fs::read_to_string(ctx.repo_root.join(allowlist_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", allowlist_rel.display())))?;
+    let allowlisted = allowlist_text
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            let path = trimmed
+                .strip_prefix("- `")
+                .and_then(|rest| rest.split_once("`"))
+                .map(|(path, _)| path)?;
+            if path.starts_with("ops/schema/") && path.ends_with(".schema.json") {
+                Some(path.to_string())
+            } else {
+                None
+            }
+        })
+        .collect::<BTreeSet<_>>();
+
+    let mut all_schema_paths = BTreeSet::new();
+    let schema_dir = ctx.repo_root.join("ops/schema");
+    if schema_dir.exists() {
+        for file in walk_files(&schema_dir) {
+            if file.extension().and_then(|v| v.to_str()) != Some("json") {
+                continue;
+            }
+            let rel = file
+                .strip_prefix(ctx.repo_root)
+                .unwrap_or(file.as_path())
+                .display()
+                .to_string();
+            if rel.ends_with(".schema.json") {
+                all_schema_paths.insert(rel);
+            }
+        }
+    }
+
+    let mut search_roots = vec![ctx.repo_root.join("ops"), ctx.repo_root.join("docs")];
+    let mut referenced = BTreeSet::new();
+    for root in search_roots.drain(..) {
+        if !root.exists() {
+            continue;
+        }
+        for file in walk_files(&root) {
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            let rel_str = rel.display().to_string();
+            if rel_str == allowlist_rel.display().to_string() {
+                continue;
+            }
+            let Ok(text) = fs::read_to_string(&file) else {
+                continue;
+            };
+            for schema_path in &all_schema_paths {
+                if text.contains(schema_path) {
+                    referenced.insert(schema_path.clone());
+                }
+            }
+        }
+    }
+
+    let unused = all_schema_paths
+        .difference(&referenced)
+        .filter(|path| !allowlisted.contains(*path))
+        .cloned()
+        .collect::<Vec<_>>();
+    if !unused.is_empty() {
+        violations.push(violation(
+            "OPS_SCHEMA_UNUSED_UNALLOWLISTED",
+            format!(
+                "schema contracts are not referenced in ops/docs and not allowlisted: {}",
+                unused.join(", ")
+            ),
+            "reference schemas from contracts/docs or add explicit entries to ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md",
+            Some(allowlist_rel),
+        ));
+    }
+    Ok(())
+}
+
+fn validate_deletion_impact_example_report(
+    ctx: &CheckContext<'_>,
+    violations: &mut Vec<Violation>,
+) -> Result<(), CheckError> {
+    let rel = Path::new("ops/_generated.example/what-breaks-if-removed-report.json");
+    let text = fs::read_to_string(ctx.repo_root.join(rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", rel.display())))?;
+    let json: serde_json::Value = serde_json::from_str(&text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", rel.display())))?;
+    if json
+        .get("generated_by")
+        .and_then(|v| v.as_str())
+        .is_none_or(|s| s.trim().is_empty())
+    {
+        violations.push(violation(
+            "OPS_DELETION_IMPACT_REPORT_GENERATOR_MISSING",
+            format!("deletion impact report `{}` must include non-empty `generated_by`", rel.display()),
+            "add generated_by metadata to what-breaks-if-removed report example",
+            Some(rel),
+        ));
+    }
+    let targets = json.get("targets").and_then(|v| v.as_array()).cloned().unwrap_or_default();
+    if targets.is_empty() {
+        violations.push(violation(
+            "OPS_DELETION_IMPACT_REPORT_TARGETS_EMPTY",
+            format!("deletion impact report `{}` must include at least one target", rel.display()),
+            "add representative deletion impact targets and consumers",
+            Some(rel),
+        ));
+    }
+    for target in targets {
+        let path = target.get("path").and_then(|v| v.as_str()).unwrap_or_default();
+        let consumers = target
+            .get("consumers")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        if path.trim().is_empty() || consumers.is_empty() {
+            violations.push(violation(
+                "OPS_DELETION_IMPACT_REPORT_TARGET_INVALID",
+                format!(
+                    "deletion impact report `{}` has target entries missing `path` or `consumers`",
+                    rel.display()
+                ),
+                "ensure every target declares a path and at least one consumer",
+                Some(rel),
+            ));
+            break;
+        }
     }
     Ok(())
 }
