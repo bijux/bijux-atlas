@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops deletion-impact --write-example",
+  "status": "pass",
+  "targets": [
+    {
+      "path": "ops/inventory/contracts-map.json",
+      "impact": "breaking",
+      "consumers": [
+        "checks_ops_inventory_contract_integrity",
+        "checks_ops_file_usage_and_orphan_contract"
+      ],
+      "notes": "authoritative inventory map removal breaks inventory integrity and file usage checks"
+    },
+    {
+      "path": "ops/load/scenarios",
+      "impact": "warning",
+      "consumers": [
+        "checks_ops_minimalism_and_deletion_safety"
+      ],
+      "notes": "deletions require suite reference and retention reconciliation"
+    }
+  ]
+}

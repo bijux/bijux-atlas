@@ -33,7 +33,8 @@
     "ops/_generated.example/schema-drift-report.json",
     "ops/_generated.example/scorecard.json",
     "ops/_generated.example/stack-drift-report.json",
-    "ops/_generated.example/stack-health-report.example.json"
+    "ops/_generated.example/stack-health-report.example.json",
+    "ops/_generated.example/what-breaks-if-removed-report.json"
   ],
   "mirrors": [
     {
@@ -324,6 +325,12 @@
       "committed": "ops/_generated.example/stack-health-report.example.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/what-breaks-if-removed-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops deletion-impact",
       "regenerate": "make ops-generated-example-refresh"
     }
   ]

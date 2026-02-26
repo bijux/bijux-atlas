@@ -37,3 +37,4 @@ Schemas that are intentionally not referenced directly by current runtime artifa
 - `ops/schema/meta/inventory-index.schema.json`: reserved for curated inventory index artifact publication.
 - `ops/schema/meta/ops-index.schema.json`: reserved for curated ops index artifact publication.
 - `ops/schema/meta/scorecard.schema.json`: reserved for curated scorecard artifact publication.
+- `ops/schema/report/what-breaks-if-removed-report.schema.json`: reserved for curated deletion impact evidence publication.
