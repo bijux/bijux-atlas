@@ -98,10 +98,16 @@ mod tests {
         let _ = fs::write(repo.join("Cargo.toml"), "[workspace]\nmembers=[]\n");
         let _ = fs::write(repo.join(".git"), "not-a-real-git-dir-marker-for-test");
         let _ = fs::create_dir_all(&nested_crate);
-        let _ = fs::write(nested_crate.join("Cargo.toml"), "[package]\nname=\"sample\"\nversion=\"0.1.0\"\n");
+        let _ = fs::write(
+            nested_crate.join("Cargo.toml"),
+            "[package]\nname=\"sample\"\nversion=\"0.1.0\"\n",
+        );
 
         let resolved = WorkspaceRoot::from_explicit_path(nested_crate.clone());
-        assert!(resolved.is_ok(), "explicit workspace root canonicalization failed");
+        assert!(
+            resolved.is_ok(),
+            "explicit workspace root canonicalization failed"
+        );
         let resolved = match resolved {
             Ok(v) => v,
             Err(_) => return,
