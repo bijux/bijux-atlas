@@ -49,3 +49,7 @@ harness = false
 [[bench]]
 name = "core_engine"
 harness = false
+
+[[bench]]
+name = "file_walk"
+harness = false
