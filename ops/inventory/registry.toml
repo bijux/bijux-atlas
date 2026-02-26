@@ -631,6 +631,17 @@ budget_ms = 2500
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_portability_environment_contract"
+domain = "ops"
+title = "ops portability matrix and environment robustness coverage remain enforced"
+docs = "ops/PORTABILITY_MATRIX.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2000
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_generated_lifecycle_metadata"
 domain = "ops"
 title = "generated evidence lifecycle metadata is complete and derivable"
