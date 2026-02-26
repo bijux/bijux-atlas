@@ -241,6 +241,7 @@ pub(super) fn check_ops_required_files_contracts(
         }
     }
 
+    const PLACEHOLDER_DIR_BUDGET_CAP: usize = 24;
     let actual_gitkeep_dirs = walk_files(&ops_root)
         .into_iter()
         .filter(|p| p.file_name().and_then(|n| n.to_str()) == Some(".gitkeep"))
@@ -291,6 +292,10 @@ pub(super) fn check_ops_required_files_contracts(
                     .and_then(|v| v.as_str())
                     .unwrap_or_default()
                     .to_ascii_lowercase();
+                let sunset_review_by = entry
+                    .get("sunset_review_by")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
 
                 if path.is_empty() {
                     violations.push(violation(
@@ -338,6 +343,25 @@ pub(super) fn check_ops_required_files_contracts(
                         Some(placeholder_allowlist_rel),
                     ));
                 }
+                if has_sunset {
+                    let valid_review_date = sunset_review_by.len() == 10
+                        && sunset_review_by.as_bytes()[4] == b'-'
+                        && sunset_review_by.as_bytes()[7] == b'-'
+                        && sunset_review_by
+                            .chars()
+                            .enumerate()
+                            .all(|(idx, ch)| matches!(idx, 4 | 7) || ch.is_ascii_digit());
+                    if !valid_review_date {
+                        violations.push(violation(
+                            "OPS_PLACEHOLDER_DIR_ENTRY_SUNSET_REVIEW_DATE_MISSING",
+                            format!(
+                                "placeholder entry `{path}` with sunset lifecycle must set `sunset_review_by` in YYYY-MM-DD format"
+                            ),
+                            "add placeholder_entries[].sunset_review_by for sunset lifecycle placeholders",
+                            Some(placeholder_allowlist_rel),
+                        ));
+                    }
+                }
             }
         }
         if allowlisted_dirs.is_empty() {
@@ -379,6 +403,18 @@ pub(super) fn check_ops_required_files_contracts(
                 ));
             }
         }
+    }
+    if actual_gitkeep_dirs.len() > PLACEHOLDER_DIR_BUDGET_CAP {
+        violations.push(violation(
+            "OPS_PLACEHOLDER_DIR_BUDGET_EXCEEDED",
+            format!(
+                "placeholder directory count {} exceeds budget cap {}",
+                actual_gitkeep_dirs.len(),
+                PLACEHOLDER_DIR_BUDGET_CAP
+            ),
+            "remove unneeded placeholder directories or reduce placeholder surface before adding more",
+            Some(placeholder_allowlist_rel),
+        ));
     }
 
     let placeholder_report_rel = Path::new("ops/_generated.example/placeholder-dirs-report.json");
@@ -431,6 +467,43 @@ pub(super) fn check_ops_required_files_contracts(
                 "add placeholder_debt_score metrics to the placeholder directory report",
                 Some(placeholder_report_rel),
             ));
+        } else if let Some(score_obj) = report_json
+            .get("placeholder_debt_score")
+            .and_then(|v| v.as_object())
+        {
+            let total_placeholders = score_obj
+                .get("total_placeholders")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(u64::MAX) as usize;
+            let score = score_obj.get("score").and_then(|v| v.as_u64()).unwrap_or(u64::MAX);
+            if total_placeholders != actual_gitkeep_dirs.len() {
+                violations.push(violation(
+                    "OPS_PLACEHOLDER_DIR_REPORT_TOTAL_COUNT_DRIFT",
+                    "placeholder-dirs-report.json total_placeholders does not match current .gitkeep placeholder count"
+                        .to_string(),
+                    "regenerate placeholder-dirs-report.json after placeholder directory changes",
+                    Some(placeholder_report_rel),
+                ));
+            }
+            if total_placeholders > PLACEHOLDER_DIR_BUDGET_CAP {
+                violations.push(violation(
+                    "OPS_PLACEHOLDER_DIR_REPORT_BUDGET_EXCEEDED",
+                    format!(
+                        "placeholder-dirs-report.json total_placeholders {} exceeds budget cap {}",
+                        total_placeholders, PLACEHOLDER_DIR_BUDGET_CAP
+                    ),
+                    "reduce placeholder directories and regenerate placeholder-dirs-report.json",
+                    Some(placeholder_report_rel),
+                ));
+            }
+            if score != 0 {
+                violations.push(violation(
+                    "OPS_PLACEHOLDER_DIR_BURN_DOWN_BLOCKING",
+                    format!("placeholder-dirs-report.json placeholder_debt_score.score must be 0, found {score}"),
+                    "resolve placeholder directory debt and regenerate placeholder-dirs-report.json",
+                    Some(placeholder_report_rel),
+                ));
+            }
         }
     }
 
