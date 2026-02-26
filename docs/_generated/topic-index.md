@@ -168,7 +168,6 @@
 | `api-versioning` | `docs/reference/evolution/api-versioning.md` |
 | `architecture` | `crates/bijux-atlas-api/docs/architecture.md, crates/bijux-atlas-cli/docs/architecture.md, crates/bijux-atlas-core/docs/architecture.md, crates/bijux-atlas-ingest/docs/architecture.md, crates/bijux-atlas-model/docs/architecture.md, crates/bijux-atlas-policies/docs/architecture.md, crates/bijux-atlas-query/docs/architecture.md, crates/bijux-atlas-server/docs/architecture.md, crates/bijux-atlas-store/docs/architecture.md` |
 | `architecture-map` | `docs/architecture/architecture-map.md` |
-| `artifacts-contract` | `ops/report/docs/artifacts-contract.md` |
 | `auth-hmac` | `docs/reference/security/auth-hmac.md` |
 | `autoscaling-contract` | `docs/operations/k8s/autoscaling-contract.md` |
 | `backend-architecture` | `docs/architecture/backend-architecture.md` |
@@ -208,10 +207,8 @@
 | `component-responsibilities` | `docs/architecture/component-responsibilities.md` |
 | `concept-ids` | `docs/_style/concept-ids.md` |
 | `config` | `docs/operations/config.md` |
-| `config-compiler-contract` | `ops/report/docs/config-compiler-contract.md` |
 | `config-diff` | `configs/docs/config-diff.md` |
 | `config-keys` | `docs/contracts/config-keys.md` |
-| `config-migration-cutoff` | `ops/report/docs/config-migration-cutoff.md` |
 | `config-schema-versioning` | `docs/reference/registry/config-schema-versioning.md` |
 | `config-versioning` | `docs/development/config-versioning.md` |
 | `configs-layout` | `docs/development/configs-layout.md` |
@@ -233,7 +230,6 @@
 | `crate-layout-contract` | `docs/architecture/crate-layout-contract.md` |
 | `crates-map` | `docs/development/crates-map.md` |
 | `crd-dependency-policy` | `docs/operations/k8s/crd-dependency-policy.md` |
-| `cross-area-navigation` | `ops/report/docs/cross-area-navigation.md` |
 | `cross-project-compatibility-policy` | `docs/reference/compatibility/cross-project-compatibility-policy.md` |
 | `curl-requests` | `docs/examples/curl-requests.md` |
 | `dashboard` | `docs/operations/observability/dashboard.md` |
@@ -241,7 +237,6 @@
 | `dataset-corruption` | `docs/operations/runbooks/dataset-corruption.md` |
 | `dataset-identity` | `docs/development/dataset-identity.md` |
 | `dataset-lifecycle` | `docs/reference/store/dataset-lifecycle.md` |
-| `dataset-lifecycle-contract` | `ops/report/docs/dataset-lifecycle-contract.md` |
 | `dataset-locality-and-shard-scaling` | `docs/operations/k8s/dataset-locality-and-shard-scaling.md` |
 | `dataset-promotion-pipeline` | `docs/operations/dataset-promotion-pipeline.md` |
 | `datasets` | `docs/operations/datasets.md` |
@@ -254,7 +249,6 @@
 | `deprecation-policy` | `docs/reference/registry/deprecation-policy.md` |
 | `determinism` | `docs/reference/ingestion/determinism.md` |
 | `deterministic-merge` | `docs/reference/registry/deterministic-merge.md` |
-| `deterministic-runs` | `ops/report/docs/deterministic-runs.md` |
 | `dev-atlas-docs` | `docs/development/tooling/dev-atlas-docs.md` |
 | `dev-atlas-ops` | `docs/development/tooling/dev-atlas-ops.md` |
 | `diffs-v1` | `docs/product/diffs-v1.md` |
@@ -264,20 +258,16 @@
 | `draft` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md` |
 | `drills` | `docs/operations/observability/drills.md` |
 | `duplicate-topics` | `docs/_lint/duplicate-topics.md` |
-| `e2e-composition-contract` | `ops/report/docs/e2e-composition-contract.md` |
-| `e2e-philosophy` | `ops/report/docs/e2e-philosophy.md` |
 | `effect-boundary-map` | `crates/bijux-atlas-api/docs/effect-boundary-map.md, crates/bijux-atlas-cli/docs/effect-boundary-map.md, crates/bijux-atlas-core/docs/effect-boundary-map.md, crates/bijux-atlas-ingest/docs/effect-boundary-map.md, crates/bijux-atlas-model/docs/effect-boundary-map.md, crates/bijux-atlas-policies/docs/effect-boundary-map.md, crates/bijux-atlas-query/docs/effect-boundary-map.md, crates/bijux-atlas-server/docs/effect-boundary-map.md, crates/bijux-atlas-store/docs/effect-boundary-map.md` |
 | `effects` | `crates/bijux-atlas-api/docs/effects.md, crates/bijux-atlas-cli/docs/effects.md, crates/bijux-atlas-core/docs/effects.md, crates/bijux-atlas-ingest/docs/effects.md, crates/bijux-atlas-model/docs/effects.md, crates/bijux-atlas-policies/docs/effects.md, crates/bijux-atlas-query/docs/effects.md, crates/bijux-atlas-server/docs/effects.md, crates/bijux-atlas-store/docs/effects.md, docs/architecture/effects.md` |
 | `endpoints` | `docs/contracts/endpoints.md` |
 | `environment-contract` | `configs/docs/environment-contract.md` |
-| `environment-overlays` | `ops/report/docs/environment-overlays.md` |
 | `error-budget-policy` | `docs/operations/observability/error-budget-policy.md` |
 | `error-code-registry` | `docs/reference/registry/error-code-registry.md` |
 | `errors` | `docs/api/errors.md, docs/contracts/errors.md` |
 | `etag-caching` | `docs/reference/store/etag-caching.md` |
 | `evidence-policy` | `docs/operations/evidence-policy.md` |
 | `failure-modes` | `crates/bijux-atlas-ingest/docs/failure-modes.md, crates/bijux-atlas-server/docs/failure-modes.md, crates/bijux-atlas-store/docs/failure-modes.md` |
-| `failure-triage-guide` | `ops/report/docs/failure-triage-guide.md` |
 | `fasta-derived-metrics` | `docs/contracts/fasta-derived-metrics.md` |
 | `federation-semantics` | `docs/reference/registry/federation-semantics.md` |
 | `filters` | `docs/reference/querying/filters.md` |
@@ -286,11 +276,9 @@
 | `full-stack-local` | `docs/operations/full-stack-local.md` |
 | `full-stack-locally` | `docs/operations/full-stack-locally.md` |
 | `gene-summary-semantics` | `docs/reference/science/gene-summary-semantics.md` |
-| `generated-committed-policy` | `ops/report/docs/generated-committed-policy.md` |
 | `gff3-acceptance` | `docs/contracts/gff3-acceptance.md` |
 | `health-endpoint-semantics` | `docs/operations/health-endpoint-semantics.md` |
 | `high-memory` | `docs/operations/runbooks/high-memory.md` |
-| `how-ops-works` | `ops/report/docs/how-ops-works.md` |
 | `how-to-run-locally` | `docs/operations/how-to-run-locally.md` |
 | `image-policy` | `docker/contracts/image-policy.md` |
 | `immutability-and-aliases` | `docs/product/immutability-and-aliases.md` |
@@ -302,27 +290,18 @@
 | `input-sources` | `docs/operations/input-sources.md` |
 | `integrity-model` | `docs/reference/store/integrity-model.md` |
 | `intro` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md` |
-| `inventory-contracts` | `ops/report/docs/inventory-contracts.md` |
 | `json-wire-compatibility` | `docs/reference/compatibility/json-wire-compatibility.md` |
 | `k6` | `docs/operations/load/k6.md` |
-| `k8s-conformance` | `ops/report/docs/k8s-conformance.md` |
-| `k8s-crd-compatibility-policy` | `ops/report/docs/k8s-crd-compatibility-policy.md` |
-| `k8s-install-contract` | `ops/report/docs/k8s-install-contract.md` |
 | `k8s-perf-chaos` | `docs/operations/runbooks/k8s-perf-chaos.md` |
-| `k8s-rollback-contract` | `ops/report/docs/k8s-rollback-contract.md` |
 | `k8s-test-contract` | `docs/operations/k8s/k8s-test-contract.md` |
 | `k8s-tests` | `docs/operations/e2e/k8s-tests.md` |
-| `k8s-uninstall-contract` | `ops/report/docs/k8s-uninstall-contract.md` |
-| `k8s-upgrade-contract` | `ops/report/docs/k8s-upgrade-contract.md` |
 | `kubernetes` | `docs/operations/kubernetes.md` |
 | `kustomize-policy` | `docs/operations/k8s/kustomize-policy.md` |
 | `latest-release-alias-policy` | `docs/reference/registry/latest-release-alias-policy.md` |
-| `layout-migration` | `ops/report/docs/layout-migration.md` |
 | `layout-shell-migration` | `docs/architecture/layout-shell-migration.md` |
 | `lifecycle` | `docs/reference/datasets/lifecycle.md` |
 | `limits` | `docs/reference/security/limits.md` |
 | `load-failure-triage` | `docs/operations/runbooks/load-failure-triage.md` |
-| `load-testing` | `ops/report/docs/load-testing.md` |
 | `local-cluster-setup` | `docs/quickstart/local-cluster-setup.md` |
 | `local-noise` | `docs/development/local-noise.md` |
 | `local-stack` | `docs/operations/local-stack.md` |
@@ -338,7 +317,6 @@
 | `metric-ownership` | `docs/operations/observability/metric-ownership.md` |
 | `metrics` | `docs/contracts/metrics.md` |
 | `metrics-conventions` | `docs/reference/store/metrics-conventions.md` |
-| `migration-window` | `ops/report/docs/migration-window.md` |
 | `mirroring` | `docs/reference/datasets/mirroring.md` |
 | `mode` | `docs/contracts/plugin/mode.md` |
 | `naming-and-wording-conventions` | `docs/development/naming-and-wording-conventions.md` |
@@ -354,25 +332,14 @@
 | `non-goals` | `docs/product/non-goals.md` |
 | `normalized-format` | `docs/contracts/normalized-format.md, docs/development/normalized-format.md` |
 | `observability-docs` | `docs/_lint/observability-docs.md` |
-| `observability-pack-definition` | `ops/report/docs/observability-pack-definition.md` |
-| `observability-verification` | `ops/report/docs/observability-verification.md` |
-| `observe-rename` | `ops/report/docs/observe-rename.md` |
-| `offline-mode` | `docs/reference/datasets/offline-mode.md, ops/report/docs/offline-mode.md` |
 | `ops-acceptance-checklist` | `docs/operations/ops-acceptance-checklist.md` |
-| `ops-api-contract` | `ops/report/docs/ops-api-contract.md` |
-| `ops-architecture` | `ops/report/docs/ops-architecture.md` |
 | `ops-boundary` | `docs/control-plane/ops-boundary.md` |
 | `ops-canonical-layout` | `docs/development/ops-canonical-layout.md` |
 | `ops-command-inventory` | `docs/development/tooling/ops-command-inventory.md` |
-| `ops-diagrams` | `ops/report/docs/ops-diagrams.md` |
 | `ops-e2e-boundary` | `.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md` |
-| `ops-evidence-explanation` | `ops/report/docs/ops-evidence-explanation.md` |
-| `ops-gates-contract` | `ops/report/docs/ops-gates-contract.md` |
-| `ops-glossary` | `ops/report/docs/ops-glossary.md` |
 | `ops-intent-naming` | `docs/development/ops-intent-naming.md` |
 | `ops-layout` | `docs/operations/ops-layout.md` |
 | `ops-local-full` | `docs/quickstart/ops-local-full.md` |
-| `ops-safety-guarantees` | `ops/report/docs/ops-safety-guarantees.md` |
 | `ordering` | `docs/reference/querying/ordering.md` |
 | `otel-outage-behavior` | `docs/operations/observability/otel-outage-behavior.md` |
 | `overload-and-degradation` | `docs/architecture/overload-and-degradation.md` |
@@ -384,15 +351,12 @@
 | `perf-regression` | `.github/ISSUE_TEMPLATE/perf-regression.md` |
 | `perf-regression-policy` | `docs/operations/observability/perf-regression-policy.md, docs/reference/performance/perf-regression-policy.md` |
 | `performance-baseline` | `docs/operations/observability/performance-baseline.md` |
-| `pin-lifecycle` | `ops/report/docs/pin-lifecycle.md` |
-| `pin-promotion-workflow` | `ops/report/docs/pin-promotion-workflow.md` |
 | `placement` | `docs/_style/placement.md` |
 | `platform-handover` | `docs/operations/platform-handover.md` |
 | `plugin-mode-entrypoint` | `docs/operations/k8s/plugin-mode-entrypoint.md` |
 | `plugin-versioning-and-release-independence` | `docs/reference/registry/plugin-versioning-and-release-independence.md` |
 | `pod-churn` | `docs/operations/runbooks/pod-churn.md` |
 | `policy-enforcement-map` | `docs/architecture/policy-enforcement-map.md` |
-| `policy-relaxations` | `ops/report/docs/policy-relaxations.md` |
 | `policy-violation-triage` | `docs/operations/policy-violation-triage.md` |
 | `production-readiness-checklist` | `docs/operations/production-readiness-checklist.md` |
 | `profile-under-load` | `docs/operations/runbooks/profile-under-load.md` |
@@ -419,7 +383,6 @@
 | `release-workflows` | `docs/operations/release-workflows.md` |
 | `removed-compatibility-paths` | `docs/architecture/removed-compatibility-paths.md` |
 | `renames` | `docs/_lint/renames.md` |
-| `render-pipeline` | `ops/report/docs/render-pipeline.md` |
 | `reorg-plan` | `docs/development/reorg-plan.md` |
 | `repo-layout` | `docs/development/repo-layout.md` |
 | `repo-overview` | `docs/architecture/repo-overview.md` |
@@ -437,7 +400,6 @@
 | `runbook-dashboard-alert-map` | `docs/operations/observability/runbook-dashboard-alert-map.md` |
 | `runtime-policy` | `docs/operations/load/runtime-policy.md` |
 | `rust-toolchain` | `docs/development/tooling/rust-toolchain.md` |
-| `schema-compatibility-policy` | `ops/report/docs/schema-compatibility-policy.md` |
 | `schema-index` | `ops/schema/generated/schema-index.md` |
 | `schema-overview` | `configs/docs/schema-overview.md` |
 | `schema-validation` | `configs/docs/schema-validation.md` |
@@ -469,8 +431,6 @@
 | `ssrf` | `docs/reference/security/ssrf.md` |
 | `stability-levels` | `docs/_style/stability-levels.md` |
 | `stack` | `docs/operations/e2e/stack.md` |
-| `stack-definition` | `ops/report/docs/stack-definition.md` |
-| `stack-lifecycle` | `ops/report/docs/stack-lifecycle.md` |
 | `startup-warm-cache-strategy` | `docs/operations/observability/startup-warm-cache-strategy.md` |
 | `store-and-registry` | `docs/architecture/store-and-registry.md` |
 | `store-outage` | `docs/operations/runbooks/store-outage.md` |
@@ -489,18 +449,15 @@
 | `testing` | `crates/bijux-atlas-api/docs/testing.md, crates/bijux-atlas-cli/docs/testing.md, crates/bijux-atlas-core/docs/testing.md, crates/bijux-atlas-ingest/docs/testing.md, crates/bijux-atlas-model/docs/testing.md, crates/bijux-atlas-policies/docs/testing.md, crates/bijux-atlas-query/docs/testing.md, crates/bijux-atlas-server/docs/testing.md, crates/bijux-atlas-store/docs/testing.md` |
 | `threat-model` | `docs/reference/security/threat-model.md` |
 | `tool-config-shims` | `docs/development/tool-config-shims.md` |
-| `toolchain-pins-explanation` | `ops/report/docs/toolchain-pins-explanation.md` |
 | `tools` | `docs/development/tooling/tools.md` |
 | `trace-sampling-policy` | `docs/operations/observability/trace-sampling-policy.md` |
 | `tracing` | `docs/contracts/tracing.md, docs/operations/observability/tracing.md` |
 | `traffic-spike` | `docs/operations/runbooks/traffic-spike.md` |
 | `transcript-semantics` | `docs/reference/science/transcript-semantics.md` |
 | `transcripts-v1` | `docs/product/transcripts-v1.md` |
-| `troubleshooting-runbook` | `ops/report/docs/troubleshooting-runbook.md` |
 | `umbrella-atlas-matrix` | `docs/reference/compatibility/umbrella-atlas-matrix.md` |
 | `umbrella-plugin-contract-v1` | `docs/contracts/plugin/umbrella-plugin-contract-v1.md` |
 | `unified-report` | `docs/operations/unified-report.md` |
-| `unified-reporting-contract` | `ops/report/docs/unified-reporting-contract.md` |
 | `user-stories` | `docs/product/user-stories.md` |
 | `v1-surface` | `docs/api/v1-surface.md` |
 | `v2-plan` | `docs/api/v2-plan.md` |

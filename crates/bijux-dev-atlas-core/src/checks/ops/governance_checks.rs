@@ -3468,6 +3468,35 @@ pub(super) fn check_ops_docs_governance(
         }
     }
 
+    let docs_registry_rel = Path::new("docs/registry.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, docs_registry_rel) {
+        let docs_registry_text = fs::read_to_string(ctx.repo_root.join(docs_registry_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let docs_registry_json: serde_json::Value = serde_json::from_str(&docs_registry_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let stale_ops_report_doc = docs_registry_json
+            .get("entries")
+            .and_then(|v| v.as_array())
+            .into_iter()
+            .flatten()
+            .filter_map(|entry| entry.get("path").and_then(|v| v.as_str()))
+            .find(|path| {
+                path.starts_with("ops/report/docs/")
+                    && *path != "ops/report/docs/README.md"
+                    && *path != "ops/report/docs/REFERENCE_INDEX.md"
+            });
+        if let Some(stale_path) = stale_ops_report_doc {
+            violations.push(violation(
+                "OPS_DOCS_REGISTRY_STALE_OPS_REPORT_DOC_REFERENCE",
+                format!(
+                    "docs registry references removed ops report doc `{stale_path}`; only redirect stubs are allowed"
+                ),
+                "regenerate docs registry and generated docs indexes after removing stale ops/report/docs references",
+                Some(docs_registry_rel),
+            ));
+        }
+    }
+
     let forbidden_doc_refs = [
         "ops/schema/obs/",
         "ops/obs/",
