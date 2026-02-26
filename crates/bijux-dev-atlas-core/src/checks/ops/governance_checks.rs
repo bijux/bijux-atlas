@@ -1450,6 +1450,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let namespaces_rel = Path::new("ops/inventory/namespaces.json");
     let layers_rel = Path::new("ops/inventory/layers.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
+    let drill_links_rel = Path::new("ops/inventory/drill-contract-links.json");
     let surfaces_rel = Path::new("ops/inventory/surfaces.json");
     let owners_rel = Path::new("ops/inventory/owners.json");
     let policy_rel = Path::new("ops/inventory/policies/dev-atlas-policy.json");
@@ -1733,6 +1734,84 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 .collect::<std::collections::BTreeSet<_>>()
         })
         .unwrap_or_default();
+
+    let drills_text = fs::read_to_string(ctx.repo_root.join(Path::new("ops/inventory/drills.json")))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let drills_json: serde_json::Value =
+        serde_json::from_str(&drills_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let drill_ids = drills_json
+        .get("drills")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.as_str())
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let drill_links_text = fs::read_to_string(ctx.repo_root.join(drill_links_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let drill_links_json: serde_json::Value = serde_json::from_str(&drill_links_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let linked_drills = drill_links_json
+        .get("links")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.get("drill_id").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    for drill_id in &drill_ids {
+        if !linked_drills.contains(drill_id) {
+            violations.push(violation(
+                "OPS_INVENTORY_DRILL_CONTRACT_LINK_MISSING",
+                format!("drill id `{drill_id}` has no mapping in drill-contract-links"),
+                "add drill-contract-links entry for each drill id with at least one contract path",
+                Some(drill_links_rel),
+            ));
+        }
+    }
+    if let Some(links) = drill_links_json.get("links").and_then(|v| v.as_array()) {
+        for link in links {
+            let drill_id = link
+                .get("drill_id")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if !drill_ids.contains(drill_id) {
+                violations.push(violation(
+                    "OPS_INVENTORY_DRILL_CONTRACT_LINK_UNKNOWN_DRILL",
+                    format!("drill-contract-links references unknown drill id `{drill_id}`"),
+                    "remove stale drill link entries or restore missing drill ids",
+                    Some(drill_links_rel),
+                ));
+            }
+            for contract_path in link
+                .get("contract_paths")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default()
+                .iter()
+                .filter_map(|item| item.as_str())
+            {
+                if !ctx
+                    .adapters
+                    .fs
+                    .exists(ctx.repo_root, Path::new(contract_path))
+                {
+                    violations.push(violation(
+                        "OPS_INVENTORY_DRILL_CONTRACT_LINK_PATH_MISSING",
+                        format!(
+                            "drill-contract-links references missing contract path `{contract_path}`"
+                        ),
+                        "fix contract_paths to existing ops domain CONTRACT.md files",
+                        Some(drill_links_rel),
+                    ));
+                }
+            }
+        }
+    }
     if let Some(gates) = gates_json.get("gates").and_then(|v| v.as_array()) {
         let gate_ids = gates
             .iter()

@@ -29,6 +29,7 @@
 | `ops/schema/inventory/authority-index.schema.json` |
 | `ops/schema/inventory/contracts-map.schema.json` |
 | `ops/schema/inventory/contracts.schema.json` |
+| `ops/schema/inventory/drill-contract-links.schema.json` |
 | `ops/schema/inventory/drills.schema.json` |
 | `ops/schema/inventory/gates.schema.json` |
 | `ops/schema/inventory/gc-pins.schema.json` |

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "links": [
+    {
+      "drill_id": "ops.drill.memory_growth",
+      "contract_paths": ["ops/observe/CONTRACT.md", "ops/load/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.otel_outage",
+      "contract_paths": ["ops/observe/CONTRACT.md", "ops/k8s/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.overload",
+      "contract_paths": ["ops/load/CONTRACT.md", "ops/e2e/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.pod_churn",
+      "contract_paths": ["ops/k8s/CONTRACT.md", "ops/e2e/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.rate_limit",
+      "contract_paths": ["ops/observe/CONTRACT.md", "ops/load/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.rollback",
+      "contract_paths": ["ops/stack/CONTRACT.md", "ops/datasets/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.store_outage",
+      "contract_paths": ["ops/datasets/CONTRACT.md", "ops/e2e/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.toxiproxy_latency",
+      "contract_paths": ["ops/stack/CONTRACT.md", "ops/load/CONTRACT.md"]
+    },
+    {
+      "drill_id": "ops.drill.upgrade",
+      "contract_paths": ["ops/k8s/CONTRACT.md", "ops/stack/CONTRACT.md"]
+    }
+  ]
+}

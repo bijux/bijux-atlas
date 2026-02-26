@@ -59,6 +59,12 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/inventory/drill-contract-links.json",
+      "schema": "ops/schema/inventory/drill-contract-links.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/inventory/gates.json",
       "schema": "ops/schema/inventory/gates.schema.json",
       "generator": "manual",
