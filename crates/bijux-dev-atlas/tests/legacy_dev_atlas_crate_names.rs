@@ -127,7 +127,6 @@ fn duplicate_migration_surface_roots_are_explicit_and_do_not_expand() {
     // explicitly reviewed here, and Batch B should drive this set to empty.
     let expected_overlap_roots = BTreeSet::from([
         "main_tests.rs".to_string(),
-        "ops_runtime_execution".to_string(),
     ]);
 
     let overlap_roots = present

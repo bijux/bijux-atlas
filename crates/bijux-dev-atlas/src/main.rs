@@ -20,7 +20,7 @@ mod main_tests;
 mod ops_command_support;
 #[path = "commands/ops.rs"]
 mod ops_commands;
-#[path = "ops_runtime_execution/runtime.rs"]
+#[path = "commands/ops/execution_runtime.rs"]
 mod ops_runtime_execution;
 
 use std::fs;

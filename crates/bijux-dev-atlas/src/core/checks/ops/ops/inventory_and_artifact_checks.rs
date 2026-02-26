@@ -206,7 +206,7 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
         ));
     }
     let runtime_source_roots = [
-        Path::new("crates/bijux-dev-atlas/src/ops_runtime_execution"),
+        Path::new("crates/bijux-dev-atlas/src/commands/ops/execution_runtime_mod"),
         Path::new("crates/bijux-dev-atlas/src/commands/ops/runtime_mod"),
     ];
     for root_rel in runtime_source_roots {

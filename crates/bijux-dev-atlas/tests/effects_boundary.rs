@@ -25,7 +25,7 @@ fn ignored_test_files() -> BTreeSet<&'static str> {
     [
         "src/main_tests.rs",
         "src/core/lib_tests.rs",
-        "src/ops_runtime_execution/runtime_mod/tests.rs",
+        "src/commands/ops/execution_runtime_mod/tests.rs",
     ]
     .into_iter()
     .collect()
@@ -46,7 +46,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/docs_runtime/reference_page_generators.rs",
         "src/commands/ops/runtime_mod/core_handler.rs",
         "src/commands/ops/runtime_mod/execution_handler.rs",
-        "src/ops_runtime_execution/runtime_mod/install_status.rs",
+        "src/commands/ops/execution_runtime_mod/install_status.rs",
         // Imported modules pending ports/adapters rewiring.
         "src/core/mod.rs",
         "src/core/checks/ops.rs",
