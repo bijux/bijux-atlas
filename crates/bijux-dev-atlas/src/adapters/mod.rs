@@ -401,7 +401,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("time")
             .as_nanos();
-        let root = std::env::temp_dir().join(format!("bijux-dev-atlas-adapters-{suffix}"));
+        let root = std::env::temp_dir().join(format!("bijux-dev-atlas-adapter-io-{suffix}"));
         fs::create_dir_all(&root).expect("mkdir");
         root
     }
