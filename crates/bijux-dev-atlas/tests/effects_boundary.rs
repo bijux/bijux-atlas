@@ -116,3 +116,12 @@ fn no_env_var_or_current_dir_outside_adapters_staged_exceptions() {
         "unexpected std::env host lookup usage: {violations:?}"
     );
 }
+
+#[test]
+fn no_reqwest_outside_adapters_staged_exceptions() {
+    let violations = files_with_effect_pattern(&["reqwest::"]);
+    assert!(
+        violations.is_empty(),
+        "unexpected reqwest usage outside adapters: {violations:?}"
+    );
+}

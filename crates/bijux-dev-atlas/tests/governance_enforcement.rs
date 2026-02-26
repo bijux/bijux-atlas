@@ -1,0 +1,121 @@
+// SPDX-License-Identifier: Apache-2.0
+
+use std::collections::BTreeSet;
+use std::fs;
+use std::path::PathBuf;
+
+use serde::Deserialize;
+
+fn workspace_root() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("crate dir parent")
+        .parent()
+        .expect("workspace root")
+        .to_path_buf()
+}
+
+#[derive(Debug, Deserialize)]
+struct RegistryFile {
+    checks: Vec<RegistryCheck>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RegistryCheck {
+    id: String,
+    domain: String,
+    tags: Vec<String>,
+    docs: String,
+}
+
+#[test]
+fn registry_checks_have_stable_ids_tags_and_inventory_mapping() {
+    let root = workspace_root();
+    let registry_path = root.join("ops/inventory/registry.toml");
+    let text = fs::read_to_string(&registry_path).expect("registry");
+    let registry: RegistryFile = toml::from_str(&text).expect("valid registry");
+
+    let mut ids = BTreeSet::new();
+    for check in registry.checks {
+        assert!(
+            !check.id.trim().is_empty(),
+            "registry check id must be non-empty"
+        );
+        assert!(
+            ids.insert(check.id.clone()),
+            "registry check id must be unique: {}",
+            check.id
+        );
+        assert!(
+            check.tags.iter().any(|tag| !tag.trim().is_empty()),
+            "registry check `{}` must define at least one tag",
+            check.id
+        );
+        assert!(
+            matches!(
+                check.domain.as_str(),
+                "root"
+                    | "workflows"
+                    | "configs"
+                    | "docker"
+                    | "crates"
+                    | "ops"
+                    | "repo"
+                    | "docs"
+                    | "make"
+            ),
+            "registry check `{}` has invalid domain mapping `{}`",
+            check.id,
+            check.domain
+        );
+        let docs = root.join(&check.docs);
+        assert!(
+            docs.components().count() >= 2,
+            "registry check `{}` docs/reference path must be repository-relative: {}",
+            check.id,
+            docs.display()
+        );
+    }
+}
+
+#[test]
+fn root_module_count_stays_within_budget() {
+    let lib_rs = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/lib.rs");
+    let text = fs::read_to_string(lib_rs).expect("lib.rs");
+    let root_modules = text
+        .lines()
+        .filter(|line| {
+            let trimmed = line.trim();
+            trimmed.starts_with("pub mod ") || trimmed.starts_with("pub(crate) mod ")
+        })
+        .count();
+    assert!(
+        root_modules <= 10,
+        "dev-atlas root module budget exceeded: {root_modules} > 10"
+    );
+}
+
+#[test]
+fn generated_report_examples_reference_existing_report_schemas() {
+    let root = workspace_root();
+    let required_pairs = [
+        (
+            "ops/_generated.example/report.unified.example.json",
+            "ops/schema/report/unified.schema.json",
+        ),
+        (
+            "ops/_generated.example/stack-health-report.example.json",
+            "ops/schema/report/stack-health-report.schema.json",
+        ),
+        (
+            "ops/_generated.example/evidence-gap-report.json",
+            "ops/schema/report/evidence-gap-report.schema.json",
+        ),
+    ];
+    for (report_rel, schema_rel) in required_pairs {
+        let report_path = root.join(report_rel);
+        let schema_path = root.join(schema_rel);
+        assert!(report_path.exists(), "missing generated example {}", report_path.display());
+        assert!(schema_path.exists(), "missing report schema {}", schema_path.display());
+    }
+}
