@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::path::Path;
+use std::{fs, path::PathBuf};
 
 #[test]
 fn internal_module_skeleton_exists() {
@@ -23,3 +24,15 @@ fn internal_module_skeleton_exists() {
     }
 }
 
+#[test]
+fn model_module_does_not_depend_on_core_or_adapters() {
+    let model_mod = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/model/mod.rs");
+    let content = fs::read_to_string(&model_mod)
+        .unwrap_or_else(|err| panic!("failed to read {}: {err}", model_mod.display()));
+    for forbidden in ["crate::core", "crate::adapters"] {
+        assert!(
+            !content.contains(forbidden),
+            "model module must not depend on {forbidden}"
+        );
+    }
+}
