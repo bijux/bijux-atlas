@@ -55,6 +55,17 @@ jobs:
           set -euo pipefail
           python3 -m pip install --upgrade pip
           python3 -m pip install -r configs/docs/requirements.lock.txt
+          npm ci --prefix configs/docs
+      - name: Run docs markdown lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm --prefix configs/docs run -s markdownlint
+      - name: Run docs spelling checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm --prefix configs/docs run -s cspell
       - name: Run docs strict build
         shell: bash
         run: |
