@@ -676,6 +676,38 @@
       ]
     },
     {
+      "name": "ops-k8s-contracts",
+      "defined_in": [
+        "makefiles/k8s.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "ops-k8s-suite",
+      "defined_in": [
+        "makefiles/k8s.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "ops-k8s-template-tests",
+      "defined_in": [
+        "makefiles/k8s.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "ops-k8s-tests",
+      "defined_in": [
+        "makefiles/k8s.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "ops-kind-down",
       "defined_in": [
         "makefiles/_ops.mk"
