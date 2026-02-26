@@ -55,8 +55,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
     .collect()
 }
 
-#[test]
-fn direct_effect_calls_are_confined_to_staged_exception_list() {
+fn files_with_effect_pattern(patterns: &[&str]) -> Vec<String> {
     let root = crate_root();
     let src_root = root.join("src");
     let ignored_tests = ignored_test_files();
@@ -79,17 +78,35 @@ fn direct_effect_calls_are_confined_to_staged_exception_list() {
         let Ok(content) = fs::read_to_string(&file) else {
             continue;
         };
-        let has_effect = content.contains("std::fs::")
-            || content.contains("std::process::Command")
-            || content.contains("std::env::var(")
-            || content.contains("std::env::current_dir(");
+        let has_effect = patterns.iter().any(|pattern| content.contains(pattern));
         if has_effect && !exceptions.contains(rel.as_str()) {
             violations.push(rel);
         }
     }
 
+    violations
+}
+
+#[test]
+fn no_std_fs_outside_adapters_staged_exceptions() {
+    let violations = files_with_effect_pattern(&["std::fs::"]);
+    assert!(violations.is_empty(), "unexpected std::fs usage: {violations:?}");
+}
+
+#[test]
+fn no_process_command_outside_adapters_staged_exceptions() {
+    let violations = files_with_effect_pattern(&["std::process::Command"]);
     assert!(
         violations.is_empty(),
-        "unexpected direct host-effect usage outside staged exception list: {violations:?}"
+        "unexpected std::process::Command usage: {violations:?}"
+    );
+}
+
+#[test]
+fn no_env_var_or_current_dir_outside_adapters_staged_exceptions() {
+    let violations = files_with_effect_pattern(&["std::env::var(", "std::env::current_dir("]);
+    assert!(
+        violations.is_empty(),
+        "unexpected std::env host lookup usage: {violations:?}"
     );
 }

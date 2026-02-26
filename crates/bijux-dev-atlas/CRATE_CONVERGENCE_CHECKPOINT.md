@@ -33,7 +33,7 @@
 - `core_engine` benchmark moved to `crates/bijux-dev-atlas/benches/core_engine.rs`
 - `file_walk` benchmark moved to `crates/bijux-dev-atlas/benches/file_walk.rs`
 - model and policy tests/goldens copied into `crates/bijux-dev-atlas/tests/`
-- boundary checks added in `tests/deps_rules.rs`
+- boundary checks added in `tests/boundaries.rs`
 
 ## Completed Layout Convergence
 
