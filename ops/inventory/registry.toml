@@ -664,6 +664,17 @@ budget_ms = 2200
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_final_polish_contracts"
+domain = "ops"
+title = "ops final polish invariants, models, and walkthrough contracts remain complete"
+docs = "ops/OPS_INVARIANTS.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2200
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_generated_lifecycle_metadata"
 domain = "ops"
 title = "generated evidence lifecycle metadata is complete and derivable"

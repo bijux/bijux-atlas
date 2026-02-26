@@ -181,6 +181,7 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
             Some(checks_ops_minimalism_and_deletion_safety)
         }
         "checks_ops_human_workflow_maturity" => Some(checks_ops_human_workflow_maturity),
+        "checks_ops_final_polish_contracts" => Some(checks_ops_final_polish_contracts),
         "checks_crates_dev_atlas_final_crate_set_contract" => {
             Some(check_final_dev_atlas_crate_set_contract)
         }
@@ -290,6 +291,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_ops_portability_environment_contract",
         "checks_ops_minimalism_and_deletion_safety",
         "checks_ops_human_workflow_maturity",
+        "checks_ops_final_polish_contracts",
         "checks_crates_dev_atlas_final_crate_set_contract",
         "checks_docs_scripting_contract_rust_control_plane_lock",
         "checks_crates_bijux_atlas_reserved_verbs_exclude_dev",
