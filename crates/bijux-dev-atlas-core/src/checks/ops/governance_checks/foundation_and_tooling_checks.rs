@@ -200,6 +200,19 @@ pub(super) fn checks_ops_workflow_routes_dev_atlas(
                 Some(rel),
             ));
         }
+        if !text.contains("rm -rf \"artifacts/${RUN_ID}\"")
+            || !text.contains("mkdir -p \"artifacts/${RUN_ID}\"")
+        {
+            violations.push(violation(
+                "WORKFLOW_RUN_ID_ARTIFACT_CLEANUP_MISSING",
+                format!(
+                    "workflow `{}` must clean and recreate artifacts/${{RUN_ID}} before lane execution",
+                    rel.display()
+                ),
+                "add a shell step that runs `rm -rf \"artifacts/${RUN_ID}\"` and `mkdir -p \"artifacts/${RUN_ID}\"`",
+                Some(rel),
+            ));
+        }
         if text.contains("actions/upload-artifact@")
             && !text.contains("path: artifacts/${{ env.RUN_ID }}")
         {

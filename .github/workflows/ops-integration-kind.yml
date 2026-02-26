@@ -45,6 +45,12 @@ jobs:
       - uses: helm/kind-action@v1
         with:
           cluster_name: normal
+      - name: Prepare run artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
+          mkdir -p "artifacts/${RUN_ID}"
       - name: Restore cargo cache
         id: cache-target
         uses: actions/cache/restore@v4

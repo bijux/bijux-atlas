@@ -58,6 +58,12 @@ jobs:
             cargo_version="$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name=="bijux-dev-atlas") | .version')"
             [ "${tag}" = "v${cargo_version}" ]
           fi
+      - name: Prepare run artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
+          mkdir -p "artifacts/${RUN_ID}"
       - name: Run release doctor gate
         if: ${{ github.event.inputs.run_release_doctor == 'true' }}
         shell: bash

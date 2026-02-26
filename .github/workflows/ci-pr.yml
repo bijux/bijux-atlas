@@ -53,6 +53,12 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84.1
+      - name: Prepare run artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
+          mkdir -p "artifacts/${RUN_ID}"
       - name: Restore cargo registry cache
         id: cache-registry
         uses: actions/cache/restore@v4
