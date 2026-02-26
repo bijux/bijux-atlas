@@ -2185,6 +2185,7 @@ pub fn validate_ops_inventory(repo_root: &Path) -> Vec<String> {
         "vendor",
         "CONTRACT.md",
         "CONTROL_PLANE.md",
+        "DIRECTORY_BUDGET_POLICY.md",
         "DRIFT.md",
         "ERRORS.md",
         "GENERATED_LIFECYCLE.md",

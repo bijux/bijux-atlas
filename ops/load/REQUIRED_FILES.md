@@ -16,13 +16,11 @@ required_dirs:
   - ops/load/scenarios
   - ops/load/thresholds
   - ops/load/k6/suites
-  - ops/load/k6/manifests
   - ops/load/k6/thresholds
   - ops/load/generated
 forbidden_patterns:
   - legacy-observe-alias/
   - legacy-observe-schema-alias/
-  - ops/load/k6/manifests/suites.json
 notes:
   - authored_root: ops/load/suites/suites.json
   - authored_root: ops/load/thresholds

@@ -26,6 +26,7 @@
         "required": [
           "path",
           "owner",
+          "why_exists",
           "purpose",
           "expected_contents",
           "lifecycle_policy"
@@ -36,6 +37,10 @@
             "pattern": "^ops\\/[a-z0-9._\\/-]+$"
           },
           "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why_exists": {
             "type": "string",
             "minLength": 1
           },

@@ -3,7 +3,7 @@
   "generated_by": "bijux dev atlas ops inventory placeholder-dirs-report --write-example",
   "status": "pass",
   "placeholder_debt_score": {
-    "total_placeholders": 23,
+    "total_placeholders": 19,
     "undeclared_placeholders": 0,
     "missing_readme_notes": 0,
     "missing_lifecycle_policy": 0,
@@ -22,16 +22,12 @@
     "ops/env/prod",
     "ops/k8s/tests/checks/perf",
     "ops/load/data",
-    "ops/load/k6/manifests",
     "ops/load/k6/thresholds",
     "ops/load/thresholds",
     "ops/observe/alerts",
     "ops/observe/dashboards",
     "ops/observe/otel",
     "ops/observe/prom",
-    "ops/observe/rules",
-    "ops/schema",
-    "ops/schema/generated",
-    "ops/schema/inventory"
+    "ops/observe/rules"
   ]
 }

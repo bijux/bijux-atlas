@@ -8,161 +8,152 @@
       "owner": "ops/report",
       "purpose": "runtime-generated output root kept empty in git",
       "expected_contents": "runtime-only generated outputs during local and CI runs",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "runtime-generated output root kept empty in git"
     },
     {
       "path": "ops/_generated.example",
       "owner": "ops/report",
       "purpose": "committed curated evidence mirror",
       "expected_contents": "allowlisted evidence artifacts only",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "committed curated evidence mirror"
     },
     {
       "path": "ops/e2e/datasets",
       "owner": "ops/e2e",
       "purpose": "reserved dataset mount point for e2e suites",
       "expected_contents": "suite-specific dataset snapshots and manifests",
-      "lifecycle_policy": "sunset when e2e fixture catalog fully owns mount layout"
+      "lifecycle_policy": "sunset when e2e fixture catalog fully owns mount layout",
+      "why_exists": "reserved dataset mount point for e2e suites"
     },
     {
       "path": "ops/e2e/expectations",
       "owner": "ops/e2e",
       "purpose": "expected results contract inputs",
       "expected_contents": "expectation snapshots referenced by e2e suites",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "expected results contract inputs"
     },
     {
       "path": "ops/e2e/manifests",
       "owner": "ops/e2e",
       "purpose": "suite manifest roots",
       "expected_contents": "smoke and scenario manifests consumed by e2e orchestration",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "suite manifest roots"
     },
     {
       "path": "ops/env/base",
       "owner": "ops/env",
       "purpose": "base overlay contract root",
       "expected_contents": "base overlay.json and shared defaults",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "base overlay contract root"
     },
     {
       "path": "ops/env/ci",
       "owner": "ops/env",
       "purpose": "CI overlay contract root",
       "expected_contents": "ci overlay.json and CI-specific values",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "CI overlay contract root"
     },
     {
       "path": "ops/env/dev",
       "owner": "ops/env",
       "purpose": "development overlay contract root",
       "expected_contents": "dev overlay.json and local profile values",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "development overlay contract root"
     },
     {
       "path": "ops/env/overlays",
       "owner": "ops/env",
       "purpose": "additional environment overlay namespace",
       "expected_contents": "environment-specific overlay documents",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "additional environment overlay namespace"
     },
     {
       "path": "ops/env/prod",
       "owner": "ops/env",
       "purpose": "production overlay contract root",
       "expected_contents": "prod overlay.json and release profile values",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "production overlay contract root"
     },
     {
       "path": "ops/k8s/tests/checks/perf",
       "owner": "ops/k8s",
       "purpose": "perf-focused k8s conformance checks namespace",
       "expected_contents": "performance check manifests and expected outputs",
-      "lifecycle_policy": "sunset when perf checks move to dedicated suite package"
+      "lifecycle_policy": "sunset when perf checks move to dedicated suite package",
+      "why_exists": "perf-focused k8s conformance checks namespace"
     },
     {
       "path": "ops/load/data",
       "owner": "ops/load",
       "purpose": "load test data mount root",
       "expected_contents": "sample payloads and load dataset inputs",
-      "lifecycle_policy": "permanent extension point"
-    },
-    {
-      "path": "ops/load/k6/manifests",
-      "owner": "ops/load",
-      "purpose": "k6 manifest namespace",
-      "expected_contents": "manifest documents for k6 execution plans",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "load test data mount root"
     },
     {
       "path": "ops/load/k6/thresholds",
       "owner": "ops/load",
       "purpose": "k6 threshold files namespace",
       "expected_contents": "threshold contracts keyed by scenario",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "k6 threshold files namespace"
     },
     {
       "path": "ops/load/thresholds",
       "owner": "ops/load",
       "purpose": "legacy threshold root retained for compatibility",
       "expected_contents": "threshold contracts consumed by load suites",
-      "lifecycle_policy": "sunset when all suites consume ops/load/k6/thresholds only"
+      "lifecycle_policy": "sunset when all suites consume ops/load/k6/thresholds only",
+      "why_exists": "legacy threshold root retained for compatibility"
     },
     {
       "path": "ops/observe/alerts",
       "owner": "ops/observe",
       "purpose": "alert rule catalog root",
       "expected_contents": "Prometheus alert rule files",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "alert rule catalog root"
     },
     {
       "path": "ops/observe/dashboards",
       "owner": "ops/observe",
       "purpose": "dashboard contract root",
       "expected_contents": "dashboard goldens and generated dashboard definitions",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "dashboard contract root"
     },
     {
       "path": "ops/observe/otel",
       "owner": "ops/observe",
       "purpose": "OpenTelemetry profile config root",
       "expected_contents": "otel pipeline and collector configuration files",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "OpenTelemetry profile config root"
     },
     {
       "path": "ops/observe/prom",
       "owner": "ops/observe",
       "purpose": "Prometheus profile config root",
       "expected_contents": "prometheus scrape and retention configuration files",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "Prometheus profile config root"
     },
     {
       "path": "ops/observe/rules",
       "owner": "ops/observe",
       "purpose": "observability rule contracts",
       "expected_contents": "public-surface and policy rules",
-      "lifecycle_policy": "permanent extension point"
-    },
-    {
-      "path": "ops/schema",
-      "owner": "ops/schema",
-      "purpose": "schema domain anchor",
-      "expected_contents": "domain schema folders and policy docs",
-      "lifecycle_policy": "permanent extension point"
-    },
-    {
-      "path": "ops/schema/generated",
-      "owner": "ops/schema",
-      "purpose": "generated schema governance outputs",
-      "expected_contents": "schema-index and compatibility lock outputs",
-      "lifecycle_policy": "permanent extension point"
-    },
-    {
-      "path": "ops/schema/inventory",
-      "owner": "ops/schema",
-      "purpose": "inventory schema namespace",
-      "expected_contents": "schemas for inventory registry documents",
-      "lifecycle_policy": "permanent extension point"
+      "lifecycle_policy": "permanent extension point",
+      "why_exists": "observability rule contracts"
     }
   ]
 }

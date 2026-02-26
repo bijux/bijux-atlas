@@ -50,6 +50,7 @@ Ops is specification-only. Runtime behavior and orchestration logic live in `cra
 - `ops/_generated/`: runtime generated outputs.
 - `ops/_generated.example/`: committed generated examples only.
 - Canonical directory budget: keep the top-level canonical tree intentionally small; additions require contract updates and ownership review.
+- Directory budget policy: `ops/DIRECTORY_BUDGET_POLICY.md`.
 
 ## Canonical SSOT Map
 

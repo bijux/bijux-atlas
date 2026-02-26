@@ -2833,6 +2833,7 @@ pub(super) fn check_ops_docs_governance(
     ]);
     let allowed_nonstandard_paths = BTreeSet::from([
         "ops/CONTROL_PLANE.md".to_string(),
+        "ops/DIRECTORY_BUDGET_POLICY.md".to_string(),
         "ops/DRIFT.md".to_string(),
         "ops/ERRORS.md".to_string(),
         "ops/GENERATED_LIFECYCLE.md".to_string(),
