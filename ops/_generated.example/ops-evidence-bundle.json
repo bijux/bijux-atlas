@@ -223,5 +223,6 @@
     "state": "frozen",
     "release": "v0.1.0",
     "source": "ops/inventory/pin-freeze.json"
-  }
+  },
+  "generated_by": "bijux dev atlas report build-evidence --write-example"
 }

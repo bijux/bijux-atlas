@@ -70,5 +70,6 @@
     "failed": 7,
     "passed": 8,
     "total": 15
-  }
+  },
+  "generated_by": "bijux dev atlas report build-scorecard --write-example"
 }

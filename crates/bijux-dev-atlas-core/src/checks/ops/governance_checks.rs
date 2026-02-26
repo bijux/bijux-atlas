@@ -3148,6 +3148,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
+    let generated_lifecycle_rel = Path::new("ops/GENERATED_LIFECYCLE.md");
     let mirror_policy_rel = Path::new("ops/_generated.example/MIRROR_POLICY.md");
     let allowlist_rel = Path::new("ops/_generated.example/ALLOWLIST.json");
     let ops_index_rel = Path::new("ops/_generated.example/ops-index.json");
@@ -3157,6 +3158,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     let gates_rel = Path::new("ops/inventory/gates.json");
 
     for rel in [
+        generated_lifecycle_rel,
         mirror_policy_rel,
         allowlist_rel,
         ops_index_rel,
@@ -3176,6 +3178,29 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 
     let mirror_policy_text = fs::read_to_string(ctx.repo_root.join(mirror_policy_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let generated_lifecycle_text = fs::read_to_string(ctx.repo_root.join(generated_lifecycle_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for required in [
+        "## Lifecycle Classes",
+        "transient_runtime",
+        "domain_derived",
+        "curated_evidence",
+        "## Retention Policy",
+        "## Regeneration Triggers",
+        "## Deterministic Ordering",
+        "## Generator Contract Versioning",
+    ] {
+        if !generated_lifecycle_text.contains(required) {
+            violations.push(violation(
+                "OPS_GENERATED_LIFECYCLE_CONTRACT_INCOMPLETE",
+                format!(
+                    "generated lifecycle contract must include required section or marker `{required}`"
+                ),
+                "update ops/GENERATED_LIFECYCLE.md with complete lifecycle, retention, trigger, and versioning policy",
+                Some(generated_lifecycle_rel),
+            ));
+        }
+    }
     for required in [
         "ops-index.json",
         "ops-evidence-bundle.json",
@@ -3185,6 +3210,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "control-plane.snapshot.md",
         "docs-drift-report.json",
         "schema-drift-report.json",
+        "ops/GENERATED_LIFECYCLE.md",
     ] {
         if !mirror_policy_text.contains(required) {
             violations.push(violation(
@@ -3261,6 +3287,17 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                             rel.display()
                         ),
                         "add schema_version to curated evidence json artifact",
+                        Some(rel),
+                    ));
+                }
+                if json.get("generated_by").is_none() {
+                    violations.push(violation(
+                        "OPS_EVIDENCE_GENERATED_BY_MISSING",
+                        format!(
+                            "curated evidence json `{}` must include generated_by",
+                            rel.display()
+                        ),
+                        "add generated_by to curated evidence json artifact",
                         Some(rel),
                     ));
                 }

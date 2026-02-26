@@ -19,5 +19,6 @@
     "ops/report/generated/release-evidence-bundle.json",
     "ops/report/generated/report-diff.json",
     "ops/report/generated/historical-comparison.json"
-  ]
+  ],
+  "generated_by": "bijux dev atlas report build-index --write-example"
 }

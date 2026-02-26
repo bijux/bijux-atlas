@@ -26,5 +26,6 @@
       "id": "todo_marker_absence",
       "status": "pass"
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas docs drift --write-example"
 }

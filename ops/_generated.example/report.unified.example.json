@@ -22,5 +22,6 @@
     "failed": 0,
     "near_failing": [],
     "failed_lanes": []
-  }
+  },
+  "generated_by": "bijux dev atlas report write-unified-example"
 }

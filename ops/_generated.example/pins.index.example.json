@@ -18,5 +18,6 @@
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "bytes": 0
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas inventory pins index --write-example"
 }

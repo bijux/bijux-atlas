@@ -2,11 +2,15 @@
   "schema_version": 1,
   "run_id": "atlas-ops-example",
   "namespace": "atlas-e2e",
-  "metadata": {"run_id": "atlas-ops-example", "namespace": "atlas-e2e"},
+  "metadata": {
+    "run_id": "atlas-ops-example",
+    "namespace": "atlas-e2e"
+  },
   "artifacts": {
     "logs": true,
     "metrics": true,
     "smoke_report": true,
     "perf_results": true
-  }
+  },
+  "generated_by": "bijux dev atlas report write-example"
 }

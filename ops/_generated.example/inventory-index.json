@@ -118,5 +118,6 @@
       "path": "ops/inventory/tools.toml",
       "sha256": "ab4c7ff9ecbdf02fc140123d8382adacb90139a7b44f26c7b5375b5275df72d0"
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas inventory index --write-example"
 }
