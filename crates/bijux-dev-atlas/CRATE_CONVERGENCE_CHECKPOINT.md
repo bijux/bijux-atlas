@@ -44,7 +44,7 @@
 
 - Replace production imports of:
   - model data contracts are also available in `crates/bijux-dev-atlas/src/model/`
-  - `bijux-dev-atlas-policies`
+  - policy schema and validation code are also available in `crates/bijux-dev-atlas/src/policies/`
   - `bijux-dev-atlas-core`
   - `bijux-dev-atlas-adapters`
   with internal module paths
