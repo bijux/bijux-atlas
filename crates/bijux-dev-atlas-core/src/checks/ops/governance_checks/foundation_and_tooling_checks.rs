@@ -126,7 +126,33 @@ pub(super) fn checks_ops_workflow_routes_dev_atlas(
             continue;
         };
         if !text.contains("RUN_ID:") {
+            if text.contains("ISO_ROOT: artifacts/isolates/") {
+                for required_tmp in ["TMPDIR:", "TMP:", "TEMP:"] {
+                    if !text.contains(required_tmp) {
+                        violations.push(violation(
+                            "WORKFLOW_ISOLATION_TEMP_ENV_MISSING",
+                            format!(
+                                "workflow `{}` defines ISO_ROOT isolation but is missing `{required_tmp}` temp environment binding",
+                                rel.display()
+                            ),
+                            "bind TMPDIR, TMP, and TEMP under the workflow isolate tmp directory",
+                            Some(rel),
+                        ));
+                    }
+                }
+            }
             continue;
+        }
+        if !text.contains("github.run_attempt") {
+            violations.push(violation(
+                "WORKFLOW_RUN_ID_ATTEMPT_SUFFIX_MISSING",
+                format!(
+                    "workflow `{}` RUN_ID must include github.run_attempt for retry-safe isolation",
+                    rel.display()
+                ),
+                "append `${{ github.run_attempt }}` to workflow RUN_ID definitions",
+                Some(rel),
+            ));
         }
         if !text.contains("ISO_ROOT: artifacts/isolates/") {
             violations.push(violation(
@@ -136,6 +162,30 @@ pub(super) fn checks_ops_workflow_routes_dev_atlas(
                     rel.display()
                 ),
                 "declare ISO_ROOT under artifacts/isolates/<lane> for workflows that emit run-scoped artifacts",
+                Some(rel),
+            ));
+        }
+        for required_tmp in ["TMPDIR:", "TMP:", "TEMP:"] {
+            if !text.contains(required_tmp) {
+                violations.push(violation(
+                    "WORKFLOW_ISOLATION_TEMP_ENV_MISSING",
+                    format!(
+                        "workflow `{}` is missing `{required_tmp}` temp environment binding",
+                        rel.display()
+                    ),
+                    "bind TMPDIR, TMP, and TEMP under the workflow isolate tmp directory",
+                    Some(rel),
+                ));
+            }
+        }
+        if text.contains("TMPDIR:") && !text.contains("TMPDIR: artifacts/isolates/") {
+            violations.push(violation(
+                "WORKFLOW_ISOLATION_TMPDIR_LAYOUT_MISSING",
+                format!(
+                    "workflow `{}` must bind TMPDIR under its isolate tmp path",
+                    rel.display()
+                ),
+                "set TMPDIR/TMP/TEMP to artifacts/isolates/<lane>/tmp",
                 Some(rel),
             ));
         }
