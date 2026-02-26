@@ -24,7 +24,7 @@ Own dataset manifest lock, pins, fetch/verify, QC, and promotion simulation.
 - `ops/datasets/generated/dataset-lineage.json`
 
 ## Artifacts
-- `ops/_artifacts/<run_id>/datasets/`
+- `artifacts/atlas-dev/ops/<run_id>/datasets/`
 
 ## Failure modes
 - Dataset lock/schema mismatch.

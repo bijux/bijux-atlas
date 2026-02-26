@@ -10,7 +10,7 @@ Contracts:
 - `ops/datasets/fixtures/CONTRACT.md`
 
 Artifacts:
-- Fixture assets are inputs; generated artifacts are written under `ops/_artifacts/<run_id>/...`.
+- Fixture assets are inputs; generated artifacts are written under `artifacts/atlas-dev/...`.
 
 Failure modes:
 - Missing fixture version directory or lock file.

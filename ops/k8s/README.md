@@ -18,7 +18,7 @@ Own Helm chart delivery, install profiles, and Kubernetes-only validation gates.
 - `ops/schema/k8s/release-snapshot.schema.json`
 
 ## Artifacts
-- `ops/_artifacts/<run_id>/k8s/`
+- `artifacts/atlas-dev/ops/<run_id>/k8s/`
 - `ops/k8s/generated/inventory-index.json`
 - `ops/k8s/generated/render-artifact-index.json`
 - `ops/k8s/generated/release-snapshot.json`

@@ -52,8 +52,8 @@
             "expected_time_seconds": 600,
             "expected_qps": 1,
             "expected_artifacts": [
-              "ops/_artifacts/k8s/test-results.json",
-              "ops/_artifacts/k8s/test-results.xml"
+              "artifacts/atlas-dev/ops/k8s/test-results.json",
+              "artifacts/atlas-dev/ops/k8s/test-results.xml"
             ]
           }
         }

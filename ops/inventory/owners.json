@@ -2,7 +2,6 @@
   "schema_version": 1,
   "areas": {
     "ops": "bijux-atlas-operations",
-    "ops/_artifacts": "bijux-atlas-operations",
     "ops/_generated": "bijux-atlas-operations",
     "ops/_generated.example": "bijux-atlas-operations",
     "artifacts/evidence": "bijux-atlas-operations",

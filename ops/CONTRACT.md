@@ -93,6 +93,7 @@ Generated truth:
 - Generated runtime outputs are written only under `ops/_generated/`.
 - Committed generated outputs are written only under `ops/_generated.example/`.
 - Runtime evidence and artifacts are written under `artifacts/`.
+- Canonical artifact layout is defined in `ops/ARTIFACTS.md` and must not use `ops/_artifacts/`.
 - `_generated.example/` accepts only curated evidence indexes and curated report examples.
 - Symlinked directories under `ops/` are forbidden unless explicitly allowlisted.
 - Executable-bit files under `ops/` are forbidden.

@@ -19,7 +19,7 @@ Stack lifecycle is controlled only through `bijux dev atlas ops stack ...`.
 - `ops/stack/generated/version-manifest.json` (derived mirror)
 
 ## Artifacts
-- `ops/_artifacts/<run_id>/stack/`
+- `artifacts/atlas-dev/ops/<run_id>/stack/`
 - `ops/stack/generated/stack-index.json`
 - `ops/stack/generated/dependency-graph.json`
 - `ops/stack/generated/artifact-metadata.json`

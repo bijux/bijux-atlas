@@ -39,6 +39,7 @@ Current-state crate inventory must live only in `ops/_generated.example/control-
 - Command surfaces are documented in command-list snapshot docs.
 - Reports and artifacts use stable `schema_version` values.
 - Control-plane artifacts follow `artifacts/<run-kind>/<run-id>/...`; current dev-atlas run kinds are rooted at `artifacts/atlas-dev/<domain>/<run-id>/...`.
+- Artifact layout authority and migration policy are defined in `ops/ARTIFACTS.md`.
 - Artifacts must not be tracked by git.
 - Internal checks stay hidden unless `--include-internal` is provided.
 - `ops/CONTROL_PLANE.md` must stay policy-only; crate names are forbidden outside explicit examples.
