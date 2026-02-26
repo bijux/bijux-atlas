@@ -70,15 +70,15 @@ Generated ops surface reference derived from inventory surfaces.
 - `ops-observability-down`
 - `ops-observability-install`
 - `ops-observability-mode`
-- `ops-observability-uninstall`
-- `ops-observability-verify`
 - `ops-observability-pack-conformance-report`
 - `ops-observability-pack-export`
 - `ops-observability-pack-health`
 - `ops-observability-pack-smoke`
 - `ops-observability-pack-verify`
 - `ops-observability-smoke`
+- `ops-observability-uninstall`
 - `ops-observability-validate`
+- `ops-observability-verify`
 - `ops-open-grafana`
 - `ops-openapi-validate`
 - `ops-perf-baseline-update`
@@ -120,6 +120,11 @@ Generated ops surface reference derived from inventory surfaces.
 - `bijux dev atlas ops actions run`
 - `bijux dev atlas ops cache prune`
 - `bijux dev atlas ops cache status`
+- `bijux dev atlas ops check`
+- `bijux dev atlas ops clean`
+- `bijux dev atlas ops clean-generated`
+- `bijux dev atlas ops contracts-check`
+- `bijux dev atlas ops contracts-index`
 - `bijux dev atlas ops datasets fetch`
 - `bijux dev atlas ops datasets lint-ids`
 - `bijux dev atlas ops datasets lock`
@@ -131,13 +136,18 @@ Generated ops surface reference derived from inventory surfaces.
 - `bijux dev atlas ops deploy apply`
 - `bijux dev atlas ops deploy plan`
 - `bijux dev atlas ops deploy rollback`
+- `bijux dev atlas ops directory-budgets-check`
+- `bijux dev atlas ops doctor`
+- `bijux dev atlas ops down`
 - `bijux dev atlas ops e2e run`
 - `bijux dev atlas ops e2e validate`
 - `bijux dev atlas ops e2e validate-results`
 - `bijux dev atlas ops env print`
 - `bijux dev atlas ops env validate`
+- `bijux dev atlas ops explain`
 - `bijux dev atlas ops gen check`
 - `bijux dev atlas ops gen run`
+- `bijux dev atlas ops help`
 - `bijux dev atlas ops k8s apply-config`
 - `bijux dev atlas ops k8s check`
 - `bijux dev atlas ops k8s contracts`
@@ -145,14 +155,24 @@ Generated ops surface reference derived from inventory surfaces.
 - `bijux dev atlas ops k8s render`
 - `bijux dev atlas ops k8s validate`
 - `bijux dev atlas ops k8s validate-configmap-keys`
+- `bijux dev atlas ops k8s-checks-layout`
+- `bijux dev atlas ops k8s-flakes-check`
+- `bijux dev atlas ops k8s-surface-generate`
+- `bijux dev atlas ops k8s-test-contract`
+- `bijux dev atlas ops k8s-test-lib-contract`
 - `bijux dev atlas ops kind down`
 - `bijux dev atlas ops kind fault`
 - `bijux dev atlas ops kind reset`
 - `bijux dev atlas ops kind up`
 - `bijux dev atlas ops kind validate`
+- `bijux dev atlas ops layer-drift-check`
+- `bijux dev atlas ops lint`
+- `bijux dev atlas ops list`
 - `bijux dev atlas ops load check`
 - `bijux dev atlas ops load compare`
 - `bijux dev atlas ops load run`
+- `bijux dev atlas ops naming-check`
+- `bijux dev atlas ops no-direct-script-usage-check`
 - `bijux dev atlas ops observe check`
 - `bijux dev atlas ops observe drill`
 - `bijux dev atlas ops observe lint`
@@ -162,26 +182,6 @@ Generated ops surface reference derived from inventory surfaces.
 - `bijux dev atlas ops observe verify`
 - `bijux dev atlas ops pins check`
 - `bijux dev atlas ops pins update`
-- `bijux dev atlas ops check`
-- `bijux dev atlas ops clean`
-- `bijux dev atlas ops clean-generated`
-- `bijux dev atlas ops contracts-check`
-- `bijux dev atlas ops contracts-index`
-- `bijux dev atlas ops directory-budgets-check`
-- `bijux dev atlas ops doctor`
-- `bijux dev atlas ops down`
-- `bijux dev atlas ops explain`
-- `bijux dev atlas ops help`
-- `bijux dev atlas ops k8s-checks-layout`
-- `bijux dev atlas ops k8s-flakes-check`
-- `bijux dev atlas ops k8s-surface-generate`
-- `bijux dev atlas ops k8s-test-contract`
-- `bijux dev atlas ops k8s-test-lib-contract`
-- `bijux dev atlas ops layer-drift-check`
-- `bijux dev atlas ops lint`
-- `bijux dev atlas ops list`
-- `bijux dev atlas ops naming-check`
-- `bijux dev atlas ops no-direct-script-usage-check`
 - `bijux dev atlas ops policy-audit`
 - `bijux dev atlas ops prereqs`
 - `bijux dev atlas ops restart`
@@ -191,12 +191,6 @@ Generated ops surface reference derived from inventory surfaces.
 - `bijux dev atlas ops run-script`
 - `bijux dev atlas ops schema-check`
 - `bijux dev atlas ops smoke`
-- `bijux dev atlas ops suites-check`
-- `bijux dev atlas ops surface`
-- `bijux dev atlas ops tool-versions-check`
-- `bijux dev atlas ops up`
-- `bijux dev atlas ops warm`
-- `bijux dev atlas ops warm-dx`
 - `bijux dev atlas ops stack check`
 - `bijux dev atlas ops stack down`
 - `bijux dev atlas ops stack report`
@@ -205,6 +199,12 @@ Generated ops surface reference derived from inventory surfaces.
 - `bijux dev atlas ops stack up`
 - `bijux dev atlas ops stack validate`
 - `bijux dev atlas ops stack versions-sync`
+- `bijux dev atlas ops suites-check`
+- `bijux dev atlas ops surface`
+- `bijux dev atlas ops tool-versions-check`
+- `bijux dev atlas ops up`
+- `bijux dev atlas ops warm`
+- `bijux dev atlas ops warm-dx`
 
 ## Actions
 

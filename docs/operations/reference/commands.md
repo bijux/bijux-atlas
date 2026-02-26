@@ -69,6 +69,4 @@ See `makefiles/GENERATED_TARGETS.md` and generated ops surface references. Narra
 
 ## Regenerate
 
-- `bijux dev atlas --help`
-- `bijux dev atlas ops --help`
-- `bijux dev atlas docs generate` (planned)
+- `python3 scripts/docs/generate_operations_references.py --write`

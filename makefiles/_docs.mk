@@ -27,4 +27,10 @@ docs-clean: ## Clean docs generated outputs
 docs-lock: ## Refresh docs requirements lock deterministically
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
 
-.PHONY: docs docs-doctor docs-validate docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock
+docs-reference-regenerate: ## Regenerate docs operations reference pages from SSOT inputs
+	@python3 scripts/docs/generate_operations_references.py --write
+
+docs-reference-check: ## Check docs operations reference pages are regenerated
+	@python3 scripts/docs/generate_operations_references.py
+
+.PHONY: docs docs-doctor docs-validate docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check
