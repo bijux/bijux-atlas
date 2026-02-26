@@ -65,6 +65,7 @@ Generated truth:
 - `ops/stack/generated/*.json`, `ops/k8s/generated/*.json`, `ops/observe/generated/telemetry-index.json`, `ops/load/generated/*.json`, `ops/report/generated/*.json`, `ops/datasets/generated/*.json`, `ops/e2e/generated/*.json`
 - `ops/_generated/**` (ephemeral runtime outputs)
 - `ops/_generated.example/**` (curated committed generated evidence artifacts)
+- lifecycle policy: `ops/GENERATED_LIFECYCLE.md`
 
 ## Duplicate Truth Rule
 

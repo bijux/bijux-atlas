@@ -1,6 +1,6 @@
 # ops/stack/generated
 
-Generated stack metadata artifacts for deterministic validation and documentation.
+Generated stack metadata artifacts for deterministic validation and documentation. This is a derived-only directory.
 
 - `stack-index.json`: canonical list of stack source artifacts.
 - `dependency-graph.json`: profile to component dependency graph.

@@ -2,9 +2,12 @@
 
 `ops/_generated.example/` is a committed mirror/output compatibility area during the migration window.
 
+Authoritative lifecycle contract: `ops/GENERATED_LIFECYCLE.md`.
+
 Rules:
 - Generate primary outputs under `ops/_generated/`.
 - Only explicit update commands may write `ops/_generated.example/`.
+- Lifecycle class for this directory is `curated_evidence`.
 - Every committed file in `ops/_generated.example/` must be declared in `ops/_generated.example/ALLOWLIST.json`.
 - `ops/_generated.example/inventory-index.json` is the generated inventory checksum index used for drift comparisons.
 - `ops/_generated.example/control-plane.snapshot.md` is the control-plane snapshot used for drift checks.
@@ -26,6 +29,7 @@ Rules:
 - `ops/_generated.example/fixture-drift-report.json` is the generated fixture governance drift summary.
 - Binary artifacts are forbidden in this directory.
 - Every committed JSON artifact in this directory must include `schema_version`.
+- Every committed JSON artifact in this directory must include `generated_by`.
 
 ## Generator Commands
 

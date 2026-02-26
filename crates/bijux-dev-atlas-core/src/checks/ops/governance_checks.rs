@@ -2835,6 +2835,7 @@ pub(super) fn check_ops_docs_governance(
         "ops/CONTROL_PLANE.md".to_string(),
         "ops/DRIFT.md".to_string(),
         "ops/ERRORS.md".to_string(),
+        "ops/GENERATED_LIFECYCLE.md".to_string(),
         "ops/NAMING.md".to_string(),
         "ops/SSOT.md".to_string(),
         "ops/_generated.example/INDEX.example.md".to_string(),

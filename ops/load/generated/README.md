@@ -1,6 +1,6 @@
-# Generated Load Artifacts
+# Generated Load Artifacts (Derived-Only)
 
-This directory is generated output only.
+This directory is generated output only. It is a derived-only directory.
 
 Do not author source-of-truth files here.
 Canonical authored inputs live under:
