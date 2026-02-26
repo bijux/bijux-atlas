@@ -401,8 +401,14 @@ fn checks_ops_generated_lifecycle_metadata(
         .and_then(|v| v.as_array())
         .cloned()
         .unwrap_or_default();
+    let generated_directories = policy_json
+        .get("generated_directories")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
 
     let mut curated_by_path = std::collections::BTreeMap::<String, serde_json::Value>::new();
+    let mut declared_generated_dirs = std::collections::BTreeMap::<String, serde_json::Value>::new();
     let mut violations = Vec::new();
     for entry in &curated_entries {
         let Some(path) = entry.get("committed").and_then(|v| v.as_str()) else {
@@ -487,6 +493,106 @@ fn checks_ops_generated_lifecycle_metadata(
             "OPS_GENERATED_LIFECYCLE_ENTRY_ORDER_UNSTABLE",
             "curated_evidence entries must be sorted by committed path".to_string(),
             "sort curated_evidence entries lexicographically by committed path",
+            Some(policy_rel),
+        ));
+    }
+
+    for entry in &generated_directories {
+        let Some(directory) = entry.get("directory").and_then(|v| v.as_str()) else {
+            violations.push(violation(
+                "OPS_GENERATED_DIRECTORY_LIFECYCLE_PATH_MISSING",
+                "generated_directories entry is missing `directory`".to_string(),
+                "declare `directory` for each generated lifecycle directory entry",
+                Some(policy_rel),
+            ));
+            continue;
+        };
+        if declared_generated_dirs
+            .insert(directory.to_string(), entry.clone())
+            .is_some()
+        {
+            violations.push(violation(
+                "OPS_GENERATED_DIRECTORY_LIFECYCLE_DUPLICATE",
+                format!("duplicate generated_directories entry for `{directory}`"),
+                "keep one generated_directories entry per directory",
+                Some(policy_rel),
+            ));
+        }
+        let lifecycle = entry
+            .get("lifecycle")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let retention = entry
+            .get("retention")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if lifecycle.trim().is_empty() || retention.trim().is_empty() {
+            violations.push(violation(
+                "OPS_GENERATED_DIRECTORY_LIFECYCLE_METADATA_MISSING",
+                format!(
+                    "generated_directories entry `{directory}` must include non-empty lifecycle and retention"
+                ),
+                "declare lifecycle and retention for each generated directory",
+                Some(policy_rel),
+            ));
+        }
+        if lifecycle != "transient_runtime" {
+            for key in ["producer", "regenerate"] {
+                if entry
+                    .get(key)
+                    .and_then(|v| v.as_str())
+                    .is_none_or(|s| s.trim().is_empty())
+                {
+                    violations.push(violation(
+                        "OPS_GENERATED_DIRECTORY_PRODUCER_METADATA_MISSING",
+                        format!(
+                            "generated_directories entry `{directory}` must include non-empty `{key}` for non-runtime lifecycle"
+                        ),
+                        "declare producer and regenerate metadata for committed/example/domain generated directories",
+                        Some(policy_rel),
+                    ));
+                }
+            }
+        }
+    }
+
+    let generated_dir_roots = [
+        Path::new("ops/_generated"),
+        Path::new("ops/_generated.example"),
+        Path::new("ops/datasets/generated"),
+        Path::new("ops/e2e/generated"),
+        Path::new("ops/k8s/generated"),
+        Path::new("ops/load/generated"),
+        Path::new("ops/observe/generated"),
+        Path::new("ops/report/generated"),
+        Path::new("ops/schema/generated"),
+        Path::new("ops/stack/generated"),
+    ];
+    for dir_rel in generated_dir_roots {
+        if !ctx.adapters.fs.exists(ctx.repo_root, dir_rel) {
+            continue;
+        }
+        let dir = dir_rel.display().to_string();
+        if !declared_generated_dirs.contains_key(&dir) {
+            violations.push(violation(
+                "OPS_GENERATED_DIRECTORY_LIFECYCLE_COVERAGE_MISSING",
+                format!("generated directory `{dir}` is missing generated_directories lifecycle metadata"),
+                "declare every generated directory in ops/inventory/generated-committed-mirror.json generated_directories",
+                Some(policy_rel),
+            ));
+        }
+    }
+
+    let declared_dir_paths: Vec<_> = generated_directories
+        .iter()
+        .filter_map(|entry| entry.get("directory").and_then(|v| v.as_str()))
+        .map(ToString::to_string)
+        .collect();
+    if !declared_dir_paths.windows(2).all(|w| w[0] <= w[1]) {
+        violations.push(violation(
+            "OPS_GENERATED_DIRECTORY_LIFECYCLE_ORDER_UNSTABLE",
+            "generated_directories entries must be sorted by directory".to_string(),
+            "sort generated_directories entries lexicographically by directory",
             Some(policy_rel),
         ));
     }
