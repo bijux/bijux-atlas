@@ -77,6 +77,12 @@
       "consumer": "checks_ops_fixture_governance"
     },
     {
+      "path": "ops/inventory/observability-coverage-map.json",
+      "schema": "ops/schema/inventory/observability-coverage-map.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_fixture_governance"
+    },
+    {
       "path": "ops/inventory/gates.json",
       "schema": "ops/schema/inventory/gates.schema.json",
       "generator": "manual",

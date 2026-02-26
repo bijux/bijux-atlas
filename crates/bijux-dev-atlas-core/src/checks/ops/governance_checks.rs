@@ -4684,6 +4684,8 @@ pub(super) fn check_ops_fixture_governance(
     let scenarios_rel = Path::new("ops/e2e/scenarios/scenarios.json");
     let expectations_rel = Path::new("ops/e2e/expectations/expectations.json");
     let scenario_slo_map_rel = Path::new("ops/inventory/scenario-slo-map.json");
+    let observe_coverage_rel = Path::new("ops/inventory/observability-coverage-map.json");
+    let alerts_contract_rel = Path::new("ops/observe/contracts/alerts-contract.json");
     let mut canonical_e2e_scenario_ids = BTreeSet::new();
     if ctx.adapters.fs.exists(ctx.repo_root, suites_rel) {
         let suites_text = fs::read_to_string(ctx.repo_root.join(suites_rel))
@@ -5008,6 +5010,98 @@ pub(super) fn check_ops_fixture_governance(
             ),
             "restore ops/inventory/scenario-slo-map.json",
             Some(scenario_slo_map_rel),
+        ));
+    }
+
+    if ctx.adapters.fs.exists(ctx.repo_root, observe_coverage_rel)
+        && ctx.adapters.fs.exists(ctx.repo_root, alerts_contract_rel)
+    {
+        let coverage_text = fs::read_to_string(ctx.repo_root.join(observe_coverage_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let coverage_json: serde_json::Value = serde_json::from_str(&coverage_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let coverage_entries = coverage_json
+            .get("mappings")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+
+        let alerts_contract_text = fs::read_to_string(ctx.repo_root.join(alerts_contract_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let alerts_contract_json: serde_json::Value = serde_json::from_str(&alerts_contract_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let required_alerts = alerts_contract_json
+            .get("required_alerts")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_str())
+                    .map(ToString::to_string)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+
+        let mut mapped_alerts = BTreeSet::new();
+        for entry in &coverage_entries {
+            let alert_id = entry
+                .get("alert_id")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if alert_id.is_empty() {
+                continue;
+            }
+            mapped_alerts.insert(alert_id.clone());
+            let slo_id = entry
+                .get("slo_id")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if !slo_ids.contains(slo_id) {
+                violations.push(violation(
+                    "OPS_OBSERVABILITY_COVERAGE_UNKNOWN_SLO_ID",
+                    format!(
+                        "observability coverage entry `{alert_id}` references unknown slo id `{slo_id}`"
+                    ),
+                    "align observability-coverage-map slo_id values with ops/observe/slo-definitions.json",
+                    Some(observe_coverage_rel),
+                ));
+            }
+            let drill_id = entry
+                .get("drill_id")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if !drill_ids.contains(drill_id) {
+                violations.push(violation(
+                    "OPS_OBSERVABILITY_COVERAGE_UNKNOWN_DRILL_ID",
+                    format!(
+                        "observability coverage entry `{alert_id}` references unknown drill id `{drill_id}`"
+                    ),
+                    "align observability-coverage-map drill_id values with ops/inventory/drills.json",
+                    Some(observe_coverage_rel),
+                ));
+            }
+        }
+        for required_alert in &required_alerts {
+            if !mapped_alerts.contains(required_alert) {
+                violations.push(violation(
+                    "OPS_OBSERVABILITY_COVERAGE_REQUIRED_ALERT_MISSING",
+                    format!(
+                        "required alert `{required_alert}` from alerts-contract is missing observability coverage mapping"
+                    ),
+                    "add alert coverage entry to ops/inventory/observability-coverage-map.json",
+                    Some(observe_coverage_rel),
+                ));
+            }
+        }
+    } else if !ctx.adapters.fs.exists(ctx.repo_root, observe_coverage_rel) {
+        violations.push(violation(
+            "OPS_OBSERVABILITY_COVERAGE_MAP_MISSING",
+            format!(
+                "missing observability coverage map `{}`",
+                observe_coverage_rel.display()
+            ),
+            "restore ops/inventory/observability-coverage-map.json",
+            Some(observe_coverage_rel),
         ));
     }
 

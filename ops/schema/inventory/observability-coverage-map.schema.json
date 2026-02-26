@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mappings"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "mappings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["alert_id", "slo_id", "drill_id", "runbook_id"],
+        "properties": {
+          "alert_id": {"type": "string", "minLength": 1},
+          "slo_id": {"type": "string", "minLength": 1},
+          "drill_id": {"type": "string", "minLength": 1},
+          "runbook_id": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

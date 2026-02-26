@@ -18,6 +18,7 @@ required_files:
   - ops/inventory/drills.json
   - ops/inventory/drill-contract-links.json
   - ops/inventory/scenario-slo-map.json
+  - ops/inventory/observability-coverage-map.json
   - ops/inventory/owners.json
   - ops/inventory/layers.json
   - ops/inventory/namespaces.json

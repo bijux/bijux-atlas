@@ -40,6 +40,7 @@
 | `ops/schema/inventory/generated-committed-mirror.schema.json` |
 | `ops/schema/inventory/layers.schema.json` |
 | `ops/schema/inventory/namespaces.schema.json` |
+| `ops/schema/inventory/observability-coverage-map.schema.json` |
 | `ops/schema/inventory/owner-docs.fragments.schema.json` |
 | `ops/schema/inventory/owners.schema.json` |
 | `ops/schema/inventory/pin-freeze.schema.json` |

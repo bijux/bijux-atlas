@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "mappings": [
+    {
+      "alert_id": "BijuxAtlasHigh5xxRate",
+      "slo_id": "api.availability",
+      "drill_id": "ops.drill.overload",
+      "runbook_id": "incident-playbook"
+    },
+    {
+      "alert_id": "BijuxAtlasP95LatencyRegression",
+      "slo_id": "api.p95_latency",
+      "drill_id": "ops.drill.overload",
+      "runbook_id": "incident-playbook"
+    },
+    {
+      "alert_id": "BijuxAtlasStoreDownloadFailures",
+      "slo_id": "api.availability",
+      "drill_id": "ops.drill.store_outage",
+      "runbook_id": "store-outage"
+    },
+    {
+      "alert_id": "AtlasOverloadSustained",
+      "slo_id": "api.availability",
+      "drill_id": "ops.drill.overload",
+      "runbook_id": "traffic-spike"
+    },
+    {
+      "alert_id": "BijuxAtlasRegistryRefreshStale",
+      "slo_id": "api.availability",
+      "drill_id": "ops.drill.upgrade",
+      "runbook_id": "slo-registry-refresh-stale"
+    },
+    {
+      "alert_id": "BijuxAtlasStoreBackendErrorSpike",
+      "slo_id": "api.availability",
+      "drill_id": "ops.drill.store_outage",
+      "runbook_id": "slo-store-backend-error-spike"
+    }
+  ]
+}
