@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops contracts dependency-graph --write-example",
+  "nodes": [
+    {"id": "ops.inventory", "path": "ops/inventory/CONTRACT.md", "taxonomy": "structural"},
+    {"id": "ops.schema", "path": "ops/schema/CONTRACT.md", "taxonomy": "structural"},
+    {"id": "ops.report", "path": "ops/report/CONTRACT.md", "taxonomy": "hybrid"},
+    {"id": "ops.load", "path": "ops/load/CONTRACT.md", "taxonomy": "behavioral"}
+  ],
+  "edges": [
+    {"from": "ops.inventory", "to": "ops.schema", "kind": "depends_on"},
+    {"from": "ops.load", "to": "ops.report", "kind": "evidence_for"},
+    {"from": "ops.report", "to": "ops.inventory", "kind": "enforced_by"}
+  ]
+}

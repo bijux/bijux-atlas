@@ -3219,6 +3219,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     let ops_index_rel = Path::new("ops/_generated.example/ops-index.json");
     let scorecard_rel = Path::new("ops/_generated.example/scorecard.json");
     let bundle_rel = Path::new("ops/_generated.example/ops-evidence-bundle.json");
+    let contract_audit_rel = Path::new("ops/_generated.example/contract-audit-report.json");
+    let contract_graph_rel = Path::new("ops/_generated.example/contract-dependency-graph.json");
     let schema_drift_rel = Path::new("ops/_generated.example/schema-drift-report.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
 
@@ -3229,6 +3231,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         ops_index_rel,
         scorecard_rel,
         bundle_rel,
+        contract_audit_rel,
+        contract_graph_rel,
         schema_drift_rel,
     ] {
         if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
@@ -3271,6 +3275,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "ops-evidence-bundle.json",
         "scorecard.json",
         "ALLOWLIST.json",
+        "contract-audit-report.json",
+        "contract-dependency-graph.json",
         "inventory-index.json",
         "control-plane.snapshot.md",
         "docs-drift-report.json",
@@ -3540,6 +3546,42 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                 format!("schema drift report is missing required key `{key}`"),
                 "populate schema drift report with required governance keys",
                 Some(schema_drift_rel),
+            ));
+        }
+    }
+
+    let contract_audit_text = fs::read_to_string(ctx.repo_root.join(contract_audit_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contract_audit_json: serde_json::Value = serde_json::from_str(&contract_audit_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for key in [
+        "schema_version",
+        "generated_by",
+        "status",
+        "summary",
+        "contracts",
+    ] {
+        if contract_audit_json.get(key).is_none() {
+            violations.push(violation(
+                "OPS_CONTRACT_AUDIT_REPORT_INVALID",
+                format!("contract audit report is missing required key `{key}`"),
+                "populate contract-audit-report.json with required governance keys",
+                Some(contract_audit_rel),
+            ));
+        }
+    }
+
+    let contract_graph_text = fs::read_to_string(ctx.repo_root.join(contract_graph_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let contract_graph_json: serde_json::Value = serde_json::from_str(&contract_graph_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for key in ["schema_version", "generated_by", "nodes", "edges"] {
+        if contract_graph_json.get(key).is_none() {
+            violations.push(violation(
+                "OPS_CONTRACT_DEPENDENCY_GRAPH_INVALID",
+                format!("contract dependency graph is missing required key `{key}`"),
+                "populate contract-dependency-graph.json with nodes and dependency edges",
+                Some(contract_graph_rel),
             ));
         }
     }

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_by", "status", "summary", "contracts"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "generated_by": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_contracts", "failed_contracts"],
+      "properties": {
+        "total_contracts": {"type": "integer", "minimum": 0},
+        "failed_contracts": {"type": "integer", "minimum": 0}
+      }
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "taxonomy", "status", "enforcement_links"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^ops/.+/CONTRACT\\.md$"},
+          "taxonomy": {"type": "string", "enum": ["structural", "behavioral", "hybrid"]},
+          "status": {"type": "string", "enum": ["pass", "fail"]},
+          "enforcement_links": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}

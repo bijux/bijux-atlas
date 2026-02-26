@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops contracts audit --write-example",
+  "status": "pass",
+  "summary": {
+    "total_contracts": 10,
+    "failed_contracts": 0
+  },
+  "contracts": [
+    {
+      "path": "ops/inventory/CONTRACT.md",
+      "taxonomy": "structural",
+      "status": "pass",
+      "enforcement_links": 3
+    },
+    {
+      "path": "ops/load/CONTRACT.md",
+      "taxonomy": "behavioral",
+      "status": "pass",
+      "enforcement_links": 2
+    },
+    {
+      "path": "ops/report/CONTRACT.md",
+      "taxonomy": "hybrid",
+      "status": "pass",
+      "enforcement_links": 3
+    }
+  ]
+}

@@ -3,6 +3,8 @@
   "allow_runtime_compat": [
     "ops/_generated.example/ALLOWLIST.json",
     "ops/_generated.example/INDEX.example.md",
+    "ops/_generated.example/contract-audit-report.json",
+    "ops/_generated.example/contract-dependency-graph.json",
     "ops/_generated.example/contract-coverage-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
     "ops/_generated.example/control-plane-surface-list.json",

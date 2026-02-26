@@ -25,6 +25,8 @@ Rules:
 - `ops/_generated.example/placeholder-dirs-report.json` is the generated placeholder directory inventory and drift detector.
 - `ops/_generated.example/registry-drift-report.json` is the generated inventory registry drift summary.
 - `ops/_generated.example/contract-coverage-report.json` is the generated contract coverage summary.
+- `ops/_generated.example/contract-audit-report.json` is the generated contract audit summary.
+- `ops/_generated.example/contract-dependency-graph.json` is the generated cross-contract dependency graph.
 - `ops/_generated.example/schema-drift-report.json` is the generated schema governance drift summary.
 - `ops/_generated.example/fixture-drift-report.json` is the generated fixture governance drift summary.
 - Binary artifacts are forbidden in this directory.
@@ -53,6 +55,8 @@ Rules:
 - `ops/_generated.example/placeholder-dirs-report.json`: `bijux dev atlas ops inventory placeholder-dirs-report --write-example`
 - `ops/_generated.example/registry-drift-report.json`: `bijux dev atlas ops inventory registry-drift-report --write-example`
 - `ops/_generated.example/fixture-drift-report.json`: `bijux dev atlas ops fixtures drift --write-example`
+- `ops/_generated.example/contract-audit-report.json`: `bijux dev atlas ops contracts audit --write-example`
+- `ops/_generated.example/contract-dependency-graph.json`: `bijux dev atlas ops contracts dependency-graph --write-example`
 
 ## Mirrored Artifacts
 
@@ -77,5 +81,7 @@ Rules:
 - `ops/_generated.example/placeholder-dirs-report.json`: generated placeholder directory report aligned to the inventory allowlist.
 - `ops/_generated.example/registry-drift-report.json`: generated inventory registry drift report for missing or extra inventory artifacts.
 - `ops/_generated.example/contract-coverage-report.json`: generated contract coverage report for domain contract invariants and check linkage.
+- `ops/_generated.example/contract-audit-report.json`: generated contract audit report for taxonomy, invariant structure, and enforcement mapping status.
+- `ops/_generated.example/contract-dependency-graph.json`: generated cross-contract dependency and evidence linkage graph.
 - `ops/_generated.example/schema-drift-report.json`: generated schema drift report for index, compatibility lock, and allowlist governance.
 - `ops/_generated.example/fixture-drift-report.json`: generated fixture drift report for fixture inventory, allowlist, and binary policy governance.

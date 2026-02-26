@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_by", "nodes", "edges"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "generated_by": {"type": "string", "minLength": 1},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "taxonomy"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "pattern": "^ops/.+"},
+          "taxonomy": {"type": "string", "enum": ["structural", "behavioral", "hybrid"]}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "kind"],
+        "properties": {
+          "from": {"type": "string", "minLength": 1},
+          "to": {"type": "string", "minLength": 1},
+          "kind": {
+            "type": "string",
+            "enum": ["depends_on", "enforced_by", "evidence_for"]
+          }
+        }
+      }
+    }
+  }
+}

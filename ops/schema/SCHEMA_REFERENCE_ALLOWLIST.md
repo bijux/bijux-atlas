@@ -29,6 +29,8 @@ Schemas that are intentionally not referenced directly by current runtime artifa
 - `ops/schema/report/stack-health-report.schema.json`: reserved for stack health snapshots.
 - `ops/schema/report/stack-ports-inventory.schema.json`: reserved for stack port inventory snapshots.
 - `ops/schema/report/unified.schema.json`: reserved for unified report payload publication.
+- `ops/schema/report/contract-audit-report.schema.json`: reserved for curated contract audit evidence publication.
+- `ops/schema/report/contract-dependency-graph.schema.json`: reserved for curated cross-contract dependency graph publication.
 - `ops/schema/meta/required-files-contract.schema.json`: reserved for REQUIRED_FILES markdown contract linting surface.
 - `ops/schema/meta/inventory-index.schema.json`: reserved for curated inventory index artifact publication.
 - `ops/schema/meta/ops-index.schema.json`: reserved for curated ops index artifact publication.

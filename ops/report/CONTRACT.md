@@ -51,6 +51,7 @@
 - Historical evidence: `ops/report/generated/historical-comparison.json`
 - Release evidence bundle: `ops/report/generated/release-evidence-bundle.json`
 - Contract audit evidence: `ops/_generated.example/contract-audit-report.json`
+- Contract dependency evidence: `ops/_generated.example/contract-dependency-graph.json`
 
 ## Enforcement Links
 
