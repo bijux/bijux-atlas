@@ -37,3 +37,7 @@ path = "src/main.rs"
 [[bench]]
 name = "inventory_scan"
 harness = false
+
+[[bench]]
+name = "report_codec"
+harness = false
