@@ -46,7 +46,7 @@
   - model data contracts are also available in `crates/bijux-dev-atlas/src/model/`
   - policy schema and validation code are also available in `crates/bijux-dev-atlas/src/policies/`
   - `bijux-dev-atlas-core`
-  - `bijux-dev-atlas-adapters`
+  - adapter implementations are also available in `crates/bijux-dev-atlas/src/adapters/`
   with internal module paths
 - Extract `src/core/ports.rs` into top-level `src/ports/*`
 - Rewire `core` to depend on `crate::ports`
