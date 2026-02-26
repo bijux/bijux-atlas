@@ -135,6 +135,12 @@
       "schema": "ops/schema/datasets/freeze-policy.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_fixture_governance"
+    },
+    {
+      "path": "ops/stack/service-dependency-contract.json",
+      "schema": "ops/schema/stack/service-dependency-contract.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
     }
   ]
 }

@@ -9,6 +9,7 @@ required_files:
   - ops/stack/REQUIRED_FILES.md
   - ops/stack/profiles.json
   - ops/stack/stack.toml
+  - ops/stack/service-dependency-contract.json
   - ops/stack/generated/version-manifest.json
   - ops/stack/generated/stack-index.json
   - ops/stack/generated/dependency-graph.json
@@ -21,5 +22,6 @@ forbidden_patterns:
   - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/stack/profiles.json
+  - authored_root: ops/stack/service-dependency-contract.json
   - generated_output: ops/stack/generated/version-manifest.json
 ```

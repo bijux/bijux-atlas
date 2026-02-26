@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "services": [
+    {
+      "id": "k8s.chart",
+      "component": "ops/k8s/charts/bijux-atlas/Chart.yaml",
+      "critical": true,
+      "required_profiles": ["ci", "kind", "local"],
+      "health_surface": "k8s.install-matrix"
+    },
+    {
+      "id": "observe.namespace",
+      "component": "ops/observe/pack/k8s/namespace.yaml",
+      "critical": true,
+      "required_profiles": ["ci", "kind", "local"],
+      "health_surface": "observe.namespace-ready"
+    },
+    {
+      "id": "stack.minio",
+      "component": "ops/stack/minio/minio.yaml",
+      "critical": true,
+      "required_profiles": ["ci", "kind", "local"],
+      "health_surface": "stack.minio-ready"
+    },
+    {
+      "id": "stack.redis",
+      "component": "ops/stack/redis/redis.yaml",
+      "critical": true,
+      "required_profiles": ["ci", "kind", "local"],
+      "health_surface": "stack.redis-ready"
+    },
+    {
+      "id": "stack.prometheus",
+      "component": "ops/stack/prometheus/prometheus.yaml",
+      "critical": false,
+      "required_profiles": ["kind"],
+      "health_surface": "observe.prometheus-ready"
+    },
+    {
+      "id": "stack.grafana",
+      "component": "ops/stack/grafana/grafana.yaml",
+      "critical": false,
+      "required_profiles": ["kind"],
+      "health_surface": "observe.grafana-ready"
+    },
+    {
+      "id": "stack.otel",
+      "component": "ops/stack/otel/otel-collector.yaml",
+      "critical": false,
+      "required_profiles": ["kind"],
+      "health_surface": "observe.otel-ready"
+    }
+  ]
+}

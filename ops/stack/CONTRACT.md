@@ -13,6 +13,7 @@
 | `ops/inventory/pins.yaml` | Authored pins SSOT |
 | `ops/stack/profiles.json` | Authored stack profile catalog |
 | `ops/stack/stack.toml` | Authored stack composition contract |
+| `ops/stack/service-dependency-contract.json` | Authored service dependency and health contract |
 | `ops/stack/generated/version-manifest.json` | Generated image/version manifest |
 | `ops/stack/generated/stack-index.json` | Generated stack index |
 | `ops/stack/generated/dependency-graph.json` | Generated dependency graph |
@@ -24,6 +25,7 @@
 | Artifact | Schema |
 | --- | --- |
 | `ops/stack/profiles.json` | `ops/schema/stack/profile-manifest.schema.json` |
+| `ops/stack/service-dependency-contract.json` | `ops/schema/stack/service-dependency-contract.schema.json` |
 | `ops/stack/generated/version-manifest.json` | `ops/schema/stack/version-manifest.schema.json` |
 | `ops/stack/generated/dependency-graph.json` | `ops/schema/stack/dependency-graph.schema.json` |
 | `ops/stack/generated/artifact-metadata.json` | `ops/schema/stack/artifact-metadata.schema.json` |
@@ -45,6 +47,7 @@
 - Stack docs must be linked from `ops/stack/INDEX.md`; orphan docs are forbidden.
 - Pin registries and generated stack manifests must be deterministic for identical authored inputs.
 - Pin lifecycle compliance with `ops/inventory/pin-freeze.json` is mandatory for release readiness.
+- Service dependency contract coverage is mandatory: required services must appear in their declared stack profiles.
 
 ## Runtime Evidence Mapping
 

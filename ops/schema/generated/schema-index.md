@@ -100,4 +100,5 @@
 | `ops/schema/stack/artifact-metadata.schema.json` |
 | `ops/schema/stack/dependency-graph.schema.json` |
 | `ops/schema/stack/profile-manifest.schema.json` |
+| `ops/schema/stack/service-dependency-contract.schema.json` |
 | `ops/schema/stack/version-manifest.schema.json` |

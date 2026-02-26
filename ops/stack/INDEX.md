@@ -8,6 +8,7 @@
 
 ## Inputs
 - `ops/stack/stack.toml`
+- `ops/stack/service-dependency-contract.json`
 - `ops/stack/profiles.json`
 - `ops/stack/kind/cluster-small.yaml`
 - `ops/stack/kind/cluster-dev.yaml`
