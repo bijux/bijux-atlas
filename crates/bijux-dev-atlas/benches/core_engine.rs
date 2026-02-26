@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use bijux_dev_atlas::adapters::AdapterError;
 use bijux_dev_atlas::core::ops_inventory::load_ops_inventory_cached;
 use bijux_dev_atlas::core::{
     run_checks, Capabilities, Fs, ProcessRunner, RunOptions, RunRequest, Selectors,
@@ -23,13 +24,13 @@ impl Fs for BenchFs {
         &self,
         repo_root: &Path,
         path: &Path,
-    ) -> Result<String, bijux_dev_atlas::core::ports::AdapterError> {
+    ) -> Result<String, AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
             repo_root.join(path)
         };
-        fs::read_to_string(target).map_err(|err| bijux_dev_atlas::core::ports::AdapterError::Io {
+        fs::read_to_string(target).map_err(|err| AdapterError::Io {
             op: "read_to_string",
             path: repo_root.join(path),
             detail: err.to_string(),
@@ -47,7 +48,7 @@ impl Fs for BenchFs {
         &self,
         repo_root: &Path,
         path: &Path,
-    ) -> Result<PathBuf, bijux_dev_atlas::core::ports::AdapterError> {
+    ) -> Result<PathBuf, AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
@@ -55,7 +56,7 @@ impl Fs for BenchFs {
         };
         target
             .canonicalize()
-            .map_err(|err| bijux_dev_atlas::core::ports::AdapterError::Io {
+            .map_err(|err| AdapterError::Io {
                 op: "canonicalize",
                 path: target,
                 detail: err.to_string(),
@@ -70,8 +71,8 @@ impl ProcessRunner for DeniedProcessRunner {
         _program: &str,
         _args: &[String],
         _repo_root: &Path,
-    ) -> Result<i32, bijux_dev_atlas::core::ports::AdapterError> {
-        Err(bijux_dev_atlas::core::ports::AdapterError::EffectDenied {
+    ) -> Result<i32, AdapterError> {
+        Err(AdapterError::EffectDenied {
             effect: "subprocess",
             detail: io::Error::other("disabled in bench").to_string(),
         })

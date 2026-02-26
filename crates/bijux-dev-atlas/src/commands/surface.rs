@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn surface_snapshot_output_is_sorted_and_deduplicated_by_command() {
-        let rendered = render_surface_snapshot_json(&[
+        let rendered_result = render_surface_snapshot_json(&[
             CommandSurfaceEntry {
                 command: "ops inventory".to_string(),
                 owner: "ops".to_string(),
@@ -55,10 +55,16 @@ mod tests {
                 owner: "ops-updated".to_string(),
                 category: "inventory".to_string(),
             },
-        ])
-        .expect("surface snapshot json");
-        let json: serde_json::Value = serde_json::from_str(&rendered).expect("json parse");
-        let surfaces = json["surfaces"].as_array().expect("surfaces array");
+        ]);
+        assert!(rendered_result.is_ok(), "surface snapshot json encode failed");
+        let rendered = rendered_result.unwrap_or_default();
+        let json_result: Result<serde_json::Value, _> = serde_json::from_str(&rendered);
+        assert!(json_result.is_ok(), "json parse failed");
+        let json = json_result.unwrap_or(serde_json::Value::Null);
+        let surfaces = match json["surfaces"].as_array() {
+            Some(surfaces) => surfaces,
+            None => panic!("surfaces array missing"),
+        };
         assert_eq!(surfaces[0]["command"], "check list");
         assert_eq!(surfaces[1]["command"], "ops inventory");
         assert_eq!(surfaces[1]["owner"], "ops-updated");
