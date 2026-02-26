@@ -134,3 +134,65 @@ fn checks_ops_artifacts_not_tracked(ctx: &CheckContext<'_>) -> Result<Vec<Violat
         )])
     }
 }
+
+fn checks_ops_retired_artifact_path_references_absent(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    let allowlist = [
+        "ops/ARTIFACTS.md",
+        "ops/CONTRACT.md",
+        "ops/_generated.example/control-plane.snapshot.md",
+    ];
+    for path in walk_files(&ctx.repo_root.join("ops")) {
+        let Ok(rel) = path.strip_prefix(ctx.repo_root) else {
+            continue;
+        };
+        let rel_str = rel.display().to_string();
+        if allowlist.iter().any(|allowed| *allowed == rel_str) {
+            continue;
+        }
+        let Ok(text) = fs::read_to_string(&path) else {
+            continue;
+        };
+        if text.contains("ops/_artifacts") {
+            violations.push(violation(
+                "OPS_RETIRED_ARTIFACT_PATH_REFERENCE",
+                format!("retired artifact path reference found in `{}`", rel.display()),
+                "replace ops/_artifacts paths with canonical artifacts/ layout",
+                Some(rel),
+            ));
+        }
+    }
+    Ok(violations)
+}
+
+fn checks_ops_runtime_output_roots_under_ops_absent(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let mut violations = Vec::new();
+    for retired_root in ["ops/_artifacts", "ops/_evidence"] {
+        let rel = Path::new(retired_root);
+        let full = ctx.repo_root.join(rel);
+        if !full.exists() {
+            continue;
+        }
+        let files = walk_files(&full)
+            .into_iter()
+            .filter(|path| path.file_name().and_then(|name| name.to_str()) != Some(".gitkeep"))
+            .collect::<Vec<_>>();
+        if files.is_empty() {
+            continue;
+        }
+        violations.push(violation(
+            "OPS_RUNTIME_OUTPUT_ROOT_UNDER_OPS_FORBIDDEN",
+            format!(
+                "retired runtime output root under ops contains files: `{}`",
+                retired_root
+            ),
+            "store runtime outputs under artifacts/ and keep ops/ for authored or curated files only",
+            Some(rel),
+        ));
+    }
+    Ok(violations)
+}

@@ -9,10 +9,10 @@
   "counts": {
     "errors": 0,
     "failed": 1,
-    "passed": 16,
+    "passed": 18,
     "schema_version": 1,
     "skipped": 0,
-    "total": 17
+    "total": 19
   },
   "durations_ms": {
     "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
@@ -26,6 +26,8 @@
     "checks_ops_makefile_routes_dev_atlas": 0,
     "checks_ops_manifest_integrity": 0,
     "checks_ops_no_scripts_areas_or_xtask_refs": 0,
+    "checks_ops_retired_artifact_path_references_absent": 0,
+    "checks_ops_runtime_output_roots_under_ops_absent": 0,
     "checks_ops_schema_presence": 0,
     "checks_ops_surface_inventory": 0,
     "checks_ops_surface_manifest": 0,
@@ -147,6 +149,24 @@
     {
       "duration_ms": 0,
       "evidence": [],
+      "id": "checks_ops_retired_artifact_path_references_absent",
+      "schema_version": 1,
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_runtime_output_roots_under_ops_absent",
+      "schema_version": 1,
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
       "id": "checks_ops_schema_presence",
       "schema_version": 1,
       "skip_reason": null,
@@ -210,10 +230,10 @@
   "summary": {
     "errors": 0,
     "failed": 1,
-    "passed": 16,
+    "passed": 18,
     "schema_version": 1,
     "skipped": 0,
-    "total": 17
+    "total": 19
   },
   "timings_ms": {
     "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
@@ -227,6 +247,8 @@
     "checks_ops_makefile_routes_dev_atlas": 0,
     "checks_ops_manifest_integrity": 0,
     "checks_ops_no_scripts_areas_or_xtask_refs": 0,
+    "checks_ops_retired_artifact_path_references_absent": 0,
+    "checks_ops_runtime_output_roots_under_ops_absent": 0,
     "checks_ops_schema_presence": 0,
     "checks_ops_surface_inventory": 0,
     "checks_ops_surface_manifest": 0,

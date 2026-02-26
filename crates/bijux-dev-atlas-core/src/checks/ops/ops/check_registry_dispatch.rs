@@ -7,6 +7,12 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_manifest_integrity" => Some(checks_ops_manifest_integrity),
         "checks_ops_surface_inventory" => Some(checks_ops_surface_inventory),
         "checks_ops_artifacts_not_tracked" => Some(checks_ops_artifacts_not_tracked),
+        "checks_ops_retired_artifact_path_references_absent" => {
+            Some(checks_ops_retired_artifact_path_references_absent)
+        }
+        "checks_ops_runtime_output_roots_under_ops_absent" => {
+            Some(checks_ops_runtime_output_roots_under_ops_absent)
+        }
         "checks_ops_no_scripts_areas_or_xtask_refs" => {
             Some(checks_ops_no_scripts_areas_or_xtask_refs)
         }
@@ -195,6 +201,8 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_ops_manifest_integrity",
         "checks_ops_surface_inventory",
         "checks_ops_artifacts_not_tracked",
+        "checks_ops_retired_artifact_path_references_absent",
+        "checks_ops_runtime_output_roots_under_ops_absent",
         "checks_ops_no_scripts_areas_or_xtask_refs",
         "checks_ops_artifacts_gitignore_policy",
         "checks_ops_makefile_routes_dev_atlas",
@@ -285,4 +293,3 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
     .map(str::to_string)
     .collect()
 }
-

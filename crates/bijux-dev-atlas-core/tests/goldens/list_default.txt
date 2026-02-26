@@ -9,6 +9,8 @@ checks_ops_generated_readonly_markers	ops generated files keep readonly generato
 checks_ops_makefile_routes_dev_atlas	ops makefile routes through dev atlas command surface
 checks_ops_manifest_integrity	ops inventory manifests are valid json with required keys
 checks_ops_no_scripts_areas_or_xtask_refs	ops owned surfaces avoid scripts areas and xtask references
+checks_ops_retired_artifact_path_references_absent	retired ops artifact path references are absent
+checks_ops_runtime_output_roots_under_ops_absent	runtime output roots under ops stay absent
 checks_ops_schema_presence	ops schema baseline is present
 checks_ops_surface_inventory	ops index inventories top-level surfaces
 checks_ops_surface_manifest	ops surface manifest consistency

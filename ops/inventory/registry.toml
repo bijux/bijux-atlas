@@ -565,6 +565,28 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "checks_ops_retired_artifact_path_references_absent"
+domain = "ops"
+title = "retired ops artifact path references are absent"
+docs = "ops/ARTIFACTS.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_runtime_output_roots_under_ops_absent"
+domain = "ops"
+title = "runtime output roots under ops stay absent"
+docs = "ops/ARTIFACTS.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
 id = "checks_ops_control_plane_doc_contract"
 domain = "ops"
 title = "ops control plane definition doc exists and declares invariants"
