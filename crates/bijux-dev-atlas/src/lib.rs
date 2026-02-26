@@ -3,7 +3,7 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::dbg_macro, clippy::print_stdout, clippy::print_stderr)]
 
-pub(crate) mod adapters;
+pub mod adapters;
 pub(crate) mod commands;
 pub mod core;
 pub mod model;
