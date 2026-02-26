@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "generated_by": "manual curated policy",
+  "entries": [
+    {
+      "url": "http://127.0.0.1:8080/healthz",
+      "reason": "local runbook endpoint example",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "url": "http://127.0.0.1:8080/metrics",
+      "reason": "local metrics endpoint example",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "url": "http://127.0.0.1:8080/readyz",
+      "reason": "local readiness endpoint example",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "url": "http://127.0.0.1:8080/debug/datasets",
+      "reason": "local dataset debug endpoint example",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "url": "http://127.0.0.1:8080/debug/registry-health",
+      "reason": "local registry debug endpoint example",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "url": "http://...",
+      "reason": "placeholder protocol example in docs text",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "url": "https://...",
+      "reason": "placeholder protocol example in docs text",
+      "expires_on": "2026-06-30"
+    }
+  ]
+}

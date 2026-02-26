@@ -54,6 +54,21 @@ jobs:
         with:
           path: .cache/cargo/target/docs-audit
           key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Install docs toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r configs/docs/requirements.lock.txt
+      - name: Run docs strict build
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/docs-audit"
+          mkdir -p "${report_root}" "${logs_root}"
+          mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cp -R site "artifacts/${RUN_ID}/site-preview"
       - name: Run docs audit
         shell: bash
         run: |
@@ -81,6 +96,13 @@ jobs:
         with:
           path: .cache/cargo/target/docs-audit
           key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: docs-preview-site-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}/site-preview
+          retention-days: 5
+
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
