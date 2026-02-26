@@ -10,19 +10,23 @@
 | `ADR-0005-security-defaults-and-enterprise-controls` | `docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md` |
 | `API_CONTRACT` | `crates/bijux-atlas-api/docs/API_CONTRACT.md` |
 | `API_STABILITY` | `crates/bijux-atlas-api/docs/API_STABILITY.md` |
+| `ARCHITECTURE` | `crates/bijux-atlas-api/ARCHITECTURE.md, crates/bijux-atlas-cli/ARCHITECTURE.md, crates/bijux-atlas-core/ARCHITECTURE.md, crates/bijux-atlas-ingest/ARCHITECTURE.md, crates/bijux-atlas-model/ARCHITECTURE.md, crates/bijux-atlas-policies/ARCHITECTURE.md, crates/bijux-atlas-query/ARCHITECTURE.md, crates/bijux-atlas-server/ARCHITECTURE.md, crates/bijux-atlas-server/src/cache/ARCHITECTURE.md, crates/bijux-atlas-store/ARCHITECTURE.md, crates/bijux-dev-atlas/ARCHITECTURE.md` |
 | `ARCHITECTURE_OVERVIEW` | `docs/root/ARCHITECTURE_OVERVIEW.md` |
-| `ARTIFACTS` | `crates/bijux-dev-atlas/docs/ARTIFACTS.md` |
+| `ARTIFACTS` | `crates/bijux-dev-atlas/docs/ARTIFACTS.md, ops/ARTIFACTS.md` |
 | `ARTIFACT_CONTRACT` | `crates/bijux-atlas-store/docs/ARTIFACT_CONTRACT.md` |
 | `ARTIFACT_OUTPUT_CONTRACT` | `crates/bijux-atlas-ingest/docs/ARTIFACT_OUTPUT_CONTRACT.md` |
+| `AUTHORITY_TIERS` | `ops/AUTHORITY_TIERS.md` |
 | `AUTHORS` | `docs/AUTHORS.md` |
 | `BACKENDS_AND_GUARANTEES` | `crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md` |
 | `BASELINE_UPDATE_POLICY` | `docs/operations/slo/BASELINE_UPDATE_POLICY.md` |
+| `BENCHMARKS` | `crates/bijux-atlas-api/BENCHMARKS.md, crates/bijux-atlas-cli/BENCHMARKS.md, crates/bijux-atlas-core/BENCHMARKS.md, crates/bijux-atlas-ingest/BENCHMARKS.md, crates/bijux-atlas-model/BENCHMARKS.md, crates/bijux-atlas-policies/BENCHMARKS.md, crates/bijux-atlas-query/BENCHMARKS.md, crates/bijux-atlas-server/BENCHMARKS.md, crates/bijux-atlas-store/BENCHMARKS.md, crates/bijux-dev-atlas/BENCHMARKS.md` |
+| `BREAKING_CHANGE_TEMPLATE` | `ops/BREAKING_CHANGE_TEMPLATE.md` |
 | `BUDGET_POLICY` | `ops/schema/BUDGET_POLICY.md` |
 | `BUILD_OUTPUTS_REFERENCE` | `docs/root/BUILD_OUTPUTS_REFERENCE.md` |
 | `CACHING` | `crates/bijux-atlas-server/docs/CACHING.md, crates/bijux-atlas-store/docs/CACHING.md` |
 | `CANONICALIZATION` | `crates/bijux-atlas-core/docs/CANONICALIZATION.md` |
 | `CARGO_DENY_NOTES` | `crates/bijux-atlas-core/docs/CARGO_DENY_NOTES.md` |
-| `CHANGELOG` | `CHANGELOG.md, configs/ops/perf/baselines/CHANGELOG.md, docs/operations/slo/CHANGELOG.md` |
+| `CHANGELOG` | `CHANGELOG.md, configs/docs/node_modules/argparse/CHANGELOG.md, configs/docs/node_modules/glob-parent/CHANGELOG.md, configs/docs/node_modules/js-yaml/CHANGELOG.md, configs/docs/node_modules/jsonc-parser/CHANGELOG.md, configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md, configs/docs/node_modules/markdownlint/CHANGELOG.md, configs/docs/node_modules/picomatch/CHANGELOG.md, configs/ops/perf/baselines/CHANGELOG.md, docs/operations/slo/CHANGELOG.md` |
 | `CHANGE_CHECKLIST` | `crates/bijux-atlas-policies/docs/CHANGE_CHECKLIST.md` |
 | `CHANGE_POLICY` | `docs/operations/slo/CHANGE_POLICY.md` |
 | `CI_LANES` | `makefiles/CI_LANES.md` |
@@ -40,29 +44,52 @@
 | `CONFIGS_OVERVIEW` | `docs/root/CONFIGS_OVERVIEW.md` |
 | `CONFIG_DISCOVERY` | `crates/bijux-atlas-cli/docs/CONFIG_DISCOVERY.md` |
 | `CONFIG_SCHEMA` | `crates/bijux-atlas-policies/docs/CONFIG_SCHEMA.md` |
+| `CONTRACT` | `configs/CONTRACT.md, crates/bijux-atlas-api/CONTRACT.md, crates/bijux-atlas-cli/CONTRACT.md, crates/bijux-atlas-core/CONTRACT.md, crates/bijux-atlas-ingest/CONTRACT.md, crates/bijux-atlas-model/CONTRACT.md, crates/bijux-atlas-policies/CONTRACT.md, crates/bijux-atlas-query/CONTRACT.md, crates/bijux-atlas-server/CONTRACT.md, crates/bijux-atlas-store/CONTRACT.md, crates/bijux-dev-atlas/CONTRACT.md, crates/bijux-dev-atlas/docs/CONTRACT.md, docker/CONTRACT.md, docs/CONTRACT.md, makefiles/CONTRACT.md, ops/CONTRACT.md, ops/datasets/CONTRACT.md, ops/datasets/fixtures/CONTRACT.md, ops/e2e/CONTRACT.md, ops/env/CONTRACT.md, ops/inventory/CONTRACT.md, ops/k8s/CONTRACT.md, ops/load/CONTRACT.md, ops/observe/CONTRACT.md, ops/report/CONTRACT.md, ops/schema/CONTRACT.md, ops/stack/CONTRACT.md` |
 | `CONTRACT_COMPATIBILITY` | `crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md` |
-| `CONTRIBUTING` | `CONTRIBUTING.md` |
+| `CONTRIBUTING` | `CONTRIBUTING.md, configs/docs/node_modules/markdownlint/CONTRIBUTING.md` |
 | `CONTRIBUTION_MODEL` | `docs/root/CONTRIBUTION_MODEL.md` |
 | `CONTROL_PLANE` | `ops/CONTROL_PLANE.md` |
 | `CONTROL_PLANE_OVERVIEW` | `docs/root/CONTROL_PLANE_OVERVIEW.md` |
 | `COST_ESTIMATOR` | `crates/bijux-atlas-query/docs/COST_ESTIMATOR.md` |
+| `CRATE_CONVERGENCE_CHECKPOINT` | `crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md` |
 | `CRATE_INDEX` | `docs/root/CRATE_INDEX.md` |
+| `CustomRules` | `configs/docs/node_modules/markdownlint/doc/CustomRules.md` |
+| `DATA_MODEL` | `crates/bijux-atlas-model/DATA_MODEL.md` |
+| `DELETE_HALF_OPS_SIMULATION_REPORT` | `ops/DELETE_HALF_OPS_SIMULATION_REPORT.md` |
+| `DEPRECATION_WORKFLOW` | `ops/DEPRECATION_WORKFLOW.md` |
 | `DEPTH_POLICY` | `docs/_style/DEPTH_POLICY.md` |
 | `DEPTH_RUBRIC` | `docs/_style/DEPTH_RUBRIC.md` |
 | `DETERMINISM` | `crates/bijux-atlas-ingest/docs/DETERMINISM.md` |
+| `DETERMINISM_PROOF` | `ops/DETERMINISM_PROOF.md` |
 | `DEVELOPER_WORKFLOW_QUICKSTART` | `docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md` |
 | `DIAGRAM_ALT_TEXT_POLICY` | `docs/root/DIAGRAM_ALT_TEXT_POLICY.md` |
 | `DIRECTORY_BUDGET_POLICY` | `ops/DIRECTORY_BUDGET_POLICY.md` |
+| `DIRECTORY_NECESSITY` | `ops/DIRECTORY_NECESSITY.md` |
 | `DOCKER_OVERVIEW` | `docs/root/DOCKER_OVERVIEW.md` |
+| `DOCS_CONVERGENCE_POLICY` | `docs/operations/DOCS_CONVERGENCE_POLICY.md` |
 | `DOCS_FRONT_MATTER` | `docs/governance/DOCS_FRONT_MATTER.md` |
 | `DOCS_OWNERSHIP` | `docs/governance/DOCS_OWNERSHIP.md` |
 | `DOCS_PHILOSOPHY` | `docs/root/DOCS_PHILOSOPHY.md` |
 | `DOCS_QUALITY_POLICY` | `docs/governance/DOCS_QUALITY_POLICY.md` |
+| `DOCS_STRUCTURE_FREEZE` | `docs/operations/DOCS_STRUCTURE_FREEZE.md` |
+| `DOC_NECESSITY_CHECKLIST` | `ops/DOC_NECESSITY_CHECKLIST.md` |
+| `DOMAIN_DOCUMENT_TEMPLATE_CONTRACT` | `ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md` |
 | `DRIFT` | `ops/DRIFT.md` |
+| `EMERGENCY_OVERRIDE_WORKFLOW` | `ops/EMERGENCY_OVERRIDE_WORKFLOW.md` |
+| `END_TO_END_INVARIANTS` | `ops/e2e/END_TO_END_INVARIANTS.md` |
+| `ENGINE_CONTRACT` | `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` |
 | `ENSEMBL_LAYOUT` | `crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md` |
 | `ERRORS` | `crates/bijux-atlas-api/docs/ERRORS.md, crates/bijux-atlas-core/docs/ERRORS.md, ops/ERRORS.md` |
+| `ERROR_TAXONOMY` | `crates/bijux-atlas-api/ERROR_TAXONOMY.md, crates/bijux-atlas-cli/ERROR_TAXONOMY.md, crates/bijux-atlas-core/ERROR_TAXONOMY.md, crates/bijux-atlas-ingest/ERROR_TAXONOMY.md, crates/bijux-atlas-model/ERROR_TAXONOMY.md, crates/bijux-atlas-policies/ERROR_TAXONOMY.md, crates/bijux-atlas-query/ERROR_TAXONOMY.md, crates/bijux-atlas-server/ERROR_TAXONOMY.md, crates/bijux-atlas-store/ERROR_TAXONOMY.md, crates/bijux-dev-atlas/ERROR_TAXONOMY.md` |
+| `ESCALATION_MAPPING` | `ops/ESCALATION_MAPPING.md` |
+| `EVIDENCE_COMPLETENESS_CHECKLIST` | `ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md` |
+| `EVIDENCE_SIGNOFF_WORKFLOW` | `ops/EVIDENCE_SIGNOFF_WORKFLOW.md` |
 | `EVOLUTION` | `crates/bijux-atlas-policies/docs/EVOLUTION.md` |
+| `EXAMPLES` | `crates/bijux-atlas-api/EXAMPLES.md, crates/bijux-atlas-cli/EXAMPLES.md, crates/bijux-atlas-core/EXAMPLES.md, crates/bijux-atlas-ingest/EXAMPLES.md, crates/bijux-atlas-model/EXAMPLES.md, crates/bijux-atlas-policies/EXAMPLES.md, crates/bijux-atlas-query/EXAMPLES.md, crates/bijux-atlas-server/EXAMPLES.md, crates/bijux-atlas-store/EXAMPLES.md, crates/bijux-dev-atlas/EXAMPLES.md` |
+| `EXAMPLE_INCIDENT_WALKTHROUGH` | `docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md` |
+| `EXAMPLE_RELEASE_WALKTHROUGH` | `docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md` |
 | `EXIT_CODES` | `crates/bijux-atlas-cli/docs/EXIT_CODES.md, crates/bijux-dev-atlas/docs/EXIT_CODES.md` |
+| `EXTENSION_GUIDE` | `crates/bijux-atlas-policies/EXTENSION_GUIDE.md` |
 | `FAILURE_MODES` | `crates/bijux-atlas-server/docs/FAILURE_MODES.md, crates/bijux-atlas-store/docs/FAILURE_MODES.md, crates/bijux-dev-atlas/docs/FAILURE_MODES.md` |
 | `FAQ` | `docs/root/FAQ.md` |
 | `FEATURES` | `crates/bijux-atlas-core/docs/FEATURES.md` |
@@ -71,12 +98,18 @@
 | `GENERATED_LIFECYCLE` | `ops/GENERATED_LIFECYCLE.md` |
 | `GLOSSARY` | `docs/operations/slo/GLOSSARY.md, docs/root/GLOSSARY.md` |
 | `GLOSSARY_CROSSLINKS` | `docs/root/GLOSSARY_CROSSLINKS.md` |
+| `GOLDEN_REFRESH_POLICY` | `ops/GOLDEN_REFRESH_POLICY.md` |
 | `HOT_PATH_CHECKLIST` | `crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md` |
+| `INCIDENT_PLAYBOOK_GENERATION` | `ops/INCIDENT_PLAYBOOK_GENERATION.md` |
+| `INDEX` | `configs/INDEX.md, configs/docs/INDEX.md, crates/bijux-atlas-api/docs/INDEX.md, crates/bijux-atlas-cli/docs/INDEX.md, crates/bijux-atlas-core/docs/INDEX.md, crates/bijux-atlas-ingest/docs/INDEX.md, crates/bijux-atlas-model/docs/INDEX.md, crates/bijux-atlas-policies/docs/INDEX.md, crates/bijux-atlas-query/docs/INDEX.md, crates/bijux-atlas-server/docs/INDEX.md, crates/bijux-atlas-store/docs/INDEX.md, crates/bijux-dev-atlas/docs/INDEX.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md, docker/contracts/INDEX.md, docs/_assets/INDEX.md, docs/_assets/diagrams/INDEX.md, docs/_lint/INDEX.md, docs/_nav/INDEX.md, docs/_style/INDEX.md, docs/adrs/INDEX.md, docs/api/INDEX.md, docs/architecture/INDEX.md, docs/architecture/layering/INDEX.md, docs/contracts/INDEX.md, docs/contracts/artifacts/INDEX.md, docs/contracts/examples/INDEX.md, docs/contracts/plugin/INDEX.md, docs/development/INDEX.md, docs/development/ci/INDEX.md, docs/development/makefiles/INDEX.md, docs/development/style/INDEX.md, docs/development/tooling/INDEX.md, docs/examples/INDEX.md, docs/operations/INDEX.md, docs/operations/e2e/INDEX.md, docs/operations/k8s/INDEX.md, docs/operations/load/INDEX.md, docs/operations/observability/INDEX.md, docs/operations/ops-system/INDEX.md, docs/operations/performance/INDEX.md, docs/operations/runbooks/INDEX.md, docs/operations/security/INDEX.md, docs/operations/security/advisories/INDEX.md, docs/operations/slo/INDEX.md, docs/product/INDEX.md, docs/quickstart/INDEX.md, docs/reference/INDEX.md, docs/reference/compatibility/INDEX.md, docs/reference/datasets/INDEX.md, docs/reference/evolution/INDEX.md, docs/reference/fixtures/INDEX.md, docs/reference/ingestion/INDEX.md, docs/reference/performance/INDEX.md, docs/reference/querying/INDEX.md, docs/reference/registry/INDEX.md, docs/reference/science/INDEX.md, docs/reference/security/INDEX.md, docs/reference/store/INDEX.md, docs/root/INDEX.md, docs/science/INDEX.md, makefiles/INDEX.md, ops/INDEX.md, ops/datasets/INDEX.md, ops/datasets/fixtures/INDEX.md, ops/e2e/INDEX.md, ops/k8s/INDEX.md, ops/k8s/tests/INDEX.md, ops/load/INDEX.md, ops/load/k6/queries/INDEX.md, ops/observe/INDEX.md, ops/report/INDEX.md, ops/schema/configs/INDEX.md, ops/stack/INDEX.md` |
 | `INDEX.example` | `ops/_generated.example/INDEX.example.md` |
 | `INGEST_CONTRACT` | `crates/bijux-atlas-ingest/docs/INGEST_CONTRACT.md` |
 | `KUBERNETES` | `crates/bijux-atlas-server/docs/KUBERNETES.md` |
+| `LICENSE` | `configs/docs/node_modules/jsonc-parser/LICENSE.md, configs/docs/node_modules/vscode-uri/LICENSE.md` |
 | `LICENSE_EXPLANATION` | `docs/root/LICENSE_EXPLANATION.md` |
 | `MAKEFILES_OVERVIEW` | `docs/root/MAKEFILES_OVERVIEW.md` |
+| `MATURITY_SCORECARD` | `ops/MATURITY_SCORECARD.md` |
+| `MINIMAL_RELEASE_SURFACE` | `ops/MINIMAL_RELEASE_SURFACE.md` |
 | `MIRROR_POLICY` | `ops/_generated.example/MIRROR_POLICY.md` |
 | `NAMING` | `ops/NAMING.md` |
 | `NAVIGATION_POLICY` | `docs/root/NAVIGATION_POLICY.md` |
@@ -85,12 +118,18 @@
 | `OBSERVABILITY_OVERVIEW` | `docs/root/OBSERVABILITY_OVERVIEW.md` |
 | `OPENAPI` | `crates/bijux-atlas-api/docs/OPENAPI.md` |
 | `OPERATIONS_RUNBOOK` | `crates/bijux-atlas-server/docs/OPERATIONS_RUNBOOK.md` |
+| `OPS_ADR_TEMPLATE` | `ops/OPS_ADR_TEMPLATE.md` |
+| `OPS_CHANGE_REVIEW_CHECKLIST` | `ops/OPS_CHANGE_REVIEW_CHECKLIST.md` |
 | `OPS_COMMAND_LIST` | `crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md` |
+| `OPS_FREEZE_WORKFLOW` | `ops/OPS_FREEZE_WORKFLOW.md` |
+| `OPS_INVARIANTS` | `ops/OPS_INVARIANTS.md` |
 | `OPS_OVERVIEW` | `docs/root/OPS_OVERVIEW.md` |
 | `OPTIONAL_FIELDS` | `crates/bijux-atlas-model/docs/OPTIONAL_FIELDS.md` |
 | `ORDERING` | `crates/bijux-atlas-query/docs/ORDERING.md` |
 | `ORDERING_RULES` | `crates/bijux-atlas-model/docs/ORDERING_RULES.md` |
 | `OWNER` | `ops/_generated.example/OWNER.md, ops/_generated/OWNER.md, ops/datasets/OWNER.md, ops/datasets/fixtures/OWNER.md, ops/e2e/OWNER.md, ops/env/OWNER.md, ops/inventory/OWNER.md, ops/k8s/OWNER.md, ops/load/OWNER.md, ops/observe/OWNER.md, ops/report/OWNER.md, ops/schema/OWNER.md, ops/stack/OWNER.md` |
+| `OWNERSHIP` | `ops/observe/drills/OWNERSHIP.md` |
+| `OWNERSHIP_ROTATION_POLICY` | `ops/OWNERSHIP_ROTATION_POLICY.md` |
 | `PAGINATION` | `crates/bijux-atlas-query/docs/PAGINATION.md` |
 | `PATTERNS` | `crates/bijux-atlas-api/docs/PATTERNS.md, crates/bijux-atlas-core/docs/PATTERNS.md` |
 | `PERF` | `crates/bijux-atlas-query/docs/PERF.md` |
@@ -103,29 +142,42 @@
 | `PLUGIN_CONTRACT` | `crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md` |
 | `POLICY` | `ops/load/evaluations/POLICY.md` |
 | `POLICY_AUTHORING_GUIDE` | `crates/bijux-atlas-policies/docs/POLICY_AUTHORING_GUIDE.md` |
+| `PORTABILITY_MATRIX` | `ops/PORTABILITY_MATRIX.md` |
 | `PROJECT_DESCRIPTION_SNIPPET` | `docs/PROJECT_DESCRIPTION_SNIPPET.md` |
 | `PROJECT_IDENTITY` | `docs/PROJECT_IDENTITY.md` |
+| `PUBLIC_SURFACE_CONTRACT_SUMMARY` | `ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md` |
 | `PURITY` | `crates/bijux-atlas-core/docs/PURITY.md, crates/bijux-atlas-model/docs/PURITY.md` |
+| `Prettier` | `configs/docs/node_modules/markdownlint/doc/Prettier.md` |
 | `QC` | `crates/bijux-atlas-ingest/docs/QC.md` |
 | `QUERY_LANGUAGE_SPEC` | `crates/bijux-atlas-query/docs/QUERY_LANGUAGE_SPEC.md` |
+| `README` | `README.md, configs/README.md, configs/coverage/README.md, configs/docs/README.md, configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md, configs/docs/node_modules/@cspell/cspell-json-reporter/README.md, configs/docs/node_modules/@cspell/cspell-pipe/README.md, configs/docs/node_modules/@cspell/cspell-resolver/README.md, configs/docs/node_modules/@cspell/cspell-service-bus/README.md, configs/docs/node_modules/@cspell/cspell-types/README.md, configs/docs/node_modules/@cspell/dict-ada/README.md, configs/docs/node_modules/@cspell/dict-aws/README.md, configs/docs/node_modules/@cspell/dict-bash/README.md, configs/docs/node_modules/@cspell/dict-companies/README.md, configs/docs/node_modules/@cspell/dict-companies/dict/README.md, configs/docs/node_modules/@cspell/dict-cpp/README.md, configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md, configs/docs/node_modules/@cspell/dict-csharp/README.md, configs/docs/node_modules/@cspell/dict-css/README.md, configs/docs/node_modules/@cspell/dict-dart/README.md, configs/docs/node_modules/@cspell/dict-data-science/README.md, configs/docs/node_modules/@cspell/dict-django/README.md, configs/docs/node_modules/@cspell/dict-docker/README.md, configs/docs/node_modules/@cspell/dict-dotnet/README.md, configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md, configs/docs/node_modules/@cspell/dict-elixir/README.md, configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md, configs/docs/node_modules/@cspell/dict-en-gb/README.md, configs/docs/node_modules/@cspell/dict-en_us/README.md, configs/docs/node_modules/@cspell/dict-filetypes/README.md, configs/docs/node_modules/@cspell/dict-flutter/README.md, configs/docs/node_modules/@cspell/dict-fonts/README.md, configs/docs/node_modules/@cspell/dict-fsharp/README.md, configs/docs/node_modules/@cspell/dict-fullstack/README.md, configs/docs/node_modules/@cspell/dict-gaming-terms/README.md, configs/docs/node_modules/@cspell/dict-git/README.md, configs/docs/node_modules/@cspell/dict-golang/README.md, configs/docs/node_modules/@cspell/dict-google/README.md, configs/docs/node_modules/@cspell/dict-haskell/README.md, configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md, configs/docs/node_modules/@cspell/dict-html/README.md, configs/docs/node_modules/@cspell/dict-java/README.md, configs/docs/node_modules/@cspell/dict-julia/README.md, configs/docs/node_modules/@cspell/dict-k8s/README.md, configs/docs/node_modules/@cspell/dict-latex/README.md, configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md, configs/docs/node_modules/@cspell/dict-lua/README.md, configs/docs/node_modules/@cspell/dict-makefile/README.md, configs/docs/node_modules/@cspell/dict-monkeyc/README.md, configs/docs/node_modules/@cspell/dict-node/README.md, configs/docs/node_modules/@cspell/dict-npm/README.md, configs/docs/node_modules/@cspell/dict-php/README.md, configs/docs/node_modules/@cspell/dict-php/dict/README.md, configs/docs/node_modules/@cspell/dict-powershell/README.md, configs/docs/node_modules/@cspell/dict-public-licenses/README.md, configs/docs/node_modules/@cspell/dict-python/README.md, configs/docs/node_modules/@cspell/dict-r/README.md, configs/docs/node_modules/@cspell/dict-ruby/README.md, configs/docs/node_modules/@cspell/dict-rust/README.md, configs/docs/node_modules/@cspell/dict-scala/README.md, configs/docs/node_modules/@cspell/dict-shell/README.md, configs/docs/node_modules/@cspell/dict-shell/dict/README.md, configs/docs/node_modules/@cspell/dict-software-terms/README.md, configs/docs/node_modules/@cspell/dict-sql/README.md, configs/docs/node_modules/@cspell/dict-svelte/README.md, configs/docs/node_modules/@cspell/dict-swift/README.md, configs/docs/node_modules/@cspell/dict-terraform/README.md, configs/docs/node_modules/@cspell/dict-typescript/README.md, configs/docs/node_modules/@cspell/dict-vue/README.md, configs/docs/node_modules/@cspell/dynamic-import/README.md, configs/docs/node_modules/@cspell/filetypes/README.md, configs/docs/node_modules/@cspell/strong-weak-map/README.md, configs/docs/node_modules/@cspell/url/README.md, configs/docs/node_modules/@nodelib/fs.scandir/README.md, configs/docs/node_modules/@nodelib/fs.stat/README.md, configs/docs/node_modules/@nodelib/fs.walk/README.md, configs/docs/node_modules/argparse/README.md, configs/docs/node_modules/array-timsort/README.md, configs/docs/node_modules/braces/README.md, configs/docs/node_modules/comment-json/README.md, configs/docs/node_modules/core-util-is/README.md, configs/docs/node_modules/cspell-config-lib/README.md, configs/docs/node_modules/cspell-dictionary/README.md, configs/docs/node_modules/cspell-gitignore/README.md, configs/docs/node_modules/cspell-glob/README.md, configs/docs/node_modules/cspell-grammar/README.md, configs/docs/node_modules/cspell-io/README.md, configs/docs/node_modules/cspell-lib/README.md, configs/docs/node_modules/cspell-trie-lib/README.md, configs/docs/node_modules/cspell/README.md, configs/docs/node_modules/esprima/README.md, configs/docs/node_modules/fast-equals/README.md, configs/docs/node_modules/fast-glob/README.md, configs/docs/node_modules/fast-json-stable-stringify/README.md, configs/docs/node_modules/fastq/README.md, configs/docs/node_modules/file-entry-cache/README.md, configs/docs/node_modules/fill-range/README.md, configs/docs/node_modules/flat-cache/README.md, configs/docs/node_modules/flatted/README.md, configs/docs/node_modules/gensequence/README.md, configs/docs/node_modules/glob-parent/README.md, configs/docs/node_modules/ignore/README.md, configs/docs/node_modules/ini/README.md, configs/docs/node_modules/is-extglob/README.md, configs/docs/node_modules/is-glob/README.md, configs/docs/node_modules/is-number/README.md, configs/docs/node_modules/js-yaml/README.md, configs/docs/node_modules/json-buffer/README.md, configs/docs/node_modules/jsonc-parser/README.md, configs/docs/node_modules/keyv/README.md, configs/docs/node_modules/linkify-it/README.md, configs/docs/node_modules/markdown-it/README.md, configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md, configs/docs/node_modules/markdownlint-cli2/README.md, configs/docs/node_modules/markdownlint-micromark/README.md, configs/docs/node_modules/markdownlint/README.md, configs/docs/node_modules/markdownlint/helpers/README.md, configs/docs/node_modules/mdurl/README.md, configs/docs/node_modules/merge2/README.md, configs/docs/node_modules/micromatch/README.md, configs/docs/node_modules/picomatch/README.md, configs/docs/node_modules/punycode.js/README.md, configs/docs/node_modules/queue-microtask/README.md, configs/docs/node_modules/reusify/README.md, configs/docs/node_modules/run-parallel/README.md, configs/docs/node_modules/semver/README.md, configs/docs/node_modules/to-regex-range/README.md, configs/docs/node_modules/uc.micro/README.md, configs/docs/node_modules/vscode-languageserver-textdocument/README.md, configs/docs/node_modules/vscode-uri/README.md, configs/docs/node_modules/yaml/README.md, configs/inventory/README.md, configs/layout/README.md, configs/make/README.md, configs/nextest/README.md, configs/openapi/README.md, configs/ops/README.md, configs/ops/policies/README.md, configs/ops/runtime/README.md, configs/ops/tools/README.md, configs/perf/README.md, configs/policy/README.md, configs/repo/README.md, configs/rust/README.md, configs/security/README.md, configs/shellcheck/README.md, configs/slo/README.md, crates/bijux-atlas-api/README.md, crates/bijux-atlas-api/tests/README.md, crates/bijux-atlas-cli/README.md, crates/bijux-atlas-cli/tests/README.md, crates/bijux-atlas-core/README.md, crates/bijux-atlas-core/tests/README.md, crates/bijux-atlas-ingest/README.md, crates/bijux-atlas-ingest/tests/README.md, crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md, crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md, crates/bijux-atlas-ingest/tests/fixtures/policies/README.md, crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md, crates/bijux-atlas-model/README.md, crates/bijux-atlas-model/tests/README.md, crates/bijux-atlas-policies/README.md, crates/bijux-atlas-policies/tests/README.md, crates/bijux-atlas-query/README.md, crates/bijux-atlas-query/tests/README.md, crates/bijux-atlas-server/README.md, crates/bijux-atlas-server/tests/README.md, crates/bijux-atlas-store/README.md, crates/bijux-atlas-store/tests/README.md, crates/bijux-dev-atlas/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md, docker/README.md, docker/contracts/README.md, docs/contracts/README.md, makefiles/README.md, ops/README.md, ops/_generated.example/README.md, ops/_generated/README.md, ops/datasets/README.md, ops/datasets/fixtures/README.md, ops/datasets/generated/README.md, ops/e2e/README.md, ops/e2e/fixtures/README.md, ops/e2e/generated/README.md, ops/e2e/k6/README.md, ops/e2e/k8s/README.md, ops/e2e/realdata/README.md, ops/env/README.md, ops/inventory/README.md, ops/k8s/README.md, ops/k8s/charts/bijux-atlas/README.md, ops/k8s/generated/README.md, ops/load/README.md, ops/load/baselines/README.md, ops/load/compose/README.md, ops/load/generated/README.md, ops/load/k6/README.md, ops/observe/README.md, ops/observe/dashboards/README.md, ops/observe/generated/README.md, ops/observe/pack/README.md, ops/report/README.md, ops/report/docs/README.md, ops/report/generated/README.md, ops/schema/README.md, ops/schema/configs/README.md, ops/schema/generated/README.md, ops/stack/README.md, ops/stack/generated/README.md, ops/stack/kind/README.md` |
+| `REDIRECT_EXPIRY_WORKFLOW` | `docs/operations/REDIRECT_EXPIRY_WORKFLOW.md` |
 | `REFERENCE_INDEX` | `ops/report/docs/REFERENCE_INDEX.md` |
+| `REGISTRY_CONTRACT` | `crates/bijux-dev-atlas/docs/REGISTRY_CONTRACT.md` |
 | `RELEASE_GATE` | `docs/operations/slo/RELEASE_GATE.md` |
 | `RELEASE_PROCESS_OVERVIEW` | `docs/root/RELEASE_PROCESS_OVERVIEW.md` |
+| `RELEASE_READINESS_SIGNOFF_CHECKLIST` | `ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md` |
 | `REPOSITORY_STRUCTURE` | `docs/root/REPOSITORY_STRUCTURE.md` |
 | `REPRODUCIBILITY_GUARANTEES` | `docs/root/REPRODUCIBILITY_GUARANTEES.md` |
 | `REQUIRED_FILES` | `ops/_generated.example/REQUIRED_FILES.md, ops/_generated/REQUIRED_FILES.md, ops/datasets/REQUIRED_FILES.md, ops/e2e/REQUIRED_FILES.md, ops/env/REQUIRED_FILES.md, ops/inventory/REQUIRED_FILES.md, ops/k8s/REQUIRED_FILES.md, ops/load/REQUIRED_FILES.md, ops/observe/REQUIRED_FILES.md, ops/report/REQUIRED_FILES.md, ops/schema/REQUIRED_FILES.md, ops/stack/REQUIRED_FILES.md` |
 | `ROLLBACK` | `crates/bijux-atlas-store/docs/ROLLBACK.md` |
+| `RUNBOOK_GENERATION_FROM_GRAPH` | `ops/RUNBOOK_GENERATION_FROM_GRAPH.md` |
 | `RUNBOOK_SNIPPET` | `crates/bijux-atlas-store/docs/RUNBOOK_SNIPPET.md` |
 | `RUNTIME` | `crates/bijux-atlas-server/docs/RUNTIME.md` |
+| `Readme` | `configs/docs/node_modules/commander/Readme.md` |
+| `ReleaseProcess` | `configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md` |
+| `Rules` | `configs/docs/node_modules/markdownlint/doc/Rules.md` |
+| `SCENARIO_RETENTION` | `ops/load/SCENARIO_RETENTION.md` |
 | `SCHEMA` | `crates/bijux-atlas-policies/docs/SCHEMA.md` |
 | `SCHEMA_BUDGET_EXCEPTIONS` | `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md` |
 | `SCHEMA_EVOLUTION` | `crates/bijux-atlas-policies/docs/SCHEMA_EVOLUTION.md` |
 | `SCHEMA_EVOLUTION_NOTES` | `crates/bijux-atlas-model/docs/SCHEMA_EVOLUTION_NOTES.md` |
+| `SCHEMA_EVOLUTION_WORKFLOW` | `ops/SCHEMA_EVOLUTION_WORKFLOW.md` |
 | `SCHEMA_INDEX` | `docs/root/SCHEMA_INDEX.md` |
 | `SCHEMA_REFERENCE_ALLOWLIST` | `ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md` |
 | `SCHEMA_STABILITY` | `crates/bijux-atlas-model/docs/SCHEMA_STABILITY.md` |
 | `SCOPE` | `docs/operations/slo/SCOPE.md` |
-| `SECURITY` | `SECURITY.md` |
+| `SECURITY` | `SECURITY.md, configs/docs/node_modules/fastq/SECURITY.md, configs/docs/node_modules/jsonc-parser/SECURITY.md, configs/docs/node_modules/reusify/SECURITY.md, configs/docs/node_modules/vscode-uri/SECURITY.md` |
 | `SECURITY_MODEL` | `docs/root/SECURITY_MODEL.md` |
 | `SERDE_POLICY` | `crates/bijux-atlas-core/docs/SERDE_POLICY.md` |
 | `SLA_DECISION_ADR_TEMPLATE` | `docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md` |
@@ -137,11 +189,18 @@
 | `STABILITY_GUARANTEES` | `docs/root/STABILITY_GUARANTEES.md` |
 | `START_HERE` | `docs/root/START_HERE.md` |
 | `STYLE` | `docs/STYLE.md` |
+| `SUPPLY_CHAIN_MODEL` | `ops/SUPPLY_CHAIN_MODEL.md` |
 | `TARGETS_REGISTRY` | `makefiles/TARGETS_REGISTRY.md` |
 | `TELEMETRY` | `crates/bijux-atlas-server/docs/TELEMETRY.md` |
 | `TERMINOLOGY_RULES` | `docs/root/TERMINOLOGY_RULES.md` |
+| `TESTING` | `crates/bijux-atlas-api/TESTING.md, crates/bijux-atlas-cli/TESTING.md, crates/bijux-atlas-core/TESTING.md, crates/bijux-atlas-ingest/TESTING.md, crates/bijux-atlas-model/TESTING.md, crates/bijux-atlas-policies/TESTING.md, crates/bijux-atlas-query/TESTING.md, crates/bijux-atlas-server/TESTING.md, crates/bijux-atlas-store/TESTING.md, crates/bijux-dev-atlas/TESTING.md` |
+| `THREAT_MODEL` | `ops/THREAT_MODEL.md` |
+| `TIER1_ROOT_SURFACE` | `ops/TIER1_ROOT_SURFACE.md` |
 | `TRANSCRIPT_ORDERING` | `crates/bijux-atlas-query/docs/TRANSCRIPT_ORDERING.md` |
+| `VERSIONING` | `crates/bijux-atlas-api/VERSIONING.md, crates/bijux-atlas-api/docs/VERSIONING.md, crates/bijux-atlas-cli/VERSIONING.md, crates/bijux-atlas-core/VERSIONING.md, crates/bijux-atlas-ingest/VERSIONING.md, crates/bijux-atlas-model/VERSIONING.md, crates/bijux-atlas-policies/VERSIONING.md, crates/bijux-atlas-query/VERSIONING.md, crates/bijux-atlas-server/VERSIONING.md, crates/bijux-atlas-store/VERSIONING.md, crates/bijux-dev-atlas/VERSIONING.md` |
 | `VERSIONING_POLICY` | `ops/schema/VERSIONING_POLICY.md` |
+| `ValidatingConfiguration` | `configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md, configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md` |
+| `WHAT_FAILS_WHEN` | `ops/WHAT_FAILS_WHEN.md` |
 | `WHAT_WE_DONT_MEASURE_YET` | `docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md` |
 | `WHY_THESE_SLIS` | `docs/operations/slo/WHY_THESE_SLIS.md` |
 | `acceptance-checklist` | `docs/operations/observability/acceptance-checklist.md` |
@@ -189,6 +248,7 @@
 | `client-sdk-examples` | `docs/quickstart/client-sdk-examples.md` |
 | `cluster-resource-profile` | `docs/operations/k8s/cluster-resource-profile.md` |
 | `command-inventory` | `docs/development/tooling/command-inventory.md` |
+| `commands` | `docs/operations/reference/commands.md` |
 | `compat-matrix` | `docs/development/tooling/compat-matrix.md` |
 | `compatibility` | `docs/api/compatibility.md, docs/contracts/compatibility.md, docs/operations/observability/compatibility.md` |
 | `compatibility-promise` | `docs/product/compatibility-promise.md` |
@@ -244,17 +304,19 @@
 | `docs-depth-contract` | `docs/development/docs-depth-contract.md` |
 | `docs-review-checklist` | `docs/_style/docs-review-checklist.md` |
 | `draft` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md` |
-| `drills` | `docs/operations/observability/drills.md` |
+| `drills` | `docs/operations/observability/drills.md, docs/operations/reference/drills.md` |
 | `duplicate-topics` | `docs/_lint/duplicate-topics.md` |
 | `effect-boundary-map` | `crates/bijux-atlas-api/docs/effect-boundary-map.md, crates/bijux-atlas-cli/docs/effect-boundary-map.md, crates/bijux-atlas-core/docs/effect-boundary-map.md, crates/bijux-atlas-ingest/docs/effect-boundary-map.md, crates/bijux-atlas-model/docs/effect-boundary-map.md, crates/bijux-atlas-policies/docs/effect-boundary-map.md, crates/bijux-atlas-query/docs/effect-boundary-map.md, crates/bijux-atlas-server/docs/effect-boundary-map.md, crates/bijux-atlas-store/docs/effect-boundary-map.md` |
 | `effects` | `crates/bijux-atlas-api/docs/effects.md, crates/bijux-atlas-cli/docs/effects.md, crates/bijux-atlas-core/docs/effects.md, crates/bijux-atlas-ingest/docs/effects.md, crates/bijux-atlas-model/docs/effects.md, crates/bijux-atlas-policies/docs/effects.md, crates/bijux-atlas-query/docs/effects.md, crates/bijux-atlas-server/docs/effects.md, crates/bijux-atlas-store/docs/effects.md, docs/architecture/effects.md` |
 | `endpoints` | `docs/contracts/endpoints.md` |
+| `entrypoints` | `docs/operations/entrypoints.md` |
 | `environment-contract` | `configs/docs/environment-contract.md` |
 | `error-budget-policy` | `docs/operations/observability/error-budget-policy.md` |
 | `error-code-registry` | `docs/reference/registry/error-code-registry.md` |
 | `errors` | `docs/api/errors.md, docs/contracts/errors.md` |
 | `etag-caching` | `docs/reference/store/etag-caching.md` |
 | `evidence` | `docs/operations/ops-system/evidence.md` |
+| `evidence-model` | `docs/operations/reference/evidence-model.md` |
 | `evidence-policy` | `docs/operations/evidence-policy.md` |
 | `failure-modes` | `crates/bijux-atlas-ingest/docs/failure-modes.md, crates/bijux-atlas-server/docs/failure-modes.md, crates/bijux-atlas-store/docs/failure-modes.md` |
 | `fasta-derived-metrics` | `docs/contracts/fasta-derived-metrics.md` |
@@ -263,7 +325,7 @@
 | `fixtures` | `docs/operations/e2e/fixtures.md` |
 | `fixtures-policy` | `docs/reference/store/fixtures-policy.md` |
 | `full-stack-local` | `docs/operations/full-stack-local.md` |
-| `gates` | `docs/operations/ops-system/gates.md` |
+| `gates` | `docs/operations/ops-system/gates.md, docs/operations/reference/gates.md` |
 | `gene-summary-semantics` | `docs/reference/science/gene-summary-semantics.md` |
 | `generators` | `docs/operations/ops-system/generators.md` |
 | `gff3-acceptance` | `docs/contracts/gff3-acceptance.md` |
@@ -301,6 +363,57 @@
 | `make-targets-inventory` | `docs/development/make-targets-inventory.md` |
 | `make-workflow-governance-entrypoints` | `docs/development/tooling/make-workflow-governance-entrypoints.md` |
 | `manifest-contract` | `docs/contracts/artifacts/manifest-contract.md` |
+| `md001` | `configs/docs/node_modules/markdownlint/doc/md001.md` |
+| `md003` | `configs/docs/node_modules/markdownlint/doc/md003.md` |
+| `md004` | `configs/docs/node_modules/markdownlint/doc/md004.md` |
+| `md005` | `configs/docs/node_modules/markdownlint/doc/md005.md` |
+| `md007` | `configs/docs/node_modules/markdownlint/doc/md007.md` |
+| `md009` | `configs/docs/node_modules/markdownlint/doc/md009.md` |
+| `md010` | `configs/docs/node_modules/markdownlint/doc/md010.md` |
+| `md011` | `configs/docs/node_modules/markdownlint/doc/md011.md` |
+| `md012` | `configs/docs/node_modules/markdownlint/doc/md012.md` |
+| `md013` | `configs/docs/node_modules/markdownlint/doc/md013.md` |
+| `md014` | `configs/docs/node_modules/markdownlint/doc/md014.md` |
+| `md018` | `configs/docs/node_modules/markdownlint/doc/md018.md` |
+| `md019` | `configs/docs/node_modules/markdownlint/doc/md019.md` |
+| `md020` | `configs/docs/node_modules/markdownlint/doc/md020.md` |
+| `md021` | `configs/docs/node_modules/markdownlint/doc/md021.md` |
+| `md022` | `configs/docs/node_modules/markdownlint/doc/md022.md` |
+| `md023` | `configs/docs/node_modules/markdownlint/doc/md023.md` |
+| `md024` | `configs/docs/node_modules/markdownlint/doc/md024.md` |
+| `md025` | `configs/docs/node_modules/markdownlint/doc/md025.md` |
+| `md026` | `configs/docs/node_modules/markdownlint/doc/md026.md` |
+| `md027` | `configs/docs/node_modules/markdownlint/doc/md027.md` |
+| `md028` | `configs/docs/node_modules/markdownlint/doc/md028.md` |
+| `md029` | `configs/docs/node_modules/markdownlint/doc/md029.md` |
+| `md030` | `configs/docs/node_modules/markdownlint/doc/md030.md` |
+| `md031` | `configs/docs/node_modules/markdownlint/doc/md031.md` |
+| `md032` | `configs/docs/node_modules/markdownlint/doc/md032.md` |
+| `md033` | `configs/docs/node_modules/markdownlint/doc/md033.md` |
+| `md034` | `configs/docs/node_modules/markdownlint/doc/md034.md` |
+| `md035` | `configs/docs/node_modules/markdownlint/doc/md035.md` |
+| `md036` | `configs/docs/node_modules/markdownlint/doc/md036.md` |
+| `md037` | `configs/docs/node_modules/markdownlint/doc/md037.md` |
+| `md038` | `configs/docs/node_modules/markdownlint/doc/md038.md` |
+| `md039` | `configs/docs/node_modules/markdownlint/doc/md039.md` |
+| `md040` | `configs/docs/node_modules/markdownlint/doc/md040.md` |
+| `md041` | `configs/docs/node_modules/markdownlint/doc/md041.md` |
+| `md042` | `configs/docs/node_modules/markdownlint/doc/md042.md` |
+| `md043` | `configs/docs/node_modules/markdownlint/doc/md043.md` |
+| `md044` | `configs/docs/node_modules/markdownlint/doc/md044.md` |
+| `md045` | `configs/docs/node_modules/markdownlint/doc/md045.md` |
+| `md046` | `configs/docs/node_modules/markdownlint/doc/md046.md` |
+| `md047` | `configs/docs/node_modules/markdownlint/doc/md047.md` |
+| `md048` | `configs/docs/node_modules/markdownlint/doc/md048.md` |
+| `md049` | `configs/docs/node_modules/markdownlint/doc/md049.md` |
+| `md050` | `configs/docs/node_modules/markdownlint/doc/md050.md` |
+| `md051` | `configs/docs/node_modules/markdownlint/doc/md051.md` |
+| `md052` | `configs/docs/node_modules/markdownlint/doc/md052.md` |
+| `md053` | `configs/docs/node_modules/markdownlint/doc/md053.md` |
+| `md054` | `configs/docs/node_modules/markdownlint/doc/md054.md` |
+| `md055` | `configs/docs/node_modules/markdownlint/doc/md055.md` |
+| `md056` | `configs/docs/node_modules/markdownlint/doc/md056.md` |
+| `md058` | `configs/docs/node_modules/markdownlint/doc/md058.md` |
 | `medium-fixture` | `docs/reference/fixtures/medium-fixture.md` |
 | `memory-profile-under-load` | `docs/operations/runbooks/memory-profile-under-load.md` |
 | `metric-cardinality-guardrails` | `docs/operations/observability/metric-cardinality-guardrails.md` |
@@ -329,11 +442,13 @@
 | `ops-command-inventory` | `docs/development/tooling/ops-command-inventory.md` |
 | `ops-design-defense` | `docs/operations/ops-system/ops-design-defense.md` |
 | `ops-docs-consolidation-checklist` | `docs/operations/ops-system/ops-docs-consolidation-checklist.md` |
+| `ops-docs-contract` | `docs/operations/ops-docs-contract.md` |
 | `ops-e2e-boundary` | `.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md` |
 | `ops-intent-naming` | `docs/development/ops-intent-naming.md` |
 | `ops-layout` | `docs/operations/ops-layout.md` |
 | `ops-ledger` | `ops/_generated.example/ops-ledger.md` |
 | `ops-local-full` | `docs/quickstart/ops-local-full.md` |
+| `ops-surface` | `docs/operations/reference/ops-surface.md` |
 | `ordering` | `docs/reference/querying/ordering.md` |
 | `otel-outage-behavior` | `docs/operations/observability/otel-outage-behavior.md` |
 | `overload-and-degradation` | `docs/architecture/overload-and-degradation.md` |
@@ -345,6 +460,7 @@
 | `perf-regression` | `.github/ISSUE_TEMPLATE/perf-regression.md` |
 | `perf-regression-policy` | `docs/operations/observability/perf-regression-policy.md, docs/reference/performance/perf-regression-policy.md` |
 | `performance-baseline` | `docs/operations/observability/performance-baseline.md` |
+| `pins` | `docs/operations/reference/pins.md` |
 | `placement` | `docs/_style/placement.md` |
 | `platform-handover` | `docs/operations/platform-handover.md` |
 | `plugin-mode-entrypoint` | `docs/operations/k8s/plugin-mode-entrypoint.md` |
@@ -365,6 +481,7 @@
 | `query-benchmarks` | `docs/reference/performance/query-benchmarks.md` |
 | `query-connection-strategy` | `docs/architecture/query-connection-strategy.md` |
 | `rbac-minimalism` | `docs/operations/k8s/rbac-minimalism.md` |
+| `readme` | `configs/docs/node_modules/@sindresorhus/merge-streams/readme.md, configs/docs/node_modules/ansi-regex/readme.md, configs/docs/node_modules/callsites/readme.md, configs/docs/node_modules/chalk-template/readme.md, configs/docs/node_modules/chalk/readme.md, configs/docs/node_modules/clear-module/readme.md, configs/docs/node_modules/entities/readme.md, configs/docs/node_modules/env-paths/readme.md, configs/docs/node_modules/find-up-simple/readme.md, configs/docs/node_modules/get-stdin/readme.md, configs/docs/node_modules/global-directory/readme.md, configs/docs/node_modules/globby/readme.md, configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md, configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md, configs/docs/node_modules/import-fresh/readme.md, configs/docs/node_modules/import-meta-resolve/readme.md, configs/docs/node_modules/parent-module/readme.md, configs/docs/node_modules/path-type/readme.md, configs/docs/node_modules/resolve-from/readme.md, configs/docs/node_modules/slash/readme.md, configs/docs/node_modules/strip-ansi/readme.md, configs/docs/node_modules/unicorn-magic/readme.md, configs/docs/node_modules/xdg-basedir/readme.md` |
 | `real-datasets` | `docs/reference/fixtures/real-datasets.md` |
 | `realdata-drills` | `docs/operations/e2e/realdata-drills.md` |
 | `redis` | `docs/reference/performance/redis.md` |
@@ -396,7 +513,7 @@
 | `runtime-policy` | `docs/operations/load/runtime-policy.md` |
 | `rust-toolchain` | `docs/development/tooling/rust-toolchain.md` |
 | `schema` | `docs/operations/ops-system/schema.md` |
-| `schema-index` | `ops/schema/generated/schema-index.md` |
+| `schema-index` | `docs/operations/reference/schema-index.md, ops/schema/generated/schema-index.md` |
 | `schema-overview` | `configs/docs/schema-overview.md` |
 | `schema-validation` | `configs/docs/schema-validation.md` |
 | `script-naming` | `docs/development/script-naming.md` |
@@ -445,7 +562,8 @@
 | `testing` | `crates/bijux-atlas-api/docs/testing.md, crates/bijux-atlas-cli/docs/testing.md, crates/bijux-atlas-core/docs/testing.md, crates/bijux-atlas-ingest/docs/testing.md, crates/bijux-atlas-model/docs/testing.md, crates/bijux-atlas-policies/docs/testing.md, crates/bijux-atlas-query/docs/testing.md, crates/bijux-atlas-server/docs/testing.md, crates/bijux-atlas-store/docs/testing.md` |
 | `threat-model` | `docs/reference/security/threat-model.md` |
 | `tool-config-shims` | `docs/development/tool-config-shims.md` |
-| `tools` | `docs/development/tooling/tools.md` |
+| `toolchain` | `docs/operations/reference/toolchain.md` |
+| `tools` | `docs/development/tooling/tools.md, docs/operations/reference/tools.md` |
 | `trace-sampling-policy` | `docs/operations/observability/trace-sampling-policy.md` |
 | `tracing` | `docs/contracts/tracing.md, docs/operations/observability/tracing.md` |
 | `traffic-spike` | `docs/operations/runbooks/traffic-spike.md` |
@@ -462,6 +580,7 @@
 | `versioning` | `docs/api/versioning.md` |
 | `versioning-alignment` | `docs/development/tooling/versioning-alignment.md` |
 | `warm-on-rollout` | `docs/operations/k8s/warm-on-rollout.md` |
+| `what-breaks-if-removed` | `docs/operations/reference/what-breaks-if-removed.md` |
 | `what-e2e-is-not` | `docs/operations/e2e/what-e2e-is-not.md` |
 | `what-is-bijux-atlas` | `docs/product/what-is-bijux-atlas.md` |
 | `when-layer-drift-fails` | `docs/operations/k8s/when-layer-drift-fails.md` |

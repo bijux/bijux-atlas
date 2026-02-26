@@ -11,4 +11,4 @@
 | `bijux-atlas-query` | 8 | 13 | 3 |
 | `bijux-atlas-server` | 8 | 17 | 3 |
 | `bijux-atlas-store` | 8 | 14 | 3 |
-| `bijux-dev-atlas` | 9 | 9 | 3 |
+| `bijux-dev-atlas` | 10 | 11 | 3 |

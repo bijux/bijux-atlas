@@ -230,6 +230,3832 @@
     },
     {
       "keywords": [
+        "@cspell",
+        "configs",
+        "cspell-bundled-dicts",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "cspell-bundled-dicts",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "cspell-json-reporter",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/cspell-json-reporter/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "cspell-json-reporter",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "cspell-pipe",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/cspell-pipe/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "cspell-pipe",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "cspell-resolver",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/cspell-resolver/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "cspell-resolver",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "cspell-service-bus",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/cspell-service-bus/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "cspell-service-bus",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "cspell-types",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/cspell-types/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "cspell-types",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-ada",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-ada/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-ada",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-aws",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-aws/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-aws",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-bash",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-bash/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-bash",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-companies",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-companies/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-companies",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-companies",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-companies/dict/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-companies",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-cpp",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-cpp/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-cpp",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-cryptocurrencies",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-cryptocurrencies",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-csharp",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-csharp/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-csharp",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-css",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-css/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-css",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-dart",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-dart/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-dart",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-data-science",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-data-science/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-data-science",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-django",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-django/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-django",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-docker",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-docker/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-docker",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-dotnet",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-dotnet/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-dotnet",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-dotnet",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-dotnet",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-elixir",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-elixir/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-elixir",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-en-common-misspellings",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-en-common-misspellings",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-en-gb",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-en-gb/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-en-gb",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-en-us",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-en_us/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-en-us",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-filetypes",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-filetypes/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-filetypes",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-flutter",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-flutter/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-flutter",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-fonts",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-fonts/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-fonts",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-fsharp",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-fsharp/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-fsharp",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-fullstack",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-fullstack/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-fullstack",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-gaming-terms",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-gaming-terms/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-gaming-terms",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-git",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-git/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-git",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-golang",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-golang/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-golang",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-google",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-google/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-google",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-haskell",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-haskell/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-haskell",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-html-symbol-entities",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-html-symbol-entities",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-html",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-html/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-html",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-java",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-java/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-java",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-julia",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-julia/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-julia",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-k8s",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-k8s/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-k8s",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-latex",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-latex/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-latex",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-lorem-ipsum",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-lorem-ipsum",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-lua",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-lua/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-lua",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-makefile",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-makefile/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-makefile",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-monkeyc",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-monkeyc/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-monkeyc",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-node",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-node/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-node",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-npm",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-npm/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-npm",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-php",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-php/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-php",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-php",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-php/dict/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-php",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-powershell",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-powershell/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-powershell",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-public-licenses",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-public-licenses/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-public-licenses",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-python",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-python/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-python",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-r",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-r/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-r",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-ruby",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-ruby/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-ruby",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-rust",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-rust/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-rust",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-scala",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-scala/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-scala",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-shell",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-shell/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-shell",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-shell",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-shell/dict/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict",
+        "dict-shell",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-software-terms",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-software-terms/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-software-terms",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-sql",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-sql/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-sql",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-svelte",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-svelte/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-svelte",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-swift",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-swift/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-swift",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-terraform",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-terraform/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-terraform",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-typescript",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-typescript/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-typescript",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dict-vue",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dict-vue/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dict-vue",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "dynamic-import",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/dynamic-import/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "dynamic-import",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "filetypes",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@cspell/filetypes/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "filetypes",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "node-modules",
+        "readme",
+        "strong-weak-map"
+      ],
+      "path": "configs/docs/node_modules/@cspell/strong-weak-map/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "node-modules",
+        "readme",
+        "strong-weak-map"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@cspell",
+        "configs",
+        "node-modules",
+        "readme",
+        "url"
+      ],
+      "path": "configs/docs/node_modules/@cspell/url/README.md",
+      "tags": [
+        "@cspell",
+        "configs",
+        "node-modules",
+        "readme",
+        "url"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@nodelib",
+        "configs",
+        "fs.scandir",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@nodelib/fs.scandir/README.md",
+      "tags": [
+        "@nodelib",
+        "configs",
+        "fs.scandir",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@nodelib",
+        "configs",
+        "fs.stat",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@nodelib/fs.stat/README.md",
+      "tags": [
+        "@nodelib",
+        "configs",
+        "fs.stat",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@nodelib",
+        "configs",
+        "fs.walk",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@nodelib/fs.walk/README.md",
+      "tags": [
+        "@nodelib",
+        "configs",
+        "fs.walk",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "@sindresorhus",
+        "configs",
+        "merge-streams",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/@sindresorhus/merge-streams/readme.md",
+      "tags": [
+        "@sindresorhus",
+        "configs",
+        "merge-streams",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "ansi-regex",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/ansi-regex/readme.md",
+      "tags": [
+        "ansi-regex",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "argparse",
+        "changelog",
+        "configs",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/argparse/CHANGELOG.md",
+      "tags": [
+        "argparse",
+        "changelog",
+        "configs",
+        "node-modules"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "argparse",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/argparse/README.md",
+      "tags": [
+        "argparse",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "array-timsort",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/array-timsort/README.md",
+      "tags": [
+        "array-timsort",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "braces",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/braces/README.md",
+      "tags": [
+        "braces",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "callsites",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/callsites/readme.md",
+      "tags": [
+        "callsites",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "chalk-template",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/chalk-template/readme.md",
+      "tags": [
+        "chalk-template",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "chalk",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/chalk/readme.md",
+      "tags": [
+        "chalk",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "clear-module",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/clear-module/readme.md",
+      "tags": [
+        "clear-module",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "commander",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/commander/Readme.md",
+      "tags": [
+        "commander",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "Readme"
+    },
+    {
+      "keywords": [
+        "comment-json",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/comment-json/README.md",
+      "tags": [
+        "comment-json",
+        "configs",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "core-util-is",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/core-util-is/README.md",
+      "tags": [
+        "configs",
+        "core-util-is",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-config-lib",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-config-lib/README.md",
+      "tags": [
+        "configs",
+        "cspell-config-lib",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-dictionary",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-dictionary/README.md",
+      "tags": [
+        "configs",
+        "cspell-dictionary",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-gitignore",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-gitignore/README.md",
+      "tags": [
+        "configs",
+        "cspell-gitignore",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-glob",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-glob/README.md",
+      "tags": [
+        "configs",
+        "cspell-glob",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-grammar",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-grammar/README.md",
+      "tags": [
+        "configs",
+        "cspell-grammar",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-io",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-io/README.md",
+      "tags": [
+        "configs",
+        "cspell-io",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-lib",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-lib/README.md",
+      "tags": [
+        "configs",
+        "cspell-lib",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell-trie-lib",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell-trie-lib/README.md",
+      "tags": [
+        "configs",
+        "cspell-trie-lib",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "cspell",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/cspell/README.md",
+      "tags": [
+        "configs",
+        "cspell",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "entities",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/entities/readme.md",
+      "tags": [
+        "configs",
+        "entities",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "env-paths",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/env-paths/readme.md",
+      "tags": [
+        "configs",
+        "env-paths",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "esprima",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/esprima/README.md",
+      "tags": [
+        "configs",
+        "esprima",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "fast-equals",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/fast-equals/README.md",
+      "tags": [
+        "configs",
+        "fast-equals",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "fast-glob",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/fast-glob/README.md",
+      "tags": [
+        "configs",
+        "fast-glob",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "fast-json-stable-stringify",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/fast-json-stable-stringify/README.md",
+      "tags": [
+        "configs",
+        "fast-json-stable-stringify",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "fastq",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/fastq/README.md",
+      "tags": [
+        "configs",
+        "fastq",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "fastq",
+        "node-modules",
+        "security"
+      ],
+      "path": "configs/docs/node_modules/fastq/SECURITY.md",
+      "tags": [
+        "configs",
+        "fastq",
+        "node-modules",
+        "security"
+      ],
+      "topic": "SECURITY"
+    },
+    {
+      "keywords": [
+        "configs",
+        "file-entry-cache",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/file-entry-cache/README.md",
+      "tags": [
+        "configs",
+        "file-entry-cache",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "fill-range",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/fill-range/README.md",
+      "tags": [
+        "configs",
+        "fill-range",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "find-up-simple",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/find-up-simple/readme.md",
+      "tags": [
+        "configs",
+        "find-up-simple",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "flat-cache",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/flat-cache/README.md",
+      "tags": [
+        "configs",
+        "flat-cache",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "flatted",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/flatted/README.md",
+      "tags": [
+        "configs",
+        "flatted",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "gensequence",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/gensequence/README.md",
+      "tags": [
+        "configs",
+        "gensequence",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "get-stdin",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/get-stdin/readme.md",
+      "tags": [
+        "configs",
+        "get-stdin",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "changelog",
+        "configs",
+        "glob-parent",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/glob-parent/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "configs",
+        "glob-parent",
+        "node-modules"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "configs",
+        "glob-parent",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/glob-parent/README.md",
+      "tags": [
+        "configs",
+        "glob-parent",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "global-directory",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/global-directory/readme.md",
+      "tags": [
+        "configs",
+        "global-directory",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "globby",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/globby/readme.md",
+      "tags": [
+        "configs",
+        "globby",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "ignore",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/ignore/README.md",
+      "tags": [
+        "configs",
+        "ignore",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "import-fresh",
+        "node-modules",
+        "parent-module",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md",
+      "tags": [
+        "configs",
+        "import-fresh",
+        "node-modules",
+        "parent-module",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "import-fresh",
+        "node-modules",
+        "readme",
+        "resolve-from"
+      ],
+      "path": "configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md",
+      "tags": [
+        "configs",
+        "import-fresh",
+        "node-modules",
+        "readme",
+        "resolve-from"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "import-fresh",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/import-fresh/readme.md",
+      "tags": [
+        "configs",
+        "import-fresh",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "import-meta-resolve",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/import-meta-resolve/readme.md",
+      "tags": [
+        "configs",
+        "import-meta-resolve",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "ini",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/ini/README.md",
+      "tags": [
+        "configs",
+        "ini",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "is-extglob",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/is-extglob/README.md",
+      "tags": [
+        "configs",
+        "is-extglob",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "is-glob",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/is-glob/README.md",
+      "tags": [
+        "configs",
+        "is-glob",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "is-number",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/is-number/README.md",
+      "tags": [
+        "configs",
+        "is-number",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "changelog",
+        "configs",
+        "js-yaml",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/js-yaml/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "configs",
+        "js-yaml",
+        "node-modules"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "configs",
+        "js-yaml",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/js-yaml/README.md",
+      "tags": [
+        "configs",
+        "js-yaml",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "json-buffer",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/json-buffer/README.md",
+      "tags": [
+        "configs",
+        "json-buffer",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "changelog",
+        "configs",
+        "jsonc-parser",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/jsonc-parser/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "configs",
+        "jsonc-parser",
+        "node-modules"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "configs",
+        "jsonc-parser",
+        "license",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/jsonc-parser/LICENSE.md",
+      "tags": [
+        "configs",
+        "jsonc-parser",
+        "license",
+        "node-modules"
+      ],
+      "topic": "LICENSE"
+    },
+    {
+      "keywords": [
+        "configs",
+        "jsonc-parser",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/jsonc-parser/README.md",
+      "tags": [
+        "configs",
+        "jsonc-parser",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "jsonc-parser",
+        "node-modules",
+        "security"
+      ],
+      "path": "configs/docs/node_modules/jsonc-parser/SECURITY.md",
+      "tags": [
+        "configs",
+        "jsonc-parser",
+        "node-modules",
+        "security"
+      ],
+      "topic": "SECURITY"
+    },
+    {
+      "keywords": [
+        "configs",
+        "keyv",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/keyv/README.md",
+      "tags": [
+        "configs",
+        "keyv",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "linkify-it",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/linkify-it/README.md",
+      "tags": [
+        "configs",
+        "linkify-it",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdown-it",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/markdown-it/README.md",
+      "tags": [
+        "configs",
+        "markdown-it",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdownlint-cli2-formatter-default",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md",
+      "tags": [
+        "configs",
+        "markdownlint-cli2-formatter-default",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "changelog",
+        "configs",
+        "markdownlint-cli2",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "configs",
+        "markdownlint-cli2",
+        "node-modules"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdownlint-cli2",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/markdownlint-cli2/README.md",
+      "tags": [
+        "configs",
+        "markdownlint-cli2",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdownlint-cli2",
+        "node-modules",
+        "schema",
+        "validatingconfiguration"
+      ],
+      "path": "configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md",
+      "tags": [
+        "configs",
+        "markdownlint-cli2",
+        "node-modules",
+        "schema",
+        "validatingconfiguration"
+      ],
+      "topic": "ValidatingConfiguration"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdownlint-micromark",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/markdownlint-micromark/README.md",
+      "tags": [
+        "configs",
+        "markdownlint-micromark",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "changelog",
+        "configs",
+        "markdownlint",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "configs",
+        "markdownlint",
+        "node-modules"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "configs",
+        "contributing",
+        "markdownlint",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/CONTRIBUTING.md",
+      "tags": [
+        "configs",
+        "contributing",
+        "markdownlint",
+        "node-modules"
+      ],
+      "topic": "CONTRIBUTING"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdownlint",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/README.md",
+      "tags": [
+        "configs",
+        "markdownlint",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "customrules",
+        "doc",
+        "markdownlint",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/CustomRules.md",
+      "tags": [
+        "configs",
+        "customrules",
+        "doc",
+        "markdownlint",
+        "node-modules"
+      ],
+      "topic": "CustomRules"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "node-modules",
+        "prettier"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/Prettier.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "node-modules",
+        "prettier"
+      ],
+      "topic": "Prettier"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "node-modules",
+        "releaseprocess"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "node-modules",
+        "releaseprocess"
+      ],
+      "topic": "ReleaseProcess"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "node-modules",
+        "rules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/Rules.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "node-modules",
+        "rules"
+      ],
+      "topic": "Rules"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md001",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md001.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md001",
+        "node-modules"
+      ],
+      "topic": "md001"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md003",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md003.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md003",
+        "node-modules"
+      ],
+      "topic": "md003"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md004",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md004.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md004",
+        "node-modules"
+      ],
+      "topic": "md004"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md005",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md005.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md005",
+        "node-modules"
+      ],
+      "topic": "md005"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md007",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md007.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md007",
+        "node-modules"
+      ],
+      "topic": "md007"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md009",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md009.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md009",
+        "node-modules"
+      ],
+      "topic": "md009"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md010",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md010.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md010",
+        "node-modules"
+      ],
+      "topic": "md010"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md011",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md011.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md011",
+        "node-modules"
+      ],
+      "topic": "md011"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md012",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md012.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md012",
+        "node-modules"
+      ],
+      "topic": "md012"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md013",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md013.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md013",
+        "node-modules"
+      ],
+      "topic": "md013"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md014",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md014.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md014",
+        "node-modules"
+      ],
+      "topic": "md014"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md018",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md018.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md018",
+        "node-modules"
+      ],
+      "topic": "md018"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md019",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md019.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md019",
+        "node-modules"
+      ],
+      "topic": "md019"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md020",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md020.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md020",
+        "node-modules"
+      ],
+      "topic": "md020"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md021",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md021.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md021",
+        "node-modules"
+      ],
+      "topic": "md021"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md022",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md022.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md022",
+        "node-modules"
+      ],
+      "topic": "md022"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md023",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md023.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md023",
+        "node-modules"
+      ],
+      "topic": "md023"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md024",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md024.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md024",
+        "node-modules"
+      ],
+      "topic": "md024"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md025",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md025.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md025",
+        "node-modules"
+      ],
+      "topic": "md025"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md026",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md026.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md026",
+        "node-modules"
+      ],
+      "topic": "md026"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md027",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md027.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md027",
+        "node-modules"
+      ],
+      "topic": "md027"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md028",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md028.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md028",
+        "node-modules"
+      ],
+      "topic": "md028"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md029",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md029.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md029",
+        "node-modules"
+      ],
+      "topic": "md029"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md030",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md030.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md030",
+        "node-modules"
+      ],
+      "topic": "md030"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md031",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md031.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md031",
+        "node-modules"
+      ],
+      "topic": "md031"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md032",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md032.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md032",
+        "node-modules"
+      ],
+      "topic": "md032"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md033",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md033.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md033",
+        "node-modules"
+      ],
+      "topic": "md033"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md034",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md034.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md034",
+        "node-modules"
+      ],
+      "topic": "md034"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md035",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md035.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md035",
+        "node-modules"
+      ],
+      "topic": "md035"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md036",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md036.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md036",
+        "node-modules"
+      ],
+      "topic": "md036"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md037",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md037.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md037",
+        "node-modules"
+      ],
+      "topic": "md037"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md038",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md038.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md038",
+        "node-modules"
+      ],
+      "topic": "md038"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md039",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md039.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md039",
+        "node-modules"
+      ],
+      "topic": "md039"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md040",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md040.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md040",
+        "node-modules"
+      ],
+      "topic": "md040"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md041",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md041.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md041",
+        "node-modules"
+      ],
+      "topic": "md041"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md042",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md042.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md042",
+        "node-modules"
+      ],
+      "topic": "md042"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md043",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md043.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md043",
+        "node-modules"
+      ],
+      "topic": "md043"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md044",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md044.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md044",
+        "node-modules"
+      ],
+      "topic": "md044"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md045",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md045.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md045",
+        "node-modules"
+      ],
+      "topic": "md045"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md046",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md046.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md046",
+        "node-modules"
+      ],
+      "topic": "md046"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md047",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md047.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md047",
+        "node-modules"
+      ],
+      "topic": "md047"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md048",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md048.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md048",
+        "node-modules"
+      ],
+      "topic": "md048"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md049",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md049.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md049",
+        "node-modules"
+      ],
+      "topic": "md049"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md050",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md050.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md050",
+        "node-modules"
+      ],
+      "topic": "md050"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md051",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md051.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md051",
+        "node-modules"
+      ],
+      "topic": "md051"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md052",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md052.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md052",
+        "node-modules"
+      ],
+      "topic": "md052"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md053",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md053.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md053",
+        "node-modules"
+      ],
+      "topic": "md053"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md054",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md054.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md054",
+        "node-modules"
+      ],
+      "topic": "md054"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md055",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md055.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md055",
+        "node-modules"
+      ],
+      "topic": "md055"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md056",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md056.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md056",
+        "node-modules"
+      ],
+      "topic": "md056"
+    },
+    {
+      "keywords": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md058",
+        "node-modules"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/doc/md058.md",
+      "tags": [
+        "configs",
+        "doc",
+        "markdownlint",
+        "md058",
+        "node-modules"
+      ],
+      "topic": "md058"
+    },
+    {
+      "keywords": [
+        "configs",
+        "helpers",
+        "markdownlint",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/helpers/README.md",
+      "tags": [
+        "configs",
+        "helpers",
+        "markdownlint",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "markdownlint",
+        "node-modules",
+        "schema",
+        "validatingconfiguration"
+      ],
+      "path": "configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md",
+      "tags": [
+        "configs",
+        "markdownlint",
+        "node-modules",
+        "schema",
+        "validatingconfiguration"
+      ],
+      "topic": "ValidatingConfiguration"
+    },
+    {
+      "keywords": [
+        "configs",
+        "mdurl",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/mdurl/README.md",
+      "tags": [
+        "configs",
+        "mdurl",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "merge2",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/merge2/README.md",
+      "tags": [
+        "configs",
+        "merge2",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "micromatch",
+        "node-modules",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/micromatch/README.md",
+      "tags": [
+        "configs",
+        "micromatch",
+        "node-modules",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "parent-module",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/parent-module/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "parent-module",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "path-type",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/path-type/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "path-type",
+        "readme"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "changelog",
+        "configs",
+        "node-modules",
+        "picomatch"
+      ],
+      "path": "configs/docs/node_modules/picomatch/CHANGELOG.md",
+      "tags": [
+        "changelog",
+        "configs",
+        "node-modules",
+        "picomatch"
+      ],
+      "topic": "CHANGELOG"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "picomatch",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/picomatch/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "picomatch",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "punycode.js",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/punycode.js/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "punycode.js",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "queue-microtask",
+        "readme"
+      ],
+      "path": "configs/docs/node_modules/queue-microtask/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "queue-microtask",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "resolve-from"
+      ],
+      "path": "configs/docs/node_modules/resolve-from/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "resolve-from"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "reusify"
+      ],
+      "path": "configs/docs/node_modules/reusify/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "reusify"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "reusify",
+        "security"
+      ],
+      "path": "configs/docs/node_modules/reusify/SECURITY.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "reusify",
+        "security"
+      ],
+      "topic": "SECURITY"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "run-parallel"
+      ],
+      "path": "configs/docs/node_modules/run-parallel/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "run-parallel"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "semver"
+      ],
+      "path": "configs/docs/node_modules/semver/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "semver"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "slash"
+      ],
+      "path": "configs/docs/node_modules/slash/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "slash"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "strip-ansi"
+      ],
+      "path": "configs/docs/node_modules/strip-ansi/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "strip-ansi"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "to-regex-range"
+      ],
+      "path": "configs/docs/node_modules/to-regex-range/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "to-regex-range"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "uc.micro"
+      ],
+      "path": "configs/docs/node_modules/uc.micro/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "uc.micro"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "unicorn-magic"
+      ],
+      "path": "configs/docs/node_modules/unicorn-magic/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "unicorn-magic"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "vscode-languageserver-textdocument"
+      ],
+      "path": "configs/docs/node_modules/vscode-languageserver-textdocument/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "vscode-languageserver-textdocument"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "license",
+        "node-modules",
+        "vscode-uri"
+      ],
+      "path": "configs/docs/node_modules/vscode-uri/LICENSE.md",
+      "tags": [
+        "configs",
+        "license",
+        "node-modules",
+        "vscode-uri"
+      ],
+      "topic": "LICENSE"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "vscode-uri"
+      ],
+      "path": "configs/docs/node_modules/vscode-uri/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "vscode-uri"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "security",
+        "vscode-uri"
+      ],
+      "path": "configs/docs/node_modules/vscode-uri/SECURITY.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "security",
+        "vscode-uri"
+      ],
+      "topic": "SECURITY"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "xdg-basedir"
+      ],
+      "path": "configs/docs/node_modules/xdg-basedir/readme.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "xdg-basedir"
+      ],
+      "topic": "readme"
+    },
+    {
+      "keywords": [
+        "configs",
+        "node-modules",
+        "readme",
+        "yaml"
+      ],
+      "path": "configs/docs/node_modules/yaml/README.md",
+      "tags": [
+        "configs",
+        "node-modules",
+        "readme",
+        "yaml"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "configs",
         "schema-overview"
       ],
@@ -3153,6 +6979,18 @@
     {
       "keywords": [
         "bijux-dev-atlas",
+        "crate-convergence-checkpoint"
+      ],
+      "path": "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "crate-convergence-checkpoint"
+      ],
+      "topic": "CRATE_CONVERGENCE_CHECKPOINT"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
         "error-taxonomy"
       ],
       "path": "crates/bijux-dev-atlas/ERROR_TAXONOMY.md",
@@ -3273,6 +7111,18 @@
     {
       "keywords": [
         "bijux-dev-atlas",
+        "engine-contract"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "engine-contract"
+      ],
+      "topic": "ENGINE_CONTRACT"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
         "exit-codes"
       ],
       "path": "crates/bijux-dev-atlas/docs/EXIT_CODES.md",
@@ -3317,6 +7167,18 @@
         "ops-command-list"
       ],
       "topic": "OPS_COMMAND_LIST"
+    },
+    {
+      "keywords": [
+        "bijux-dev-atlas",
+        "registry-contract"
+      ],
+      "path": "crates/bijux-dev-atlas/docs/REGISTRY_CONTRACT.md",
+      "tags": [
+        "bijux-dev-atlas",
+        "registry-contract"
+      ],
+      "topic": "REGISTRY_CONTRACT"
     },
     {
       "keywords": [
@@ -5504,6 +9366,54 @@
     },
     {
       "keywords": [
+        "docs-convergence-policy",
+        "operations"
+      ],
+      "path": "docs/operations/DOCS_CONVERGENCE_POLICY.md",
+      "tags": [
+        "docs-convergence-policy",
+        "operations"
+      ],
+      "topic": "DOCS_CONVERGENCE_POLICY"
+    },
+    {
+      "keywords": [
+        "docs-structure-freeze",
+        "operations"
+      ],
+      "path": "docs/operations/DOCS_STRUCTURE_FREEZE.md",
+      "tags": [
+        "docs-structure-freeze",
+        "operations"
+      ],
+      "topic": "DOCS_STRUCTURE_FREEZE"
+    },
+    {
+      "keywords": [
+        "example-incident-walkthrough",
+        "operations"
+      ],
+      "path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
+      "tags": [
+        "example-incident-walkthrough",
+        "operations"
+      ],
+      "topic": "EXAMPLE_INCIDENT_WALKTHROUGH"
+    },
+    {
+      "keywords": [
+        "example-release-walkthrough",
+        "operations"
+      ],
+      "path": "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md",
+      "tags": [
+        "example-release-walkthrough",
+        "operations"
+      ],
+      "topic": "EXAMPLE_RELEASE_WALKTHROUGH"
+    },
+    {
+      "keywords": [
         "index",
         "operations"
       ],
@@ -5513,6 +9423,18 @@
         "operations"
       ],
       "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
+      "tags": [
+        "operations",
+        "redirect-expiry-workflow"
+      ],
+      "topic": "REDIRECT_EXPIRY_WORKFLOW"
     },
     {
       "keywords": [
@@ -5693,6 +9615,18 @@
         "what-e2e-is-not"
       ],
       "topic": "what-e2e-is-not"
+    },
+    {
+      "keywords": [
+        "entrypoints",
+        "operations"
+      ],
+      "path": "docs/operations/entrypoints.md",
+      "tags": [
+        "entrypoints",
+        "operations"
+      ],
+      "topic": "entrypoints"
     },
     {
       "keywords": [
@@ -6517,6 +10451,18 @@
     {
       "keywords": [
         "operations",
+        "ops-docs-contract"
+      ],
+      "path": "docs/operations/ops-docs-contract.md",
+      "tags": [
+        "operations",
+        "ops-docs-contract"
+      ],
+      "topic": "ops-docs-contract"
+    },
+    {
+      "keywords": [
+        "operations",
         "ops-layout"
       ],
       "path": "docs/operations/ops-layout.md",
@@ -6715,6 +10661,146 @@
         "production-readiness-checklist"
       ],
       "topic": "production-readiness-checklist"
+    },
+    {
+      "keywords": [
+        "commands",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/commands.md",
+      "tags": [
+        "commands",
+        "operations",
+        "reference"
+      ],
+      "topic": "commands"
+    },
+    {
+      "keywords": [
+        "drills",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/drills.md",
+      "tags": [
+        "drills",
+        "operations",
+        "reference"
+      ],
+      "topic": "drills"
+    },
+    {
+      "keywords": [
+        "evidence-model",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/evidence-model.md",
+      "tags": [
+        "evidence-model",
+        "operations",
+        "reference"
+      ],
+      "topic": "evidence-model"
+    },
+    {
+      "keywords": [
+        "gates",
+        "operations",
+        "reference"
+      ],
+      "path": "docs/operations/reference/gates.md",
+      "tags": [
+        "gates",
+        "operations",
+        "reference"
+      ],
+      "topic": "gates"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-surface",
+        "reference"
+      ],
+      "path": "docs/operations/reference/ops-surface.md",
+      "tags": [
+        "operations",
+        "ops-surface",
+        "reference"
+      ],
+      "topic": "ops-surface"
+    },
+    {
+      "keywords": [
+        "operations",
+        "pins",
+        "reference"
+      ],
+      "path": "docs/operations/reference/pins.md",
+      "tags": [
+        "operations",
+        "pins",
+        "reference"
+      ],
+      "topic": "pins"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "schema-index"
+      ],
+      "path": "docs/operations/reference/schema-index.md",
+      "tags": [
+        "operations",
+        "reference",
+        "schema-index"
+      ],
+      "topic": "schema-index"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "toolchain"
+      ],
+      "path": "docs/operations/reference/toolchain.md",
+      "tags": [
+        "operations",
+        "reference",
+        "toolchain"
+      ],
+      "topic": "toolchain"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "tools"
+      ],
+      "path": "docs/operations/reference/tools.md",
+      "tags": [
+        "operations",
+        "reference",
+        "tools"
+      ],
+      "topic": "tools"
+    },
+    {
+      "keywords": [
+        "operations",
+        "reference",
+        "what-breaks-if-removed"
+      ],
+      "path": "docs/operations/reference/what-breaks-if-removed.md",
+      "tags": [
+        "operations",
+        "reference",
+        "what-breaks-if-removed"
+      ],
+      "topic": "what-breaks-if-removed"
     },
     {
       "keywords": [
@@ -8972,6 +13058,42 @@
     },
     {
       "keywords": [
+        "artifacts",
+        "ops"
+      ],
+      "path": "ops/ARTIFACTS.md",
+      "tags": [
+        "artifacts",
+        "ops"
+      ],
+      "topic": "ARTIFACTS"
+    },
+    {
+      "keywords": [
+        "authority-tiers",
+        "ops"
+      ],
+      "path": "ops/AUTHORITY_TIERS.md",
+      "tags": [
+        "authority-tiers",
+        "ops"
+      ],
+      "topic": "AUTHORITY_TIERS"
+    },
+    {
+      "keywords": [
+        "breaking-change-template",
+        "ops"
+      ],
+      "path": "ops/BREAKING_CHANGE_TEMPLATE.md",
+      "tags": [
+        "breaking-change-template",
+        "ops"
+      ],
+      "topic": "BREAKING_CHANGE_TEMPLATE"
+    },
+    {
+      "keywords": [
         "contract",
         "ops"
       ],
@@ -8996,6 +13118,42 @@
     },
     {
       "keywords": [
+        "delete-half-ops-simulation-report",
+        "ops"
+      ],
+      "path": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
+      "tags": [
+        "delete-half-ops-simulation-report",
+        "ops"
+      ],
+      "topic": "DELETE_HALF_OPS_SIMULATION_REPORT"
+    },
+    {
+      "keywords": [
+        "deprecation-workflow",
+        "ops"
+      ],
+      "path": "ops/DEPRECATION_WORKFLOW.md",
+      "tags": [
+        "deprecation-workflow",
+        "ops"
+      ],
+      "topic": "DEPRECATION_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "determinism-proof",
+        "ops"
+      ],
+      "path": "ops/DETERMINISM_PROOF.md",
+      "tags": [
+        "determinism-proof",
+        "ops"
+      ],
+      "topic": "DETERMINISM_PROOF"
+    },
+    {
+      "keywords": [
         "directory-budget-policy",
         "ops"
       ],
@@ -9005,6 +13163,42 @@
         "ops"
       ],
       "topic": "DIRECTORY_BUDGET_POLICY"
+    },
+    {
+      "keywords": [
+        "directory-necessity",
+        "ops"
+      ],
+      "path": "ops/DIRECTORY_NECESSITY.md",
+      "tags": [
+        "directory-necessity",
+        "ops"
+      ],
+      "topic": "DIRECTORY_NECESSITY"
+    },
+    {
+      "keywords": [
+        "doc-necessity-checklist",
+        "ops"
+      ],
+      "path": "ops/DOC_NECESSITY_CHECKLIST.md",
+      "tags": [
+        "doc-necessity-checklist",
+        "ops"
+      ],
+      "topic": "DOC_NECESSITY_CHECKLIST"
+    },
+    {
+      "keywords": [
+        "domain-document-template-contract",
+        "ops"
+      ],
+      "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+      "tags": [
+        "domain-document-template-contract",
+        "ops"
+      ],
+      "topic": "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT"
     },
     {
       "keywords": [
@@ -9020,6 +13214,18 @@
     },
     {
       "keywords": [
+        "emergency-override-workflow",
+        "ops"
+      ],
+      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+      "tags": [
+        "emergency-override-workflow",
+        "ops"
+      ],
+      "topic": "EMERGENCY_OVERRIDE_WORKFLOW"
+    },
+    {
+      "keywords": [
         "errors",
         "ops"
       ],
@@ -9029,6 +13235,30 @@
         "ops"
       ],
       "topic": "ERRORS"
+    },
+    {
+      "keywords": [
+        "escalation-mapping",
+        "ops"
+      ],
+      "path": "ops/ESCALATION_MAPPING.md",
+      "tags": [
+        "escalation-mapping",
+        "ops"
+      ],
+      "topic": "ESCALATION_MAPPING"
+    },
+    {
+      "keywords": [
+        "evidence-signoff-workflow",
+        "ops"
+      ],
+      "path": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
+      "tags": [
+        "evidence-signoff-workflow",
+        "ops"
+      ],
+      "topic": "EVIDENCE_SIGNOFF_WORKFLOW"
     },
     {
       "keywords": [
@@ -9044,6 +13274,30 @@
     },
     {
       "keywords": [
+        "golden-refresh-policy",
+        "ops"
+      ],
+      "path": "ops/GOLDEN_REFRESH_POLICY.md",
+      "tags": [
+        "golden-refresh-policy",
+        "ops"
+      ],
+      "topic": "GOLDEN_REFRESH_POLICY"
+    },
+    {
+      "keywords": [
+        "incident-playbook-generation",
+        "ops"
+      ],
+      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+      "tags": [
+        "incident-playbook-generation",
+        "ops"
+      ],
+      "topic": "INCIDENT_PLAYBOOK_GENERATION"
+    },
+    {
+      "keywords": [
         "index",
         "ops"
       ],
@@ -9053,6 +13307,30 @@
         "ops"
       ],
       "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "maturity-scorecard",
+        "ops"
+      ],
+      "path": "ops/MATURITY_SCORECARD.md",
+      "tags": [
+        "maturity-scorecard",
+        "ops"
+      ],
+      "topic": "MATURITY_SCORECARD"
+    },
+    {
+      "keywords": [
+        "minimal-release-surface",
+        "ops"
+      ],
+      "path": "ops/MINIMAL_RELEASE_SURFACE.md",
+      "tags": [
+        "minimal-release-surface",
+        "ops"
+      ],
+      "topic": "MINIMAL_RELEASE_SURFACE"
     },
     {
       "keywords": [
@@ -9069,6 +13347,90 @@
     {
       "keywords": [
         "ops",
+        "ops-adr-template"
+      ],
+      "path": "ops/OPS_ADR_TEMPLATE.md",
+      "tags": [
+        "ops",
+        "ops-adr-template"
+      ],
+      "topic": "OPS_ADR_TEMPLATE"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-change-review-checklist"
+      ],
+      "path": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
+      "tags": [
+        "ops",
+        "ops-change-review-checklist"
+      ],
+      "topic": "OPS_CHANGE_REVIEW_CHECKLIST"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-freeze-workflow"
+      ],
+      "path": "ops/OPS_FREEZE_WORKFLOW.md",
+      "tags": [
+        "ops",
+        "ops-freeze-workflow"
+      ],
+      "topic": "OPS_FREEZE_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ops-invariants"
+      ],
+      "path": "ops/OPS_INVARIANTS.md",
+      "tags": [
+        "ops",
+        "ops-invariants"
+      ],
+      "topic": "OPS_INVARIANTS"
+    },
+    {
+      "keywords": [
+        "ops",
+        "ownership-rotation-policy"
+      ],
+      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
+      "tags": [
+        "ops",
+        "ownership-rotation-policy"
+      ],
+      "topic": "OWNERSHIP_ROTATION_POLICY"
+    },
+    {
+      "keywords": [
+        "ops",
+        "portability-matrix"
+      ],
+      "path": "ops/PORTABILITY_MATRIX.md",
+      "tags": [
+        "ops",
+        "portability-matrix"
+      ],
+      "topic": "PORTABILITY_MATRIX"
+    },
+    {
+      "keywords": [
+        "ops",
+        "public-surface-contract-summary"
+      ],
+      "path": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
+      "tags": [
+        "ops",
+        "public-surface-contract-summary"
+      ],
+      "topic": "PUBLIC_SURFACE_CONTRACT_SUMMARY"
+    },
+    {
+      "keywords": [
+        "ops",
         "readme"
       ],
       "path": "ops/README.md",
@@ -9081,6 +13443,42 @@
     {
       "keywords": [
         "ops",
+        "release-readiness-signoff-checklist"
+      ],
+      "path": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+      "tags": [
+        "ops",
+        "release-readiness-signoff-checklist"
+      ],
+      "topic": "RELEASE_READINESS_SIGNOFF_CHECKLIST"
+    },
+    {
+      "keywords": [
+        "ops",
+        "runbook-generation-from-graph"
+      ],
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+      "tags": [
+        "ops",
+        "runbook-generation-from-graph"
+      ],
+      "topic": "RUNBOOK_GENERATION_FROM_GRAPH"
+    },
+    {
+      "keywords": [
+        "ops",
+        "schema-evolution-workflow"
+      ],
+      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
+      "tags": [
+        "ops",
+        "schema-evolution-workflow"
+      ],
+      "topic": "SCHEMA_EVOLUTION_WORKFLOW"
+    },
+    {
+      "keywords": [
+        "ops",
         "ssot"
       ],
       "path": "ops/SSOT.md",
@@ -9089,6 +13487,54 @@
         "ssot"
       ],
       "topic": "SSOT"
+    },
+    {
+      "keywords": [
+        "ops",
+        "supply-chain-model"
+      ],
+      "path": "ops/SUPPLY_CHAIN_MODEL.md",
+      "tags": [
+        "ops",
+        "supply-chain-model"
+      ],
+      "topic": "SUPPLY_CHAIN_MODEL"
+    },
+    {
+      "keywords": [
+        "ops",
+        "threat-model"
+      ],
+      "path": "ops/THREAT_MODEL.md",
+      "tags": [
+        "ops",
+        "threat-model"
+      ],
+      "topic": "THREAT_MODEL"
+    },
+    {
+      "keywords": [
+        "ops",
+        "tier1-root-surface"
+      ],
+      "path": "ops/TIER1_ROOT_SURFACE.md",
+      "tags": [
+        "ops",
+        "tier1-root-surface"
+      ],
+      "topic": "TIER1_ROOT_SURFACE"
+    },
+    {
+      "keywords": [
+        "ops",
+        "what-fails-when"
+      ],
+      "path": "ops/WHAT_FAILS_WHEN.md",
+      "tags": [
+        "ops",
+        "what-fails-when"
+      ],
+      "topic": "WHAT_FAILS_WHEN"
     },
     {
       "keywords": [
@@ -9407,6 +13853,20 @@
         "ops"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "e2e",
+        "end-to-end-invariants",
+        "ops"
+      ],
+      "path": "ops/e2e/END_TO_END_INVARIANTS.md",
+      "tags": [
+        "e2e",
+        "end-to-end-invariants",
+        "ops"
+      ],
+      "topic": "END_TO_END_INVARIANTS"
     },
     {
       "keywords": [
@@ -9846,6 +14306,20 @@
     },
     {
       "keywords": [
+        "load",
+        "ops",
+        "scenario-retention"
+      ],
+      "path": "ops/load/SCENARIO_RETENTION.md",
+      "tags": [
+        "load",
+        "ops",
+        "scenario-retention"
+      ],
+      "topic": "SCENARIO_RETENTION"
+    },
+    {
+      "keywords": [
         "baselines",
         "load",
         "ops",
@@ -10027,6 +14501,22 @@
     {
       "keywords": [
         "drills",
+        "observe",
+        "ops",
+        "ownership"
+      ],
+      "path": "ops/observe/drills/OWNERSHIP.md",
+      "tags": [
+        "drills",
+        "observe",
+        "ops",
+        "ownership"
+      ],
+      "topic": "OWNERSHIP"
+    },
+    {
+      "keywords": [
+        "drills",
         "incident-template",
         "observe",
         "ops",
@@ -10087,6 +14577,20 @@
         "report"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "evidence-completeness-checklist",
+        "ops",
+        "report"
+      ],
+      "path": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
+      "tags": [
+        "evidence-completeness-checklist",
+        "ops",
+        "report"
+      ],
+      "topic": "EVIDENCE_COMPLETENESS_CHECKLIST"
     },
     {
       "keywords": [

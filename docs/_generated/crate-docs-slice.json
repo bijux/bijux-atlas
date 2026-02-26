@@ -2583,6 +2583,26 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-dev-atlas",
+          "engine-contract"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md",
+        "review_due": "2026-08-24",
+        "stability": "evolving",
+        "tags": [
+          "bijux-dev-atlas",
+          "engine-contract"
+        ],
+        "topic": "ENGINE_CONTRACT"
+      },
+      {
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
           "exit-codes"
         ],
         "last_reviewed": "2026-02-25",
@@ -2656,6 +2676,26 @@
           "ops-command-list"
         ],
         "topic": "OPS_COMMAND_LIST"
+      },
+      {
+        "crate": "bijux-dev-atlas",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-dev-atlas",
+          "registry-contract"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "bijux-dev-atlas",
+        "path": "crates/bijux-dev-atlas/docs/REGISTRY_CONTRACT.md",
+        "review_due": "2026-08-24",
+        "stability": "evolving",
+        "tags": [
+          "bijux-dev-atlas",
+          "registry-contract"
+        ],
+        "topic": "REGISTRY_CONTRACT"
       }
     ]
   },

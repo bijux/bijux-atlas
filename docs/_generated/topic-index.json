@@ -42,13 +42,17 @@
       "docs/root/ARCHITECTURE_OVERVIEW.md"
     ],
     "ARTIFACTS": [
-      "crates/bijux-dev-atlas/docs/ARTIFACTS.md"
+      "crates/bijux-dev-atlas/docs/ARTIFACTS.md",
+      "ops/ARTIFACTS.md"
     ],
     "ARTIFACT_CONTRACT": [
       "crates/bijux-atlas-store/docs/ARTIFACT_CONTRACT.md"
     ],
     "ARTIFACT_OUTPUT_CONTRACT": [
       "crates/bijux-atlas-ingest/docs/ARTIFACT_OUTPUT_CONTRACT.md"
+    ],
+    "AUTHORITY_TIERS": [
+      "ops/AUTHORITY_TIERS.md"
     ],
     "AUTHORS": [
       "docs/AUTHORS.md"
@@ -71,6 +75,9 @@
       "crates/bijux-atlas-store/BENCHMARKS.md",
       "crates/bijux-dev-atlas/BENCHMARKS.md"
     ],
+    "BREAKING_CHANGE_TEMPLATE": [
+      "ops/BREAKING_CHANGE_TEMPLATE.md"
+    ],
     "BUDGET_POLICY": [
       "ops/schema/BUDGET_POLICY.md"
     ],
@@ -89,6 +96,13 @@
     ],
     "CHANGELOG": [
       "CHANGELOG.md",
+      "configs/docs/node_modules/argparse/CHANGELOG.md",
+      "configs/docs/node_modules/glob-parent/CHANGELOG.md",
+      "configs/docs/node_modules/js-yaml/CHANGELOG.md",
+      "configs/docs/node_modules/jsonc-parser/CHANGELOG.md",
+      "configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md",
+      "configs/docs/node_modules/markdownlint/CHANGELOG.md",
+      "configs/docs/node_modules/picomatch/CHANGELOG.md",
       "configs/ops/perf/baselines/CHANGELOG.md",
       "docs/operations/slo/CHANGELOG.md"
     ],
@@ -178,7 +192,8 @@
       "crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md"
     ],
     "CONTRIBUTING": [
-      "CONTRIBUTING.md"
+      "CONTRIBUTING.md",
+      "configs/docs/node_modules/markdownlint/CONTRIBUTING.md"
     ],
     "CONTRIBUTION_MODEL": [
       "docs/root/CONTRIBUTION_MODEL.md"
@@ -192,11 +207,23 @@
     "COST_ESTIMATOR": [
       "crates/bijux-atlas-query/docs/COST_ESTIMATOR.md"
     ],
+    "CRATE_CONVERGENCE_CHECKPOINT": [
+      "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md"
+    ],
     "CRATE_INDEX": [
       "docs/root/CRATE_INDEX.md"
     ],
+    "CustomRules": [
+      "configs/docs/node_modules/markdownlint/doc/CustomRules.md"
+    ],
     "DATA_MODEL": [
       "crates/bijux-atlas-model/DATA_MODEL.md"
+    ],
+    "DELETE_HALF_OPS_SIMULATION_REPORT": [
+      "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
+    ],
+    "DEPRECATION_WORKFLOW": [
+      "ops/DEPRECATION_WORKFLOW.md"
     ],
     "DEPTH_POLICY": [
       "docs/_style/DEPTH_POLICY.md"
@@ -207,6 +234,9 @@
     "DETERMINISM": [
       "crates/bijux-atlas-ingest/docs/DETERMINISM.md"
     ],
+    "DETERMINISM_PROOF": [
+      "ops/DETERMINISM_PROOF.md"
+    ],
     "DEVELOPER_WORKFLOW_QUICKSTART": [
       "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md"
     ],
@@ -216,8 +246,14 @@
     "DIRECTORY_BUDGET_POLICY": [
       "ops/DIRECTORY_BUDGET_POLICY.md"
     ],
+    "DIRECTORY_NECESSITY": [
+      "ops/DIRECTORY_NECESSITY.md"
+    ],
     "DOCKER_OVERVIEW": [
       "docs/root/DOCKER_OVERVIEW.md"
+    ],
+    "DOCS_CONVERGENCE_POLICY": [
+      "docs/operations/DOCS_CONVERGENCE_POLICY.md"
     ],
     "DOCS_FRONT_MATTER": [
       "docs/governance/DOCS_FRONT_MATTER.md"
@@ -231,8 +267,26 @@
     "DOCS_QUALITY_POLICY": [
       "docs/governance/DOCS_QUALITY_POLICY.md"
     ],
+    "DOCS_STRUCTURE_FREEZE": [
+      "docs/operations/DOCS_STRUCTURE_FREEZE.md"
+    ],
+    "DOC_NECESSITY_CHECKLIST": [
+      "ops/DOC_NECESSITY_CHECKLIST.md"
+    ],
+    "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT": [
+      "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
+    ],
     "DRIFT": [
       "ops/DRIFT.md"
+    ],
+    "EMERGENCY_OVERRIDE_WORKFLOW": [
+      "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
+    ],
+    "END_TO_END_INVARIANTS": [
+      "ops/e2e/END_TO_END_INVARIANTS.md"
+    ],
+    "ENGINE_CONTRACT": [
+      "crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md"
     ],
     "ENSEMBL_LAYOUT": [
       "crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md"
@@ -254,6 +308,15 @@
       "crates/bijux-atlas-store/ERROR_TAXONOMY.md",
       "crates/bijux-dev-atlas/ERROR_TAXONOMY.md"
     ],
+    "ESCALATION_MAPPING": [
+      "ops/ESCALATION_MAPPING.md"
+    ],
+    "EVIDENCE_COMPLETENESS_CHECKLIST": [
+      "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
+    ],
+    "EVIDENCE_SIGNOFF_WORKFLOW": [
+      "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
+    ],
     "EVOLUTION": [
       "crates/bijux-atlas-policies/docs/EVOLUTION.md"
     ],
@@ -268,6 +331,12 @@
       "crates/bijux-atlas-server/EXAMPLES.md",
       "crates/bijux-atlas-store/EXAMPLES.md",
       "crates/bijux-dev-atlas/EXAMPLES.md"
+    ],
+    "EXAMPLE_INCIDENT_WALKTHROUGH": [
+      "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md"
+    ],
+    "EXAMPLE_RELEASE_WALKTHROUGH": [
+      "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md"
     ],
     "EXIT_CODES": [
       "crates/bijux-atlas-cli/docs/EXIT_CODES.md",
@@ -303,8 +372,14 @@
     "GLOSSARY_CROSSLINKS": [
       "docs/root/GLOSSARY_CROSSLINKS.md"
     ],
+    "GOLDEN_REFRESH_POLICY": [
+      "ops/GOLDEN_REFRESH_POLICY.md"
+    ],
     "HOT_PATH_CHECKLIST": [
       "crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md"
+    ],
+    "INCIDENT_PLAYBOOK_GENERATION": [
+      "ops/INCIDENT_PLAYBOOK_GENERATION.md"
     ],
     "INDEX": [
       "configs/INDEX.md",
@@ -390,11 +465,21 @@
     "KUBERNETES": [
       "crates/bijux-atlas-server/docs/KUBERNETES.md"
     ],
+    "LICENSE": [
+      "configs/docs/node_modules/jsonc-parser/LICENSE.md",
+      "configs/docs/node_modules/vscode-uri/LICENSE.md"
+    ],
     "LICENSE_EXPLANATION": [
       "docs/root/LICENSE_EXPLANATION.md"
     ],
     "MAKEFILES_OVERVIEW": [
       "docs/root/MAKEFILES_OVERVIEW.md"
+    ],
+    "MATURITY_SCORECARD": [
+      "ops/MATURITY_SCORECARD.md"
+    ],
+    "MINIMAL_RELEASE_SURFACE": [
+      "ops/MINIMAL_RELEASE_SURFACE.md"
     ],
     "MIRROR_POLICY": [
       "ops/_generated.example/MIRROR_POLICY.md"
@@ -420,8 +505,20 @@
     "OPERATIONS_RUNBOOK": [
       "crates/bijux-atlas-server/docs/OPERATIONS_RUNBOOK.md"
     ],
+    "OPS_ADR_TEMPLATE": [
+      "ops/OPS_ADR_TEMPLATE.md"
+    ],
+    "OPS_CHANGE_REVIEW_CHECKLIST": [
+      "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
+    ],
     "OPS_COMMAND_LIST": [
       "crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md"
+    ],
+    "OPS_FREEZE_WORKFLOW": [
+      "ops/OPS_FREEZE_WORKFLOW.md"
+    ],
+    "OPS_INVARIANTS": [
+      "ops/OPS_INVARIANTS.md"
     ],
     "OPS_OVERVIEW": [
       "docs/root/OPS_OVERVIEW.md"
@@ -449,6 +546,12 @@
       "ops/report/OWNER.md",
       "ops/schema/OWNER.md",
       "ops/stack/OWNER.md"
+    ],
+    "OWNERSHIP": [
+      "ops/observe/drills/OWNERSHIP.md"
+    ],
+    "OWNERSHIP_ROTATION_POLICY": [
+      "ops/OWNERSHIP_ROTATION_POLICY.md"
     ],
     "PAGINATION": [
       "crates/bijux-atlas-query/docs/PAGINATION.md"
@@ -487,15 +590,24 @@
     "POLICY_AUTHORING_GUIDE": [
       "crates/bijux-atlas-policies/docs/POLICY_AUTHORING_GUIDE.md"
     ],
+    "PORTABILITY_MATRIX": [
+      "ops/PORTABILITY_MATRIX.md"
+    ],
     "PROJECT_DESCRIPTION_SNIPPET": [
       "docs/PROJECT_DESCRIPTION_SNIPPET.md"
     ],
     "PROJECT_IDENTITY": [
       "docs/PROJECT_IDENTITY.md"
     ],
+    "PUBLIC_SURFACE_CONTRACT_SUMMARY": [
+      "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
+    ],
     "PURITY": [
       "crates/bijux-atlas-core/docs/PURITY.md",
       "crates/bijux-atlas-model/docs/PURITY.md"
+    ],
+    "Prettier": [
+      "configs/docs/node_modules/markdownlint/doc/Prettier.md"
     ],
     "QC": [
       "crates/bijux-atlas-ingest/docs/QC.md"
@@ -508,6 +620,133 @@
       "configs/README.md",
       "configs/coverage/README.md",
       "configs/docs/README.md",
+      "configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md",
+      "configs/docs/node_modules/@cspell/cspell-json-reporter/README.md",
+      "configs/docs/node_modules/@cspell/cspell-pipe/README.md",
+      "configs/docs/node_modules/@cspell/cspell-resolver/README.md",
+      "configs/docs/node_modules/@cspell/cspell-service-bus/README.md",
+      "configs/docs/node_modules/@cspell/cspell-types/README.md",
+      "configs/docs/node_modules/@cspell/dict-ada/README.md",
+      "configs/docs/node_modules/@cspell/dict-aws/README.md",
+      "configs/docs/node_modules/@cspell/dict-bash/README.md",
+      "configs/docs/node_modules/@cspell/dict-companies/README.md",
+      "configs/docs/node_modules/@cspell/dict-companies/dict/README.md",
+      "configs/docs/node_modules/@cspell/dict-cpp/README.md",
+      "configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md",
+      "configs/docs/node_modules/@cspell/dict-csharp/README.md",
+      "configs/docs/node_modules/@cspell/dict-css/README.md",
+      "configs/docs/node_modules/@cspell/dict-dart/README.md",
+      "configs/docs/node_modules/@cspell/dict-data-science/README.md",
+      "configs/docs/node_modules/@cspell/dict-django/README.md",
+      "configs/docs/node_modules/@cspell/dict-docker/README.md",
+      "configs/docs/node_modules/@cspell/dict-dotnet/README.md",
+      "configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md",
+      "configs/docs/node_modules/@cspell/dict-elixir/README.md",
+      "configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md",
+      "configs/docs/node_modules/@cspell/dict-en-gb/README.md",
+      "configs/docs/node_modules/@cspell/dict-en_us/README.md",
+      "configs/docs/node_modules/@cspell/dict-filetypes/README.md",
+      "configs/docs/node_modules/@cspell/dict-flutter/README.md",
+      "configs/docs/node_modules/@cspell/dict-fonts/README.md",
+      "configs/docs/node_modules/@cspell/dict-fsharp/README.md",
+      "configs/docs/node_modules/@cspell/dict-fullstack/README.md",
+      "configs/docs/node_modules/@cspell/dict-gaming-terms/README.md",
+      "configs/docs/node_modules/@cspell/dict-git/README.md",
+      "configs/docs/node_modules/@cspell/dict-golang/README.md",
+      "configs/docs/node_modules/@cspell/dict-google/README.md",
+      "configs/docs/node_modules/@cspell/dict-haskell/README.md",
+      "configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md",
+      "configs/docs/node_modules/@cspell/dict-html/README.md",
+      "configs/docs/node_modules/@cspell/dict-java/README.md",
+      "configs/docs/node_modules/@cspell/dict-julia/README.md",
+      "configs/docs/node_modules/@cspell/dict-k8s/README.md",
+      "configs/docs/node_modules/@cspell/dict-latex/README.md",
+      "configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md",
+      "configs/docs/node_modules/@cspell/dict-lua/README.md",
+      "configs/docs/node_modules/@cspell/dict-makefile/README.md",
+      "configs/docs/node_modules/@cspell/dict-monkeyc/README.md",
+      "configs/docs/node_modules/@cspell/dict-node/README.md",
+      "configs/docs/node_modules/@cspell/dict-npm/README.md",
+      "configs/docs/node_modules/@cspell/dict-php/README.md",
+      "configs/docs/node_modules/@cspell/dict-php/dict/README.md",
+      "configs/docs/node_modules/@cspell/dict-powershell/README.md",
+      "configs/docs/node_modules/@cspell/dict-public-licenses/README.md",
+      "configs/docs/node_modules/@cspell/dict-python/README.md",
+      "configs/docs/node_modules/@cspell/dict-r/README.md",
+      "configs/docs/node_modules/@cspell/dict-ruby/README.md",
+      "configs/docs/node_modules/@cspell/dict-rust/README.md",
+      "configs/docs/node_modules/@cspell/dict-scala/README.md",
+      "configs/docs/node_modules/@cspell/dict-shell/README.md",
+      "configs/docs/node_modules/@cspell/dict-shell/dict/README.md",
+      "configs/docs/node_modules/@cspell/dict-software-terms/README.md",
+      "configs/docs/node_modules/@cspell/dict-sql/README.md",
+      "configs/docs/node_modules/@cspell/dict-svelte/README.md",
+      "configs/docs/node_modules/@cspell/dict-swift/README.md",
+      "configs/docs/node_modules/@cspell/dict-terraform/README.md",
+      "configs/docs/node_modules/@cspell/dict-typescript/README.md",
+      "configs/docs/node_modules/@cspell/dict-vue/README.md",
+      "configs/docs/node_modules/@cspell/dynamic-import/README.md",
+      "configs/docs/node_modules/@cspell/filetypes/README.md",
+      "configs/docs/node_modules/@cspell/strong-weak-map/README.md",
+      "configs/docs/node_modules/@cspell/url/README.md",
+      "configs/docs/node_modules/@nodelib/fs.scandir/README.md",
+      "configs/docs/node_modules/@nodelib/fs.stat/README.md",
+      "configs/docs/node_modules/@nodelib/fs.walk/README.md",
+      "configs/docs/node_modules/argparse/README.md",
+      "configs/docs/node_modules/array-timsort/README.md",
+      "configs/docs/node_modules/braces/README.md",
+      "configs/docs/node_modules/comment-json/README.md",
+      "configs/docs/node_modules/core-util-is/README.md",
+      "configs/docs/node_modules/cspell-config-lib/README.md",
+      "configs/docs/node_modules/cspell-dictionary/README.md",
+      "configs/docs/node_modules/cspell-gitignore/README.md",
+      "configs/docs/node_modules/cspell-glob/README.md",
+      "configs/docs/node_modules/cspell-grammar/README.md",
+      "configs/docs/node_modules/cspell-io/README.md",
+      "configs/docs/node_modules/cspell-lib/README.md",
+      "configs/docs/node_modules/cspell-trie-lib/README.md",
+      "configs/docs/node_modules/cspell/README.md",
+      "configs/docs/node_modules/esprima/README.md",
+      "configs/docs/node_modules/fast-equals/README.md",
+      "configs/docs/node_modules/fast-glob/README.md",
+      "configs/docs/node_modules/fast-json-stable-stringify/README.md",
+      "configs/docs/node_modules/fastq/README.md",
+      "configs/docs/node_modules/file-entry-cache/README.md",
+      "configs/docs/node_modules/fill-range/README.md",
+      "configs/docs/node_modules/flat-cache/README.md",
+      "configs/docs/node_modules/flatted/README.md",
+      "configs/docs/node_modules/gensequence/README.md",
+      "configs/docs/node_modules/glob-parent/README.md",
+      "configs/docs/node_modules/ignore/README.md",
+      "configs/docs/node_modules/ini/README.md",
+      "configs/docs/node_modules/is-extglob/README.md",
+      "configs/docs/node_modules/is-glob/README.md",
+      "configs/docs/node_modules/is-number/README.md",
+      "configs/docs/node_modules/js-yaml/README.md",
+      "configs/docs/node_modules/json-buffer/README.md",
+      "configs/docs/node_modules/jsonc-parser/README.md",
+      "configs/docs/node_modules/keyv/README.md",
+      "configs/docs/node_modules/linkify-it/README.md",
+      "configs/docs/node_modules/markdown-it/README.md",
+      "configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md",
+      "configs/docs/node_modules/markdownlint-cli2/README.md",
+      "configs/docs/node_modules/markdownlint-micromark/README.md",
+      "configs/docs/node_modules/markdownlint/README.md",
+      "configs/docs/node_modules/markdownlint/helpers/README.md",
+      "configs/docs/node_modules/mdurl/README.md",
+      "configs/docs/node_modules/merge2/README.md",
+      "configs/docs/node_modules/micromatch/README.md",
+      "configs/docs/node_modules/picomatch/README.md",
+      "configs/docs/node_modules/punycode.js/README.md",
+      "configs/docs/node_modules/queue-microtask/README.md",
+      "configs/docs/node_modules/reusify/README.md",
+      "configs/docs/node_modules/run-parallel/README.md",
+      "configs/docs/node_modules/semver/README.md",
+      "configs/docs/node_modules/to-regex-range/README.md",
+      "configs/docs/node_modules/uc.micro/README.md",
+      "configs/docs/node_modules/vscode-languageserver-textdocument/README.md",
+      "configs/docs/node_modules/vscode-uri/README.md",
+      "configs/docs/node_modules/yaml/README.md",
       "configs/inventory/README.md",
       "configs/layout/README.md",
       "configs/make/README.md",
@@ -588,14 +827,23 @@
       "ops/stack/generated/README.md",
       "ops/stack/kind/README.md"
     ],
+    "REDIRECT_EXPIRY_WORKFLOW": [
+      "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md"
+    ],
     "REFERENCE_INDEX": [
       "ops/report/docs/REFERENCE_INDEX.md"
+    ],
+    "REGISTRY_CONTRACT": [
+      "crates/bijux-dev-atlas/docs/REGISTRY_CONTRACT.md"
     ],
     "RELEASE_GATE": [
       "docs/operations/slo/RELEASE_GATE.md"
     ],
     "RELEASE_PROCESS_OVERVIEW": [
       "docs/root/RELEASE_PROCESS_OVERVIEW.md"
+    ],
+    "RELEASE_READINESS_SIGNOFF_CHECKLIST": [
+      "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
     ],
     "REPOSITORY_STRUCTURE": [
       "docs/root/REPOSITORY_STRUCTURE.md"
@@ -620,11 +868,26 @@
     "ROLLBACK": [
       "crates/bijux-atlas-store/docs/ROLLBACK.md"
     ],
+    "RUNBOOK_GENERATION_FROM_GRAPH": [
+      "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
+    ],
     "RUNBOOK_SNIPPET": [
       "crates/bijux-atlas-store/docs/RUNBOOK_SNIPPET.md"
     ],
     "RUNTIME": [
       "crates/bijux-atlas-server/docs/RUNTIME.md"
+    ],
+    "Readme": [
+      "configs/docs/node_modules/commander/Readme.md"
+    ],
+    "ReleaseProcess": [
+      "configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md"
+    ],
+    "Rules": [
+      "configs/docs/node_modules/markdownlint/doc/Rules.md"
+    ],
+    "SCENARIO_RETENTION": [
+      "ops/load/SCENARIO_RETENTION.md"
     ],
     "SCHEMA": [
       "crates/bijux-atlas-policies/docs/SCHEMA.md"
@@ -637,6 +900,9 @@
     ],
     "SCHEMA_EVOLUTION_NOTES": [
       "crates/bijux-atlas-model/docs/SCHEMA_EVOLUTION_NOTES.md"
+    ],
+    "SCHEMA_EVOLUTION_WORKFLOW": [
+      "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
     ],
     "SCHEMA_INDEX": [
       "docs/root/SCHEMA_INDEX.md"
@@ -651,7 +917,11 @@
       "docs/operations/slo/SCOPE.md"
     ],
     "SECURITY": [
-      "SECURITY.md"
+      "SECURITY.md",
+      "configs/docs/node_modules/fastq/SECURITY.md",
+      "configs/docs/node_modules/jsonc-parser/SECURITY.md",
+      "configs/docs/node_modules/reusify/SECURITY.md",
+      "configs/docs/node_modules/vscode-uri/SECURITY.md"
     ],
     "SECURITY_MODEL": [
       "docs/root/SECURITY_MODEL.md"
@@ -686,6 +956,9 @@
     "STYLE": [
       "docs/STYLE.md"
     ],
+    "SUPPLY_CHAIN_MODEL": [
+      "ops/SUPPLY_CHAIN_MODEL.md"
+    ],
     "TARGETS_REGISTRY": [
       "makefiles/TARGETS_REGISTRY.md"
     ],
@@ -707,6 +980,12 @@
       "crates/bijux-atlas-store/TESTING.md",
       "crates/bijux-dev-atlas/TESTING.md"
     ],
+    "THREAT_MODEL": [
+      "ops/THREAT_MODEL.md"
+    ],
+    "TIER1_ROOT_SURFACE": [
+      "ops/TIER1_ROOT_SURFACE.md"
+    ],
     "TRANSCRIPT_ORDERING": [
       "crates/bijux-atlas-query/docs/TRANSCRIPT_ORDERING.md"
     ],
@@ -725,6 +1004,13 @@
     ],
     "VERSIONING_POLICY": [
       "ops/schema/VERSIONING_POLICY.md"
+    ],
+    "ValidatingConfiguration": [
+      "configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md",
+      "configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md"
+    ],
+    "WHAT_FAILS_WHEN": [
+      "ops/WHAT_FAILS_WHEN.md"
     ],
     "WHAT_WE_DONT_MEASURE_YET": [
       "docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md"
@@ -875,6 +1161,9 @@
     ],
     "command-inventory": [
       "docs/development/tooling/command-inventory.md"
+    ],
+    "commands": [
+      "docs/operations/reference/commands.md"
     ],
     "compat-matrix": [
       "docs/development/tooling/compat-matrix.md"
@@ -1048,7 +1337,8 @@
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md"
     ],
     "drills": [
-      "docs/operations/observability/drills.md"
+      "docs/operations/observability/drills.md",
+      "docs/operations/reference/drills.md"
     ],
     "duplicate-topics": [
       "docs/_lint/duplicate-topics.md"
@@ -1079,6 +1369,9 @@
     "endpoints": [
       "docs/contracts/endpoints.md"
     ],
+    "entrypoints": [
+      "docs/operations/entrypoints.md"
+    ],
     "environment-contract": [
       "configs/docs/environment-contract.md"
     ],
@@ -1097,6 +1390,9 @@
     ],
     "evidence": [
       "docs/operations/ops-system/evidence.md"
+    ],
+    "evidence-model": [
+      "docs/operations/reference/evidence-model.md"
     ],
     "evidence-policy": [
       "docs/operations/evidence-policy.md"
@@ -1125,7 +1421,8 @@
       "docs/operations/full-stack-local.md"
     ],
     "gates": [
-      "docs/operations/ops-system/gates.md"
+      "docs/operations/ops-system/gates.md",
+      "docs/operations/reference/gates.md"
     ],
     "gene-summary-semantics": [
       "docs/reference/science/gene-summary-semantics.md"
@@ -1239,6 +1536,159 @@
     "manifest-contract": [
       "docs/contracts/artifacts/manifest-contract.md"
     ],
+    "md001": [
+      "configs/docs/node_modules/markdownlint/doc/md001.md"
+    ],
+    "md003": [
+      "configs/docs/node_modules/markdownlint/doc/md003.md"
+    ],
+    "md004": [
+      "configs/docs/node_modules/markdownlint/doc/md004.md"
+    ],
+    "md005": [
+      "configs/docs/node_modules/markdownlint/doc/md005.md"
+    ],
+    "md007": [
+      "configs/docs/node_modules/markdownlint/doc/md007.md"
+    ],
+    "md009": [
+      "configs/docs/node_modules/markdownlint/doc/md009.md"
+    ],
+    "md010": [
+      "configs/docs/node_modules/markdownlint/doc/md010.md"
+    ],
+    "md011": [
+      "configs/docs/node_modules/markdownlint/doc/md011.md"
+    ],
+    "md012": [
+      "configs/docs/node_modules/markdownlint/doc/md012.md"
+    ],
+    "md013": [
+      "configs/docs/node_modules/markdownlint/doc/md013.md"
+    ],
+    "md014": [
+      "configs/docs/node_modules/markdownlint/doc/md014.md"
+    ],
+    "md018": [
+      "configs/docs/node_modules/markdownlint/doc/md018.md"
+    ],
+    "md019": [
+      "configs/docs/node_modules/markdownlint/doc/md019.md"
+    ],
+    "md020": [
+      "configs/docs/node_modules/markdownlint/doc/md020.md"
+    ],
+    "md021": [
+      "configs/docs/node_modules/markdownlint/doc/md021.md"
+    ],
+    "md022": [
+      "configs/docs/node_modules/markdownlint/doc/md022.md"
+    ],
+    "md023": [
+      "configs/docs/node_modules/markdownlint/doc/md023.md"
+    ],
+    "md024": [
+      "configs/docs/node_modules/markdownlint/doc/md024.md"
+    ],
+    "md025": [
+      "configs/docs/node_modules/markdownlint/doc/md025.md"
+    ],
+    "md026": [
+      "configs/docs/node_modules/markdownlint/doc/md026.md"
+    ],
+    "md027": [
+      "configs/docs/node_modules/markdownlint/doc/md027.md"
+    ],
+    "md028": [
+      "configs/docs/node_modules/markdownlint/doc/md028.md"
+    ],
+    "md029": [
+      "configs/docs/node_modules/markdownlint/doc/md029.md"
+    ],
+    "md030": [
+      "configs/docs/node_modules/markdownlint/doc/md030.md"
+    ],
+    "md031": [
+      "configs/docs/node_modules/markdownlint/doc/md031.md"
+    ],
+    "md032": [
+      "configs/docs/node_modules/markdownlint/doc/md032.md"
+    ],
+    "md033": [
+      "configs/docs/node_modules/markdownlint/doc/md033.md"
+    ],
+    "md034": [
+      "configs/docs/node_modules/markdownlint/doc/md034.md"
+    ],
+    "md035": [
+      "configs/docs/node_modules/markdownlint/doc/md035.md"
+    ],
+    "md036": [
+      "configs/docs/node_modules/markdownlint/doc/md036.md"
+    ],
+    "md037": [
+      "configs/docs/node_modules/markdownlint/doc/md037.md"
+    ],
+    "md038": [
+      "configs/docs/node_modules/markdownlint/doc/md038.md"
+    ],
+    "md039": [
+      "configs/docs/node_modules/markdownlint/doc/md039.md"
+    ],
+    "md040": [
+      "configs/docs/node_modules/markdownlint/doc/md040.md"
+    ],
+    "md041": [
+      "configs/docs/node_modules/markdownlint/doc/md041.md"
+    ],
+    "md042": [
+      "configs/docs/node_modules/markdownlint/doc/md042.md"
+    ],
+    "md043": [
+      "configs/docs/node_modules/markdownlint/doc/md043.md"
+    ],
+    "md044": [
+      "configs/docs/node_modules/markdownlint/doc/md044.md"
+    ],
+    "md045": [
+      "configs/docs/node_modules/markdownlint/doc/md045.md"
+    ],
+    "md046": [
+      "configs/docs/node_modules/markdownlint/doc/md046.md"
+    ],
+    "md047": [
+      "configs/docs/node_modules/markdownlint/doc/md047.md"
+    ],
+    "md048": [
+      "configs/docs/node_modules/markdownlint/doc/md048.md"
+    ],
+    "md049": [
+      "configs/docs/node_modules/markdownlint/doc/md049.md"
+    ],
+    "md050": [
+      "configs/docs/node_modules/markdownlint/doc/md050.md"
+    ],
+    "md051": [
+      "configs/docs/node_modules/markdownlint/doc/md051.md"
+    ],
+    "md052": [
+      "configs/docs/node_modules/markdownlint/doc/md052.md"
+    ],
+    "md053": [
+      "configs/docs/node_modules/markdownlint/doc/md053.md"
+    ],
+    "md054": [
+      "configs/docs/node_modules/markdownlint/doc/md054.md"
+    ],
+    "md055": [
+      "configs/docs/node_modules/markdownlint/doc/md055.md"
+    ],
+    "md056": [
+      "configs/docs/node_modules/markdownlint/doc/md056.md"
+    ],
+    "md058": [
+      "configs/docs/node_modules/markdownlint/doc/md058.md"
+    ],
     "medium-fixture": [
       "docs/reference/fixtures/medium-fixture.md"
     ],
@@ -1325,6 +1775,9 @@
     "ops-docs-consolidation-checklist": [
       "docs/operations/ops-system/ops-docs-consolidation-checklist.md"
     ],
+    "ops-docs-contract": [
+      "docs/operations/ops-docs-contract.md"
+    ],
     "ops-e2e-boundary": [
       ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md"
     ],
@@ -1339,6 +1792,9 @@
     ],
     "ops-local-full": [
       "docs/quickstart/ops-local-full.md"
+    ],
+    "ops-surface": [
+      "docs/operations/reference/ops-surface.md"
     ],
     "ordering": [
       "docs/reference/querying/ordering.md"
@@ -1374,6 +1830,9 @@
     ],
     "performance-baseline": [
       "docs/operations/observability/performance-baseline.md"
+    ],
+    "pins": [
+      "docs/operations/reference/pins.md"
     ],
     "placement": [
       "docs/_style/placement.md"
@@ -1442,6 +1901,31 @@
     ],
     "rbac-minimalism": [
       "docs/operations/k8s/rbac-minimalism.md"
+    ],
+    "readme": [
+      "configs/docs/node_modules/@sindresorhus/merge-streams/readme.md",
+      "configs/docs/node_modules/ansi-regex/readme.md",
+      "configs/docs/node_modules/callsites/readme.md",
+      "configs/docs/node_modules/chalk-template/readme.md",
+      "configs/docs/node_modules/chalk/readme.md",
+      "configs/docs/node_modules/clear-module/readme.md",
+      "configs/docs/node_modules/entities/readme.md",
+      "configs/docs/node_modules/env-paths/readme.md",
+      "configs/docs/node_modules/find-up-simple/readme.md",
+      "configs/docs/node_modules/get-stdin/readme.md",
+      "configs/docs/node_modules/global-directory/readme.md",
+      "configs/docs/node_modules/globby/readme.md",
+      "configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md",
+      "configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md",
+      "configs/docs/node_modules/import-fresh/readme.md",
+      "configs/docs/node_modules/import-meta-resolve/readme.md",
+      "configs/docs/node_modules/parent-module/readme.md",
+      "configs/docs/node_modules/path-type/readme.md",
+      "configs/docs/node_modules/resolve-from/readme.md",
+      "configs/docs/node_modules/slash/readme.md",
+      "configs/docs/node_modules/strip-ansi/readme.md",
+      "configs/docs/node_modules/unicorn-magic/readme.md",
+      "configs/docs/node_modules/xdg-basedir/readme.md"
     ],
     "real-datasets": [
       "docs/reference/fixtures/real-datasets.md"
@@ -1538,6 +2022,7 @@
       "docs/operations/ops-system/schema.md"
     ],
     "schema-index": [
+      "docs/operations/reference/schema-index.md",
       "ops/schema/generated/schema-index.md"
     ],
     "schema-overview": [
@@ -1693,8 +2178,12 @@
     "tool-config-shims": [
       "docs/development/tool-config-shims.md"
     ],
+    "toolchain": [
+      "docs/operations/reference/toolchain.md"
+    ],
     "tools": [
-      "docs/development/tooling/tools.md"
+      "docs/development/tooling/tools.md",
+      "docs/operations/reference/tools.md"
     ],
     "trace-sampling-policy": [
       "docs/operations/observability/trace-sampling-policy.md"
@@ -1744,6 +2233,9 @@
     ],
     "warm-on-rollout": [
       "docs/operations/k8s/warm-on-rollout.md"
+    ],
+    "what-breaks-if-removed": [
+      "docs/operations/reference/what-breaks-if-removed.md"
     ],
     "what-e2e-is-not": [
       "docs/operations/e2e/what-e2e-is-not.md"

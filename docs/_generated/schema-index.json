@@ -126,6 +126,26 @@
       "doc_version": "v1",
       "keywords": [
         "ops",
+        "schema-evolution-workflow"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops",
+        "schema-evolution-workflow"
+      ],
+      "topic": "SCHEMA_EVOLUTION_WORKFLOW"
+    },
+    {
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "ops",
         "schema",
         "schema-budget-exceptions"
       ],
