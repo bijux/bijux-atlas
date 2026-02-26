@@ -1,5 +1,7 @@
 # Generated Artifact Lifecycle
 
+- Authority Tier: `machine`
+- Audience: `contributors`
 ## Scope
 
 This contract defines generated artifact classes, retention, and regeneration policy for all `ops/` generated surfaces.

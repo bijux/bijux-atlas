@@ -1,5 +1,7 @@
 # Ops Naming Rules
 
+- Authority Tier: `machine`
+- Audience: `contributors`
 ## Canonical Terms
 
 - Use `observe` for observability domain naming.

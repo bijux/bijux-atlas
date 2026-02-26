@@ -1,6 +1,8 @@
 # Ops Contract (SSOT)
 
 - Owner: `bijux-atlas-operations`
+- Authority Tier: `machine`
+- Audience: `mixed`
 - Contract version: `1.1.0`
 - kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af029ac1a3e412960`
 

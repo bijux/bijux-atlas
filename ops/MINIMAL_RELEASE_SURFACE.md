@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `define the minimum ops files and generated evidence required to make a release readiness decision`
 - Consumers: `checks_ops_minimalism_and_deletion_safety`
+- Authority Tier: `machine`
+- Audience: `contributors`
 
 ## Minimal Release Surface
 

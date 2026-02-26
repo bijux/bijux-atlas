@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `template for durable architectural decisions affecting ops contracts and governance`
 - Consumers: `checks_ops_human_workflow_maturity`
+- Authority Tier: `explanatory`
+- Audience: `contributors`
 
 ## Title
 

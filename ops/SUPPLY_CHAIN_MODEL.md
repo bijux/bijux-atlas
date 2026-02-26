@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `describe trusted inputs, pin sets, and verification points for ops supply-chain governance`
 - Consumers: `checks_ops_final_polish_contracts`
+- Authority Tier: `explanatory`
+- Audience: `reviewers`
 
 ## Trusted Inputs
 

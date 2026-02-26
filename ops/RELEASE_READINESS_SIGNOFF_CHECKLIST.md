@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `define human sign-off requirements before a release readiness decision is accepted`
 - Consumers: `checks_ops_human_workflow_maturity`
+- Authority Tier: `explanatory`
+- Audience: `reviewers`
 
 ## Sign-Off Checklist
 

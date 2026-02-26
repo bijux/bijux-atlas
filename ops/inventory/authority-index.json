@@ -64,11 +64,13 @@
     }
   ],
   "ignored_paths": [
+    "ops/AUTHORITY_TIERS.md",
     "ops/BREAKING_CHANGE_TEMPLATE.md",
     "ops/CONTRACT.md",
     "ops/CONTROL_PLANE.md",
     "ops/DETERMINISM_PROOF.md",
     "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md",
+    "ops/DOC_NECESSITY_CHECKLIST.md",
     "ops/DIRECTORY_NECESSITY.md",
     "ops/DIRECTORY_BUDGET_POLICY.md",
     "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",

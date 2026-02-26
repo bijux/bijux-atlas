@@ -1,5 +1,7 @@
 # Directory Budget Policy
 
+- Authority Tier: `machine`
+- Audience: `contributors`
 ## Purpose
 
 Keep `ops/` minimal, enforceable, and consumer-driven.

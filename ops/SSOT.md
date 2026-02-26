@@ -1,5 +1,7 @@
 # Ops SSOT Policy
 
+- Authority Tier: `machine`
+- Audience: `contributors`
 This page defines authored truth versus generated truth in `ops/`.
 
 ## Authored

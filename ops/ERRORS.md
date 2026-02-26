@@ -1,5 +1,7 @@
 # Ops Errors
 
+- Authority Tier: `machine`
+- Audience: `operators`
 ## Scope
 
 Stable error identifiers for `bijux dev atlas ops ...` command surfaces.

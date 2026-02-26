@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: Canonical required structure for authored `ops/<domain>/CONTRACT.md` and `ops/<domain>/README.md` files.
 - Consumers: `checks_ops_domain_contract_structure`
+- Authority Tier: `machine`
+- Audience: `contributors`
 
 ## Scope
 

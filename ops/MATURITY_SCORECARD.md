@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `track maturity dimensions and evidence-backed status for ops governance`
 - Consumers: `checks_ops_final_polish_contracts`
+- Authority Tier: `explanatory`
+- Audience: `reviewers`
 
 ## Dimensions
 

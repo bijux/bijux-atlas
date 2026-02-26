@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `standardize human review expectations for ops contract and runtime governance changes`
 - Consumers: `checks_ops_human_workflow_maturity`
+- Authority Tier: `explanatory`
+- Audience: `reviewers`
 
 ## Checklist
 

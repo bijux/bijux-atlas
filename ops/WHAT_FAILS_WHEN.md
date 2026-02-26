@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `document failure impact mapping from key ops components to checks, evidence, and release outcomes`
 - Consumers: `checks_ops_final_polish_contracts`
+- Authority Tier: `explanatory`
+- Audience: `operators`
 
 ## Failure Impact Mapping
 

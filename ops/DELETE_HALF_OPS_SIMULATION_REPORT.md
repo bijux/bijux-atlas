@@ -3,6 +3,8 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `record deletion-safety simulation assumptions and expected breakage categories for aggressive ops surface reduction`
 - Consumers: `checks_ops_final_polish_contracts`
+- Authority Tier: `explanatory`
+- Audience: `reviewers`
 
 ## Simulation Scope
 

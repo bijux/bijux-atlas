@@ -1,5 +1,7 @@
 # Ops Artifacts
 
+- Authority Tier: `machine`
+- Audience: `operators`
 ## Purpose
 Define the canonical runtime artifact root and path layout for ops workflows.
 

@@ -1,6 +1,8 @@
 # Ops
 
 - Owner: `bijux-atlas-operations`
+- Authority Tier: `explanatory`
+- Audience: `mixed`
 
 ## What
 

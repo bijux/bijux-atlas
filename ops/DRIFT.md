@@ -1,5 +1,7 @@
 # Ops Drift Policy
 
+- Authority Tier: `machine`
+- Audience: `contributors`
 This page lists drift categories blocked by contract checks.
 
 ## Drift Types
