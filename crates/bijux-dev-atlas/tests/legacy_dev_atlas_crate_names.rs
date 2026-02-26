@@ -16,9 +16,12 @@ fn workspace_root() -> PathBuf {
 }
 
 fn allowlisted_paths() -> BTreeSet<&'static str> {
-    [BANLIST_PATH, "crates/bijux-dev-atlas/tests/legacy_dev_atlas_crate_names.rs"]
-        .into_iter()
-        .collect()
+    [
+        BANLIST_PATH,
+        "crates/bijux-dev-atlas/tests/legacy_dev_atlas_crate_names.rs",
+    ]
+    .into_iter()
+    .collect()
 }
 
 fn ignored_subtrees(root: &Path) -> BTreeSet<PathBuf> {
