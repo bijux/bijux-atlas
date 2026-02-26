@@ -251,6 +251,10 @@ pub(crate) fn crate_doc_contract_status(
     (rows, errors, warnings)
 }
 
+fn is_vendored_docs_registry_path(path: &str) -> bool {
+    path.starts_with("configs/docs/node_modules/")
+}
+
 fn tags_for_path(path: &str) -> Vec<String> {
     let mut out = BTreeSet::new();
     for segment in path.split('/') {
@@ -516,6 +520,10 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
     let mut per_crate = BTreeMap::<String, usize>::new();
     for entry in &docs {
         let bucket = entry["crate"].as_str().unwrap_or("docs-root").to_string();
+        let path = entry["path"].as_str().unwrap_or_default();
+        if is_vendored_docs_registry_path(path) {
+            continue;
+        }
         *per_crate.entry(bucket).or_default() += 1;
     }
     for (bucket, count) in per_crate {
@@ -568,6 +576,9 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         let _ = source;
     }
     for path in &registered {
+        if is_vendored_docs_registry_path(path) {
+            continue;
+        }
         let basename = Path::new(path)
             .file_name()
             .and_then(|v| v.to_str())
@@ -652,4 +663,3 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         }
     }))
 }
-
