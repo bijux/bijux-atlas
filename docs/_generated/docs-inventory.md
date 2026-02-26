@@ -612,7 +612,6 @@ License: Apache-2.0
 | `docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/slo/WHY_THESE_SLIS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/unified-report.md` | `concept` | `docs-governance` | `stable` |
-| `docs/ops/checks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/policies/checks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/compatibility-promise.md` | `concept` | `bijux-atlas-product` | `stable` |

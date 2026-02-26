@@ -5174,14 +5174,6 @@
     {
       "breadcrumbs": [
         "docs",
-        "docs/ops",
-        "docs/ops/checks.md"
-      ],
-      "path": "docs/ops/checks.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
         "docs/policies",
         "docs/policies/checks.md"
       ],

@@ -197,7 +197,6 @@
 | `chart` | `docs/operations/k8s/chart.md` |
 | `chart-values` | `docs/contracts/chart-values.md` |
 | `check-failures` | `docs/dev/check-failures.md` |
-| `checks` | `docs/docs/checks.md, docs/ops/checks.md, docs/policies/checks.md` |
 | `ci` | `docs/development/ci/ci.md` |
 | `ci-policy` | `docs/operations/load/ci-policy.md` |
 | `client-sdk-examples` | `docs/quickstart/client-sdk-examples.md` |

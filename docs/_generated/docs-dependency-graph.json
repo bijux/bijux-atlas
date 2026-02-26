@@ -3043,11 +3043,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/ops/checks.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/policies/checks.md"
     },
     {

@@ -12544,26 +12544,6 @@
       "doc_version": "v1",
       "keywords": [
         "checks",
-        "ops"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/ops/checks.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "checks",
-        "ops"
-      ],
-      "topic": "checks"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "checks",
         "policies"
       ],
       "last_reviewed": "2026-02-25",

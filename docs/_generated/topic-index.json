@@ -897,7 +897,6 @@
     ],
     "checks": [
       "docs/docs/checks.md",
-      "docs/ops/checks.md",
       "docs/policies/checks.md"
     ],
     "ci": [

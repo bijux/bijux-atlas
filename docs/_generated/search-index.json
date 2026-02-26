@@ -7677,18 +7677,6 @@
     {
       "keywords": [
         "checks",
-        "ops"
-      ],
-      "path": "docs/ops/checks.md",
-      "tags": [
-        "checks",
-        "ops"
-      ],
-      "topic": "checks"
-    },
-    {
-      "keywords": [
-        "checks",
         "policies"
       ],
       "path": "docs/policies/checks.md",
