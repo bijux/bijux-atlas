@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_by", "status", "budgets", "top_directories"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "generated_by": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_markdown_files_per_ops_domain_dir"],
+      "properties": {
+        "max_markdown_files_per_ops_domain_dir": {"type": "integer", "minimum": 1}
+      }
+    },
+    "top_directories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["directory", "markdown_file_count"],
+        "properties": {
+          "directory": {"type": "string", "pattern": "^ops/.+"},
+          "markdown_file_count": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "notes": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}

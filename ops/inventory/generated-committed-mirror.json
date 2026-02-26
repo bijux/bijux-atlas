@@ -12,6 +12,7 @@
     "ops/_generated.example/control-plane.snapshot.md",
     "ops/_generated.example/docs-drift-report.json",
     "ops/_generated.example/docs-links-report.json",
+    "ops/_generated.example/docs-shrink-report.json",
     "ops/_generated.example/domain-document-template-contract.hash.json",
     "ops/_generated.example/evidence-gap-report.json",
     "ops/_generated.example/file-usage-report.json",
@@ -194,6 +195,12 @@
       "committed": "ops/_generated.example/docs-links-report.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/docs-shrink-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops docs shrink-report",
       "regenerate": "make ops-generated-example-refresh"
     },
     {

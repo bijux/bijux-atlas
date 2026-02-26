@@ -39,3 +39,4 @@ Schemas that are intentionally not referenced directly by current runtime artifa
 - `ops/schema/meta/scorecard.schema.json`: reserved for curated scorecard artifact publication.
 - `ops/schema/report/what-breaks-if-removed-report.schema.json`: reserved for curated deletion impact evidence publication.
 - `ops/schema/inventory/inventory-completeness-score.schema.json`: reserved for curated inventory completeness evidence publication.
+- `ops/schema/report/docs-shrink-report.schema.json`: reserved for curated docs compression evidence publication.

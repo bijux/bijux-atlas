@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops docs shrink-report --write-example",
+  "status": "pass",
+  "budgets": {
+    "max_markdown_files_per_ops_domain_dir": 18
+  },
+  "top_directories": [
+    {"directory": "ops/datasets", "markdown_file_count": 12},
+    {"directory": "ops/e2e", "markdown_file_count": 11},
+    {"directory": "ops/schema", "markdown_file_count": 10}
+  ],
+  "notes": [
+    "Tracks docs compression budgets for canonical ops domain directories",
+    "Exceeding directories require consolidation or justified budget updates"
+  ]
+}

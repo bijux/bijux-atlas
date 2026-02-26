@@ -17,6 +17,7 @@
     "ops/_generated.example/control-plane.snapshot.md",
     "ops/_generated.example/docs-drift-report.json",
     "ops/_generated.example/docs-links-report.json",
+    "ops/_generated.example/docs-shrink-report.json",
     "ops/_generated.example/evidence-gap-report.json",
     "ops/_generated.example/file-usage-report.json",
     "ops/_generated.example/fixture-drift-report.json",

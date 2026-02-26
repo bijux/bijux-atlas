@@ -39,6 +39,7 @@
 | `ops/schema/inventory/gates.schema.json` |
 | `ops/schema/inventory/gc-pins.schema.json` |
 | `ops/schema/inventory/generated-committed-mirror.schema.json` |
+| `ops/schema/inventory/inventory-completeness-score.schema.json` |
 | `ops/schema/inventory/layers.schema.json` |
 | `ops/schema/inventory/namespaces.schema.json` |
 | `ops/schema/inventory/observability-coverage-map.schema.json` |
@@ -90,6 +91,7 @@
 | `ops/schema/observe/telemetry-index.schema.json` |
 | `ops/schema/report/contract-audit-report.schema.json` |
 | `ops/schema/report/contract-dependency-graph.schema.json` |
+| `ops/schema/report/docs-shrink-report.schema.json` |
 | `ops/schema/report/evidence-gap-report.schema.json` |
 | `ops/schema/report/evidence-levels.schema.json` |
 | `ops/schema/report/historical-comparison.schema.json` |
@@ -102,6 +104,7 @@
 | `ops/schema/report/stack-health-report.schema.json` |
 | `ops/schema/report/stack-ports-inventory.schema.json` |
 | `ops/schema/report/unified.schema.json` |
+| `ops/schema/report/what-breaks-if-removed-report.schema.json` |
 | `ops/schema/stack/artifact-metadata.schema.json` |
 | `ops/schema/stack/dependency-graph.schema.json` |
 | `ops/schema/stack/evolution-policy.schema.json` |
