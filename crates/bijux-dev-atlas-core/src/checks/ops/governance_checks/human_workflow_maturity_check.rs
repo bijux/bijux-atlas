@@ -6,6 +6,7 @@ pub(super) fn checks_ops_human_workflow_maturity(
     let mut violations = Vec::new();
     validate_required_human_workflow_docs(ctx, &mut violations)?;
     validate_drill_ownership_coverage(ctx, &mut violations)?;
+    validate_human_workflow_cross_links(ctx, &mut violations)?;
     Ok(violations)
 }
 
@@ -94,6 +95,92 @@ fn validate_required_human_workflow_docs(
                 "## Workflow",
                 "## Required Inputs",
                 "## Required Sign-Off Roles",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/OPS_FREEZE_WORKFLOW.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Workflow",
+                "## Freeze Exceptions",
+                "## Required Inputs",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/DEPRECATION_WORKFLOW.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Workflow",
+                "## Required Metadata",
+                "Cutoff Date",
+                "Replacement Path",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Workflow",
+                "## Override Requirements",
+                "Expiry Time",
+                "Rollback Plan",
+                "Audit Evidence",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/OWNERSHIP_ROTATION_POLICY.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Rotation Scope",
+                "## Rotation Cadence",
+                "## Handover Requirements",
+                "ops/inventory/owners.json",
+                "ops/observe/drills/OWNERSHIP.md",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/ESCALATION_MAPPING.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Escalation Classes",
+                "## Escalation Paths",
+                "## Evidence Requirements",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Inputs",
+                "ops/inventory/control-graph.json",
+                "ops/inventory/drill-contract-links.json",
+                "ops/inventory/authority-index.json",
+                "## Generation Rules",
+                "## Outputs",
                 "## Enforcement Links",
             ]
             .as_slice(),
@@ -276,5 +363,60 @@ fn validate_drill_ownership_coverage(
         ));
     }
 
+    Ok(())
+}
+
+fn validate_human_workflow_cross_links(
+    ctx: &CheckContext<'_>,
+    violations: &mut Vec<Violation>,
+) -> Result<(), CheckError> {
+    let runbook_rel = Path::new("ops/RUNBOOK_GENERATION_FROM_GRAPH.md");
+    let runbook_text = fs::read_to_string(ctx.repo_root.join(runbook_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", runbook_rel.display())))?;
+    if !runbook_text.contains("ops/inventory/control-graph.json")
+        || !runbook_text.contains("docs/operations/")
+    {
+        violations.push(violation(
+            "OPS_HUMAN_WORKFLOW_RUNBOOK_GRAPH_LINK_MISSING",
+            format!(
+                "runbook generation workflow `{}` must link control graph inputs to docs outputs",
+                runbook_rel.display()
+            ),
+            "declare control-graph inputs and docs/operations outputs in the runbook generation workflow",
+            Some(runbook_rel),
+        ));
+    }
+
+    let escalation_rel = Path::new("ops/ESCALATION_MAPPING.md");
+    let escalation_text = fs::read_to_string(ctx.repo_root.join(escalation_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", escalation_rel.display())))?;
+    for required in ["Primary Owner", "Secondary Owner", "On-Call Route"] {
+        if !escalation_text.contains(required) {
+            violations.push(violation(
+                "OPS_HUMAN_WORKFLOW_ESCALATION_MAPPING_INCOMPLETE",
+                format!(
+                    "escalation mapping `{}` is missing required route field `{required}`",
+                    escalation_rel.display()
+                ),
+                "complete escalation route fields for each escalation class",
+                Some(escalation_rel),
+            ));
+        }
+    }
+
+    let evidence_rel = Path::new("ops/EVIDENCE_SIGNOFF_WORKFLOW.md");
+    let evidence_text = fs::read_to_string(ctx.repo_root.join(evidence_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", evidence_rel.display())))?;
+    if !evidence_text.contains("ops/GOLDEN_REFRESH_POLICY.md") {
+        violations.push(violation(
+            "OPS_HUMAN_WORKFLOW_EVIDENCE_GOLDEN_POLICY_LINK_MISSING",
+            format!(
+                "evidence signoff workflow `{}` must reference ops/GOLDEN_REFRESH_POLICY.md",
+                evidence_rel.display()
+            ),
+            "link the golden refresh policy from the evidence signoff workflow",
+            Some(evidence_rel),
+        ));
+    }
     Ok(())
 }
