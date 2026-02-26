@@ -385,6 +385,7 @@ fn checks_ops_generated_lifecycle_metadata(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let policy_rel = Path::new("ops/inventory/generated-committed-mirror.json");
+    let generation_audit_rel = Path::new("ops/_generated.example/generation-audit-log.json");
     let policy_path = ctx.repo_root.join(policy_rel);
     let policy_text =
         fs::read_to_string(&policy_path).map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -595,6 +596,52 @@ fn checks_ops_generated_lifecycle_metadata(
             "sort generated_directories entries lexicographically by directory",
             Some(policy_rel),
         ));
+    }
+
+    let generation_audit_text = fs::read_to_string(ctx.repo_root.join(generation_audit_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", generation_audit_rel.display())))?;
+    let generation_audit_json: serde_json::Value = serde_json::from_str(&generation_audit_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", generation_audit_rel.display())))?;
+    if generation_audit_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+        violations.push(violation(
+            "OPS_GENERATION_AUDIT_LOG_BLOCKING",
+            format!("generation audit log `{}` status is not `pass`", generation_audit_rel.display()),
+            "resolve generation audit failures and regenerate generation-audit-log.json",
+            Some(generation_audit_rel),
+        ));
+    }
+    let entries = generation_audit_json
+        .get("entries")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    if entries.is_empty() {
+        violations.push(violation(
+            "OPS_GENERATION_AUDIT_LOG_EMPTY",
+            format!("generation audit log `{}` must include at least one entry", generation_audit_rel.display()),
+            "emit generator audit entries for curated or domain-generated artifacts",
+            Some(generation_audit_rel),
+        ));
+    }
+    for entry in entries {
+        for key in ["artifact", "producer", "regenerate", "lifecycle"] {
+            if entry
+                .get(key)
+                .and_then(|v| v.as_str())
+                .is_none_or(|s| s.trim().is_empty())
+            {
+                violations.push(violation(
+                    "OPS_GENERATION_AUDIT_LOG_ENTRY_INVALID",
+                    format!(
+                        "generation audit log `{}` contains entry missing non-empty `{key}`",
+                        generation_audit_rel.display()
+                    ),
+                    "ensure each generation audit entry declares artifact, producer, regenerate, and lifecycle",
+                    Some(generation_audit_rel),
+                ));
+                break;
+            }
+        }
     }
 
     Ok(violations)
