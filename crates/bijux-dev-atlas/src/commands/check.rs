@@ -80,7 +80,10 @@ mod tests {
         assert!(explained.is_ok(), "render_check_explain_text failed");
         let explained = explained.unwrap_or_default();
         assert!(explained.contains("id: "), "explain output missing id line");
-        assert!(explained.contains("effects_required:"), "explain output missing effects");
+        assert!(
+            explained.contains("effects_required:"),
+            "explain output missing effects"
+        );
     }
 
     #[test]

@@ -64,6 +64,7 @@ fn dev_policy_registry_validation_rejects_unknown_ratchet_id() {
         "relaxations": []
     });
     let err = dev::validate_policy_registry_ids(&config).expect_err("must reject unknown ratchet");
-    assert!(err.to_string().contains("ratchet references unknown policy id"));
+    assert!(err
+        .to_string()
+        .contains("ratchet references unknown policy id"));
 }
-

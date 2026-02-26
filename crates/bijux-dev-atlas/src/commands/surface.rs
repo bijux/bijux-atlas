@@ -56,7 +56,10 @@ mod tests {
                 category: "inventory".to_string(),
             },
         ]);
-        assert!(rendered_result.is_ok(), "surface snapshot json encode failed");
+        assert!(
+            rendered_result.is_ok(),
+            "surface snapshot json encode failed"
+        );
         let rendered = rendered_result.unwrap_or_default();
         let json_result: Result<serde_json::Value, _> = serde_json::from_str(&rendered);
         assert!(json_result.is_ok(), "json parse failed");

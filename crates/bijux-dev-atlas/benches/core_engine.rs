@@ -20,11 +20,7 @@ fn repo_root() -> PathBuf {
 
 struct BenchFs;
 impl Fs for BenchFs {
-    fn read_text(
-        &self,
-        repo_root: &Path,
-        path: &Path,
-    ) -> Result<String, AdapterError> {
+    fn read_text(&self, repo_root: &Path, path: &Path) -> Result<String, AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
@@ -44,23 +40,17 @@ impl Fs for BenchFs {
         };
         target.exists()
     }
-    fn canonicalize(
-        &self,
-        repo_root: &Path,
-        path: &Path,
-    ) -> Result<PathBuf, AdapterError> {
+    fn canonicalize(&self, repo_root: &Path, path: &Path) -> Result<PathBuf, AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
             repo_root.join(path)
         };
-        target
-            .canonicalize()
-            .map_err(|err| AdapterError::Io {
-                op: "canonicalize",
-                path: target,
-                detail: err.to_string(),
-            })
+        target.canonicalize().map_err(|err| AdapterError::Io {
+            op: "canonicalize",
+            path: target,
+            detail: err.to_string(),
+        })
     }
 }
 
