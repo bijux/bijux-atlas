@@ -1,19 +1,37 @@
-async fn finalize_genes_success_response<R>(
-    state: &AppState,
-    headers: &HeaderMap,
-    params: &HashMap<String, String>,
+struct GenesResponseFinalizeContext<'a, R> {
+    state: &'a AppState,
+    headers: &'a HeaderMap,
+    params: &'a HashMap<String, String>,
     payload: serde_json::Value,
     started: Instant,
-    etag: &str,
+    etag: &'a str,
     class: QueryClass,
-    redis_cache_key: &Option<String>,
-    exact_gene_id: &Option<String>,
+    redis_cache_key: &'a Option<String>,
+    exact_gene_id: &'a Option<String>,
     redis_fill_guard: Option<R>,
-    artifact_hash: &str,
-    cache_key_debug: &str,
+    artifact_hash: &'a str,
+    cache_key_debug: &'a str,
     coalesce_key: String,
-    request_id: &str,
-) -> Response {
+    request_id: &'a str,
+}
+
+async fn finalize_genes_success_response<R>(ctx: GenesResponseFinalizeContext<'_, R>) -> Response {
+    let GenesResponseFinalizeContext {
+        state,
+        headers,
+        params,
+        payload,
+        started,
+        etag,
+        class,
+        redis_cache_key,
+        exact_gene_id,
+        redis_fill_guard,
+        artifact_hash,
+        cache_key_debug,
+        coalesce_key,
+        request_id,
+    } = ctx;
     let serialize_started = Instant::now();
     let bytes = match info_span!("serialize_response").in_scope(|| {
         super::handlers::serialize_payload_with_capacity(

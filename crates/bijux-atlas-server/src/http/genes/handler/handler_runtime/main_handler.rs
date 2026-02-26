@@ -638,21 +638,21 @@ pub(crate) async fn genes_handler(
             return super::handlers::with_request_id(resp, &request_id);
         }
     };
-    finalize_genes_success_response(
-        &state,
-        &headers,
-        &params,
+    finalize_genes_success_response(GenesResponseFinalizeContext {
+        state: &state,
+        headers: &headers,
+        params: &params,
         payload,
         started,
-        &etag,
+        etag: &etag,
         class,
-        &redis_cache_key,
-        &exact_gene_id,
+        redis_cache_key: &redis_cache_key,
+        exact_gene_id: &exact_gene_id,
         redis_fill_guard,
-        &artifact_hash,
-        &cache_key_debug,
+        artifact_hash: &artifact_hash,
+        cache_key_debug: &cache_key_debug,
         coalesce_key,
-        &request_id,
-    )
+        request_id: &request_id,
+    })
     .await
 }
