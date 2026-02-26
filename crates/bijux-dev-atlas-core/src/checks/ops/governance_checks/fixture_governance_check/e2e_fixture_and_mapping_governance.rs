@@ -300,6 +300,10 @@ fn validate_e2e_fixture_and_mapping_governance(
 
     let drills_rel = Path::new("ops/inventory/drills.json");
     let mut drill_ids = BTreeSet::new();
+    let mut slo_ids_with_scenario_drill = BTreeSet::new();
+    let mut slo_ids_with_scenario_load_suite = BTreeSet::new();
+    let mut slo_ids_with_alert_coverage = BTreeSet::new();
+    let mut slo_ids_with_observability_drill = BTreeSet::new();
     if ctx.adapters.fs.exists(ctx.repo_root, drills_rel) {
         let drills_text = fs::read_to_string(ctx.repo_root.join(drills_rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -347,6 +351,24 @@ fn validate_e2e_fixture_and_mapping_governance(
                 .flatten()
                 .filter_map(|v| v.as_str())
             {
+                let has_any_drill = entry
+                    .get("drill_ids")
+                    .and_then(|v| v.as_array())
+                    .is_some_and(|arr| {
+                        arr.iter().any(|v| v.as_str().is_some_and(|s| !s.is_empty()))
+                    });
+                let has_any_load_suite = entry
+                    .get("load_suites")
+                    .and_then(|v| v.as_array())
+                    .is_some_and(|arr| {
+                        arr.iter().any(|v| v.as_str().is_some_and(|s| !s.is_empty()))
+                    });
+                if has_any_drill {
+                    slo_ids_with_scenario_drill.insert(slo_id.to_string());
+                }
+                if has_any_load_suite {
+                    slo_ids_with_scenario_load_suite.insert(slo_id.to_string());
+                }
                 if !slo_ids.contains(slo_id) {
                     violations.push(violation(
                         "OPS_SCENARIO_SLO_MAP_UNKNOWN_SLO_ID",
@@ -463,6 +485,9 @@ fn validate_e2e_fixture_and_mapping_governance(
                 .get("slo_id")
                 .and_then(|v| v.as_str())
                 .unwrap_or_default();
+            if !slo_id.is_empty() {
+                slo_ids_with_alert_coverage.insert(slo_id.to_string());
+            }
             if !slo_ids.contains(slo_id) {
                 violations.push(violation(
                     "OPS_OBSERVABILITY_COVERAGE_UNKNOWN_SLO_ID",
@@ -477,6 +502,9 @@ fn validate_e2e_fixture_and_mapping_governance(
                 .get("drill_id")
                 .and_then(|v| v.as_str())
                 .unwrap_or_default();
+            if !slo_id.is_empty() && !drill_id.is_empty() {
+                slo_ids_with_observability_drill.insert(slo_id.to_string());
+            }
             if !drill_ids.contains(drill_id) {
                 violations.push(violation(
                     "OPS_OBSERVABILITY_COVERAGE_UNKNOWN_DRILL_ID",
@@ -510,6 +538,41 @@ fn validate_e2e_fixture_and_mapping_governance(
             "restore ops/inventory/observability-coverage-map.json",
             Some(observe_coverage_rel),
         ));
+    }
+
+    for slo_id in &slo_ids {
+        if !slo_ids_with_alert_coverage.contains(slo_id) {
+            violations.push(violation(
+                "OPS_SLO_ALERT_COVERAGE_MISSING",
+                format!("slo `{slo_id}` has no observability alert coverage mapping"),
+                "add observability coverage entries so every SLO has at least one alert mapping",
+                Some(observe_coverage_rel),
+            ));
+        }
+        if !slo_ids_with_observability_drill.contains(slo_id) {
+            violations.push(violation(
+                "OPS_SLO_OBSERVABILITY_DRILL_LINKAGE_MISSING",
+                format!("slo `{slo_id}` has no observability coverage drill linkage"),
+                "map every SLO to at least one drill_id in ops/inventory/observability-coverage-map.json",
+                Some(observe_coverage_rel),
+            ));
+        }
+        if !slo_ids_with_scenario_drill.contains(slo_id) {
+            violations.push(violation(
+                "OPS_SLO_SCENARIO_DRILL_PROOF_MISSING",
+                format!("slo `{slo_id}` has no scenario-slo-map entry with a drill_id"),
+                "include each SLO in at least one drill-backed scenario mapping",
+                Some(scenario_slo_map_rel),
+            ));
+        }
+        if !slo_ids_with_scenario_load_suite.contains(slo_id) {
+            violations.push(violation(
+                "OPS_SLO_LOAD_SUITE_PROOF_MISSING",
+                format!("slo `{slo_id}` has no scenario-slo-map entry with a load suite"),
+                "include each SLO in at least one load-backed scenario mapping",
+                Some(scenario_slo_map_rel),
+            ));
+        }
     }
 
     let realdata_readme_rel = Path::new("ops/e2e/realdata/README.md");
