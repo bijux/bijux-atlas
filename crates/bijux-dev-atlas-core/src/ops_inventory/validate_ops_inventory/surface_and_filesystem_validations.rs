@@ -128,6 +128,7 @@ fn validate_surface_and_filesystem_policies(
         "ESCALATION_MAPPING.md",
         "SUPPLY_CHAIN_MODEL.md",
         "THREAT_MODEL.md",
+        "TIER1_ROOT_SURFACE.md",
         "WHAT_FAILS_WHEN.md",
         "SSOT.md",
     ]

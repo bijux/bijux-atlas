@@ -85,6 +85,22 @@ fn validate_ops_authority_tiers_and_doc_necessity(
 
     let valid_tiers = ["machine", "explanatory", "generated", "tier0-machine", "tier1-normative", "tier2"];
     let valid_audiences = ["contributors", "operators", "reviewers", "mixed"];
+    let allowed_tier1_root_docs = [
+        "ops/README.md",
+        "ops/CONTRACT.md",
+        "ops/SSOT.md",
+        "ops/ERRORS.md",
+        "ops/DRIFT.md",
+        "ops/NAMING.md",
+        "ops/ARTIFACTS.md",
+        "ops/GENERATED_LIFECYCLE.md",
+        "ops/AUTHORITY_TIERS.md",
+        "ops/CONTROL_PLANE.md",
+        "ops/DIRECTORY_BUDGET_POLICY.md",
+        "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+        "ops/TIER1_ROOT_SURFACE.md",
+    ];
+    let mut tier1_root_doc_count = 0usize;
     for file in walk_files(&ctx.repo_root.join("ops")) {
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
         if rel.components().count() != 2 {
@@ -148,6 +164,22 @@ fn validate_ops_authority_tiers_and_doc_necessity(
             ));
         }
 
+        if tier == "machine" || tier == "tier0-machine" || tier == "tier1-normative" {
+            tier1_root_doc_count += 1;
+            let rel_s = rel.display().to_string();
+            if !allowed_tier1_root_docs.contains(&rel_s.as_str()) {
+                violations.push(violation(
+                    "OPS_TIER1_ROOT_DOC_NOT_ALLOWLISTED",
+                    format!(
+                        "top-level ops doc `{}` is Tier-1 but not in the allowed Tier-1 root surface",
+                        rel.display()
+                    ),
+                    "reclassify to tier2/generated or add to ops/TIER1_ROOT_SURFACE.md with justification",
+                    Some(rel),
+                ));
+            }
+        }
+
         if tier == "explanatory" || tier == "tier2" {
             for forbidden_header in ["## Invariants", "## Contract", "## Rules"] {
                 if text.contains(forbidden_header) {
@@ -180,6 +212,18 @@ fn validate_ops_authority_tiers_and_doc_necessity(
                 }
             }
         }
+    }
+
+    if tier1_root_doc_count > 13 {
+        violations.push(violation(
+            "OPS_TIER1_ROOT_DOC_COUNT_BUDGET_EXCEEDED",
+            format!(
+                "Tier-1 root docs exceed budget: found {}, budget=13",
+                tier1_root_doc_count
+            ),
+            "shrink ops root Tier-1 surface or reclassify narrative docs to tier2",
+            Some(Path::new("ops/TIER1_ROOT_SURFACE.md")),
+        ));
     }
 
     let exceptions_rel = Path::new("ops/inventory/authority-tier-exceptions.json");
