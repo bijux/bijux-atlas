@@ -12,6 +12,11 @@ pub use checks::*;
 pub use ops::*;
 pub use surfaces::*;
 
+pub(crate) fn run() -> i32 {
+    let cli = Cli::parse();
+    crate::dispatch::run_cli(cli)
+}
+
 #[derive(Parser, Debug)]
 #[command(name = "bijux-dev-atlas", version, disable_help_subcommand = true)]
 #[command(about = "Bijux Atlas development control-plane")]

@@ -21,7 +21,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 
 use crate::cli::{
-    Cli, ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
+    ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
     GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
     OpsStatusTarget, WorkflowsCommand,
 };
@@ -34,7 +34,6 @@ use bijux_dev_atlas_core::{
 };
 use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
 pub(crate) use build_commands::run_build_command;
-use clap::Parser;
 #[cfg(test)]
 pub(crate) use configs_commands::parse_config_file;
 pub(crate) use configs_commands::{
@@ -700,6 +699,5 @@ pub(crate) fn run_check_registry_doctor(
 }
 
 fn main() {
-    let cli = Cli::parse();
-    std::process::exit(dispatch::run_cli(cli));
+    std::process::exit(cli::run());
 }
