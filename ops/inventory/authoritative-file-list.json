@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "authoritative_paths": [
+    "ops/ARTIFACTS.md",
     "ops/inventory/contracts-map.json",
     "ops/inventory/authority-index.json",
     "ops/inventory/authoritative-file-list.json",

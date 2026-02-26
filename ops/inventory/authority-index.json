@@ -7,6 +7,12 @@
   ],
   "authoritative_files": [
     {
+      "path": "ops/ARTIFACTS.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_retired_artifact_path_references_absent"
+    },
+    {
       "path": "ops/inventory/contracts-map.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
@@ -58,7 +64,6 @@
     }
   ],
   "ignored_paths": [
-    "ops/ARTIFACTS.md",
     "ops/CONTRACT.md",
     "ops/CONTROL_PLANE.md",
     "ops/DIRECTORY_BUDGET_POLICY.md",
