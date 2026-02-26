@@ -2,7 +2,7 @@
 
 use crate::cli::{DockerCommand, DockerCommonArgs, DockerPolicyCommand, PoliciesCommand};
 use crate::*;
-use crate::model::CONTRACT_SCHEMA_VERSION;
+use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::collections::VecDeque;
 

@@ -41,7 +41,7 @@ use bijux_dev_atlas_core::{
     render_jsonl, render_text_with_durations, run_checks, select_checks, RunOptions, RunRequest,
     Selectors,
 };
-use bijux_dev_atlas::model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
+use bijux_dev_atlas_model::{CheckId, CheckSpec, DomainId, RunId, SuiteId, Tag};
 pub(crate) use build_commands::run_build_command;
 #[cfg(test)]
 pub(crate) use configs_commands::parse_config_file;
