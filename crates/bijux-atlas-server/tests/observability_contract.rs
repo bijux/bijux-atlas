@@ -169,8 +169,8 @@ async fn metrics_endpoint_matches_metrics_contract() {
         .to_path_buf();
     let contract_path = root
         .join("ops")
-        .join("obs")
-        .join("contract")
+        .join("observe")
+        .join("contracts")
         .join("metrics-contract.json");
     let contract: MetricsContract =
         serde_json::from_slice(&std::fs::read(contract_path).expect("read contract"))
@@ -344,8 +344,8 @@ async fn generated_metrics_contract_covers_ops_metrics_contract_and_owners() {
     let ops_contract: MetricsContract = serde_json::from_slice(
         &std::fs::read(
             root.join("ops")
-                .join("obs")
-                .join("contract")
+                .join("observe")
+                .join("contracts")
                 .join("metrics-contract.json"),
         )
         .expect("read ops metrics contract"),
