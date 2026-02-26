@@ -3,6 +3,17 @@
 - Owner: bijux-dev-atlas
 - Stability: stable
 
+## End-State Contract
+
+- `bijux-dev-atlas` is the single control-plane crate; crate-internal modules are the only implementation surface for dev-atlas behavior.
+- Effects live only in `adapters`; `core` remains pure and effect-free.
+- `ports` is the only interface boundary between `core` and `adapters`.
+- `commands` orchestrates flows and dependency wiring; it does not own core business logic.
+- `cli` parses arguments and dispatches only.
+- `model` is a leaf module for stable types and serialization contracts.
+- `policies` is a leaf-oriented pure validation module.
+- Root module budget is capped at 10 modules (`src/lib.rs`), and command/core source files follow LOC budgets (warning at 800, error at 1000 unless a stricter file-local rule applies).
+
 ## Internal Module Graph
 
 Allowed dependency direction (strict):
