@@ -8,6 +8,6 @@ use crate::docs_commands::{
 use crate::*;
 use std::collections::{BTreeMap, BTreeSet};
 
-include!("docs_command_runtime/payload_builders.rs");
-include!("docs_command_runtime/subprocess_support.rs");
-include!("docs_command_runtime/command_dispatch.rs");
+include!("docs_runtime/payload_builders.rs");
+include!("docs_runtime/subprocess_support.rs");
+include!("docs_runtime/command_dispatch.rs");

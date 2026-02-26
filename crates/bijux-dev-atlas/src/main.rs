@@ -12,11 +12,13 @@ mod configs_commands;
 mod control_plane_commands;
 #[path = "commands/dispatch.rs"]
 mod dispatch;
+#[path = "commands/docs_runtime.rs"]
 mod docs_command_runtime;
 #[path = "commands/docs.rs"]
 mod docs_commands;
 #[cfg(test)]
 mod main_tests;
+#[path = "commands/ops_support.rs"]
 mod ops_command_support;
 #[path = "commands/ops.rs"]
 mod ops_commands;

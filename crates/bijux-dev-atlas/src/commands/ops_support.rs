@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[path = "ops_command_support_mod/manifests.rs"]
+#[path = "ops_support/manifests.rs"]
 mod manifests;
-#[path = "ops_command_support_mod/reports.rs"]
+#[path = "ops_support/reports.rs"]
 mod reports;
-#[path = "ops_command_support_mod/tools.rs"]
+#[path = "ops_support/tools.rs"]
 mod tools;
 
 pub(crate) use manifests::*;
