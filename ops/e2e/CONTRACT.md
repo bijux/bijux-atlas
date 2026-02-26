@@ -2,6 +2,8 @@
 
 - Area: `ops/e2e`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `behavioral`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -30,6 +32,11 @@
 | `ops/e2e/generated/e2e-summary.json` | `ops/schema/e2e/summary.schema.json` |
 | `ops/e2e/generated/coverage-matrix.json` | `ops/schema/e2e/coverage-matrix.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: suites, scenarios, expectations, and fixture allowlists define stable composition inputs.
+- Behavioral contract: reproducibility policy and generated summary/coverage outputs define runtime verification behavior.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; scenario composition is authored only in `ops/e2e/scenarios/scenarios.json`.
@@ -40,6 +47,12 @@
 - E2E docs must be linked from `ops/e2e/INDEX.md`; orphan docs are forbidden.
 - Referenced fixture assets must be versioned, allowlisted, and lock-verified.
 - Suite and scenario coverage generation must be deterministic for identical authored inputs.
+
+## Runtime Evidence Mapping
+
+- E2E summary evidence: `ops/e2e/generated/e2e-summary.json`
+- Coverage evidence: `ops/e2e/generated/coverage-matrix.json`
+- Curated drift evidence: `ops/_generated.example/docs-drift-report.json`
 
 ## Enforcement Links
 

@@ -1213,6 +1213,59 @@ pub(super) fn check_ops_domain_contract_structure(
         }
         let text = fs::read_to_string(ctx.repo_root.join(rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if !text.contains("- contract_version: `") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_VERSION_METADATA_MISSING",
+                format!(
+                    "domain contract `{}` must include `- contract_version: ` metadata",
+                    rel.display()
+                ),
+                "add explicit contract_version metadata in domain CONTRACT.md header",
+                Some(rel),
+            ));
+        }
+        let taxonomy = text
+            .lines()
+            .find_map(|line| {
+                let trimmed = line.trim();
+                trimmed
+                    .strip_prefix("- contract_taxonomy: `")
+                    .and_then(|value| value.strip_suffix('`'))
+            })
+            .unwrap_or_default()
+            .to_string();
+        if taxonomy.is_empty() {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_TAXONOMY_METADATA_MISSING",
+                format!(
+                    "domain contract `{}` must include `- contract_taxonomy: ` metadata",
+                    rel.display()
+                ),
+                "set contract_taxonomy to structural, behavioral, or hybrid",
+                Some(rel),
+            ));
+        } else if !matches!(taxonomy.as_str(), "structural" | "behavioral" | "hybrid") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_TAXONOMY_INVALID",
+                format!(
+                    "domain contract `{}` has invalid contract_taxonomy `{taxonomy}`",
+                    rel.display()
+                ),
+                "use one of: structural, behavioral, hybrid",
+                Some(rel),
+            ));
+        }
+        if !text.contains("## Contract Taxonomy") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_TAXONOMY_SECTION_MISSING",
+                format!(
+                    "domain contract `{}` must include `## Contract Taxonomy`",
+                    rel.display()
+                ),
+                "add structural/behavioral taxonomy section",
+                Some(rel),
+            ));
+        }
         if !text.contains("## Authored vs Generated") {
             violations.push(violation(
                 "OPS_DOMAIN_CONTRACT_AUTHORED_GENERATED_SECTION_MISSING",
@@ -1244,6 +1297,17 @@ pub(super) fn check_ops_domain_contract_structure(
                     rel.display()
                 ),
                 "add enforcement links section that references concrete check ids",
+                Some(rel),
+            ));
+        }
+        if !text.contains("## Runtime Evidence Mapping") {
+            violations.push(violation(
+                "OPS_DOMAIN_CONTRACT_RUNTIME_EVIDENCE_SECTION_MISSING",
+                format!(
+                    "domain contract `{}` must include `## Runtime Evidence Mapping`",
+                    rel.display()
+                ),
+                "map contract invariants to concrete runtime/generated evidence artifacts",
                 Some(rel),
             ));
         }

@@ -2,6 +2,8 @@
 
 - Area: `ops/k8s`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `hybrid`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -29,6 +31,11 @@
 | `ops/k8s/generated/inventory-index.json` | `ops/schema/k8s/inventory-index.schema.json` |
 | `ops/k8s/generated/release-snapshot.json` | `ops/schema/k8s/release-snapshot.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: chart metadata, values overlays, and install matrix define stable delivery inputs.
+- Behavioral contract: render determinism and release snapshot outputs define rollout/runtime behavior expectations.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; k8s authored inputs are constrained to chart, values, and install matrix paths.
@@ -39,6 +46,12 @@
 - K8s docs must be linked from `ops/k8s/INDEX.md`; orphan docs are forbidden.
 - Render determinism is mandatory: same chart plus same values must produce identical manifests.
 - Release snapshot and inventory index generation must be deterministic for identical authored inputs.
+
+## Runtime Evidence Mapping
+
+- Render index evidence: `ops/k8s/generated/render-artifact-index.json`
+- Release snapshot evidence: `ops/k8s/generated/release-snapshot.json`
+- Conformance evidence: `ops/k8s/generated/conformance-report.json`
 
 ## Enforcement Links
 

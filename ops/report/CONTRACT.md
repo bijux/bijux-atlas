@@ -2,6 +2,8 @@
 
 - Area: `ops/report`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `hybrid`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -27,6 +29,11 @@
 | `ops/report/generated/release-evidence-bundle.json` | `ops/schema/report/release-evidence-bundle.schema.json` |
 | `ops/report/generated/readiness-score.json` | `ops/schema/report/readiness-score.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: report schema and evidence-level policy define stable report artifact structure.
+- Behavioral contract: diff/comparison/readiness/evidence outputs define release behavior and governance decisions.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; report model and evidence policy are authored only in `ops/report/schema.json` and `ops/report/evidence-levels.json`.
@@ -37,6 +44,13 @@
 - Report docs must be linked from `docs/operations/ops-system/INDEX.md`; orphan docs are forbidden.
 - Evidence bundle must include deterministic hashes of inventory and schema index inputs.
 - Generated reporting outputs must be deterministic for identical authored and generated inputs.
+
+## Runtime Evidence Mapping
+
+- Report diff evidence: `ops/report/generated/report-diff.json`
+- Historical evidence: `ops/report/generated/historical-comparison.json`
+- Release evidence bundle: `ops/report/generated/release-evidence-bundle.json`
+- Contract audit evidence: `ops/_generated.example/contract-audit-report.json`
 
 ## Enforcement Links
 

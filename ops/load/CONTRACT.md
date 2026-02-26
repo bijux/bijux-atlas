@@ -2,6 +2,8 @@
 
 - Area: `ops/load`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `behavioral`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -27,6 +29,11 @@
 | `ops/load/generated/load-summary.json` | `ops/schema/load/load-summary.schema.json` |
 | `ops/load/generated/load-drift-report.json` | `ops/schema/load/load-drift-report.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: suites, thresholds, scenarios, and schemas define stable load input surfaces.
+- Behavioral contract: deterministic seed, scenario constraints, and generated drift outputs define runtime behavior expectations.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; suite SSOT is `ops/load/suites/suites.json` and threshold SSOT is `ops/load/thresholds/*.thresholds.json`.
@@ -37,6 +44,12 @@
 - Load docs must be linked from `ops/load/INDEX.md`; orphan docs are forbidden.
 - Authored JSON in `ops/load/k6/manifests/` is forbidden.
 - Generated load summary and drift reports must be deterministic for identical authored inputs.
+
+## Runtime Evidence Mapping
+
+- Drift evidence: `ops/load/generated/load-drift-report.json`
+- Summary evidence: `ops/load/generated/load-summary.json`
+- Curated evidence mirror: `ops/_generated.example/registry-drift-report.json`
 
 ## Enforcement Links
 

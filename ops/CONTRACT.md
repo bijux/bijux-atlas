@@ -120,6 +120,18 @@ Runtime outputs (ephemeral):
 - Breaking updates require a schema version bump and migration notes in this contract.
 - Contract conformance is gated by `bijux dev atlas` checks and CI suites.
 
+## Contract Promotion Lifecycle
+
+- Draft changes: update authored contracts and schemas in the same change set.
+- Promotion gate: contract changes must pass `ops validate` and contract coverage checks.
+- Release promotion: promoted contracts require regenerated evidence artifacts in `_generated.example`.
+
+## Contract Deprecation
+
+- Deprecated contract fields or files must be documented in `ops/DRIFT.md` with a removal date.
+- Deprecated authored paths must retain compatibility checks until removal.
+- Removal is allowed only after replacement contract paths are authoritative and enforced.
+
 ## Naming Policy
 
 - Names use durable intent-focused nouns.

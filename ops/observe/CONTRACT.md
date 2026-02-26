@@ -2,6 +2,8 @@
 
 - Area: `ops/observe`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `behavioral`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -26,6 +28,11 @@
 | `ops/observe/suites/suites.json` | `ops/schema/observe/suites.schema.json` |
 | `ops/observe/generated/telemetry-index.json` | `ops/schema/observe/telemetry-index.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: authored observability catalogs and suite definitions define stable telemetry surfaces.
+- Behavioral contract: drill/readiness/SLO artifacts define expected operational behavior under incidents and release checks.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; authored observability policy lives only in `ops/observe/*.json` and `ops/observe/suites/*.json`.
@@ -36,6 +43,12 @@
 - Observe docs must be linked from `ops/observe/INDEX.md`; orphan docs are forbidden.
 - Public telemetry surface is defined by contracts in `ops/observe/contracts/` and must not drift silently.
 - Generated telemetry index output must be deterministic for identical authored inputs.
+
+## Runtime Evidence Mapping
+
+- Telemetry index evidence: `ops/observe/generated/telemetry-index.json`
+- Curated docs-link evidence: `ops/_generated.example/docs-links-report.json`
+- Curated schema coverage evidence: `ops/_generated.example/schema-coverage-report.json`
 
 ## Enforcement Links
 

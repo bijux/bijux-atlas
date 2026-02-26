@@ -2,6 +2,8 @@
 
 - Area: `ops/stack`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `hybrid`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -28,6 +30,11 @@
 | `ops/stack/generated/versions.json` | `ops/schema/stack/versions.schema.json` |
 | `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: stack composition and profile metadata define stable deployment surfaces.
+- Behavioral contract: generated version/dependency outputs and pin-freeze enforcement define runtime rollout behavior.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; pin SSOT is `ops/inventory/pins.yaml`.
@@ -38,6 +45,12 @@
 - Stack docs must be linked from `ops/stack/INDEX.md`; orphan docs are forbidden.
 - Pin registries and generated stack manifests must be deterministic for identical authored inputs.
 - Pin lifecycle compliance with `ops/inventory/pin-freeze.json` is mandatory for release readiness.
+
+## Runtime Evidence Mapping
+
+- Stack version evidence: `ops/stack/generated/version-manifest.json`
+- Dependency evidence: `ops/stack/generated/dependency-graph.json`
+- Stack health evidence: `ops/report/generated/stack-health-report.json`
 
 ## Enforcement Links
 

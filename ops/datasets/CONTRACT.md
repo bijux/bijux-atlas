@@ -2,6 +2,8 @@
 
 - Area: `ops/datasets`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `hybrid`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -31,6 +33,11 @@
 | `ops/datasets/generated/dataset-lineage.json` | `ops/schema/datasets/dataset-lineage.schema.json` |
 | `ops/datasets/generated/fixture-inventory.json` | `ops/schema/datasets/fixture-inventory.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: dataset manifest, lock, and policy artifacts define stable catalog and schema surfaces.
+- Behavioral contract: promotion, rollback, and fixture lineage outputs define operational dataset behavior expectations.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; dataset identity and lifecycle policy are authored only under `ops/datasets/*.json`.
@@ -41,6 +48,12 @@
 - Dataset docs must be linked from `ops/datasets/INDEX.md`; orphan docs are forbidden.
 - Fixture assets must be versioned under `ops/datasets/fixtures/**` and verified by `manifest.lock` hashes.
 - Dataset promotion and rollback policy must be deterministic for a given manifest and lock set.
+
+## Runtime Evidence Mapping
+
+- Fixture inventory evidence: `ops/datasets/generated/fixture-inventory.json`
+- Lineage evidence: `ops/datasets/generated/dataset-lineage.json`
+- Drift evidence: `ops/_generated.example/fixture-drift-report.json`
 
 ## Enforcement Links
 

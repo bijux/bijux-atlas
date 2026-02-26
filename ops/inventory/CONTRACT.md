@@ -2,6 +2,8 @@
 
 - Area: `ops/inventory`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `structural`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -34,6 +36,11 @@
 | `ops/inventory/layers.json` | `ops/schema/inventory/layers.schema.json` |
 | `ops/inventory/namespaces.json` | `ops/schema/inventory/namespaces.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: inventory artifacts define authoritative registry structure and metadata ownership.
+- Behavioral contract: inventory gate/action mappings constrain execution surfaces through check ids and command ids.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; authoritative inventory registry is `ops/inventory/contracts-map.json`.
@@ -64,6 +71,12 @@
 - Inter-domain dependencies are declared only by `ops/inventory/layers.json` `layer_dependencies`.
 - Cross-domain references outside declared dependency edges are invalid.
 - New dependency edges must be reviewed with both producer and consumer owners.
+
+## Runtime Evidence Mapping
+
+- Registry drift evidence: `ops/_generated.example/registry-drift-report.json`
+- Registry relationship evidence: `ops/_generated.example/registry-graph.json`
+- Inventory checksum evidence: `ops/_generated.example/inventory-index.json`
 
 ## Enforcement Links
 

@@ -2,6 +2,8 @@
 
 - Area: `ops/schema`
 - schema_version: `1`
+- contract_version: `1.0.0`
+- contract_taxonomy: `structural`
 - Canonical parent contract: `ops/CONTRACT.md`
 
 ## Authored vs Generated
@@ -23,6 +25,11 @@
 | `ops/schema/generated/schema-index.json` | `ops/schema/meta/schema-index.schema.json` |
 | `ops/schema/generated/compatibility-lock.json` | `ops/schema/meta/compatibility-lock.schema.json` |
 
+## Contract Taxonomy
+
+- Structural contract: schema files are the typed contract surface for all ops authored and generated artifacts.
+- Behavioral contract: compatibility-lock and schema-index outputs govern change management and drift detection.
+
 ## Invariants
 
 - No duplicate authored truth is allowed; schema definitions are authored once under `ops/schema/**`.
@@ -33,6 +40,12 @@
 - Schema docs and policy files must be linked from `ops/schema/INDEX.md` or top-level `ops/INDEX.md`.
 - Compatibility lock and schema index generation must be deterministic for identical schema inputs.
 - Orphan schema files are forbidden unless explicitly allowlisted as library schemas.
+
+## Runtime Evidence Mapping
+
+- Schema index evidence: `ops/schema/generated/schema-index.json`
+- Compatibility evidence: `ops/schema/generated/compatibility-lock.json`
+- Curated schema drift evidence: `ops/_generated.example/schema-drift-report.json`
 
 ## Enforcement Links
 
