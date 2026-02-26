@@ -147,6 +147,12 @@
       "schema": "ops/schema/k8s/rollout-safety-contract.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/stack/evolution-policy.json",
+      "schema": "ops/schema/stack/evolution-policy.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
     }
   ]
 }

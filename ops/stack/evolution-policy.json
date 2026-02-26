@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "policy_version": "1.0.0",
+  "freeze_rules": {
+    "pin_freeze_required": true,
+    "version_manifest_consistency_required": true,
+    "dependency_graph_consistency_required": true
+  },
+  "change_controls": [
+    "update_ops_inventory_pins",
+    "regenerate_stack_generated_manifests",
+    "regenerate_stack_drift_report",
+    "document_profile_impact"
+  ],
+  "compatibility": {
+    "cluster_profiles": ["ci", "kind", "local"],
+    "minimum_supported_profiles": 3
+  }
+}

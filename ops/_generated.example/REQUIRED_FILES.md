@@ -27,6 +27,7 @@ required_files:
   - ops/_generated.example/registry-graph.json
   - ops/_generated.example/schema-coverage-report.json
   - ops/_generated.example/fixture-drift-report.json
+  - ops/_generated.example/stack-drift-report.json
   - ops/_generated.example/contract-coverage-report.json
   - ops/_generated.example/contract-audit-report.json
   - ops/_generated.example/contract-dependency-graph.json

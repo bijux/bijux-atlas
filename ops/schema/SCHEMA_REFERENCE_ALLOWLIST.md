@@ -26,6 +26,7 @@ Schemas that are intentionally not referenced directly by current runtime artifa
 - `ops/schema/meta/ops-ledger.schema.json`: supports generated ledger evidence contracts under `ops/_generated.example/ops-ledger.json`.
 - `ops/schema/report/lane.schema.json`: reserved for lane-scoped report fragments.
 - `ops/schema/report/stack-contract.schema.json`: reserved for stack contract report fragments.
+- `ops/schema/report/stack-drift-report.schema.json`: reserved for curated stack drift evidence publication.
 - `ops/schema/report/stack-health-report.schema.json`: reserved for stack health snapshots.
 - `ops/schema/report/stack-ports-inventory.schema.json`: reserved for stack port inventory snapshots.
 - `ops/schema/report/unified.schema.json`: reserved for unified report payload publication.

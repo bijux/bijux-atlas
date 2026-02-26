@@ -95,11 +95,13 @@
 | `ops/schema/report/release-evidence-bundle.schema.json` |
 | `ops/schema/report/report-diff.schema.json` |
 | `ops/schema/report/stack-contract.schema.json` |
+| `ops/schema/report/stack-drift-report.schema.json` |
 | `ops/schema/report/stack-health-report.schema.json` |
 | `ops/schema/report/stack-ports-inventory.schema.json` |
 | `ops/schema/report/unified.schema.json` |
 | `ops/schema/stack/artifact-metadata.schema.json` |
 | `ops/schema/stack/dependency-graph.schema.json` |
+| `ops/schema/stack/evolution-policy.schema.json` |
 | `ops/schema/stack/profile-manifest.schema.json` |
 | `ops/schema/stack/service-dependency-contract.schema.json` |
 | `ops/schema/stack/version-manifest.schema.json` |

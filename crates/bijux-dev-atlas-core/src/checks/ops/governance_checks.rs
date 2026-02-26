@@ -1461,11 +1461,13 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let stack_toml_rel = Path::new("ops/stack/stack.toml");
     let stack_dependency_graph_rel = Path::new("ops/stack/generated/dependency-graph.json");
     let stack_service_contract_rel = Path::new("ops/stack/service-dependency-contract.json");
+    let stack_evolution_policy_rel = Path::new("ops/stack/evolution-policy.json");
     let k8s_install_matrix_rel = Path::new("ops/k8s/install-matrix.json");
     let k8s_rollout_contract_rel = Path::new("ops/k8s/rollout-safety-contract.json");
     let registry_rel = Path::new("ops/inventory/registry.toml");
     let tools_rel = Path::new("ops/inventory/tools.toml");
     let inventory_index_rel = Path::new("ops/_generated.example/inventory-index.json");
+    let stack_drift_rel = Path::new("ops/_generated.example/stack-drift-report.json");
 
     let contracts_map_text = fs::read_to_string(ctx.repo_root.join(contracts_map_rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -2317,6 +2319,39 @@ pub(super) fn check_ops_inventory_contract_integrity(
         }
     }
 
+    if ctx.adapters.fs.exists(ctx.repo_root, stack_evolution_policy_rel) {
+        let evolution_text = fs::read_to_string(ctx.repo_root.join(stack_evolution_policy_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let evolution_json: serde_json::Value = serde_json::from_str(&evolution_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for key in [
+            "schema_version",
+            "policy_version",
+            "freeze_rules",
+            "change_controls",
+            "compatibility",
+        ] {
+            if evolution_json.get(key).is_none() {
+                violations.push(violation(
+                    "OPS_STACK_EVOLUTION_POLICY_FIELD_MISSING",
+                    format!("stack evolution policy missing required key `{key}`"),
+                    "add missing required keys to ops/stack/evolution-policy.json",
+                    Some(stack_evolution_policy_rel),
+                ));
+            }
+        }
+    } else {
+        violations.push(violation(
+            "OPS_STACK_EVOLUTION_POLICY_MISSING",
+            format!(
+                "missing stack evolution policy `{}`",
+                stack_evolution_policy_rel.display()
+            ),
+            "restore ops/stack/evolution-policy.json",
+            Some(stack_evolution_policy_rel),
+        ));
+    }
+
     if ctx.adapters.fs.exists(ctx.repo_root, k8s_install_matrix_rel)
         && ctx.adapters.fs.exists(ctx.repo_root, k8s_rollout_contract_rel)
     {
@@ -2524,6 +2559,28 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 "control-graph-diff-report.json status is not `pass`".to_string(),
                 "resolve control graph drift and regenerate control-graph-diff-report.json",
                 Some(control_graph_diff_rel),
+            ));
+        }
+    }
+
+    if !ctx.adapters.fs.exists(ctx.repo_root, stack_drift_rel) {
+        violations.push(violation(
+            "OPS_STACK_DRIFT_REPORT_MISSING",
+            format!("missing stack drift report `{}`", stack_drift_rel.display()),
+            "generate and commit ops/_generated.example/stack-drift-report.json",
+            Some(stack_drift_rel),
+        ));
+    } else {
+        let stack_drift_text = fs::read_to_string(ctx.repo_root.join(stack_drift_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let stack_drift_json: serde_json::Value = serde_json::from_str(&stack_drift_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if stack_drift_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_STACK_DRIFT_REPORT_BLOCKING",
+                "stack-drift-report.json status is not `pass`".to_string(),
+                "resolve stack drift and regenerate stack-drift-report.json",
+                Some(stack_drift_rel),
             ));
         }
     }
@@ -3801,6 +3858,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "control-graph-diff-report.json",
         "docs-drift-report.json",
         "schema-drift-report.json",
+        "stack-drift-report.json",
         "ops/GENERATED_LIFECYCLE.md",
     ] {
         if !mirror_policy_text.contains(required) {

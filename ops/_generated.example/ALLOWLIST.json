@@ -34,6 +34,7 @@
     "ops/_generated.example/report.unified.example.json",
     "ops/_generated.example/schema-coverage-report.json",
     "ops/_generated.example/schema-drift-report.json",
-    "ops/_generated.example/scorecard.json"
+    "ops/_generated.example/scorecard.json",
+    "ops/_generated.example/stack-drift-report.json"
   ]
 }

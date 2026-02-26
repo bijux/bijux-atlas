@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops stack drift-report --write-example",
+  "status": "pass",
+  "summary": {
+    "profile_count": 3,
+    "manifest_pin_mismatches": 0,
+    "dependency_profile_mismatches": 0
+  },
+  "drift": []
+}

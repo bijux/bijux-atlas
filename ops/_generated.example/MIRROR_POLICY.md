@@ -30,6 +30,7 @@ Rules:
 - `ops/_generated.example/contract-dependency-graph.json` is the generated cross-contract dependency graph.
 - `ops/_generated.example/schema-drift-report.json` is the generated schema governance drift summary.
 - `ops/_generated.example/fixture-drift-report.json` is the generated fixture governance drift summary.
+- `ops/_generated.example/stack-drift-report.json` is the generated stack governance drift summary.
 - Binary artifacts are forbidden in this directory.
 - Every committed JSON artifact in this directory must include `schema_version`.
 - Every committed JSON artifact in this directory must include `generated_by`.
@@ -57,6 +58,7 @@ Rules:
 - `ops/_generated.example/placeholder-dirs-report.json`: `bijux dev atlas ops inventory placeholder-dirs-report --write-example`
 - `ops/_generated.example/registry-drift-report.json`: `bijux dev atlas ops inventory registry-drift-report --write-example`
 - `ops/_generated.example/fixture-drift-report.json`: `bijux dev atlas ops fixtures drift --write-example`
+- `ops/_generated.example/stack-drift-report.json`: `bijux dev atlas ops stack drift-report --write-example`
 - `ops/_generated.example/contract-audit-report.json`: `bijux dev atlas ops contracts audit --write-example`
 - `ops/_generated.example/contract-dependency-graph.json`: `bijux dev atlas ops contracts dependency-graph --write-example`
 
@@ -88,3 +90,4 @@ Rules:
 - `ops/_generated.example/contract-dependency-graph.json`: generated cross-contract dependency and evidence linkage graph.
 - `ops/_generated.example/schema-drift-report.json`: generated schema drift report for index, compatibility lock, and allowlist governance.
 - `ops/_generated.example/fixture-drift-report.json`: generated fixture drift report for fixture inventory, allowlist, and binary policy governance.
+- `ops/_generated.example/stack-drift-report.json`: generated stack drift report for pin, profile, and dependency-graph governance.

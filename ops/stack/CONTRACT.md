@@ -14,6 +14,7 @@
 | `ops/stack/profiles.json` | Authored stack profile catalog |
 | `ops/stack/stack.toml` | Authored stack composition contract |
 | `ops/stack/service-dependency-contract.json` | Authored service dependency and health contract |
+| `ops/stack/evolution-policy.json` | Authored stack evolution and freeze policy |
 | `ops/stack/generated/version-manifest.json` | Generated image/version manifest |
 | `ops/stack/generated/stack-index.json` | Generated stack index |
 | `ops/stack/generated/dependency-graph.json` | Generated dependency graph |
@@ -26,6 +27,7 @@
 | --- | --- |
 | `ops/stack/profiles.json` | `ops/schema/stack/profile-manifest.schema.json` |
 | `ops/stack/service-dependency-contract.json` | `ops/schema/stack/service-dependency-contract.schema.json` |
+| `ops/stack/evolution-policy.json` | `ops/schema/stack/evolution-policy.schema.json` |
 | `ops/stack/generated/version-manifest.json` | `ops/schema/stack/version-manifest.schema.json` |
 | `ops/stack/generated/dependency-graph.json` | `ops/schema/stack/dependency-graph.schema.json` |
 | `ops/stack/generated/artifact-metadata.json` | `ops/schema/stack/artifact-metadata.schema.json` |
@@ -54,6 +56,7 @@
 - Stack version evidence: `ops/stack/generated/version-manifest.json`
 - Dependency evidence: `ops/stack/generated/dependency-graph.json`
 - Stack health evidence: `ops/report/generated/stack-health-report.json`
+- Stack drift evidence: `ops/_generated.example/stack-drift-report.json`
 
 ## Enforcement Links
 
