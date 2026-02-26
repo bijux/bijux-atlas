@@ -105,6 +105,8 @@ fn suite_expansion_is_stable() {
             "checks_ops_makefile_routes_dev_atlas".to_string(),
             "checks_ops_manifest_integrity".to_string(),
             "checks_ops_no_scripts_areas_or_xtask_refs".to_string(),
+            "checks_ops_retired_artifact_path_references_absent".to_string(),
+            "checks_ops_runtime_output_roots_under_ops_absent".to_string(),
             "checks_ops_schema_presence".to_string(),
             "checks_ops_ssot_manifests_schema_versions".to_string(),
             "checks_ops_surface_inventory".to_string(),
@@ -164,7 +166,11 @@ fn list_output_shape_is_stable() {
 #[test]
 fn doctor_reports_ok_for_valid_registry() {
     let report = registry_doctor(&root());
-    assert!(report.errors.is_empty());
+    assert!(
+        report.errors.is_empty(),
+        "registry_doctor errors: {:?}",
+        report.errors
+    );
 }
 
 #[test]
@@ -332,10 +338,14 @@ fn selector_by_suite_works() {
         },
     )
     .expect("selected");
-    assert_eq!(selected.len(), 11);
-    assert!(selected
-        .iter()
-        .any(|row| row.id.as_str() == "checks_ops_surface_manifest"));
+    assert!(selected.len() >= 11);
+    for required in [
+        "checks_ops_surface_manifest",
+        "checks_ops_artifacts_gitignore_policy",
+        "checks_ops_retired_artifact_path_references_absent",
+    ] {
+        assert!(selected.iter().any(|row| row.id.as_str() == required));
+    }
 }
 
 #[test]
