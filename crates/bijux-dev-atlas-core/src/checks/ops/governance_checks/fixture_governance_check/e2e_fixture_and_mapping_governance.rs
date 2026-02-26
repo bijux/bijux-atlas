@@ -527,6 +527,133 @@ fn validate_e2e_fixture_and_mapping_governance(
         }
     }
 
+    let incident_template_rel = Path::new("ops/observe/drills/templates/incident-template.md");
+    if ctx.adapters.fs.exists(ctx.repo_root, incident_template_rel) {
+        let text = fs::read_to_string(ctx.repo_root.join(incident_template_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for required in ["- Dashboard Links:", "- Runbook Links:", "- Drill Result Path:"] {
+            if !text.contains(required) {
+                violations.push(violation(
+                    "OPS_INCIDENT_TEMPLATE_LINKAGE_FIELD_MISSING",
+                    format!(
+                        "incident drill template must include linkage field `{required}`"
+                    ),
+                    "add dashboard, runbook, and drill result path linkage fields to incident template",
+                    Some(incident_template_rel),
+                ));
+            }
+        }
+    }
+
+    let golden_refresh_policy_rel = Path::new("ops/GOLDEN_REFRESH_POLICY.md");
+    if !ctx.adapters.fs.exists(ctx.repo_root, golden_refresh_policy_rel) {
+        violations.push(violation(
+            "OPS_GOLDEN_REFRESH_POLICY_MISSING",
+            "missing golden refresh policy `ops/GOLDEN_REFRESH_POLICY.md`".to_string(),
+            "add a golden refresh policy with approvers, regeneration commands, and review expectations",
+            Some(golden_refresh_policy_rel),
+        ));
+    } else {
+        let text = fs::read_to_string(ctx.repo_root.join(golden_refresh_policy_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for required in ["## Scope", "## Regeneration", "## Review", "## Approval"] {
+            if !text.contains(required) {
+                violations.push(violation(
+                    "OPS_GOLDEN_REFRESH_POLICY_INCOMPLETE",
+                    format!("golden refresh policy is missing `{required}`"),
+                    "document scope, regeneration, review, and approval sections",
+                    Some(golden_refresh_policy_rel),
+                ));
+            }
+        }
+    }
+
+    let e2e_invariants_rel = Path::new("ops/e2e/END_TO_END_INVARIANTS.md");
+    if !ctx.adapters.fs.exists(ctx.repo_root, e2e_invariants_rel) {
+        violations.push(violation(
+            "OPS_E2E_INVARIANTS_CONTRACT_MISSING",
+            "missing end-to-end invariants contract `ops/e2e/END_TO_END_INVARIANTS.md`".to_string(),
+            "add a deterministic end-to-end invariants contract with at least five must-pass invariants",
+            Some(e2e_invariants_rel),
+        ));
+    } else {
+        let text = fs::read_to_string(ctx.repo_root.join(e2e_invariants_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let invariant_count = text
+            .lines()
+            .filter(|line| line.trim_start().starts_with("- "))
+            .count();
+        if invariant_count < 5 {
+            violations.push(violation(
+                "OPS_E2E_INVARIANTS_CONTRACT_TOO_SMALL",
+                format!(
+                    "end-to-end invariants contract must define at least 5 invariants; found {invariant_count}"
+                ),
+                "add at least five concrete end-to-end invariants with deterministic pass criteria",
+                Some(e2e_invariants_rel),
+            ));
+        }
+    }
+
+    let readiness_score_rel = Path::new("ops/report/generated/readiness-score.json");
+    let readiness_score_schema_rel = Path::new("ops/schema/report/readiness-score.schema.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, readiness_score_rel)
+        && ctx.adapters.fs.exists(ctx.repo_root, readiness_score_schema_rel)
+    {
+        let score_text = fs::read_to_string(ctx.repo_root.join(readiness_score_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let score_json: serde_json::Value =
+            serde_json::from_str(&score_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        if score_json.get("generated_by").and_then(|v| v.as_str()).unwrap_or("").trim().is_empty()
+        {
+            violations.push(violation(
+                "OPS_READINESS_SCORE_GENERATOR_METADATA_MISSING",
+                "readiness-score.json must include non-empty generated_by".to_string(),
+                "add generated_by metadata to ops/report/generated/readiness-score.json",
+                Some(readiness_score_rel),
+            ));
+        }
+        let inputs = score_json
+            .get("inputs")
+            .and_then(|v| v.as_object())
+            .cloned()
+            .unwrap_or_default();
+        let input_keys = inputs.keys().cloned().collect::<Vec<_>>();
+        let sorted_keys = {
+            let mut keys = input_keys.clone();
+            keys.sort();
+            keys
+        };
+        if input_keys != sorted_keys {
+            violations.push(violation(
+                "OPS_READINESS_SCORE_INPUT_ORDER_NONDETERMINISTIC",
+                "readiness-score.json inputs keys must be lexicographically ordered".to_string(),
+                "regenerate readiness-score.json with deterministic key ordering",
+                Some(readiness_score_rel),
+            ));
+        }
+
+        let schema_text = fs::read_to_string(ctx.repo_root.join(readiness_score_schema_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let schema_json: serde_json::Value = serde_json::from_str(&schema_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let required_fields = schema_json
+            .get("required")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(ToString::to_string))
+            .collect::<BTreeSet<_>>();
+        if !required_fields.contains("generated_by") {
+            violations.push(violation(
+                "OPS_READINESS_SCORE_SCHEMA_GENERATOR_METADATA_MISSING",
+                "readiness-score.schema.json must require generated_by".to_string(),
+                "add generated_by to the readiness score schema required fields",
+                Some(readiness_score_schema_rel),
+            ));
+        }
+    }
+
     Ok(())
 }
-
