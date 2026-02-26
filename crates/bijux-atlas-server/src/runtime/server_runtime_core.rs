@@ -363,8 +363,9 @@ async fn cors_middleware(
 }
 
 pub use config::{
-    load_runtime_startup_config, validate_startup_config_contract, ApiConfig, RateLimitConfig,
-    RuntimeStartupConfig,
+    load_runtime_startup_config, runtime_startup_config_docs_markdown,
+    runtime_startup_config_schema_json, validate_startup_config_contract, ApiConfig,
+    RateLimitConfig, RuntimeStartupConfig,
 };
 pub use routing_hash::consistent_route_dataset;
 pub use store::backends::{LocalFsBackend, RetryPolicy, S3LikeBackend};

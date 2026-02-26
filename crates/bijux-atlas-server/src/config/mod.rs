@@ -196,6 +196,97 @@ pub struct RuntimeStartupConfig {
     pub cache_root: PathBuf,
 }
 
+const DEFAULT_BIND_ADDR: &str = "0.0.0.0:8080";
+const DEFAULT_STORE_ROOT: &str = "artifacts/server-store";
+const DEFAULT_CACHE_ROOT: &str = "artifacts/server-cache";
+
+pub fn runtime_startup_config_schema_json() -> serde_json::Value {
+    serde_json::json!({
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://bijux.dev/schemas/runtime-startup-config.schema.json",
+        "title": "RuntimeStartupConfig",
+        "description": "Runtime startup configuration resolved from CLI, env, config file, then defaults.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "bind_addr": {
+                "type": "string",
+                "description": "Socket bind address in host:port form.",
+                "default": DEFAULT_BIND_ADDR
+            },
+            "store_root": {
+                "type": "string",
+                "description": "Directory for local runtime store artifacts.",
+                "default": DEFAULT_STORE_ROOT
+            },
+            "cache_root": {
+                "type": "string",
+                "description": "Directory for local runtime cache artifacts.",
+                "default": DEFAULT_CACHE_ROOT
+            }
+        },
+        "required": ["bind_addr", "store_root", "cache_root"],
+        "x-resolution-order": ["cli", "env", "config_file", "default"]
+    })
+}
+
+pub fn runtime_startup_config_docs_markdown() -> String {
+    format!(
+        "# Runtime Startup Config\n\n\
+Source of truth for startup config resolution used by `atlas-server`.\n\n\
+Resolution precedence: `CLI > ENV > config file > defaults`.\n\n\
+| Field | CLI Flag | ENV | Config Key | Default |\n\
+|---|---|---|---|---|\n\
+| `bind_addr` | `--bind` | `ATLAS_BIND` | `bind_addr` | `{}` |\n\
+| `store_root` | `--store-root` | `ATLAS_STORE_ROOT` | `store_root` | `{}` |\n\
+| `cache_root` | `--cache-root` | `ATLAS_CACHE_ROOT` | `cache_root` | `{}` |\n\n\
+File formats: `.json`, `.yaml`/`.yml`, `.toml`.\n\
+Validation: all resolved fields are required and must be non-empty.\n",
+        DEFAULT_BIND_ADDR, DEFAULT_STORE_ROOT, DEFAULT_CACHE_ROOT
+    )
+}
+
+fn resolve_runtime_startup_config(
+    file_cfg: RuntimeStartupConfigFile,
+    cli_bind_addr: Option<&str>,
+    cli_store_root: Option<&Path>,
+    cli_cache_root: Option<&Path>,
+    env_bind_addr: Option<String>,
+    env_store_root: Option<PathBuf>,
+    env_cache_root: Option<PathBuf>,
+) -> Result<RuntimeStartupConfig, String> {
+    let bind_addr = cli_bind_addr
+        .map(ToString::to_string)
+        .or(env_bind_addr)
+        .or(file_cfg.bind_addr)
+        .unwrap_or_else(|| DEFAULT_BIND_ADDR.to_string());
+
+    let store_root = cli_store_root
+        .map(Path::to_path_buf)
+        .or(env_store_root)
+        .or(file_cfg.store_root)
+        .unwrap_or_else(|| PathBuf::from(DEFAULT_STORE_ROOT));
+
+    let cache_root = cli_cache_root
+        .map(Path::to_path_buf)
+        .or(env_cache_root)
+        .or(file_cfg.cache_root)
+        .unwrap_or_else(|| PathBuf::from(DEFAULT_CACHE_ROOT));
+
+    if bind_addr.trim().is_empty() {
+        return Err("runtime config bind_addr must not be empty".to_string());
+    }
+    if store_root.as_os_str().is_empty() || cache_root.as_os_str().is_empty() {
+        return Err("runtime config store_root/cache_root must not be empty".to_string());
+    }
+
+    Ok(RuntimeStartupConfig {
+        bind_addr,
+        store_root,
+        cache_root,
+    })
+}
+
 fn parse_runtime_startup_config_file(path: &Path) -> Result<RuntimeStartupConfigFile, String> {
     let text = std::fs::read_to_string(path).map_err(|err| {
         format!(
@@ -228,37 +319,15 @@ pub fn load_runtime_startup_config(
     } else {
         RuntimeStartupConfigFile::default()
     };
-
-    let bind_addr = cli_bind_addr
-        .map(ToString::to_string)
-        .or_else(|| std::env::var("ATLAS_BIND").ok())
-        .or(file_cfg.bind_addr)
-        .unwrap_or_else(|| "0.0.0.0:8080".to_string());
-
-    let store_root = cli_store_root
-        .map(Path::to_path_buf)
-        .or_else(|| std::env::var("ATLAS_STORE_ROOT").ok().map(PathBuf::from))
-        .or(file_cfg.store_root)
-        .unwrap_or_else(|| PathBuf::from("artifacts/server-store"));
-
-    let cache_root = cli_cache_root
-        .map(Path::to_path_buf)
-        .or_else(|| std::env::var("ATLAS_CACHE_ROOT").ok().map(PathBuf::from))
-        .or(file_cfg.cache_root)
-        .unwrap_or_else(|| PathBuf::from("artifacts/server-cache"));
-
-    if bind_addr.trim().is_empty() {
-        return Err("runtime config bind_addr must not be empty".to_string());
-    }
-    if store_root.as_os_str().is_empty() || cache_root.as_os_str().is_empty() {
-        return Err("runtime config store_root/cache_root must not be empty".to_string());
-    }
-
-    Ok(RuntimeStartupConfig {
-        bind_addr,
-        store_root,
-        cache_root,
-    })
+    resolve_runtime_startup_config(
+        file_cfg,
+        cli_bind_addr,
+        cli_store_root,
+        cli_cache_root,
+        std::env::var("ATLAS_BIND").ok(),
+        std::env::var("ATLAS_STORE_ROOT").ok().map(PathBuf::from),
+        std::env::var("ATLAS_CACHE_ROOT").ok().map(PathBuf::from),
+    )
 }
 
 #[cfg(test)]
@@ -296,26 +365,83 @@ mod tests {
 
     #[test]
     fn runtime_startup_config_cli_overrides_env_and_file() {
-        let temp = tempfile::tempdir().expect("tempdir");
-        let config_path = temp.path().join("server.toml");
-        std::fs::write(
-            &config_path,
-            "bind_addr = \"127.0.0.1:9000\"\nstore_root = \"from-file-store\"\ncache_root = \"from-file-cache\"\n",
-        )
-        .expect("write");
-        std::env::set_var("ATLAS_BIND", "127.0.0.1:9100");
-        std::env::set_var("ATLAS_STORE_ROOT", "from-env-store");
-        std::env::set_var("ATLAS_CACHE_ROOT", "from-env-cache");
-
-        let resolved = load_runtime_startup_config(
-            Some(&config_path),
+        let resolved = resolve_runtime_startup_config(
+            RuntimeStartupConfigFile {
+                bind_addr: Some("127.0.0.1:9000".to_string()),
+                store_root: Some(PathBuf::from("from-file-store")),
+                cache_root: Some(PathBuf::from("from-file-cache")),
+            },
             Some("127.0.0.1:9200"),
             Some(Path::new("from-cli-store")),
             Some(Path::new("from-cli-cache")),
+            Some("127.0.0.1:9100".to_string()),
+            Some(PathBuf::from("from-env-store")),
+            Some(PathBuf::from("from-env-cache")),
         )
         .expect("load");
         assert_eq!(resolved.bind_addr, "127.0.0.1:9200");
         assert_eq!(resolved.store_root, PathBuf::from("from-cli-store"));
         assert_eq!(resolved.cache_root, PathBuf::from("from-cli-cache"));
+    }
+
+    #[test]
+    fn runtime_startup_config_env_overrides_file() {
+        let resolved = resolve_runtime_startup_config(
+            RuntimeStartupConfigFile {
+                bind_addr: Some("127.0.0.1:9000".to_string()),
+                store_root: Some(PathBuf::from("from-file-store")),
+                cache_root: Some(PathBuf::from("from-file-cache")),
+            },
+            None,
+            None,
+            None,
+            Some("127.0.0.1:9100".to_string()),
+            Some(PathBuf::from("from-env-store")),
+            Some(PathBuf::from("from-env-cache")),
+        )
+        .expect("load");
+        assert_eq!(resolved.bind_addr, "127.0.0.1:9100");
+        assert_eq!(resolved.store_root, PathBuf::from("from-env-store"));
+        assert_eq!(resolved.cache_root, PathBuf::from("from-env-cache"));
+    }
+
+    #[test]
+    fn runtime_startup_config_uses_defaults_without_sources() {
+        let resolved = resolve_runtime_startup_config(
+            RuntimeStartupConfigFile::default(),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        .expect("load");
+        assert_eq!(resolved.bind_addr, DEFAULT_BIND_ADDR);
+        assert_eq!(resolved.store_root, PathBuf::from(DEFAULT_STORE_ROOT));
+        assert_eq!(resolved.cache_root, PathBuf::from(DEFAULT_CACHE_ROOT));
+    }
+
+    #[test]
+    fn runtime_startup_config_contract_artifacts_match_generated() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let schema_path = root.join("docs/generated/runtime-startup-config.schema.json");
+        let docs_path = root.join("docs/generated/runtime-startup-config.md");
+        let expected_schema = std::fs::read_to_string(schema_path).expect("schema file");
+        let expected_docs = std::fs::read_to_string(docs_path).expect("docs file");
+
+        let generated_schema = runtime_startup_config_schema_json();
+        let expected_schema: serde_json::Value =
+            serde_json::from_str(&expected_schema).expect("parse schema file");
+        let generated_docs = runtime_startup_config_docs_markdown();
+
+        assert_eq!(
+            generated_schema, expected_schema,
+            "runtime startup config schema drift; regenerate docs/generated/runtime-startup-config.schema.json"
+        );
+        assert_eq!(
+            generated_docs, expected_docs,
+            "runtime startup config docs drift; regenerate docs/generated/runtime-startup-config.md"
+        );
     }
 }

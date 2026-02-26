@@ -29,6 +29,9 @@ Does not provide in-process hot reload of ConfigMap values.
 - Canonical workflow is values update -> `helm upgrade` -> rollout restart.
 - Unknown ConfigMap keys are rejected by `bijux dev atlas ops k8s validate-configmap-keys` when `ATLAS_STRICT_CONFIG_KEYS=1`.
 - Version stamps are required: `ATLAS_CONFIG_RELEASE_ID` and `ATLAS_CONFIG_SCHEMA_VERSION`.
+- Runtime startup config contract artifacts are generated from server source:
+  - `crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json`
+  - `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md`
 
 ### Config Keys
 

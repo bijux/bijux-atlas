@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/runtime-startup-config.schema.json",
+  "title": "RuntimeStartupConfig",
+  "description": "Runtime startup configuration resolved from CLI, env, config file, then defaults.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "bind_addr": {
+      "type": "string",
+      "description": "Socket bind address in host:port form.",
+      "default": "0.0.0.0:8080"
+    },
+    "store_root": {
+      "type": "string",
+      "description": "Directory for local runtime store artifacts.",
+      "default": "artifacts/server-store"
+    },
+    "cache_root": {
+      "type": "string",
+      "description": "Directory for local runtime cache artifacts.",
+      "default": "artifacts/server-cache"
+    }
+  },
+  "required": [
+    "bind_addr",
+    "store_root",
+    "cache_root"
+  ],
+  "x-resolution-order": [
+    "cli",
+    "env",
+    "config_file",
+    "default"
+  ]
+}
