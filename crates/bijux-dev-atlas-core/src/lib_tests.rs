@@ -102,6 +102,7 @@ fn suite_expansion_is_stable() {
             "checks_ops_artifacts_not_tracked".to_string(),
             "checks_ops_control_plane_doc_contract".to_string(),
             "checks_ops_generated_readonly_markers".to_string(),
+            "checks_ops_image_references_digest_pinned".to_string(),
             "checks_ops_makefile_routes_dev_atlas".to_string(),
             "checks_ops_manifest_integrity".to_string(),
             "checks_ops_no_scripts_areas_or_xtask_refs".to_string(),
@@ -113,6 +114,7 @@ fn suite_expansion_is_stable() {
             "checks_ops_surface_manifest".to_string(),
             "checks_ops_tree_contract".to_string(),
             "checks_ops_workflow_routes_dev_atlas".to_string(),
+            "checks_ops_workflows_github_actions_pinned".to_string(),
         ]
     );
 }

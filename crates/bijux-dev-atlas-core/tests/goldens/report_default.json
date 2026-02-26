@@ -9,10 +9,10 @@
   "counts": {
     "errors": 0,
     "failed": 1,
-    "passed": 18,
+    "passed": 20,
     "schema_version": 1,
     "skipped": 0,
-    "total": 19
+    "total": 21
   },
   "durations_ms": {
     "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
@@ -23,6 +23,7 @@
     "checks_ops_artifacts_gitignore_policy": 0,
     "checks_ops_artifacts_not_tracked": 0,
     "checks_ops_generated_readonly_markers": 0,
+    "checks_ops_image_references_digest_pinned": 0,
     "checks_ops_makefile_routes_dev_atlas": 0,
     "checks_ops_manifest_integrity": 0,
     "checks_ops_no_scripts_areas_or_xtask_refs": 0,
@@ -33,6 +34,7 @@
     "checks_ops_surface_manifest": 0,
     "checks_ops_tree_contract": 0,
     "checks_ops_workflow_routes_dev_atlas": 0,
+    "checks_ops_workflows_github_actions_pinned": 0,
     "checks_repo_import_boundary": 0
   },
   "repo_root": "<repo_root>",
@@ -114,6 +116,15 @@
       "duration_ms": 0,
       "evidence": [],
       "id": "checks_ops_generated_readonly_markers",
+      "schema_version": 1,
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
+      "id": "checks_ops_image_references_digest_pinned",
       "schema_version": 1,
       "skip_reason": null,
       "status": "pass",
@@ -212,6 +223,15 @@
     {
       "duration_ms": 0,
       "evidence": [],
+      "id": "checks_ops_workflows_github_actions_pinned",
+      "schema_version": 1,
+      "skip_reason": null,
+      "status": "pass",
+      "violations": []
+    },
+    {
+      "duration_ms": 0,
+      "evidence": [],
       "id": "checks_repo_import_boundary",
       "schema_version": 1,
       "skip_reason": null,
@@ -230,10 +250,10 @@
   "summary": {
     "errors": 0,
     "failed": 1,
-    "passed": 18,
+    "passed": 20,
     "schema_version": 1,
     "skipped": 0,
-    "total": 19
+    "total": 21
   },
   "timings_ms": {
     "checks_crates_bijux_atlas_cli_owns_umbrella_dispatch": 0,
@@ -244,6 +264,7 @@
     "checks_ops_artifacts_gitignore_policy": 0,
     "checks_ops_artifacts_not_tracked": 0,
     "checks_ops_generated_readonly_markers": 0,
+    "checks_ops_image_references_digest_pinned": 0,
     "checks_ops_makefile_routes_dev_atlas": 0,
     "checks_ops_manifest_integrity": 0,
     "checks_ops_no_scripts_areas_or_xtask_refs": 0,
@@ -254,6 +275,7 @@
     "checks_ops_surface_manifest": 0,
     "checks_ops_tree_contract": 0,
     "checks_ops_workflow_routes_dev_atlas": 0,
+    "checks_ops_workflows_github_actions_pinned": 0,
     "checks_repo_import_boundary": 0
   }
 }

@@ -6,6 +6,7 @@ checks_make_wrapper_commands	make wrapper commands stay canonical
 checks_ops_artifacts_gitignore_policy	artifacts root remains gitignored
 checks_ops_artifacts_not_tracked	ops evidence paths stay empty in repository
 checks_ops_generated_readonly_markers	ops generated files keep readonly generator markers
+checks_ops_image_references_digest_pinned	ops image references are digest pinned
 checks_ops_makefile_routes_dev_atlas	ops makefile routes through dev atlas command surface
 checks_ops_manifest_integrity	ops inventory manifests are valid json with required keys
 checks_ops_no_scripts_areas_or_xtask_refs	ops owned surfaces avoid scripts areas and xtask references
@@ -16,4 +17,5 @@ checks_ops_surface_inventory	ops index inventories top-level surfaces
 checks_ops_surface_manifest	ops surface manifest consistency
 checks_ops_tree_contract	ops contract files are present
 checks_ops_workflow_routes_dev_atlas	atlas dev workflow routes through ops command surface
+checks_ops_workflows_github_actions_pinned	workflow github actions are sha pinned and allowlisted
 checks_repo_import_boundary	repo import boundary contracts
