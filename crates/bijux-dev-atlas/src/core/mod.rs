@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+//! `core` contains the pure control-plane engine, registries, and checks.
+//!
+//! Boundary: core may depend on `model`, `policies`, and `ports`; direct host effects belong in
+//! `adapters` implementations.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;

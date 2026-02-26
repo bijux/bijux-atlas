@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+#![deny(clippy::unwrap_used, clippy::expect_used, clippy::todo)]
 
 #[path = "commands/build.rs"]
 mod build_commands;

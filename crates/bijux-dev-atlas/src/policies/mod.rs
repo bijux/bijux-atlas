@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+//! `policies` defines policy schemas, defaults, and validation helpers.
+//!
+//! Boundary: policies may depend on `model` and `std`; it must not depend on `core` or `adapters`.
 
 mod schema;
 mod validate;

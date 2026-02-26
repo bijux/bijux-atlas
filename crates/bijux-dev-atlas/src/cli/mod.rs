@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
+//! `cli` defines argument parsing and command-surface types.
+//!
+//! Boundary: `cli` parses/normalizes user input and dispatches to command handlers; business logic
+//! belongs in `commands`/`core`.
 
 use std::path::PathBuf;
 

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+//! `model` defines serde-facing report and identifier types shared across the crate.
+//!
+//! Boundary: model is a leaf module; it must not depend on `core`, `commands`, or `adapters`.
 
 use std::collections::BTreeMap;
 use std::fmt;

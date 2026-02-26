@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+//! `adapters` contains concrete host-effect implementations (filesystem, process, environment).
+//!
+//! Boundary: adapters may depend on `std` host APIs and implement `crate::ports`; they must not
+//! depend on core check modules or embed policy/core decision logic.
 
 pub use crate::ports::{AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner};
 use std::fs;
