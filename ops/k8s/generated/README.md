@@ -7,3 +7,6 @@ Generated Kubernetes delivery artifacts. This is a derived-only directory.
 - `release-snapshot.json`: release snapshot metadata for k8s delivery.
 
 Do not edit manually.
+
+- Producer: `bijux dev atlas ops k8s inventory`
+- Regenerate: `bijux dev atlas ops k8s inventory --write-example`

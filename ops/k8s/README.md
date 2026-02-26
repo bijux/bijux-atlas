@@ -1,5 +1,9 @@
 # Ops K8s
 
+- Owner: `bijux-atlas-operations`
+- Purpose: `kubernetes delivery contracts and render/install validation surfaces`
+- Consumers: `bijux dev atlas ops k8s commands, checks_ops_domain_contract_structure`
+
 ## Purpose
 Own Helm chart delivery, install profiles, and Kubernetes-only validation gates.
 

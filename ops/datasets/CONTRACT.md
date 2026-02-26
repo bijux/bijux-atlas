@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `hybrid`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-data`
+- Purpose: `dataset lifecycle contracts and generated inventory surfaces`
+- Consumers: `checks_ops_fixture_governance, checks_ops_domain_contract_structure`
 
 ## Authored vs Generated
 

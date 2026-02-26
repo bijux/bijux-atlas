@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `hybrid`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-operations`
+- Purpose: `kubernetes delivery contracts and render/install validation surfaces`
+- Consumers: `checks_ops_inventory_contract_integrity, checks_ops_domain_contract_structure`
 
 ## Authored vs Generated
 

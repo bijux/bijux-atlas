@@ -7,3 +7,6 @@ Canonical authored inputs live under:
 - `ops/load/suites/`
 - `ops/load/thresholds/`
 - `ops/load/scenarios/`
+
+- Producer: `bijux dev atlas ops load plan`
+- Regenerate: `bijux dev atlas ops load plan <suite> --profile <profile>`

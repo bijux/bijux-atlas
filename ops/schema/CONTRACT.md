@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `structural`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-operations`
+- Purpose: `schema contracts for ops authored and generated artifacts`
+- Consumers: `checks_ops_schema_presence, checks_ops_domain_contract_structure`
 
 ## Authored vs Generated
 

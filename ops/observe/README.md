@@ -1,5 +1,9 @@
 # ops/observe
 
+- Owner: `bijux-atlas-observability`
+- Purpose: `observability contracts, drills, and generated verification indexes`
+- Consumers: `bijux dev atlas ops observe commands, checks_ops_domain_contract_structure`
+
 Observability assets (dashboards, alerts, rules, otel, prometheus) in the target layout.
 
 ## Contracts

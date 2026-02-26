@@ -9,3 +9,6 @@ Generated stack metadata artifacts for deterministic validation and documentatio
 - `versions.json`: generated stack version summary.
 
 Do not edit manually.
+
+- Producer: `bijux dev atlas ops inventory docs --write-example`
+- Regenerate: `bijux dev atlas ops inventory docs --write-example`

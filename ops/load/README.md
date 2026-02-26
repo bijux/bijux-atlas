@@ -1,5 +1,9 @@
 # Ops Load
 
+- Owner: `bijux-atlas-performance`
+- Purpose: `load suite contracts, thresholds, and generated load reports`
+- Consumers: `bijux dev atlas ops load commands, checks_ops_domain_contract_structure`
+
 Load suites, thresholds, scenarios, and generated reporting artifacts.
 
 ## Start Here

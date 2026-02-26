@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `behavioral`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-performance`
+- Purpose: `load suite contracts, thresholds, and generated load reports`
+- Consumers: `checks_ops_domain_contract_structure, checks_ops_required_files_contracts`
 
 ## Authored vs Generated
 

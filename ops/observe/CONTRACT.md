@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `behavioral`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-observability`
+- Purpose: `observability contracts, drills, and generated verification indexes`
+- Consumers: `checks_ops_evidence_bundle_discipline, checks_ops_domain_contract_structure`
 
 ## Authored vs Generated
 

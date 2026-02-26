@@ -19,3 +19,7 @@ Canonical inventory documents for ops ownership, command surface, namespaces, to
   - `ops/inventory/gates.json`
 - Release pin freeze state is canonical in:
   - `ops/inventory/pin-freeze.json`
+
+- Owner: `bijux-atlas-operations`
+- Purpose: `ops inventory registries and authority mappings`
+- Consumers: `bijux dev atlas ops inventory *, checks_ops_domain_contract_structure`

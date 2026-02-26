@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `behavioral`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-operations`
+- Purpose: `end-to-end suite contracts and scenario definitions`
+- Consumers: `checks_ops_domain_contract_structure, checks_ops_fixture_governance`
 
 ## Authored vs Generated
 

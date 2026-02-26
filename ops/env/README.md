@@ -22,3 +22,7 @@ Environment overlays for ops deployment variants.
   - `network_mode`
 
 Placeholder extension directories tracked with `.gitkeep`: `ops/env/base`, `ops/env/dev`, `ops/env/ci`, `ops/env/prod`, `ops/env/overlays`.
+
+- Owner: `bijux-atlas-operations`
+- Purpose: `environment overlay contracts for ops profiles`
+- Consumers: `bijux dev atlas ops * --profile <name>, checks_ops_domain_contract_structure`

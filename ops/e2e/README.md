@@ -20,3 +20,7 @@ Composition-only end-to-end scenarios across stack, k8s, observe, load, and data
 - `make ops-e2e-validate`
 
 Placeholder extension directories tracked with `.gitkeep`: `ops/e2e/datasets`, `ops/e2e/expectations`, `ops/e2e/manifests`.
+
+- Owner: `bijux-atlas-operations`
+- Purpose: `end-to-end suite contracts and scenario definitions`
+- Consumers: `bijux dev atlas ops e2e run, checks_ops_domain_contract_structure`

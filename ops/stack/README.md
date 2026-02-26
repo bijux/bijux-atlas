@@ -1,5 +1,9 @@
 # Ops Stack
 
+- Owner: `bijux-atlas-operations`
+- Purpose: `stack composition contracts and generated dependency metadata`
+- Consumers: `bijux dev atlas ops stack commands, checks_ops_domain_contract_structure`
+
 ## Purpose
 Own local and CI infrastructure dependencies: kind, store backend, redis, telemetry stack, and fault primitives.
 

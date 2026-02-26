@@ -1,5 +1,9 @@
 # Ops Reporting
 
+- Owner: `bijux-atlas-operations`
+- Purpose: `report contracts and generated operational summaries`
+- Consumers: `bijux dev atlas ops report, checks_ops_domain_contract_structure`
+
 Report assembly and evidence publishing across stack, observe, load, datasets, and e2e.
 
 ## Start Here

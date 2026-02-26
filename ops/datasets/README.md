@@ -30,3 +30,7 @@ Own dataset manifest lock, pins, fetch/verify, QC, and promotion simulation.
 - Dataset lock/schema mismatch.
 - QC threshold failure.
 - Promotion simulation contract regression.
+
+- Owner: `bijux-atlas-data`
+- Purpose: `dataset lifecycle contracts and generated inventory surfaces`
+- Consumers: `bijux dev atlas ops datasets commands, checks_ops_domain_contract_structure`

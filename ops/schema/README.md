@@ -1,5 +1,9 @@
 # ops/schema
 
+- Owner: `bijux-atlas-operations`
+- Purpose: `schema contracts for ops authored and generated artifacts`
+- Consumers: `checks_ops_schema_presence, checks_ops_domain_contract_structure`
+
 Canonical ops schemas. Generated and validation tooling should reference this directory.
 
 ## Generated Artifacts

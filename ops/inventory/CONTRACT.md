@@ -5,6 +5,9 @@
 - contract_version: `1.0.0`
 - contract_taxonomy: `structural`
 - Canonical parent contract: `ops/CONTRACT.md`
+- Owner: `bijux-atlas-operations`
+- Purpose: `ops inventory registries and authority mappings`
+- Consumers: `checks_ops_inventory_contract_integrity, checks_ops_domain_contract_structure`
 
 ## Authored vs Generated
 
