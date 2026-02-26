@@ -102,6 +102,7 @@ fn validate_surface_and_filesystem_policies(
         "GOLDEN_REFRESH_POLICY.md",
         "INDEX.md",
         "NAMING.md",
+        "PORTABILITY_MATRIX.md",
         "README.md",
         "SSOT.md",
     ]
