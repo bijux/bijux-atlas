@@ -83,12 +83,28 @@ pub trait Network {
     fn get_text(&self, url: &str) -> Result<String, AdapterError>;
 }
 
+pub trait Clock {
+    fn now_unix_secs(&self) -> u64;
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Capabilities {
     pub fs_write: bool,
     pub subprocess: bool,
     pub git: bool,
     pub network: bool,
+}
+
+#[derive(Debug, Default, Clone, Copy)]
+pub struct SystemClock;
+
+impl Clock for SystemClock {
+    fn now_unix_secs(&self) -> u64 {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|dur| dur.as_secs())
+            .unwrap_or(0)
+    }
 }
 
 impl Capabilities {

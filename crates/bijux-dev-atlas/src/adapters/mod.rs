@@ -10,8 +10,10 @@ pub use crate::ports::{AdapterError, Capabilities, Fs, FsWrite, Git, Network, Pr
 
 mod fs;
 mod process;
+mod bundles;
 mod world;
 
+pub use bundles::{AdaptersBundle, FixedClock, TestBundle};
 pub use fs::{
     canonicalize_from_repo_root, discover_repo_root, ensure_write_path_under_artifacts,
     normalize_line_endings, sorted_non_empty_lines, RealFs,
