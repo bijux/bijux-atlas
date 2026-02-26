@@ -64,6 +64,7 @@
     }
   ],
   "ignored_paths": [
+    "ops/BREAKING_CHANGE_TEMPLATE.md",
     "ops/CONTRACT.md",
     "ops/CONTROL_PLANE.md",
     "ops/DETERMINISM_PROOF.md",
@@ -73,6 +74,7 @@
     "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
     "ops/DRIFT.md",
     "ops/ERRORS.md",
+    "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
     "ops/GENERATED_LIFECYCLE.md",
     "ops/GOLDEN_REFRESH_POLICY.md",
     "ops/INDEX.md",
@@ -80,6 +82,7 @@
     "ops/MINIMAL_RELEASE_SURFACE.md",
     "ops/NAMING.md",
     "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
+    "ops/OPS_ADR_TEMPLATE.md",
     "ops/OPS_INVARIANTS.md",
     "ops/PORTABILITY_MATRIX.md",
     "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md",
