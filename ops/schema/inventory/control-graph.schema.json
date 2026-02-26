@@ -2,26 +2,70 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "graph_version", "nodes", "edges"],
+  "required": [
+    "schema_version",
+    "graph_version",
+    "nodes",
+    "edges"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "graph_version": {"type": "string", "minLength": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "graph_version": {
+      "type": "string",
+      "minLength": 1
+    },
     "nodes": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "type"],
+        "required": [
+          "id",
+          "type"
+        ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
           "type": {
             "type": "string",
-            "enum": ["artifact", "action", "gate", "policy", "schema", "domain"]
+            "enum": [
+              "artifact",
+              "action",
+              "gate",
+              "policy",
+              "schema",
+              "domain"
+            ]
           },
           "path": {
             "type": "string",
             "pattern": "^(ops|docs|makefiles|crates)/.+",
-            "not": {"pattern": "^/|^\\.\\./"}
+            "not": {
+              "pattern": "^/|^\\.\\./"
+            }
+          },
+          "producer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consumer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lifecycle": {
+            "type": "string",
+            "enum": [
+              "authoritative",
+              "generated_committed",
+              "generated_example",
+              "runtime_generated",
+              "declared"
+            ]
           }
         }
       }
@@ -31,10 +75,20 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["from", "to", "kind"],
+        "required": [
+          "from",
+          "to",
+          "kind"
+        ],
         "properties": {
-          "from": {"type": "string", "minLength": 1},
-          "to": {"type": "string", "minLength": 1},
+          "from": {
+            "type": "string",
+            "minLength": 1
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
           "kind": {
             "type": "string",
             "enum": [
