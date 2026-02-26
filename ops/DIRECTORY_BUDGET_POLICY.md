@@ -13,6 +13,8 @@ Keep `ops/` minimal, enforceable, and consumer-driven.
 - Placeholder directories are allowed only when declared in `ops/inventory/placeholder-dirs.json` with explicit lifecycle policy.
 - Directory depth must remain bounded by governance checks; deeper trees require explicit exception entries.
 - Remove empty compatibility directories once all consumers are migrated.
+- `ops/` directory count budget: `<= 140` directories.
+- `ops/` file count budget: `<= 650` files.
 
 ## Review Criteria
 
