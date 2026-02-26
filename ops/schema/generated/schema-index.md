@@ -32,6 +32,7 @@
 | `ops/schema/inventory/authority-index.schema.json` |
 | `ops/schema/inventory/contracts-map.schema.json` |
 | `ops/schema/inventory/contracts.schema.json` |
+| `ops/schema/inventory/control-graph-coverage-map.schema.json` |
 | `ops/schema/inventory/control-graph-diff-report.schema.json` |
 | `ops/schema/inventory/control-graph.schema.json` |
 | `ops/schema/inventory/drill-contract-links.schema.json` |

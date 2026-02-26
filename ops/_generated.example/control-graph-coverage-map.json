@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops inventory control-graph-coverage-map --write-example",
+  "status": "pass",
+  "checks": [
+    {
+      "check_id": "checks_ops_inventory_contract_integrity",
+      "node_id": "artifact.contracts_map"
+    },
+    {
+      "check_id": "checks_ops_docs_governance",
+      "node_id": "artifact.docs.operations_index"
+    }
+  ],
+  "reports": [
+    {
+      "path": "ops/_generated.example/control-graph-diff-report.json",
+      "node_id": "artifact.gates"
+    },
+    {
+      "path": "ops/_generated.example/inventory-completeness-score.json",
+      "node_id": "artifact.contracts_map"
+    }
+  ],
+  "notes": [
+    "Curated coverage map links selected checks and reports to control-graph nodes"
+  ]
+}

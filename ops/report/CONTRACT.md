@@ -35,6 +35,7 @@
 | `ops/_generated.example/generation-audit-log.json` | `ops/schema/report/generation-audit-log.schema.json` |
 | `ops/_generated.example/docs-shrink-report.json` | `ops/schema/report/docs-shrink-report.schema.json` |
 | `ops/_generated.example/inventory-completeness-score.json` | `ops/schema/inventory/inventory-completeness-score.schema.json` |
+| `ops/_generated.example/control-graph-coverage-map.json` | `ops/schema/inventory/control-graph-coverage-map.schema.json` |
 | `ops/_generated.example/what-breaks-if-removed-report.json` | `ops/schema/report/what-breaks-if-removed-report.schema.json` |
 
 ## Contract Taxonomy
@@ -63,6 +64,7 @@
 - Generation audit evidence: `ops/_generated.example/generation-audit-log.json`
 - Docs shrink evidence: `ops/_generated.example/docs-shrink-report.json`
 - Inventory completeness evidence: `ops/_generated.example/inventory-completeness-score.json`
+- Control graph coverage evidence: `ops/_generated.example/control-graph-coverage-map.json`
 - Deletion impact evidence: `ops/_generated.example/what-breaks-if-removed-report.json`
 
 ## Enforcement Links

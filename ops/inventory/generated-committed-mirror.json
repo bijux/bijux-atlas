@@ -6,6 +6,7 @@
     "ops/_generated.example/contract-audit-report.json",
     "ops/_generated.example/contract-coverage-report.json",
     "ops/_generated.example/contract-dependency-graph.json",
+    "ops/_generated.example/control-graph-coverage-map.json",
     "ops/_generated.example/control-graph-diff-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
     "ops/_generated.example/control-plane-surface-list.json",
@@ -160,6 +161,12 @@
       "committed": "ops/_generated.example/contract-dependency-graph.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/control-graph-coverage-map.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops inventory control-graph-coverage-map",
       "regenerate": "make ops-generated-example-refresh"
     },
     {
