@@ -4,8 +4,267 @@
   "status": "pass",
   "entries": [
     {
+      "artifact": "ops/_generated.example/ALLOWLIST.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/INDEX.example.md",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/contract-audit-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/contract-coverage-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/contract-dependency-graph.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/control-graph-coverage-map.json",
+      "producer": "bijux dev atlas ops inventory control-graph-coverage-map",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/control-graph-diff-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/control-plane-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/control-plane-surface-list.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/control-plane.snapshot.md",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/docs-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/docs-links-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
       "artifact": "ops/_generated.example/docs-shrink-report.json",
       "producer": "bijux dev atlas ops docs shrink-report",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/domain-document-template-contract.hash.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/evidence-gap-report.json",
+      "producer": "bijux dev atlas report evidence-gap",
+      "regenerate": "make ops-readiness-scorecard",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/file-usage-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/fixture-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/generation-audit-log.json",
+      "producer": "bijux dev atlas ops generation-audit-log",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/generator-coverage-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/inventory-completeness-score.json",
+      "producer": "bijux dev atlas ops inventory completeness-score",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/inventory-index.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops-evidence-bundle.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops-index.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops-ledger.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops-ledger.md",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/orphan-files-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/pins.index.example.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/placeholder-dirs-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/registry-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/registry-graph.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/report.example.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/report.unified.example.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/schema-coverage-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/schema-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/scorecard.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/stack-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/stack-health-report.example.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/what-breaks-if-removed-report.json",
+      "producer": "bijux dev atlas ops deletion-impact",
       "regenerate": "make ops-generated-example-refresh",
       "lifecycle": "curated_evidence",
       "generator_version": "schema-v1"
@@ -19,6 +278,7 @@
     }
   ],
   "notes": [
-    "Curated audit log for generated artifact lineage and regeneration commands"
+    "Curated audit log covers all committed generated evidence entries from generated-committed-mirror.json",
+    "Includes representative domain-derived artifact lineage metadata"
   ]
 }
