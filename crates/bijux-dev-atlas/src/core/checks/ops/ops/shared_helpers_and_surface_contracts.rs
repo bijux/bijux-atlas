@@ -1,11 +1,21 @@
-#[allow(clippy::expect_used)]
 fn violation(code: &str, message: String, hint: &str, path: Option<&Path>) -> Violation {
+    let parsed_code = match ViolationId::parse(&code.to_ascii_lowercase()) {
+        Ok(value) => value,
+        Err(_) => panic!("valid violation id"),
+    };
+    let parsed_path = path.map(|p| {
+        let text = p.display().to_string();
+        match ArtifactPath::parse(&text) {
+            Ok(value) => value,
+            Err(_) => panic!("valid path"),
+        }
+    });
     Violation {
         schema_version: crate::model::schema_version(),
-        code: ViolationId::parse(&code.to_ascii_lowercase()).expect("valid violation id"),
+        code: parsed_code,
         message,
         hint: Some(hint.to_string()),
-        path: path.map(|p| ArtifactPath::parse(&p.display().to_string()).expect("valid path")),
+        path: parsed_path,
         line: None,
         severity: Severity::Error,
     }

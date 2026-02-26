@@ -16,6 +16,7 @@ use crate::ops_command_support::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
 use crate::*;
+use std::io::{self, Write};
 
 #[path = "runtime_mod/core_handler.rs"]
 mod core_handler;
@@ -91,7 +92,8 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         });
 
     if debug {
-        eprintln!(
+        let _ = writeln!(
+            io::stderr(),
             "{}",
             serde_json::json!({
                 "event": "ops.command.completed",
@@ -103,12 +105,12 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
     match run {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
-                println!("{rendered}");
+                let _ = writeln!(io::stdout(), "{rendered}");
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas ops failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas ops failed: {err}");
             if err.contains("unknown ops action")
                 || err.contains("unknown suite")
                 || err.contains("requires --")

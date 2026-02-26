@@ -1,3 +1,5 @@
+use std::io::{self, Write};
+
 pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
@@ -644,17 +646,16 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
                 if code == 0 {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 } else {
-                    eprintln!("{rendered}");
+                    let _ = writeln!(io::stderr(), "{rendered}");
                 }
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas docs failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas docs failed: {err}");
             1
         }
     }
 }
-

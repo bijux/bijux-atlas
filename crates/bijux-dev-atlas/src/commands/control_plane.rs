@@ -5,6 +5,7 @@ use crate::*;
 use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::collections::VecDeque;
+use std::io::{self, Write};
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -38,12 +39,12 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
     match result {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
-                println!("{rendered}");
+                let _ = writeln!(io::stdout(), "{rendered}");
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas policies failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas policies failed: {err}");
             1
         }
     }
@@ -391,15 +392,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
                 if code == 0 {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 } else {
-                    eprintln!("{rendered}");
+                    let _ = writeln!(io::stderr(), "{rendered}");
                 }
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas docker failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas docker failed: {err}");
             1
         }
     }

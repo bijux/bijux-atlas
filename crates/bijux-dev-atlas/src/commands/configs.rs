@@ -2,6 +2,7 @@
 
 use crate::*;
 use std::collections::BTreeMap;
+use std::io::{self, Write};
 
 pub(crate) fn configs_context(common: &ConfigsCommonArgs) -> Result<ConfigsContext, String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
@@ -452,15 +453,15 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
                 if code == 0 {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 } else {
-                    eprintln!("{rendered}");
+                    let _ = writeln!(io::stderr(), "{rendered}");
                 }
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas configs failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas configs failed: {err}");
             1
         }
     }

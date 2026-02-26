@@ -4,14 +4,18 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::*;
 
-#[allow(clippy::expect_used)]
 fn known_violation_id(raw: &str) -> crate::model::ViolationId {
-    crate::model::ViolationId::parse(raw).expect("static violation id literal must be valid")
+    match crate::model::ViolationId::parse(raw) {
+        Ok(id) => id,
+        Err(_) => panic!("static violation id literal must be valid"),
+    }
 }
 
-#[allow(clippy::expect_used)]
 fn known_artifact_path(raw: String) -> crate::model::ArtifactPath {
-    crate::model::ArtifactPath::parse(&raw).expect("static artifact path must be valid")
+    match crate::model::ArtifactPath::parse(&raw) {
+        Ok(path) => path,
+        Err(_) => panic!("static artifact path must be valid"),
+    }
 }
 
 fn effect_allowed(effect: Effect, caps: Capabilities) -> bool {

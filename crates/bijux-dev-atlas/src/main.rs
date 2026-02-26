@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
-#![deny(clippy::unwrap_used, clippy::expect_used, clippy::todo)]
+#![deny(clippy::dbg_macro, clippy::print_stdout, clippy::print_stderr)]
+#![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
+#![deny(clippy::todo)]
 
 #[path = "commands/build.rs"]
 mod build_commands;
@@ -25,6 +27,7 @@ mod ops_commands;
 mod ops_runtime_execution;
 
 use std::fs;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 
@@ -394,15 +397,18 @@ pub(crate) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {
                     if code == 0 {
-                        println!("{rendered}");
+                        let _ = writeln!(io::stdout(), "{rendered}");
                     } else {
-                        eprintln!("{rendered}");
+                        let _ = writeln!(io::stderr(), "{rendered}");
                     }
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas workflows validate failed: {err}");
+                let _ = writeln!(
+                    io::stderr(),
+                    "bijux-dev-atlas workflows validate failed: {err}"
+                );
                 1
             }
         },
@@ -430,12 +436,12 @@ pub(crate) fn run_gates_command(quiet: bool, command: GatesCommand) -> i32 {
         }) {
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas gates list failed: {err}");
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas gates list failed: {err}");
                 1
             }
         },
@@ -478,15 +484,15 @@ pub(crate) fn run_gates_command(quiet: bool, command: GatesCommand) -> i32 {
             Ok((rendered, code)) => {
                 if !quiet && !rendered.is_empty() {
                     if code == 0 {
-                        println!("{rendered}");
+                        let _ = writeln!(io::stdout(), "{rendered}");
                     } else {
-                        eprintln!("{rendered}");
+                        let _ = writeln!(io::stderr(), "{rendered}");
                     }
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas gates run failed: {err}");
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas gates run failed: {err}");
                 1
             }
         },

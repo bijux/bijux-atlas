@@ -3,6 +3,7 @@
 use crate::cli::{BuildCleanArgs, BuildCommand, BuildCommonArgs, FormatArg};
 use crate::*;
 use sha2::{Digest, Sha256};
+use std::io::{self, Write};
 
 pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
     let run: Result<(String, i32), String> = {
@@ -21,12 +22,12 @@ pub(crate) fn run_build_command(quiet: bool, command: BuildCommand) -> i32 {
     match run {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
-                println!("{rendered}");
+                let _ = writeln!(io::stdout(), "{rendered}");
             }
             code
         }
         Err(err) => {
-            eprintln!("bijux-dev-atlas build failed: {err}");
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas build failed: {err}");
             1
         }
     }

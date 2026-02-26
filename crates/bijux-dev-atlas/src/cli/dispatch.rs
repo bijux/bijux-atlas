@@ -12,6 +12,7 @@ use crate::{
     run_print_boundaries_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
+use std::io::{self, Write};
 
 fn force_json_output(command: &mut Command) {
     match command {
@@ -408,19 +409,22 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         }
     }
     if cli.bijux_plugin_metadata {
-        println!("{}", plugin_metadata_json());
+        let _ = writeln!(io::stdout(), "{}", plugin_metadata_json());
         return 0;
     }
     if cli.print_policies {
         return match run_print_policies(cli.repo_root.clone()) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas --print-policies failed: {err}");
+                let _ = writeln!(
+                    io::stderr(),
+                    "bijux-dev-atlas --print-policies failed: {err}"
+                );
                 1
             }
         };
@@ -429,19 +433,23 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         return match run_print_boundaries_command() {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas --print-boundaries failed: {err}");
+                let _ = writeln!(
+                    io::stderr(),
+                    "bijux-dev-atlas --print-boundaries failed: {err}"
+                );
                 1
             }
         };
     }
 
     let Some(command) = cli.command else {
-        eprintln!(
+        let _ = writeln!(
+            io::stderr(),
             "bijux-dev-atlas requires a subcommand unless --print-policies or --print-boundaries is provided"
         );
         return 2;
@@ -451,24 +459,24 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Version { format, out } => match run_version_command(format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas version failed: {err}");
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas version failed: {err}");
                 1
             }
         },
         Command::Help { format, out } => match run_help_inventory_command(format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas help failed: {err}");
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas help failed: {err}");
                 1
             }
         },
@@ -482,12 +490,12 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Capabilities { format, out } => match run_capabilities_command(format, out) {
             Ok((rendered, code)) => {
                 if !cli.quiet && !rendered.is_empty() {
-                    println!("{rendered}");
+                    let _ = writeln!(io::stdout(), "{rendered}");
                 }
                 code
             }
             Err(err) => {
-                eprintln!("bijux-dev-atlas capabilities failed: {err}");
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas capabilities failed: {err}");
                 1
             }
         },
@@ -578,12 +586,12 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             match result {
                 Ok((rendered, code)) => {
                     if !cli.quiet && !rendered.is_empty() {
-                        println!("{rendered}");
+                        let _ = writeln!(io::stdout(), "{rendered}");
                     }
                     code
                 }
                 Err(err) => {
-                    eprintln!("bijux-dev-atlas check failed: {err}");
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas check failed: {err}");
                     1
                 }
             }
@@ -592,7 +600,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
     };
 
     if cli.verbose {
-        eprintln!("bijux-dev-atlas exit={exit}");
+        let _ = writeln!(io::stderr(), "bijux-dev-atlas exit={exit}");
     }
     exit
 }
