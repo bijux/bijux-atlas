@@ -91,6 +91,7 @@ fn validate_surface_and_filesystem_policies(
         "stack",
         "tools",
         "vendor",
+        "ARTIFACTS.md",
         "CONTRACT.md",
         "CONTROL_PLANE.md",
         "DIRECTORY_BUDGET_POLICY.md",
