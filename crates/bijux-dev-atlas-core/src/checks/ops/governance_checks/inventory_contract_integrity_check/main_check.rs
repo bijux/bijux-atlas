@@ -522,6 +522,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 ("makefiles/", "make"),
                 ("crates/", "runtime"),
                 ("ops/report/", "report"),
+                ("ops/schema/", "schema"),
             ] {
                 if path.starts_with(prefix) {
                     path_prefix_coverage.insert(key);
@@ -594,7 +595,14 @@ pub(super) fn check_ops_inventory_contract_integrity(
             ));
         }
     }
-    for required_kind in ["dependency", "consumer", "producer", "lifecycle", "drift"] {
+    for required_kind in [
+        "dependency",
+        "consumer",
+        "producer",
+        "lifecycle",
+        "drift",
+        "schema_link",
+    ] {
         if !seen_kinds.contains(required_kind) {
             violations.push(violation(
                 "OPS_INVENTORY_CONTROL_GRAPH_EDGE_KIND_MISSING",
@@ -634,14 +642,14 @@ pub(super) fn check_ops_inventory_contract_integrity(
             ));
         }
     }
-    for required_prefix in ["docs", "make", "runtime", "report"] {
+    for required_prefix in ["docs", "make", "runtime", "report", "schema"] {
         if !path_prefix_coverage.contains(required_prefix) {
             violations.push(violation(
                 "OPS_INVENTORY_CONTROL_GRAPH_PATH_COVERAGE_MISSING",
                 format!(
                     "control graph is missing explicit `{required_prefix}` path-backed node coverage"
                 ),
-                "add control graph nodes for docs, makefiles, runtime crate, and report artifact paths",
+                "add control graph nodes for docs, makefiles, runtime crate, schema, and report artifact paths",
                 Some(control_graph_rel),
             ));
         }

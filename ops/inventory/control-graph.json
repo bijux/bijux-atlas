@@ -97,6 +97,13 @@
       "lifecycle": "authoritative"
     },
     {
+      "id": "artifact.schema.control_graph",
+      "type": "schema",
+      "path": "ops/schema/inventory/control-graph.schema.json",
+      "consumer": "ops.checks.inventory_contract_integrity",
+      "lifecycle": "authoritative"
+    },
+    {
       "id": "artifact.dataset_manifest",
       "type": "artifact",
       "path": "ops/datasets/manifest.json",
@@ -262,6 +269,11 @@
       "from": "artifact.contracts_map",
       "to": "artifact.policy.dev_atlas",
       "kind": "policy_link"
+    },
+    {
+      "from": "artifact.contracts_map",
+      "to": "artifact.schema.control_graph",
+      "kind": "schema_link"
     },
     {
       "from": "artifact.contracts_map",
