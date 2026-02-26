@@ -504,6 +504,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let mut seen_kinds = std::collections::BTreeSet::new();
     let mut adjacency = std::collections::BTreeMap::<String, Vec<String>>::new();
     let mut incident_counts = std::collections::BTreeMap::<String, usize>::new();
+    let mut covered_domain_nodes = std::collections::BTreeSet::<String>::new();
     for edge in &edges {
         let from = edge.get("from").and_then(|v| v.as_str()).unwrap_or_default();
         let to = edge.get("to").and_then(|v| v.as_str()).unwrap_or_default();
@@ -520,6 +521,9 @@ pub(super) fn check_ops_inventory_contract_integrity(
         seen_kinds.insert(kind.to_string());
         *incident_counts.entry(from.to_string()).or_default() += 1;
         *incident_counts.entry(to.to_string()).or_default() += 1;
+        if kind == "coverage" && to.starts_with("domain.") {
+            covered_domain_nodes.insert(to.to_string());
+        }
         if matches!(
             kind,
             "dependency" | "consumer" | "producer" | "lifecycle" | "drift"
@@ -546,6 +550,36 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 "OPS_INVENTORY_CONTROL_GRAPH_EDGE_KIND_MISSING",
                 format!("control graph is missing required edge kind `{required_kind}`"),
                 "add at least one edge for each required control graph edge kind",
+                Some(control_graph_rel),
+            ));
+        }
+    }
+    for required_domain in [
+        "domain.datasets",
+        "domain.e2e",
+        "domain.env",
+        "domain.inventory",
+        "domain.k8s",
+        "domain.load",
+        "domain.observe",
+        "domain.report",
+        "domain.schema",
+        "domain.stack",
+    ] {
+        if !node_ids.contains(required_domain) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_DOMAIN_NODE_MISSING",
+                format!("control graph is missing canonical domain node `{required_domain}`"),
+                "add canonical ops domain nodes to control-graph.json for coverage accounting",
+                Some(control_graph_rel),
+            ));
+            continue;
+        }
+        if !covered_domain_nodes.contains(required_domain) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_DOMAIN_COVERAGE_MISSING",
+                format!("control graph domain node `{required_domain}` has no coverage edge"),
+                "add a coverage edge to every canonical domain node",
                 Some(control_graph_rel),
             ));
         }

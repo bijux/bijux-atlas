@@ -26,7 +26,13 @@
     {"id": "domain.observe", "type": "domain"},
     {"id": "domain.load", "type": "domain"},
     {"id": "domain.datasets", "type": "domain"},
-    {"id": "domain.k8s", "type": "domain"}
+    {"id": "domain.k8s", "type": "domain"},
+    {"id": "domain.e2e", "type": "domain"},
+    {"id": "domain.env", "type": "domain"},
+    {"id": "domain.inventory", "type": "domain"},
+    {"id": "domain.report", "type": "domain"},
+    {"id": "domain.schema", "type": "domain"},
+    {"id": "domain.stack", "type": "domain"}
   ],
   "edges": [
     {"from": "artifact.contracts_map", "to": "artifact.contracts_generated", "kind": "producer"},
@@ -51,6 +57,12 @@
     {"from": "artifact.gates", "to": "domain.load", "kind": "coverage"},
     {"from": "artifact.gates", "to": "domain.datasets", "kind": "coverage"},
     {"from": "artifact.gates", "to": "domain.k8s", "kind": "coverage"},
+    {"from": "artifact.gates", "to": "domain.e2e", "kind": "coverage"},
+    {"from": "artifact.gates", "to": "domain.env", "kind": "coverage"},
+    {"from": "artifact.gates", "to": "domain.inventory", "kind": "coverage"},
+    {"from": "artifact.gates", "to": "domain.report", "kind": "coverage"},
+    {"from": "artifact.gates", "to": "domain.schema", "kind": "coverage"},
+    {"from": "artifact.gates", "to": "domain.stack", "kind": "coverage"},
     {"from": "artifact.contracts_generated", "to": "artifact.contracts_map", "kind": "drift"}
   ]
 }
