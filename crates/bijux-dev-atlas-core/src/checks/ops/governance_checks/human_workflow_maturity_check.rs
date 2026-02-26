@@ -43,6 +43,35 @@ fn validate_required_human_workflow_docs(
             .as_slice(),
         ),
         (
+            "ops/BREAKING_CHANGE_TEMPLATE.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Change Summary",
+                "## Impact Analysis",
+                "## Migration Plan",
+                "## Approval",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/OPS_ADR_TEMPLATE.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Title",
+                "## Status",
+                "## Context",
+                "## Decision",
+                "## Consequences",
+                "## Contract and Check Impact",
+                "## Reviewers",
+            ]
+            .as_slice(),
+        ),
+        (
             "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
             [
                 "- Owner:",
@@ -53,6 +82,19 @@ fn validate_required_human_workflow_docs(
                 "historical-comparison.json",
                 "release-evidence-bundle.json",
                 "## Required Sign-Off Roles",
+            ]
+            .as_slice(),
+        ),
+        (
+            "ops/EVIDENCE_SIGNOFF_WORKFLOW.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Workflow",
+                "## Required Inputs",
+                "## Required Sign-Off Roles",
+                "## Enforcement Links",
             ]
             .as_slice(),
         ),
