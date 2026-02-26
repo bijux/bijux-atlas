@@ -16,7 +16,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "role", "owner"],
+        "required": ["path", "role", "owner", "consumer"],
         "properties": {
           "path": {"type": "string", "pattern": "^ops/.+"},
           "role": {
@@ -24,6 +24,8 @@
             "enum": ["authoritative", "generated", "presence_contract"]
           },
           "owner": {"type": "string", "minLength": 1},
+          "consumer": {"type": "string", "minLength": 1},
+          "producer": {"type": "string", "minLength": 1},
           "derived_from": {"type": "string", "pattern": "^ops/.+"}
         }
       }
