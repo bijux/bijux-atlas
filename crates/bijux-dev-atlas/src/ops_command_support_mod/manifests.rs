@@ -254,7 +254,7 @@ mod tests {
     #[test]
     fn tools_manifest_parses() {
         let root = tempfile::tempdir().expect("tempdir");
-        let tools_dir = root.path().join("ops/tools");
+        let tools_dir = root.path().join("ops/inventory");
         std::fs::create_dir_all(&tools_dir).expect("mkdir");
         std::fs::write(
             tools_dir.join("tools.toml"),

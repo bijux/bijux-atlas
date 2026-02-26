@@ -50,11 +50,14 @@ mod tests {
         std::fs::create_dir_all(root.path().join("ops/load/k6/suites")).expect("mkdir suites");
         std::fs::create_dir_all(root.path().join("ops/load/queries")).expect("mkdir queries");
         std::fs::create_dir_all(root.path().join("ops/atlas-dev")).expect("mkdir atlas-dev");
+        std::fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
         std::fs::write(
             root.path().join("ops/inventory/registry.toml"),
             "schema_version = 1\n",
         )
         .expect("registry");
+        std::fs::write(root.path().join("ops/inventory/tools.toml"), "schema_version = 1\n")
+            .expect("tools");
         std::fs::create_dir_all(root.path().join("artifacts/ops/ops_run/load/mixed"))
             .expect("mkdir artifacts");
         std::fs::write(
@@ -107,11 +110,14 @@ mod tests {
         std::fs::create_dir_all(root.path().join("ops/load/queries")).expect("mkdir queries");
         std::fs::create_dir_all(root.path().join("ops/load/thresholds")).expect("mkdir thresholds");
         std::fs::create_dir_all(root.path().join("ops/atlas-dev")).expect("mkdir atlas-dev");
+        std::fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
         std::fs::write(
             root.path().join("ops/inventory/registry.toml"),
             "schema_version = 1\n",
         )
         .expect("registry");
+        std::fs::write(root.path().join("ops/inventory/tools.toml"), "schema_version = 1\n")
+            .expect("tools");
         std::fs::write(
             root.path().join("ops/load/load.toml"),
             "[suites.mixed]\nscript=\"ops/load/k6/suites/mixed-80-20.js\"\ndataset=\"ops/load/queries/pinned-v1.json\"\nthresholds=\"ops/load/thresholds/mixed.thresholds.json\"\n[suites.mixed.env]\nZZZ=\"1\"\nAAA=\"2\"\n",
