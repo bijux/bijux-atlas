@@ -24,7 +24,6 @@ Canonical operational filesystem layout.
 ## Run full stack
 
 ```bash
-$ make ops-full
 ```
 
 Canonical meta target: `ops-full`.
@@ -33,3 +32,9 @@ Canonical meta target: `ops-full`.
 
 - [Operations Index](INDEX.md)
 - [Full Stack Local](full-stack-local.md)
+
+## Authoritative References
+
+- `ops/README.md` (Tier-1 normative root overview)
+- `ops/inventory/surfaces.json` (machine truth)
+- `docs/operations/reference/ops-surface.md` (generated reference)

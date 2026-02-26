@@ -1,0 +1,304 @@
+# Ops Surface Reference
+
+- Owner: `bijux-atlas-operations`
+- Tier: `generated`
+- Audience: `operators`
+- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane.snapshot.md`
+
+## Purpose
+
+Generated ops surface reference derived from inventory surfaces.
+
+## Entry Points
+
+- `ops-alerts-validate`
+- `ops-artifacts-open`
+- `ops-baseline-policy-check`
+- `ops-cache-pin-set`
+- `ops-cache-status`
+- `ops-catalog-validate`
+- `ops-check`
+- `ops-clean`
+- `ops-contracts-check`
+- `ops-dashboards-validate`
+- `ops-dataset-federated-registry-test`
+- `ops-dataset-multi-release-test`
+- `ops-dataset-promotion-sim`
+- `ops-dataset-qc`
+- `ops-datasets-fetch`
+- `ops-deploy`
+- `ops-doctor`
+- `ops-down`
+- `ops-drill-corruption-dataset`
+- `ops-drill-memory-growth`
+- `ops-drill-otel-outage`
+- `ops-drill-overload`
+- `ops-drill-pod-churn`
+- `ops-drill-rate-limit`
+- `ops-drill-rollback`
+- `ops-drill-rollback-under-load`
+- `ops-drill-store-outage`
+- `ops-drill-suite`
+- `ops-drill-toxiproxy-latency`
+- `ops-drill-upgrade`
+- `ops-drill-upgrade-under-load`
+- `ops-e2e-smoke`
+- `ops-e2e-validate`
+- `ops-full`
+- `ops-full-pr`
+- `ops-gc-smoke`
+- `ops-gen`
+- `ops-gen-check`
+- `ops-help`
+- `ops-incident-repro-kit`
+- `ops-k8s-smoke`
+- `ops-k8s-suite`
+- `ops-k8s-template-tests`
+- `ops-k8s-tests`
+- `ops-layout-lint`
+- `ops-load-ci`
+- `ops-load-full`
+- `ops-load-manifest-validate`
+- `ops-load-nightly`
+- `ops-load-shedding`
+- `ops-load-smoke`
+- `ops-load-soak`
+- `ops-load-suite`
+- `ops-local-full`
+- `ops-local-full-stack`
+- `ops-metrics-check`
+- `ops-observability-down`
+- `ops-observability-install`
+- `ops-observability-mode`
+- `ops-observability-uninstall`
+- `ops-observability-verify`
+- `ops-observability-pack-conformance-report`
+- `ops-observability-pack-export`
+- `ops-observability-pack-health`
+- `ops-observability-pack-smoke`
+- `ops-observability-pack-verify`
+- `ops-observability-smoke`
+- `ops-observability-validate`
+- `ops-open-grafana`
+- `ops-openapi-validate`
+- `ops-perf-baseline-update`
+- `ops-perf-cold-start`
+- `ops-perf-nightly`
+- `ops-perf-report`
+- `ops-perf-warm-start`
+- `ops-prereqs`
+- `ops-proof-cached-only`
+- `ops-publish`
+- `ops-readiness-scorecard`
+- `ops-realdata`
+- `ops-redeploy`
+- `ops-ref-grade-local`
+- `ops-ref-grade-nightly`
+- `ops-ref-grade-pr`
+- `ops-release-matrix`
+- `ops-release-rollback`
+- `ops-release-update`
+- `ops-report`
+- `ops-slo-alert-proof`
+- `ops-slo-burn`
+- `ops-slo-report`
+- `ops-smoke`
+- `ops-surface`
+- `ops-tools-check`
+- `ops-traces-check`
+- `ops-undeploy`
+- `ops-up`
+- `ops-values-validate`
+- `ops-warm`
+- `ops-warm-datasets`
+- `ops-warm-shards`
+- `ops-warm-top`
+
+## bijux-dev-atlas Commands
+
+- `bijux dev atlas ops actions list`
+- `bijux dev atlas ops actions run`
+- `bijux dev atlas ops cache prune`
+- `bijux dev atlas ops cache status`
+- `bijux dev atlas ops datasets fetch`
+- `bijux dev atlas ops datasets lint-ids`
+- `bijux dev atlas ops datasets lock`
+- `bijux dev atlas ops datasets pin`
+- `bijux dev atlas ops datasets qc diff`
+- `bijux dev atlas ops datasets qc summary`
+- `bijux dev atlas ops datasets validate`
+- `bijux dev atlas ops datasets verify`
+- `bijux dev atlas ops deploy apply`
+- `bijux dev atlas ops deploy plan`
+- `bijux dev atlas ops deploy rollback`
+- `bijux dev atlas ops e2e run`
+- `bijux dev atlas ops e2e validate`
+- `bijux dev atlas ops e2e validate-results`
+- `bijux dev atlas ops env print`
+- `bijux dev atlas ops env validate`
+- `bijux dev atlas ops gen check`
+- `bijux dev atlas ops gen run`
+- `bijux dev atlas ops k8s apply-config`
+- `bijux dev atlas ops k8s check`
+- `bijux dev atlas ops k8s contracts`
+- `bijux dev atlas ops k8s diff`
+- `bijux dev atlas ops k8s render`
+- `bijux dev atlas ops k8s validate`
+- `bijux dev atlas ops k8s validate-configmap-keys`
+- `bijux dev atlas ops kind down`
+- `bijux dev atlas ops kind fault`
+- `bijux dev atlas ops kind reset`
+- `bijux dev atlas ops kind up`
+- `bijux dev atlas ops kind validate`
+- `bijux dev atlas ops load check`
+- `bijux dev atlas ops load compare`
+- `bijux dev atlas ops load run`
+- `bijux dev atlas ops observe check`
+- `bijux dev atlas ops observe drill`
+- `bijux dev atlas ops observe lint`
+- `bijux dev atlas ops observe report`
+- `bijux dev atlas ops observe up`
+- `bijux dev atlas ops observe validate`
+- `bijux dev atlas ops observe verify`
+- `bijux dev atlas ops pins check`
+- `bijux dev atlas ops pins update`
+- `bijux dev atlas ops check`
+- `bijux dev atlas ops clean`
+- `bijux dev atlas ops clean-generated`
+- `bijux dev atlas ops contracts-check`
+- `bijux dev atlas ops contracts-index`
+- `bijux dev atlas ops directory-budgets-check`
+- `bijux dev atlas ops doctor`
+- `bijux dev atlas ops down`
+- `bijux dev atlas ops explain`
+- `bijux dev atlas ops help`
+- `bijux dev atlas ops k8s-checks-layout`
+- `bijux dev atlas ops k8s-flakes-check`
+- `bijux dev atlas ops k8s-surface-generate`
+- `bijux dev atlas ops k8s-test-contract`
+- `bijux dev atlas ops k8s-test-lib-contract`
+- `bijux dev atlas ops layer-drift-check`
+- `bijux dev atlas ops lint`
+- `bijux dev atlas ops list`
+- `bijux dev atlas ops naming-check`
+- `bijux dev atlas ops no-direct-script-usage-check`
+- `bijux dev atlas ops policy-audit`
+- `bijux dev atlas ops prereqs`
+- `bijux dev atlas ops restart`
+- `bijux dev atlas ops root-lanes`
+- `bijux dev atlas ops root-local`
+- `bijux dev atlas ops run`
+- `bijux dev atlas ops run-script`
+- `bijux dev atlas ops schema-check`
+- `bijux dev atlas ops smoke`
+- `bijux dev atlas ops suites-check`
+- `bijux dev atlas ops surface`
+- `bijux dev atlas ops tool-versions-check`
+- `bijux dev atlas ops up`
+- `bijux dev atlas ops warm`
+- `bijux dev atlas ops warm-dx`
+- `bijux dev atlas ops stack check`
+- `bijux dev atlas ops stack down`
+- `bijux dev atlas ops stack report`
+- `bijux dev atlas ops stack restart`
+- `bijux dev atlas ops stack status`
+- `bijux dev atlas ops stack up`
+- `bijux dev atlas ops stack validate`
+- `bijux dev atlas ops stack versions-sync`
+
+## Actions
+
+- `{'id': 'ops.actions.list', 'domain': 'actions', 'command': ['bijux-dev-atlas', 'ops', 'actions', 'list'], 'argv': ['actions', 'list']}`
+- `{'id': 'ops.actions.run', 'domain': 'actions', 'command': ['bijux-dev-atlas', 'ops', 'actions', 'run'], 'argv': ['actions', 'run']}`
+- `{'id': 'ops.cache.prune', 'domain': 'cache', 'command': ['bijux-dev-atlas', 'ops', 'cache', 'prune'], 'argv': ['cache', 'prune']}`
+- `{'id': 'ops.cache.status', 'domain': 'cache', 'command': ['bijux-dev-atlas', 'ops', 'cache', 'status'], 'argv': ['cache', 'status']}`
+- `{'id': 'ops.datasets.fetch', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'fetch'], 'argv': ['datasets', 'fetch']}`
+- `{'id': 'ops.datasets.lint-ids', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'lint-ids'], 'argv': ['datasets', 'lint-ids']}`
+- `{'id': 'ops.datasets.lock', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'lock'], 'argv': ['datasets', 'lock']}`
+- `{'id': 'ops.datasets.pin', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'pin'], 'argv': ['datasets', 'pin']}`
+- `{'id': 'ops.datasets.qc.diff', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'qc', 'diff'], 'argv': ['datasets', 'qc', 'diff']}`
+- `{'id': 'ops.datasets.qc.summary', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'qc', 'summary'], 'argv': ['datasets', 'qc', 'summary']}`
+- `{'id': 'ops.datasets.validate', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'validate'], 'argv': ['datasets', 'validate']}`
+- `{'id': 'ops.datasets.verify', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'verify'], 'argv': ['datasets', 'verify']}`
+- `{'id': 'ops.deploy.apply', 'domain': 'deploy', 'command': ['bijux-dev-atlas', 'ops', 'deploy', 'apply'], 'argv': ['deploy', 'apply']}`
+- `{'id': 'ops.deploy.plan', 'domain': 'deploy', 'command': ['bijux-dev-atlas', 'ops', 'deploy', 'plan'], 'argv': ['deploy', 'plan']}`
+- `{'id': 'ops.deploy.rollback', 'domain': 'deploy', 'command': ['bijux-dev-atlas', 'ops', 'deploy', 'rollback'], 'argv': ['deploy', 'rollback']}`
+- `{'id': 'ops.e2e.run', 'domain': 'e2e', 'command': ['bijux-dev-atlas', 'ops', 'e2e', 'run'], 'argv': ['e2e', 'run']}`
+- `{'id': 'ops.e2e.validate', 'domain': 'e2e', 'command': ['bijux-dev-atlas', 'ops', 'e2e', 'validate'], 'argv': ['e2e', 'validate']}`
+- `{'id': 'ops.e2e.validate-results', 'domain': 'e2e', 'command': ['bijux-dev-atlas', 'ops', 'e2e', 'validate-results'], 'argv': ['e2e', 'validate-results']}`
+- `{'id': 'ops.env.print', 'domain': 'env', 'command': ['bijux-dev-atlas', 'ops', 'env', 'print'], 'argv': ['env', 'print']}`
+- `{'id': 'ops.env.validate', 'domain': 'env', 'command': ['bijux-dev-atlas', 'ops', 'env', 'validate'], 'argv': ['env', 'validate']}`
+- `{'id': 'ops.gen.check', 'domain': 'gen', 'command': ['bijux-dev-atlas', 'ops', 'gen', 'check'], 'argv': ['gen', 'check']}`
+- `{'id': 'ops.gen.run', 'domain': 'gen', 'command': ['bijux-dev-atlas', 'ops', 'gen', 'run'], 'argv': ['gen', 'run']}`
+- `{'id': 'ops.k8s.apply-config', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'apply-config'], 'argv': ['k8s', 'apply-config']}`
+- `{'id': 'ops.k8s.check', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'check'], 'argv': ['k8s', 'check']}`
+- `{'id': 'ops.k8s.contracts', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'contracts'], 'argv': ['k8s', 'contracts']}`
+- `{'id': 'ops.k8s.diff', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'diff'], 'argv': ['k8s', 'diff']}`
+- `{'id': 'ops.k8s.render', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'render'], 'argv': ['k8s', 'render']}`
+- `{'id': 'ops.k8s.validate', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'validate'], 'argv': ['k8s', 'validate']}`
+- `{'id': 'ops.k8s.validate-configmap-keys', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'validate-configmap-keys'], 'argv': ['k8s', 'validate-configmap-keys']}`
+- `{'id': 'ops.kind.down', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'down'], 'argv': ['kind', 'down']}`
+- `{'id': 'ops.kind.fault', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'fault'], 'argv': ['kind', 'fault']}`
+- `{'id': 'ops.kind.reset', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'reset'], 'argv': ['kind', 'reset']}`
+- `{'id': 'ops.kind.up', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'up'], 'argv': ['kind', 'up']}`
+- `{'id': 'ops.kind.validate', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'validate'], 'argv': ['kind', 'validate']}`
+- `{'id': 'ops.load.check', 'domain': 'load', 'command': ['bijux-dev-atlas', 'ops', 'load', 'check'], 'argv': ['load', 'check']}`
+- `{'id': 'ops.load.compare', 'domain': 'load', 'command': ['bijux-dev-atlas', 'ops', 'load', 'compare'], 'argv': ['load', 'compare']}`
+- `{'id': 'ops.load.run', 'domain': 'load', 'command': ['bijux-dev-atlas', 'ops', 'load', 'run'], 'argv': ['load', 'run']}`
+- `{'id': 'ops.observe.check', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'check'], 'argv': ['observe', 'check']}`
+- `{'id': 'ops.observe.drill', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'drill'], 'argv': ['observe', 'drill']}`
+- `{'id': 'ops.observe.lint', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'lint'], 'argv': ['observe', 'lint']}`
+- `{'id': 'ops.observe.report', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'report'], 'argv': ['observe', 'report']}`
+- `{'id': 'ops.observe.up', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'up'], 'argv': ['observe', 'up']}`
+- `{'id': 'ops.observe.validate', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'validate'], 'argv': ['observe', 'validate']}`
+- `{'id': 'ops.observe.verify', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'verify'], 'argv': ['observe', 'verify']}`
+- `{'id': 'ops.pins.check', 'domain': 'pins', 'command': ['bijux-dev-atlas', 'ops', 'pins', 'check'], 'argv': ['pins', 'check']}`
+- `{'id': 'ops.pins.update', 'domain': 'pins', 'command': ['bijux-dev-atlas', 'ops', 'pins', 'update'], 'argv': ['pins', 'update']}`
+- `{'id': 'ops.root.check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'check'], 'argv': ['check']}`
+- `{'id': 'ops.root.clean', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'clean'], 'argv': ['clean']}`
+- `{'id': 'ops.root.clean-generated', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'clean-generated'], 'argv': ['clean-generated']}`
+- `{'id': 'ops.root.contracts-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'contracts-check'], 'argv': ['contracts-check']}`
+- `{'id': 'ops.root.contracts-index', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'contracts-index'], 'argv': ['contracts-index']}`
+- `{'id': 'ops.root.directory-budgets-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'directory-budgets-check'], 'argv': ['directory-budgets-check']}`
+- `{'id': 'ops.root.doctor', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'doctor'], 'argv': ['doctor']}`
+- `{'id': 'ops.root.down', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'down'], 'argv': ['down']}`
+- `{'id': 'ops.root.explain', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'explain'], 'argv': ['explain']}`
+- `{'id': 'ops.root.help', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'help'], 'argv': ['help']}`
+- `{'id': 'ops.root.k8s-checks-layout', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-checks-layout'], 'argv': ['k8s-checks-layout']}`
+- `{'id': 'ops.root.k8s-flakes-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-flakes-check'], 'argv': ['k8s-flakes-check']}`
+- `{'id': 'ops.root.k8s-surface-generate', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-surface-generate'], 'argv': ['k8s-surface-generate']}`
+- `{'id': 'ops.root.k8s-test-contract', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-test-contract'], 'argv': ['k8s-test-contract']}`
+- `{'id': 'ops.root.k8s-test-lib-contract', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-test-lib-contract'], 'argv': ['k8s-test-lib-contract']}`
+- `{'id': 'ops.root.layer-drift-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'layer-drift-check'], 'argv': ['layer-drift-check']}`
+- `{'id': 'ops.root.lint', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'lint'], 'argv': ['lint']}`
+- `{'id': 'ops.root.list', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'list'], 'argv': ['list']}`
+- `{'id': 'ops.root.naming-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'naming-check'], 'argv': ['naming-check']}`
+- `{'id': 'ops.root.no-direct-script-usage-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'no-direct-script-usage-check'], 'argv': ['no-direct-script-usage-check']}`
+- `{'id': 'ops.root.policy-audit', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'policy-audit'], 'argv': ['policy-audit']}`
+- `{'id': 'ops.root.prereqs', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'prereqs'], 'argv': ['prereqs']}`
+- `{'id': 'ops.root.restart', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'restart'], 'argv': ['restart']}`
+- `{'id': 'ops.root.root-lanes', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'root-lanes'], 'argv': ['root-lanes']}`
+- `{'id': 'ops.root.root-local', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'root-local'], 'argv': ['root-local']}`
+- `{'id': 'ops.root.run', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'run'], 'argv': ['run']}`
+- `{'id': 'ops.root.run-script', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'run-script'], 'argv': ['run-script']}`
+- `{'id': 'ops.root.schema-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'schema-check'], 'argv': ['schema-check']}`
+- `{'id': 'ops.root.smoke', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'smoke'], 'argv': ['smoke']}`
+- `{'id': 'ops.root.suites-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'suites-check'], 'argv': ['suites-check']}`
+- `{'id': 'ops.root.surface', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'surface'], 'argv': ['surface']}`
+- `{'id': 'ops.root.tool-versions-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'tool-versions-check'], 'argv': ['tool-versions-check']}`
+- `{'id': 'ops.root.up', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'up'], 'argv': ['up']}`
+- `{'id': 'ops.root.warm', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'warm'], 'argv': ['warm']}`
+- `{'id': 'ops.root.warm-dx', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'warm-dx'], 'argv': ['warm-dx']}`
+- `{'id': 'ops.stack.check', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'check'], 'argv': ['stack', 'check']}`
+- `{'id': 'ops.stack.down', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'down'], 'argv': ['stack', 'down']}`
+- `{'id': 'ops.stack.report', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'report'], 'argv': ['stack', 'report']}`
+- `{'id': 'ops.stack.restart', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'restart'], 'argv': ['stack', 'restart']}`
+- `{'id': 'ops.stack.status', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'status'], 'argv': ['stack', 'status']}`
+- `{'id': 'ops.stack.up', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'up'], 'argv': ['stack', 'up']}`
+- `{'id': 'ops.stack.validate', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'validate'], 'argv': ['stack', 'validate']}`
+- `{'id': 'ops.stack.versions-sync', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'versions-sync'], 'argv': ['stack', 'versions-sync']}`
+
+## See Also
+
+- `ops/_generated.example/control-plane.snapshot.md` (example generated snapshot)
+- `ops/inventory/surfaces.json` (machine truth)
