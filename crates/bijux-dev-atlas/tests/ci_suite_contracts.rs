@@ -34,7 +34,11 @@ fn suite_ids(suite: &str) -> BTreeSet<String> {
         .as_array()
         .expect("checks array")
         .iter()
-        .filter_map(|row| row.get("id").and_then(|v| v.as_str()).map(ToString::to_string))
+        .filter_map(|row| {
+            row.get("id")
+                .and_then(|v| v.as_str())
+                .map(ToString::to_string)
+        })
         .collect()
 }
 

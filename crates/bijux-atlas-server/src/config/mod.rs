@@ -197,8 +197,12 @@ pub struct RuntimeStartupConfig {
 }
 
 fn parse_runtime_startup_config_file(path: &Path) -> Result<RuntimeStartupConfigFile, String> {
-    let text = std::fs::read_to_string(path)
-        .map_err(|err| format!("failed reading runtime config file {}: {err}", path.display()))?;
+    let text = std::fs::read_to_string(path).map_err(|err| {
+        format!(
+            "failed reading runtime config file {}: {err}",
+            path.display()
+        )
+    })?;
     match path.extension().and_then(|v| v.to_str()) {
         Some("json") => serde_json::from_str(&text)
             .map_err(|err| format!("invalid runtime config json {}: {err}", path.display())),
