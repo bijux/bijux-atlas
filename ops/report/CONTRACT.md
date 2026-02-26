@@ -31,6 +31,7 @@
 | `ops/report/generated/historical-comparison.json` | `ops/schema/report/historical-comparison.schema.json` |
 | `ops/report/generated/release-evidence-bundle.json` | `ops/schema/report/release-evidence-bundle.schema.json` |
 | `ops/report/generated/readiness-score.json` | `ops/schema/report/readiness-score.schema.json` |
+| `ops/_generated.example/evidence-gap-report.json` | `ops/schema/report/evidence-gap-report.schema.json` |
 
 ## Contract Taxonomy
 

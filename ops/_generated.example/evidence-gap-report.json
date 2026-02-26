@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas report evidence-gap --write-example",
+  "generated_from": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md",
+  "status": "pass",
+  "summary": {
+    "missing": 0,
+    "stale": 0,
+    "lineage": 0
+  },
+  "gaps": []
+}

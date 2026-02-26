@@ -3,6 +3,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     let generated_lifecycle_rel = Path::new("ops/GENERATED_LIFECYCLE.md");
+    let evidence_checklist_rel = Path::new("ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md");
     let mirror_policy_rel = Path::new("ops/_generated.example/MIRROR_POLICY.md");
     let allowlist_rel = Path::new("ops/_generated.example/ALLOWLIST.json");
     let ops_index_rel = Path::new("ops/_generated.example/ops-index.json");
@@ -13,10 +14,15 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     let control_graph_diff_rel =
         Path::new("ops/_generated.example/control-graph-diff-report.json");
     let schema_drift_rel = Path::new("ops/_generated.example/schema-drift-report.json");
+    let evidence_gap_rel = Path::new("ops/_generated.example/evidence-gap-report.json");
+    let readiness_score_rel = Path::new("ops/report/generated/readiness-score.json");
+    let historical_comparison_rel = Path::new("ops/report/generated/historical-comparison.json");
+    let release_bundle_rel = Path::new("ops/report/generated/release-evidence-bundle.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
 
     for rel in [
         generated_lifecycle_rel,
+        evidence_checklist_rel,
         mirror_policy_rel,
         allowlist_rel,
         ops_index_rel,
@@ -26,6 +32,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         contract_graph_rel,
         control_graph_diff_rel,
         schema_drift_rel,
+        evidence_gap_rel,
     ] {
         if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
             violations.push(violation(
@@ -63,6 +70,28 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         }
     }
     for required in [
+        "## Required Artifacts",
+        "## Completeness Rules",
+        "## Lineage Rules",
+        "## Blocking Conditions",
+        "ops/_generated.example/evidence-gap-report.json",
+        "ops/report/generated/release-evidence-bundle.json",
+        "ops/report/generated/historical-comparison.json",
+        "ops/report/generated/readiness-score.json",
+    ] {
+        if !fs::read_to_string(ctx.repo_root.join(evidence_checklist_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?
+            .contains(required)
+        {
+            violations.push(violation(
+                "OPS_EVIDENCE_COMPLETENESS_CHECKLIST_INCOMPLETE",
+                format!("evidence completeness checklist must include `{required}`"),
+                "update ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md with required evidence rules and artifacts",
+                Some(evidence_checklist_rel),
+            ));
+        }
+    }
+    for required in [
         "ops-index.json",
         "ops-evidence-bundle.json",
         "scorecard.json",
@@ -76,6 +105,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "schema-drift-report.json",
         "stack-drift-report.json",
         "ops/GENERATED_LIFECYCLE.md",
+        "evidence-gap-report.json",
     ] {
         if !mirror_policy_text.contains(required) {
             violations.push(violation(
@@ -231,6 +261,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "schema_version",
         "release",
         "status",
+        "generated_by",
+        "generated_from",
         "hashes",
         "gates",
         "pin_freeze_status",
@@ -242,6 +274,37 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                 "populate required evidence bundle key",
                 Some(bundle_rel),
             ));
+        }
+    }
+    if bundle_json
+        .get("generated_from")
+        .and_then(|v| v.as_str())
+        != Some(evidence_checklist_rel.to_str().unwrap_or_default())
+    {
+        violations.push(violation(
+            "OPS_EVIDENCE_BUNDLE_LINEAGE_SOURCE_INVALID",
+            "release evidence bundle generated_from must reference ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md".to_string(),
+            "set release-evidence-bundle.json generated_from to the evidence completeness checklist contract",
+            Some(bundle_rel),
+        ));
+    }
+    if let Some(bundle_paths) = bundle_json.get("bundle_paths").and_then(|v| v.as_array()) {
+        let bundle_paths = bundle_paths
+            .iter()
+            .filter_map(|v| v.as_str())
+            .collect::<BTreeSet<_>>();
+        for required in [
+            "ops/report/generated/readiness-score.json",
+            "ops/report/generated/historical-comparison.json",
+        ] {
+            if !bundle_paths.contains(required) {
+                violations.push(violation(
+                    "OPS_EVIDENCE_BUNDLE_COMPLETENESS_PATH_MISSING",
+                    format!("release evidence bundle missing required bundle_paths entry `{required}`"),
+                    "include readiness and historical comparison artifacts in release-evidence-bundle.json bundle_paths",
+                    Some(bundle_rel),
+                ));
+            }
         }
     }
 
@@ -342,6 +405,89 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                 Some(schema_drift_rel),
             ));
         }
+    }
+
+    let readiness_score_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(readiness_score_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?,
+    )
+    .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let historical_comparison_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(historical_comparison_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?,
+    )
+    .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let release_report_bundle_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(release_bundle_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?,
+    )
+    .map_err(|err| CheckError::Failed(err.to_string()))?;
+    if historical_comparison_json
+        .get("status")
+        .and_then(|v| v.as_str())
+        == Some("regressed")
+        && release_report_bundle_json
+            .get("status")
+            .and_then(|v| v.as_str())
+            == Some("ready")
+    {
+        violations.push(violation(
+            "OPS_EVIDENCE_READINESS_HISTORICAL_STATUS_CONFLICT",
+            "release-evidence-bundle.json status cannot be `ready` when historical-comparison.json status is `regressed`".to_string(),
+            "block release readiness or refresh historical comparison evidence before marking release bundle ready",
+            Some(release_bundle_rel),
+        ));
+    }
+    if readiness_score_json.get("generated_by").is_none() {
+        violations.push(violation(
+            "OPS_EVIDENCE_READINESS_SCORE_LINEAGE_MISSING",
+            "readiness-score.json must include generated_by for evidence lineage".to_string(),
+            "add generated_by metadata to readiness-score.json",
+            Some(readiness_score_rel),
+        ));
+    }
+
+    let evidence_gap_json: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(ctx.repo_root.join(evidence_gap_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?,
+    )
+    .map_err(|err| CheckError::Failed(err.to_string()))?;
+    for key in [
+        "schema_version",
+        "generated_by",
+        "generated_from",
+        "status",
+        "summary",
+        "gaps",
+    ] {
+        if evidence_gap_json.get(key).is_none() {
+            violations.push(violation(
+                "OPS_EVIDENCE_GAP_REPORT_INVALID",
+                format!("evidence gap report is missing required key `{key}`"),
+                "populate evidence-gap-report.json with required completeness fields",
+                Some(evidence_gap_rel),
+            ));
+        }
+    }
+    if evidence_gap_json
+        .get("generated_from")
+        .and_then(|v| v.as_str())
+        != Some(evidence_checklist_rel.to_str().unwrap_or_default())
+    {
+        violations.push(violation(
+            "OPS_EVIDENCE_GAP_REPORT_LINEAGE_SOURCE_INVALID",
+            "evidence-gap-report.json generated_from must reference ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md".to_string(),
+            "set evidence-gap-report.json generated_from to the evidence completeness checklist contract",
+            Some(evidence_gap_rel),
+        ));
+    }
+    if evidence_gap_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+        violations.push(violation(
+            "OPS_EVIDENCE_GAP_REPORT_BLOCKING",
+            "evidence-gap-report.json status is not `pass`".to_string(),
+            "resolve missing/stale/lineage evidence gaps and regenerate evidence-gap-report.json",
+            Some(evidence_gap_rel),
+        ));
     }
 
     let contract_audit_text = fs::read_to_string(ctx.repo_root.join(contract_audit_rel))
@@ -451,4 +597,3 @@ pub(super) fn check_ops_evidence_bundle_discipline(
 
     Ok(violations)
 }
-

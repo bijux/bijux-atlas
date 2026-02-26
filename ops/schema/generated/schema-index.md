@@ -90,6 +90,7 @@
 | `ops/schema/observe/telemetry-index.schema.json` |
 | `ops/schema/report/contract-audit-report.schema.json` |
 | `ops/schema/report/contract-dependency-graph.schema.json` |
+| `ops/schema/report/evidence-gap-report.schema.json` |
 | `ops/schema/report/evidence-levels.schema.json` |
 | `ops/schema/report/historical-comparison.schema.json` |
 | `ops/schema/report/lane.schema.json` |

@@ -13,6 +13,7 @@
     "ops/_generated.example/docs-drift-report.json",
     "ops/_generated.example/docs-links-report.json",
     "ops/_generated.example/domain-document-template-contract.hash.json",
+    "ops/_generated.example/evidence-gap-report.json",
     "ops/_generated.example/file-usage-report.json",
     "ops/_generated.example/fixture-drift-report.json",
     "ops/_generated.example/generator-coverage-report.json",
@@ -128,6 +129,12 @@
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/evidence-gap-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas report evidence-gap",
+      "regenerate": "make ops-readiness-scorecard"
     },
     {
       "committed": "ops/_generated.example/file-usage-report.json",
