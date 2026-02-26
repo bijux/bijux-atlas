@@ -45,3 +45,7 @@ harness = false
 [[bench]]
 name = "policy_eval"
 harness = false
+
+[[bench]]
+name = "core_engine"
+harness = false
