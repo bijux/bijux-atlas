@@ -642,6 +642,17 @@ budget_ms = 1000
 visibility = "public"
 
 [[checks]]
+id = "checks_ops_image_references_digest_pinned"
+domain = "ops"
+title = "ops image references are digest pinned"
+docs = "ops/inventory/toolchain.json"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1200
+visibility = "public"
+
+[[checks]]
 id = "checks_ops_internal_registry_consistency"
 domain = "ops"
 title = "ops internal registry consistency"
@@ -859,6 +870,17 @@ tags = ["ops", "fast"]
 suites = ["ops_fast", "all_fast", "ci"]
 effects_required = ["fs_read"]
 budget_ms = 1000
+visibility = "public"
+
+[[checks]]
+id = "checks_ops_workflows_github_actions_pinned"
+domain = "ops"
+title = "workflow github actions are sha pinned and allowlisted"
+docs = "ops/inventory/toolchain.json"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1200
 visibility = "public"
 
 [[checks]]

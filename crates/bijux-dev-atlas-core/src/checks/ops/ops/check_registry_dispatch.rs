@@ -19,6 +19,12 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_ops_artifacts_gitignore_policy" => Some(checks_ops_artifacts_gitignore_policy),
         "checks_ops_makefile_routes_dev_atlas" => Some(checks_ops_makefile_routes_dev_atlas),
         "checks_ops_workflow_routes_dev_atlas" => Some(checks_ops_workflow_routes_dev_atlas),
+        "checks_ops_workflows_github_actions_pinned" => {
+            Some(checks_ops_workflows_github_actions_pinned)
+        }
+        "checks_ops_image_references_digest_pinned" => {
+            Some(checks_ops_image_references_digest_pinned)
+        }
         "checks_make_ops_wrappers_delegate_dev_atlas" => {
             Some(check_make_ops_wrappers_delegate_dev_atlas)
         }
@@ -207,6 +213,8 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_ops_artifacts_gitignore_policy",
         "checks_ops_makefile_routes_dev_atlas",
         "checks_ops_workflow_routes_dev_atlas",
+        "checks_ops_workflows_github_actions_pinned",
+        "checks_ops_image_references_digest_pinned",
         "checks_make_ops_wrappers_delegate_dev_atlas",
         "checks_workflows_ops_entrypoints_bijux_only",
         "checks_ops_internal_registry_consistency",
