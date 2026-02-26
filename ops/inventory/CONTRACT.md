@@ -12,6 +12,7 @@
 | --- | --- |
 | `ops/inventory/contracts-map.json` | Authored registry SSOT |
 | `ops/inventory/authority-index.json` | Authored authority hierarchy index |
+| `ops/inventory/authoritative-file-list.json` | Authored authoritative path index |
 | `ops/inventory/control-graph.json` | Authored inventory control graph |
 | `ops/inventory/pins.yaml` | Authored pins SSOT |
 | `ops/inventory/pin-freeze.json` | Authored pin lifecycle policy |
@@ -31,6 +32,7 @@
 | --- | --- |
 | `ops/inventory/contracts-map.json` | `ops/schema/inventory/contracts-map.schema.json` |
 | `ops/inventory/authority-index.json` | `ops/schema/inventory/authority-index.schema.json` |
+| `ops/inventory/authoritative-file-list.json` | `ops/schema/inventory/authoritative-file-list.schema.json` |
 | `ops/inventory/control-graph.json` | `ops/schema/inventory/control-graph.schema.json` |
 | `ops/inventory/contracts.json` | `ops/schema/inventory/contracts.schema.json` |
 | `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` |
@@ -52,6 +54,7 @@
 ## Invariants
 
 - No duplicate authored truth is allowed; authoritative inventory registry is `ops/inventory/contracts-map.json`.
+- Authoritative inventory paths are indexed in `ops/inventory/authoritative-file-list.json` and must stay aligned with authority-index and contracts-map.
 - `ops/inventory/contracts.json` is a generated output and must never become authored truth.
 - Namespace identity lives in `ops/inventory/namespaces.json`; cross-domain dependency permissions live in `ops/inventory/layers.json`.
 - Schema references for this domain must resolve only to `ops/schema/**`.

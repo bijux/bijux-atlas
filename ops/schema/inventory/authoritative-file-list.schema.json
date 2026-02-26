@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "authoritative_paths", "derived_paths"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "authoritative_paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^ops/.+"},
+      "uniqueItems": true
+    },
+    "derived_paths": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^ops/.+"},
+      "uniqueItems": true
+    }
+  }
+}

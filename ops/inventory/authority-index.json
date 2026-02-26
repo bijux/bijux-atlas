@@ -12,6 +12,16 @@
       "owner": "bijux-atlas-operations"
     },
     {
+      "path": "ops/inventory/authority-index.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations"
+    },
+    {
+      "path": "ops/inventory/authoritative-file-list.json",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations"
+    },
+    {
       "path": "ops/inventory/surfaces.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations"

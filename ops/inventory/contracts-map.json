@@ -17,6 +17,12 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/inventory/authoritative-file-list.json",
+      "schema": "ops/schema/inventory/authoritative-file-list.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/inventory/owners.json",
       "schema": "ops/schema/inventory/owners.schema.json",
       "generator": "manual+sync-owner-docs",

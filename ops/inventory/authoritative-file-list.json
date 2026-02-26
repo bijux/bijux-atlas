@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "authoritative_paths": [
+    "ops/inventory/contracts-map.json",
+    "ops/inventory/authority-index.json",
+    "ops/inventory/authoritative-file-list.json",
+    "ops/inventory/surfaces.json",
+    "ops/inventory/gates.json",
+    "ops/inventory/layers.json",
+    "ops/inventory/namespaces.json",
+    "ops/inventory/owners.json",
+    "ops/inventory/drills.json",
+    "ops/inventory/drill-contract-links.json",
+    "ops/inventory/scenario-slo-map.json",
+    "ops/inventory/observability-coverage-map.json",
+    "ops/inventory/pins.yaml",
+    "ops/inventory/pin-freeze.json",
+    "ops/inventory/registry.toml",
+    "ops/inventory/toolchain.json",
+    "ops/inventory/tools.toml"
+  ],
+  "derived_paths": [
+    "ops/inventory/contracts.json"
+  ]
+}

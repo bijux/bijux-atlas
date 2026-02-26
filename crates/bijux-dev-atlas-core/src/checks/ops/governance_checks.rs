@@ -1446,6 +1446,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let contracts_map_rel = Path::new("ops/inventory/contracts-map.json");
     let contracts_rel = Path::new("ops/inventory/contracts.json");
     let authority_index_rel = Path::new("ops/inventory/authority-index.json");
+    let authoritative_file_list_rel = Path::new("ops/inventory/authoritative-file-list.json");
     let contracts_meta_rel = Path::new("ops/inventory/meta/contracts.json");
     let namespaces_rel = Path::new("ops/inventory/namespaces.json");
     let layers_rel = Path::new("ops/inventory/layers.json");
@@ -1562,6 +1563,15 @@ pub(super) fn check_ops_inventory_contract_integrity(
             Some(contracts_map_rel),
         ));
     }
+    if !item_paths.contains(authoritative_file_list_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_AUTHORITATIVE_FILE_LIST_NOT_REGISTERED",
+            "ops/inventory/authoritative-file-list.json must be declared in contracts-map items"
+                .to_string(),
+            "register ops/inventory/authoritative-file-list.json in contracts-map with schema and consumer metadata",
+            Some(contracts_map_rel),
+        ));
+    }
     if !ctx.adapters.fs.exists(ctx.repo_root, authority_index_rel) {
         violations.push(violation(
             "OPS_INVENTORY_AUTHORITY_INDEX_MISSING",
@@ -1605,7 +1615,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
             .unwrap_or_default();
         let mut has_contracts_map_authoritative = false;
         let mut has_contracts_generated = false;
-        for entry in entries {
+        for entry in &entries {
             let path = entry.get("path").and_then(|v| v.as_str()).unwrap_or_default();
             let role = entry.get("role").and_then(|v| v.as_str()).unwrap_or_default();
             if path == "ops/inventory/contracts-map.json" && role == "authoritative" {
@@ -1638,6 +1648,78 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 "set contracts.json role=generated and derived_from=ops/inventory/contracts-map.json",
                 Some(authority_index_rel),
             ));
+        }
+
+        if !ctx
+            .adapters
+            .fs
+            .exists(ctx.repo_root, authoritative_file_list_rel)
+        {
+            violations.push(violation(
+                "OPS_INVENTORY_AUTHORITATIVE_FILE_LIST_MISSING",
+                "missing ops/inventory/authoritative-file-list.json".to_string(),
+                "restore authoritative-file-list.json with authoritative and derived path indexes",
+                Some(authoritative_file_list_rel),
+            ));
+        } else {
+            let file_list_text =
+                fs::read_to_string(ctx.repo_root.join(authoritative_file_list_rel))
+                    .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let file_list_json: serde_json::Value = serde_json::from_str(&file_list_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let authoritative_paths = file_list_json
+                .get("authoritative_paths")
+                .and_then(|v| v.as_array())
+                .map(|arr| {
+                    arr.iter()
+                        .filter_map(|v| v.as_str())
+                        .map(ToString::to_string)
+                        .collect::<BTreeSet<_>>()
+                })
+                .unwrap_or_default();
+            let derived_paths = file_list_json
+                .get("derived_paths")
+                .and_then(|v| v.as_array())
+                .map(|arr| {
+                    arr.iter()
+                        .filter_map(|v| v.as_str())
+                        .map(ToString::to_string)
+                        .collect::<BTreeSet<_>>()
+                })
+                .unwrap_or_default();
+            if !authoritative_paths.contains("ops/inventory/contracts-map.json") {
+                violations.push(violation(
+                    "OPS_INVENTORY_AUTHORITATIVE_FILE_LIST_CONTRACTS_MAP_MISSING",
+                    "authoritative-file-list must include ops/inventory/contracts-map.json"
+                        .to_string(),
+                    "add contracts-map to authoritative_paths in authoritative-file-list",
+                    Some(authoritative_file_list_rel),
+                ));
+            }
+            for entry in &entries {
+                let path = entry.get("path").and_then(|v| v.as_str()).unwrap_or_default();
+                let role = entry.get("role").and_then(|v| v.as_str()).unwrap_or_default();
+                if role == "authoritative" && !authoritative_paths.contains(path) {
+                    violations.push(violation(
+                        "OPS_INVENTORY_AUTHORITATIVE_FILE_LIST_DRIFT",
+                        format!(
+                            "authority-index authoritative path `{path}` missing from authoritative-file-list"
+                        ),
+                        "sync authoritative-file-list authoritative_paths with authority-index entries",
+                        Some(authoritative_file_list_rel),
+                    ));
+                }
+                if role == "generated" && !derived_paths.contains(path) {
+                    violations.push(violation(
+                        "OPS_INVENTORY_DERIVED_FILE_LIST_DRIFT",
+                        format!(
+                            "authority-index generated path `{path}` missing from authoritative-file-list derived_paths"
+                        ),
+                        "sync authoritative-file-list derived_paths with authority-index generated entries",
+                        Some(authoritative_file_list_rel),
+                    ));
+                }
+            }
         }
     }
     if ctx.adapters.fs.exists(ctx.repo_root, contracts_meta_rel) {
