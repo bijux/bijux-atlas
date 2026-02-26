@@ -60,30 +60,6 @@
       "root_doc_count": 9,
       "docs_dir_count": 9,
       "diagram_count": 3
-    },
-    {
-      "crate": "bijux-dev-atlas-adapters",
-      "root_doc_count": 9,
-      "docs_dir_count": 2,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-dev-atlas-core",
-      "root_doc_count": 8,
-      "docs_dir_count": 2,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-dev-atlas-model",
-      "root_doc_count": 9,
-      "docs_dir_count": 2,
-      "diagram_count": 3
-    },
-    {
-      "crate": "bijux-dev-atlas-policies",
-      "root_doc_count": 9,
-      "docs_dir_count": 2,
-      "diagram_count": 3
     }
   ]
 }

@@ -10,7 +10,7 @@
 
 - Sorted registries and schema indexes
 - Generated lineage metadata (`generated_by`, `generated_from`)
-- Golden and report drift tests in `bijux-dev-atlas-core`
+- Golden and report drift tests in `bijux-dev-atlas`
 - Immutable workflow action pins and image digest pinning
 - Generated lifecycle metadata and curated evidence coverage checks
 

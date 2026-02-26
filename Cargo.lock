@@ -411,47 +411,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bijux-dev-atlas-adapters"
-version = "0.1.0"
-dependencies = [
- "bijux-dev-atlas-core",
- "criterion",
-]
-
-[[package]]
-name = "bijux-dev-atlas-core"
-version = "0.1.0"
-dependencies = [
- "bijux-dev-atlas-model",
- "bijux-dev-atlas-policies",
- "criterion",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2",
- "tempfile",
- "toml",
-]
-
-[[package]]
-name = "bijux-dev-atlas-model"
-version = "0.1.0"
-dependencies = [
- "criterion",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bijux-dev-atlas-policies"
-version = "0.1.0"
-dependencies = [
- "criterion",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "bit-set"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

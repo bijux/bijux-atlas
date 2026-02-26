@@ -1,0 +1,4 @@
+bijux-dev-atlas-core
+bijux-dev-atlas-model
+bijux-dev-atlas-adapters
+bijux-dev-atlas-policies

@@ -4,7 +4,7 @@
 
 - Owner: bijux-dev-atlas maintainers
 - Scope: `crates/bijux-dev-atlas` control-plane convergence
-- Intent: track the in-progress merge from `bijux-dev-atlas-*` crates into one crate without schema/report drift
+- Intent: track convergence into one crate without schema/report drift
 
 ## Target
 
@@ -40,26 +40,9 @@
 - dispatch implementation lives at `src/commands/dispatch.rs`
 - command handlers moved under `src/commands/` and loaded by `main.rs` via `#[path = ...]`
 
-## Remaining Before Workspace Member Removal
+## Convergence Notes
 
-- Replace production imports of:
-  - model data contracts are also available in `crates/bijux-dev-atlas/src/model/`
-  - policy schema and validation code are also available in `crates/bijux-dev-atlas/src/policies/`
-  - core engine and checks are also available in `crates/bijux-dev-atlas/src/core/`
-  - adapter implementations are also available in `crates/bijux-dev-atlas/src/adapters/`
-  with internal module paths
-- Extract `src/core/ports.rs` into top-level `src/ports/*`
-- Rewire `core` to depend on `crate::ports`
-- Rewire command execution paths to use internal `core` + `adapters`
-- Consolidate remaining core-related tests/goldens under `crates/bijux-dev-atlas/tests/`
-- Remove all references to old crate names in docs/configs/ops/CI
-- Remove old crates from workspace members and workspace dependencies
-
-## Removal Gate (Batch 7 / Batch 8)
-
-Do not remove workspace members for `bijux-dev-atlas-core`, `-model`, `-adapters`, or `-policies` until:
-
-1. `cargo metadata` no longer shows `bijux-dev-atlas` depending on those crates
-2. `cargo test -p bijux-dev-atlas` passes using internal modules
-3. `cargo bench -p bijux-dev-atlas --no-run` passes for migrated benches
-4. grep for old crate names is clean in code and CI paths
+- Internal module imports are wired through the unified crate.
+- Ports live in `src/ports/` with core compatibility re-exports.
+- Bench and test targets run from `crates/bijux-dev-atlas`.
+- Remaining work focuses on repository-wide cleanup, boundary enforcement, and verification.

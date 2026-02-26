@@ -4,12 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const FORBIDDEN: [&str; 4] = [
-    "bijux-dev-atlas-core",
-    "bijux-dev-atlas-model",
-    "bijux-dev-atlas-adapters",
-    "bijux-dev-atlas-policies",
-];
+const BANLIST_PATH: &str = "crates/bijux-dev-atlas/merge_banlist.txt";
 
 fn workspace_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -21,49 +16,13 @@ fn workspace_root() -> PathBuf {
 }
 
 fn allowlisted_paths() -> BTreeSet<&'static str> {
-    [
-        // Workspace and crate manifests still depend on split crates until later batches rewire imports.
-        "Cargo.toml",
-        "crates/bijux-dev-atlas/Cargo.toml",
-        // Explicit migration planning / checkpoint docs.
-        "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md",
-        // Compatibility checks and docs still reference split-crate paths by design during migration.
-        "crates/bijux-dev-atlas/src/core/checks/ops/governance_repo_checks.rs",
-        "crates/bijux-dev-atlas/src/core/checks/ops/documentation_and_config_checks/config_and_control_plane_checks.rs",
-        "ops/DETERMINISM_PROOF.md",
-        ".github/workflows/ops-validate.yml",
-        "configs/docs/quality-policy.json",
-        // Generated/golden snapshots are updated in Batch 8 after the actual removals happen.
-        "crates/bijux-dev-atlas/tests/goldens/crate_doc_governance_snapshot.json",
-        "docs/registry.json",
-        "docs/_generated/topic-index.json",
-        "docs/_generated/sitemap.json",
-        "docs/_generated/breadcrumbs.json",
-        "docs/_generated/search-index.json",
-        "docs/_generated/crate-doc-coverage.json",
-        "docs/_generated/crate-doc-governance.json",
-        "docs/_generated/crate-doc-governance.md",
-        "docs/_generated/docs-dependency-graph.json",
-        "docs/_generated/docs-quality-dashboard.json",
-        "docs/_generated/crate-doc-pruning.json",
-        "docs/_generated/crate-doc-api-table.md",
-        "docs/_generated/crate-docs-slice.json",
-        "docs/_generated/docs-inventory.md",
-        "docs/_generated/topic-index.md",
-    ]
-    .into_iter()
-    .collect()
+    [BANLIST_PATH].into_iter().collect()
 }
 
 fn ignored_subtrees(root: &Path) -> BTreeSet<PathBuf> {
     [
         root.join("target"),
         root.join(".git"),
-        // Batch 7 deletes these crates. Until then, they are expected to contain legacy names.
-        root.join("crates/bijux-dev-atlas-core"),
-        root.join("crates/bijux-dev-atlas-model"),
-        root.join("crates/bijux-dev-atlas-adapters"),
-        root.join("crates/bijux-dev-atlas-policies"),
     ]
     .into_iter()
     .collect()
@@ -88,6 +47,18 @@ fn collect_files(root: &Path, ignored: &BTreeSet<PathBuf>, out: &mut Vec<PathBuf
 #[test]
 fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
     let root = workspace_root();
+    let banlist_text =
+        fs::read_to_string(root.join(BANLIST_PATH)).expect("merge banlist file must exist");
+    let banlist_entries = banlist_text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        banlist_entries.len(),
+        4,
+        "merge banlist must list the four deleted split dev-atlas crate names"
+    );
     let allowlisted = allowlisted_paths();
     let ignored = ignored_subtrees(&root);
     let mut files = Vec::new();
@@ -112,9 +83,9 @@ fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
         let Ok(text) = fs::read_to_string(&file) else {
             continue;
         };
-        for needle in FORBIDDEN {
+        for needle in &banlist_entries {
             if text.contains(needle) {
-                violations.push(format!("{rel}: contains `{needle}`"));
+                violations.push(format!("{rel}: contains `{}`", needle));
             }
         }
     }

@@ -1,9 +1,6 @@
 {
   "schema_version": 1,
   "topics": {
-    "ADAPTER_BOUNDARY": [
-      "crates/bijux-dev-atlas-adapters/ADAPTER_BOUNDARY.md"
-    ],
     "ADDING_FILTERS": [
       "crates/bijux-atlas-query/docs/ADDING_FILTERS.md"
     ],
@@ -39,10 +36,6 @@
       "crates/bijux-atlas-server/ARCHITECTURE.md",
       "crates/bijux-atlas-server/src/cache/ARCHITECTURE.md",
       "crates/bijux-atlas-store/ARCHITECTURE.md",
-      "crates/bijux-dev-atlas-adapters/ARCHITECTURE.md",
-      "crates/bijux-dev-atlas-core/ARCHITECTURE.md",
-      "crates/bijux-dev-atlas-model/ARCHITECTURE.md",
-      "crates/bijux-dev-atlas-policies/ARCHITECTURE.md",
       "crates/bijux-dev-atlas/ARCHITECTURE.md"
     ],
     "ARCHITECTURE_OVERVIEW": [
@@ -76,14 +69,7 @@
       "crates/bijux-atlas-query/BENCHMARKS.md",
       "crates/bijux-atlas-server/BENCHMARKS.md",
       "crates/bijux-atlas-store/BENCHMARKS.md",
-      "crates/bijux-dev-atlas-adapters/BENCHMARKS.md",
-      "crates/bijux-dev-atlas-core/BENCHMARKS.md",
-      "crates/bijux-dev-atlas-model/BENCHMARKS.md",
-      "crates/bijux-dev-atlas-policies/BENCHMARKS.md",
       "crates/bijux-dev-atlas/BENCHMARKS.md"
-    ],
-    "BOUNDARY": [
-      "crates/bijux-dev-atlas-adapters/docs/BOUNDARY.md"
     ],
     "BUDGET_POLICY": [
       "ops/schema/BUDGET_POLICY.md"
@@ -170,10 +156,6 @@
       "crates/bijux-atlas-query/CONTRACT.md",
       "crates/bijux-atlas-server/CONTRACT.md",
       "crates/bijux-atlas-store/CONTRACT.md",
-      "crates/bijux-dev-atlas-adapters/CONTRACT.md",
-      "crates/bijux-dev-atlas-core/CONTRACT.md",
-      "crates/bijux-dev-atlas-model/CONTRACT.md",
-      "crates/bijux-dev-atlas-policies/CONTRACT.md",
       "crates/bijux-dev-atlas/CONTRACT.md",
       "crates/bijux-dev-atlas/docs/CONTRACT.md",
       "docker/CONTRACT.md",
@@ -191,9 +173,6 @@
       "ops/report/CONTRACT.md",
       "ops/schema/CONTRACT.md",
       "ops/stack/CONTRACT.md"
-    ],
-    "CONTRACTS": [
-      "crates/bijux-dev-atlas-model/docs/CONTRACTS.md"
     ],
     "CONTRACT_COMPATIBILITY": [
       "crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md"
@@ -217,8 +196,7 @@
       "docs/root/CRATE_INDEX.md"
     ],
     "DATA_MODEL": [
-      "crates/bijux-atlas-model/DATA_MODEL.md",
-      "crates/bijux-dev-atlas-model/DATA_MODEL.md"
+      "crates/bijux-atlas-model/DATA_MODEL.md"
     ],
     "DEPTH_POLICY": [
       "docs/_style/DEPTH_POLICY.md"
@@ -256,9 +234,6 @@
     "DRIFT": [
       "ops/DRIFT.md"
     ],
-    "ENGINE_ARCHITECTURE": [
-      "crates/bijux-dev-atlas-core/docs/ENGINE_ARCHITECTURE.md"
-    ],
     "ENSEMBL_LAYOUT": [
       "crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md"
     ],
@@ -277,10 +252,6 @@
       "crates/bijux-atlas-query/ERROR_TAXONOMY.md",
       "crates/bijux-atlas-server/ERROR_TAXONOMY.md",
       "crates/bijux-atlas-store/ERROR_TAXONOMY.md",
-      "crates/bijux-dev-atlas-adapters/ERROR_TAXONOMY.md",
-      "crates/bijux-dev-atlas-core/ERROR_TAXONOMY.md",
-      "crates/bijux-dev-atlas-model/ERROR_TAXONOMY.md",
-      "crates/bijux-dev-atlas-policies/ERROR_TAXONOMY.md",
       "crates/bijux-dev-atlas/ERROR_TAXONOMY.md"
     ],
     "EVOLUTION": [
@@ -296,10 +267,6 @@
       "crates/bijux-atlas-query/EXAMPLES.md",
       "crates/bijux-atlas-server/EXAMPLES.md",
       "crates/bijux-atlas-store/EXAMPLES.md",
-      "crates/bijux-dev-atlas-adapters/EXAMPLES.md",
-      "crates/bijux-dev-atlas-core/EXAMPLES.md",
-      "crates/bijux-dev-atlas-model/EXAMPLES.md",
-      "crates/bijux-dev-atlas-policies/EXAMPLES.md",
       "crates/bijux-dev-atlas/EXAMPLES.md"
     ],
     "EXIT_CODES": [
@@ -307,8 +274,7 @@
       "crates/bijux-dev-atlas/docs/EXIT_CODES.md"
     ],
     "EXTENSION_GUIDE": [
-      "crates/bijux-atlas-policies/EXTENSION_GUIDE.md",
-      "crates/bijux-dev-atlas-policies/EXTENSION_GUIDE.md"
+      "crates/bijux-atlas-policies/EXTENSION_GUIDE.md"
     ],
     "FAILURE_MODES": [
       "crates/bijux-atlas-server/docs/FAILURE_MODES.md",
@@ -352,10 +318,6 @@
       "crates/bijux-atlas-query/docs/INDEX.md",
       "crates/bijux-atlas-server/docs/INDEX.md",
       "crates/bijux-atlas-store/docs/INDEX.md",
-      "crates/bijux-dev-atlas-adapters/docs/INDEX.md",
-      "crates/bijux-dev-atlas-core/docs/INDEX.md",
-      "crates/bijux-dev-atlas-model/docs/INDEX.md",
-      "crates/bijux-dev-atlas-policies/docs/INDEX.md",
       "crates/bijux-dev-atlas/docs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
       "docker/contracts/INDEX.md",
@@ -522,9 +484,6 @@
     "POLICY": [
       "ops/load/evaluations/POLICY.md"
     ],
-    "POLICY_AUTHORING": [
-      "crates/bijux-dev-atlas-policies/docs/POLICY_AUTHORING.md"
-    ],
     "POLICY_AUTHORING_GUIDE": [
       "crates/bijux-atlas-policies/docs/POLICY_AUTHORING_GUIDE.md"
     ],
@@ -587,10 +546,6 @@
       "crates/bijux-atlas-server/tests/README.md",
       "crates/bijux-atlas-store/README.md",
       "crates/bijux-atlas-store/tests/README.md",
-      "crates/bijux-dev-atlas-adapters/README.md",
-      "crates/bijux-dev-atlas-core/README.md",
-      "crates/bijux-dev-atlas-model/README.md",
-      "crates/bijux-dev-atlas-policies/README.md",
       "crates/bijux-dev-atlas/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md",
       "docker/README.md",
@@ -750,10 +705,6 @@
       "crates/bijux-atlas-query/TESTING.md",
       "crates/bijux-atlas-server/TESTING.md",
       "crates/bijux-atlas-store/TESTING.md",
-      "crates/bijux-dev-atlas-adapters/TESTING.md",
-      "crates/bijux-dev-atlas-core/TESTING.md",
-      "crates/bijux-dev-atlas-model/TESTING.md",
-      "crates/bijux-dev-atlas-policies/TESTING.md",
       "crates/bijux-dev-atlas/TESTING.md"
     ],
     "TRANSCRIPT_ORDERING": [
@@ -770,10 +721,6 @@
       "crates/bijux-atlas-query/VERSIONING.md",
       "crates/bijux-atlas-server/VERSIONING.md",
       "crates/bijux-atlas-store/VERSIONING.md",
-      "crates/bijux-dev-atlas-adapters/VERSIONING.md",
-      "crates/bijux-dev-atlas-core/VERSIONING.md",
-      "crates/bijux-dev-atlas-model/VERSIONING.md",
-      "crates/bijux-dev-atlas-policies/VERSIONING.md",
       "crates/bijux-dev-atlas/VERSIONING.md"
     ],
     "VERSIONING_POLICY": [

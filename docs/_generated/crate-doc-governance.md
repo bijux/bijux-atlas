@@ -12,7 +12,3 @@
 | `bijux-atlas-server` | 8 | 17 | 3 |
 | `bijux-atlas-store` | 8 | 14 | 3 |
 | `bijux-dev-atlas` | 9 | 9 | 3 |
-| `bijux-dev-atlas-adapters` | 9 | 2 | 3 |
-| `bijux-dev-atlas-core` | 8 | 2 | 3 |
-| `bijux-dev-atlas-model` | 9 | 2 | 3 |
-| `bijux-dev-atlas-policies` | 9 | 2 | 3 |

@@ -14,10 +14,7 @@
     "bijux-atlas-server": 20,
     "bijux-atlas-cli": 20,
     "bijux-dev-atlas": 20,
-    "bijux-dev-atlas-core": 20,
-    "bijux-dev-atlas-model": 20,
-    "bijux-dev-atlas-adapters": 20,
-    "bijux-dev-atlas-policies": 20
+    "bijux-dev-atlas": 20
   },
   "naming": {
     "forbidden_words": ["phase", "task", "legacy", "migration"],

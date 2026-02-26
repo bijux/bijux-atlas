@@ -174,11 +174,7 @@ pub(super) fn check_control_plane_naming_contract_docs(
 pub(super) fn check_final_dev_atlas_crate_set_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let required_dirs = [
-        "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas-core",
-        "crates/bijux-dev-atlas-policies",
-    ];
+    let required_dirs = ["crates/bijux-dev-atlas"];
     let mut violations = Vec::new();
     for path in required_dirs {
         let rel = Path::new(path);
@@ -189,7 +185,7 @@ pub(super) fn check_final_dev_atlas_crate_set_contract(
                     "required control-plane crate directory is missing: {}",
                     rel.display()
                 ),
-                "keep the final dev-atlas crate set present and explicitly named",
+                "keep the unified dev-atlas control-plane crate present and explicitly named",
                 Some(rel),
             ));
         }

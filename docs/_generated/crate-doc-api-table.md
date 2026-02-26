@@ -12,7 +12,3 @@
 | `bijux-atlas-server` | `crates/bijux-atlas-server/docs/public-api.md` |
 | `bijux-atlas-store` | `crates/bijux-atlas-store/docs/public-api.md` |
 | `bijux-dev-atlas` | `missing` |
-| `bijux-dev-atlas-adapters` | `missing` |
-| `bijux-dev-atlas-core` | `missing` |
-| `bijux-dev-atlas-model` | `missing` |
-| `bijux-dev-atlas-policies` | `missing` |

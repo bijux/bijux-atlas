@@ -39,22 +39,6 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_count": 9
-    },
-    {
-      "crate": "bijux-dev-atlas-adapters",
-      "doc_count": 2
-    },
-    {
-      "crate": "bijux-dev-atlas-core",
-      "doc_count": 2
-    },
-    {
-      "crate": "bijux-dev-atlas-model",
-      "doc_count": 2
-    },
-    {
-      "crate": "bijux-dev-atlas-policies",
-      "doc_count": 2
     }
   ],
   "schema_version": 1
