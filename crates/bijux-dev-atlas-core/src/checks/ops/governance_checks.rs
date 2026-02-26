@@ -3095,6 +3095,18 @@ pub(super) fn check_ops_docs_governance(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
+    let retired_docs_subtree = Path::new("docs/ops");
+    if ctx.adapters.fs.exists(ctx.repo_root, retired_docs_subtree) {
+        violations.push(violation(
+            "OPS_DOCS_RETIRED_SUBTREE_REINTRODUCED",
+            format!(
+                "retired docs subtree `{}` must not exist",
+                retired_docs_subtree.display()
+            ),
+            "keep ops handbook docs under docs/operations and remove docs/ops",
+            Some(retired_docs_subtree),
+        ));
+    }
     let forbidden_transitional_tokens = ["phase", "task"];
     for root in ["ops", "docs"] {
         for file in walk_files(&ctx.repo_root.join(root)) {
