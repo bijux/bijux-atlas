@@ -11,9 +11,19 @@ impl WorkspaceRoot {
         discover_repo_root(start).map(Self)
     }
 
+    pub fn from_explicit_path(path: PathBuf) -> Result<Self, AdapterError> {
+        path.canonicalize()
+            .map(Self)
+            .map_err(|err| AdapterError::Io {
+                op: "canonicalize",
+                path,
+                detail: err.to_string(),
+            })
+    }
+
     pub fn from_cli_or_cwd(arg: Option<PathBuf>) -> Result<Self, AdapterError> {
         match arg {
-            Some(path) => Self::discover_from(&path),
+            Some(path) => Self::from_explicit_path(path),
             None => {
                 let cwd = std::env::current_dir().map_err(|err| AdapterError::Io {
                     op: "current_dir",
@@ -79,5 +89,27 @@ mod tests {
         let _ = fs::create_dir_all(&nested);
         let err = WorkspaceRoot::discover_from(&nested);
         assert!(matches!(err, Err(AdapterError::PathViolation { .. })));
+    }
+
+    #[test]
+    fn explicit_workspace_root_path_is_not_promoted_to_repo_root() {
+        let repo = temp_root();
+        let nested_crate = repo.join("crates").join("sample");
+        let _ = fs::write(repo.join("Cargo.toml"), "[workspace]\nmembers=[]\n");
+        let _ = fs::write(repo.join(".git"), "not-a-real-git-dir-marker-for-test");
+        let _ = fs::create_dir_all(&nested_crate);
+        let _ = fs::write(nested_crate.join("Cargo.toml"), "[package]\nname=\"sample\"\nversion=\"0.1.0\"\n");
+
+        let resolved = WorkspaceRoot::from_explicit_path(nested_crate.clone());
+        assert!(resolved.is_ok(), "explicit workspace root canonicalization failed");
+        let resolved = match resolved {
+            Ok(v) => v,
+            Err(_) => return,
+        };
+        let expected = match nested_crate.canonicalize() {
+            Ok(v) => v,
+            Err(_) => panic!("expected explicit path to canonicalize"),
+        };
+        assert_eq!(resolved.as_path(), expected.as_path());
     }
 }

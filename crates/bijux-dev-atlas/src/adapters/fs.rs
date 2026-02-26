@@ -26,11 +26,18 @@ pub fn discover_repo_root(start: &Path) -> Result<PathBuf, AdapterError> {
         path: start.to_path_buf(),
         detail: err.to_string(),
     })?;
+    let mut cargo_root_candidate: Option<PathBuf> = None;
     loop {
-        if current.join(".git").exists() || current.join("Cargo.toml").exists() {
+        if current.join(".git").exists() {
             return Ok(current);
         }
+        if cargo_root_candidate.is_none() && current.join("Cargo.toml").exists() {
+            cargo_root_candidate = Some(current.clone());
+        }
         let Some(parent) = current.parent() else {
+            if let Some(cargo_root) = cargo_root_candidate {
+                return Ok(cargo_root);
+            }
             return Err(AdapterError::PathViolation {
                 path: start.to_path_buf(),
                 detail: "unable to discover repository root from start path".to_string(),
