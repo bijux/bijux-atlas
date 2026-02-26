@@ -692,12 +692,14 @@ pub(super) fn check_ops_inventory_contract_integrity(
     validate_generated_inventory_index_and_stack_contracts(
         ctx,
         &mut violations,
-        &inventory_root,
-        inventory_index_rel,
-        stack_toml_rel,
-        stack_dependency_graph_rel,
-        stack_service_contract_rel,
-        stack_evolution_policy_rel,
+        InventoryAndStackContractPaths {
+            inventory_root: &inventory_root,
+            inventory_index_rel,
+            stack_toml_rel,
+            stack_dependency_graph_rel,
+            stack_service_contract_rel,
+            stack_evolution_policy_rel,
+        },
     )?;
     validate_k8s_rollout_and_drift_reports(
         ctx,

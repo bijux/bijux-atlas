@@ -3,7 +3,7 @@ fn validate_load_and_report_manifests(
     inputs: &LoadedOpsInventoryValidationInputs,
     errors: &mut Vec<String>,
 ) {
-    let inventory = &inputs.inventory;
+    let _inventory = &inputs.inventory;
     let load_suites = &inputs.load_suites;
     let load_query_lock = &inputs.load_query_lock;
     let load_seed_policy = &inputs.load_seed_policy;
@@ -85,10 +85,10 @@ fn validate_load_and_report_manifests(
     if let Ok(entries) = fs::read_dir(&legacy_thresholds_dir) {
         for entry in entries.flatten() {
             let path = entry.path();
-            if !path
+            if path
                 .extension()
                 .and_then(|ext| ext.to_str())
-                .is_some_and(|ext| ext == "json")
+                .is_none_or(|ext| ext != "json")
             {
                 continue;
             }

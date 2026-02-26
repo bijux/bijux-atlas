@@ -3,7 +3,7 @@ fn validate_datasets_and_e2e_manifests(
     inputs: &LoadedOpsInventoryValidationInputs,
     errors: &mut Vec<String>,
 ) {
-    let inventory = &inputs.inventory;
+    let _inventory = &inputs.inventory;
     let datasets_manifest_lock = &inputs.datasets_manifest_lock;
     let datasets_promotion_rules = &inputs.datasets_promotion_rules;
     let datasets_qc_metadata = &inputs.datasets_qc_metadata;
@@ -24,12 +24,12 @@ fn validate_datasets_and_e2e_manifests(
     let report_diff = &inputs.report_diff;
     let report_history = &inputs.report_history;
     let report_bundle = &inputs.report_bundle;
-    let load_suites = &inputs.load_suites;
-    let load_query_lock = &inputs.load_query_lock;
-    let load_seed_policy = &inputs.load_seed_policy;
-    let load_query_catalog = &inputs.load_query_catalog;
-    let load_summary = &inputs.load_summary;
-    let load_drift_report = &inputs.load_drift_report;
+    let _load_suites = &inputs.load_suites;
+    let _load_query_lock = &inputs.load_query_lock;
+    let _load_seed_policy = &inputs.load_seed_policy;
+    let _load_query_catalog = &inputs.load_query_catalog;
+    let _load_summary = &inputs.load_summary;
+    let _load_drift_report = &inputs.load_drift_report;
     let manifest_ids = match load_json::<DatasetsManifest>(repo_root, OPS_DATASETS_MANIFEST_PATH) {
         Ok(manifest) => {
             if manifest.schema_version < 1 {

@@ -140,7 +140,7 @@ pub(super) fn check_docs_markdown_directory_budgets(
     for path in docs_markdown_paths(ctx) {
         let rel = path.strip_prefix(ctx.repo_root).unwrap_or(&path);
         let rel_str = rel.display().to_string();
-        for (prefix, _) in &budgets {
+        for prefix in budgets.keys() {
             if rel_str == *prefix || rel_str.starts_with(&(prefix.clone() + "/")) {
                 *counts.entry(prefix.clone()).or_default() += 1;
             }
@@ -718,4 +718,3 @@ pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
     }
     Ok(violations)
 }
-

@@ -1,13 +1,25 @@
+struct InventoryAndStackContractPaths<'a> {
+    inventory_root: &'a Path,
+    inventory_index_rel: &'a Path,
+    stack_toml_rel: &'a Path,
+    stack_dependency_graph_rel: &'a Path,
+    stack_service_contract_rel: &'a Path,
+    stack_evolution_policy_rel: &'a Path,
+}
+
 fn validate_generated_inventory_index_and_stack_contracts(
     ctx: &CheckContext<'_>,
     violations: &mut Vec<Violation>,
-    inventory_root: &Path,
-    inventory_index_rel: &Path,
-    stack_toml_rel: &Path,
-    stack_dependency_graph_rel: &Path,
-    stack_service_contract_rel: &Path,
-    stack_evolution_policy_rel: &Path,
+    paths: InventoryAndStackContractPaths<'_>,
 ) -> Result<(), CheckError> {
+    let InventoryAndStackContractPaths {
+        inventory_root,
+        inventory_index_rel,
+        stack_toml_rel,
+        stack_dependency_graph_rel,
+        stack_service_contract_rel,
+        stack_evolution_policy_rel,
+    } = paths;
     if !ctx.adapters.fs.exists(ctx.repo_root, inventory_index_rel) {
         violations.push(violation(
             "OPS_INVENTORY_INDEX_ARTIFACT_MISSING",
