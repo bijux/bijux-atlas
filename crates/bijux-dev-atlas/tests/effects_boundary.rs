@@ -35,6 +35,9 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
     [
         // End-state target: effects live under adapters; current convergence still has legacy command/core sites.
         "src/adapters/mod.rs",
+        "src/adapters/fs.rs",
+        "src/adapters/process.rs",
+        "src/adapters/world.rs",
         "src/main.rs",
         "src/ops_support.rs",
         "src/ops_command_support_mod/manifests.rs",
@@ -90,7 +93,10 @@ fn files_with_effect_pattern(patterns: &[&str]) -> Vec<String> {
 #[test]
 fn no_std_fs_outside_adapters_staged_exceptions() {
     let violations = files_with_effect_pattern(&["std::fs::"]);
-    assert!(violations.is_empty(), "unexpected std::fs usage: {violations:?}");
+    assert!(
+        violations.is_empty(),
+        "unexpected std::fs usage: {violations:?}"
+    );
 }
 
 #[test]
