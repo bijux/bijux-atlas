@@ -12,13 +12,13 @@ impl Fs for TestFs {
         &self,
         repo_root: &Path,
         path: &Path,
-    ) -> Result<String, crate::core::ports::AdapterError> {
+    ) -> Result<String, crate::ports::AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
             repo_root.join(path)
         };
-        fs::read_to_string(target).map_err(|err| crate::core::ports::AdapterError::Io {
+        fs::read_to_string(target).map_err(|err| crate::ports::AdapterError::Io {
             op: "read_to_string",
             path: repo_root.join(path),
             detail: err.to_string(),
@@ -38,7 +38,7 @@ impl Fs for TestFs {
         &self,
         repo_root: &Path,
         path: &Path,
-    ) -> Result<PathBuf, crate::core::ports::AdapterError> {
+    ) -> Result<PathBuf, crate::ports::AdapterError> {
         let target = if path.is_absolute() {
             path.to_path_buf()
         } else {
@@ -46,7 +46,7 @@ impl Fs for TestFs {
         };
         target
             .canonicalize()
-            .map_err(|err| crate::core::ports::AdapterError::Io {
+            .map_err(|err| crate::ports::AdapterError::Io {
                 op: "canonicalize",
                 path: target,
                 detail: err.to_string(),
@@ -62,8 +62,8 @@ impl ProcessRunner for DeniedProcessRunner {
         program: &str,
         _args: &[String],
         _repo_root: &Path,
-    ) -> Result<i32, crate::core::ports::AdapterError> {
-        Err(crate::core::ports::AdapterError::EffectDenied {
+    ) -> Result<i32, crate::ports::AdapterError> {
+        Err(crate::ports::AdapterError::EffectDenied {
             effect: "subprocess",
             detail: format!("attempted to execute `{program}`"),
         })
