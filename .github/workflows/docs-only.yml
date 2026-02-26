@@ -70,7 +70,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 scripts/docs/generate_operations_references.py
+          cargo run -q -p bijux-dev-atlas -- docs reference check --allow-subprocess --format json
       - name: Run docs strict build
         shell: bash
         run: |

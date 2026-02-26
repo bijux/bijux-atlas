@@ -28,9 +28,9 @@ docs-lock: ## Refresh docs requirements lock deterministically
 	@$(DEV_ATLAS) docs build --allow-subprocess --allow-write --format text
 
 docs-reference-regenerate: ## Regenerate docs operations reference pages from SSOT inputs
-	@python3 scripts/docs/generate_operations_references.py --write
+	@$(DEV_ATLAS) docs reference generate --allow-subprocess --allow-write --format json
 
 docs-reference-check: ## Check docs operations reference pages are regenerated
-	@python3 scripts/docs/generate_operations_references.py
+	@$(DEV_ATLAS) docs reference check --allow-subprocess --format json
 
 .PHONY: docs docs-doctor docs-validate docs-registry docs-registry-validate docs-build docs-serve docs-clean docs-lock docs-reference-regenerate docs-reference-check
