@@ -72,7 +72,7 @@ fn cli_source_files_stay_within_loc_budget() {
         "src/commands/ops_support.rs",
         "src/commands/docs_runtime/command_dispatch.rs",
         "src/ops_commands/runtime.rs",
-        "src/ops_runtime_execution/runtime.rs",
+        "src/commands/ops/execution_runtime.rs",
     ];
     for path in files {
         let text = fs::read_to_string(&path).expect("read source file");

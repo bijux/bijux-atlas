@@ -96,6 +96,39 @@ fn root_module_count_stays_within_budget() {
 }
 
 #[test]
+fn src_root_contains_only_canonical_module_dirs_and_entry_files() {
+    let src_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src");
+    let mut names = fs::read_dir(&src_root)
+        .expect("src dir")
+        .flatten()
+        .map(|entry| {
+            entry
+                .file_name()
+                .to_str()
+                .expect("utf8 file name")
+                .to_string()
+        })
+        .collect::<Vec<_>>();
+    names.sort();
+
+    let expected = vec![
+        "adapters".to_string(),
+        "cli".to_string(),
+        "commands".to_string(),
+        "core".to_string(),
+        "lib.rs".to_string(),
+        "main.rs".to_string(),
+        "model".to_string(),
+        "policies".to_string(),
+        "ports".to_string(),
+    ];
+    assert_eq!(
+        names, expected,
+        "src root must contain only canonical module directories plus lib.rs/main.rs"
+    );
+}
+
+#[test]
 fn generated_report_examples_reference_existing_report_schemas() {
     let root = workspace_root();
     let required_pairs = [
