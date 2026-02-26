@@ -82,8 +82,9 @@ verify: ## Run repo verification orchestration via dev-atlas checks
 	@$(DEV_ATLAS) check run --suite ci --format json
 
 lanes: ## Print CI lane mapping to dev-atlas suites
-	@printf '%s\n' "ci-pr -> check run --suite ci_fast"; \
-	printf '%s\n' "ci-nightly -> check run --suite deep --include-internal --include-slow"; \
+	@printf '%s\n' "ci-fast -> check run --suite ci_fast"; \
+	printf '%s\n' "ci-pr -> check run --suite ci_pr"; \
+	printf '%s\n' "ci-nightly -> check run --suite ci_nightly --include-internal --include-slow"; \
 	printf '%s\n' "ci-docs -> check run --domain docs"
 
 lint-makefiles: ## Lint make wrappers via dev-atlas make checks

@@ -1193,6 +1193,18 @@ domains = []
 tags_any = []
 
 [[suites]]
+id = "ci_nightly"
+checks = []
+domains = ["ops", "repo", "docs", "make", "configs", "workflows", "docker", "crates"]
+tags_any = []
+
+[[suites]]
+id = "ci_pr"
+checks = []
+domains = ["ops", "repo", "docs", "make", "configs", "workflows", "docker", "crates"]
+tags_any = ["fast"]
+
+[[suites]]
 id = "configs"
 checks = []
 domains = ["configs"]

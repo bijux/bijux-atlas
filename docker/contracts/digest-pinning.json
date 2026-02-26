@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
-  "allow_tagged_images": [
+  "require_digest_pins": true,
+  "allow_tagged_images_exceptions": [
     "gcr.io/distroless/cc-debian12:nonroot",
     "rust:${RUST_VERSION}-bookworm"
   ],

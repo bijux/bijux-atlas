@@ -9,10 +9,10 @@ ci-fast: ## CI fast lane wrapper
 	@$(DEV_ATLAS) check run --suite ci_fast --format json
 
 ci-pr: ## CI PR lane wrapper
-	@$(DEV_ATLAS) check run --suite ci_fast --format json
+	@$(DEV_ATLAS) check run --suite ci_pr --format json
 
 ci-nightly: ## CI nightly lane (includes slow checks)
-	@$(DEV_ATLAS) check run --suite deep --include-internal --include-slow --format json
+	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json
 
 ci-docs: ## CI docs lane wrapper
 	@$(DEV_ATLAS) check run --domain docs --format json
