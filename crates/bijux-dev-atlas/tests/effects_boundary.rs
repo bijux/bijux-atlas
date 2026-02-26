@@ -37,6 +37,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/adapters/mod.rs",
         "src/adapters/fs.rs",
         "src/adapters/process.rs",
+        "src/adapters/workspace_root.rs",
         "src/adapters/world.rs",
         "src/main.rs",
         "src/commands/ops_support/manifests.rs",
@@ -77,6 +78,7 @@ fn staged_time_random_exceptions() -> BTreeSet<&'static str> {
     [
         "src/adapters/mod.rs",
         "src/adapters/fs.rs",
+        "src/adapters/workspace_root.rs",
         "src/ports/mod.rs",
     ]
     .into_iter()
