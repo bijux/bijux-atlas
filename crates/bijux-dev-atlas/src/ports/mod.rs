@@ -61,6 +61,10 @@ pub trait Fs {
     fn canonicalize(&self, repo_root: &Path, path: &Path) -> Result<PathBuf, AdapterError>;
 }
 
+pub trait FsRead: Fs {}
+
+impl<T: Fs + ?Sized> FsRead for T {}
+
 pub trait FsWrite {
     fn write_text(
         &self,
@@ -73,6 +77,14 @@ pub trait FsWrite {
 
 pub trait ProcessRunner {
     fn run(&self, program: &str, args: &[String], repo_root: &Path) -> Result<i32, AdapterError>;
+}
+
+pub trait Exec: ProcessRunner {}
+
+impl<T: ProcessRunner + ?Sized> Exec for T {}
+
+pub trait Walk {
+    fn walk_files(&self, repo_root: &Path, root: &Path) -> Result<Vec<PathBuf>, AdapterError>;
 }
 
 pub trait Git {

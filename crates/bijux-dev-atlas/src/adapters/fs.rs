@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::AdapterError;
-use crate::ports::{Fs, FsWrite};
+use crate::ports::{Fs, FsWrite, Walk};
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
@@ -149,5 +149,43 @@ impl FsWrite for RealFs {
             detail: err.to_string(),
         })?;
         Ok(target)
+    }
+}
+
+impl Walk for RealFs {
+    fn walk_files(&self, repo_root: &Path, root: &Path) -> Result<Vec<PathBuf>, AdapterError> {
+        fn walk(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), AdapterError> {
+            let entries = fs::read_dir(dir).map_err(|err| AdapterError::Io {
+                op: "read_dir",
+                path: dir.to_path_buf(),
+                detail: err.to_string(),
+            })?;
+            for entry in entries {
+                let entry = entry.map_err(|err| AdapterError::Io {
+                    op: "read_dir_entry",
+                    path: dir.to_path_buf(),
+                    detail: err.to_string(),
+                })?;
+                let path = entry.path();
+                if path.is_dir() {
+                    walk(&path, out)?;
+                } else {
+                    out.push(path);
+                }
+            }
+            Ok(())
+        }
+
+        let target = if root.is_absolute() {
+            root.to_path_buf()
+        } else {
+            repo_root.join(root)
+        };
+        let mut out = Vec::new();
+        if target.exists() {
+            walk(&target, &mut out)?;
+            out.sort();
+        }
+        Ok(out)
     }
 }

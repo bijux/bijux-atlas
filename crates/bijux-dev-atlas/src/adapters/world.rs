@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::{AdapterError, RealFs, RealProcessRunner};
-use crate::ports::{Fs, FsWrite, Git, Network, ProcessRunner};
+use crate::ports::{Fs, FsWrite, Git, Network, ProcessRunner, Walk};
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Default)]
@@ -133,6 +133,24 @@ impl FsWrite for FakeWorld {
             effect: "fs_write",
             detail: "FakeWorld write requires mutable store plumbing".to_string(),
         })
+    }
+}
+
+impl Walk for FakeWorld {
+    fn walk_files(&self, repo_root: &Path, root: &Path) -> Result<Vec<PathBuf>, AdapterError> {
+        let base = if root.is_absolute() {
+            root.to_path_buf()
+        } else {
+            repo_root.join(root)
+        };
+        let mut out = self
+            .files
+            .keys()
+            .filter(|path| path.starts_with(&base))
+            .cloned()
+            .collect::<Vec<_>>();
+        out.sort();
+        Ok(out)
     }
 }
 

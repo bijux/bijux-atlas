@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::adapters::{DeniedNetwork, FakeWorld, RealFs, RealGit, RealProcessRunner};
-use crate::ports::{Clock, Fs, Git, Network, ProcessRunner, SystemClock};
+use crate::ports::{Clock, Exec, Fs, FsRead, Git, Network, ProcessRunner, SystemClock, Walk};
 
 #[derive(Debug, Default)]
 pub struct AdaptersBundle {
@@ -21,7 +21,19 @@ impl AdaptersBundle {
         &self.fs
     }
 
+    pub fn filesystem_reader(&self) -> &dyn FsRead {
+        &self.fs
+    }
+
+    pub fn walker(&self) -> &dyn Walk {
+        &self.fs
+    }
+
     pub fn process_runner(&self) -> &dyn ProcessRunner {
+        &self.process
+    }
+
+    pub fn exec(&self) -> &dyn Exec {
         &self.process
     }
 
@@ -80,7 +92,19 @@ impl TestBundle {
         &self.world
     }
 
+    pub fn filesystem_reader(&self) -> &dyn FsRead {
+        &self.world
+    }
+
+    pub fn walker(&self) -> &dyn Walk {
+        &self.world
+    }
+
     pub fn process_runner(&self) -> &dyn ProcessRunner {
+        &self.world
+    }
+
+    pub fn exec(&self) -> &dyn Exec {
         &self.world
     }
 

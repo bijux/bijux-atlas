@@ -159,4 +159,21 @@ mod tests {
             }
         ));
     }
+
+    #[test]
+    fn test_bundle_exposes_walk_and_exec_ports() {
+        let repo_root = temp_repo_root();
+        let docs = repo_root.join("docs/a.md");
+        let bundle = TestBundle::new().with_world(FakeWorld::default().with_file(&docs, "hello"));
+        let walked = bundle
+            .walker()
+            .walk_files(&repo_root, Path::new("docs"))
+            .expect("walk");
+        assert_eq!(walked, vec![docs]);
+        let err = bundle
+            .exec()
+            .run("cargo", &["--version".to_string()], &repo_root)
+            .expect_err("not stubbed");
+        assert!(matches!(err, AdapterError::Process { .. }));
+    }
 }
