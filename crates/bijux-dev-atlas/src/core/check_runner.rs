@@ -2,6 +2,16 @@
 
 use super::*;
 
+#[allow(clippy::expect_used)]
+fn known_violation_id(raw: &str) -> crate::model::ViolationId {
+    crate::model::ViolationId::parse(raw).expect("static violation id literal must be valid")
+}
+
+#[allow(clippy::expect_used)]
+fn known_artifact_path(raw: String) -> crate::model::ArtifactPath {
+    crate::model::ArtifactPath::parse(&raw).expect("static artifact path must be valid")
+}
+
 fn effect_allowed(effect: Effect, caps: Capabilities) -> bool {
     match effect {
         Effect::FsRead => true,
@@ -182,8 +192,7 @@ impl<'a> CheckRunner<'a> {
                     result.status = CheckStatus::Error;
                     result.violations = vec![Violation {
                         schema_version: crate::model::schema_version(),
-                        code: crate::model::ViolationId::parse("check_execution_error")
-                            .expect("valid id"),
+                        code: known_violation_id("check_execution_error"),
                         message: match err {
                             CheckError::Failed(msg) => msg,
                         },
@@ -204,8 +213,7 @@ impl<'a> CheckRunner<'a> {
                 result.status = CheckStatus::Error;
                 result.violations.push(Violation {
                     schema_version: crate::model::schema_version(),
-                    code: crate::model::ViolationId::parse("evidence_path_timestamp_forbidden")
-                        .expect("valid id"),
+                    code: known_violation_id("evidence_path_timestamp_forbidden"),
                     message: "evidence paths must not include timestamps".to_string(),
                     hint: Some(
                         "use stable run identifiers and deterministic file names".to_string(),
@@ -349,14 +357,10 @@ fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
-            code: crate::model::ViolationId::parse("repo_import_boundary_source_missing")
-                .expect("valid id"),
+            code: known_violation_id("repo_import_boundary_source_missing"),
             message: "missing expected atlas dispatch source file".to_string(),
             hint: Some("restore crate source tree".to_string()),
-            path: Some(
-                crate::model::ArtifactPath::parse(&target.display().to_string())
-                    .expect("valid path"),
-            ),
+            path: Some(known_artifact_path(target.display().to_string())),
             line: None,
             severity: Severity::Error,
         }])
@@ -370,13 +374,10 @@ fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Chec
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
-            code: crate::model::ViolationId::parse("docs_index_missing").expect("valid id"),
+            code: known_violation_id("docs_index_missing"),
             message: "missing docs/INDEX.md".to_string(),
             hint: Some("restore docs index".to_string()),
-            path: Some(
-                crate::model::ArtifactPath::parse(&target.display().to_string())
-                    .expect("valid path"),
-            ),
+            path: Some(known_artifact_path(target.display().to_string())),
             line: None,
             severity: Severity::Error,
         }])
@@ -390,13 +391,10 @@ fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>,
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
-            code: crate::model::ViolationId::parse("make_contract_missing").expect("valid id"),
+            code: known_violation_id("make_contract_missing"),
             message: "missing makefiles/CONTRACT.md".to_string(),
             hint: Some("restore make contract doc".to_string()),
-            path: Some(
-                crate::model::ArtifactPath::parse(&target.display().to_string())
-                    .expect("valid path"),
-            ),
+            path: Some(known_artifact_path(target.display().to_string())),
             line: None,
             severity: Severity::Error,
         }])

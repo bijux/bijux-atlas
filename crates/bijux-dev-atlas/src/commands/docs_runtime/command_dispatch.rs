@@ -928,34 +928,31 @@ fn render_docs_reference_pins(repo_root: &std::path::Path) -> Result<String, Str
 }
 
 fn collect_yaml_rows(prefix: &str, value: &serde_yaml::Value, out: &mut Vec<(String, String, String)>) {
-    match value {
-        serde_yaml::Value::Mapping(map) => {
-            for (k, v) in map {
-                let key = k.as_str().unwrap_or_default();
-                if prefix == "root" && !matches!(v, serde_yaml::Value::Mapping(_) | serde_yaml::Value::Sequence(_)) {
-                    out.push((prefix.to_string(), key.to_string(), yaml_scalar_string(v)));
-                } else {
-                    match v {
-                        serde_yaml::Value::Mapping(inner) => {
-                            for (ik, iv) in inner {
-                                out.push((
-                                    key.to_string(),
-                                    ik.as_str().unwrap_or_default().to_string(),
-                                    yaml_scalar_string(iv),
-                                ));
-                            }
+    if let serde_yaml::Value::Mapping(map) = value {
+        for (k, v) in map {
+            let key = k.as_str().unwrap_or_default();
+            if prefix == "root" && !matches!(v, serde_yaml::Value::Mapping(_) | serde_yaml::Value::Sequence(_)) {
+                out.push((prefix.to_string(), key.to_string(), yaml_scalar_string(v)));
+            } else {
+                match v {
+                    serde_yaml::Value::Mapping(inner) => {
+                        for (ik, iv) in inner {
+                            out.push((
+                                key.to_string(),
+                                ik.as_str().unwrap_or_default().to_string(),
+                                yaml_scalar_string(iv),
+                            ));
                         }
-                        serde_yaml::Value::Sequence(seq) => {
-                            for (idx, item) in seq.iter().enumerate() {
-                                out.push((key.to_string(), idx.to_string(), yaml_scalar_string(item)));
-                            }
-                        }
-                        _ => out.push((prefix.to_string(), key.to_string(), yaml_scalar_string(v))),
                     }
+                    serde_yaml::Value::Sequence(seq) => {
+                        for (idx, item) in seq.iter().enumerate() {
+                            out.push((key.to_string(), idx.to_string(), yaml_scalar_string(item)));
+                        }
+                    }
+                    _ => out.push((prefix.to_string(), key.to_string(), yaml_scalar_string(v))),
                 }
             }
         }
-        _ => {}
     }
 }
 

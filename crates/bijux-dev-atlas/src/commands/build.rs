@@ -257,11 +257,11 @@ fn run_build_dist(
     hasher.update(&bytes);
     let checksum = format!("{:x}", hasher.finalize());
     let checksum_path = dist_dir.join("sha256sum.txt");
-    let checksum_line = format!(
-        "{}  {}\n",
-        checksum,
-        archive_path.file_name().unwrap().to_string_lossy()
-    );
+    let archive_file_name = archive_path
+        .file_name()
+        .map(|name| name.to_string_lossy().into_owned())
+        .ok_or_else(|| format!("archive path has no file name: {}", archive_path.display()))?;
+    let checksum_line = format!("{}  {}\n", checksum, archive_file_name);
     fs::write(&checksum_path, checksum_line)
         .map_err(|e| format!("cannot write {}: {e}", checksum_path.display()))?;
     let payload = serde_json::json!({

@@ -38,7 +38,7 @@ impl AdaptersBundle {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct FixedClock {
     unix_secs: u64,
 }
@@ -46,12 +46,6 @@ pub struct FixedClock {
 impl FixedClock {
     pub fn new(unix_secs: u64) -> Self {
         Self { unix_secs }
-    }
-}
-
-impl Default for FixedClock {
-    fn default() -> Self {
-        Self { unix_secs: 0 }
     }
 }
 
