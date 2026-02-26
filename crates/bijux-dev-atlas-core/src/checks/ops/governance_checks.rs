@@ -3434,6 +3434,40 @@ pub(super) fn check_ops_docs_governance(
         }
     }
 
+    let docs_links_rel = Path::new("ops/_generated.example/docs-links-report.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, docs_links_rel) {
+        violations.push(violation(
+            "OPS_DOCS_LINKS_REPORT_MISSING",
+            format!("missing docs links artifact `{}`", docs_links_rel.display()),
+            "generate and commit docs links report artifact",
+            Some(docs_links_rel),
+        ));
+    } else {
+        let docs_links_text = fs::read_to_string(ctx.repo_root.join(docs_links_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let docs_links_json: serde_json::Value = serde_json::from_str(&docs_links_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if !ctx.adapters.fs.exists(ctx.repo_root, Path::new("docs/ops")) {
+            let stale_docs_ops_ref = docs_links_json
+                .get("links")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(|entry| entry.get("doc").and_then(|v| v.as_str()))
+                .find(|doc| doc.starts_with("docs/ops/"));
+            if let Some(stale_doc) = stale_docs_ops_ref {
+                violations.push(violation(
+                    "OPS_DOCS_LINKS_REPORT_STALE_DOCS_OPS_REFERENCE",
+                    format!(
+                        "docs links report references retired docs path `{stale_doc}` while `docs/ops` does not exist"
+                    ),
+                    "regenerate docs-links-report.json after removing stale docs/ops references",
+                    Some(docs_links_rel),
+                ));
+            }
+        }
+    }
+
     let forbidden_doc_refs = [
         "ops/schema/obs/",
         "ops/obs/",
