@@ -435,6 +435,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
         .cloned()
         .unwrap_or_default();
     let mut node_ids = std::collections::BTreeSet::new();
+    let mut node_paths = std::collections::BTreeMap::<String, String>::new();
+    let mut path_prefix_coverage = std::collections::BTreeSet::<&'static str>::new();
     for node in &nodes {
         let id = node.get("id").and_then(|v| v.as_str()).unwrap_or_default();
         let node_type = node.get("type").and_then(|v| v.as_str()).unwrap_or_default();
@@ -454,6 +456,26 @@ pub(super) fn check_ops_inventory_contract_integrity(
                     "fix node.path to an existing ops artifact path",
                     Some(control_graph_rel),
                 ));
+            }
+            if let Some(prev_id) = node_paths.insert(path.to_string(), id.to_string()) {
+                violations.push(violation(
+                    "OPS_INVENTORY_CONTROL_GRAPH_DUPLICATE_PATH_NODE",
+                    format!(
+                        "control graph path `{path}` is declared by multiple nodes: `{prev_id}` and `{id}`"
+                    ),
+                    "assign one control graph node per concrete path",
+                    Some(control_graph_rel),
+                ));
+            }
+            for (prefix, key) in [
+                ("docs/", "docs"),
+                ("makefiles/", "make"),
+                ("crates/", "runtime"),
+                ("ops/report/", "report"),
+            ] {
+                if path.starts_with(prefix) {
+                    path_prefix_coverage.insert(key);
+                }
             }
         }
         if node_type == "action" {
@@ -481,6 +503,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     }
     let mut seen_kinds = std::collections::BTreeSet::new();
     let mut adjacency = std::collections::BTreeMap::<String, Vec<String>>::new();
+    let mut incident_counts = std::collections::BTreeMap::<String, usize>::new();
     for edge in &edges {
         let from = edge.get("from").and_then(|v| v.as_str()).unwrap_or_default();
         let to = edge.get("to").and_then(|v| v.as_str()).unwrap_or_default();
@@ -495,6 +518,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
             continue;
         }
         seen_kinds.insert(kind.to_string());
+        *incident_counts.entry(from.to_string()).or_default() += 1;
+        *incident_counts.entry(to.to_string()).or_default() += 1;
         if matches!(
             kind,
             "dependency" | "consumer" | "producer" | "lifecycle" | "drift"
@@ -505,12 +530,34 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 .push(to.to_string());
         }
     }
+    for node_id in &node_ids {
+        if !incident_counts.contains_key(node_id) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_ORPHAN_NODE",
+                format!("control graph node `{node_id}` has no incident edges"),
+                "connect every control graph node with at least one incoming or outgoing edge",
+                Some(control_graph_rel),
+            ));
+        }
+    }
     for required_kind in ["dependency", "consumer", "producer", "lifecycle", "drift"] {
         if !seen_kinds.contains(required_kind) {
             violations.push(violation(
                 "OPS_INVENTORY_CONTROL_GRAPH_EDGE_KIND_MISSING",
                 format!("control graph is missing required edge kind `{required_kind}`"),
                 "add at least one edge for each required control graph edge kind",
+                Some(control_graph_rel),
+            ));
+        }
+    }
+    for required_prefix in ["docs", "make", "runtime", "report"] {
+        if !path_prefix_coverage.contains(required_prefix) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_PATH_COVERAGE_MISSING",
+                format!(
+                    "control graph is missing explicit `{required_prefix}` path-backed node coverage"
+                ),
+                "add control graph nodes for docs, makefiles, runtime crate, and report artifact paths",
                 Some(control_graph_rel),
             ));
         }

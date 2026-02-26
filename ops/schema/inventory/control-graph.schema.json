@@ -18,7 +18,11 @@
             "type": "string",
             "enum": ["artifact", "action", "gate", "policy", "schema", "domain"]
           },
-          "path": {"type": "string", "pattern": "^ops/.+"}
+          "path": {
+            "type": "string",
+            "pattern": "^(ops|docs|makefiles|crates)/.+",
+            "not": {"pattern": "^/|^\\.\\./"}
+          }
         }
       }
     },
