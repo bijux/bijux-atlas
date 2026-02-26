@@ -54,3 +54,31 @@ fn policies_module_does_not_depend_on_core_or_adapters() {
         }
     }
 }
+
+#[test]
+fn core_module_does_not_import_adapters() {
+    let core_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/core");
+    let mut stack = vec![core_root];
+    while let Some(path) = stack.pop() {
+        for entry in fs::read_dir(&path)
+            .unwrap_or_else(|err| panic!("failed to read dir {}: {err}", path.display()))
+        {
+            let entry = entry.expect("dir entry");
+            let entry_path = entry.path();
+            if entry_path.is_dir() {
+                stack.push(entry_path);
+                continue;
+            }
+            if entry_path.extension().is_none_or(|ext| ext != "rs") {
+                continue;
+            }
+            let content = fs::read_to_string(&entry_path)
+                .unwrap_or_else(|err| panic!("failed to read {}: {err}", entry_path.display()));
+            assert!(
+                !content.contains("crate::adapters"),
+                "core source file {} must not import crate::adapters",
+                entry_path.display()
+            );
+        }
+    }
+}
