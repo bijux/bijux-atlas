@@ -66,6 +66,7 @@
   "ignored_paths": [
     "ops/CONTRACT.md",
     "ops/CONTROL_PLANE.md",
+    "ops/DIRECTORY_NECESSITY.md",
     "ops/DIRECTORY_BUDGET_POLICY.md",
     "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
     "ops/DRIFT.md",
@@ -73,6 +74,7 @@
     "ops/GENERATED_LIFECYCLE.md",
     "ops/GOLDEN_REFRESH_POLICY.md",
     "ops/INDEX.md",
+    "ops/MINIMAL_RELEASE_SURFACE.md",
     "ops/NAMING.md",
     "ops/PORTABILITY_MATRIX.md",
     "ops/README.md",
