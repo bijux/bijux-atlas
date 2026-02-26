@@ -17,6 +17,7 @@
     "ops/_generated.example/file-usage-report.json",
     "ops/_generated.example/fixture-drift-report.json",
     "ops/_generated.example/generator-coverage-report.json",
+    "ops/_generated.example/inventory-completeness-score.json",
     "ops/_generated.example/inventory-index.json",
     "ops/_generated.example/ops-evidence-bundle.json",
     "ops/_generated.example/ops-index.json",
@@ -223,6 +224,12 @@
       "committed": "ops/_generated.example/generator-coverage-report.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/inventory-completeness-score.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops inventory completeness-score",
       "regenerate": "make ops-generated-example-refresh"
     },
     {

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops inventory completeness-score --write-example",
+  "status": "pass",
+  "score": 100,
+  "checks": {
+    "node_consumer_coverage": 100,
+    "node_lifecycle_coverage": 100,
+    "domain_coverage_edges": 100,
+    "path_surface_coverage": 100,
+    "edge_kind_coverage": 100
+  },
+  "notes": [
+    "control-graph nodes include explicit consumer and lifecycle metadata",
+    "canonical domain and path coverage checks are green"
+  ]
+}

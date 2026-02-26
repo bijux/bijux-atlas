@@ -32,6 +32,7 @@
 | `ops/report/generated/release-evidence-bundle.json` | `ops/schema/report/release-evidence-bundle.schema.json` |
 | `ops/report/generated/readiness-score.json` | `ops/schema/report/readiness-score.schema.json` |
 | `ops/_generated.example/evidence-gap-report.json` | `ops/schema/report/evidence-gap-report.schema.json` |
+| `ops/_generated.example/inventory-completeness-score.json` | `ops/schema/inventory/inventory-completeness-score.schema.json` |
 | `ops/_generated.example/what-breaks-if-removed-report.json` | `ops/schema/report/what-breaks-if-removed-report.schema.json` |
 
 ## Contract Taxonomy
@@ -57,6 +58,7 @@
 - Release evidence bundle: `ops/report/generated/release-evidence-bundle.json`
 - Contract audit evidence: `ops/_generated.example/contract-audit-report.json`
 - Contract dependency evidence: `ops/_generated.example/contract-dependency-graph.json`
+- Inventory completeness evidence: `ops/_generated.example/inventory-completeness-score.json`
 - Deletion impact evidence: `ops/_generated.example/what-breaks-if-removed-report.json`
 
 ## Enforcement Links
