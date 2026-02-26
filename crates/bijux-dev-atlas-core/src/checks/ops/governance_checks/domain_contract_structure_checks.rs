@@ -1,21 +1,22 @@
 pub(super) fn check_ops_domain_contract_structure(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let contract_files = [
-        "ops/datasets/CONTRACT.md",
-        "ops/e2e/CONTRACT.md",
-        "ops/env/CONTRACT.md",
-        "ops/inventory/CONTRACT.md",
-        "ops/k8s/CONTRACT.md",
-        "ops/load/CONTRACT.md",
-        "ops/observe/CONTRACT.md",
-        "ops/report/CONTRACT.md",
-        "ops/schema/CONTRACT.md",
-        "ops/stack/CONTRACT.md",
+    let domain_roots = [
+        "ops/datasets",
+        "ops/e2e",
+        "ops/env",
+        "ops/inventory",
+        "ops/k8s",
+        "ops/load",
+        "ops/observe",
+        "ops/report",
+        "ops/schema",
+        "ops/stack",
     ];
     let mut violations = Vec::new();
-    for rel_str in contract_files {
-        let rel = Path::new(rel_str);
+    for domain_root in domain_roots {
+        let contract_rel_string = format!("{domain_root}/CONTRACT.md");
+        let rel = Path::new(&contract_rel_string);
         if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
             violations.push(violation(
                 "OPS_DOMAIN_CONTRACT_MISSING",
@@ -27,6 +28,31 @@ pub(super) fn check_ops_domain_contract_structure(
         }
         let text = fs::read_to_string(ctx.repo_root.join(rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for required_header in ["- Owner:", "- Purpose:", "- Consumers:"] {
+            if !text.contains(required_header) {
+                violations.push(violation(
+                    "OPS_DOMAIN_DOC_HEADER_METADATA_MISSING",
+                    format!(
+                        "domain contract `{}` must include header metadata line `{required_header}`",
+                        rel.display()
+                    ),
+                    "add Owner, Purpose, and Consumers metadata lines near the top of the domain contract",
+                    Some(rel),
+                ));
+            }
+        }
+        let consumer_line = text
+            .lines()
+            .find(|line| line.trim_start().starts_with("- Consumers:"))
+            .unwrap_or_default();
+        if consumer_line.trim() == "- Consumers:" {
+            violations.push(violation(
+                "OPS_DOMAIN_DOC_CONSUMERS_METADATA_EMPTY",
+                format!("domain contract `{}` must declare at least one consumer", rel.display()),
+                "list the enforcing checks or runtime commands under Consumers metadata",
+                Some(rel),
+            ));
+        }
         if !text.contains("- contract_version: `") {
             violations.push(violation(
                 "OPS_DOMAIN_CONTRACT_VERSION_METADATA_MISSING",
@@ -173,6 +199,65 @@ pub(super) fn check_ops_domain_contract_structure(
                 Some(rel),
             ));
         }
+
+        let readme_rel_string = format!("{domain_root}/README.md");
+        let readme_rel = Path::new(&readme_rel_string);
+        if !ctx.adapters.fs.exists(ctx.repo_root, readme_rel) {
+            violations.push(violation(
+                "OPS_DOMAIN_README_MISSING",
+                format!("missing domain README `{}`", readme_rel.display()),
+                "add missing domain README.md file",
+                Some(readme_rel),
+            ));
+        } else {
+            let readme_text = fs::read_to_string(ctx.repo_root.join(readme_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            for required_header in ["- Owner:", "- Purpose:", "- Consumers:"] {
+                if !readme_text.contains(required_header) {
+                    violations.push(violation(
+                        "OPS_DOMAIN_DOC_HEADER_METADATA_MISSING",
+                        format!(
+                            "domain README `{}` must include header metadata line `{required_header}`",
+                            readme_rel.display()
+                        ),
+                        "add Owner, Purpose, and Consumers metadata lines near the top of the domain README",
+                        Some(readme_rel),
+                    ));
+                }
+            }
+            let consumer_line = readme_text
+                .lines()
+                .find(|line| line.trim_start().starts_with("- Consumers:"))
+                .unwrap_or_default();
+            if consumer_line.trim() == "- Consumers:" {
+                violations.push(violation(
+                    "OPS_DOMAIN_DOC_CONSUMERS_METADATA_EMPTY",
+                    format!("domain README `{}` must declare at least one consumer", readme_rel.display()),
+                    "list the runtime command surface or checks that consume this README",
+                    Some(readme_rel),
+                ));
+            }
+        }
+
+        let generated_readme_rel_string = format!("{domain_root}/generated/README.md");
+        let generated_readme_rel = Path::new(&generated_readme_rel_string);
+        if ctx.adapters.fs.exists(ctx.repo_root, generated_readme_rel) {
+            let generated_readme_text = fs::read_to_string(ctx.repo_root.join(generated_readme_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            for required_line in ["- Producer:", "- Regenerate:"] {
+                if !generated_readme_text.contains(required_line) {
+                    violations.push(violation(
+                        "OPS_GENERATED_README_PRODUCER_METADATA_MISSING",
+                        format!(
+                            "generated README `{}` must include `{required_line}` metadata",
+                            generated_readme_rel.display()
+                        ),
+                        "document producer command and regeneration command in generated/README.md",
+                        Some(generated_readme_rel),
+                    ));
+                }
+            }
+        }
     }
     let coverage_rel = Path::new("ops/_generated.example/contract-coverage-report.json");
     if !ctx.adapters.fs.exists(ctx.repo_root, coverage_rel) {
@@ -252,4 +337,3 @@ pub(super) fn check_ops_domain_contract_structure(
     }
     Ok(violations)
 }
-
