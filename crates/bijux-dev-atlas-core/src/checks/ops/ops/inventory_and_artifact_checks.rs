@@ -205,5 +205,46 @@ fn checks_ops_runtime_output_roots_under_ops_absent(
             Some(rel),
         ));
     }
+    let runtime_source_roots = [
+        Path::new("crates/bijux-dev-atlas/src/ops_runtime_execution"),
+        Path::new("crates/bijux-dev-atlas/src/ops_commands/runtime_mod"),
+    ];
+    for root_rel in runtime_source_roots {
+        let root = ctx.repo_root.join(root_rel);
+        if !root.exists() {
+            continue;
+        }
+        for file in walk_files(&root) {
+            if file.extension().and_then(|e| e.to_str()) != Some("rs") {
+                continue;
+            }
+            let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
+            if rel.display().to_string().contains("/tests.rs") {
+                continue;
+            }
+            let Ok(text) = fs::read_to_string(&file) else {
+                continue;
+            };
+            for line in text.lines() {
+                let trimmed = line.trim();
+                let writes_ops_tree = (trimmed.contains("create_dir_all(")
+                    || trimmed.contains("std::fs::write(")
+                    || trimmed.contains("fs::write("))
+                    && trimmed.contains("join(\"ops/");
+                if writes_ops_tree {
+                    violations.push(violation(
+                        "OPS_RUNTIME_SOURCE_WRITES_UNDER_OPS_FORBIDDEN",
+                        format!(
+                            "runtime source `{}` writes under ops tree in line `{trimmed}`",
+                            rel.display()
+                        ),
+                        "write runtime outputs under artifacts/ and restrict ops/ writes to explicit governance/manifests outside runtime execution modules",
+                        Some(rel),
+                    ));
+                    break;
+                }
+            }
+        }
+    }
     Ok(violations)
 }
