@@ -35,7 +35,7 @@ use crate::cli::{
     GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
     OpsStatusTarget, WorkflowsCommand,
 };
-use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner};
+use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas::core::{
     exit_code_for_report, explain_output, load_registry, registry_doctor, render_json,
@@ -89,30 +89,10 @@ impl From<DomainArg> for DomainId {
     }
 }
 
-fn discover_repo_root(start: &Path) -> Result<PathBuf, String> {
-    let mut current = start.canonicalize().map_err(|err| err.to_string())?;
-    loop {
-        if current.join("ops/inventory/registry.toml").exists() {
-            return Ok(current);
-        }
-        if let Some(parent) = current.parent() {
-            current = parent.to_path_buf();
-        } else {
-            return Err(
-                "could not discover repo root (no ops/inventory/registry.toml found)".to_string(),
-            );
-        }
-    }
-}
-
 fn resolve_repo_root(arg: Option<PathBuf>) -> Result<PathBuf, String> {
-    match arg {
-        Some(path) => discover_repo_root(&path),
-        None => {
-            let cwd = std::env::current_dir().map_err(|err| err.to_string())?;
-            discover_repo_root(&cwd)
-        }
-    }
+    WorkspaceRoot::from_cli_or_cwd(arg)
+        .map(WorkspaceRoot::into_inner)
+        .map_err(|err| err.to_string())
 }
 
 pub(crate) fn plugin_metadata_json() -> String {
