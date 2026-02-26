@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 pub const CONFIG_SCHEMA_VERSION: &str = "1";
@@ -181,6 +182,81 @@ pub fn validate_startup_config_contract(
     Ok(())
 }
 
+#[derive(Debug, Clone, Default, Deserialize)]
+struct RuntimeStartupConfigFile {
+    bind_addr: Option<String>,
+    store_root: Option<PathBuf>,
+    cache_root: Option<PathBuf>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct RuntimeStartupConfig {
+    pub bind_addr: String,
+    pub store_root: PathBuf,
+    pub cache_root: PathBuf,
+}
+
+fn parse_runtime_startup_config_file(path: &Path) -> Result<RuntimeStartupConfigFile, String> {
+    let text = std::fs::read_to_string(path)
+        .map_err(|err| format!("failed reading runtime config file {}: {err}", path.display()))?;
+    match path.extension().and_then(|v| v.to_str()) {
+        Some("json") => serde_json::from_str(&text)
+            .map_err(|err| format!("invalid runtime config json {}: {err}", path.display())),
+        Some("yaml") | Some("yml") => serde_yaml::from_str(&text)
+            .map_err(|err| format!("invalid runtime config yaml {}: {err}", path.display())),
+        Some("toml") => toml::from_str(&text)
+            .map_err(|err| format!("invalid runtime config toml {}: {err}", path.display())),
+        _ => Err(format!(
+            "unsupported runtime config extension for {} (expected .json/.yaml/.yml/.toml)",
+            path.display()
+        )),
+    }
+}
+
+pub fn load_runtime_startup_config(
+    config_path: Option<&Path>,
+    cli_bind_addr: Option<&str>,
+    cli_store_root: Option<&Path>,
+    cli_cache_root: Option<&Path>,
+) -> Result<RuntimeStartupConfig, String> {
+    let file_cfg = if let Some(path) = config_path {
+        parse_runtime_startup_config_file(path)?
+    } else {
+        RuntimeStartupConfigFile::default()
+    };
+
+    let bind_addr = cli_bind_addr
+        .map(ToString::to_string)
+        .or_else(|| std::env::var("ATLAS_BIND").ok())
+        .or(file_cfg.bind_addr)
+        .unwrap_or_else(|| "0.0.0.0:8080".to_string());
+
+    let store_root = cli_store_root
+        .map(Path::to_path_buf)
+        .or_else(|| std::env::var("ATLAS_STORE_ROOT").ok().map(PathBuf::from))
+        .or(file_cfg.store_root)
+        .unwrap_or_else(|| PathBuf::from("artifacts/server-store"));
+
+    let cache_root = cli_cache_root
+        .map(Path::to_path_buf)
+        .or_else(|| std::env::var("ATLAS_CACHE_ROOT").ok().map(PathBuf::from))
+        .or(file_cfg.cache_root)
+        .unwrap_or_else(|| PathBuf::from("artifacts/server-cache"));
+
+    if bind_addr.trim().is_empty() {
+        return Err("runtime config bind_addr must not be empty".to_string());
+    }
+    if store_root.as_os_str().is_empty() || cache_root.as_os_str().is_empty() {
+        return Err("runtime config store_root/cache_root must not be empty".to_string());
+    }
+
+    Ok(RuntimeStartupConfig {
+        bind_addr,
+        store_root,
+        cache_root,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -212,5 +288,30 @@ mod tests {
         api.hmac_secret = None;
         let err = validate_startup_config_contract(&api, &cache).expect_err("missing hmac");
         assert!(err.contains("hmac_secret"));
+    }
+
+    #[test]
+    fn runtime_startup_config_cli_overrides_env_and_file() {
+        let temp = tempfile::tempdir().expect("tempdir");
+        let config_path = temp.path().join("server.toml");
+        std::fs::write(
+            &config_path,
+            "bind_addr = \"127.0.0.1:9000\"\nstore_root = \"from-file-store\"\ncache_root = \"from-file-cache\"\n",
+        )
+        .expect("write");
+        std::env::set_var("ATLAS_BIND", "127.0.0.1:9100");
+        std::env::set_var("ATLAS_STORE_ROOT", "from-env-store");
+        std::env::set_var("ATLAS_CACHE_ROOT", "from-env-cache");
+
+        let resolved = load_runtime_startup_config(
+            Some(&config_path),
+            Some("127.0.0.1:9200"),
+            Some(Path::new("from-cli-store")),
+            Some(Path::new("from-cli-cache")),
+        )
+        .expect("load");
+        assert_eq!(resolved.bind_addr, "127.0.0.1:9200");
+        assert_eq!(resolved.store_root, PathBuf::from("from-cli-store"));
+        assert_eq!(resolved.cache_root, PathBuf::from("from-cli-cache"));
     }
 }

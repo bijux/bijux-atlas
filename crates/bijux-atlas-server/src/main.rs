@@ -4,9 +4,11 @@
 
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_server::{
-    build_router, ApiConfig, AppState, DatasetCacheConfig, DatasetCacheManager, FederatedBackend,
-    LocalFsBackend, RegistrySource, RetryPolicy, S3LikeBackend,
+    build_router, load_runtime_startup_config, ApiConfig, AppState, DatasetCacheConfig,
+    DatasetCacheManager, FederatedBackend, LocalFsBackend, RegistrySource, RetryPolicy,
+    S3LikeBackend,
 };
+use clap::Parser;
 use opentelemetry::trace::TracerProvider as _;
 use redis::AsyncCommands;
 use std::collections::HashSet;
@@ -22,6 +24,19 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilte
 #[cfg(feature = "jemalloc")]
 #[global_allocator]
 static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
+#[derive(Parser, Debug)]
+#[command(name = "atlas-server", version, about = "Bijux Atlas runtime server")]
+struct ServerCliArgs {
+    #[arg(long)]
+    config: Option<PathBuf>,
+    #[arg(long)]
+    bind: Option<String>,
+    #[arg(long)]
+    store_root: Option<PathBuf>,
+    #[arg(long)]
+    cache_root: Option<PathBuf>,
+}
 
 fn env_bool(name: &str, default: bool) -> bool {
     env::var(name)
@@ -333,16 +348,19 @@ fn validate_runtime_env_contract() -> Result<(), String> {
 
 #[tokio::main]
 async fn main() -> Result<(), String> {
+    let cli = ServerCliArgs::parse();
     init_tracing();
     validate_runtime_env_contract()?;
 
-    let bind_addr = env::var("ATLAS_BIND").unwrap_or_else(|_| "0.0.0.0:8080".to_string());
-    let store_root = PathBuf::from(
-        env::var("ATLAS_STORE_ROOT").unwrap_or_else(|_| "artifacts/server-store".to_string()),
-    );
-    let cache_root = PathBuf::from(
-        env::var("ATLAS_CACHE_ROOT").unwrap_or_else(|_| "artifacts/server-cache".to_string()),
-    );
+    let startup = load_runtime_startup_config(
+        cli.config.as_deref(),
+        cli.bind.as_deref(),
+        cli.store_root.as_deref(),
+        cli.cache_root.as_deref(),
+    )?;
+    let bind_addr = startup.bind_addr;
+    let store_root = startup.store_root;
+    let cache_root = startup.cache_root;
 
     let pinned: HashSet<_> = env::var("ATLAS_PINNED_DATASETS")
         .unwrap_or_default()
