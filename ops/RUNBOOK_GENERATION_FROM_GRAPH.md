@@ -1,6 +1,6 @@
 # Runbook Generation From Graph
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 - Owner: `bijux-atlas-operations`
 - Purpose: `define how operator runbooks are derived from inventory control graph nodes and edges`

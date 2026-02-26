@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `document deterministic generation and governance proof points available in-repo`
 - Consumers: `checks_ops_final_polish_contracts`
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `reviewers`
 
 ## Determinism Proof Points

@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `gate new docs and doc expansions so ops documentation surface stays compressed and intentional`
 - Consumers: `checks_ops_docs_governance`
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 
 ## Checklist

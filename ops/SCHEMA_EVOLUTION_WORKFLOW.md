@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `define the human workflow for schema changes, compatibility review, and release gating`
 - Consumers: `checks_ops_human_workflow_maturity`
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 
 ## Workflow

@@ -1,6 +1,6 @@
 # Emergency Override Workflow
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `operators`
 - Owner: `bijux-atlas-operations`
 - Purpose: `control emergency overrides with auditability, expiry, and rollback requirements`

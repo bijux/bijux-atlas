@@ -1,6 +1,6 @@
 # Ownership Rotation Policy
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `operators`
 - Owner: `bijux-atlas-operations`
 - Purpose: `define reviewer and operator ownership rotation cadence for ops domains and drills`

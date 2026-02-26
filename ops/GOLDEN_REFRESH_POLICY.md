@@ -1,6 +1,6 @@
 # Golden Refresh Policy
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 ## Scope
 - Applies to committed golden snapshots, curated report examples, and generated example evidence under `ops/_generated.example/` and test goldens under `crates/**/tests/goldens/`.

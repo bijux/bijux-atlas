@@ -1,6 +1,6 @@
 # Ops Index
 
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `mixed`
 Human entry for the ops specification surface.
 

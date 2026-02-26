@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `declare why each canonical ops directory exists and what breaks if removed`
 - Consumers: `checks_ops_minimalism_and_deletion_safety`
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 
 ## Canonical Directories

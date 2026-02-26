@@ -1,6 +1,6 @@
 # Escalation Mapping
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `operators`
 - Owner: `bijux-atlas-operations`
 - Purpose: `map operational incident classes to owners, escalation paths, and required evidence`

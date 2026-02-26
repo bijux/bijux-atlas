@@ -1,6 +1,6 @@
 # Ops Freeze Workflow
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `operators`
 - Owner: `bijux-atlas-operations`
 - Purpose: `define freeze activation and release exception handling for ops changes`

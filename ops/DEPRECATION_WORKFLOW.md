@@ -1,6 +1,6 @@
 # Deprecation Workflow
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 - Owner: `bijux-atlas-operations`
 - Purpose: `standardize deprecation notices, cutover windows, and removal criteria for ops contracts and docs`

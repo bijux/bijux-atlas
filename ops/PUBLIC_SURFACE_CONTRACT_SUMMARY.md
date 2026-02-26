@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `summarize the public ops contract surface and its canonical entrypoints`
 - Consumers: `checks_ops_final_polish_contracts`
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `mixed`
 
 ## Public Surface

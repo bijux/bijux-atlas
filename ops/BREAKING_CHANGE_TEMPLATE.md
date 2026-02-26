@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `standardize breaking change proposals affecting ops contracts, evidence, or runtime workflows`
 - Consumers: `checks_ops_human_workflow_maturity`
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 
 ## Change Summary

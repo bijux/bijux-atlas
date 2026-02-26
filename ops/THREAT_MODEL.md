@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `capture high-level threat categories against ops contracts, evidence, and execution surfaces`
 - Consumers: `checks_ops_final_polish_contracts`
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `reviewers`
 
 ## Threat Categories

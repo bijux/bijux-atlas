@@ -1,6 +1,6 @@
 # Incident Playbook Generation
 
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `operators`
 - Owner: `bijux-atlas-operations`
 - Purpose: `define how incident playbooks are produced from drill inventory, runbook policies, and control graph mappings`

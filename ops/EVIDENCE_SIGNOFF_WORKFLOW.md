@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `define how evidence bundles are reviewed and signed off before release decisions`
 - Consumers: `checks_ops_human_workflow_maturity`
-- Authority Tier: `explanatory`
+- Authority Tier: `tier2`
 - Audience: `reviewers`
 
 ## Workflow

@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `distill ops philosophy into enforceable invariants and decision rules`
 - Consumers: `checks_ops_final_polish_contracts`
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `mixed`
 
 ## Core Invariants

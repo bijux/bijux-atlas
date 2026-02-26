@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Purpose: `declare portability coverage expectations and proof artifacts for environment robustness`
 - Consumers: `checks_ops_portability_environment_contract`
-- Authority Tier: `machine`
+- Authority Tier: `tier2`
 - Audience: `contributors`
 
 ## Scope
