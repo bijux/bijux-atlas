@@ -11,6 +11,8 @@ required_files:
   - ops/datasets/manifest.json
   - ops/datasets/manifest.lock
   - ops/datasets/promotion-rules.json
+  - ops/datasets/consumer-list.json
+  - ops/datasets/freeze-policy.json
   - ops/datasets/qc-metadata.json
   - ops/datasets/rollback-policy.json
   - ops/datasets/real-datasets.json
@@ -24,5 +26,7 @@ forbidden_patterns:
 notes:
   - authored_root: ops/datasets/manifest.json
   - authored_root: ops/datasets/promotion-rules.json
+  - authored_root: ops/datasets/consumer-list.json
+  - authored_root: ops/datasets/freeze-policy.json
   - generated_output: ops/datasets/generated/fixture-inventory.json
 ```

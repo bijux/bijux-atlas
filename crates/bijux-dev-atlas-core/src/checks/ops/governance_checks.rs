@@ -3921,6 +3921,99 @@ pub(super) fn check_ops_fixture_governance(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
+    let manifest_rel = Path::new("ops/datasets/manifest.json");
+    let manifest_dataset_ids = if ctx.adapters.fs.exists(ctx.repo_root, manifest_rel) {
+        let manifest_text = fs::read_to_string(ctx.repo_root.join(manifest_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let manifest_json: serde_json::Value = serde_json::from_str(&manifest_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        manifest_json
+            .get("datasets")
+            .and_then(|v| v.as_array())
+            .map(|datasets| {
+                datasets
+                    .iter()
+                    .filter_map(|entry| entry.get("id").and_then(|v| v.as_str()))
+                    .map(ToString::to_string)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default()
+    } else {
+        BTreeSet::new()
+    };
+
+    let consumer_list_rel = Path::new("ops/datasets/consumer-list.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, consumer_list_rel) {
+        let consumer_list_text = fs::read_to_string(ctx.repo_root.join(consumer_list_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let consumer_list_json: serde_json::Value = serde_json::from_str(&consumer_list_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if let Some(consumers) = consumer_list_json.get("consumers").and_then(|v| v.as_array()) {
+            for consumer in consumers {
+                let consumer_id = consumer
+                    .get("id")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("unknown-consumer");
+                for dataset_id in consumer
+                    .get("dataset_ids")
+                    .and_then(|v| v.as_array())
+                    .into_iter()
+                    .flatten()
+                    .filter_map(|v| v.as_str())
+                {
+                    if !manifest_dataset_ids.contains(dataset_id) {
+                        violations.push(violation(
+                            "OPS_DATASET_CONSUMER_UNKNOWN_DATASET_ID",
+                            format!(
+                                "dataset consumer `{consumer_id}` references unknown dataset id `{dataset_id}`"
+                            ),
+                            "align ops/datasets/consumer-list.json dataset_ids with ops/datasets/manifest.json",
+                            Some(consumer_list_rel),
+                        ));
+                    }
+                }
+            }
+        }
+    } else {
+        violations.push(violation(
+            "OPS_DATASET_CONSUMER_LIST_MISSING",
+            format!("missing dataset consumer contract `{}`", consumer_list_rel.display()),
+            "restore ops/datasets/consumer-list.json",
+            Some(consumer_list_rel),
+        ));
+    }
+
+    let freeze_policy_rel = Path::new("ops/datasets/freeze-policy.json");
+    if ctx.adapters.fs.exists(ctx.repo_root, freeze_policy_rel) {
+        let freeze_policy_text = fs::read_to_string(ctx.repo_root.join(freeze_policy_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let freeze_policy_json: serde_json::Value = serde_json::from_str(&freeze_policy_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for key in [
+            "schema_version",
+            "freeze_mode",
+            "immutability",
+            "retention",
+            "change_controls",
+        ] {
+            if freeze_policy_json.get(key).is_none() {
+                violations.push(violation(
+                    "OPS_DATASET_FREEZE_POLICY_FIELD_MISSING",
+                    format!("freeze policy missing required key `{key}`"),
+                    "add missing required keys to ops/datasets/freeze-policy.json",
+                    Some(freeze_policy_rel),
+                ));
+            }
+        }
+    } else {
+        violations.push(violation(
+            "OPS_DATASET_FREEZE_POLICY_MISSING",
+            format!("missing dataset freeze policy `{}`", freeze_policy_rel.display()),
+            "restore ops/datasets/freeze-policy.json",
+            Some(freeze_policy_rel),
+        ));
+    }
+
     let fixture_policy_rel = Path::new("ops/datasets/fixture-policy.json");
     let mut allowed_binary_paths = BTreeSet::new();
     if ctx.adapters.fs.exists(ctx.repo_root, fixture_policy_rel) {

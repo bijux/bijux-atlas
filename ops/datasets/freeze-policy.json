@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "freeze_mode": "manifest-lock",
+  "immutability": {
+    "fixture_assets_append_only": true,
+    "manifest_lock_hash_required": true,
+    "allow_archive_replacement": false
+  },
+  "retention": {
+    "minimum_release_lines": 2,
+    "preserve_latest_fixture_versions": 2,
+    "require_deletion_review": true
+  },
+  "change_controls": [
+    "update_manifest_lock",
+    "refresh_fixture_inventory",
+    "refresh_fixture_drift_report",
+    "record_consumer_impact"
+  ]
+}

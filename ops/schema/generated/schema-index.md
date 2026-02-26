@@ -3,11 +3,13 @@
 | Path |
 | --- |
 | `ops/schema/configs/public-surface.schema.json` |
+| `ops/schema/datasets/consumer-list.schema.json` |
 | `ops/schema/datasets/corruption-drill-report.schema.json` |
 | `ops/schema/datasets/dataset-index.schema.json` |
 | `ops/schema/datasets/dataset-lineage.schema.json` |
 | `ops/schema/datasets/fixture-inventory.schema.json` |
 | `ops/schema/datasets/fixture-policy.schema.json` |
+| `ops/schema/datasets/freeze-policy.schema.json` |
 | `ops/schema/datasets/manifest-lock.schema.json` |
 | `ops/schema/datasets/manifest.schema.json` |
 | `ops/schema/datasets/promotion-report.schema.json` |

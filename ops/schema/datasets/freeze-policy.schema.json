@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "freeze_mode", "immutability", "retention", "change_controls"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "freeze_mode": {"type": "string", "minLength": 1},
+    "immutability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_assets_append_only", "manifest_lock_hash_required", "allow_archive_replacement"],
+      "properties": {
+        "fixture_assets_append_only": {"type": "boolean"},
+        "manifest_lock_hash_required": {"type": "boolean"},
+        "allow_archive_replacement": {"type": "boolean"}
+      }
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_release_lines", "preserve_latest_fixture_versions", "require_deletion_review"],
+      "properties": {
+        "minimum_release_lines": {"type": "integer", "minimum": 1},
+        "preserve_latest_fixture_versions": {"type": "integer", "minimum": 1},
+        "require_deletion_review": {"type": "boolean"}
+      }
+    },
+    "change_controls": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

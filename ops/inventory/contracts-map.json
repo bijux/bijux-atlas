@@ -117,6 +117,18 @@
       "schema": "ops/schema/datasets/manifest.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_orphan_data_artifacts"
+    },
+    {
+      "path": "ops/datasets/consumer-list.json",
+      "schema": "ops/schema/datasets/consumer-list.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_fixture_governance"
+    },
+    {
+      "path": "ops/datasets/freeze-policy.json",
+      "schema": "ops/schema/datasets/freeze-policy.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_fixture_governance"
     }
   ]
 }

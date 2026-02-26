@@ -12,6 +12,8 @@
 | --- | --- |
 | `ops/datasets/manifest.json` | Authored dataset catalog SSOT |
 | `ops/datasets/promotion-rules.json` | Authored promotion policy |
+| `ops/datasets/consumer-list.json` | Authored dataset consumer contract |
+| `ops/datasets/freeze-policy.json` | Authored dataset freeze and retention policy |
 | `ops/datasets/qc-metadata.json` | Authored quality metadata |
 | `ops/datasets/rollback-policy.json` | Authored rollback policy |
 | `ops/datasets/real-datasets.json` | Authored real dataset registry |
@@ -27,6 +29,8 @@
 | `ops/datasets/manifest.json` | `ops/schema/datasets/manifest.schema.json` |
 | `ops/datasets/manifest.lock` | `ops/schema/datasets/manifest-lock.schema.json` |
 | `ops/datasets/promotion-rules.json` | `ops/schema/datasets/promotion-rules.schema.json` |
+| `ops/datasets/consumer-list.json` | `ops/schema/datasets/consumer-list.schema.json` |
+| `ops/datasets/freeze-policy.json` | `ops/schema/datasets/freeze-policy.schema.json` |
 | `ops/datasets/qc-metadata.json` | `ops/schema/datasets/qc-metadata.schema.json` |
 | `ops/datasets/rollback-policy.json` | `ops/schema/datasets/rollback-policy.schema.json` |
 | `ops/datasets/generated/dataset-index.json` | `ops/schema/datasets/dataset-index.schema.json` |
@@ -48,6 +52,8 @@
 - Dataset docs must be linked from `ops/datasets/INDEX.md`; orphan docs are forbidden.
 - Fixture assets must be versioned under `ops/datasets/fixtures/**` and verified by `manifest.lock` hashes.
 - Dataset promotion and rollback policy must be deterministic for a given manifest and lock set.
+- Dataset consumer declarations must reference only dataset IDs present in `ops/datasets/manifest.json`.
+- Dataset freeze policy must keep fixture assets append-only and enforce manifest-lock hash integrity.
 
 ## Runtime Evidence Mapping
 

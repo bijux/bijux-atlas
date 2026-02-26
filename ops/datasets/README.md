@@ -13,6 +13,8 @@ Own dataset manifest lock, pins, fetch/verify, QC, and promotion simulation.
 - `ops/datasets/CONTRACT.md`
 - `ops/datasets/manifest.lock`
 - `ops/datasets/promotion-rules.json`
+- `ops/datasets/consumer-list.json`
+- `ops/datasets/freeze-policy.json`
 - `ops/datasets/qc-metadata.json`
 - `ops/datasets/fixture-policy.json`
 - `ops/datasets/rollback-policy.json`

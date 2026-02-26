@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "consumers": [
+    {
+      "id": "ops.e2e.suites",
+      "kind": "verification",
+      "owner": "bijux-atlas-operations",
+      "dataset_ids": [
+        "110/homo_sapiens/GRCh38"
+      ],
+      "interface": "ops/e2e/suites/suites.json"
+    },
+    {
+      "id": "ops.load.suites",
+      "kind": "load",
+      "owner": "bijux-atlas-operations",
+      "dataset_ids": [
+        "110/homo_sapiens/GRCh38"
+      ],
+      "interface": "ops/load/suites/suites.json"
+    },
+    {
+      "id": "ops.release-diff",
+      "kind": "release-diff",
+      "owner": "bijux-atlas-operations",
+      "dataset_ids": [
+        "110/homo_sapiens/GRCh38",
+        "111/homo_sapiens/GRCh38"
+      ],
+      "interface": "ops/datasets/fixtures/release-diff/v1/release-diff-queries.v1.json"
+    }
+  ]
+}
