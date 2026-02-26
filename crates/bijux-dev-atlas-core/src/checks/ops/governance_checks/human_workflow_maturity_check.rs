@@ -186,6 +186,21 @@ fn validate_required_human_workflow_docs(
             .as_slice(),
         ),
         (
+            "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+            [
+                "- Owner:",
+                "- Purpose:",
+                "- Consumers:",
+                "## Inputs",
+                "ops/inventory/control-graph.json",
+                "## Generation Rules",
+                "## Outputs",
+                "ops/_generated.example/incident-playbook-generation-report.json",
+                "## Enforcement Links",
+            ]
+            .as_slice(),
+        ),
+        (
             "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
             [
                 "- Owner:",
@@ -416,6 +431,29 @@ fn validate_human_workflow_cross_links(
             ),
             "link the golden refresh policy from the evidence signoff workflow",
             Some(evidence_rel),
+        ));
+    }
+
+    let incident_report_rel = Path::new("ops/_generated.example/incident-playbook-generation-report.json");
+    let incident_report_text = fs::read_to_string(ctx.repo_root.join(incident_report_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", incident_report_rel.display())))?;
+    let incident_report_json: serde_json::Value = serde_json::from_str(&incident_report_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", incident_report_rel.display())))?;
+    if incident_report_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+        violations.push(violation(
+            "OPS_HUMAN_WORKFLOW_INCIDENT_PLAYBOOK_REPORT_BLOCKING",
+            format!("incident playbook generation report `{}` status is not `pass`", incident_report_rel.display()),
+            "resolve incident playbook generation gaps and regenerate incident-playbook-generation-report.json",
+            Some(incident_report_rel),
+        ));
+    }
+    let playbooks = incident_report_json.get("playbooks").and_then(|v| v.as_array()).cloned().unwrap_or_default();
+    if playbooks.is_empty() {
+        violations.push(violation(
+            "OPS_HUMAN_WORKFLOW_INCIDENT_PLAYBOOK_REPORT_EMPTY",
+            format!("incident playbook generation report `{}` must include playbooks entries", incident_report_rel.display()),
+            "emit playbook mappings with drill_id, runbook_path, and control_graph_node",
+            Some(incident_report_rel),
         ));
     }
     Ok(())

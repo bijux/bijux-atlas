@@ -199,5 +199,28 @@ fn validate_ops_authority_tiers_and_doc_necessity(
         }
     }
 
+    let docs_dup_rel = Path::new("ops/_generated.example/docs-semantic-duplication-report.json");
+    let docs_dup_text = fs::read_to_string(ctx.repo_root.join(docs_dup_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", docs_dup_rel.display())))?;
+    let docs_dup_json: serde_json::Value = serde_json::from_str(&docs_dup_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", docs_dup_rel.display())))?;
+    if docs_dup_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+        violations.push(violation(
+            "OPS_DOCS_SEMANTIC_DUPLICATION_REPORT_BLOCKING",
+            format!("docs semantic duplication report `{}` status is not `pass`", docs_dup_rel.display()),
+            "resolve duplicate-risk docs or regenerate docs-semantic-duplication-report.json",
+            Some(docs_dup_rel),
+        ));
+    }
+    let pairs = docs_dup_json.get("pairs").and_then(|v| v.as_array()).cloned().unwrap_or_default();
+    if pairs.is_empty() {
+        violations.push(violation(
+            "OPS_DOCS_SEMANTIC_DUPLICATION_REPORT_EMPTY",
+            format!("docs semantic duplication report `{}` must include at least one analyzed pair", docs_dup_rel.display()),
+            "emit analyzed doc pairs in docs-semantic-duplication-report.json",
+            Some(docs_dup_rel),
+        ));
+    }
+
     Ok(())
 }
