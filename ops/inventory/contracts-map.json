@@ -5,6 +5,12 @@
   "registry_meaning": "authoritative list of authored inventory artifacts and their schema contracts",
   "items": [
     {
+      "path": "ops/inventory/control-graph.json",
+      "schema": "ops/schema/inventory/control-graph.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/inventory/authority-index.json",
       "schema": "ops/schema/inventory/authority-index.schema.json",
       "generator": "manual",

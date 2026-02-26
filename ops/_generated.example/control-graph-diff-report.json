@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops inventory control-graph-diff-report --write-example",
+  "status": "pass",
+  "summary": {
+    "added_nodes": 0,
+    "removed_nodes": 0,
+    "added_edges": 0,
+    "removed_edges": 0
+  },
+  "added_nodes": [],
+  "removed_nodes": [],
+  "added_edges": [],
+  "removed_edges": []
+}

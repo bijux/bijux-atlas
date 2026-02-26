@@ -7,6 +7,7 @@ required_files:
   - ops/inventory/REQUIRED_FILES.md
   - ops/inventory/surfaces.json
   - ops/inventory/authority-index.json
+  - ops/inventory/control-graph.json
   - ops/inventory/contracts.json
   - ops/inventory/contracts-map.json
   - ops/inventory/toolchain.json

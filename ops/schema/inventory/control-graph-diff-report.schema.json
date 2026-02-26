@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_by",
+    "status",
+    "summary",
+    "added_nodes",
+    "removed_nodes",
+    "added_edges",
+    "removed_edges"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "generated_by": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["added_nodes", "removed_nodes", "added_edges", "removed_edges"],
+      "properties": {
+        "added_nodes": {"type": "integer", "minimum": 0},
+        "removed_nodes": {"type": "integer", "minimum": 0},
+        "added_edges": {"type": "integer", "minimum": 0},
+        "removed_edges": {"type": "integer", "minimum": 0}
+      }
+    },
+    "added_nodes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "removed_nodes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "added_edges": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "removed_edges": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}

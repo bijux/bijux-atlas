@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "graph_version", "nodes", "edges"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "graph_version": {"type": "string", "minLength": 1},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "type": {
+            "type": "string",
+            "enum": ["artifact", "action", "gate", "policy", "schema", "domain"]
+          },
+          "path": {"type": "string", "pattern": "^ops/.+"}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "kind"],
+        "properties": {
+          "from": {"type": "string", "minLength": 1},
+          "to": {"type": "string", "minLength": 1},
+          "kind": {
+            "type": "string",
+            "enum": [
+              "dependency",
+              "consumer",
+              "producer",
+              "lifecycle",
+              "drift",
+              "policy_link",
+              "schema_link",
+              "drill_link",
+              "coverage"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

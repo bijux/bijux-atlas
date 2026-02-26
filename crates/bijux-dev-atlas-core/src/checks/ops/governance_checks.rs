@@ -1451,6 +1451,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let layers_rel = Path::new("ops/inventory/layers.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
     let drill_links_rel = Path::new("ops/inventory/drill-contract-links.json");
+    let control_graph_rel = Path::new("ops/inventory/control-graph.json");
     let surfaces_rel = Path::new("ops/inventory/surfaces.json");
     let owners_rel = Path::new("ops/inventory/owners.json");
     let policy_rel = Path::new("ops/inventory/policies/dev-atlas-policy.json");
@@ -1734,6 +1735,150 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 .collect::<std::collections::BTreeSet<_>>()
         })
         .unwrap_or_default();
+    let gate_ids = gates_json
+        .get("gates")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|gate| gate.get("id").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<std::collections::BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+
+    let control_graph_text = fs::read_to_string(ctx.repo_root.join(control_graph_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let control_graph_json: serde_json::Value = serde_json::from_str(&control_graph_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let nodes = control_graph_json
+        .get("nodes")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    let edges = control_graph_json
+        .get("edges")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    let mut node_ids = std::collections::BTreeSet::new();
+    for node in &nodes {
+        let id = node.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let node_type = node.get("type").and_then(|v| v.as_str()).unwrap_or_default();
+        if id.is_empty() || !node_ids.insert(id.to_string()) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_NODE_INVALID",
+                format!("control graph node id is empty or duplicated: `{id}`"),
+                "ensure control-graph nodes have unique non-empty ids",
+                Some(control_graph_rel),
+            ));
+        }
+        if let Some(path) = node.get("path").and_then(|v| v.as_str()) {
+            if !ctx.adapters.fs.exists(ctx.repo_root, Path::new(path)) {
+                violations.push(violation(
+                    "OPS_INVENTORY_CONTROL_GRAPH_NODE_PATH_MISSING",
+                    format!("control graph node path does not exist: `{path}`"),
+                    "fix node.path to an existing ops artifact path",
+                    Some(control_graph_rel),
+                ));
+            }
+        }
+        if node_type == "action" {
+            let action_id = id.strip_prefix("action.").unwrap_or(id);
+            if !action_ids.contains(action_id) {
+                violations.push(violation(
+                    "OPS_INVENTORY_CONTROL_GRAPH_ACTION_NOT_IN_SURFACES",
+                    format!("control graph action node `{id}` is not defined in surfaces actions"),
+                    "align action nodes with ops/inventory/surfaces.json action ids",
+                    Some(control_graph_rel),
+                ));
+            }
+        }
+        if node_type == "gate" {
+            let gate_id = id.strip_prefix("gate.").unwrap_or(id);
+            if !gate_ids.contains(gate_id) {
+                violations.push(violation(
+                    "OPS_INVENTORY_CONTROL_GRAPH_GATE_NOT_IN_GATES",
+                    format!("control graph gate node `{id}` is not defined in gates.json"),
+                    "align gate nodes with ops/inventory/gates.json ids",
+                    Some(control_graph_rel),
+                ));
+            }
+        }
+    }
+    let mut seen_kinds = std::collections::BTreeSet::new();
+    let mut adjacency = std::collections::BTreeMap::<String, Vec<String>>::new();
+    for edge in &edges {
+        let from = edge.get("from").and_then(|v| v.as_str()).unwrap_or_default();
+        let to = edge.get("to").and_then(|v| v.as_str()).unwrap_or_default();
+        let kind = edge.get("kind").and_then(|v| v.as_str()).unwrap_or_default();
+        if !node_ids.contains(from) || !node_ids.contains(to) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_EDGE_REFERENCE_INVALID",
+                format!("control graph edge references unknown node: from=`{from}` to=`{to}`"),
+                "ensure edge endpoints reference existing node ids",
+                Some(control_graph_rel),
+            ));
+            continue;
+        }
+        seen_kinds.insert(kind.to_string());
+        if matches!(
+            kind,
+            "dependency" | "consumer" | "producer" | "lifecycle" | "drift"
+        ) {
+            adjacency
+                .entry(from.to_string())
+                .or_default()
+                .push(to.to_string());
+        }
+    }
+    for required_kind in ["dependency", "consumer", "producer", "lifecycle", "drift"] {
+        if !seen_kinds.contains(required_kind) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_EDGE_KIND_MISSING",
+                format!("control graph is missing required edge kind `{required_kind}`"),
+                "add at least one edge for each required control graph edge kind",
+                Some(control_graph_rel),
+            ));
+        }
+    }
+    fn has_cycle(
+        node: &str,
+        adjacency: &std::collections::BTreeMap<String, Vec<String>>,
+        visiting: &mut std::collections::BTreeSet<String>,
+        visited: &mut std::collections::BTreeSet<String>,
+    ) -> bool {
+        if visiting.contains(node) {
+            return true;
+        }
+        if visited.contains(node) {
+            return false;
+        }
+        visiting.insert(node.to_string());
+        if let Some(neighbors) = adjacency.get(node) {
+            for next in neighbors {
+                if has_cycle(next, adjacency, visiting, visited) {
+                    return true;
+                }
+            }
+        }
+        visiting.remove(node);
+        visited.insert(node.to_string());
+        false
+    }
+    let mut visiting = std::collections::BTreeSet::new();
+    let mut visited = std::collections::BTreeSet::new();
+    for node in node_ids.iter() {
+        if has_cycle(node, &adjacency, &mut visiting, &mut visited) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_CYCLE_DETECTED",
+                "control graph contains a cycle in dependency/consumer/producer/lifecycle/drift edges"
+                    .to_string(),
+                "break cyclic control graph edges to keep inventory graph acyclic",
+                Some(control_graph_rel),
+            ));
+            break;
+        }
+    }
 
     let drills_text = fs::read_to_string(ctx.repo_root.join(Path::new("ops/inventory/drills.json")))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -2066,6 +2211,7 @@ pub(super) fn check_ops_inventory_contract_integrity(
     }
 
     let registry_drift_rel = Path::new("ops/_generated.example/registry-drift-report.json");
+    let control_graph_diff_rel = Path::new("ops/_generated.example/control-graph-diff-report.json");
     if !ctx.adapters.fs.exists(ctx.repo_root, registry_drift_rel) {
         violations.push(violation(
             "OPS_INVENTORY_REGISTRY_DRIFT_REPORT_MISSING",
@@ -2087,6 +2233,36 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 "registry-drift-report.json status is not `pass`".to_string(),
                 "resolve inventory registry drift and regenerate registry-drift-report.json",
                 Some(registry_drift_rel),
+            ));
+        }
+    }
+
+    if !ctx.adapters.fs.exists(ctx.repo_root, control_graph_diff_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_CONTROL_GRAPH_DIFF_REPORT_MISSING",
+            format!(
+                "missing control graph diff report `{}`",
+                control_graph_diff_rel.display()
+            ),
+            "generate and commit ops/_generated.example/control-graph-diff-report.json",
+            Some(control_graph_diff_rel),
+        ));
+    } else {
+        let control_graph_diff_text = fs::read_to_string(ctx.repo_root.join(control_graph_diff_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let control_graph_diff_json: serde_json::Value =
+            serde_json::from_str(&control_graph_diff_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if control_graph_diff_json
+            .get("status")
+            .and_then(|v| v.as_str())
+            != Some("pass")
+        {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_DIFF_REPORT_BLOCKING",
+                "control-graph-diff-report.json status is not `pass`".to_string(),
+                "resolve control graph drift and regenerate control-graph-diff-report.json",
+                Some(control_graph_diff_rel),
             ));
         }
     }
@@ -3300,6 +3476,8 @@ pub(super) fn check_ops_evidence_bundle_discipline(
     let bundle_rel = Path::new("ops/_generated.example/ops-evidence-bundle.json");
     let contract_audit_rel = Path::new("ops/_generated.example/contract-audit-report.json");
     let contract_graph_rel = Path::new("ops/_generated.example/contract-dependency-graph.json");
+    let control_graph_diff_rel =
+        Path::new("ops/_generated.example/control-graph-diff-report.json");
     let schema_drift_rel = Path::new("ops/_generated.example/schema-drift-report.json");
     let gates_rel = Path::new("ops/inventory/gates.json");
 
@@ -3312,6 +3490,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         bundle_rel,
         contract_audit_rel,
         contract_graph_rel,
+        control_graph_diff_rel,
         schema_drift_rel,
     ] {
         if !ctx.adapters.fs.exists(ctx.repo_root, rel) {
@@ -3358,6 +3537,7 @@ pub(super) fn check_ops_evidence_bundle_discipline(
         "contract-dependency-graph.json",
         "inventory-index.json",
         "control-plane.snapshot.md",
+        "control-graph-diff-report.json",
         "docs-drift-report.json",
         "schema-drift-report.json",
         "ops/GENERATED_LIFECYCLE.md",
