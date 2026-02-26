@@ -43,7 +43,7 @@
 ## Remaining Before Workspace Member Removal
 
 - Replace production imports of:
-  - `bijux-dev-atlas-model`
+  - model data contracts are also available in `crates/bijux-dev-atlas/src/model/`
   - `bijux-dev-atlas-policies`
   - `bijux-dev-atlas-core`
   - `bijux-dev-atlas-adapters`
