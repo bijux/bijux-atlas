@@ -41,3 +41,7 @@ harness = false
 [[bench]]
 name = "report_codec"
 harness = false
+
+[[bench]]
+name = "policy_eval"
+harness = false
