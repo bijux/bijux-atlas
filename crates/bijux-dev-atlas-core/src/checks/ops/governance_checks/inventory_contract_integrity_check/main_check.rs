@@ -177,6 +177,34 @@ pub(super) fn check_ops_inventory_contract_integrity(
         for entry in &entries {
             let path = entry.get("path").and_then(|v| v.as_str()).unwrap_or_default();
             let role = entry.get("role").and_then(|v| v.as_str()).unwrap_or_default();
+            let consumer = entry
+                .get("consumer")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .trim();
+            if consumer.is_empty() {
+                violations.push(violation(
+                    "OPS_INVENTORY_AUTHORITY_INDEX_CONSUMER_MISSING",
+                    format!("authority-index entry `{path}` must include non-empty `consumer`"),
+                    "add authority-index authoritative_files[].consumer with the enforcing check or runtime consumer id",
+                    Some(authority_index_rel),
+                ));
+            }
+            if role == "generated" {
+                let producer = entry
+                    .get("producer")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .trim();
+                if producer.is_empty() {
+                    violations.push(violation(
+                        "OPS_INVENTORY_AUTHORITY_INDEX_PRODUCER_MISSING",
+                        format!("generated authority-index entry `{path}` must include non-empty `producer`"),
+                        "add authority-index authoritative_files[].producer for generated entries",
+                        Some(authority_index_rel),
+                    ));
+                }
+            }
             if path == "ops/inventory/contracts-map.json" && role == "authoritative" {
                 has_contracts_map_authoritative = true;
             }
