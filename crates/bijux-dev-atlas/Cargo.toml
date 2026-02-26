@@ -23,7 +23,6 @@ toml = "0.8"
 bijux-dev-atlas-core.workspace = true
 bijux-dev-atlas-model.workspace = true
 bijux-dev-atlas-adapters.workspace = true
-bijux-dev-atlas-policies.workspace = true
 
 [dev-dependencies]
 assert_cmd = "2"

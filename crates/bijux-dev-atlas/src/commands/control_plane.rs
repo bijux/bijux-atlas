@@ -3,7 +3,7 @@
 use crate::cli::{DockerCommand, DockerCommonArgs, DockerPolicyCommand, PoliciesCommand};
 use crate::*;
 use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
-use bijux_dev_atlas_policies::{canonical_policy_json, DevAtlasPolicySet};
+use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::collections::VecDeque;
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
@@ -76,7 +76,7 @@ fn walk_files(root: &Path) -> Vec<PathBuf> {
 }
 
 fn policies_inventory_rows(
-    doc: &bijux_dev_atlas_policies::DevAtlasPolicySetDocument,
+    doc: &bijux_dev_atlas::policies::DevAtlasPolicySetDocument,
 ) -> Vec<serde_json::Value> {
     vec![
         serde_json::json!({
