@@ -3,20 +3,33 @@
 - Owner: bijux-dev-atlas
 - Stability: stable
 
-This crate-level governance page points to canonical crate docs and root docs.
+## Internal Module Graph
 
-- Crate docs index: crates/bijux-dev-atlas/docs/INDEX.md
-- Central docs index: docs/index.md
+Allowed dependency direction (strict):
 
-## Internal Boundaries (Convergence Target)
+- `cli` -> `commands`
+- `commands` -> `adapters`, `core`, `model`, `policies`
+- `core` -> `model`, `policies`, `ports`
+- `adapters` -> `ports`, `model` (serialization helpers only when required)
+- `policies` -> `model`
+- `model` -> `std`/serde only
+- `ports` -> `std` + shared error/trait contracts
 
-- `cli`: argument parsing and command surface definitions.
-- `commands`: execution handlers orchestrating adapters + core.
-- `core`: pure control-plane logic and checks.
-- `ports`: IO traits used by core.
-- `adapters`: real IO implementations for ports.
-- `model`: serde-facing types and codecs.
-- `policies`: policy contracts and validators.
+Forbidden dependency examples:
 
-Migration note:
-- During crate convergence, code moves behind these modules without changing report/output behavior.
+- `core` -> `adapters`
+- `model` -> `core`
+- `policies` -> `adapters`
+- `cli` -> host effects (`std::fs`, `Command`, env reads) beyond argument parsing needs
+
+## Invariants
+
+- Host effects are isolated to adapter implementations and explicitly tracked temporary exceptions.
+- `cli` parses and dispatches only; command execution lives in `commands`.
+- `core` owns check logic and report generation behavior.
+- `model` and `policies` remain leaf modules with stable data contracts.
+
+## References
+
+- Crate docs index: `crates/bijux-dev-atlas/docs/INDEX.md`
+- Repository docs index: `docs/index.md`
