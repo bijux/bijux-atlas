@@ -17,6 +17,7 @@
     "ops/_generated.example/ops-evidence-bundle.json",
     "ops/_generated.example/inventory-index.json",
     "ops/_generated.example/control-plane.snapshot.md",
+    "ops/_generated.example/domain-document-template-contract.hash.json",
     "ops/_generated.example/docs-drift-report.json",
     "ops/_generated.example/docs-links-report.json",
     "ops/_generated.example/file-usage-report.json",
@@ -30,6 +31,7 @@
     "ops/_generated.example/schema-coverage-report.json",
     "ops/_generated.example/schema-drift-report.json",
     "ops/_generated.example/scorecard.json",
+    "ops/_generated.example/stack-health-report.example.json",
     "ops/_generated.example/stack-drift-report.json"
   ],
   "mirrors": [
