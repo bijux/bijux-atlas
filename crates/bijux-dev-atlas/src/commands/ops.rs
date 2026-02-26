@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-#[path = "../ops_commands/runtime.rs"]
+#[path = "ops/runtime.rs"]
 mod runtime;
 
 pub(crate) use crate::ops_command_support::{

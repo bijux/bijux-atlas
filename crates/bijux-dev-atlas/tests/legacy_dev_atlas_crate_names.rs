@@ -126,15 +126,8 @@ fn duplicate_migration_surface_roots_are_explicit_and_do_not_expand() {
     // This is a migration-overlap inventory, not a relaxed policy: any new overlap root must be
     // explicitly reviewed here, and Batch B should drive this set to empty.
     let expected_overlap_roots = BTreeSet::from([
-        "dispatch.rs".to_string(),
-        "docs_command_runtime".to_string(),
-        "docs_commands".to_string(),
         "main_tests.rs".to_string(),
-        "ops_command_support_mod".to_string(),
-        "ops_commands".to_string(),
         "ops_runtime_execution".to_string(),
-        "ops_runtime_execution.rs".to_string(),
-        "ops_support.rs".to_string(),
     ]);
 
     let overlap_roots = present

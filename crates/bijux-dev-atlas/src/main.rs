@@ -20,8 +20,8 @@ mod main_tests;
 mod ops_command_support;
 #[path = "commands/ops.rs"]
 mod ops_commands;
+#[path = "ops_runtime_execution/runtime.rs"]
 mod ops_runtime_execution;
-mod ops_support;
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -60,7 +60,7 @@ pub(crate) use docs_commands::{
     docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
 pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
-pub(crate) use ops_support::{
+pub(crate) use ops_command_support::{
     OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,
     ToolDefinition, ToolchainInventory,
 };

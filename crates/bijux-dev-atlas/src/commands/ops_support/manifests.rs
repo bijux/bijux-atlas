@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::ops_support::StackManifestToml;
+use crate::ops_command_support::StackManifestToml;
 use crate::*;
 use serde::{Deserialize, Serialize};
 
@@ -250,7 +250,7 @@ pub(crate) fn load_toolchain_inventory_for_ops(
 #[allow(clippy::expect_used)]
 mod tests {
     use super::*;
-    use crate::ops_support::StackManifestProfile;
+    use crate::ops_command_support::StackManifestProfile;
 
     #[test]
     fn tools_manifest_parses() {
