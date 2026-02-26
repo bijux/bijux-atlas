@@ -3,6 +3,6 @@
 use crate::*;
 use std::collections::{BTreeMap, BTreeSet};
 
-include!("../docs_commands/policy_and_inventory.rs");
-include!("../docs_commands/registry_and_contracts.rs");
-include!("../docs_commands/validation_and_links.rs");
+include!("docs/policy_and_inventory.rs");
+include!("docs/registry_and_contracts.rs");
+include!("docs/validation_and_links.rs");
