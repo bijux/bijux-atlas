@@ -36,3 +36,21 @@ fn model_module_does_not_depend_on_core_or_adapters() {
         );
     }
 }
+
+#[test]
+fn policies_module_does_not_depend_on_core_or_adapters() {
+    let policies_mod = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/policies/mod.rs");
+    let policies_schema = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/policies/schema.rs");
+    let policies_validate = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/policies/validate.rs");
+    for path in [policies_mod, policies_schema, policies_validate] {
+        let content = fs::read_to_string(&path)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()));
+        for forbidden in ["crate::core", "crate::adapters"] {
+            assert!(
+                !content.contains(forbidden),
+                "policies module file {} must not depend on {forbidden}",
+                path.display()
+            );
+        }
+    }
+}
