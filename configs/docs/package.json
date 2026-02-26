@@ -1,0 +1,16 @@
+{
+  "name": "bijux-atlas-docs-tooling",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned docs lint and spelling tooling for CI",
+  "license": "Apache-2.0",
+  "scripts": {
+    "markdownlint": "markdownlint-cli2 \"../../docs/operations/*.md\" \"../../docs/operations/reference/*.md\" \"../../ops/*.md\"",
+    "cspell": "cspell lint --config cspell.config.json \"../../docs/operations/*.md\" \"../../docs/operations/reference/*.md\" \"../../ops/*.md\""
+  },
+  "devDependencies": {
+    "cspell": "8.14.4",
+    "markdownlint-cli2": "0.14.0",
+    "markdownlint-cli2-formatter-default": "0.0.5"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "bijux",
+    "atlas",
+    "configmap",
+    "cutover",
+    "dorny",
+    "dtolnay",
+    "fasta",
+    "goldens",
+    "kustomize",
+    "kubeconform",
+    "makefiles",
+    "mkdocs",
+    "opencontainers",
+    "toxiproxy",
+    "prereqs",
+    "realdata",
+    "rebuildable",
+    "runbook",
+    "runbooks",
+    "ssot",
+    "timeboxed",
+    "toctou",
+    "toxi",
+    "otel",
+    "readinessz",
+    "healthz",
+    "readyz"
+  ],
+  "ignorePaths": [
+    "docs/_generated/**",
+    "ops/_generated.example/**",
+    "artifacts/**",
+    "target/**"
+  ]
+}
