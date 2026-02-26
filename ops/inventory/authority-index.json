@@ -13,7 +13,49 @@
       "consumer": "checks_ops_retired_artifact_path_references_absent"
     },
     {
-      "path": "ops/inventory/contracts-map.json",
+      "path": "ops/DEPRECATION_WORKFLOW.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
+      "path": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
+      "path": "ops/ESCALATION_MAPPING.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
+      "path": "ops/OPS_FREEZE_WORKFLOW.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
+      "path": "ops/OWNERSHIP_ROTATION_POLICY.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
+      "path": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
+      "path": "ops/inventory/REQUIRED_FILES.md",
+      "role": "presence_contract",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_required_files_contracts"
+    },
+    {
+      "path": "ops/inventory/authoritative-file-list.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
       "consumer": "checks_ops_inventory_contract_integrity"
@@ -25,16 +67,18 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/authoritative-file-list.json",
+      "path": "ops/inventory/contracts-map.json",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/surfaces.json",
-      "role": "authoritative",
+      "path": "ops/inventory/contracts.json",
+      "role": "generated",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_inventory_contract_integrity"
+      "consumer": "checks_ops_inventory_contract_integrity",
+      "producer": "bijux dev atlas ops gen run",
+      "derived_from": "ops/inventory/contracts-map.json"
     },
     {
       "path": "ops/inventory/owners.json",
@@ -49,18 +93,10 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/contracts.json",
-      "role": "generated",
+      "path": "ops/inventory/surfaces.json",
+      "role": "authoritative",
       "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_inventory_contract_integrity",
-      "producer": "bijux dev atlas ops gen run",
-      "derived_from": "ops/inventory/contracts-map.json"
-    },
-    {
-      "path": "ops/inventory/REQUIRED_FILES.md",
-      "role": "presence_contract",
-      "owner": "bijux-atlas-operations",
-      "consumer": "checks_ops_required_files_contracts"
+      "consumer": "checks_ops_inventory_contract_integrity"
     }
   ],
   "ignored_paths": [
