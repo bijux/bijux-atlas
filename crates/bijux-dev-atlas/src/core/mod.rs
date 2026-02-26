@@ -24,7 +24,7 @@ pub mod logging;
 pub mod ops_inventory;
 pub mod ports;
 mod report_rendering;
-pub use ports::{Capabilities, Fs, ProcessRunner};
+pub use crate::ports::{Capabilities, Fs, ProcessRunner};
 
 pub const DEFAULT_REGISTRY_PATH: &str = "ops/inventory/registry.toml";
 
