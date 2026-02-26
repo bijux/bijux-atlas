@@ -1,5 +1,10 @@
 # Air-Gapped Install and Artifact Mirroring
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Goal
 Run Atlas without direct internet/store access by mirroring deterministic artifact packs.
 

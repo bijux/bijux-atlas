@@ -1,5 +1,10 @@
 # Ops Design Defense
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## What Ops Is
 
 `ops/` is the machine-verifiable contract surface for operations behavior.

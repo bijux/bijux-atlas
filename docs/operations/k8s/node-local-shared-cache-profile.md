@@ -1,5 +1,10 @@
 # Node-Local Shared Cache Profile
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 This is an advanced deployment profile, not the default.
 
 ## Overview

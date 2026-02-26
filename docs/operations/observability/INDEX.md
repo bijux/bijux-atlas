@@ -1,5 +1,10 @@
 # Operations Observability Index
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `mixed`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - Owner: `docs-governance`
 
 ## What

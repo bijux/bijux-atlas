@@ -1,5 +1,10 @@
 # Why These SLIs
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 These SLIs are the minimal set that covers user pain and platform truth.
 
 ## User pain coverage

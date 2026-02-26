@@ -1,6 +1,11 @@
 # Runbook: K8s Perf Chaos
 
 - Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
+- Owner: `bijux-atlas-operations`
 
 ## Symptoms
 

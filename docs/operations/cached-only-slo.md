@@ -1,5 +1,10 @@
 # Cached-Only Mode SLO
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Mode Definition
 - `ATLAS_CACHED_ONLY_MODE=true`
 - Server serves only datasets already present and verified in local cache.

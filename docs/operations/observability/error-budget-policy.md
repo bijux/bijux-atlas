@@ -1,5 +1,10 @@
 # Bijux Atlas Error Budget Policy
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Budget Definition
 
 - Availability SLO baseline: 99.5% success over rolling 30 days.

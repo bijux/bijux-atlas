@@ -1,6 +1,11 @@
 # Redirect Expiry Workflow
 
 - Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
+- Owner: `bijux-atlas-operations`
 - Purpose: `govern redirect stubs and temporary doc redirects with explicit expiry and replacement paths`
 - Consumers: `checks_ops_human_workflow_maturity`
 

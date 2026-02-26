@@ -1,5 +1,10 @@
 # SLO Release Gate
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Purpose
 
 Define when a release is blocked by SLO non-compliance.

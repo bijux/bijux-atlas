@@ -1,5 +1,10 @@
 # When Layer Drift Fails
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Layer drift means the live cluster shape no longer matches `ops/inventory/layers.json`.
 
 ## What

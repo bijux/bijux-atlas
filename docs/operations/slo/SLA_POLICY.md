@@ -1,5 +1,10 @@
 # SLA Policy (v1)
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Current policy
 
 - No public SLA in v1.

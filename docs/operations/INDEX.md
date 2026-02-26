@@ -1,6 +1,11 @@
 # Operations Index
 
 - Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `mixed`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
+- Owner: `bijux-atlas-operations`
 - Stability: `stable`
 
 ## What

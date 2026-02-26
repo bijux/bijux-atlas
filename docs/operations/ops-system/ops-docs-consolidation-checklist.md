@@ -1,5 +1,10 @@
 # Ops Docs Consolidation Checklist
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - [x] `ops/report/docs/` is constrained to redirect stubs (`README.md`, `REFERENCE_INDEX.md`).
 - [x] Workflow and narrative guidance lives under `docs/operations/**`.
 - [x] Ops markdown filename rules are enforced in governance checks.

@@ -1,5 +1,10 @@
 # Bijux Atlas SLO
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Canonical targets are defined in `docs/product/slo-targets.md`.
 This file describes service-level interpretation and error-budget operations.
 

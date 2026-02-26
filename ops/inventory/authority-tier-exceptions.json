@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "generated_by": "manual curated allowlist",
+  "exceptions": [
+    {
+      "path": "docs/operations/ops-layout.md",
+      "rule": "tier2_no_directory_map",
+      "reason": "transitional narrative page pending generated ops surface replacement",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "path": "docs/operations/INDEX.md",
+      "rule": "tier2_no_command_list",
+      "reason": "index still links canonical workflows before generated command reference landing",
+      "expires_on": "2026-05-31"
+    }
+  ]
+}

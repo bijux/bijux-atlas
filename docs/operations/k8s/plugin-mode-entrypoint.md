@@ -1,5 +1,10 @@
 # Plugin-Mode Entrypoint (Kubernetes)
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Atlas containers run in plugin mode.
 
 Canonical runtime command:

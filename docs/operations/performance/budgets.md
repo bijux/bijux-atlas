@@ -1,5 +1,10 @@
 # Ops Budgets
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Canonical SSOT: `configs/ops/budgets.json`.
 
 ## What

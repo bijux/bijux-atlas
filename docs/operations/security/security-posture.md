@@ -1,5 +1,10 @@
 # Atlas Security Posture
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Default posture
 
 - Deny-by-default CORS. No cross-origin access unless explicitly allowed by `ATLAS_CORS_ALLOWED_ORIGINS`.

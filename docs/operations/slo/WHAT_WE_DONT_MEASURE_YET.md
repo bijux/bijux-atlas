@@ -1,5 +1,10 @@
 # What We Do Not Measure Yet
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - Native p99 request-duration metric per endpoint class (`bijux_http_request_latency_p99_seconds`).
 - Direct registry refresh age gauge (`bijux_registry_refresh_age_seconds`).
 - Explicit cold-start-to-first-query metric for standard endpoints.

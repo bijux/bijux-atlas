@@ -1,5 +1,10 @@
 # Dataset Promotion Pipeline
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Deterministic promotion flow:
 
 1. Ingest

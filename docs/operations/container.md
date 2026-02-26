@@ -1,5 +1,10 @@
 # Container and Kubernetes
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## What
 
 This page defines how container images map into Kubernetes chart deployment.

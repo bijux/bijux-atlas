@@ -1,5 +1,10 @@
 # Performance Regression Policy
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Nightly performance suite is authoritative for latency regressions.
 
 ## Inputs

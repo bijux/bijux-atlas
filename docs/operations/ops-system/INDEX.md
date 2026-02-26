@@ -1,5 +1,10 @@
 # Ops System Index
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `mixed`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - [Contracts](contracts.md)
 - [Gates](gates.md)
 - [Evidence](evidence.md)

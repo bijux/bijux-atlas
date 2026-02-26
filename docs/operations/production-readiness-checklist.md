@@ -1,5 +1,10 @@
 # Production Readiness Checklist
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - Owner: `operations`
 
 ## What

@@ -1,5 +1,10 @@
 # Atlas Performance Baseline
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Baseline Targets
 
 - `v1/genes/count` p95 <= 300 ms under steady mixed load.

@@ -1,5 +1,10 @@
 # Unified Report
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 `artifacts/evidence/make/<run_id>/unified.json` is the canonical machine report for root/root-local lane outcomes.
 
 The report always includes core fields: `schema_version`, `report_version`, `run_id`, `generated_at`, `lanes`, `summary`, and `budget_status`.

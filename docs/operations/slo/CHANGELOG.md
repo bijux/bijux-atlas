@@ -1,5 +1,10 @@
 # SLO Changelog
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## 2026-02-20
 
 - Pre-release cleanup: legacy compatibility paths removed across docs/config/runtime.

@@ -1,5 +1,10 @@
 # SLO Store Backend Error Spike
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Symptoms
 
 - `BijuxAtlasStoreBackendErrorSpike` firing.

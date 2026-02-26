@@ -1,5 +1,10 @@
 # Canary Progressive Delivery Notes
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 `bijux-atlas` can run either a standard `Deployment` or an Argo `Rollout`.
 
 ## Recommended Sequence

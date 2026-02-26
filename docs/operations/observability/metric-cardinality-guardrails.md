@@ -1,5 +1,10 @@
 # Metric Cardinality Guardrails
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Policy
 - Metric names are versioned by contract in `ops/observe/contracts/metrics-contract.json`.
 - Labels must be bounded and non-user-controlled.

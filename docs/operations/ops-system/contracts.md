@@ -1,5 +1,10 @@
 # Ops System Contracts
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Canonical normative contracts are authored in `ops/` domain `CONTRACT.md` files.
 
 Start with:

@@ -1,5 +1,10 @@
 # Local Stack (Make Only)
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Run the local reference stack using make targets only.
 
 ```bash

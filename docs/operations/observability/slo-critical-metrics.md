@@ -1,5 +1,10 @@
 # SLO-Critical Metrics
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Metric meanings
 
 - `http_requests_total{route,method,status,class}`: request outcomes by endpoint class.

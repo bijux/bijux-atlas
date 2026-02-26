@@ -1,5 +1,10 @@
 # Chart Values Schema Contract
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Canonical reference: `docs/contracts/chart-values.md`.
 
 Generated reference list: `docs/_generated/contracts/CHART_VALUES.md`.

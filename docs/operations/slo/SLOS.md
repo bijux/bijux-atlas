@@ -1,5 +1,10 @@
 # SLO Targets (v1)
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - Generated from `configs/ops/slo/slo.v1.json`.
 
 | SLO ID | SLI | Target | Window | Threshold |

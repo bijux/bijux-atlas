@@ -1,6 +1,11 @@
 # Cluster Resource Profile
 
 - Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
+- Owner: `bijux-atlas-operations`
 
 ## What
 

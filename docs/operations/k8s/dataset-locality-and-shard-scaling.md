@@ -1,5 +1,10 @@
 # Dataset Locality And Shard-Aware Scaling
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 ## Node affinity recommendation (dataset locality)
 
 Use node affinity to keep Atlas pods close to node-local cache or SSD volumes.

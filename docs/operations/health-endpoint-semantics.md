@@ -1,5 +1,10 @@
 # Health Endpoint Semantics
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - `/healthz`: process is alive.
 - `/readyz`: service is ready to serve user traffic.
 - `/healthz/overload`: overload gate signal for protective throttling.

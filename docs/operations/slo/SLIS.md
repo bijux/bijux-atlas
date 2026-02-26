@@ -1,5 +1,10 @@
 # SLIs (v1)
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 - Generated from `configs/ops/slo/slis.v1.json`.
 
 | SLI | Goal | Primary Metric | Secondary Metric | Status |

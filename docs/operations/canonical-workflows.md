@@ -1,5 +1,10 @@
 # Canonical Workflows
 
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
 Use these canonical pages for core workflows:
 
 - Running locally: [Local Stack (Make Only)](local-stack.md)

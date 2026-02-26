@@ -1,6 +1,11 @@
 # Example Release Walkthrough
 
 - Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+
+- Owner: `bijux-atlas-operations`
 - Purpose: `show a representative release readiness decision flow using evidence and sign-off contracts`
 - Consumers: `checks_ops_final_polish_contracts`
 
