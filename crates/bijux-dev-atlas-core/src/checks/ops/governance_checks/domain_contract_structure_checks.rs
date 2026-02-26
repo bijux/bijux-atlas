@@ -1,6 +1,14 @@
 pub(super) fn check_ops_domain_contract_structure(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
+    let template_contract_rel = Path::new("ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md");
+    let template_required_markers = [
+        "## Domain CONTRACT.md Required Metadata",
+        "## Domain CONTRACT.md Required Sections",
+        "## Domain README.md Required Metadata",
+        "## generated/README.md Required Metadata",
+        "checks_ops_domain_contract_structure",
+    ];
     let domain_roots = [
         "ops/datasets",
         "ops/e2e",
@@ -14,6 +22,30 @@ pub(super) fn check_ops_domain_contract_structure(
         "ops/stack",
     ];
     let mut violations = Vec::new();
+    if !ctx.adapters.fs.exists(ctx.repo_root, template_contract_rel) {
+        violations.push(violation(
+            "OPS_DOMAIN_DOCUMENT_TEMPLATE_CONTRACT_MISSING",
+            "missing canonical domain document template contract `ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md`"
+                .to_string(),
+            "add a canonical domain document template contract consumed by checks_ops_domain_contract_structure",
+            Some(template_contract_rel),
+        ));
+    } else {
+        let template_text = fs::read_to_string(ctx.repo_root.join(template_contract_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        for marker in template_required_markers {
+            if !template_text.contains(marker) {
+                violations.push(violation(
+                    "OPS_DOMAIN_DOCUMENT_TEMPLATE_CONTRACT_INCOMPLETE",
+                    format!(
+                        "domain document template contract is missing required marker `{marker}`"
+                    ),
+                    "complete the canonical template contract sections and enforcement linkage",
+                    Some(template_contract_rel),
+                ));
+            }
+        }
+    }
     for domain_root in domain_roots {
         let contract_rel_string = format!("{domain_root}/CONTRACT.md");
         let rel = Path::new(&contract_rel_string);

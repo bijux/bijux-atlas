@@ -95,6 +95,7 @@ fn validate_surface_and_filesystem_policies(
         "CONTRACT.md",
         "CONTROL_PLANE.md",
         "DIRECTORY_BUDGET_POLICY.md",
+        "DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
         "DRIFT.md",
         "ERRORS.md",
         "GENERATED_LIFECYCLE.md",

@@ -62,6 +62,7 @@
     "ops/CONTRACT.md",
     "ops/CONTROL_PLANE.md",
     "ops/DIRECTORY_BUDGET_POLICY.md",
+    "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
     "ops/DRIFT.md",
     "ops/ERRORS.md",
     "ops/GENERATED_LIFECYCLE.md",
