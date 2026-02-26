@@ -25,6 +25,7 @@
       "purpose": "reserved dataset mount point for e2e suites",
       "expected_contents": "suite-specific dataset snapshots and manifests",
       "lifecycle_policy": "sunset when e2e fixture catalog fully owns mount layout",
+      "sunset_review_by": "2026-12-31",
       "why_exists": "reserved dataset mount point for e2e suites"
     },
     {
@@ -89,6 +90,7 @@
       "purpose": "perf-focused k8s conformance checks namespace",
       "expected_contents": "performance check manifests and expected outputs",
       "lifecycle_policy": "sunset when perf checks move to dedicated suite package",
+      "sunset_review_by": "2026-09-30",
       "why_exists": "perf-focused k8s conformance checks namespace"
     },
     {
@@ -113,6 +115,7 @@
       "purpose": "legacy threshold root retained for compatibility",
       "expected_contents": "threshold contracts consumed by load suites",
       "lifecycle_policy": "sunset when all suites consume ops/load/k6/thresholds only",
+      "sunset_review_by": "2026-10-31",
       "why_exists": "legacy threshold root retained for compatibility"
     },
     {
