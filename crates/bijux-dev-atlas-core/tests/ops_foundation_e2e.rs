@@ -177,7 +177,7 @@ tags_any = ["fast"]
     write(&root.join("ops/ERRORS.md"), "# Errors\n");
     write(
         &root.join("ops/INDEX.md"),
-        "# Ops\n- `ops/inventory/`\n- `ops/schema/`\n- `ops/env/`\n- `ops/stack/`\n- `ops/k8s/`\n- `ops/observe/`\n- `ops/load/`\n- `ops/datasets/`\n- `ops/e2e/`\n- `ops/report/`\n- `ops/_generated/`\n- `ops/_generated.example/`\n",
+        "# Ops\n- `ops/inventory/`\n- `ops/schema/`\n- `ops/env/`\n- `ops/stack/`\n- `ops/k8s/`\n- `ops/observe/`\n- `ops/load/`\n- `ops/datasets/`\n- `ops/e2e/`\n- `ops/report/`\n- `ops/_generated/`\n- `ops/_generated.example/`\nSchema policy: [Versioning Policy](ops/schema/VERSIONING_POLICY.md)\n",
     );
     write(&root.join("ops/README.md"), "# Ops\n");
     write(&root.join("ops/inventory/OWNER.md"), "# Owner\n");
@@ -185,13 +185,62 @@ tags_any = ["fast"]
         &root.join("ops/inventory/REQUIRED_FILES.md"),
         "# Required Files\n",
     );
-    write(&root.join("ops/schema/README.md"), "# Schema\n");
+    write(
+        &root.join("ops/schema/README.md"),
+        "# Schema\n- `ops/schema/VERSIONING_POLICY.md`\n- `ops/schema/BUDGET_POLICY.md`\n- `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md`\n- `ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md`\n",
+    );
+    write(&root.join("ops/schema/VERSIONING_POLICY.md"), "# Versioning Policy\n");
+    write(&root.join("ops/schema/BUDGET_POLICY.md"), "# Budget Policy\n");
+    write(
+        &root.join("ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"),
+        "# Schema Budget Exceptions\n",
+    );
+    write(
+        &root.join("ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"),
+        "# Schema Reference Allowlist\n\
+- `ops/schema/configs/public-surface.schema.json`: minimal fixture does not include configs consumers\n\
+- `ops/schema/datasets/dataset-index.schema.json`: minimal fixture does not include dataset inventory consumers\n\
+- `ops/schema/datasets/dataset-lineage.schema.json`: minimal fixture does not include lineage consumers\n\
+- `ops/schema/datasets/fixture-inventory.schema.json`: minimal fixture does not include fixture inventory consumers\n\
+- `ops/schema/datasets/manifest.schema.json`: minimal fixture keeps schema presence checks isolated\n\
+- `ops/schema/datasets/promotion-rules.schema.json`: minimal fixture omits promotion workflows\n\
+- `ops/schema/datasets/qc-metadata.schema.json`: minimal fixture omits qc workflows\n\
+- `ops/schema/datasets/rollback-policy.schema.json`: minimal fixture omits rollback workflows\n\
+- `ops/schema/e2e/coverage-matrix.schema.json`: minimal fixture omits e2e coverage generator\n\
+- `ops/schema/e2e/expectations.schema.json`: minimal fixture omits e2e expectations consumers\n\
+- `ops/schema/env/overlay.schema.json`: minimal fixture keeps env overlays inline for contract smoke coverage\n\
+- `ops/schema/inventory/gates.schema.json`: minimal fixture omits gate config consumers\n\
+- `ops/schema/inventory/pin-freeze.schema.json`: minimal fixture omits pin freeze consumers\n\
+- `ops/schema/inventory/pins.schema.json`: minimal fixture omits pin registry consumers\n\
+- `ops/schema/inventory/toolchain.schema.json`: minimal fixture omits toolchain registry consumers\n\
+- `ops/schema/load/deterministic-seed-policy.schema.json`: minimal fixture omits load seed policies\n\
+- `ops/schema/load/k6-suite.schema.json`: minimal fixture omits k6 suite configs\n\
+- `ops/schema/load/perf-baseline.schema.json`: minimal fixture omits perf baseline consumers\n\
+- `ops/schema/load/thresholds.schema.json`: minimal fixture omits threshold configs\n\
+- `ops/schema/meta/inventory-index.schema.json`: minimal fixture omits generated inventory index consumers\n\
+- `ops/schema/meta/namespaces.schema.json`: minimal fixture omits namespace registry consumers\n\
+- `ops/schema/meta/ops-index.schema.json`: minimal fixture omits ops index generator\n\
+- `ops/schema/meta/ownership.schema.json`: minimal fixture omits ownership validators\n\
+- `ops/schema/meta/pins.schema.json`: minimal fixture omits pins metadata consumers\n\
+- `ops/schema/meta/required-files-contract.schema.json`: minimal fixture validates presence only\n\
+- `ops/schema/meta/scorecard.schema.json`: minimal fixture omits scorecard generator\n\
+- `ops/schema/report/evidence-levels.schema.json`: minimal fixture omits report evidence generators\n\
+- `ops/schema/report/readiness-score.schema.json`: minimal fixture omits readiness score generator\n\
+- `ops/schema/report/unified.schema.json`: minimal fixture omits unified report generator\n\
+- `ops/schema/stack/artifact-metadata.schema.json`: minimal fixture omits stack artifact generator\n\
+- `ops/schema/stack/dependency-graph.schema.json`: minimal fixture omits stack graph generator\n\
+- `ops/schema/stack/profile-manifest.schema.json`: minimal fixture omits stack profile generator\n",
+    );
     write(&root.join("ops/schema/OWNER.md"), "# Owner\n");
     write(
         &root.join("ops/schema/REQUIRED_FILES.md"),
         "# Required Files\n",
     );
     write(&root.join("ops/schema/meta/ownership.schema.json"), "{}\n");
+    write(
+        &root.join("ops/schema/meta/required-files-contract.schema.json"),
+        "{\"required\":[\"schema_version\",\"required_files\",\"required_dirs\",\"forbidden_patterns\",\"notes\"],\"properties\":{\"schema_version\":{},\"required_files\":{},\"required_dirs\":{},\"forbidden_patterns\":{},\"notes\":{}}}\n",
+    );
     write(
         &root.join("ops/schema/inventory/pins.schema.json"),
         "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
@@ -205,7 +254,63 @@ tags_any = ["fast"]
         "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
     );
     write(
+        &root.join("ops/schema/datasets/dataset-index.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/datasets/dataset-lineage.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/datasets/fixture-inventory.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/datasets/promotion-rules.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/datasets/qc-metadata.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/datasets/rollback-policy.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/e2e/coverage-matrix.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/e2e/expectations.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/inventory/gates.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/inventory/pin-freeze.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
         &root.join("ops/schema/load/perf-baseline.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/load/deterministic-seed-policy.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/load/k6-suite.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/load/thresholds.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/configs/public-surface.schema.json"),
         "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
     );
     write(
@@ -214,6 +319,34 @@ tags_any = ["fast"]
     );
     write(
         &root.join("ops/schema/report/unified.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/meta/namespaces.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/meta/pins.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/meta/inventory-index.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/meta/ops-index.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/meta/scorecard.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/report/readiness-score.schema.json"),
+        "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
+    );
+    write(
+        &root.join("ops/schema/report/evidence-levels.schema.json"),
         "{\"required\":[\"schema_version\"],\"properties\":{\"schema_version\":{}}}\n",
     );
     write(
@@ -230,11 +363,11 @@ tags_any = ["fast"]
     );
     write(
         &root.join("ops/schema/generated/schema-index.json"),
-        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/env/overlay.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/artifact-metadata.schema.json\",\"ops/schema/stack/dependency-graph.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
+        "{\"schema_version\":1,\"source\":\"ops/schema\",\"files\":[\"ops/schema/configs/public-surface.schema.json\",\"ops/schema/datasets/dataset-index.schema.json\",\"ops/schema/datasets/dataset-lineage.schema.json\",\"ops/schema/datasets/fixture-inventory.schema.json\",\"ops/schema/datasets/manifest.schema.json\",\"ops/schema/datasets/promotion-rules.schema.json\",\"ops/schema/datasets/qc-metadata.schema.json\",\"ops/schema/datasets/rollback-policy.schema.json\",\"ops/schema/e2e/coverage-matrix.schema.json\",\"ops/schema/e2e/expectations.schema.json\",\"ops/schema/env/overlay.schema.json\",\"ops/schema/inventory/gates.schema.json\",\"ops/schema/inventory/pin-freeze.schema.json\",\"ops/schema/inventory/pins.schema.json\",\"ops/schema/inventory/toolchain.schema.json\",\"ops/schema/load/deterministic-seed-policy.schema.json\",\"ops/schema/load/k6-suite.schema.json\",\"ops/schema/load/perf-baseline.schema.json\",\"ops/schema/load/thresholds.schema.json\",\"ops/schema/meta/inventory-index.schema.json\",\"ops/schema/meta/namespaces.schema.json\",\"ops/schema/meta/ops-index.schema.json\",\"ops/schema/meta/ownership.schema.json\",\"ops/schema/meta/pins.schema.json\",\"ops/schema/meta/required-files-contract.schema.json\",\"ops/schema/meta/scorecard.schema.json\",\"ops/schema/report/evidence-levels.schema.json\",\"ops/schema/report/readiness-score.schema.json\",\"ops/schema/report/unified.schema.json\",\"ops/schema/stack/artifact-metadata.schema.json\",\"ops/schema/stack/dependency-graph.schema.json\",\"ops/schema/stack/profile-manifest.schema.json\"]}\n",
     );
     write(
         &root.join("ops/schema/generated/schema-index.md"),
-        "# Schema Index\n",
+        "# Schema Index\n| Schema | Notes |\n| --- | --- |\n| `ops/schema/configs/public-surface.schema.json` | fixture |\n| `ops/schema/datasets/dataset-index.schema.json` | fixture |\n| `ops/schema/datasets/dataset-lineage.schema.json` | fixture |\n| `ops/schema/datasets/fixture-inventory.schema.json` | fixture |\n| `ops/schema/datasets/manifest.schema.json` | fixture |\n| `ops/schema/datasets/promotion-rules.schema.json` | fixture |\n| `ops/schema/datasets/qc-metadata.schema.json` | fixture |\n| `ops/schema/datasets/rollback-policy.schema.json` | fixture |\n| `ops/schema/e2e/coverage-matrix.schema.json` | fixture |\n| `ops/schema/e2e/expectations.schema.json` | fixture |\n| `ops/schema/env/overlay.schema.json` | fixture |\n| `ops/schema/inventory/gates.schema.json` | fixture |\n| `ops/schema/inventory/pin-freeze.schema.json` | fixture |\n| `ops/schema/inventory/pins.schema.json` | fixture |\n| `ops/schema/inventory/toolchain.schema.json` | fixture |\n| `ops/schema/load/deterministic-seed-policy.schema.json` | fixture |\n| `ops/schema/load/k6-suite.schema.json` | fixture |\n| `ops/schema/load/perf-baseline.schema.json` | fixture |\n| `ops/schema/load/thresholds.schema.json` | fixture |\n| `ops/schema/meta/inventory-index.schema.json` | fixture |\n| `ops/schema/meta/namespaces.schema.json` | fixture |\n| `ops/schema/meta/ops-index.schema.json` | fixture |\n| `ops/schema/meta/ownership.schema.json` | fixture |\n| `ops/schema/meta/pins.schema.json` | fixture |\n| `ops/schema/meta/required-files-contract.schema.json` | fixture |\n| `ops/schema/meta/scorecard.schema.json` | fixture |\n| `ops/schema/report/evidence-levels.schema.json` | fixture |\n| `ops/schema/report/readiness-score.schema.json` | fixture |\n| `ops/schema/report/unified.schema.json` | fixture |\n| `ops/schema/stack/artifact-metadata.schema.json` | fixture |\n| `ops/schema/stack/dependency-graph.schema.json` | fixture |\n| `ops/schema/stack/profile-manifest.schema.json` | fixture |\n",
     );
     write(
         &root.join("ops/schema/generated/compatibility-lock.json"),
@@ -276,6 +409,10 @@ tags_any = ["fast"]
         "{\"schema_version\":1}\n",
     );
     write(
+        &root.join("ops/inventory/gates.json"),
+        "{\"schema_version\":1,\"gates\":[]}\n",
+    );
+    write(
         &root.join("ops/inventory/generated-committed-mirror.json"),
         "{\"schema_version\":1,\"allow_runtime_compat\":[],\"mirrors\":[{\"committed\":\"ops/_generated.example/.gitkeep\",\"source\":\"ops/_generated/.gitkeep\"},{\"committed\":\"ops/_generated.example/README.md\",\"source\":\"ops/_generated/README.md\"},{\"committed\":\"ops/_generated.example/OWNER.md\",\"source\":\"ops/_generated/OWNER.md\"},{\"committed\":\"ops/_generated.example/REQUIRED_FILES.md\",\"source\":\"ops/_generated/REQUIRED_FILES.md\"}]}\n",
     );
@@ -295,7 +432,6 @@ tags_any = ["fast"]
         &root.join("ops/_generated.example/REQUIRED_FILES.md"),
         "# Required Files\n",
     );
-    write(&root.join("ops/_evidence/.gitkeep"), "\n");
     write(
         &root.join("ops/stack/generated/stack-index.json"),
         "{\"schema_version\":1}\n",
