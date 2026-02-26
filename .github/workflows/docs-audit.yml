@@ -71,6 +71,11 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix configs/docs run -s cspell
+      - name: Check generated docs references
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/docs/generate_operations_references.py
       - name: Run docs strict build
         shell: bash
         run: |
