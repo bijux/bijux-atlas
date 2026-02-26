@@ -30,6 +30,9 @@ assert_cmd = "2"
 tempfile = "=3.13.0"
 criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
 
+[lib]
+path = "src/lib.rs"
+
 [[bin]]
 name = "bijux-dev-atlas"
 path = "src/main.rs"
