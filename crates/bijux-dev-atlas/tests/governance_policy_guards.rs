@@ -40,7 +40,10 @@ fn benchmark_groups_are_unique_and_named_for_files() {
             continue;
         }
         let text = fs::read_to_string(&path).expect("bench source");
-        let stem = path.file_stem().and_then(|s| s.to_str()).expect("file stem");
+        let stem = path
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .expect("file stem");
         let marker = "criterion_group!(";
         let idx = text
             .find(marker)
@@ -66,7 +69,8 @@ fn benchmark_groups_are_unique_and_named_for_files() {
 #[test]
 fn architecture_contract_is_single_source_and_records_execution_policy() {
     let root = workspace_root();
-    let architecture = fs::read_to_string(crate_root().join("ARCHITECTURE.md")).expect("ARCHITECTURE.md");
+    let architecture =
+        fs::read_to_string(crate_root().join("ARCHITECTURE.md")).expect("ARCHITECTURE.md");
     assert!(
         architecture.contains("artifacts/target"),
         "ARCHITECTURE.md must document target-dir policy"

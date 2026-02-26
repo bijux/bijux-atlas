@@ -48,11 +48,9 @@ fn representative_ops_crate_check_runs_with_test_bundle_without_subprocess_execu
     .expect("run report");
 
     assert!(
-        report
-            .results
-            .iter()
-            .any(|row| row.id.as_str() == "checks_crates_plugin_conformance_binaries"
-                && row.status == CheckStatus::Skip),
+        report.results.iter().any(|row| row.id.as_str()
+            == "checks_crates_plugin_conformance_binaries"
+            && row.status == CheckStatus::Skip),
         "selected subprocess-only check must be skipped under denied subprocess capability"
     );
     assert!(report.summary.total >= 1);

@@ -115,7 +115,15 @@ fn generated_report_examples_reference_existing_report_schemas() {
     for (report_rel, schema_rel) in required_pairs {
         let report_path = root.join(report_rel);
         let schema_path = root.join(schema_rel);
-        assert!(report_path.exists(), "missing generated example {}", report_path.display());
-        assert!(schema_path.exists(), "missing report schema {}", schema_path.display());
+        assert!(
+            report_path.exists(),
+            "missing generated example {}",
+            report_path.display()
+        );
+        assert!(
+            schema_path.exists(),
+            "missing report schema {}",
+            schema_path.display()
+        );
     }
 }

@@ -8,9 +8,9 @@
 
 pub use crate::ports::{AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner};
 
+mod bundles;
 mod fs;
 mod process;
-mod bundles;
 mod world;
 
 pub use bundles::{AdaptersBundle, FixedClock, TestBundle};
