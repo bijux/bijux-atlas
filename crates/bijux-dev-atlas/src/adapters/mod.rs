@@ -7,6 +7,7 @@
 //! depend on core check modules or embed policy/core decision logic.
 
 pub use crate::ports::{AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner};
+pub use crate::ports::SystemClock as RealClock;
 
 mod bundles;
 mod fs;
@@ -19,6 +20,8 @@ pub use fs::{
     normalize_line_endings, sorted_non_empty_lines, RealFs,
 };
 pub use process::{run_subprocess_captured, CommandCapture, RealProcessRunner, SubprocessPolicy};
+pub type RealExec = RealProcessRunner;
+pub type RealWalk = RealFs;
 pub use world::{DeniedNetwork, DeniedProcessRunner, FakeWorld, RealGit, RealWorld};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
