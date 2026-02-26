@@ -3275,6 +3275,34 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                 ));
             }
             if rel.extension().and_then(|ext| ext.to_str()) == Some("json") {
+                let file_name = rel
+                    .file_name()
+                    .and_then(|v| v.to_str())
+                    .unwrap_or_default()
+                    .to_string();
+                let suffix_allowed = file_name.ends_with("-report.json")
+                    || file_name.ends_with("-index.json")
+                    || file_name.ends_with(".example.json")
+                    || matches!(
+                        file_name.as_str(),
+                        "ALLOWLIST.json"
+                            | "ops-ledger.json"
+                            | "ops-index.json"
+                            | "ops-evidence-bundle.json"
+                            | "scorecard.json"
+                            | "control-plane-surface-list.json"
+                    );
+                if !suffix_allowed {
+                    violations.push(violation(
+                        "OPS_EVIDENCE_FILENAME_SUFFIX_POLICY_VIOLATION",
+                        format!(
+                            "curated evidence json filename does not match suffix policy: `{}`",
+                            rel.display()
+                        ),
+                        "use -report.json, -index.json, .example.json, or an approved canonical evidence filename",
+                        Some(rel),
+                    ));
+                }
                 let text =
                     fs::read_to_string(&file).map_err(|err| CheckError::Failed(err.to_string()))?;
                 let json: serde_json::Value = serde_json::from_str(&text)
@@ -3381,6 +3409,52 @@ pub(super) fn check_ops_evidence_bundle_discipline(
                     Some(bundle_rel),
                 ));
             }
+        }
+    }
+    if let Some(inventory_hashes) = bundle_json
+        .get("hashes")
+        .and_then(|v| v.get("inventory"))
+        .and_then(|v| v.as_array())
+    {
+        let mut paths = Vec::new();
+        for entry in inventory_hashes {
+            let path = entry
+                .get("path")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            let sha = entry
+                .get("sha256")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if !path.starts_with("ops/") {
+                violations.push(violation(
+                    "OPS_EVIDENCE_BUNDLE_INVENTORY_HASH_PATH_INVALID",
+                    format!("inventory hash entry path must live under ops/: `{path}`"),
+                    "set hashes.inventory[].path to canonical ops paths only",
+                    Some(bundle_rel),
+                ));
+            }
+            if !sha.chars().all(|c| c.is_ascii_hexdigit()) || sha.len() != 64 {
+                violations.push(violation(
+                    "OPS_EVIDENCE_BUNDLE_INVENTORY_HASH_INVALID",
+                    format!("inventory hash entry must be 64 lowercase hex chars for `{path}`"),
+                    "refresh hashes.inventory sha256 values from deterministic artifact hashing",
+                    Some(bundle_rel),
+                ));
+            }
+            paths.push(path);
+        }
+        let mut sorted = paths.clone();
+        sorted.sort();
+        if paths != sorted {
+            violations.push(violation(
+                "OPS_EVIDENCE_BUNDLE_INVENTORY_HASH_ORDER_NONDETERMINISTIC",
+                "hashes.inventory must be sorted by path for deterministic output".to_string(),
+                "sort hashes.inventory entries lexicographically by path",
+                Some(bundle_rel),
+            ));
         }
     }
 
