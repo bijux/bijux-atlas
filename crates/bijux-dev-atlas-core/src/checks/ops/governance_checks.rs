@@ -69,9 +69,6 @@ pub(super) fn checks_ops_no_scripts_areas_or_xtask_refs(
                 continue;
             }
             let rel = file.strip_prefix(ctx.repo_root).unwrap_or(file.as_path());
-            if rel == Path::new("ops/report/docs/observe-rename.md") {
-                continue;
-            }
             let Ok(content) = fs::read_to_string(&file) else {
                 continue;
             };
