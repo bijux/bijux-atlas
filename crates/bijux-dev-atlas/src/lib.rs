@@ -2,7 +2,8 @@
 
 #![forbid(unsafe_code)]
 #![deny(clippy::dbg_macro, clippy::print_stdout, clippy::print_stderr)]
-#![deny(clippy::unwrap_used, clippy::expect_used, clippy::todo)]
+#![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
+#![deny(clippy::todo)]
 
 pub mod adapters;
 pub(crate) mod commands;
