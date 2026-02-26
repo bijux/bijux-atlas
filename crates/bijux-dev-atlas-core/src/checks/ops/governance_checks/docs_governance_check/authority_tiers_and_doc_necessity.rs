@@ -135,5 +135,69 @@ fn validate_ops_authority_tiers_and_doc_necessity(
         }
     }
 
+    let docs_shrink_rel = Path::new("ops/_generated.example/docs-shrink-report.json");
+    let docs_shrink_text = fs::read_to_string(ctx.repo_root.join(docs_shrink_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", docs_shrink_rel.display())))?;
+    let docs_shrink_json: serde_json::Value = serde_json::from_str(&docs_shrink_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", docs_shrink_rel.display())))?;
+    if docs_shrink_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+        violations.push(violation(
+            "OPS_DOCS_SHRINK_REPORT_BLOCKING",
+            format!("docs shrink report `{}` status is not `pass`", docs_shrink_rel.display()),
+            "resolve docs compression budget failures and regenerate docs-shrink-report.json",
+            Some(docs_shrink_rel),
+        ));
+    }
+    let max_md_per_dir = docs_shrink_json
+        .get("budgets")
+        .and_then(|v| v.get("max_markdown_files_per_ops_domain_dir"))
+        .and_then(|v| v.as_u64())
+        .unwrap_or(18);
+    let top_dirs = docs_shrink_json
+        .get("top_directories")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    if top_dirs.is_empty() {
+        violations.push(violation(
+            "OPS_DOCS_SHRINK_REPORT_EMPTY",
+            format!("docs shrink report `{}` must include top_directories entries", docs_shrink_rel.display()),
+            "include top_directories markdown counts for canonical ops domains",
+            Some(docs_shrink_rel),
+        ));
+    }
+
+    for domain in [
+        "ops/datasets",
+        "ops/e2e",
+        "ops/env",
+        "ops/inventory",
+        "ops/k8s",
+        "ops/load",
+        "ops/observe",
+        "ops/report",
+        "ops/schema",
+        "ops/stack",
+    ] {
+        let domain_dir = ctx.repo_root.join(domain);
+        if !domain_dir.exists() {
+            continue;
+        }
+        let md_count = walk_files(&domain_dir)
+            .into_iter()
+            .filter(|path| path.extension().and_then(|e| e.to_str()) == Some("md"))
+            .count() as u64;
+        if md_count > max_md_per_dir {
+            violations.push(violation(
+                "OPS_DOMAIN_DOC_COUNT_BUDGET_EXCEEDED",
+                format!(
+                    "domain markdown file count exceeds budget: `{domain}` has {md_count}, budget={max_md_per_dir}"
+                ),
+                "consolidate docs, generate references, or raise docs-shrink-report budget with justification",
+                Some(Path::new(domain)),
+            ));
+        }
+    }
+
     Ok(())
 }
