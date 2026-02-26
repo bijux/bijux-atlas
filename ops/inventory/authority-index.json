@@ -76,8 +76,11 @@
     "ops/INDEX.md",
     "ops/MINIMAL_RELEASE_SURFACE.md",
     "ops/NAMING.md",
+    "ops/OPS_CHANGE_REVIEW_CHECKLIST.md",
     "ops/PORTABILITY_MATRIX.md",
     "ops/README.md",
+    "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+    "ops/SCHEMA_EVOLUTION_WORKFLOW.md",
     "ops/SSOT.md"
   ],
   "ignored_prefixes": [

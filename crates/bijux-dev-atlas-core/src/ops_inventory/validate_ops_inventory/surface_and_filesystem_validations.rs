@@ -104,8 +104,11 @@ fn validate_surface_and_filesystem_policies(
         "INDEX.md",
         "MINIMAL_RELEASE_SURFACE.md",
         "NAMING.md",
+        "OPS_CHANGE_REVIEW_CHECKLIST.md",
         "PORTABILITY_MATRIX.md",
         "README.md",
+        "RELEASE_READINESS_SIGNOFF_CHECKLIST.md",
+        "SCHEMA_EVOLUTION_WORKFLOW.md",
         "SSOT.md",
     ]
     .into_iter()
