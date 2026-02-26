@@ -65,6 +65,8 @@ Does not define product semantics or internal crate APIs.
 - [No Direct Path Usage](no-direct-path-usage.md)
 - [Platform Handover](platform-handover.md)
 - [Ops System](ops-system/INDEX.md)
+- [Docs Convergence Policy](DOCS_CONVERGENCE_POLICY.md)
+- [Docs Structure Freeze](DOCS_STRUCTURE_FREEZE.md)
 
 ## Topic Registry
 

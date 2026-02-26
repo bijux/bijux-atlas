@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "generated_by": "curated docs simulation report",
+  "status": "pass",
+  "targets": [
+    {
+      "path": "docs/operations/reference/commands.md",
+      "impact": "warning",
+      "consumers": ["docs/operations/entrypoints.md", "checks_ops_docs_governance"],
+      "notes": "top-level docs may drift back to embedded command lists"
+    },
+    {
+      "path": "docs/operations/ops-docs-contract.md",
+      "impact": "breaking",
+      "consumers": ["checks_ops_docs_governance"],
+      "notes": "authority tier policy gate loses canonical docs-side contract"
+    }
+  ]
+}
