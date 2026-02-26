@@ -73,3 +73,5 @@ __pycache__/
 /observability
 /datasets
 /fixtures
+# Docs tooling local installs (CI/local npm ci --prefix configs/docs)
+configs/docs/node_modules/
