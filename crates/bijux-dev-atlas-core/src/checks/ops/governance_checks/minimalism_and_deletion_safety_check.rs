@@ -10,6 +10,7 @@ pub(super) fn checks_ops_minimalism_and_deletion_safety(
     validate_inventory_drill_usage_contract(ctx, &mut violations)?;
     validate_unused_schema_detection(ctx, &mut violations)?;
     validate_deletion_impact_example_report(ctx, &mut violations)?;
+    validate_ops_surface_count_budgets(ctx, &mut violations)?;
     Ok(violations)
 }
 
@@ -378,6 +379,67 @@ fn validate_deletion_impact_example_report(
             ));
             break;
         }
+    }
+    Ok(())
+}
+
+fn validate_ops_surface_count_budgets(
+    ctx: &CheckContext<'_>,
+    violations: &mut Vec<Violation>,
+) -> Result<(), CheckError> {
+    let policy_rel = Path::new("ops/DIRECTORY_BUDGET_POLICY.md");
+    let policy_text = fs::read_to_string(ctx.repo_root.join(policy_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", policy_rel.display())))?;
+    for required in [
+        "ops/` directory count budget: `<= 140` directories.",
+        "ops/` file count budget: `<= 650` files.",
+    ] {
+        if !policy_text.contains(required) {
+            violations.push(violation(
+                "OPS_SURFACE_BUDGET_POLICY_MISSING_LIMIT",
+                format!(
+                    "directory budget policy `{}` is missing explicit limit `{required}`",
+                    policy_rel.display()
+                ),
+                "declare explicit ops directory and file count budgets in ops/DIRECTORY_BUDGET_POLICY.md",
+                Some(policy_rel),
+            ));
+        }
+    }
+
+    let ops_root = ctx.repo_root.join("ops");
+    let file_count = walk_files(&ops_root).len();
+    fn count_dirs(root: &Path) -> usize {
+        let mut total = 0usize;
+        let Ok(entries) = fs::read_dir(root) else {
+            return 0;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                total += 1;
+                total += count_dirs(&path);
+            }
+        }
+        total
+    }
+    let dir_count = count_dirs(&ops_root);
+
+    if dir_count > 140 {
+        violations.push(violation(
+            "OPS_DIRECTORY_COUNT_BUDGET_EXCEEDED",
+            format!("ops directory count budget exceeded: count={dir_count}, budget=140"),
+            "remove redundant directories or raise the budget policy with justification",
+            Some(policy_rel),
+        ));
+    }
+    if file_count > 650 {
+        violations.push(violation(
+            "OPS_FILE_COUNT_BUDGET_EXCEEDED",
+            format!("ops file count budget exceeded: count={file_count}, budget=650"),
+            "remove redundant files or raise the budget policy with justification",
+            Some(policy_rel),
+        ));
     }
     Ok(())
 }
