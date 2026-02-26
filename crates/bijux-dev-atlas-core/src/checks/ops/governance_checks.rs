@@ -12,3 +12,4 @@ include!("governance_checks/fixture_governance_check.rs");
 include!("governance_checks/fixture_governance_helpers.rs");
 include!("governance_checks/quarantine_shim_expiration_check.rs");
 include!("governance_checks/portability_environment_contract_check.rs");
+include!("governance_checks/minimalism_and_deletion_safety_check.rs");

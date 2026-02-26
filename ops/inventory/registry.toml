@@ -642,6 +642,17 @@ budget_ms = 2000
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_minimalism_and_deletion_safety"
+domain = "ops"
+title = "ops deletion safety declarations and minimal release surface remain enforced"
+docs = "ops/MINIMAL_RELEASE_SURFACE.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2200
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_generated_lifecycle_metadata"
 domain = "ops"
 title = "generated evidence lifecycle metadata is complete and derivable"
