@@ -66,13 +66,12 @@ pub(crate) fn validate_pins_completeness(
 ) -> Result<Vec<String>, OpsCommandError> {
     let mut errors = Vec::new();
     let stack_manifest: serde_json::Value = serde_json::from_str(
-        &std::fs::read_to_string(repo_root.join("ops/stack/generated/version-manifest.json")).map_err(
-            |err| {
+        &std::fs::read_to_string(repo_root.join("ops/stack/generated/version-manifest.json"))
+            .map_err(|err| {
                 OpsCommandError::Manifest(format!(
                     "failed to read ops/stack/generated/version-manifest.json: {err}"
                 ))
-            },
-        )?,
+            })?,
     )
     .map_err(|err| OpsCommandError::Schema(format!("invalid version manifest json: {err}")))?;
     if let Some(obj) = stack_manifest.as_object() {
@@ -250,7 +249,8 @@ mod tests {
             .expect("mkdir chart");
         std::fs::create_dir_all(root.path().join("ops/inventory")).expect("mkdir inventory");
         std::fs::write(
-            root.path().join("ops/stack/generated/version-manifest.json"),
+            root.path()
+                .join("ops/stack/generated/version-manifest.json"),
             "{\"schema_version\":1,\"redis\":\"redis:latest\"}",
         )
         .expect("write manifest");

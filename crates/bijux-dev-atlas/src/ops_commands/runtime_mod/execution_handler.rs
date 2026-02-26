@@ -261,8 +261,10 @@ pub(super) fn dispatch_execution(
                     let old = load_stack_pins(&repo_root).map_err(|e| e.to_stable_message())?;
                     let mut updated = old.clone();
                     let stack_manifest: serde_json::Value = serde_json::from_str(
-                        &std::fs::read_to_string(repo_root.join("ops/stack/generated/version-manifest.json"))
-                            .map_err(|err| format!("failed to read version manifest: {err}"))?,
+                        &std::fs::read_to_string(
+                            repo_root.join("ops/stack/generated/version-manifest.json"),
+                        )
+                        .map_err(|err| format!("failed to read version manifest: {err}"))?,
                     )
                     .map_err(|err| format!("invalid version manifest json: {err}"))?;
                     if let Some(obj) = stack_manifest.as_object() {

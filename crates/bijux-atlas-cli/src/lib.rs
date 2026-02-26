@@ -250,11 +250,17 @@ enum AtlasCommand {
         root: PathBuf,
         #[arg(long)]
         dataset: String,
-        #[arg(long, default_value = "ops/datasets/fixtures/medium/api-list-queries.v1.json")]
+        #[arg(
+            long,
+            default_value = "ops/datasets/fixtures/medium/api-list-queries.v1.json"
+        )]
         golden_queries: PathBuf,
         #[arg(long, default_value_t = false)]
         write_snapshot: bool,
-        #[arg(long, default_value = "ops/datasets/fixtures/medium/api-list-responses.v1.json")]
+        #[arg(
+            long,
+            default_value = "ops/datasets/fixtures/medium/api-list-responses.v1.json"
+        )]
         snapshot_out: PathBuf,
     },
     Openapi {

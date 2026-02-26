@@ -243,7 +243,10 @@ tags_any = ["fast"]
     write(&root.join("ops/inventory/README.md"), "# Inventory\n");
     write(&root.join("ops/env/README.md"), "# Env\n");
     write(&root.join("ops/env/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/env/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/env/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(
         &root.join("ops/env/base/overlay.json"),
         "{\"schema_version\":1,\"environment\":\"base\",\"values\":{\"namespace\":\"atlas-e2e\",\"cluster_profile\":\"kind\",\"allow_write\":false,\"allow_subprocess\":false,\"network_mode\":\"restricted\"}}\n",
@@ -283,7 +286,10 @@ tags_any = ["fast"]
         &root.join("ops/_generated/REQUIRED_FILES.md"),
         "# Required Files\n",
     );
-    write(&root.join("ops/_generated.example/README.md"), "# Generated Example\n");
+    write(
+        &root.join("ops/_generated.example/README.md"),
+        "# Generated Example\n",
+    );
     write(&root.join("ops/_generated.example/OWNER.md"), "# Owner\n");
     write(
         &root.join("ops/_generated.example/REQUIRED_FILES.md"),
@@ -304,25 +310,46 @@ tags_any = ["fast"]
     );
     write(&root.join("ops/stack/README.md"), "# Stack\n");
     write(&root.join("ops/stack/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/stack/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/stack/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/k8s/README.md"), "# K8s\n");
     write(&root.join("ops/k8s/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/k8s/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/k8s/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/observe/README.md"), "# Observe\n");
     write(&root.join("ops/observe/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/observe/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/observe/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/load/README.md"), "# Load\n");
     write(&root.join("ops/load/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/load/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/load/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/e2e/README.md"), "# E2E\n");
     write(&root.join("ops/e2e/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/e2e/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/e2e/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/datasets/README.md"), "# Datasets\n");
     write(&root.join("ops/datasets/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/datasets/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/datasets/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(&root.join("ops/report/README.md"), "# Report\n");
     write(&root.join("ops/report/OWNER.md"), "# Owner\n");
-    write(&root.join("ops/report/REQUIRED_FILES.md"), "# Required Files\n");
+    write(
+        &root.join("ops/report/REQUIRED_FILES.md"),
+        "# Required Files\n",
+    );
     write(
         &root.join("configs/ops/ops-surface-manifest.json"),
         "{\"schema_version\":1}\n",
