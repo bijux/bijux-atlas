@@ -31,8 +31,7 @@ pub const DEFAULT_REGISTRY_PATH: &str = "ops/inventory/registry.toml";
 pub fn load_dev_policy_set(
     repo_root: &Path,
 ) -> Result<crate::policies::DevAtlasPolicySet, Cow<'static, str>> {
-    crate::policies::DevAtlasPolicySet::load(repo_root)
-        .map_err(|err| Cow::Owned(err.to_string()))
+    crate::policies::DevAtlasPolicySet::load(repo_root).map_err(|err| Cow::Owned(err.to_string()))
 }
 
 #[derive(Debug, Clone)]

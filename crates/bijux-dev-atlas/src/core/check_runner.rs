@@ -204,10 +204,8 @@ impl<'a> CheckRunner<'a> {
                 result.status = CheckStatus::Error;
                 result.violations.push(Violation {
                     schema_version: crate::model::schema_version(),
-                    code: crate::model::ViolationId::parse(
-                        "evidence_path_timestamp_forbidden",
-                    )
-                    .expect("valid id"),
+                    code: crate::model::ViolationId::parse("evidence_path_timestamp_forbidden")
+                        .expect("valid id"),
                     message: "evidence paths must not include timestamps".to_string(),
                     hint: Some(
                         "use stable run identifiers and deterministic file names".to_string(),
@@ -372,8 +370,7 @@ fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Chec
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
-            code: crate::model::ViolationId::parse("docs_index_missing")
-                .expect("valid id"),
+            code: crate::model::ViolationId::parse("docs_index_missing").expect("valid id"),
             message: "missing docs/INDEX.md".to_string(),
             hint: Some("restore docs index".to_string()),
             path: Some(
@@ -393,8 +390,7 @@ fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>,
     } else {
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
-            code: crate::model::ViolationId::parse("make_contract_missing")
-                .expect("valid id"),
+            code: crate::model::ViolationId::parse("make_contract_missing").expect("valid id"),
             message: "missing makefiles/CONTRACT.md".to_string(),
             hint: Some("restore make contract doc".to_string()),
             path: Some(

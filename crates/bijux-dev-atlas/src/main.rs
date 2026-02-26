@@ -29,13 +29,13 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command as ProcessCommand;
 
+#[cfg(test)]
+pub(crate) use crate::cli::Cli;
 use crate::cli::{
     ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
     GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
     OpsStatusTarget, WorkflowsCommand,
 };
-#[cfg(test)]
-pub(crate) use crate::cli::Cli;
 use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner};
 use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
 use bijux_dev_atlas::core::{

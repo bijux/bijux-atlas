@@ -20,12 +20,9 @@ fn allowlisted_paths() -> BTreeSet<&'static str> {
 }
 
 fn ignored_subtrees(root: &Path) -> BTreeSet<PathBuf> {
-    [
-        root.join("target"),
-        root.join(".git"),
-    ]
-    .into_iter()
-    .collect()
+    [root.join("target"), root.join(".git")]
+        .into_iter()
+        .collect()
 }
 
 fn collect_files(root: &Path, ignored: &BTreeSet<PathBuf>, out: &mut Vec<PathBuf>) {
@@ -62,7 +59,14 @@ fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
     let allowlisted = allowlisted_paths();
     let ignored = ignored_subtrees(&root);
     let mut files = Vec::new();
-    for rel in [".github/workflows", "crates", "configs", "ops", "docs", "makefiles"] {
+    for rel in [
+        ".github/workflows",
+        "crates",
+        "configs",
+        "ops",
+        "docs",
+        "makefiles",
+    ] {
         collect_files(&root.join(rel), &ignored, &mut files);
     }
     files.sort();

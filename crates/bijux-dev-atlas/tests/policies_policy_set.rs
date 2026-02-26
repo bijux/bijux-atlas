@@ -111,7 +111,9 @@ fn repo_structure_limits_are_enforced() {
                 .expect("path must be under workspace root")
                 .to_string_lossy()
                 .to_string();
-            if !policy.repo_policy.loc_allowlist.contains(&rel) && !is_staged_merge_compat_exception(&rel) {
+            if !policy.repo_policy.loc_allowlist.contains(&rel)
+                && !is_staged_merge_compat_exception(&rel)
+            {
                 violators.push((lines, rel));
             }
         } else if lines > policy.repo_policy.max_loc_warn {
@@ -120,7 +122,9 @@ fn repo_structure_limits_are_enforced() {
                 .expect("path must be under workspace root")
                 .to_string_lossy()
                 .to_string();
-            if !policy.repo_policy.loc_allowlist.contains(&rel) && !is_staged_merge_compat_exception(&rel) {
+            if !policy.repo_policy.loc_allowlist.contains(&rel)
+                && !is_staged_merge_compat_exception(&rel)
+            {
                 warnings.push((lines, rel));
             }
         }

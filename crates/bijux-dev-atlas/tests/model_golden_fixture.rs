@@ -6,8 +6,8 @@ use std::path::PathBuf;
 
 #[test]
 fn canonical_report_fixture_parses_and_matches_shape() {
-    let fixture =
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/model_fixtures/run_report_canonical.json");
+    let fixture = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/model_fixtures/run_report_canonical.json");
     let text = fs::read_to_string(fixture).expect("fixture");
     let parsed: RunReport = serde_json::from_str(&text).expect("parse");
     assert_eq!(
