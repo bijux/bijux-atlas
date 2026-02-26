@@ -615,6 +615,7 @@ fn checks_ops_generated_lifecycle_metadata(
         .and_then(|v| v.as_array())
         .cloned()
         .unwrap_or_default();
+    let mut audited_artifacts = std::collections::BTreeSet::<String>::new();
     if entries.is_empty() {
         violations.push(violation(
             "OPS_GENERATION_AUDIT_LOG_EMPTY",
@@ -624,6 +625,11 @@ fn checks_ops_generated_lifecycle_metadata(
         ));
     }
     for entry in entries {
+        let artifact = entry
+            .get("artifact")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
         for key in ["artifact", "producer", "regenerate", "lifecycle"] {
             if entry
                 .get(key)
@@ -641,6 +647,32 @@ fn checks_ops_generated_lifecycle_metadata(
                 ));
                 break;
             }
+        }
+        if entry.get("lifecycle").and_then(|v| v.as_str()) == Some("curated_evidence")
+            && !curated_by_path.contains_key(&artifact)
+        {
+            violations.push(violation(
+                "OPS_GENERATION_AUDIT_LOG_CURATED_ENTRY_STALE",
+                format!(
+                    "generation audit log contains curated_evidence artifact not declared in generated lifecycle policy: `{artifact}`"
+                ),
+                "remove stale audit entries or declare the artifact in curated_evidence metadata",
+                Some(generation_audit_rel),
+            ));
+        }
+        audited_artifacts.insert(artifact);
+    }
+
+    for curated_path in curated_by_path.keys() {
+        if !audited_artifacts.contains(curated_path) {
+            violations.push(violation(
+                "OPS_GENERATION_AUDIT_LOG_COVERAGE_MISSING",
+                format!(
+                    "generation audit log is missing curated_evidence artifact coverage for `{curated_path}`"
+                ),
+                "add generation audit entries for every curated_evidence artifact",
+                Some(generation_audit_rel),
+            ));
         }
     }
 
