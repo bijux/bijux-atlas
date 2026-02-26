@@ -10,8 +10,6 @@ mod cli;
 mod configs_commands;
 #[path = "commands/control_plane.rs"]
 mod control_plane_commands;
-#[path = "commands/dispatch.rs"]
-mod dispatch;
 #[path = "commands/docs_runtime.rs"]
 mod docs_command_runtime;
 #[path = "commands/docs.rs"]

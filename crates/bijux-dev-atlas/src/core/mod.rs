@@ -22,7 +22,6 @@ mod check_runner;
 pub mod checks;
 pub mod logging;
 pub mod ops_inventory;
-pub mod ports;
 mod report_rendering;
 pub use crate::ports::{Capabilities, Fs, ProcessRunner};
 

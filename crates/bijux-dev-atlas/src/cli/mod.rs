@@ -9,6 +9,7 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 mod checks;
+mod dispatch;
 mod ops;
 mod surfaces;
 
@@ -18,7 +19,7 @@ pub use surfaces::*;
 
 pub(crate) fn run() -> i32 {
     let cli = Cli::parse();
-    crate::dispatch::run_cli(cli)
+    dispatch::run_cli(cli)
 }
 
 #[derive(Parser, Debug)]
