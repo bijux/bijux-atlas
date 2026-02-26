@@ -57,6 +57,76 @@
       "source": "ops/_generated/REQUIRED_FILES.md"
     }
   ],
+  "generated_directories": [
+    {
+      "directory": "ops/_generated",
+      "lifecycle": "transient_runtime",
+      "retention": "no_commit_retention"
+    },
+    {
+      "directory": "ops/_generated.example",
+      "lifecycle": "curated_evidence",
+      "retention": "committed_example_retention",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "directory": "ops/datasets/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "directory": "ops/e2e/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "directory": "ops/k8s/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "directory": "ops/load/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "directory": "ops/observe/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "directory": "ops/report/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops report readiness-score",
+      "regenerate": "make ops-readiness-scorecard"
+    },
+    {
+      "directory": "ops/schema/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops schema index",
+      "regenerate": "make ops-schema-index"
+    },
+    {
+      "directory": "ops/stack/generated",
+      "lifecycle": "domain_derived",
+      "retention": "current_contract_outputs_only",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    }
+  ],
   "curated_evidence": [
     {
       "committed": "ops/_generated.example/ALLOWLIST.json",

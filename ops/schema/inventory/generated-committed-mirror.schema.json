@@ -2,19 +2,43 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "allow_runtime_compat", "mirrors", "curated_evidence"],
+  "required": [
+    "schema_version",
+    "allow_runtime_compat",
+    "mirrors",
+    "generated_directories",
+    "curated_evidence"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "allow_runtime_compat": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "allow_runtime_compat": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
     "mirrors": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["committed", "source"],
+        "required": [
+          "committed",
+          "source"
+        ],
         "properties": {
-          "committed": {"type": "string", "minLength": 1},
-          "source": {"type": "string", "minLength": 1}
+          "committed": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
@@ -23,15 +47,74 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["committed", "lifecycle", "producer", "regenerate"],
+        "required": [
+          "committed",
+          "lifecycle",
+          "producer",
+          "regenerate"
+        ],
         "properties": {
-          "committed": {"type": "string", "minLength": 1},
+          "committed": {
+            "type": "string",
+            "minLength": 1
+          },
           "lifecycle": {
             "type": "string",
-            "enum": ["curated_evidence"]
+            "enum": [
+              "curated_evidence"
+            ]
           },
-          "producer": {"type": "string", "minLength": 1},
-          "regenerate": {"type": "string", "minLength": 1}
+          "producer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "regenerate": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "generated_directories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "directory",
+          "lifecycle",
+          "retention"
+        ],
+        "properties": {
+          "directory": {
+            "type": "string",
+            "pattern": "^ops/.+",
+            "minLength": 1
+          },
+          "lifecycle": {
+            "type": "string",
+            "enum": [
+              "transient_runtime",
+              "domain_derived",
+              "curated_evidence"
+            ]
+          },
+          "retention": {
+            "type": "string",
+            "enum": [
+              "no_commit_retention",
+              "current_contract_outputs_only",
+              "committed_example_retention"
+            ]
+          },
+          "producer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "regenerate": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     }
