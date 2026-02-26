@@ -45,13 +45,13 @@
 - Replace production imports of:
   - model data contracts are also available in `crates/bijux-dev-atlas/src/model/`
   - policy schema and validation code are also available in `crates/bijux-dev-atlas/src/policies/`
-  - `bijux-dev-atlas-core`
+  - core engine and checks are also available in `crates/bijux-dev-atlas/src/core/`
   - adapter implementations are also available in `crates/bijux-dev-atlas/src/adapters/`
   with internal module paths
 - Extract `src/core/ports.rs` into top-level `src/ports/*`
 - Rewire `core` to depend on `crate::ports`
 - Rewire command execution paths to use internal `core` + `adapters`
-- Migrate remaining `bijux-dev-atlas-core` tests/goldens to `crates/bijux-dev-atlas/tests/`
+- Consolidate remaining core-related tests/goldens under `crates/bijux-dev-atlas/tests/`
 - Remove all references to old crate names in docs/configs/ops/CI
 - Remove old crates from workspace members and workspace dependencies
 
