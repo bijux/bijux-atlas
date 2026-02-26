@@ -55,7 +55,7 @@ fn collect_rs_files(dir: &std::path::Path) -> Vec<PathBuf> {
 fn is_staged_merge_compat_exception(rel: &str) -> bool {
     // During the single-crate convergence, the policies tests are hosted in `bijux-dev-atlas`
     // before the repo-wide LOC ratchet allowlist is updated to account for the moved code.
-    rel == "crates/bijux-dev-atlas/src/docs_command_runtime/command_dispatch.rs"
+    rel == "crates/bijux-dev-atlas/src/commands/docs_runtime/command_dispatch.rs"
 }
 
 #[test]
