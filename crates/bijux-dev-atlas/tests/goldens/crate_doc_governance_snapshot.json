@@ -57,8 +57,8 @@
     },
     {
       "crate": "bijux-dev-atlas",
-      "root_doc_count": 9,
-      "docs_dir_count": 9,
+      "root_doc_count": 10,
+      "docs_dir_count": 11,
       "diagram_count": 3
     }
   ]
