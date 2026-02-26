@@ -2,10 +2,15 @@
   "rows": [
     {
       "charts": 1,
-      "components": 7,
+      "components": 8,
       "inventory_errors": [],
-      "mirror_entries": 2,
+      "mirror_entries": 5,
       "profiles": [
+        {
+          "cluster_config": "ops/stack/kind/cluster-small.yaml",
+          "kind_profile": "small",
+          "name": "minimal"
+        },
         {
           "cluster_config": "ops/stack/kind/cluster-small.yaml",
           "kind_profile": "small",
@@ -15,6 +20,11 @@
           "cluster_config": "ops/stack/kind/cluster.yaml",
           "kind_profile": "normal",
           "name": "kind"
+        },
+        {
+          "cluster_config": "ops/stack/kind/cluster-dev.yaml",
+          "kind_profile": "normal",
+          "name": "dev"
         },
         {
           "cluster_config": "ops/stack/kind/cluster-perf.yaml",
@@ -54,7 +64,7 @@
         "ops/inventory/surfaces.json",
         "ops/inventory/contracts.json"
       ],
-      "stack_profiles": 5,
+      "stack_profiles": 7,
       "suites": [
         "load",
         "e2e",
@@ -62,7 +72,7 @@
         "obs"
       ],
       "surface_actions": 89,
-      "toolchain_images": 7,
+      "toolchain_images": 8,
       "tools": [
         "curl",
         "helm",

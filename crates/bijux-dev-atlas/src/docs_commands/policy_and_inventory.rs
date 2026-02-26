@@ -96,7 +96,11 @@ pub(crate) fn load_quality_policy(repo_root: &Path) -> DocsQualityPolicy {
 }
 
 pub(crate) fn docs_context(common: &DocsCommonArgs) -> Result<DocsContext, String> {
-    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let repo_root = if let Some(path) = common.repo_root.clone() {
+        path.canonicalize().map_err(|err| err.to_string())?
+    } else {
+        resolve_repo_root(None)?
+    };
     let artifacts_root = common
         .artifacts_root
         .clone()
@@ -412,4 +416,3 @@ pub(crate) fn workspace_crate_roots(repo_root: &Path) -> Vec<PathBuf> {
     roots.sort();
     roots
 }
-

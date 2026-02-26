@@ -107,12 +107,12 @@ fn docs_verify_contracts_supports_json_format() {
 fn docs_inventory_respects_include_drafts_flag() {
     let fixture_root = repo_root().join("crates/bijux-dev-atlas/tests/fixtures/docs-mini");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
+        .current_dir(&fixture_root)
         .args([
             "docs",
             "inventory",
             "--repo-root",
-            fixture_root.to_str().expect("fixture root"),
+            ".",
             "--include-drafts",
             "--format",
             "json",
@@ -137,12 +137,12 @@ fn docs_inventory_respects_include_drafts_flag() {
 fn docs_inventory_fixture_json_matches_golden() {
     let fixture_root = repo_root().join("crates/bijux-dev-atlas/tests/fixtures/docs-mini");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
-        .current_dir(repo_root())
+        .current_dir(&fixture_root)
         .args([
             "docs",
             "inventory",
             "--repo-root",
-            fixture_root.to_str().expect("fixture root"),
+            ".",
             "--run-id",
             "docs_inventory_fixture",
             "--format",
