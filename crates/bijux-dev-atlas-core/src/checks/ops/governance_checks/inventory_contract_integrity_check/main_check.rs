@@ -437,6 +437,13 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let mut node_ids = std::collections::BTreeSet::new();
     let mut node_paths = std::collections::BTreeMap::<String, String>::new();
     let mut path_prefix_coverage = std::collections::BTreeSet::<&'static str>::new();
+    let valid_node_lifecycles = std::collections::BTreeSet::from([
+        "authoritative",
+        "generated_committed",
+        "generated_example",
+        "runtime_generated",
+        "declared",
+    ]);
     for node in &nodes {
         let id = node.get("id").and_then(|v| v.as_str()).unwrap_or_default();
         let node_type = node.get("type").and_then(|v| v.as_str()).unwrap_or_default();
@@ -445,6 +452,49 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 "OPS_INVENTORY_CONTROL_GRAPH_NODE_INVALID",
                 format!("control graph node id is empty or duplicated: `{id}`"),
                 "ensure control-graph nodes have unique non-empty ids",
+                Some(control_graph_rel),
+            ));
+        }
+        let node_consumer = node
+            .get("consumer")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .trim();
+        if node_consumer.is_empty() {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_NODE_CONSUMER_MISSING",
+                format!("control graph node `{id}` is missing non-empty `consumer` metadata"),
+                "add `consumer` to every control-graph node",
+                Some(control_graph_rel),
+            ));
+        }
+        let node_lifecycle = node
+            .get("lifecycle")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .trim();
+        if !valid_node_lifecycles.contains(node_lifecycle) {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_NODE_LIFECYCLE_INVALID",
+                format!(
+                    "control graph node `{id}` has missing/invalid `lifecycle` metadata: `{node_lifecycle}`"
+                ),
+                "set lifecycle to one of authoritative/generated_committed/generated_example/runtime_generated/declared",
+                Some(control_graph_rel),
+            ));
+        }
+        if node_lifecycle.starts_with("generated_")
+            && node
+                .get("producer")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .trim()
+                .is_empty()
+        {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_GENERATED_NODE_PRODUCER_MISSING",
+                format!("generated control graph node `{id}` is missing non-empty `producer` metadata"),
+                "add `producer` command metadata to generated control-graph nodes",
                 Some(control_graph_rel),
             ));
         }
