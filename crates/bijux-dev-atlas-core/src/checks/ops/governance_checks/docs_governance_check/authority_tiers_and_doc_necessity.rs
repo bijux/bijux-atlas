@@ -47,6 +47,39 @@ fn validate_ops_authority_tiers_and_doc_necessity(
             ["- Tier: `tier2`", "## Canonical Entrypoints", "reference/commands.md", "reference/ops-surface.md"]
                 .as_slice(),
         ),
+        (
+            Path::new("docs/operations/reference/tools.md"),
+            ["- Tier: `generated`", "ops/inventory/tools.toml", "## Tools"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/toolchain.md"),
+            ["- Tier: `generated`", "ops/inventory/toolchain.json", "## GitHub Actions Pins"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/pins.md"),
+            ["- Tier: `generated`", "ops/inventory/pins.yaml", "## Pins"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/gates.md"),
+            ["- Tier: `generated`", "ops/inventory/gates.json", "## Gates"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/drills.md"),
+            ["- Tier: `generated`", "ops/inventory/drills.json", "## Drills"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/schema-index.md"),
+            ["- Tier: `generated`", "ops/schema/generated/schema-index.md", "## Canonical Source"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/evidence-model.md"),
+            ["- Tier: `generated`", "evidence-levels.schema.json", "release-evidence-bundle.schema.json"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/reference/what-breaks-if-removed.md"),
+            ["- Tier: `generated`", "ops/_generated.example/what-breaks-if-removed-report.json", "## Removal Impact Targets"]
+                .as_slice(),
+        ),
     ] {
         let text = fs::read_to_string(ctx.repo_root.join(rel))
             .map_err(|err| CheckError::Failed(format!("read {}: {err}", rel.display())))?;
@@ -436,6 +469,36 @@ fn validate_ops_authority_tiers_and_doc_necessity(
                     "move command lists to docs/operations/reference/commands.md or docs/operations/reference/ops-surface.md",
                     Some(rel),
                 ));
+            }
+
+            let top_level_topic_table_ban = [
+                ("tools", "| Tool |", "docs/operations/reference/tools.md"),
+                ("toolchain", "## GitHub Actions Pins", "docs/operations/reference/toolchain.md"),
+                ("pins", "| Section | Key | Value |", "docs/operations/reference/pins.md"),
+                ("gates", "| Gate ID | Category | Action ID | Description |", "docs/operations/reference/gates.md"),
+                ("drills", "ops.drill.", "docs/operations/reference/drills.md"),
+            ];
+            let top_level_ref_pages = [
+                "docs/operations/reference/tools.md",
+                "docs/operations/reference/toolchain.md",
+                "docs/operations/reference/pins.md",
+                "docs/operations/reference/gates.md",
+                "docs/operations/reference/drills.md",
+            ];
+            if top_level_docs_page && !top_level_ref_pages.contains(&rel_s.as_str()) {
+                for (topic, marker, reference_page) in top_level_topic_table_ban {
+                    if text.contains(marker) {
+                        violations.push(violation(
+                            "OPS_TOP_LEVEL_TIER2_DOC_HAND_EDITED_REFERENCE_TABLE_BANNED",
+                            format!(
+                                "top-level tier2 docs page `{}` contains hand-edited {} reference content; use `{}`",
+                                rel.display(), topic, reference_page
+                            ),
+                            "replace hand-maintained topic tables/lists with links to generated docs/operations/reference pages",
+                            Some(rel),
+                        ));
+                    }
+                }
             }
 
             if text.contains("edit ops/_generated") || text.contains("edit ops/_generated.example") {
