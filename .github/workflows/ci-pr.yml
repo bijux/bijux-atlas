@@ -80,6 +80,9 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/ci-pr-minimal"
           mkdir -p "${report_root}" "${logs_root}"
+          make lint-policy-report > "${logs_root}/lint-policy-report.stdout.log" 2> "${logs_root}/lint-policy-report.stderr.log"
+          cp artifacts/lint/effective-clippy-policy.txt "${report_root}/effective-clippy-policy.txt"
+          ! rg -n '\btodo!\(' .
           make ci-fast > "${report_root}/ci-fast.json" 2> "${logs_root}/ci-fast.stderr.log"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
@@ -146,6 +149,9 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/ci-pr"
           mkdir -p "${report_root}" "${logs_root}"
+          make lint-policy-report > "${logs_root}/lint-policy-report.stdout.log" 2> "${logs_root}/lint-policy-report.stderr.log"
+          cp artifacts/lint/effective-clippy-policy.txt "${report_root}/effective-clippy-policy.txt"
+          ! rg -n '\btodo!\(' .
           make ci-pr > "${report_root}/ci-pr.json" 2> "${logs_root}/ci-pr.stderr.log"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-pr.json"
           printf "- lane: ci-pr\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
@@ -285,3 +291,22 @@ jobs:
             size_kb="$(du -sk .cache/cargo/target | awk '{print $1}')"
             [ "${size_kb}" -le 4194304 ]
           fi
+
+  docker-runtime-image:
+    if: needs.route-changes.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: route-changes
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Build runtime image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build --file docker/images/runtime/Dockerfile --tag bijux-atlas-runtime:ci .
+      - name: Runtime image smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --entrypoint /app/bijux-atlas bijux-atlas-runtime:ci --version
+          docker run --rm --entrypoint /app/bijux-atlas bijux-atlas-runtime:ci --help

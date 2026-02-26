@@ -13,7 +13,10 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates pkg-config libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY Cargo.toml Cargo.lock rust-toolchain.toml rustfmt.toml clippy.toml deny.toml ./
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
+COPY configs/rust/rustfmt.toml /workspace/configs/rust/rustfmt.toml
+COPY configs/rust/clippy.toml /workspace/configs/rust/clippy.toml
+COPY configs/security/deny.toml /workspace/configs/security/deny.toml
 COPY crates ./crates
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true \
