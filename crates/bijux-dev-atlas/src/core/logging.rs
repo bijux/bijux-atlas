@@ -2,7 +2,7 @@
 
 #![forbid(unsafe_code)]
 
-use bijux_dev_atlas_model::CONTRACT_SCHEMA_VERSION;
+use crate::model::CONTRACT_SCHEMA_VERSION;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

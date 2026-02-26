@@ -508,7 +508,7 @@ fn deterministic_json_output() {
 #[test]
 fn exit_code_mapping_is_distinct_for_fail_and_error() {
     let pass_report = RunReport {
-        schema_version: bijux_dev_atlas_model::schema_version(),
+        schema_version: crate::model::schema_version(),
         run_id: RunId::from_seed("pass"),
         repo_root: ".".to_string(),
         command: "check run".to_string(),
@@ -517,7 +517,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
         results: Vec::new(),
         durations_ms: BTreeMap::new(),
         counts: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 1,
             failed: 0,
             skipped: 0,
@@ -525,7 +525,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
             total: 1,
         },
         summary: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 1,
             failed: 0,
             skipped: 0,
@@ -538,7 +538,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
 
     let fail_report = RunReport {
         summary: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 0,
             failed: 1,
             skipped: 0,
@@ -551,7 +551,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
 
     let error_report = RunReport {
         summary: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 0,
             failed: 0,
             skipped: 0,
@@ -564,7 +564,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
 
     let skip_report = RunReport {
         summary: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 0,
             failed: 0,
             skipped: 2,
@@ -579,7 +579,7 @@ fn exit_code_mapping_is_distinct_for_fail_and_error() {
 #[test]
 fn duration_output_is_deterministic_for_equal_durations() {
     let report = RunReport {
-        schema_version: bijux_dev_atlas_model::schema_version(),
+        schema_version: crate::model::schema_version(),
         run_id: RunId::from_seed("durations"),
         repo_root: ".".to_string(),
         command: "check run".to_string(),
@@ -587,7 +587,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
         capabilities: BTreeMap::new(),
         results: vec![
             CheckResult {
-                schema_version: bijux_dev_atlas_model::schema_version(),
+                schema_version: crate::model::schema_version(),
                 id: CheckId::parse("checks_ops_surface_manifest").expect("id"),
                 status: CheckStatus::Pass,
                 skip_reason: None,
@@ -596,7 +596,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
                 evidence: Vec::new(),
             },
             CheckResult {
-                schema_version: bijux_dev_atlas_model::schema_version(),
+                schema_version: crate::model::schema_version(),
                 id: CheckId::parse("checks_ops_tree_contract").expect("id"),
                 status: CheckStatus::Pass,
                 skip_reason: None,
@@ -606,7 +606,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
             },
         ],
         summary: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 2,
             failed: 0,
             skipped: 0,
@@ -615,7 +615,7 @@ fn duration_output_is_deterministic_for_equal_durations() {
         },
         durations_ms: BTreeMap::new(),
         counts: RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: 2,
             failed: 0,
             skipped: 0,

@@ -11,7 +11,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use bijux_dev_atlas_model::{
+use crate::model::{
     ArtifactsRoot, CheckId, CheckResult, CheckSpec, CheckStatus, DomainId, Effect, RunId,
     RunReport, RunSummary, Severity, SuiteId, Tag, Violation, Visibility,
 };

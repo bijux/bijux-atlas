@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use bijux_dev_atlas_model::{ArtifactPath, CheckId, Severity, Violation, ViolationId};
+use crate::model::{ArtifactPath, CheckId, Severity, Violation, ViolationId};
 use serde_yaml::Value as YamlValue;
 
 use crate::core::{CheckContext, CheckError, CheckFn};

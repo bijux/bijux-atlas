@@ -147,7 +147,7 @@ impl<'a> CheckRunner<'a> {
                 let check_id = check.id().clone();
                 timings.insert(check_id.clone(), 0);
                 results.push(CheckResult {
-                    schema_version: bijux_dev_atlas_model::schema_version(),
+                    schema_version: crate::model::schema_version(),
                     id: check_id,
                     status: CheckStatus::Skip,
                     skip_reason: Some(format!("effect denied: {effect:?}")),
@@ -160,7 +160,7 @@ impl<'a> CheckRunner<'a> {
 
             let start = Instant::now();
             let mut result = CheckResult {
-                schema_version: bijux_dev_atlas_model::schema_version(),
+                schema_version: crate::model::schema_version(),
                 id: check.id().clone(),
                 status: CheckStatus::Pass,
                 skip_reason: None,
@@ -181,8 +181,8 @@ impl<'a> CheckRunner<'a> {
                 Err(err) => {
                     result.status = CheckStatus::Error;
                     result.violations = vec![Violation {
-                        schema_version: bijux_dev_atlas_model::schema_version(),
-                        code: bijux_dev_atlas_model::ViolationId::parse("check_execution_error")
+                        schema_version: crate::model::schema_version(),
+                        code: crate::model::ViolationId::parse("check_execution_error")
                             .expect("valid id"),
                         message: match err {
                             CheckError::Failed(msg) => msg,
@@ -203,8 +203,8 @@ impl<'a> CheckRunner<'a> {
             {
                 result.status = CheckStatus::Error;
                 result.violations.push(Violation {
-                    schema_version: bijux_dev_atlas_model::schema_version(),
-                    code: bijux_dev_atlas_model::ViolationId::parse(
+                    schema_version: crate::model::schema_version(),
+                    code: crate::model::ViolationId::parse(
                         "evidence_path_timestamp_forbidden",
                     )
                     .expect("valid id"),
@@ -238,7 +238,7 @@ impl<'a> CheckRunner<'a> {
         results.sort_by(|a, b| a.id.as_str().cmp(b.id.as_str()));
 
         let summary = RunSummary {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             passed: results
                 .iter()
                 .filter(|row| row.status == CheckStatus::Pass)
@@ -268,7 +268,7 @@ impl<'a> CheckRunner<'a> {
         };
 
         Ok(RunReport {
-            schema_version: bijux_dev_atlas_model::schema_version(),
+            schema_version: crate::model::schema_version(),
             run_id: ctx.run_id,
             repo_root: runtime.repo_root.display().to_string(),
             command: self
@@ -350,13 +350,13 @@ fn check_repo_import_boundary(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, 
         Ok(Vec::new())
     } else {
         Ok(vec![Violation {
-            schema_version: bijux_dev_atlas_model::schema_version(),
-            code: bijux_dev_atlas_model::ViolationId::parse("repo_import_boundary_source_missing")
+            schema_version: crate::model::schema_version(),
+            code: crate::model::ViolationId::parse("repo_import_boundary_source_missing")
                 .expect("valid id"),
             message: "missing expected atlas dispatch source file".to_string(),
             hint: Some("restore crate source tree".to_string()),
             path: Some(
-                bijux_dev_atlas_model::ArtifactPath::parse(&target.display().to_string())
+                crate::model::ArtifactPath::parse(&target.display().to_string())
                     .expect("valid path"),
             ),
             line: None,
@@ -371,13 +371,13 @@ fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Chec
         Ok(Vec::new())
     } else {
         Ok(vec![Violation {
-            schema_version: bijux_dev_atlas_model::schema_version(),
-            code: bijux_dev_atlas_model::ViolationId::parse("docs_index_missing")
+            schema_version: crate::model::schema_version(),
+            code: crate::model::ViolationId::parse("docs_index_missing")
                 .expect("valid id"),
             message: "missing docs/INDEX.md".to_string(),
             hint: Some("restore docs index".to_string()),
             path: Some(
-                bijux_dev_atlas_model::ArtifactPath::parse(&target.display().to_string())
+                crate::model::ArtifactPath::parse(&target.display().to_string())
                     .expect("valid path"),
             ),
             line: None,
@@ -392,13 +392,13 @@ fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>,
         Ok(Vec::new())
     } else {
         Ok(vec![Violation {
-            schema_version: bijux_dev_atlas_model::schema_version(),
-            code: bijux_dev_atlas_model::ViolationId::parse("make_contract_missing")
+            schema_version: crate::model::schema_version(),
+            code: crate::model::ViolationId::parse("make_contract_missing")
                 .expect("valid id"),
             message: "missing makefiles/CONTRACT.md".to_string(),
             hint: Some("restore make contract doc".to_string()),
             path: Some(
-                bijux_dev_atlas_model::ArtifactPath::parse(&target.display().to_string())
+                crate::model::ArtifactPath::parse(&target.display().to_string())
                     .expect("valid path"),
             ),
             line: None,

@@ -1,6 +1,6 @@
 fn violation(code: &str, message: String, hint: &str, path: Option<&Path>) -> Violation {
     Violation {
-        schema_version: bijux_dev_atlas_model::schema_version(),
+        schema_version: crate::model::schema_version(),
         code: ViolationId::parse(&code.to_ascii_lowercase()).expect("valid violation id"),
         message,
         hint: Some(hint.to_string()),
