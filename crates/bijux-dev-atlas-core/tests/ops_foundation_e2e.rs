@@ -189,8 +189,14 @@ tags_any = ["fast"]
         &root.join("ops/schema/README.md"),
         "# Schema\n- `ops/schema/VERSIONING_POLICY.md`\n- `ops/schema/BUDGET_POLICY.md`\n- `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md`\n- `ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md`\n",
     );
-    write(&root.join("ops/schema/VERSIONING_POLICY.md"), "# Versioning Policy\n");
-    write(&root.join("ops/schema/BUDGET_POLICY.md"), "# Budget Policy\n");
+    write(
+        &root.join("ops/schema/VERSIONING_POLICY.md"),
+        "# Versioning Policy\n",
+    );
+    write(
+        &root.join("ops/schema/BUDGET_POLICY.md"),
+        "# Budget Policy\n",
+    );
     write(
         &root.join("ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"),
         "# Schema Budget Exceptions\n",
