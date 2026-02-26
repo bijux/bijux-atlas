@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops gen run --write-example",
+  "path": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md",
+  "sha256": "bc6c354f4505d1a672bf1f1f1039d3c2b90fc5cfd239f14fdf304ef3c56f55e4"
+}

@@ -2,6 +2,7 @@ pub(super) fn check_ops_domain_contract_structure(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let template_contract_rel = Path::new("ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md");
+    let template_hash_rel = Path::new("ops/_generated.example/domain-document-template-contract.hash.json");
     let template_required_markers = [
         "## Domain CONTRACT.md Required Metadata",
         "## Domain CONTRACT.md Required Sections",
@@ -43,6 +44,56 @@ pub(super) fn check_ops_domain_contract_structure(
                     "complete the canonical template contract sections and enforcement linkage",
                     Some(template_contract_rel),
                 ));
+            }
+        }
+        if !ctx.adapters.fs.exists(ctx.repo_root, template_hash_rel) {
+            violations.push(violation(
+                "OPS_DOMAIN_DOCUMENT_TEMPLATE_HASH_MISSING",
+                "missing domain document template hash artifact `ops/_generated.example/domain-document-template-contract.hash.json`".to_string(),
+                "commit a deterministic template hash artifact for domain document template drift checks",
+                Some(template_hash_rel),
+            ));
+        } else {
+            let hash_text = fs::read_to_string(ctx.repo_root.join(template_hash_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let hash_json: serde_json::Value = serde_json::from_str(&hash_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let expected_path = hash_json
+                .get("path")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if expected_path != template_contract_rel.display().to_string() {
+                violations.push(violation(
+                    "OPS_DOMAIN_DOCUMENT_TEMPLATE_HASH_PATH_INVALID",
+                    "domain template hash artifact path must target ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
+                        .to_string(),
+                    "set hash artifact `path` to the canonical template contract path",
+                    Some(template_hash_rel),
+                ));
+            }
+            let expected_sha = hash_json
+                .get("sha256")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if expected_sha.is_empty() {
+                violations.push(violation(
+                    "OPS_DOMAIN_DOCUMENT_TEMPLATE_HASH_EMPTY",
+                    "domain template hash artifact must include non-empty sha256".to_string(),
+                    "populate sha256 with the template contract digest",
+                    Some(template_hash_rel),
+                ));
+            } else {
+                let actual_sha = sha256_hex(&ctx.repo_root.join(template_contract_rel))?;
+                if expected_sha != actual_sha {
+                    violations.push(violation(
+                        "OPS_DOMAIN_DOCUMENT_TEMPLATE_HASH_DRIFT",
+                        format!(
+                            "domain template contract hash drift: expected {expected_sha} actual {actual_sha}"
+                        ),
+                        "refresh ops/_generated.example/domain-document-template-contract.hash.json after template changes",
+                        Some(template_hash_rel),
+                    ));
+                }
             }
         }
     }
