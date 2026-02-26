@@ -5,6 +5,7 @@ Usage: bijux-dev-atlas [OPTIONS] [COMMAND]
 Commands:
   ops       
   docs      
+  demo      
   configs   
   policies  
   check     

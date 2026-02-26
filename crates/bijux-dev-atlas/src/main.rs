@@ -34,9 +34,9 @@ use std::process::Command as ProcessCommand;
 #[cfg(test)]
 pub(crate) use crate::cli::Cli;
 use crate::cli::{
-    ConfigsCommand, ConfigsCommonArgs, DocsCommand, DocsCommonArgs, DomainArg, FormatArg,
-    GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand, OpsRenderTarget,
-    OpsStatusTarget, WorkflowsCommand,
+    ConfigsCommand, ConfigsCommonArgs, DemoCommand, DocsCommand, DocsCommonArgs, DomainArg,
+    FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand,
+    OpsRenderTarget, OpsStatusTarget, WorkflowsCommand,
 };
 use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
@@ -135,6 +135,43 @@ fn parse_selectors(
         include_internal,
         include_slow,
     })
+}
+
+pub(crate) fn run_demo_command(quiet: bool, command: DemoCommand) -> i32 {
+    let result = (|| -> Result<(String, i32), String> {
+        match command {
+            DemoCommand::Quickstart(args) => {
+                let repo_root = resolve_repo_root(args.repo_root.clone())?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "name": "demo_quickstart",
+                    "text": "quickstart execution plan",
+                    "duration_budget_minutes": 3,
+                    "steps_budget": 4,
+                    "steps": [
+                        {"order": 1, "name": "stack_up", "command": "bijux dev atlas ops stack up --profile kind --allow-subprocess --allow-write --format json"},
+                        {"order": 2, "name": "ingest_fixture", "command": "bijux atlas ingest run --input ops/datasets/fixtures/tiny --format json"},
+                        {"order": 3, "name": "query_smoke", "command": "curl -fsS http://127.0.0.1:8080/api/v1/genes?limit=1"},
+                        {"order": 4, "name": "metrics_smoke", "command": "curl -fsS http://127.0.0.1:8080/metrics"}
+                    ],
+                    "repo_root": repo_root.display().to_string()
+                });
+                Ok((emit_payload(args.format, args.out, &payload)?, 0))
+            }
+        }
+    })();
+    match result {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                let _ = writeln!(io::stdout(), "{rendered}");
+            }
+            code
+        }
+        Err(err) => {
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas demo failed: {err}");
+            1
+        }
+    }
 }
 
 fn normalize_suite_name(raw: &str) -> Result<&str, String> {

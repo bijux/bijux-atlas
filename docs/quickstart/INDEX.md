@@ -4,7 +4,9 @@
 
 ## What
 
-Index page for `quickstart` documentation.
+Canonical onboarding root is `docs/START_HERE.md`.
+
+Use this directory only for supporting quickstart references.
 
 ## Why
 

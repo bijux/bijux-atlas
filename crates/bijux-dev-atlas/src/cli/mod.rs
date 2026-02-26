@@ -74,6 +74,10 @@ pub enum Command {
         #[command(subcommand)]
         command: DocsCommand,
     },
+    Demo {
+        #[command(subcommand)]
+        command: DemoCommand,
+    },
     Configs {
         #[command(subcommand)]
         command: ConfigsCommand,
