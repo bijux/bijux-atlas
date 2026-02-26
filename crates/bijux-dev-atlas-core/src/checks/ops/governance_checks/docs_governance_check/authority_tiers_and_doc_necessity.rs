@@ -80,6 +80,14 @@ fn validate_ops_authority_tiers_and_doc_necessity(
             ["- Tier: `generated`", "ops/_generated.example/what-breaks-if-removed-report.json", "## Removal Impact Targets"]
                 .as_slice(),
         ),
+        (
+            Path::new("docs/operations/DOCS_CONVERGENCE_POLICY.md"),
+            ["- Tier: `tier2`", "## Convergence Rule", "## Deletion Rule", "checks_ops_docs_governance"].as_slice(),
+        ),
+        (
+            Path::new("docs/operations/DOCS_STRUCTURE_FREEZE.md"),
+            ["- Tier: `tier2`", "## Version", "v0.1", "## Change Control"].as_slice(),
+        ),
     ] {
         let text = fs::read_to_string(ctx.repo_root.join(rel))
             .map_err(|err| CheckError::Failed(format!("read {}: {err}", rel.display())))?;
@@ -134,6 +142,33 @@ fn validate_ops_authority_tiers_and_doc_necessity(
             ));
         }
         allowed_external_urls.insert(url.to_string());
+    }
+
+    let docs_delete_sim_rel = Path::new("docs/_generated/docs-what-breaks-if-removed-report.json");
+    let docs_delete_sim_text = fs::read_to_string(ctx.repo_root.join(docs_delete_sim_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", docs_delete_sim_rel.display())))?;
+    let docs_delete_sim_json: serde_json::Value = serde_json::from_str(&docs_delete_sim_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", docs_delete_sim_rel.display())))?;
+    if docs_delete_sim_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+        violations.push(violation(
+            "OPS_DOCS_DELETION_IMPACT_REPORT_BLOCKING",
+            format!("docs deletion-impact report `{}` status is not `pass`", docs_delete_sim_rel.display()),
+            "refresh docs-what-breaks-if-removed-report.json and resolve blocking impacts",
+            Some(docs_delete_sim_rel),
+        ));
+    }
+    if docs_delete_sim_json
+        .get("targets")
+        .and_then(|v| v.as_array())
+        .map(|a| a.is_empty())
+        .unwrap_or(true)
+    {
+        violations.push(violation(
+            "OPS_DOCS_DELETION_IMPACT_REPORT_EMPTY",
+            format!("docs deletion-impact report `{}` must include targets", docs_delete_sim_rel.display()),
+            "add docs deletion-impact targets and consumers to the curated report",
+            Some(docs_delete_sim_rel),
+        ));
     }
 
     let authority_tiers_rel = Path::new("ops/AUTHORITY_TIERS.md");
@@ -512,6 +547,34 @@ fn validate_ops_authority_tiers_and_doc_necessity(
                     Some(rel),
                 ));
             }
+
+            let source_line = text
+                .lines()
+                .find(|line| line.trim().starts_with("- Source-of-truth:"))
+                .unwrap_or_default();
+            if !(source_line.contains("ops/") || source_line.contains("docs/operations/reference/")) {
+                violations.push(violation(
+                    "OPS_TIER2_DOC_SOURCE_LINK_NOT_EXPLICIT",
+                    format!(
+                        "tier2 docs page `{}` must point Source-of-truth to ops/* or docs/operations/reference/* authoritative sources",
+                        rel.display()
+                    ),
+                    "update Source-of-truth header to reference normative ops sources or generated reference pages",
+                    Some(rel),
+                ));
+            }
+        }
+
+        let file_name = rel.file_name().and_then(|n| n.to_str()).unwrap_or_default().to_ascii_lowercase();
+        if (file_name.contains("future") || file_name.contains("todo") || file_name.contains("draft"))
+            && rel.components().count() >= 3
+        {
+            violations.push(violation(
+                "OPS_DOCS_PLACEHOLDER_PAGE_NAME_BANNED",
+                format!("docs operations page uses placeholder naming: `{}`", rel.display()),
+                "rename placeholder pages to durable intent-based names or delete them",
+                Some(rel),
+            ));
         }
 
         for token in text.split_whitespace() {
