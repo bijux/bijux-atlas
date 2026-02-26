@@ -4364,6 +4364,8 @@ pub(super) fn check_ops_fixture_governance(
     let suites_rel = Path::new("ops/e2e/suites/suites.json");
     let scenarios_rel = Path::new("ops/e2e/scenarios/scenarios.json");
     let expectations_rel = Path::new("ops/e2e/expectations/expectations.json");
+    let scenario_slo_map_rel = Path::new("ops/inventory/scenario-slo-map.json");
+    let mut canonical_e2e_scenario_ids = BTreeSet::new();
     if ctx.adapters.fs.exists(ctx.repo_root, suites_rel) {
         let suites_text = fs::read_to_string(ctx.repo_root.join(suites_rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -4399,6 +4401,7 @@ pub(super) fn check_ops_fixture_governance(
         } else {
             BTreeSet::new()
         };
+        canonical_e2e_scenario_ids.extend(scenario_ids.iter().cloned());
         if ctx.adapters.fs.exists(ctx.repo_root, expectations_rel) {
             let expectations_text = fs::read_to_string(ctx.repo_root.join(expectations_rel))
                 .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -4499,6 +4502,7 @@ pub(super) fn check_ops_fixture_governance(
     }
 
     let load_suites_rel = Path::new("ops/load/suites/suites.json");
+    let mut load_suite_names = BTreeSet::new();
     if ctx.adapters.fs.exists(ctx.repo_root, load_suites_rel) {
         let load_suites_text = fs::read_to_string(ctx.repo_root.join(load_suites_rel))
             .map_err(|err| CheckError::Failed(err.to_string()))?;
@@ -4514,6 +4518,7 @@ pub(super) fn check_ops_fixture_governance(
                 .get("name")
                 .and_then(|v| v.as_str())
                 .unwrap_or("unknown");
+            load_suite_names.insert(suite_name.to_string());
             if suite.get("kind").and_then(|v| v.as_str()) == Some("k6") {
                 if let Some(scenario_name) = suite.get("scenario").and_then(|v| v.as_str()) {
                     let scenario_rel = Path::new("ops/load/scenarios").join(scenario_name);
@@ -4544,6 +4549,147 @@ pub(super) fn check_ops_fixture_governance(
                 }
             }
         }
+    }
+
+    let slo_definitions_rel = Path::new("ops/observe/slo-definitions.json");
+    let mut slo_ids = BTreeSet::new();
+    if ctx.adapters.fs.exists(ctx.repo_root, slo_definitions_rel) {
+        let slo_text = fs::read_to_string(ctx.repo_root.join(slo_definitions_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let slo_json: serde_json::Value =
+            serde_json::from_str(&slo_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        slo_ids = slo_json
+            .get("slos")
+            .and_then(|v| v.as_array())
+            .map(|slos| {
+                slos.iter()
+                    .filter_map(|entry| entry.get("id").and_then(|v| v.as_str()))
+                    .map(ToString::to_string)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+    }
+
+    let drills_rel = Path::new("ops/inventory/drills.json");
+    let mut drill_ids = BTreeSet::new();
+    if ctx.adapters.fs.exists(ctx.repo_root, drills_rel) {
+        let drills_text = fs::read_to_string(ctx.repo_root.join(drills_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let drills_json: serde_json::Value = serde_json::from_str(&drills_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        drill_ids = drills_json
+            .get("drills")
+            .and_then(|v| v.as_array())
+            .map(|entries| {
+                entries
+                    .iter()
+                    .filter_map(|v| v.as_str())
+                    .map(ToString::to_string)
+                    .collect::<BTreeSet<_>>()
+            })
+            .unwrap_or_default();
+    }
+
+    if ctx.adapters.fs.exists(ctx.repo_root, scenario_slo_map_rel) {
+        let map_text = fs::read_to_string(ctx.repo_root.join(scenario_slo_map_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let map_json: serde_json::Value =
+            serde_json::from_str(&map_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+        let map_entries = map_json
+            .get("mappings")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let mut mapped_scenarios = BTreeSet::new();
+        for entry in &map_entries {
+            let scenario_id = entry
+                .get("scenario_id")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default()
+                .to_string();
+            if scenario_id.is_empty() {
+                continue;
+            }
+            mapped_scenarios.insert(scenario_id.clone());
+
+            for slo_id in entry
+                .get("slo_ids")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(|v| v.as_str())
+            {
+                if !slo_ids.contains(slo_id) {
+                    violations.push(violation(
+                        "OPS_SCENARIO_SLO_MAP_UNKNOWN_SLO_ID",
+                        format!(
+                            "scenario-slo-map entry `{scenario_id}` references unknown slo id `{slo_id}`"
+                        ),
+                        "align scenario-slo-map slo_ids with ops/observe/slo-definitions.json",
+                        Some(scenario_slo_map_rel),
+                    ));
+                }
+            }
+
+            for drill_id in entry
+                .get("drill_ids")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(|v| v.as_str())
+            {
+                if !drill_ids.contains(drill_id) {
+                    violations.push(violation(
+                        "OPS_SCENARIO_SLO_MAP_UNKNOWN_DRILL_ID",
+                        format!(
+                            "scenario-slo-map entry `{scenario_id}` references unknown drill id `{drill_id}`"
+                        ),
+                        "align scenario-slo-map drill_ids with ops/inventory/drills.json",
+                        Some(scenario_slo_map_rel),
+                    ));
+                }
+            }
+
+            for load_suite in entry
+                .get("load_suites")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(|v| v.as_str())
+            {
+                if !load_suite_names.contains(load_suite) {
+                    violations.push(violation(
+                        "OPS_SCENARIO_SLO_MAP_UNKNOWN_LOAD_SUITE",
+                        format!(
+                            "scenario-slo-map entry `{scenario_id}` references unknown load suite `{load_suite}`"
+                        ),
+                        "align scenario-slo-map load_suites with ops/load/suites/suites.json",
+                        Some(scenario_slo_map_rel),
+                    ));
+                }
+            }
+        }
+
+        for scenario_id in &canonical_e2e_scenario_ids {
+            if !mapped_scenarios.contains(scenario_id) {
+                violations.push(violation(
+                    "OPS_SCENARIO_SLO_MAP_MISSING_SCENARIO",
+                    format!("e2e scenario `{scenario_id}` missing from scenario-slo-map"),
+                    "add mapping entries for every e2e scenario in ops/inventory/scenario-slo-map.json",
+                    Some(scenario_slo_map_rel),
+                ));
+            }
+        }
+    } else {
+        violations.push(violation(
+            "OPS_SCENARIO_SLO_MAP_MISSING",
+            format!(
+                "missing scenario to slo mapping contract `{}`",
+                scenario_slo_map_rel.display()
+            ),
+            "restore ops/inventory/scenario-slo-map.json",
+            Some(scenario_slo_map_rel),
+        ));
     }
 
     let realdata_readme_rel = Path::new("ops/e2e/realdata/README.md");

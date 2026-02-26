@@ -17,6 +17,7 @@
 | `ops/inventory/pin-freeze.json` | Authored pin lifecycle policy |
 | `ops/inventory/toolchain.json` | Authored toolchain registry |
 | `ops/inventory/drill-contract-links.json` | Authored drill to contract linkage map |
+| `ops/inventory/scenario-slo-map.json` | Authored E2E/load to SLO/drill mapping |
 | `ops/inventory/gates.json` | Authored gate catalog |
 | `ops/inventory/surfaces.json` | Authored command surface catalog |
 | `ops/inventory/layers.json` | Authored layering model |
@@ -34,6 +35,7 @@
 | `ops/inventory/pins.yaml` | `ops/schema/inventory/pins.schema.json` |
 | `ops/inventory/pin-freeze.json` | `ops/schema/inventory/pin-freeze.schema.json` |
 | `ops/inventory/drill-contract-links.json` | `ops/schema/inventory/drill-contract-links.schema.json` |
+| `ops/inventory/scenario-slo-map.json` | `ops/schema/inventory/scenario-slo-map.schema.json` |
 | `ops/inventory/toolchain.json` | `ops/schema/inventory/toolchain.schema.json` |
 | `ops/inventory/gates.json` | `ops/schema/inventory/gates.schema.json` |
 | `ops/inventory/surfaces.json` | `ops/schema/inventory/surfaces.schema.json` |
@@ -58,6 +60,7 @@
 - Pin keys and values must follow canonical format and be deterministic under `pins.schema.json`.
 - Registry outputs must be deterministic and stable for identical authored inventory inputs.
 - Every drill id in `ops/inventory/drills.json` must map to at least one domain contract in `ops/inventory/drill-contract-links.json`.
+- Every E2E scenario id must map to at least one SLO id through `ops/inventory/scenario-slo-map.json`.
 
 ## Ownership Semantics
 

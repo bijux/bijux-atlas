@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "mappings": [
+    {
+      "scenario_id": "smoke",
+      "slo_ids": ["api.availability", "api.p95_latency"],
+      "drill_ids": ["ops.drill.store_outage"],
+      "load_suites": ["mixed", "cheap-only-survival"]
+    },
+    {
+      "scenario_id": "k8s-suite",
+      "slo_ids": ["api.availability"],
+      "drill_ids": ["ops.drill.pod_churn", "ops.drill.upgrade"],
+      "load_suites": []
+    },
+    {
+      "scenario_id": "realdata",
+      "slo_ids": ["api.availability"],
+      "drill_ids": ["ops.drill.rollback", "ops.drill.store_outage"],
+      "load_suites": ["multi-release", "diff-heavy"]
+    },
+    {
+      "scenario_id": "perf-e2e",
+      "slo_ids": ["api.availability", "api.p95_latency"],
+      "drill_ids": ["ops.drill.overload", "ops.drill.memory_growth"],
+      "load_suites": [
+        "warm-steady-state-p99",
+        "spike-overload-proof",
+        "soak-30m"
+      ]
+    }
+  ]
+}

@@ -47,6 +47,7 @@
     "ops/schema/inventory/pins.schema.json",
     "ops/schema/inventory/placeholder-dirs.schema.json",
     "ops/schema/inventory/registry.schema.json",
+    "ops/schema/inventory/scenario-slo-map.schema.json",
     "ops/schema/inventory/surfaces.schema.json",
     "ops/schema/inventory/toolchain.schema.json",
     "ops/schema/inventory/tools.schema.json",
