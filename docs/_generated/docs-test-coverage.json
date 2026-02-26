@@ -1,8 +1,8 @@
 {
-  "documents_total": 875,
-  "owner_metadata_count": 874,
-  "owner_metadata_ratio": 0.9988571428571429,
+  "documents_total": 851,
+  "owner_metadata_count": 850,
+  "owner_metadata_ratio": 0.9988249118683902,
   "schema_version": 1,
-  "stability_metadata_count": 875,
+  "stability_metadata_count": 851,
   "stability_metadata_ratio": 1.0
 }

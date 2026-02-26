@@ -4244,14 +4244,6 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
-        "docs/operations/full-stack-locally.md"
-      ],
-      "path": "docs/operations/full-stack-locally.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
         "docs/operations/health-endpoint-semantics.md"
       ],
       "path": "docs/operations/health-endpoint-semantics.md"
@@ -4770,6 +4762,87 @@
         "docs/operations/ops-layout.md"
       ],
       "path": "docs/operations/ops-layout.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/INDEX.md"
+      ],
+      "path": "docs/operations/ops-system/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/contracts.md"
+      ],
+      "path": "docs/operations/ops-system/contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/evidence.md"
+      ],
+      "path": "docs/operations/ops-system/evidence.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/gates.md"
+      ],
+      "path": "docs/operations/ops-system/gates.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/generators.md"
+      ],
+      "path": "docs/operations/ops-system/generators.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/ops-design-defense.md"
+      ],
+      "path": "docs/operations/ops-system/ops-design-defense.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/ops-docs-consolidation-checklist.md"
+      ],
+      "path": "docs/operations/ops-system/ops-docs-consolidation-checklist.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/registry.md"
+      ],
+      "path": "docs/operations/ops-system/registry.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/ops-system",
+        "docs/operations/ops-system/schema.md"
+      ],
+      "path": "docs/operations/ops-system/schema.md"
     },
     {
       "breadcrumbs": [
@@ -6291,6 +6364,13 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/DIRECTORY_BUDGET_POLICY.md"
+      ],
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/DRIFT.md"
       ],
       "path": "ops/DRIFT.md"
@@ -6301,6 +6381,13 @@
         "ops/ERRORS.md"
       ],
       "path": "ops/ERRORS.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/GENERATED_LIFECYCLE.md"
+      ],
+      "path": "ops/GENERATED_LIFECYCLE.md"
     },
     {
       "breadcrumbs": [
@@ -6381,6 +6468,14 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/_generated.example",
+        "ops/_generated.example/ops-ledger.md"
+      ],
+      "path": "ops/_generated.example/ops-ledger.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/_generated",
         "ops/_generated/OWNER.md"
       ],
@@ -6409,6 +6504,14 @@
         "ops/datasets/CONTRACT.md"
       ],
       "path": "ops/datasets/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/datasets",
+        "ops/datasets/FIXTURE_LIFECYCLE.md"
+      ],
+      "path": "ops/datasets/FIXTURE_LIFECYCLE.md"
     },
     {
       "breadcrumbs": [
@@ -6481,6 +6584,15 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/datasets",
+        "ops/datasets/generated",
+        "ops/datasets/generated/README.md"
+      ],
+      "path": "ops/datasets/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/e2e",
         "ops/e2e/CONTRACT.md"
       ],
@@ -6531,6 +6643,15 @@
       "breadcrumbs": [
         "ops",
         "ops/e2e",
+        "ops/e2e/generated",
+        "ops/e2e/generated/README.md"
+      ],
+      "path": "ops/e2e/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/e2e",
         "ops/e2e/k6",
         "ops/e2e/k6/README.md"
       ],
@@ -6558,6 +6679,14 @@
       "breadcrumbs": [
         "ops",
         "ops/env",
+        "ops/env/CONTRACT.md"
+      ],
+      "path": "ops/env/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/env",
         "ops/env/OWNER.md"
       ],
       "path": "ops/env/OWNER.md"
@@ -6577,6 +6706,14 @@
         "ops/env/REQUIRED_FILES.md"
       ],
       "path": "ops/env/REQUIRED_FILES.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/inventory",
+        "ops/inventory/CONTRACT.md"
+      ],
+      "path": "ops/inventory/CONTRACT.md"
     },
     {
       "breadcrumbs": [
@@ -6828,6 +6965,15 @@
       "breadcrumbs": [
         "ops",
         "ops/observe",
+        "ops/observe/generated",
+        "ops/observe/generated/README.md"
+      ],
+      "path": "ops/observe/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/observe",
         "ops/observe/pack",
         "ops/observe/pack/README.md"
       ],
@@ -6894,10 +7040,27 @@
     {
       "breadcrumbs": [
         "ops",
+        "ops/report",
+        "ops/report/generated",
+        "ops/report/generated/README.md"
+      ],
+      "path": "ops/report/generated/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
         "ops/schema",
         "ops/schema/BUDGET_POLICY.md"
       ],
       "path": "ops/schema/BUDGET_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/CONTRACT.md"
+      ],
+      "path": "ops/schema/CONTRACT.md"
     },
     {
       "breadcrumbs": [
@@ -6964,6 +7127,15 @@
         "ops/schema/configs/README.md"
       ],
       "path": "ops/schema/configs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "ops",
+        "ops/schema",
+        "ops/schema/generated",
+        "ops/schema/generated/README.md"
+      ],
+      "path": "ops/schema/generated/README.md"
     },
     {
       "breadcrumbs": [

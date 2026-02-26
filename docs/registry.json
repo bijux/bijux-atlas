@@ -10263,26 +10263,6 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "full-stack-locally",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/full-stack-locally.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "full-stack-locally",
-        "operations"
-      ],
-      "topic": "full-stack-locally"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
         "health-endpoint-semantics",
         "operations"
       ],
@@ -11557,6 +11537,204 @@
         "ops-layout"
       ],
       "topic": "ops-layout"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "operations",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "operations",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/contracts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "evidence",
+        "operations",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/evidence.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "evidence",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "evidence"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "gates",
+        "operations",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/gates.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "gates",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "gates"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "generators",
+        "operations",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/generators.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "generators",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "generators"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-design-defense",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/ops-design-defense.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-design-defense",
+        "ops-system"
+      ],
+      "topic": "ops-design-defense"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-docs-consolidation-checklist",
+        "ops-system"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/ops-docs-consolidation-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-docs-consolidation-checklist",
+        "ops-system"
+      ],
+      "topic": "ops-docs-consolidation-checklist"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-system",
+        "registry"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/registry.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-system",
+        "registry"
+      ],
+      "topic": "registry"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-system",
+        "schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/ops-system/schema.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-system",
+        "schema"
+      ],
+      "topic": "schema"
     },
     {
       "crate": null,
@@ -15321,6 +15499,26 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "topic": "DIRECTORY_BUDGET_POLICY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "drift",
         "ops"
       ],
@@ -15355,6 +15553,26 @@
         "ops"
       ],
       "topic": "ERRORS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "generated-lifecycle",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/GENERATED_LIFECYCLE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "generated-lifecycle",
+        "ops"
+      ],
+      "topic": "GENERATED_LIFECYCLE"
     },
     {
       "crate": null,
@@ -15573,6 +15791,28 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "-generated.example",
+        "ops",
+        "ops-ledger"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/_generated.example/ops-ledger.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "ops-ledger"
+      ],
+      "topic": "ops-ledger"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "-generated",
         "ops",
         "owner"
@@ -15655,6 +15895,28 @@
         "ops"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "datasets",
+        "fixture-lifecycle",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/datasets/FIXTURE_LIFECYCLE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "fixture-lifecycle",
+        "ops"
+      ],
+      "topic": "FIXTURE_LIFECYCLE"
     },
     {
       "crate": null,
@@ -15845,6 +16107,30 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/datasets/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contract",
         "e2e",
         "ops"
@@ -15980,6 +16266,30 @@
       "doc_version": "v1",
       "keywords": [
         "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/e2e/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
         "ops",
         "readme"
       ],
@@ -16049,6 +16359,28 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "contract",
+        "env",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/env/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract",
+        "env",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "env",
         "ops",
         "owner"
@@ -16109,6 +16441,28 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contract",
+        "inventory",
+        "ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/inventory/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract",
+        "inventory",
+        "ops"
+      ],
+      "topic": "CONTRACT"
     },
     {
       "crate": null,
@@ -16777,6 +17131,30 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "generated",
+        "observe",
+        "ops",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/observe/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "generated",
+        "observe",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "observe",
         "ops",
         "pack",
@@ -16939,7 +17317,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
+      "owner": "docs-governance",
       "path": "ops/report/docs/REFERENCE_INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -16949,6 +17327,30 @@
         "report"
       ],
       "topic": "REFERENCE_INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "generated",
+        "ops",
+        "readme",
+        "report"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/report/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "generated",
+        "ops",
+        "readme",
+        "report"
+      ],
+      "topic": "README"
     },
     {
       "crate": null,
@@ -16971,6 +17373,28 @@
         "schema"
       ],
       "topic": "BUDGET_POLICY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contract",
+        "ops",
+        "schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/schema/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract",
+        "ops",
+        "schema"
+      ],
+      "topic": "CONTRACT"
     },
     {
       "crate": null,
@@ -17146,6 +17570,30 @@
       "stability": "stable",
       "tags": [
         "configs",
+        "ops",
+        "readme",
+        "schema"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "generated",
+        "ops",
+        "readme",
+        "schema"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "ops/schema/generated/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "generated",
         "ops",
         "readme",
         "schema"

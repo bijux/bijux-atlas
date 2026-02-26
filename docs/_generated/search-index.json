@@ -6236,18 +6236,6 @@
     },
     {
       "keywords": [
-        "full-stack-locally",
-        "operations"
-      ],
-      "path": "docs/operations/full-stack-locally.md",
-      "tags": [
-        "full-stack-locally",
-        "operations"
-      ],
-      "topic": "full-stack-locally"
-    },
-    {
-      "keywords": [
         "health-endpoint-semantics",
         "operations"
       ],
@@ -7053,6 +7041,132 @@
         "ops-layout"
       ],
       "topic": "ops-layout"
+    },
+    {
+      "keywords": [
+        "index",
+        "operations",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/INDEX.md",
+      "tags": [
+        "index",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "operations",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/contracts.md",
+      "tags": [
+        "contracts",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
+        "evidence",
+        "operations",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/evidence.md",
+      "tags": [
+        "evidence",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "evidence"
+    },
+    {
+      "keywords": [
+        "gates",
+        "operations",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/gates.md",
+      "tags": [
+        "gates",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "gates"
+    },
+    {
+      "keywords": [
+        "generators",
+        "operations",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/generators.md",
+      "tags": [
+        "generators",
+        "operations",
+        "ops-system"
+      ],
+      "topic": "generators"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-design-defense",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/ops-design-defense.md",
+      "tags": [
+        "operations",
+        "ops-design-defense",
+        "ops-system"
+      ],
+      "topic": "ops-design-defense"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-docs-consolidation-checklist",
+        "ops-system"
+      ],
+      "path": "docs/operations/ops-system/ops-docs-consolidation-checklist.md",
+      "tags": [
+        "operations",
+        "ops-docs-consolidation-checklist",
+        "ops-system"
+      ],
+      "topic": "ops-docs-consolidation-checklist"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-system",
+        "registry"
+      ],
+      "path": "docs/operations/ops-system/registry.md",
+      "tags": [
+        "operations",
+        "ops-system",
+        "registry"
+      ],
+      "topic": "registry"
+    },
+    {
+      "keywords": [
+        "operations",
+        "ops-system",
+        "schema"
+      ],
+      "path": "docs/operations/ops-system/schema.md",
+      "tags": [
+        "operations",
+        "ops-system",
+        "schema"
+      ],
+      "topic": "schema"
     },
     {
       "keywords": [
@@ -9398,6 +9512,18 @@
     },
     {
       "keywords": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "path": "ops/DIRECTORY_BUDGET_POLICY.md",
+      "tags": [
+        "directory-budget-policy",
+        "ops"
+      ],
+      "topic": "DIRECTORY_BUDGET_POLICY"
+    },
+    {
+      "keywords": [
         "drift",
         "ops"
       ],
@@ -9419,6 +9545,18 @@
         "ops"
       ],
       "topic": "ERRORS"
+    },
+    {
+      "keywords": [
+        "generated-lifecycle",
+        "ops"
+      ],
+      "path": "ops/GENERATED_LIFECYCLE.md",
+      "tags": [
+        "generated-lifecycle",
+        "ops"
+      ],
+      "topic": "GENERATED_LIFECYCLE"
     },
     {
       "keywords": [
@@ -9554,6 +9692,20 @@
     },
     {
       "keywords": [
+        "-generated.example",
+        "ops",
+        "ops-ledger"
+      ],
+      "path": "ops/_generated.example/ops-ledger.md",
+      "tags": [
+        "-generated.example",
+        "ops",
+        "ops-ledger"
+      ],
+      "topic": "ops-ledger"
+    },
+    {
+      "keywords": [
         "-generated",
         "ops",
         "owner"
@@ -9607,6 +9759,20 @@
         "ops"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "datasets",
+        "fixture-lifecycle",
+        "ops"
+      ],
+      "path": "ops/datasets/FIXTURE_LIFECYCLE.md",
+      "tags": [
+        "datasets",
+        "fixture-lifecycle",
+        "ops"
+      ],
+      "topic": "FIXTURE_LIFECYCLE"
     },
     {
       "keywords": [
@@ -9730,6 +9896,22 @@
     },
     {
       "keywords": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/datasets/generated/README.md",
+      "tags": [
+        "datasets",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "contract",
         "e2e",
         "ops"
@@ -9817,6 +9999,22 @@
     {
       "keywords": [
         "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/e2e/generated/README.md",
+      "tags": [
+        "e2e",
+        "generated",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "e2e",
         "ops",
         "readme"
       ],
@@ -9862,6 +10060,20 @@
     },
     {
       "keywords": [
+        "contract",
+        "env",
+        "ops"
+      ],
+      "path": "ops/env/CONTRACT.md",
+      "tags": [
+        "contract",
+        "env",
+        "ops"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
         "env",
         "ops",
         "owner"
@@ -9901,6 +10113,20 @@
         "required-files"
       ],
       "topic": "REQUIRED_FILES"
+    },
+    {
+      "keywords": [
+        "contract",
+        "inventory",
+        "ops"
+      ],
+      "path": "ops/inventory/CONTRACT.md",
+      "tags": [
+        "contract",
+        "inventory",
+        "ops"
+      ],
+      "topic": "CONTRACT"
     },
     {
       "keywords": [
@@ -10334,6 +10560,22 @@
     },
     {
       "keywords": [
+        "generated",
+        "observe",
+        "ops",
+        "readme"
+      ],
+      "path": "ops/observe/generated/README.md",
+      "tags": [
+        "generated",
+        "observe",
+        "ops",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "observe",
         "ops",
         "pack",
@@ -10448,6 +10690,22 @@
     },
     {
       "keywords": [
+        "generated",
+        "ops",
+        "readme",
+        "report"
+      ],
+      "path": "ops/report/generated/README.md",
+      "tags": [
+        "generated",
+        "ops",
+        "readme",
+        "report"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
         "budget-policy",
         "ops",
         "schema"
@@ -10459,6 +10717,20 @@
         "schema"
       ],
       "topic": "BUDGET_POLICY"
+    },
+    {
+      "keywords": [
+        "contract",
+        "ops",
+        "schema"
+      ],
+      "path": "ops/schema/CONTRACT.md",
+      "tags": [
+        "contract",
+        "ops",
+        "schema"
+      ],
+      "topic": "CONTRACT"
     },
     {
       "keywords": [
@@ -10570,6 +10842,22 @@
       "path": "ops/schema/configs/README.md",
       "tags": [
         "configs",
+        "ops",
+        "readme",
+        "schema"
+      ],
+      "topic": "README"
+    },
+    {
+      "keywords": [
+        "generated",
+        "ops",
+        "readme",
+        "schema"
+      ],
+      "path": "ops/schema/generated/README.md",
+      "tags": [
+        "generated",
         "ops",
         "readme",
         "schema"

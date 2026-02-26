@@ -2518,11 +2518,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/operations/full-stack-locally.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/operations/health-endpoint-semantics.md"
     },
     {
@@ -2814,6 +2809,51 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/ops-layout.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/contracts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/evidence.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/gates.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/generators.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/ops-design-defense.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/ops-docs-consolidation-checklist.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/registry.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/ops-system/schema.md"
     },
     {
       "crate": null,
@@ -3703,12 +3743,22 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/DIRECTORY_BUDGET_POLICY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/DRIFT.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "ops/ERRORS.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/GENERATED_LIFECYCLE.md"
     },
     {
       "crate": null,
@@ -3763,6 +3813,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/_generated.example/ops-ledger.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/_generated/OWNER.md"
     },
     {
@@ -3779,6 +3834,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/datasets/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/datasets/FIXTURE_LIFECYCLE.md"
     },
     {
       "crate": null,
@@ -3823,6 +3883,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/datasets/generated/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/e2e/CONTRACT.md"
     },
     {
@@ -3853,6 +3918,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/e2e/generated/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/e2e/k6/README.md"
     },
     {
@@ -3868,6 +3938,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/env/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/env/OWNER.md"
     },
     {
@@ -3879,6 +3954,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/env/REQUIRED_FILES.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/inventory/CONTRACT.md"
     },
     {
       "crate": null,
@@ -4028,6 +4108,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/observe/generated/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/observe/pack/README.md"
     },
     {
@@ -4068,7 +4153,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "ops/report/generated/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "ops/schema/BUDGET_POLICY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/schema/CONTRACT.md"
     },
     {
       "crate": null,
@@ -4109,6 +4204,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "ops/schema/configs/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "ops/schema/generated/README.md"
     },
     {
       "crate": null,
