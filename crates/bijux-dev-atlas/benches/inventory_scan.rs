@@ -43,5 +43,5 @@ fn walk(root: &std::path::Path) -> usize {
     count
 }
 
-criterion_group!(benches, bench_inventory_scan);
-criterion_main!(benches);
+criterion_group!(inventory_scan, bench_inventory_scan);
+criterion_main!(inventory_scan);

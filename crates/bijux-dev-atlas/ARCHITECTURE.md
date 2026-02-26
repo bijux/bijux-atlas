@@ -28,6 +28,8 @@ Forbidden dependency examples:
 - `cli` parses and dispatches only; command execution lives in `commands`.
 - `core` owns check logic and report generation behavior.
 - `model` and `policies` remain leaf modules with stable data contracts.
+- Benchmarks and tests use the repository `artifacts/target` cache root (workspace `.cargo/config.toml`); bench code must not introduce custom `target/` writes.
+- Benchmark groups and output names remain unique per bench file to preserve isolated performance histories.
 
 ## References
 
