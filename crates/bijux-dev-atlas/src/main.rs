@@ -2,17 +2,22 @@
 
 #![forbid(unsafe_code)]
 
+#[path = "commands/build.rs"]
 mod build_commands;
 mod cli;
+#[path = "commands/configs.rs"]
 mod configs_commands;
+#[path = "commands/control_plane.rs"]
 mod control_plane_commands;
 #[path = "commands/dispatch.rs"]
 mod dispatch;
 mod docs_command_runtime;
+#[path = "commands/docs.rs"]
 mod docs_commands;
 #[cfg(test)]
 mod main_tests;
 mod ops_command_support;
+#[path = "commands/ops.rs"]
 mod ops_commands;
 mod ops_runtime_execution;
 mod ops_support;
