@@ -16,7 +16,9 @@ fn workspace_root() -> PathBuf {
 }
 
 fn allowlisted_paths() -> BTreeSet<&'static str> {
-    [BANLIST_PATH].into_iter().collect()
+    [BANLIST_PATH, "crates/bijux-dev-atlas/tests/legacy_dev_atlas_crate_names.rs"]
+        .into_iter()
+        .collect()
 }
 
 fn ignored_subtrees(root: &Path) -> BTreeSet<PathBuf> {
@@ -41,21 +43,8 @@ fn collect_files(root: &Path, ignored: &BTreeSet<PathBuf>, out: &mut Vec<PathBuf
     }
 }
 
-#[test]
-fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
+fn no_banlist_strings_appear_outside_allowlist(banlist_entries: &[&str]) {
     let root = workspace_root();
-    let banlist_text =
-        fs::read_to_string(root.join(BANLIST_PATH)).expect("merge banlist file must exist");
-    let banlist_entries = banlist_text
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty())
-        .collect::<Vec<_>>();
-    assert_eq!(
-        banlist_entries.len(),
-        4,
-        "merge banlist must list the four deleted split dev-atlas crate names"
-    );
     let allowlisted = allowlisted_paths();
     let ignored = ignored_subtrees(&root);
     let mut files = Vec::new();
@@ -81,15 +70,12 @@ fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
         if allowlisted.contains(rel.as_str()) {
             continue;
         }
-        if rel == "crates/bijux-dev-atlas/tests/legacy_dev_atlas_crate_names.rs" {
-            continue;
-        }
         let Ok(text) = fs::read_to_string(&file) else {
             continue;
         };
-        for needle in &banlist_entries {
+        for needle in banlist_entries {
             if text.contains(needle) {
-                violations.push(format!("{rel}: contains `{}`", needle));
+                violations.push(format!("{rel}: contains `{needle}`"));
             }
         }
     }
@@ -97,5 +83,67 @@ fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
     assert!(
         violations.is_empty(),
         "unexpected legacy dev-atlas crate references remain: {violations:?}"
+    );
+}
+
+#[test]
+fn no_unexpected_legacy_dev_atlas_crate_names_remain() {
+    let root = workspace_root();
+    let banlist_text =
+        fs::read_to_string(root.join(BANLIST_PATH)).expect("merge banlist file must exist");
+    let banlist_entries = banlist_text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        banlist_entries.len(),
+        4,
+        "merge banlist must list the four deleted split dev-atlas crate names"
+    );
+    no_banlist_strings_appear_outside_allowlist(&banlist_entries);
+}
+
+#[test]
+fn duplicate_migration_surface_roots_are_explicit_and_do_not_expand() {
+    let src_root = workspace_root().join("crates/bijux-dev-atlas/src");
+    let entries = fs::read_dir(&src_root)
+        .expect("src dir")
+        .flatten()
+        .map(|entry| entry.path())
+        .collect::<Vec<_>>();
+
+    let mut present = BTreeSet::new();
+    for path in entries {
+        let name = path
+            .file_name()
+            .and_then(|v| v.to_str())
+            .expect("utf8 path")
+            .to_string();
+        present.insert(name);
+    }
+
+    // This is a migration-overlap inventory, not a relaxed policy: any new overlap root must be
+    // explicitly reviewed here, and Batch B should drive this set to empty.
+    let expected_overlap_roots = BTreeSet::from([
+        "dispatch.rs".to_string(),
+        "docs_command_runtime".to_string(),
+        "docs_commands".to_string(),
+        "main_tests.rs".to_string(),
+        "ops_command_support_mod".to_string(),
+        "ops_commands".to_string(),
+        "ops_runtime_execution".to_string(),
+        "ops_runtime_execution.rs".to_string(),
+        "ops_support.rs".to_string(),
+    ]);
+
+    let overlap_roots = present
+        .into_iter()
+        .filter(|name| expected_overlap_roots.contains(name))
+        .collect::<BTreeSet<_>>();
+
+    assert_eq!(
+        overlap_roots, expected_overlap_roots,
+        "duplicate migration surface roots changed; update Batch B convergence plan intentionally"
     );
 }
