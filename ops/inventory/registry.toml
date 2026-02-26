@@ -358,7 +358,7 @@ visibility = "internal"
 [[checks]]
 id = "checks_docs_ops_operations_duplicate_titles"
 domain = "docs"
-title = "docs/ops and docs/operations must not share duplicate top-level titles"
+title = "retired docs subtree must not be reintroduced with duplicate top-level titles"
 docs = "docs/operations/INDEX.md"
 tags = ["docs", "internal"]
 suites = ["deep"]

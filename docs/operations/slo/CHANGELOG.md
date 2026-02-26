@@ -2,7 +2,7 @@
 
 ## 2026-02-20
 
-- Pre-release cleanup: legacy compatibility paths removed across docs/ops/config/runtime.
+- Pre-release cleanup: legacy compatibility paths removed across docs/config/runtime.
 - Runtime env contract enforcement added; unknown `ATLAS_*`/`BIJUX_*` vars now fail by default.
 
 ## 2026-02-18
