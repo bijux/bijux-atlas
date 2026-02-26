@@ -9,12 +9,12 @@
 
 | Tool | Required | Probe Args |
 | --- | --- | --- |
-| `curl` | `True` | `--version` |
-| `helm` | `True` | `version --short` |
-| `k6` | `False` | `version` |
-| `kind` | `True` | `--version` |
-| `kubeconform` | `False` | `-v` |
-| `kubectl` | `True` | `version --client --short` |
+| `curl` | `true` | `--version` |
+| `helm` | `true` | `version --short` |
+| `k6` | `false` | `version` |
+| `kind` | `true` | `--version` |
+| `kubeconform` | `false` | `-v` |
+| `kubectl` | `true` | `version --client --short` |
 
 ## Images
 

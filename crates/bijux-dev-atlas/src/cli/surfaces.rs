@@ -19,6 +19,10 @@ pub enum DocsCommand {
     Links(DocsCommonArgs),
     Inventory(DocsCommonArgs),
     Grep(DocsGrepArgs),
+    Reference {
+        #[command(subcommand)]
+        command: DocsReferenceCommand,
+    },
     Registry {
         #[command(subcommand)]
         command: DocsRegistryCommand,
@@ -29,6 +33,12 @@ pub enum DocsCommand {
 pub enum DocsRegistryCommand {
     Build(DocsCommonArgs),
     Validate(DocsCommonArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum DocsReferenceCommand {
+    Generate(DocsCommonArgs),
+    Check(DocsCommonArgs),
 }
 
 #[derive(Args, Debug, Clone)]

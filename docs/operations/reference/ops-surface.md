@@ -208,95 +208,95 @@ Generated ops surface reference derived from inventory surfaces.
 
 ## Actions
 
-- `{'id': 'ops.actions.list', 'domain': 'actions', 'command': ['bijux-dev-atlas', 'ops', 'actions', 'list'], 'argv': ['actions', 'list']}`
-- `{'id': 'ops.actions.run', 'domain': 'actions', 'command': ['bijux-dev-atlas', 'ops', 'actions', 'run'], 'argv': ['actions', 'run']}`
-- `{'id': 'ops.cache.prune', 'domain': 'cache', 'command': ['bijux-dev-atlas', 'ops', 'cache', 'prune'], 'argv': ['cache', 'prune']}`
-- `{'id': 'ops.cache.status', 'domain': 'cache', 'command': ['bijux-dev-atlas', 'ops', 'cache', 'status'], 'argv': ['cache', 'status']}`
-- `{'id': 'ops.datasets.fetch', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'fetch'], 'argv': ['datasets', 'fetch']}`
-- `{'id': 'ops.datasets.lint-ids', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'lint-ids'], 'argv': ['datasets', 'lint-ids']}`
-- `{'id': 'ops.datasets.lock', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'lock'], 'argv': ['datasets', 'lock']}`
-- `{'id': 'ops.datasets.pin', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'pin'], 'argv': ['datasets', 'pin']}`
-- `{'id': 'ops.datasets.qc.diff', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'qc', 'diff'], 'argv': ['datasets', 'qc', 'diff']}`
-- `{'id': 'ops.datasets.qc.summary', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'qc', 'summary'], 'argv': ['datasets', 'qc', 'summary']}`
-- `{'id': 'ops.datasets.validate', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'validate'], 'argv': ['datasets', 'validate']}`
-- `{'id': 'ops.datasets.verify', 'domain': 'datasets', 'command': ['bijux-dev-atlas', 'ops', 'datasets', 'verify'], 'argv': ['datasets', 'verify']}`
-- `{'id': 'ops.deploy.apply', 'domain': 'deploy', 'command': ['bijux-dev-atlas', 'ops', 'deploy', 'apply'], 'argv': ['deploy', 'apply']}`
-- `{'id': 'ops.deploy.plan', 'domain': 'deploy', 'command': ['bijux-dev-atlas', 'ops', 'deploy', 'plan'], 'argv': ['deploy', 'plan']}`
-- `{'id': 'ops.deploy.rollback', 'domain': 'deploy', 'command': ['bijux-dev-atlas', 'ops', 'deploy', 'rollback'], 'argv': ['deploy', 'rollback']}`
-- `{'id': 'ops.e2e.run', 'domain': 'e2e', 'command': ['bijux-dev-atlas', 'ops', 'e2e', 'run'], 'argv': ['e2e', 'run']}`
-- `{'id': 'ops.e2e.validate', 'domain': 'e2e', 'command': ['bijux-dev-atlas', 'ops', 'e2e', 'validate'], 'argv': ['e2e', 'validate']}`
-- `{'id': 'ops.e2e.validate-results', 'domain': 'e2e', 'command': ['bijux-dev-atlas', 'ops', 'e2e', 'validate-results'], 'argv': ['e2e', 'validate-results']}`
-- `{'id': 'ops.env.print', 'domain': 'env', 'command': ['bijux-dev-atlas', 'ops', 'env', 'print'], 'argv': ['env', 'print']}`
-- `{'id': 'ops.env.validate', 'domain': 'env', 'command': ['bijux-dev-atlas', 'ops', 'env', 'validate'], 'argv': ['env', 'validate']}`
-- `{'id': 'ops.gen.check', 'domain': 'gen', 'command': ['bijux-dev-atlas', 'ops', 'gen', 'check'], 'argv': ['gen', 'check']}`
-- `{'id': 'ops.gen.run', 'domain': 'gen', 'command': ['bijux-dev-atlas', 'ops', 'gen', 'run'], 'argv': ['gen', 'run']}`
-- `{'id': 'ops.k8s.apply-config', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'apply-config'], 'argv': ['k8s', 'apply-config']}`
-- `{'id': 'ops.k8s.check', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'check'], 'argv': ['k8s', 'check']}`
-- `{'id': 'ops.k8s.contracts', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'contracts'], 'argv': ['k8s', 'contracts']}`
-- `{'id': 'ops.k8s.diff', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'diff'], 'argv': ['k8s', 'diff']}`
-- `{'id': 'ops.k8s.render', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'render'], 'argv': ['k8s', 'render']}`
-- `{'id': 'ops.k8s.validate', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'validate'], 'argv': ['k8s', 'validate']}`
-- `{'id': 'ops.k8s.validate-configmap-keys', 'domain': 'k8s', 'command': ['bijux-dev-atlas', 'ops', 'k8s', 'validate-configmap-keys'], 'argv': ['k8s', 'validate-configmap-keys']}`
-- `{'id': 'ops.kind.down', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'down'], 'argv': ['kind', 'down']}`
-- `{'id': 'ops.kind.fault', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'fault'], 'argv': ['kind', 'fault']}`
-- `{'id': 'ops.kind.reset', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'reset'], 'argv': ['kind', 'reset']}`
-- `{'id': 'ops.kind.up', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'up'], 'argv': ['kind', 'up']}`
-- `{'id': 'ops.kind.validate', 'domain': 'kind', 'command': ['bijux-dev-atlas', 'ops', 'kind', 'validate'], 'argv': ['kind', 'validate']}`
-- `{'id': 'ops.load.check', 'domain': 'load', 'command': ['bijux-dev-atlas', 'ops', 'load', 'check'], 'argv': ['load', 'check']}`
-- `{'id': 'ops.load.compare', 'domain': 'load', 'command': ['bijux-dev-atlas', 'ops', 'load', 'compare'], 'argv': ['load', 'compare']}`
-- `{'id': 'ops.load.run', 'domain': 'load', 'command': ['bijux-dev-atlas', 'ops', 'load', 'run'], 'argv': ['load', 'run']}`
-- `{'id': 'ops.observe.check', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'check'], 'argv': ['observe', 'check']}`
-- `{'id': 'ops.observe.drill', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'drill'], 'argv': ['observe', 'drill']}`
-- `{'id': 'ops.observe.lint', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'lint'], 'argv': ['observe', 'lint']}`
-- `{'id': 'ops.observe.report', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'report'], 'argv': ['observe', 'report']}`
-- `{'id': 'ops.observe.up', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'up'], 'argv': ['observe', 'up']}`
-- `{'id': 'ops.observe.validate', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'validate'], 'argv': ['observe', 'validate']}`
-- `{'id': 'ops.observe.verify', 'domain': 'observe', 'command': ['bijux-dev-atlas', 'ops', 'observe', 'verify'], 'argv': ['observe', 'verify']}`
-- `{'id': 'ops.pins.check', 'domain': 'pins', 'command': ['bijux-dev-atlas', 'ops', 'pins', 'check'], 'argv': ['pins', 'check']}`
-- `{'id': 'ops.pins.update', 'domain': 'pins', 'command': ['bijux-dev-atlas', 'ops', 'pins', 'update'], 'argv': ['pins', 'update']}`
-- `{'id': 'ops.root.check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'check'], 'argv': ['check']}`
-- `{'id': 'ops.root.clean', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'clean'], 'argv': ['clean']}`
-- `{'id': 'ops.root.clean-generated', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'clean-generated'], 'argv': ['clean-generated']}`
-- `{'id': 'ops.root.contracts-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'contracts-check'], 'argv': ['contracts-check']}`
-- `{'id': 'ops.root.contracts-index', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'contracts-index'], 'argv': ['contracts-index']}`
-- `{'id': 'ops.root.directory-budgets-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'directory-budgets-check'], 'argv': ['directory-budgets-check']}`
-- `{'id': 'ops.root.doctor', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'doctor'], 'argv': ['doctor']}`
-- `{'id': 'ops.root.down', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'down'], 'argv': ['down']}`
-- `{'id': 'ops.root.explain', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'explain'], 'argv': ['explain']}`
-- `{'id': 'ops.root.help', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'help'], 'argv': ['help']}`
-- `{'id': 'ops.root.k8s-checks-layout', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-checks-layout'], 'argv': ['k8s-checks-layout']}`
-- `{'id': 'ops.root.k8s-flakes-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-flakes-check'], 'argv': ['k8s-flakes-check']}`
-- `{'id': 'ops.root.k8s-surface-generate', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-surface-generate'], 'argv': ['k8s-surface-generate']}`
-- `{'id': 'ops.root.k8s-test-contract', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-test-contract'], 'argv': ['k8s-test-contract']}`
-- `{'id': 'ops.root.k8s-test-lib-contract', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'k8s-test-lib-contract'], 'argv': ['k8s-test-lib-contract']}`
-- `{'id': 'ops.root.layer-drift-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'layer-drift-check'], 'argv': ['layer-drift-check']}`
-- `{'id': 'ops.root.lint', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'lint'], 'argv': ['lint']}`
-- `{'id': 'ops.root.list', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'list'], 'argv': ['list']}`
-- `{'id': 'ops.root.naming-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'naming-check'], 'argv': ['naming-check']}`
-- `{'id': 'ops.root.no-direct-script-usage-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'no-direct-script-usage-check'], 'argv': ['no-direct-script-usage-check']}`
-- `{'id': 'ops.root.policy-audit', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'policy-audit'], 'argv': ['policy-audit']}`
-- `{'id': 'ops.root.prereqs', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'prereqs'], 'argv': ['prereqs']}`
-- `{'id': 'ops.root.restart', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'restart'], 'argv': ['restart']}`
-- `{'id': 'ops.root.root-lanes', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'root-lanes'], 'argv': ['root-lanes']}`
-- `{'id': 'ops.root.root-local', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'root-local'], 'argv': ['root-local']}`
-- `{'id': 'ops.root.run', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'run'], 'argv': ['run']}`
-- `{'id': 'ops.root.run-script', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'run-script'], 'argv': ['run-script']}`
-- `{'id': 'ops.root.schema-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'schema-check'], 'argv': ['schema-check']}`
-- `{'id': 'ops.root.smoke', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'smoke'], 'argv': ['smoke']}`
-- `{'id': 'ops.root.suites-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'suites-check'], 'argv': ['suites-check']}`
-- `{'id': 'ops.root.surface', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'surface'], 'argv': ['surface']}`
-- `{'id': 'ops.root.tool-versions-check', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'tool-versions-check'], 'argv': ['tool-versions-check']}`
-- `{'id': 'ops.root.up', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'up'], 'argv': ['up']}`
-- `{'id': 'ops.root.warm', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'warm'], 'argv': ['warm']}`
-- `{'id': 'ops.root.warm-dx', 'domain': 'root', 'command': ['bijux-dev-atlas', 'ops', 'warm-dx'], 'argv': ['warm-dx']}`
-- `{'id': 'ops.stack.check', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'check'], 'argv': ['stack', 'check']}`
-- `{'id': 'ops.stack.down', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'down'], 'argv': ['stack', 'down']}`
-- `{'id': 'ops.stack.report', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'report'], 'argv': ['stack', 'report']}`
-- `{'id': 'ops.stack.restart', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'restart'], 'argv': ['stack', 'restart']}`
-- `{'id': 'ops.stack.status', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'status'], 'argv': ['stack', 'status']}`
-- `{'id': 'ops.stack.up', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'up'], 'argv': ['stack', 'up']}`
-- `{'id': 'ops.stack.validate', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'validate'], 'argv': ['stack', 'validate']}`
-- `{'id': 'ops.stack.versions-sync', 'domain': 'stack', 'command': ['bijux-dev-atlas', 'ops', 'stack', 'versions-sync'], 'argv': ['stack', 'versions-sync']}`
+- `{"argv":["actions","list"],"command":["bijux-dev-atlas","ops","actions","list"],"domain":"actions","id":"ops.actions.list"}`
+- `{"argv":["actions","run"],"command":["bijux-dev-atlas","ops","actions","run"],"domain":"actions","id":"ops.actions.run"}`
+- `{"argv":["cache","prune"],"command":["bijux-dev-atlas","ops","cache","prune"],"domain":"cache","id":"ops.cache.prune"}`
+- `{"argv":["cache","status"],"command":["bijux-dev-atlas","ops","cache","status"],"domain":"cache","id":"ops.cache.status"}`
+- `{"argv":["datasets","fetch"],"command":["bijux-dev-atlas","ops","datasets","fetch"],"domain":"datasets","id":"ops.datasets.fetch"}`
+- `{"argv":["datasets","lint-ids"],"command":["bijux-dev-atlas","ops","datasets","lint-ids"],"domain":"datasets","id":"ops.datasets.lint-ids"}`
+- `{"argv":["datasets","lock"],"command":["bijux-dev-atlas","ops","datasets","lock"],"domain":"datasets","id":"ops.datasets.lock"}`
+- `{"argv":["datasets","pin"],"command":["bijux-dev-atlas","ops","datasets","pin"],"domain":"datasets","id":"ops.datasets.pin"}`
+- `{"argv":["datasets","qc","diff"],"command":["bijux-dev-atlas","ops","datasets","qc","diff"],"domain":"datasets","id":"ops.datasets.qc.diff"}`
+- `{"argv":["datasets","qc","summary"],"command":["bijux-dev-atlas","ops","datasets","qc","summary"],"domain":"datasets","id":"ops.datasets.qc.summary"}`
+- `{"argv":["datasets","validate"],"command":["bijux-dev-atlas","ops","datasets","validate"],"domain":"datasets","id":"ops.datasets.validate"}`
+- `{"argv":["datasets","verify"],"command":["bijux-dev-atlas","ops","datasets","verify"],"domain":"datasets","id":"ops.datasets.verify"}`
+- `{"argv":["deploy","apply"],"command":["bijux-dev-atlas","ops","deploy","apply"],"domain":"deploy","id":"ops.deploy.apply"}`
+- `{"argv":["deploy","plan"],"command":["bijux-dev-atlas","ops","deploy","plan"],"domain":"deploy","id":"ops.deploy.plan"}`
+- `{"argv":["deploy","rollback"],"command":["bijux-dev-atlas","ops","deploy","rollback"],"domain":"deploy","id":"ops.deploy.rollback"}`
+- `{"argv":["e2e","run"],"command":["bijux-dev-atlas","ops","e2e","run"],"domain":"e2e","id":"ops.e2e.run"}`
+- `{"argv":["e2e","validate"],"command":["bijux-dev-atlas","ops","e2e","validate"],"domain":"e2e","id":"ops.e2e.validate"}`
+- `{"argv":["e2e","validate-results"],"command":["bijux-dev-atlas","ops","e2e","validate-results"],"domain":"e2e","id":"ops.e2e.validate-results"}`
+- `{"argv":["env","print"],"command":["bijux-dev-atlas","ops","env","print"],"domain":"env","id":"ops.env.print"}`
+- `{"argv":["env","validate"],"command":["bijux-dev-atlas","ops","env","validate"],"domain":"env","id":"ops.env.validate"}`
+- `{"argv":["gen","check"],"command":["bijux-dev-atlas","ops","gen","check"],"domain":"gen","id":"ops.gen.check"}`
+- `{"argv":["gen","run"],"command":["bijux-dev-atlas","ops","gen","run"],"domain":"gen","id":"ops.gen.run"}`
+- `{"argv":["k8s","apply-config"],"command":["bijux-dev-atlas","ops","k8s","apply-config"],"domain":"k8s","id":"ops.k8s.apply-config"}`
+- `{"argv":["k8s","check"],"command":["bijux-dev-atlas","ops","k8s","check"],"domain":"k8s","id":"ops.k8s.check"}`
+- `{"argv":["k8s","contracts"],"command":["bijux-dev-atlas","ops","k8s","contracts"],"domain":"k8s","id":"ops.k8s.contracts"}`
+- `{"argv":["k8s","diff"],"command":["bijux-dev-atlas","ops","k8s","diff"],"domain":"k8s","id":"ops.k8s.diff"}`
+- `{"argv":["k8s","render"],"command":["bijux-dev-atlas","ops","k8s","render"],"domain":"k8s","id":"ops.k8s.render"}`
+- `{"argv":["k8s","validate"],"command":["bijux-dev-atlas","ops","k8s","validate"],"domain":"k8s","id":"ops.k8s.validate"}`
+- `{"argv":["k8s","validate-configmap-keys"],"command":["bijux-dev-atlas","ops","k8s","validate-configmap-keys"],"domain":"k8s","id":"ops.k8s.validate-configmap-keys"}`
+- `{"argv":["kind","down"],"command":["bijux-dev-atlas","ops","kind","down"],"domain":"kind","id":"ops.kind.down"}`
+- `{"argv":["kind","fault"],"command":["bijux-dev-atlas","ops","kind","fault"],"domain":"kind","id":"ops.kind.fault"}`
+- `{"argv":["kind","reset"],"command":["bijux-dev-atlas","ops","kind","reset"],"domain":"kind","id":"ops.kind.reset"}`
+- `{"argv":["kind","up"],"command":["bijux-dev-atlas","ops","kind","up"],"domain":"kind","id":"ops.kind.up"}`
+- `{"argv":["kind","validate"],"command":["bijux-dev-atlas","ops","kind","validate"],"domain":"kind","id":"ops.kind.validate"}`
+- `{"argv":["load","check"],"command":["bijux-dev-atlas","ops","load","check"],"domain":"load","id":"ops.load.check"}`
+- `{"argv":["load","compare"],"command":["bijux-dev-atlas","ops","load","compare"],"domain":"load","id":"ops.load.compare"}`
+- `{"argv":["load","run"],"command":["bijux-dev-atlas","ops","load","run"],"domain":"load","id":"ops.load.run"}`
+- `{"argv":["observe","check"],"command":["bijux-dev-atlas","ops","observe","check"],"domain":"observe","id":"ops.observe.check"}`
+- `{"argv":["observe","drill"],"command":["bijux-dev-atlas","ops","observe","drill"],"domain":"observe","id":"ops.observe.drill"}`
+- `{"argv":["observe","lint"],"command":["bijux-dev-atlas","ops","observe","lint"],"domain":"observe","id":"ops.observe.lint"}`
+- `{"argv":["observe","report"],"command":["bijux-dev-atlas","ops","observe","report"],"domain":"observe","id":"ops.observe.report"}`
+- `{"argv":["observe","up"],"command":["bijux-dev-atlas","ops","observe","up"],"domain":"observe","id":"ops.observe.up"}`
+- `{"argv":["observe","validate"],"command":["bijux-dev-atlas","ops","observe","validate"],"domain":"observe","id":"ops.observe.validate"}`
+- `{"argv":["observe","verify"],"command":["bijux-dev-atlas","ops","observe","verify"],"domain":"observe","id":"ops.observe.verify"}`
+- `{"argv":["pins","check"],"command":["bijux-dev-atlas","ops","pins","check"],"domain":"pins","id":"ops.pins.check"}`
+- `{"argv":["pins","update"],"command":["bijux-dev-atlas","ops","pins","update"],"domain":"pins","id":"ops.pins.update"}`
+- `{"argv":["check"],"command":["bijux-dev-atlas","ops","check"],"domain":"root","id":"ops.root.check"}`
+- `{"argv":["clean"],"command":["bijux-dev-atlas","ops","clean"],"domain":"root","id":"ops.root.clean"}`
+- `{"argv":["clean-generated"],"command":["bijux-dev-atlas","ops","clean-generated"],"domain":"root","id":"ops.root.clean-generated"}`
+- `{"argv":["contracts-check"],"command":["bijux-dev-atlas","ops","contracts-check"],"domain":"root","id":"ops.root.contracts-check"}`
+- `{"argv":["contracts-index"],"command":["bijux-dev-atlas","ops","contracts-index"],"domain":"root","id":"ops.root.contracts-index"}`
+- `{"argv":["directory-budgets-check"],"command":["bijux-dev-atlas","ops","directory-budgets-check"],"domain":"root","id":"ops.root.directory-budgets-check"}`
+- `{"argv":["doctor"],"command":["bijux-dev-atlas","ops","doctor"],"domain":"root","id":"ops.root.doctor"}`
+- `{"argv":["down"],"command":["bijux-dev-atlas","ops","down"],"domain":"root","id":"ops.root.down"}`
+- `{"argv":["explain"],"command":["bijux-dev-atlas","ops","explain"],"domain":"root","id":"ops.root.explain"}`
+- `{"argv":["help"],"command":["bijux-dev-atlas","ops","help"],"domain":"root","id":"ops.root.help"}`
+- `{"argv":["k8s-checks-layout"],"command":["bijux-dev-atlas","ops","k8s-checks-layout"],"domain":"root","id":"ops.root.k8s-checks-layout"}`
+- `{"argv":["k8s-flakes-check"],"command":["bijux-dev-atlas","ops","k8s-flakes-check"],"domain":"root","id":"ops.root.k8s-flakes-check"}`
+- `{"argv":["k8s-surface-generate"],"command":["bijux-dev-atlas","ops","k8s-surface-generate"],"domain":"root","id":"ops.root.k8s-surface-generate"}`
+- `{"argv":["k8s-test-contract"],"command":["bijux-dev-atlas","ops","k8s-test-contract"],"domain":"root","id":"ops.root.k8s-test-contract"}`
+- `{"argv":["k8s-test-lib-contract"],"command":["bijux-dev-atlas","ops","k8s-test-lib-contract"],"domain":"root","id":"ops.root.k8s-test-lib-contract"}`
+- `{"argv":["layer-drift-check"],"command":["bijux-dev-atlas","ops","layer-drift-check"],"domain":"root","id":"ops.root.layer-drift-check"}`
+- `{"argv":["lint"],"command":["bijux-dev-atlas","ops","lint"],"domain":"root","id":"ops.root.lint"}`
+- `{"argv":["list"],"command":["bijux-dev-atlas","ops","list"],"domain":"root","id":"ops.root.list"}`
+- `{"argv":["naming-check"],"command":["bijux-dev-atlas","ops","naming-check"],"domain":"root","id":"ops.root.naming-check"}`
+- `{"argv":["no-direct-script-usage-check"],"command":["bijux-dev-atlas","ops","no-direct-script-usage-check"],"domain":"root","id":"ops.root.no-direct-script-usage-check"}`
+- `{"argv":["policy-audit"],"command":["bijux-dev-atlas","ops","policy-audit"],"domain":"root","id":"ops.root.policy-audit"}`
+- `{"argv":["prereqs"],"command":["bijux-dev-atlas","ops","prereqs"],"domain":"root","id":"ops.root.prereqs"}`
+- `{"argv":["restart"],"command":["bijux-dev-atlas","ops","restart"],"domain":"root","id":"ops.root.restart"}`
+- `{"argv":["root-lanes"],"command":["bijux-dev-atlas","ops","root-lanes"],"domain":"root","id":"ops.root.root-lanes"}`
+- `{"argv":["root-local"],"command":["bijux-dev-atlas","ops","root-local"],"domain":"root","id":"ops.root.root-local"}`
+- `{"argv":["run"],"command":["bijux-dev-atlas","ops","run"],"domain":"root","id":"ops.root.run"}`
+- `{"argv":["run-script"],"command":["bijux-dev-atlas","ops","run-script"],"domain":"root","id":"ops.root.run-script"}`
+- `{"argv":["schema-check"],"command":["bijux-dev-atlas","ops","schema-check"],"domain":"root","id":"ops.root.schema-check"}`
+- `{"argv":["smoke"],"command":["bijux-dev-atlas","ops","smoke"],"domain":"root","id":"ops.root.smoke"}`
+- `{"argv":["suites-check"],"command":["bijux-dev-atlas","ops","suites-check"],"domain":"root","id":"ops.root.suites-check"}`
+- `{"argv":["surface"],"command":["bijux-dev-atlas","ops","surface"],"domain":"root","id":"ops.root.surface"}`
+- `{"argv":["tool-versions-check"],"command":["bijux-dev-atlas","ops","tool-versions-check"],"domain":"root","id":"ops.root.tool-versions-check"}`
+- `{"argv":["up"],"command":["bijux-dev-atlas","ops","up"],"domain":"root","id":"ops.root.up"}`
+- `{"argv":["warm"],"command":["bijux-dev-atlas","ops","warm"],"domain":"root","id":"ops.root.warm"}`
+- `{"argv":["warm-dx"],"command":["bijux-dev-atlas","ops","warm-dx"],"domain":"root","id":"ops.root.warm-dx"}`
+- `{"argv":["stack","check"],"command":["bijux-dev-atlas","ops","stack","check"],"domain":"stack","id":"ops.stack.check"}`
+- `{"argv":["stack","down"],"command":["bijux-dev-atlas","ops","stack","down"],"domain":"stack","id":"ops.stack.down"}`
+- `{"argv":["stack","report"],"command":["bijux-dev-atlas","ops","stack","report"],"domain":"stack","id":"ops.stack.report"}`
+- `{"argv":["stack","restart"],"command":["bijux-dev-atlas","ops","stack","restart"],"domain":"stack","id":"ops.stack.restart"}`
+- `{"argv":["stack","status"],"command":["bijux-dev-atlas","ops","stack","status"],"domain":"stack","id":"ops.stack.status"}`
+- `{"argv":["stack","up"],"command":["bijux-dev-atlas","ops","stack","up"],"domain":"stack","id":"ops.stack.up"}`
+- `{"argv":["stack","validate"],"command":["bijux-dev-atlas","ops","stack","validate"],"domain":"stack","id":"ops.stack.validate"}`
+- `{"argv":["stack","versions-sync"],"command":["bijux-dev-atlas","ops","stack","versions-sync"],"domain":"stack","id":"ops.stack.versions-sync"}`
 
 ## See Also
 

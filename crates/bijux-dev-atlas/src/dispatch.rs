@@ -135,6 +135,10 @@ fn force_json_docs(command: &mut DocsCommand) {
             crate::cli::DocsRegistryCommand::Build(common)
             | crate::cli::DocsRegistryCommand::Validate(common) => common.format = FormatArg::Json,
         },
+        DocsCommand::Reference { command } => match command {
+            crate::cli::DocsReferenceCommand::Generate(common)
+            | crate::cli::DocsReferenceCommand::Check(common) => common.format = FormatArg::Json,
+        },
     }
 }
 
@@ -197,6 +201,10 @@ fn apply_fail_fast(command: &mut Command) {
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(_)
                 | crate::cli::DocsRegistryCommand::Validate(_) => {}
+            },
+            DocsCommand::Reference { command } => match command {
+                crate::cli::DocsReferenceCommand::Generate(_)
+                | crate::cli::DocsReferenceCommand::Check(_) => {}
             },
         },
         Command::Configs { command } => match command {
@@ -341,6 +349,12 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(common)
                 | crate::cli::DocsRegistryCommand::Validate(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            DocsCommand::Reference { command } => match command {
+                crate::cli::DocsReferenceCommand::Generate(common)
+                | crate::cli::DocsReferenceCommand::Check(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },

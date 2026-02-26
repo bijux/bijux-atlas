@@ -16,4 +16,4 @@
 
 ## Regenerate
 
-- `python3 scripts/docs/generate_operations_references.py --write`
+- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
