@@ -156,6 +156,7 @@ fn validate_k8s_rollout_and_drift_reports(
 
     let registry_drift_rel = Path::new("ops/_generated.example/registry-drift-report.json");
     let control_graph_diff_rel = Path::new("ops/_generated.example/control-graph-diff-report.json");
+    let inventory_completeness_rel = Path::new("ops/_generated.example/inventory-completeness-score.json");
     if !ctx.adapters.fs.exists(ctx.repo_root, registry_drift_rel) {
         violations.push(violation(
             "OPS_INVENTORY_REGISTRY_DRIFT_REPORT_MISSING",
@@ -200,6 +201,66 @@ fn validate_k8s_rollout_and_drift_reports(
                 "resolve control graph drift and regenerate control-graph-diff-report.json",
                 Some(control_graph_diff_rel),
             ));
+        }
+    }
+
+    if !ctx.adapters.fs.exists(ctx.repo_root, inventory_completeness_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_COMPLETENESS_SCORE_MISSING",
+            format!(
+                "missing inventory completeness score report `{}`",
+                inventory_completeness_rel.display()
+            ),
+            "generate and commit ops/_generated.example/inventory-completeness-score.json",
+            Some(inventory_completeness_rel),
+        ));
+    } else {
+        let completeness_text = fs::read_to_string(ctx.repo_root.join(inventory_completeness_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let completeness_json: serde_json::Value = serde_json::from_str(&completeness_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if completeness_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_INVENTORY_COMPLETENESS_SCORE_BLOCKING",
+                "inventory-completeness-score.json status is not `pass`".to_string(),
+                "resolve inventory completeness gaps and regenerate inventory-completeness-score.json",
+                Some(inventory_completeness_rel),
+            ));
+        }
+        if completeness_json
+            .get("score")
+            .and_then(|v| v.as_u64())
+            .is_none_or(|score| score < 90)
+        {
+            violations.push(violation(
+                "OPS_INVENTORY_COMPLETENESS_SCORE_THRESHOLD",
+                "inventory-completeness-score.json score must be >= 90".to_string(),
+                "raise inventory completeness coverage and regenerate the completeness score report",
+                Some(inventory_completeness_rel),
+            ));
+        }
+        let checks = completeness_json
+            .get("checks")
+            .and_then(|v| v.as_object())
+            .cloned()
+            .unwrap_or_default();
+        for key in [
+            "node_consumer_coverage",
+            "node_lifecycle_coverage",
+            "domain_coverage_edges",
+            "path_surface_coverage",
+            "edge_kind_coverage",
+        ] {
+            if checks.get(key).and_then(|v| v.as_u64()).is_none() {
+                violations.push(violation(
+                    "OPS_INVENTORY_COMPLETENESS_SCORE_CHECKS_INCOMPLETE",
+                    format!(
+                        "inventory completeness score report is missing numeric checks field `{key}`"
+                    ),
+                    "include all inventory completeness component checks in the report",
+                    Some(inventory_completeness_rel),
+                ));
+            }
         }
     }
 
