@@ -157,6 +157,7 @@ fn validate_k8s_rollout_and_drift_reports(
     let registry_drift_rel = Path::new("ops/_generated.example/registry-drift-report.json");
     let control_graph_diff_rel = Path::new("ops/_generated.example/control-graph-diff-report.json");
     let inventory_completeness_rel = Path::new("ops/_generated.example/inventory-completeness-score.json");
+    let control_graph_coverage_rel = Path::new("ops/_generated.example/control-graph-coverage-map.json");
     if !ctx.adapters.fs.exists(ctx.repo_root, registry_drift_rel) {
         violations.push(violation(
             "OPS_INVENTORY_REGISTRY_DRIFT_REPORT_MISSING",
@@ -260,6 +261,74 @@ fn validate_k8s_rollout_and_drift_reports(
                     "include all inventory completeness component checks in the report",
                     Some(inventory_completeness_rel),
                 ));
+            }
+        }
+    }
+
+    if !ctx.adapters.fs.exists(ctx.repo_root, control_graph_coverage_rel) {
+        violations.push(violation(
+            "OPS_INVENTORY_CONTROL_GRAPH_COVERAGE_MAP_MISSING",
+            format!(
+                "missing control graph coverage map `{}`",
+                control_graph_coverage_rel.display()
+            ),
+            "generate and commit ops/_generated.example/control-graph-coverage-map.json",
+            Some(control_graph_coverage_rel),
+        ));
+    } else {
+        let coverage_text = fs::read_to_string(ctx.repo_root.join(control_graph_coverage_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let coverage_json: serde_json::Value = serde_json::from_str(&coverage_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        if coverage_json.get("status").and_then(|v| v.as_str()) != Some("pass") {
+            violations.push(violation(
+                "OPS_INVENTORY_CONTROL_GRAPH_COVERAGE_MAP_BLOCKING",
+                "control-graph-coverage-map.json status is not `pass`".to_string(),
+                "resolve unmapped coverage entries and regenerate control-graph-coverage-map.json",
+                Some(control_graph_coverage_rel),
+            ));
+        }
+        let control_graph_rel = Path::new("ops/inventory/control-graph.json");
+        let control_graph_text = fs::read_to_string(ctx.repo_root.join(control_graph_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let control_graph_json: serde_json::Value = serde_json::from_str(&control_graph_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let node_ids = control_graph_json
+            .get("nodes")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|n| n.get("id").and_then(|v| v.as_str()).map(ToString::to_string))
+            .collect::<std::collections::BTreeSet<_>>();
+        for key in ["checks", "reports"] {
+            let Some(entries) = coverage_json.get(key).and_then(|v| v.as_array()) else {
+                violations.push(violation(
+                    "OPS_INVENTORY_CONTROL_GRAPH_COVERAGE_MAP_INVALID",
+                    format!("control-graph-coverage-map.json is missing array `{key}`"),
+                    "include checks and reports arrays in the coverage map",
+                    Some(control_graph_coverage_rel),
+                ));
+                continue;
+            };
+            if entries.is_empty() {
+                violations.push(violation(
+                    "OPS_INVENTORY_CONTROL_GRAPH_COVERAGE_MAP_EMPTY_SECTION",
+                    format!("control-graph-coverage-map.json `{key}` array must not be empty"),
+                    "add representative coverage mappings for checks and reports",
+                    Some(control_graph_coverage_rel),
+                ));
+            }
+            for entry in entries {
+                let node_id = entry.get("node_id").and_then(|v| v.as_str()).unwrap_or_default();
+                if !node_ids.contains(node_id) {
+                    violations.push(violation(
+                        "OPS_INVENTORY_CONTROL_GRAPH_COVERAGE_MAP_UNKNOWN_NODE",
+                        format!("control graph coverage map references unknown node `{node_id}`"),
+                        "map checks/reports only to existing control-graph node ids",
+                        Some(control_graph_coverage_rel),
+                    ));
+                }
             }
         }
     }
