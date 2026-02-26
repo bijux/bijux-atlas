@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "namespace": "bijux-atlas-local",
+  "timestamp": "2026-02-26T00:00:00Z",
+  "checks": {
+    "nodes": {
+      "ok": true,
+      "code": 0,
+      "stdout": "node/local Ready",
+      "stderr": ""
+    },
+    "pods": {
+      "ok": true,
+      "code": 0,
+      "stdout": "all pods Running",
+      "stderr": ""
+    },
+    "services": {
+      "ok": true,
+      "code": 0,
+      "stdout": "cluster services reachable",
+      "stderr": ""
+    },
+    "storageclass": {
+      "ok": true,
+      "code": 0,
+      "stdout": "standard (default)",
+      "stderr": ""
+    }
+  }
+}

@@ -655,5 +655,63 @@ fn validate_e2e_fixture_and_mapping_governance(
         }
     }
 
+    let stack_health_example_rel = Path::new("ops/_generated.example/stack-health-report.example.json");
+    let stack_health_schema_rel = Path::new("ops/schema/report/stack-health-report.schema.json");
+    if !ctx.adapters.fs.exists(ctx.repo_root, stack_health_example_rel) {
+        violations.push(violation(
+            "OPS_STACK_HEALTH_REPORT_EXAMPLE_MISSING",
+            "missing stack health report example `ops/_generated.example/stack-health-report.example.json`"
+                .to_string(),
+            "add a schema-shaped example stack health report for governance review and drift checks",
+            Some(stack_health_example_rel),
+        ));
+    } else if ctx.adapters.fs.exists(ctx.repo_root, stack_health_schema_rel) {
+        let example_text = fs::read_to_string(ctx.repo_root.join(stack_health_example_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let example_json: serde_json::Value = serde_json::from_str(&example_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let required_top = ["schema_version", "namespace", "timestamp", "checks"];
+        for field in required_top {
+            if example_json.get(field).is_none() {
+                violations.push(violation(
+                    "OPS_STACK_HEALTH_REPORT_EXAMPLE_SHAPE_INVALID",
+                    format!("stack health report example is missing top-level field `{field}`"),
+                    "regenerate the stack health report example to match the stack health schema",
+                    Some(stack_health_example_rel),
+                ));
+            }
+        }
+        let check_keys = example_json
+            .get("checks")
+            .and_then(|v| v.as_object())
+            .map(|obj| obj.keys().cloned().collect::<BTreeSet<_>>())
+            .unwrap_or_default();
+        let expected_keys = ["nodes", "pods", "services", "storageclass"]
+            .into_iter()
+            .map(ToString::to_string)
+            .collect::<BTreeSet<_>>();
+        if check_keys != expected_keys {
+            violations.push(violation(
+                "OPS_STACK_HEALTH_REPORT_EXAMPLE_CHECK_KEYS_INVALID",
+                "stack health report example checks keys must be nodes/pods/services/storageclass"
+                    .to_string(),
+                "align the example stack health report checks object with stack-health-report.schema.json",
+                Some(stack_health_example_rel),
+            ));
+        }
+        if example_json
+            .get("schema_version")
+            .and_then(|v| v.as_i64())
+            != Some(1)
+        {
+            violations.push(violation(
+                "OPS_STACK_HEALTH_REPORT_EXAMPLE_SCHEMA_VERSION_INVALID",
+                "stack health report example schema_version must be 1".to_string(),
+                "set schema_version to 1 in the stack health report example",
+                Some(stack_health_example_rel),
+            ));
+        }
+    }
+
     Ok(())
 }
