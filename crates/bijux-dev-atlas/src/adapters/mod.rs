@@ -2,9 +2,7 @@
 
 #![forbid(unsafe_code)]
 
-pub use bijux_dev_atlas_core::ports::{
-    AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner,
-};
+pub use crate::ports::{AdapterError, Capabilities, Fs, FsWrite, Git, Network, ProcessRunner};
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
