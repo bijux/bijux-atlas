@@ -56,5 +56,35 @@
       "owner": "bijux-atlas-operations",
       "consumer": "checks_ops_required_files_contracts"
     }
+  ],
+  "ignored_paths": [
+    "ops/ARTIFACTS.md",
+    "ops/CONTRACT.md",
+    "ops/CONTROL_PLANE.md",
+    "ops/DIRECTORY_BUDGET_POLICY.md",
+    "ops/DRIFT.md",
+    "ops/ERRORS.md",
+    "ops/GENERATED_LIFECYCLE.md",
+    "ops/GOLDEN_REFRESH_POLICY.md",
+    "ops/INDEX.md",
+    "ops/NAMING.md",
+    "ops/README.md",
+    "ops/SSOT.md"
+  ],
+  "ignored_prefixes": [
+    "ops/_generated/",
+    "ops/_generated.example/",
+    "ops/schema/",
+    "ops/datasets/",
+    "ops/e2e/",
+    "ops/env/",
+    "ops/k8s/",
+    "ops/load/",
+    "ops/observe/",
+    "ops/report/",
+    "ops/stack/",
+    "ops/inventory/contracts/",
+    "ops/inventory/policies/",
+    "ops/inventory/meta/"
   ]
 }

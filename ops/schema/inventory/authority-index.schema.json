@@ -29,6 +29,16 @@
           "derived_from": {"type": "string", "pattern": "^ops/.+"}
         }
       }
+    },
+    "ignored_paths": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^ops/.+"},
+      "uniqueItems": true
+    },
+    "ignored_prefixes": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^ops/.+"},
+      "uniqueItems": true
     }
   }
 }

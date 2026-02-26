@@ -85,6 +85,41 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
                 .collect::<BTreeSet<_>>()
         })
         .unwrap_or_default();
+    let authority_index_rel = Path::new("ops/inventory/authority-index.json");
+    let authority_index_text = fs::read_to_string(ctx.repo_root.join(authority_index_rel))
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let authority_index_json: serde_json::Value = serde_json::from_str(&authority_index_text)
+        .map_err(|err| CheckError::Failed(err.to_string()))?;
+    let authority_index_paths = authority_index_json
+        .get("authoritative_files")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|entry| entry.get("path").and_then(|v| v.as_str()))
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let authority_ignored_paths = authority_index_json
+        .get("ignored_paths")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let authority_ignored_prefixes = authority_index_json
+        .get("ignored_prefixes")
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str())
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
 
     let schema_index_rel = Path::new("ops/schema/generated/schema-index.json");
     let schema_index_text = fs::read_to_string(ctx.repo_root.join(schema_index_rel))
@@ -299,6 +334,25 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
                 Some(ledger_rel),
             ));
         }
+        let covered_by_authority_index = authority_index_paths.contains(path)
+            || registry_inputs.contains(path)
+            || schema_files.contains(path)
+            || path.contains("/generated/")
+            || path.starts_with("ops/_generated.example/")
+            || authority_ignored_paths.contains(path)
+            || authority_ignored_prefixes
+                .iter()
+                .any(|prefix| path.starts_with(prefix));
+        if !covered_by_authority_index {
+            violations.push(violation(
+                "OPS_AUTHORITY_INDEX_COVERAGE_MISSING",
+                format!(
+                    "ops file `{path}` is not covered by authority-index, contracts-map, generated/schema classification, or explicit ignore rule"
+                ),
+                "register the file in authority-index/contracts-map or add an explicit ignore rule in ops/inventory/authority-index.json",
+                Some(authority_index_rel),
+            ));
+        }
     }
 
     let allowlist_rel = Path::new("ops/_generated.example/ALLOWLIST.json");
@@ -418,4 +472,3 @@ pub(super) fn check_ops_file_usage_and_orphan_contract(
 
     Ok(violations)
 }
-
