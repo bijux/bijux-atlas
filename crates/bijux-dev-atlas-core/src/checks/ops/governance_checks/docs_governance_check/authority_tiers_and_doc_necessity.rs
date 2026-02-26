@@ -62,6 +62,47 @@ fn validate_ops_authority_tiers_and_doc_necessity(
         }
     }
 
+    let external_allowlist_rel = Path::new("docs/operations/external-link-allowlist.json");
+    let external_allowlist_text = fs::read_to_string(ctx.repo_root.join(external_allowlist_rel))
+        .map_err(|err| CheckError::Failed(format!("read {}: {err}", external_allowlist_rel.display())))?;
+    let external_allowlist_json: serde_json::Value = serde_json::from_str(&external_allowlist_text)
+        .map_err(|err| CheckError::Failed(format!("parse {}: {err}", external_allowlist_rel.display())))?;
+    let mut allowed_external_urls = std::collections::HashSet::new();
+    for entry in external_allowlist_json
+        .get("entries")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+    {
+        let url = entry.get("url").and_then(|v| v.as_str()).unwrap_or_default();
+        let reason = entry.get("reason").and_then(|v| v.as_str()).unwrap_or_default();
+        let expires_on = entry.get("expires_on").and_then(|v| v.as_str()).unwrap_or_default();
+        if url.is_empty() || reason.trim().is_empty() || expires_on.is_empty() {
+            violations.push(violation(
+                "OPS_DOC_EXTERNAL_LINK_ALLOWLIST_INCOMPLETE",
+                format!("external link allowlist `{}` entries must include url/reason/expires_on", external_allowlist_rel.display()),
+                "complete each allowlist entry with url, reason, and expires_on",
+                Some(external_allowlist_rel),
+            ));
+            continue;
+        }
+        let parts: Vec<&str> = expires_on.split('-').collect();
+        let is_date = parts.len() == 3
+            && parts.iter().all(|p| p.chars().all(|c| c.is_ascii_digit()))
+            && parts[0].len() == 4
+            && parts[1].len() == 2
+            && parts[2].len() == 2;
+        if !is_date {
+            violations.push(violation(
+                "OPS_DOC_EXTERNAL_LINK_ALLOWLIST_EXPIRY_INVALID",
+                format!("external link allowlist entry `{url}` has invalid expires_on `{expires_on}`"),
+                "use YYYY-MM-DD expiry dates in docs/operations/external-link-allowlist.json",
+                Some(external_allowlist_rel),
+            ));
+        }
+        allowed_external_urls.insert(url.to_string());
+    }
+
     let authority_tiers_rel = Path::new("ops/AUTHORITY_TIERS.md");
     let authority_tiers_text = fs::read_to_string(ctx.repo_root.join(authority_tiers_rel))
         .map_err(|err| CheckError::Failed(format!("read {}: {err}", authority_tiers_rel.display())))?;
@@ -405,6 +446,24 @@ fn validate_ops_authority_tiers_and_doc_necessity(
                         rel.display()
                     ),
                     "describe regeneration commands or authoritative sources instead of manual edits in ops/_generated*",
+                    Some(rel),
+                ));
+            }
+        }
+
+        for token in text.split_whitespace() {
+            let candidate = token.trim_matches(|c: char| "`()[]<>{},.;'\"".contains(c));
+            if !(candidate.starts_with("http://") || candidate.starts_with("https://")) {
+                continue;
+            }
+            if !allowed_external_urls.contains(candidate) {
+                violations.push(violation(
+                    "OPS_DOC_EXTERNAL_LINK_NOT_ALLOWLISTED",
+                    format!(
+                        "docs operations page `{}` references external URL `{}` not in docs/operations/external-link-allowlist.json",
+                        rel.display(), candidate
+                    ),
+                    "add the URL to the docs external-link allowlist with reason and expiry or replace it with a local/generated reference",
                     Some(rel),
                 ));
             }
