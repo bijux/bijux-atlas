@@ -6,6 +6,6 @@
 pub(crate) mod adapters;
 pub(crate) mod commands;
 pub(crate) mod core;
-pub(crate) mod model;
+pub mod model;
 pub(crate) mod policies;
 pub(crate) mod ports;
