@@ -98,6 +98,7 @@ fn validate_surface_and_filesystem_policies(
         "DRIFT.md",
         "ERRORS.md",
         "GENERATED_LIFECYCLE.md",
+        "GOLDEN_REFRESH_POLICY.md",
         "INDEX.md",
         "NAMING.md",
         "README.md",

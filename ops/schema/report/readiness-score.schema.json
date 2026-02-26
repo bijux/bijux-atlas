@@ -2,11 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "score", "status", "inputs"],
+  "required": ["schema_version", "score", "status", "inputs", "generated_by"],
   "properties": {
     "schema_version": {"type": "integer", "const": 1},
     "score": {"type": "integer", "minimum": 0, "maximum": 100},
     "status": {"type": "string", "enum": ["ready", "blocked"]},
-    "inputs": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}}
+    "inputs": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+    "generated_by": {"type": "string", "minLength": 1},
+    "generated_from": {"type": "string", "minLength": 1}
   }
 }
