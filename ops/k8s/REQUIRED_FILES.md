@@ -8,6 +8,7 @@ required_files:
   - ops/k8s/INDEX.md
   - ops/k8s/REQUIRED_FILES.md
   - ops/k8s/install-matrix.json
+  - ops/k8s/rollout-safety-contract.json
   - ops/k8s/tests/suites.json
   - ops/k8s/tests/manifest.json
   - ops/k8s/values/kind.yaml
@@ -22,5 +23,6 @@ forbidden_patterns:
   - legacy-observe-schema-alias/
 notes:
   - authored_root: ops/k8s/install-matrix.json
+  - authored_root: ops/k8s/rollout-safety-contract.json
   - generated_output: ops/k8s/generated/release-snapshot.json
 ```

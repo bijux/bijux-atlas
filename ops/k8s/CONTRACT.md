@@ -13,6 +13,7 @@
 | `ops/k8s/charts/bijux-atlas/Chart.yaml` | Authored chart metadata |
 | `ops/k8s/charts/bijux-atlas/values.yaml` | Authored chart defaults |
 | `ops/k8s/install-matrix.json` | Authored install profile matrix |
+| `ops/k8s/rollout-safety-contract.json` | Authored rollout and warmup safety policy |
 | `ops/k8s/values/kind.yaml` | Authored kind profile overrides |
 | `ops/k8s/values/dev.yaml` | Authored dev profile overrides |
 | `ops/k8s/values/ci.yaml` | Authored CI profile overrides |
@@ -26,6 +27,7 @@
 | Artifact | Schema |
 | --- | --- |
 | `ops/k8s/install-matrix.json` | `ops/schema/k8s/install-matrix.schema.json` |
+| `ops/k8s/rollout-safety-contract.json` | `ops/schema/k8s/rollout-safety-contract.schema.json` |
 | `ops/k8s/tests/suites.json` | `ops/schema/k8s/suite-report.schema.json` |
 | `ops/k8s/generated/render-artifact-index.json` | `ops/schema/k8s/render-artifact-index.schema.json` |
 | `ops/k8s/generated/inventory-index.json` | `ops/schema/k8s/inventory-index.schema.json` |
@@ -45,6 +47,7 @@
 - Generated k8s artifacts must include `generated_by` and `schema_version` metadata.
 - K8s docs must be linked from `ops/k8s/INDEX.md`; orphan docs are forbidden.
 - Render determinism is mandatory: same chart plus same values must produce identical manifests.
+- Rollout safety contract must align with install matrix profile names, values files, and suite assignments.
 - Release snapshot and inventory index generation must be deterministic for identical authored inputs.
 
 ## Runtime Evidence Mapping

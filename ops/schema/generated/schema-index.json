@@ -56,6 +56,7 @@
     "ops/schema/k8s/inventory-index.schema.json",
     "ops/schema/k8s/release-snapshot.schema.json",
     "ops/schema/k8s/render-artifact-index.schema.json",
+    "ops/schema/k8s/rollout-safety-contract.schema.json",
     "ops/schema/k8s/suite-report.schema.json",
     "ops/schema/load/deterministic-seed-policy.schema.json",
     "ops/schema/load/k6-suite.schema.json",

@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    {
+      "name": "ci",
+      "suite": "install-gate",
+      "values_file": "ops/k8s/values/ci.yaml",
+      "rollout_mode": "deployment",
+      "warmup_required": false,
+      "readiness_path_required": true
+    },
+    {
+      "name": "dev",
+      "suite": "install-gate",
+      "values_file": "ops/k8s/values/dev.yaml",
+      "rollout_mode": "deployment",
+      "warmup_required": false,
+      "readiness_path_required": true
+    },
+    {
+      "name": "kind",
+      "suite": "k8s-suite",
+      "values_file": "ops/k8s/values/kind.yaml",
+      "rollout_mode": "rollout",
+      "warmup_required": true,
+      "readiness_path_required": true
+    },
+    {
+      "name": "offline",
+      "suite": "k8s-suite",
+      "values_file": "ops/k8s/values/offline.yaml",
+      "rollout_mode": "deployment",
+      "warmup_required": true,
+      "readiness_path_required": true
+    },
+    {
+      "name": "perf",
+      "suite": "nightly",
+      "values_file": "ops/k8s/values/perf.yaml",
+      "rollout_mode": "rollout",
+      "warmup_required": false,
+      "readiness_path_required": true
+    },
+    {
+      "name": "prod",
+      "suite": "nightly",
+      "values_file": "ops/k8s/values/prod.yaml",
+      "rollout_mode": "rollout",
+      "warmup_required": false,
+      "readiness_path_required": true
+    }
+  ]
+}

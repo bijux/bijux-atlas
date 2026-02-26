@@ -10,6 +10,7 @@
 - `ops/k8s/charts/bijux-atlas/Chart.yaml`
 - `ops/k8s/charts/bijux-atlas/values.yaml`
 - `ops/k8s/install-matrix.json`
+- `ops/k8s/rollout-safety-contract.json`
 - `ops/k8s/values/kind.yaml`
 - `ops/k8s/values/dev.yaml`
 - `ops/k8s/values/ci.yaml`

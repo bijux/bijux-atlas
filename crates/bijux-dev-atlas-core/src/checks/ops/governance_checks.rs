@@ -1461,6 +1461,8 @@ pub(super) fn check_ops_inventory_contract_integrity(
     let stack_toml_rel = Path::new("ops/stack/stack.toml");
     let stack_dependency_graph_rel = Path::new("ops/stack/generated/dependency-graph.json");
     let stack_service_contract_rel = Path::new("ops/stack/service-dependency-contract.json");
+    let k8s_install_matrix_rel = Path::new("ops/k8s/install-matrix.json");
+    let k8s_rollout_contract_rel = Path::new("ops/k8s/rollout-safety-contract.json");
     let registry_rel = Path::new("ops/inventory/registry.toml");
     let tools_rel = Path::new("ops/inventory/tools.toml");
     let inventory_index_rel = Path::new("ops/_generated.example/inventory-index.json");
@@ -2313,6 +2315,160 @@ pub(super) fn check_ops_inventory_contract_integrity(
                 Some(stack_service_contract_rel),
             ));
         }
+    }
+
+    if ctx.adapters.fs.exists(ctx.repo_root, k8s_install_matrix_rel)
+        && ctx.adapters.fs.exists(ctx.repo_root, k8s_rollout_contract_rel)
+    {
+        let install_matrix_text = fs::read_to_string(ctx.repo_root.join(k8s_install_matrix_rel))
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let install_matrix_json: serde_json::Value = serde_json::from_str(&install_matrix_text)
+            .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let matrix_profiles = install_matrix_json
+            .get("profiles")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let matrix_by_name = matrix_profiles
+            .iter()
+            .filter_map(|entry| {
+                let name = entry.get("name").and_then(|v| v.as_str())?;
+                Some((name.to_string(), entry.clone()))
+            })
+            .collect::<BTreeMap<_, _>>();
+
+        let rollout_contract_text =
+            fs::read_to_string(ctx.repo_root.join(k8s_rollout_contract_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let rollout_contract_json: serde_json::Value =
+            serde_json::from_str(&rollout_contract_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+        let rollout_profiles = rollout_contract_json
+            .get("profiles")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+
+        for profile in &rollout_profiles {
+            let profile_name = profile
+                .get("name")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if profile_name.is_empty() {
+                continue;
+            }
+            let Some(matrix_entry) = matrix_by_name.get(profile_name) else {
+                violations.push(violation(
+                    "OPS_K8S_ROLLOUT_PROFILE_MISSING_FROM_INSTALL_MATRIX",
+                    format!(
+                        "rollout-safety-contract profile `{profile_name}` is missing from install-matrix"
+                    ),
+                    "align rollout-safety-contract profiles with ops/k8s/install-matrix.json",
+                    Some(k8s_rollout_contract_rel),
+                ));
+                continue;
+            };
+            let contract_suite = profile.get("suite").and_then(|v| v.as_str()).unwrap_or_default();
+            let matrix_suite = matrix_entry
+                .get("suite")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if contract_suite != matrix_suite {
+                violations.push(violation(
+                    "OPS_K8S_ROLLOUT_SUITE_DRIFT",
+                    format!(
+                        "rollout-safety-contract suite drift for profile `{profile_name}`: contract=`{contract_suite}` matrix=`{matrix_suite}`"
+                    ),
+                    "align rollout-safety-contract suite values with install-matrix",
+                    Some(k8s_rollout_contract_rel),
+                ));
+            }
+            let values_file = profile
+                .get("values_file")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            let matrix_values_file = matrix_entry
+                .get("values_file")
+                .and_then(|v| v.as_str())
+                .unwrap_or_default();
+            if values_file != matrix_values_file {
+                violations.push(violation(
+                    "OPS_K8S_ROLLOUT_VALUES_FILE_DRIFT",
+                    format!(
+                        "rollout-safety-contract values_file drift for profile `{profile_name}`: contract=`{values_file}` matrix=`{matrix_values_file}`"
+                    ),
+                    "align rollout-safety-contract values_file with install-matrix",
+                    Some(k8s_rollout_contract_rel),
+                ));
+                continue;
+            }
+            let values_rel = Path::new(values_file);
+            if !ctx.adapters.fs.exists(ctx.repo_root, values_rel) {
+                violations.push(violation(
+                    "OPS_K8S_ROLLOUT_VALUES_FILE_MISSING",
+                    format!("rollout-safety-contract references missing values file `{values_file}`"),
+                    "restore missing values file or update rollout-safety-contract",
+                    Some(k8s_rollout_contract_rel),
+                ));
+                continue;
+            }
+            let values_text = fs::read_to_string(ctx.repo_root.join(values_rel))
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let values_yaml: serde_yaml::Value = serde_yaml::from_str(&values_text)
+                .map_err(|err| CheckError::Failed(err.to_string()))?;
+            let warmup_required = profile
+                .get("warmup_required")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false);
+            if warmup_required {
+                let warmup_enabled = values_yaml
+                    .get("cache")
+                    .and_then(|v| v.get("warmupEnabled"))
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(false);
+                if !warmup_enabled {
+                    violations.push(violation(
+                        "OPS_K8S_WARMUP_REQUIRED_BUT_DISABLED",
+                        format!(
+                            "profile `{profile_name}` requires warmup but values file disables cache.warmupEnabled"
+                        ),
+                        "enable cache.warmupEnabled for warmup-required rollout profiles",
+                        Some(values_rel),
+                    ));
+                }
+            }
+            let readiness_required = profile
+                .get("readiness_path_required")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false);
+            if readiness_required {
+                let readiness_path = values_yaml
+                    .get("server")
+                    .and_then(|v| v.get("readinessProbePath"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                if readiness_path.trim().is_empty() {
+                    violations.push(violation(
+                        "OPS_K8S_READINESS_PATH_REQUIRED_MISSING",
+                        format!(
+                            "profile `{profile_name}` requires readiness probe path but server.readinessProbePath is missing"
+                        ),
+                        "define server.readinessProbePath in profile values file",
+                        Some(values_rel),
+                    ));
+                }
+            }
+        }
+    } else if !ctx.adapters.fs.exists(ctx.repo_root, k8s_rollout_contract_rel) {
+        violations.push(violation(
+            "OPS_K8S_ROLLOUT_CONTRACT_MISSING",
+            format!(
+                "missing k8s rollout safety contract `{}`",
+                k8s_rollout_contract_rel.display()
+            ),
+            "restore ops/k8s/rollout-safety-contract.json",
+            Some(k8s_rollout_contract_rel),
+        ));
     }
 
     let registry_drift_rel = Path::new("ops/_generated.example/registry-drift-report.json");

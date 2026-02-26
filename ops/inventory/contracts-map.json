@@ -141,6 +141,12 @@
       "schema": "ops/schema/stack/service-dependency-contract.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/k8s/rollout-safety-contract.json",
+      "schema": "ops/schema/k8s/rollout-safety-contract.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
     }
   ]
 }
