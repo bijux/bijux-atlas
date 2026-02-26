@@ -618,6 +618,14 @@
       "used_in": []
     },
     {
+      "name": "ops-artifact-root-check",
+      "defined_in": [
+        "makefiles/_ops.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "ops-clean",
       "defined_in": [
         "makefiles/_ops.mk"

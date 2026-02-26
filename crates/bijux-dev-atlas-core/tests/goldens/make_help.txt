@@ -54,6 +54,7 @@ Curated make targets (Rust control plane):
   ops-help
   ops-doctor
   ops-validate
+  ops-artifact-root-check
   ops-render
   ops-install-plan
   ops-up
