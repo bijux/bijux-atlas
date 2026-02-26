@@ -38,6 +38,7 @@
 
 - No duplicate authored truth is allowed; authoritative inventory registry is `ops/inventory/contracts-map.json`.
 - `ops/inventory/contracts.json` is a generated output and must never become authored truth.
+- Namespace identity lives in `ops/inventory/namespaces.json`; cross-domain dependency permissions live in `ops/inventory/layers.json`.
 - Schema references for this domain must resolve only to `ops/schema/**`.
 - Behavior source is forbidden in `ops/inventory`; inventory artifacts are declarative only.
 - The semantic domain name `obs` is prohibited; only canonical `observe` naming is valid.
@@ -51,6 +52,18 @@
 - `OWNER.md` files identify accountable teams for review and drift response only.
 - Effective machine ownership source is `ops/inventory/owners.json`.
 - New ownership semantics must be added in `owners.json` first, then reflected in human-readable docs.
+
+## Contract Fragment Lifecycle
+
+- Domain fragments under `ops/inventory/contracts/*.contract.fragment.json` are input fragments only.
+- Fragment changes must be reflected in the generated contracts mirror and pass contract-integrity checks in the same change set.
+- Fragments without a runtime or check consumer are forbidden and must be removed.
+
+## Cross-Domain Dependency Contract
+
+- Inter-domain dependencies are declared only by `ops/inventory/layers.json` `layer_dependencies`.
+- Cross-domain references outside declared dependency edges are invalid.
+- New dependency edges must be reviewed with both producer and consumer owners.
 
 ## Enforcement Links
 
