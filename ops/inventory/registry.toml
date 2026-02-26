@@ -653,6 +653,17 @@ budget_ms = 2200
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_human_workflow_maturity"
+domain = "ops"
+title = "ops human workflow contracts and drill ownership remain enforced"
+docs = "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 2200
+visibility = "internal"
+
+[[checks]]
 id = "checks_ops_generated_lifecycle_metadata"
 domain = "ops"
 title = "generated evidence lifecycle metadata is complete and derivable"
