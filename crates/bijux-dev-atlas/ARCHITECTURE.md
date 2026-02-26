@@ -39,6 +39,8 @@ Forbidden dependency examples:
 - `cli` parses and dispatches only; command execution lives in `commands`.
 - `core` owns check logic and report generation behavior.
 - `model` and `policies` remain leaf modules with stable data contracts.
+- Runtime policy contracts live in the runtime crate (`bijux-atlas-policies`); dev-atlas governance policy loading/validation lives in `crate::policies::dev`.
+- Dev policy source-of-truth paths are `ops/inventory/policies/dev-atlas-policy.json` and `ops/inventory/policies/dev-atlas-policy.schema.json`; command code must not duplicate these paths.
 - Benchmarks and tests use the repository `artifacts/target` cache root (workspace `.cargo/config.toml`); bench code must not introduce custom `target/` writes.
 - Benchmark groups and output names remain unique per bench file to preserve isolated performance histories.
 
