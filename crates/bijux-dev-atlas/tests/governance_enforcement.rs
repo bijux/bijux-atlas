@@ -4,6 +4,7 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
+use regex::Regex;
 use serde::Deserialize;
 
 fn workspace_root() -> PathBuf {
@@ -18,6 +19,7 @@ fn workspace_root() -> PathBuf {
 #[derive(Debug, Deserialize)]
 struct RegistryFile {
     checks: Vec<RegistryCheck>,
+    tags: Option<RegistryTags>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -28,6 +30,11 @@ struct RegistryCheck {
     docs: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct RegistryTags {
+    vocabulary: Vec<String>,
+}
+
 #[test]
 fn registry_checks_have_stable_ids_tags_and_inventory_mapping() {
     let root = workspace_root();
@@ -35,11 +42,22 @@ fn registry_checks_have_stable_ids_tags_and_inventory_mapping() {
     let text = fs::read_to_string(&registry_path).expect("registry");
     let registry: RegistryFile = toml::from_str(&text).expect("valid registry");
 
+    let allowed_tags = registry
+        .tags
+        .as_ref()
+        .map(|tags| tags.vocabulary.iter().cloned().collect::<BTreeSet<_>>())
+        .unwrap_or_default();
+    let id_pattern = Regex::new(r"^checks_[a-z0-9_]+$").expect("id regex");
     let mut ids = BTreeSet::new();
     for check in registry.checks {
         assert!(
             !check.id.trim().is_empty(),
             "registry check id must be non-empty"
+        );
+        assert!(
+            id_pattern.is_match(&check.id),
+            "registry check id must match `checks_[a-z0-9_]+`: {}",
+            check.id
         );
         assert!(
             ids.insert(check.id.clone()),
@@ -51,6 +69,14 @@ fn registry_checks_have_stable_ids_tags_and_inventory_mapping() {
             "registry check `{}` must define at least one tag",
             check.id
         );
+        for tag in &check.tags {
+            assert!(
+                allowed_tags.is_empty() || allowed_tags.contains(tag),
+                "registry check `{}` uses tag `{}` not present in tags vocabulary",
+                check.id,
+                tag
+            );
+        }
         assert!(
             matches!(
                 check.domain.as_str(),
