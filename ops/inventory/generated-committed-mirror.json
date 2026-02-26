@@ -13,6 +13,7 @@
     "ops/_generated.example/control-plane.snapshot.md",
     "ops/_generated.example/docs-drift-report.json",
     "ops/_generated.example/docs-links-report.json",
+    "ops/_generated.example/docs-semantic-duplication-report.json",
     "ops/_generated.example/docs-shrink-report.json",
     "ops/_generated.example/domain-document-template-contract.hash.json",
     "ops/_generated.example/evidence-gap-report.json",
@@ -20,6 +21,7 @@
     "ops/_generated.example/fixture-drift-report.json",
     "ops/_generated.example/generation-audit-log.json",
     "ops/_generated.example/generator-coverage-report.json",
+    "ops/_generated.example/incident-playbook-generation-report.json",
     "ops/_generated.example/inventory-completeness-score.json",
     "ops/_generated.example/inventory-index.json",
     "ops/_generated.example/ops-evidence-bundle.json",
@@ -206,6 +208,12 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
+      "committed": "ops/_generated.example/docs-semantic-duplication-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops docs semantic-duplication-report",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
       "committed": "ops/_generated.example/docs-shrink-report.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops docs shrink-report",
@@ -245,6 +253,12 @@
       "committed": "ops/_generated.example/generator-coverage-report.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/incident-playbook-generation-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops incident-playbook-generation-report",
       "regenerate": "make ops-generated-example-refresh"
     },
     {

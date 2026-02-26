@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_by", "status", "playbooks"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "generated_by": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "playbooks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["drill_id", "runbook_path", "control_graph_node"],
+        "properties": {
+          "drill_id": {"type": "string", "minLength": 1},
+          "runbook_path": {"type": "string", "pattern": "^docs/operations/.+\\.md$"},
+          "control_graph_node": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

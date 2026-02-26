@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops docs semantic-duplication-report --write-example",
+  "status": "pass",
+  "pairs": [
+    {
+      "left": "ops/CONTRACT.md",
+      "right": "ops/CONTROL_PLANE.md",
+      "status": "ok",
+      "notes": "Cross-references preserved; normative artifact root declared in ARTIFACTS.md"
+    },
+    {
+      "left": "ops/AUTHORITY_TIERS.md",
+      "right": "ops/DOC_NECESSITY_CHECKLIST.md",
+      "status": "ok",
+      "notes": "Tier policy and necessity checklist are complementary, not duplicate rule sources"
+    }
+  ]
+}

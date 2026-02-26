@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops incident-playbook-generation-report --write-example",
+  "status": "pass",
+  "playbooks": [
+    {
+      "drill_id": "ops.drill.release-readiness",
+      "runbook_path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
+      "control_graph_node": "domain.observe"
+    }
+  ]
+}

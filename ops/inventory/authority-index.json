@@ -31,6 +31,12 @@
       "consumer": "checks_ops_human_workflow_maturity"
     },
     {
+      "path": "ops/INCIDENT_PLAYBOOK_GENERATION.md",
+      "role": "authoritative",
+      "owner": "bijux-atlas-operations",
+      "consumer": "checks_ops_human_workflow_maturity"
+    },
+    {
       "path": "ops/OPS_FREEZE_WORKFLOW.md",
       "role": "authoritative",
       "owner": "bijux-atlas-operations",

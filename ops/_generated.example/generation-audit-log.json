@@ -88,6 +88,13 @@
       "generator_version": "schema-v1"
     },
     {
+      "artifact": "ops/_generated.example/docs-semantic-duplication-report.json",
+      "producer": "bijux dev atlas ops docs semantic-duplication-report",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
       "artifact": "ops/_generated.example/docs-shrink-report.json",
       "producer": "bijux dev atlas ops docs shrink-report",
       "regenerate": "make ops-generated-example-refresh",
@@ -132,6 +139,13 @@
     {
       "artifact": "ops/_generated.example/generator-coverage-report.json",
       "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/incident-playbook-generation-report.json",
+      "producer": "bijux dev atlas ops incident-playbook-generation-report",
       "regenerate": "make ops-generated-example-refresh",
       "lifecycle": "curated_evidence",
       "generator_version": "schema-v1"

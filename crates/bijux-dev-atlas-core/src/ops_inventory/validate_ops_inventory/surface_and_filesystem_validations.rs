@@ -109,6 +109,7 @@ fn validate_surface_and_filesystem_policies(
         "GENERATED_LIFECYCLE.md",
         "GOLDEN_REFRESH_POLICY.md",
         "INDEX.md",
+        "INCIDENT_PLAYBOOK_GENERATION.md",
         "MATURITY_SCORECARD.md",
         "MINIMAL_RELEASE_SURFACE.md",
         "NAMING.md",

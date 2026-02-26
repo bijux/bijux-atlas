@@ -42,3 +42,5 @@ Schemas that are intentionally not referenced directly by current runtime artifa
 - `ops/schema/report/docs-shrink-report.schema.json`: reserved for curated docs compression evidence publication.
 - `ops/schema/report/generation-audit-log.schema.json`: reserved for curated generation audit evidence publication.
 - `ops/schema/inventory/control-graph-coverage-map.schema.json`: reserved for curated control graph coverage mapping evidence publication.
+- `ops/schema/report/docs-semantic-duplication-report.schema.json`: reserved for curated docs semantic duplication evidence publication.
+- `ops/schema/report/incident-playbook-generation-report.schema.json`: reserved for curated incident playbook generation evidence publication.

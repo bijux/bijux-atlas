@@ -33,7 +33,9 @@
 | `ops/report/generated/readiness-score.json` | `ops/schema/report/readiness-score.schema.json` |
 | `ops/_generated.example/evidence-gap-report.json` | `ops/schema/report/evidence-gap-report.schema.json` |
 | `ops/_generated.example/generation-audit-log.json` | `ops/schema/report/generation-audit-log.schema.json` |
+| `ops/_generated.example/incident-playbook-generation-report.json` | `ops/schema/report/incident-playbook-generation-report.schema.json` |
 | `ops/_generated.example/docs-shrink-report.json` | `ops/schema/report/docs-shrink-report.schema.json` |
+| `ops/_generated.example/docs-semantic-duplication-report.json` | `ops/schema/report/docs-semantic-duplication-report.schema.json` |
 | `ops/_generated.example/inventory-completeness-score.json` | `ops/schema/inventory/inventory-completeness-score.schema.json` |
 | `ops/_generated.example/control-graph-coverage-map.json` | `ops/schema/inventory/control-graph-coverage-map.schema.json` |
 | `ops/_generated.example/what-breaks-if-removed-report.json` | `ops/schema/report/what-breaks-if-removed-report.schema.json` |
@@ -62,7 +64,9 @@
 - Contract audit evidence: `ops/_generated.example/contract-audit-report.json`
 - Contract dependency evidence: `ops/_generated.example/contract-dependency-graph.json`
 - Generation audit evidence: `ops/_generated.example/generation-audit-log.json`
+- Incident playbook generation evidence: `ops/_generated.example/incident-playbook-generation-report.json`
 - Docs shrink evidence: `ops/_generated.example/docs-shrink-report.json`
+- Docs semantic duplication evidence: `ops/_generated.example/docs-semantic-duplication-report.json`
 - Inventory completeness evidence: `ops/_generated.example/inventory-completeness-score.json`
 - Control graph coverage evidence: `ops/_generated.example/control-graph-coverage-map.json`
 - Deletion impact evidence: `ops/_generated.example/what-breaks-if-removed-report.json`
