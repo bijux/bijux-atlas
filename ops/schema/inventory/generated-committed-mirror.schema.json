@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "allow_runtime_compat", "mirrors"],
+  "required": ["schema_version", "allow_runtime_compat", "mirrors", "curated_evidence"],
   "properties": {
     "schema_version": {"type": "integer", "const": 1},
     "allow_runtime_compat": {"type": "array", "items": {"type": "string", "minLength": 1}},
@@ -15,6 +15,23 @@
         "properties": {
           "committed": {"type": "string", "minLength": 1},
           "source": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "curated_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["committed", "lifecycle", "producer", "regenerate"],
+        "properties": {
+          "committed": {"type": "string", "minLength": 1},
+          "lifecycle": {
+            "type": "string",
+            "enum": ["curated_evidence"]
+          },
+          "producer": {"type": "string", "minLength": 1},
+          "regenerate": {"type": "string", "minLength": 1}
         }
       }
     }

@@ -631,6 +631,17 @@ budget_ms = 2500
 visibility = "internal"
 
 [[checks]]
+id = "checks_ops_generated_lifecycle_metadata"
+domain = "ops"
+title = "generated evidence lifecycle metadata is complete and derivable"
+docs = "ops/GENERATED_LIFECYCLE.md"
+tags = ["ops", "fast"]
+suites = ["ops_fast", "all_fast", "ci"]
+effects_required = ["fs_read"]
+budget_ms = 1000
+visibility = "public"
+
+[[checks]]
 id = "checks_ops_generated_readonly_markers"
 domain = "ops"
 title = "ops generated files keep readonly generator markers"

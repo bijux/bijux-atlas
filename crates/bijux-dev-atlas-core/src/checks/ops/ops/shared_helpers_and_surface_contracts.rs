@@ -381,3 +381,115 @@ fn checks_ops_generated_readonly_markers(
     Ok(violations)
 }
 
+fn checks_ops_generated_lifecycle_metadata(
+    ctx: &CheckContext<'_>,
+) -> Result<Vec<Violation>, CheckError> {
+    let policy_rel = Path::new("ops/inventory/generated-committed-mirror.json");
+    let policy_path = ctx.repo_root.join(policy_rel);
+    let policy_text =
+        fs::read_to_string(&policy_path).map_err(|err| CheckError::Failed(err.to_string()))?;
+    let policy_json: serde_json::Value =
+        serde_json::from_str(&policy_text).map_err(|err| CheckError::Failed(err.to_string()))?;
+
+    let allow_runtime_compat = policy_json
+        .get("allow_runtime_compat")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+    let curated_entries = policy_json
+        .get("curated_evidence")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default();
+
+    let mut curated_by_path = std::collections::BTreeMap::<String, serde_json::Value>::new();
+    let mut violations = Vec::new();
+    for entry in &curated_entries {
+        let Some(path) = entry.get("committed").and_then(|v| v.as_str()) else {
+            violations.push(violation(
+                "OPS_GENERATED_LIFECYCLE_ENTRY_PATH_MISSING",
+                "curated_evidence entry is missing `committed` path".to_string(),
+                "add committed path to every curated_evidence entry",
+                Some(policy_rel),
+            ));
+            continue;
+        };
+        if curated_by_path.insert(path.to_string(), entry.clone()).is_some() {
+            violations.push(violation(
+                "OPS_GENERATED_LIFECYCLE_DUPLICATE_ENTRY",
+                format!("duplicate curated_evidence metadata entry for `{path}`"),
+                "keep one curated_evidence metadata entry per committed file",
+                Some(policy_rel),
+            ));
+        }
+        for key in ["lifecycle", "producer", "regenerate"] {
+            if entry
+                .get(key)
+                .and_then(|v| v.as_str())
+                .is_none_or(|s| s.trim().is_empty())
+            {
+                violations.push(violation(
+                    "OPS_GENERATED_LIFECYCLE_METADATA_MISSING",
+                    format!("curated_evidence entry `{path}` must include non-empty `{key}`"),
+                    "declare lifecycle, producer, and regenerate command metadata for curated generated files",
+                    Some(policy_rel),
+                ));
+            }
+        }
+        if entry
+            .get("lifecycle")
+            .and_then(|v| v.as_str())
+            .is_some_and(|value| value != "curated_evidence")
+        {
+            violations.push(violation(
+                "OPS_GENERATED_LIFECYCLE_VALUE_INVALID",
+                format!(
+                    "curated_evidence entry `{path}` has invalid lifecycle value; expected `curated_evidence`"
+                ),
+                "use the generated lifecycle state names from ops/GENERATED_LIFECYCLE.md",
+                Some(policy_rel),
+            ));
+        }
+    }
+
+    let mut allowlisted_paths = Vec::<String>::new();
+    for entry in allow_runtime_compat {
+        if let Some(path) = entry.as_str() {
+            allowlisted_paths.push(path.to_string());
+            if !curated_by_path.contains_key(path) {
+                violations.push(violation(
+                    "OPS_GENERATED_LIFECYCLE_COVERAGE_MISSING",
+                    format!(
+                        "allow_runtime_compat path `{path}` is missing curated_evidence lifecycle metadata"
+                    ),
+                    "add a curated_evidence metadata entry for every committed generated evidence path",
+                    Some(policy_rel),
+                ));
+            }
+        }
+    }
+    if !allowlisted_paths.windows(2).all(|w| w[0] <= w[1]) {
+        violations.push(violation(
+            "OPS_GENERATED_ALLOWLIST_ORDER_UNSTABLE",
+            "allow_runtime_compat entries must be lexicographically sorted".to_string(),
+            "sort allow_runtime_compat paths for deterministic generated lifecycle policy diffs",
+            Some(policy_rel),
+        ));
+    }
+
+    let curated_paths: Vec<_> = curated_entries
+        .iter()
+        .filter_map(|entry| entry.get("committed").and_then(|v| v.as_str()))
+        .map(ToString::to_string)
+        .collect();
+    if !curated_paths.windows(2).all(|w| w[0] <= w[1]) {
+        violations.push(violation(
+            "OPS_GENERATED_LIFECYCLE_ENTRY_ORDER_UNSTABLE",
+            "curated_evidence entries must be sorted by committed path".to_string(),
+            "sort curated_evidence entries lexicographically by committed path",
+            Some(policy_rel),
+        ));
+    }
+
+    Ok(violations)
+}
