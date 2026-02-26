@@ -144,24 +144,35 @@ fn checks_ops_retired_artifact_path_references_absent(
         "ops/CONTRACT.md",
         "ops/_generated.example/control-plane.snapshot.md",
     ];
-    for path in walk_files(&ctx.repo_root.join("ops")) {
-        let Ok(rel) = path.strip_prefix(ctx.repo_root) else {
-            continue;
-        };
-        let rel_str = rel.display().to_string();
-        if allowlist.iter().any(|allowed| *allowed == rel_str) {
+    let scan_roots = [
+        Path::new("ops"),
+        Path::new("crates/bijux-dev-atlas/src"),
+        Path::new("crates/bijux-dev-atlas/docs"),
+    ];
+    for scan_root in scan_roots {
+        let full_root = ctx.repo_root.join(scan_root);
+        if !full_root.exists() {
             continue;
         }
-        let Ok(text) = fs::read_to_string(&path) else {
-            continue;
-        };
-        if text.contains("ops/_artifacts") {
-            violations.push(violation(
-                "OPS_RETIRED_ARTIFACT_PATH_REFERENCE",
-                format!("retired artifact path reference found in `{}`", rel.display()),
-                "replace ops/_artifacts paths with canonical artifacts/ layout",
-                Some(rel),
-            ));
+        for path in walk_files(&full_root) {
+            let Ok(rel) = path.strip_prefix(ctx.repo_root) else {
+                continue;
+            };
+            let rel_str = rel.display().to_string();
+            if allowlist.iter().any(|allowed| *allowed == rel_str) {
+                continue;
+            }
+            let Ok(text) = fs::read_to_string(&path) else {
+                continue;
+            };
+            if text.contains("ops/_artifacts") {
+                violations.push(violation(
+                    "OPS_RETIRED_ARTIFACT_PATH_REFERENCE",
+                    format!("retired artifact path reference found in `{}`", rel.display()),
+                    "replace ops/_artifacts paths with canonical artifacts/ layout",
+                    Some(rel),
+                ));
+            }
         }
     }
     Ok(violations)
