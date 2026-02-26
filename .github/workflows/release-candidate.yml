@@ -37,8 +37,8 @@ jobs:
       TMP: artifacts/isolates/release-candidate/tmp
       TEMP: artifacts/isolates/release-candidate/tmp
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
           toolchain: 1.84.1
       - name: Verify clean tree and lockfile
@@ -88,7 +88,7 @@ jobs:
           printf "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- input version: %s\n" \
             "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: release-candidate-${{ env.RUN_ID }}

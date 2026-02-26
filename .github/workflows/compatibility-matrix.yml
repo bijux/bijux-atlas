@@ -19,12 +19,12 @@ jobs:
       TMP: artifacts/isolates/compatibility-matrix/tmp
       TEMP: artifacts/isolates/compatibility-matrix/tmp
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ref: main
       - run: make docs
       - name: Create compatibility matrix PR
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           commit-message: "docs(compatibility): refresh umbrella-atlas matrix for ${GITHUB_REF_NAME}"
           title: "docs: refresh compatibility matrix for ${GITHUB_REF_NAME}"

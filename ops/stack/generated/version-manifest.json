@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "kind_node_image": "kindest/node:v1.31.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f",
-  "minio": "minio/minio:RELEASE.2025-01-20T14-49-07Z",
-  "minio_mc": "minio/mc:RELEASE.2025-01-17T23-25-50Z",
-  "prometheus": "prom/prometheus:v2.54.1",
-  "otel_collector": "otel/opentelemetry-collector-contrib:0.111.0",
-  "redis": "redis:7.4-alpine",
-  "toxiproxy": "ghcr.io/shopify/toxiproxy:2.12.0",
+  "minio": "minio/minio:RELEASE.2025-01-20T14-49-07Z@sha256:ed9be66eb5f2636c18289c34c3b725ddf57815f2777c77b5938543b78a44f144",
+  "minio_mc": "minio/mc:RELEASE.2025-01-17T23-25-50Z@sha256:b55b1283c0b81b8bb473c94133d4e00a552518c4796a954ddb04bb7b6e05927d",
+  "prometheus": "prom/prometheus:v2.54.1@sha256:f6639335d34a77d9d9db382b92eeb7fc00934be8eae81dbc03b31cfe90411a94",
+  "otel_collector": "otel/opentelemetry-collector-contrib:0.111.0@sha256:a2a52e43c1a80aa94120ad78c2db68780eb90e6d11c8db5b3ce2f6a0cc6b5029",
+  "redis": "redis:7.4-alpine@sha256:8b81dd37ff027bec4e516d41acfbe9fe2460070dc6d4a4570a2ac5b9d59df065",
+  "toxiproxy": "ghcr.io/shopify/toxiproxy:2.12.0@sha256:9378ed52a28bc50edc1350f936f518f31fa95f0d15917d6eb40b8e376d1a214e",
   "generated_by": "bijux dev atlas ops generate"
 }
