@@ -43,6 +43,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/ops_support/manifests.rs",
         "src/commands/ops_support/tools.rs",
         "src/commands/docs_runtime/command_dispatch.rs",
+        "src/commands/docs_runtime/reference_page_generators.rs",
         "src/ops_commands/runtime_mod/core_handler.rs",
         "src/ops_commands/runtime_mod/execution_handler.rs",
         "src/ops_runtime_execution/runtime_mod/install_status.rs",
