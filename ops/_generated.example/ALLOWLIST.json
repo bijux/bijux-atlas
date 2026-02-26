@@ -21,6 +21,7 @@
     "ops/_generated.example/evidence-gap-report.json",
     "ops/_generated.example/file-usage-report.json",
     "ops/_generated.example/fixture-drift-report.json",
+    "ops/_generated.example/generation-audit-log.json",
     "ops/_generated.example/generator-coverage-report.json",
     "ops/_generated.example/inventory-completeness-score.json",
     "ops/_generated.example/inventory-index.json",

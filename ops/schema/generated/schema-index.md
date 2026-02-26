@@ -94,6 +94,7 @@
 | `ops/schema/report/docs-shrink-report.schema.json` |
 | `ops/schema/report/evidence-gap-report.schema.json` |
 | `ops/schema/report/evidence-levels.schema.json` |
+| `ops/schema/report/generation-audit-log.schema.json` |
 | `ops/schema/report/historical-comparison.schema.json` |
 | `ops/schema/report/lane.schema.json` |
 | `ops/schema/report/readiness-score.schema.json` |

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "generated_by": "bijux dev atlas ops generation-audit-log --write-example",
+  "status": "pass",
+  "entries": [
+    {
+      "artifact": "ops/_generated.example/docs-shrink-report.json",
+      "producer": "bijux dev atlas ops docs shrink-report",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/report/generated/readiness-score.json",
+      "producer": "bijux dev atlas ops report readiness-score",
+      "regenerate": "make ops-readiness-scorecard",
+      "lifecycle": "domain_derived",
+      "generator_version": "schema-v1"
+    }
+  ],
+  "notes": [
+    "Curated audit log for generated artifact lineage and regeneration commands"
+  ]
+}
