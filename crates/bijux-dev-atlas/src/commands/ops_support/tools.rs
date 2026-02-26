@@ -237,6 +237,7 @@ pub(crate) fn verify_tools_snapshot(
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
 

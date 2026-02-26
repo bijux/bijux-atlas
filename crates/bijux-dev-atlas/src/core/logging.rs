@@ -57,6 +57,7 @@ pub fn render_log(record: &LogRecord, format: LogFormat) -> Result<String, Strin
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
 

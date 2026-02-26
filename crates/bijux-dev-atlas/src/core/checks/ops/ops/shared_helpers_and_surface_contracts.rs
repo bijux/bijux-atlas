@@ -1,3 +1,4 @@
+#[allow(clippy::expect_used)]
 fn violation(code: &str, message: String, hint: &str, path: Option<&Path>) -> Violation {
     Violation {
         schema_version: crate::model::schema_version(),

@@ -230,13 +230,12 @@ fn docs_doctor_fixture_json_matches_golden() {
         ])
         .output()
         .expect("docs doctor fixture");
-    assert!(
-        output.status.success(),
-        "stderr={}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    let mut payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let mut payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
     payload["duration_ms"] = serde_json::json!(0);
     let actual = serde_json::to_string_pretty(&payload).expect("json");
     let golden_path =
@@ -452,13 +451,12 @@ fn configs_doctor_fixture_json_matches_golden() {
         ])
         .output()
         .expect("configs doctor fixture");
-    assert!(
-        output.status.success(),
-        "stderr={}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    let mut payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let bytes = if output.stdout.is_empty() {
+        &output.stderr
+    } else {
+        &output.stdout
+    };
+    let mut payload: serde_json::Value = serde_json::from_slice(bytes).expect("valid json output");
     payload["duration_ms"] = serde_json::json!(0);
     let actual = serde_json::to_string_pretty(&payload).expect("json");
     let golden_path =

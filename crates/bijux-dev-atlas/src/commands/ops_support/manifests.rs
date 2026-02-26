@@ -247,6 +247,7 @@ pub(crate) fn load_toolchain_inventory_for_ops(
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
     use crate::ops_support::StackManifestProfile;

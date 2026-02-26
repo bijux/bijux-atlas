@@ -506,6 +506,7 @@ pub fn report_json_schema() -> Value {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::*;
 

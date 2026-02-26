@@ -30,6 +30,7 @@ fn collect_files_recursive(path: PathBuf) -> Vec<PathBuf> {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
 mod tests {
     use super::{load_ops_inventory_cached, validate_pins_file_content};
     use std::collections::BTreeSet;
