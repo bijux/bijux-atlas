@@ -124,7 +124,7 @@ pub(super) fn check_ops_docs_governance(
     validate_ops_generated_docs_and_reports(ctx, &mut violations)?;
     validate_ops_markdown_governance_budgets(ctx, &mut violations)?;
     validate_ops_root_index_and_root_doc_budgets(ctx, &mut violations)?;
+    validate_ops_authority_tiers_and_doc_necessity(ctx, &mut violations)?;
 
     Ok(violations)
 }
-
