@@ -101,6 +101,7 @@ fn suite_expansion_is_stable() {
             "checks_ops_artifacts_gitignore_policy".to_string(),
             "checks_ops_artifacts_not_tracked".to_string(),
             "checks_ops_control_plane_doc_contract".to_string(),
+            "checks_ops_generated_lifecycle_metadata".to_string(),
             "checks_ops_generated_readonly_markers".to_string(),
             "checks_ops_image_references_digest_pinned".to_string(),
             "checks_ops_makefile_routes_dev_atlas".to_string(),

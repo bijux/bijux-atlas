@@ -5,6 +5,7 @@ checks_docs_index_links	docs index links must resolve
 checks_make_wrapper_commands	make wrapper commands stay canonical
 checks_ops_artifacts_gitignore_policy	artifacts root remains gitignored
 checks_ops_artifacts_not_tracked	ops evidence paths stay empty in repository
+checks_ops_generated_lifecycle_metadata	generated evidence lifecycle metadata is complete and derivable
 checks_ops_generated_readonly_markers	ops generated files keep readonly generator markers
 checks_ops_image_references_digest_pinned	ops image references are digest pinned
 checks_ops_makefile_routes_dev_atlas	ops makefile routes through dev atlas command surface
