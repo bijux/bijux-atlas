@@ -107,10 +107,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 action: "stack-logs".to_string(),
                 common,
             },
-            OpsStackCommand::Ports(common) => OpsCommand::Explain {
-                action: "stack-ports".to_string(),
-                common,
-            },
+            OpsStackCommand::Ports(common) => OpsCommand::K8sPorts(common),
             OpsStackCommand::Versions(common) => OpsCommand::Explain {
                 action: "stack-versions".to_string(),
                 common,

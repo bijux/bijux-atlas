@@ -136,6 +136,18 @@ fn ops_stack_plan_supports_json_format() {
 }
 
 #[test]
+fn ops_stack_ports_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "stack", "ports", "--format", "json"])
+        .output()
+        .expect("ops stack ports");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("k8s ports requires --allow-subprocess"));
+}
+
+#[test]
 fn ops_k8s_test_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
