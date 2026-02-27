@@ -158,6 +158,17 @@ budget_ms = 1200
 visibility = "internal"
 
 [[checks]]
+id = "checks_docs_command_list_matches_contract"
+domain = "docs"
+title = "runtime command list doc matches runtime command contract"
+docs = "docs/contracts/plugin/mode.md"
+tags = ["internal", "slow"]
+suites = ["deep"]
+effects_required = ["fs_read"]
+budget_ms = 1500
+visibility = "internal"
+
+[[checks]]
 id = "checks_docs_command_surface_docs_exist"
 domain = "docs"
 title = "runtime and dev command surface docs are present"
@@ -386,17 +397,6 @@ tags = ["docs", "internal"]
 suites = ["deep"]
 effects_required = ["fs_read"]
 budget_ms = 1000
-visibility = "internal"
-
-[[checks]]
-id = "checks_docs_command_list_matches_contract"
-domain = "docs"
-title = "runtime command list doc matches runtime command contract"
-docs = "docs/contracts/plugin/mode.md"
-tags = ["internal", "slow"]
-suites = ["deep"]
-effects_required = ["fs_read"]
-budget_ms = 1500
 visibility = "internal"
 
 [[checks]]
