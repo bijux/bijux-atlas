@@ -121,6 +121,9 @@ pub enum ConfigsCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum DockerCommand {
+    Contracts(DockerCommonArgs),
+    Gates(DockerCommonArgs),
+    Doctor(DockerCommonArgs),
     Validate(DockerCommonArgs),
     Build(DockerCommonArgs),
     Check(DockerCommonArgs),

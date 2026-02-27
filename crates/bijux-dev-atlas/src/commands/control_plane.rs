@@ -196,6 +196,81 @@ pub(crate) fn run_policies_report(
 }
 
 pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
+    fn docker_contract_rows() -> Vec<serde_json::Value> {
+        vec![
+            serde_json::json!({"contract_id":"DOCKER-001","name":"no-latest-tags","gate_id":"docker.contract.no_latest"}),
+            serde_json::json!({"contract_id":"DOCKER-002","name":"base-images-digest-pinned","gate_id":"docker.contract.digest_pins"}),
+            serde_json::json!({"contract_id":"DOCKER-003","name":"root-dockerfile-is-shim-symlink","gate_id":"docker.contract.root_symlink"}),
+            serde_json::json!({"contract_id":"DOCKER-004","name":"dockerfiles-only-under-docker-images","gate_id":"docker.contract.path_scope"}),
+            serde_json::json!({"contract_id":"DOCKER-005","name":"required-oci-labels-present","gate_id":"docker.contract.oci_labels"}),
+            serde_json::json!({"contract_id":"DOCKER-006","name":"build-args-defaulted","gate_id":"docker.contract.build_args"}),
+            serde_json::json!({"contract_id":"DOCKER-007","name":"runtime-smoke-surface","gate_id":"docker.contract.runtime_smoke"}),
+            serde_json::json!({"contract_id":"DOCKER-008","name":"sbom-generated","gate_id":"docker.contract.sbom_generated"}),
+            serde_json::json!({"contract_id":"DOCKER-009","name":"vuln-scan-policy","gate_id":"docker.contract.vuln_scan"}),
+            serde_json::json!({"contract_id":"DOCKER-010","name":"image-size-budget","gate_id":"docker.contract.image_size"}),
+        ]
+    }
+
+    fn docker_gate_rows() -> Vec<serde_json::Value> {
+        vec![
+            serde_json::json!({"gate_id":"docker.contract.no_latest","command":"bijux dev atlas docker validate"}),
+            serde_json::json!({"gate_id":"docker.contract.digest_pins","command":"bijux dev atlas docker validate"}),
+            serde_json::json!({"gate_id":"docker.contract.root_symlink","command":"bijux dev atlas docker validate"}),
+            serde_json::json!({"gate_id":"docker.contract.path_scope","command":"bijux dev atlas docker validate"}),
+            serde_json::json!({"gate_id":"docker.contract.oci_labels","command":"bijux dev atlas docker validate"}),
+            serde_json::json!({"gate_id":"docker.contract.build_args","command":"bijux dev atlas docker validate"}),
+            serde_json::json!({"gate_id":"docker.contract.runtime_smoke","command":"bijux dev atlas docker smoke --allow-subprocess"}),
+            serde_json::json!({"gate_id":"docker.contract.sbom_generated","command":"bijux dev atlas docker sbom --allow-subprocess"}),
+            serde_json::json!({"gate_id":"docker.contract.vuln_scan","command":"bijux dev atlas docker scan --allow-subprocess --allow-network"}),
+            serde_json::json!({"gate_id":"docker.contract.image_size","command":"bijux dev atlas docker build --allow-subprocess"}),
+        ]
+    }
+
+    fn check_contract_gate_mapping() -> Result<(), String> {
+        let contract_gate_ids = docker_contract_rows()
+            .into_iter()
+            .filter_map(|row| row["gate_id"].as_str().map(ToString::to_string))
+            .collect::<std::collections::BTreeSet<_>>();
+        let gate_ids = docker_gate_rows()
+            .into_iter()
+            .filter_map(|row| row["gate_id"].as_str().map(ToString::to_string))
+            .collect::<std::collections::BTreeSet<_>>();
+        if contract_gate_ids != gate_ids {
+            return Err(format!(
+                "docker contract to gate mapping mismatch: contracts={contract_gate_ids:?} gates={gate_ids:?}"
+            ));
+        }
+        Ok(())
+    }
+
+    fn image_tag_for_run(run_id: &RunId) -> String {
+        format!("bijux-atlas:{}", run_id.as_str())
+    }
+
+    fn docker_artifact_dir(repo_root: &Path, run_id: &RunId) -> PathBuf {
+        repo_root
+            .join("artifacts")
+            .join(run_id.as_str())
+            .join("docker")
+    }
+
+    fn run_subprocess(
+        repo_root: &Path,
+        program: &str,
+        args: &[&str],
+    ) -> Result<(i32, String, String), String> {
+        let output = std::process::Command::new(program)
+            .args(args)
+            .current_dir(repo_root)
+            .output()
+            .map_err(|e| format!("failed to run `{program}`: {e}"))?;
+        Ok((
+            output.status.code().unwrap_or(1),
+            String::from_utf8_lossy(&output.stdout).to_string(),
+            String::from_utf8_lossy(&output.stderr).to_string(),
+        ))
+    }
+
     fn extract_copy_sources(line: &str) -> Option<Vec<String>> {
         let trimmed = line.trim();
         if !trimmed.starts_with("COPY ") || trimmed.contains("--from=") {
@@ -214,10 +289,25 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         )
     }
 
-    fn validate_runtime_dockerfile(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
-        let dockerfile = repo_root.join("docker/images/runtime/Dockerfile");
-        let text = fs::read_to_string(&dockerfile)
-            .map_err(|e| format!("failed to read {}: {e}", dockerfile.display()))?;
+    fn all_dockerfiles(repo_root: &Path) -> Result<Vec<PathBuf>, String> {
+        let mut files = Vec::new();
+        let images_root = repo_root.join("docker/images");
+        if images_root.exists() {
+            for path in walk_files(&images_root) {
+                if path
+                    .file_name()
+                    .and_then(|s| s.to_str())
+                    .is_some_and(|s| s == "Dockerfile")
+                {
+                    files.push(path);
+                }
+            }
+        }
+        files.sort();
+        Ok(files)
+    }
+
+    fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
         let policy_path = repo_root.join("docker/policy.json");
         let policy_text = fs::read_to_string(&policy_path)
             .map_err(|e| format!("failed to read {}: {e}", policy_path.display()))?;
@@ -243,65 +333,160 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             .into_iter()
             .filter_map(|v| v.as_str().map(str::to_string))
             .collect::<Vec<_>>();
+        let required_labels = policy["required_oci_labels"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect::<Vec<_>>();
 
         let mut rows = Vec::new();
-        let mut violations = 0usize;
-        for (idx, line) in text.lines().enumerate() {
-            if let Some(srcs) = extract_copy_sources(line) {
-                for src in srcs {
-                    if src == "." || src.starts_with('/') {
-                        continue;
-                    }
-                    if !repo_root.join(&src).exists() {
-                        violations += 1;
-                        rows.push(serde_json::json!({
-                            "kind":"copy_source_missing",
-                            "line": idx + 1,
-                            "path": src
-                        }));
-                    }
-                }
-            }
-            let trimmed = line.trim();
-            if trimmed.starts_with("RUN ")
-                && !allowed_network_tokens
-                    .iter()
-                    .any(|token| trimmed.contains(token))
-                && forbidden_network_tokens
-                    .iter()
-                    .any(|token| trimmed.contains(token))
-            {
-                violations += 1;
+        let root_dockerfile = repo_root.join("Dockerfile");
+        if !root_dockerfile.exists() {
+            rows.push(serde_json::json!({
+                "contract_id":"DOCKER-003",
+                "gate_id":"docker.contract.root_symlink",
+                "kind":"root_dockerfile_missing",
+                "file":"Dockerfile",
+                "line": 1
+            }));
+        } else {
+            let meta = fs::symlink_metadata(&root_dockerfile)
+                .map_err(|e| format!("failed to stat {}: {e}", root_dockerfile.display()))?;
+            if !meta.file_type().is_symlink() {
                 rows.push(serde_json::json!({
-                    "kind":"build_network_policy_violation",
-                    "line": idx + 1,
-                    "instruction": trimmed
-                }));
-            }
-            if !trimmed.starts_with("FROM ") {
-                continue;
-            }
-            let from_spec = trimmed
-                .split_whitespace()
-                .nth(1)
-                .ok_or_else(|| format!("invalid FROM line in {}: {}", dockerfile.display(), trimmed))?;
-            let uses_latest = from_spec.ends_with(":latest") || from_spec == "latest";
-            let is_digest_pinned = from_spec.contains("@sha256:");
-            let is_allowlisted = exceptions.iter().any(|e| e == &from_spec);
-            if uses_latest || (!is_digest_pinned && !is_allowlisted) {
-                violations += 1;
-                rows.push(serde_json::json!({
-                    "kind":"base_image_policy_violation",
-                    "line": idx + 1,
-                    "image": from_spec
+                    "contract_id":"DOCKER-003",
+                    "gate_id":"docker.contract.root_symlink",
+                    "kind":"root_dockerfile_not_symlink",
+                    "file":"Dockerfile",
+                    "line": 1
                 }));
             }
         }
-        rows.push(serde_json::json!({
-            "kind":"summary",
-            "dockerfile": dockerfile.display().to_string(),
-            "violations": violations
-        }));
+
+        let dockerfiles = all_dockerfiles(repo_root)?;
+        for dockerfile in dockerfiles {
+            let rel = dockerfile
+                .strip_prefix(repo_root)
+                .unwrap_or(&dockerfile)
+                .display()
+                .to_string();
+            if !rel.starts_with("docker/images/") {
+                rows.push(serde_json::json!({
+                    "contract_id":"DOCKER-004",
+                    "gate_id":"docker.contract.path_scope",
+                    "kind":"dockerfile_outside_scope",
+                    "file": rel,
+                    "line": 1
+                }));
+            }
+            let text = fs::read_to_string(&dockerfile)
+                .map_err(|e| format!("failed to read {}: {e}", dockerfile.display()))?;
+            let mut labels_present = std::collections::BTreeSet::new();
+            for (idx, line) in text.lines().enumerate() {
+                if let Some(srcs) = extract_copy_sources(line) {
+                    for src in srcs {
+                        if src == "." || src.starts_with('/') {
+                            continue;
+                        }
+                        if !repo_root.join(&src).exists() {
+                            rows.push(serde_json::json!({
+                                "contract_id":"DOCKER-004",
+                                "gate_id":"docker.contract.path_scope",
+                                "kind":"copy_source_missing",
+                                "file": rel,
+                                "line": idx + 1,
+                                "evidence": src
+                            }));
+                        }
+                    }
+                }
+
+                let trimmed = line.trim();
+                if trimmed.starts_with("LABEL ") {
+                    for key in &required_labels {
+                        if trimmed.contains(key) {
+                            labels_present.insert(key.clone());
+                        }
+                    }
+                }
+                if trimmed.starts_with("ARG ")
+                    && !trimmed.contains('=')
+                    && trimmed
+                        .split_whitespace()
+                        .nth(1)
+                        .is_some_and(|name| name == "RUST_VERSION" || name == "IMAGE_VERSION")
+                {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-006",
+                        "gate_id":"docker.contract.build_args",
+                        "kind":"required_arg_missing_default",
+                        "file": rel,
+                        "line": idx + 1,
+                        "evidence": trimmed
+                    }));
+                }
+                if trimmed.starts_with("RUN ")
+                    && !allowed_network_tokens
+                        .iter()
+                        .any(|token| trimmed.contains(token))
+                    && forbidden_network_tokens
+                        .iter()
+                        .any(|token| trimmed.contains(token))
+                {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-004",
+                        "gate_id":"docker.contract.path_scope",
+                        "kind":"build_network_policy_violation",
+                        "file": rel,
+                        "line": idx + 1,
+                        "evidence": trimmed
+                    }));
+                }
+                if !trimmed.starts_with("FROM ") {
+                    continue;
+                }
+                let from_spec = trimmed.split_whitespace().nth(1).ok_or_else(|| {
+                    format!("invalid FROM line in {}: {}", dockerfile.display(), trimmed)
+                })?;
+                let uses_latest = from_spec.ends_with(":latest") || from_spec == "latest";
+                let is_digest_pinned = from_spec.contains("@sha256:");
+                let is_allowlisted = exceptions.iter().any(|e| e == &from_spec);
+                if uses_latest {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-001",
+                        "gate_id":"docker.contract.no_latest",
+                        "kind":"latest_tag_forbidden",
+                        "file": rel,
+                        "line": idx + 1,
+                        "evidence": from_spec
+                    }));
+                }
+                if !is_digest_pinned && !is_allowlisted {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-002",
+                        "gate_id":"docker.contract.digest_pins",
+                        "kind":"digest_pin_required",
+                        "file": rel,
+                        "line": idx + 1,
+                        "evidence": from_spec
+                    }));
+                }
+            }
+            for label in &required_labels {
+                if !labels_present.contains(label) {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-005",
+                        "gate_id":"docker.contract.oci_labels",
+                        "kind":"required_label_missing",
+                        "file": rel,
+                        "line": 1,
+                        "evidence": label
+                    }));
+                }
+            }
+        }
         Ok(rows)
     }
 
@@ -312,13 +497,55 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             Ok((rendered, code))
         };
         match command {
+            DockerCommand::Contracts(common) => {
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "status": "ok",
+                    "rows": docker_contract_rows(),
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Gates(common) => {
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "status": "ok",
+                    "rows": docker_gate_rows(),
+                });
+                emit(&common, payload, 0)
+            }
+            DockerCommand::Doctor(common) => {
+                if !common.allow_subprocess {
+                    return Err("docker doctor requires --allow-subprocess".to_string());
+                }
+                let mut rows = Vec::new();
+                let (docker_code, _, docker_err) = run_subprocess(
+                    &resolve_repo_root(common.repo_root.clone())?,
+                    "docker",
+                    &["version", "--format", "{{.Server.Version}}"],
+                )?;
+                rows.push(serde_json::json!({"check":"docker_version","status": if docker_code == 0 { "ok" } else { "failed" }, "stderr": docker_err}));
+                let (syft_code, _, _) =
+                    run_subprocess(&resolve_repo_root(common.repo_root.clone())?, "syft", &["version"])
+                        .unwrap_or((1, String::new(), String::new()));
+                rows.push(serde_json::json!({"check":"syft","status": if syft_code == 0 { "ok" } else { "failed" }}));
+                let (trivy_code, _, _) =
+                    run_subprocess(&resolve_repo_root(common.repo_root.clone())?, "trivy", &["--version"])
+                        .unwrap_or((1, String::new(), String::new()));
+                rows.push(serde_json::json!({"check":"trivy","status": if trivy_code == 0 { "ok" } else { "failed" }}));
+                let failures = rows.iter().filter(|r| r["status"] == "failed").count();
+                let payload = serde_json::json!({
+                    "schema_version":1,
+                    "status": if failures == 0 { "ok" } else { "failed" },
+                    "rows": rows,
+                    "summary": {"errors": failures, "warnings":0}
+                });
+                emit(&common, payload, if failures == 0 { 0 } else { 1 })
+            }
             DockerCommand::Validate(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let rows = validate_runtime_dockerfile(&repo_root)?;
-                let violations = rows
-                    .iter()
-                    .filter(|r| r["kind"] != "summary")
-                    .count();
+                check_contract_gate_mapping()?;
+                let rows = validate_dockerfiles(&repo_root)?;
+                let violations = rows.len();
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "status": if violations == 0 { "ok" } else { "failed" },
@@ -341,43 +568,76 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     .map(|v| RunId::parse(v))
                     .transpose()?
                     .unwrap_or_else(|| RunId::from_seed("docker_build"));
+                let tag = image_tag_for_run(&run_id);
+                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                fs::create_dir_all(&artifact_dir)
+                    .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
+                let (code, stdout, stderr) = run_subprocess(
+                    &repo_root,
+                    "docker",
+                    &[
+                        "build",
+                        "--file",
+                        "docker/images/runtime/Dockerfile",
+                        "--tag",
+                        &tag,
+                        ".",
+                    ],
+                )?;
+                fs::write(artifact_dir.join("build.stdout.log"), &stdout)
+                    .map_err(|e| format!("cannot write build stdout log: {e}"))?;
+                fs::write(artifact_dir.join("build.stderr.log"), &stderr)
+                    .map_err(|e| format!("cannot write build stderr log: {e}"))?;
+                let (inspect_code, inspect_stdout, _) =
+                    run_subprocess(&repo_root, "docker", &["image", "inspect", &tag, "--format", "{{.Id}}"])
+                        .unwrap_or((1, String::new(), String::new()));
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "run_id": run_id.as_str(),
-                    "text": "docker build wrapper is defined (subprocess-gated)",
-                    "rows": [{"action":"build","repo_root": repo_root.display().to_string()}],
+                    "text": "docker build completed",
+                    "rows": [{"action":"build","repo_root": repo_root.display().to_string(), "image_tag": tag, "image_id": inspect_stdout.trim(), "inspect_status": inspect_code}],
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, 0)
+                emit(&common, payload, code)
             }
             DockerCommand::Check(common) => {
-                if !common.allow_subprocess {
-                    return Err("docker check requires --allow-subprocess".to_string());
-                }
-                let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                let payload = serde_json::json!({
-                    "schema_version": 1,
-                    "text": "docker check wrapper is defined (subprocess-gated)",
-                    "rows": [{"action":"check","repo_root": repo_root.display().to_string()}],
-                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
-                    "duration_ms": started.elapsed().as_millis() as u64
-                });
-                emit(&common, payload, 0)
+                let validate = run_docker_command(true, DockerCommand::Validate(common.clone()));
+                emit(&common, serde_json::json!({"schema_version":1,"status": if validate == 0 { "ok" } else { "failed" }, "rows":[{"action":"check","validate_exit_code": validate}]}), validate)
             }
             DockerCommand::Smoke(common) => {
                 if !common.allow_subprocess {
                     return Err("docker smoke requires --allow-subprocess".to_string());
                 }
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_smoke"));
+                let tag = image_tag_for_run(&run_id);
+                let (help_code, help_out, help_err) = run_subprocess(
+                    &repo_root,
+                    "docker",
+                    &["run", "--rm", "--entrypoint", "/app/bijux-atlas", &tag, "--help"],
+                )?;
+                let (version_code, version_out, version_err) = run_subprocess(
+                    &repo_root,
+                    "docker",
+                    &["run", "--rm", "--entrypoint", "/app/bijux-atlas", &tag, "--version"],
+                )?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
-                    "text": "docker smoke wrapper is defined (subprocess-gated)",
-                    "rows": [{"action":"smoke","repo_root": repo_root.display().to_string()}],
+                    "text": "docker smoke executed",
+                    "rows": [
+                        {"action":"smoke_help","status": help_code, "stdout": help_out, "stderr": help_err, "contract_id":"DOCKER-007"},
+                        {"action":"smoke_version","status": version_code, "stdout": version_out, "stderr": version_err, "contract_id":"DOCKER-007"}
+                    ],
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, 0)
+                emit(&common, payload, if help_code == 0 && version_code == 0 { 0 } else { 1 })
             }
             DockerCommand::Scan(common) => {
                 if !common.allow_subprocess {
@@ -387,28 +647,76 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     return Err("docker scan requires --allow-network".to_string());
                 }
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_scan"));
+                let tag = image_tag_for_run(&run_id);
+                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                fs::create_dir_all(&artifact_dir)
+                    .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
+                let report_path = artifact_dir.join("scan.trivy.json");
+                let report_arg = report_path.display().to_string();
+                let args = [
+                    "image",
+                    "--format",
+                    "json",
+                    "--output",
+                    report_arg.as_str(),
+                    tag.as_str(),
+                ];
+                let (code, stdout, stderr) = run_subprocess(&repo_root, "trivy", &args)?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
-                    "text": "docker scan wrapper is defined (subprocess and network gated)",
-                    "rows": [{"action":"scan","repo_root": repo_root.display().to_string(),"scanner":"trivy_or_grype"}],
+                    "text": "docker scan executed",
+                    "rows": [{"action":"scan","repo_root": repo_root.display().to_string(),"scanner":"trivy","report":report_path.display().to_string(),"stdout":stdout,"stderr":stderr,"contract_id":"DOCKER-009"}],
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, 0)
+                emit(&common, payload, code)
             }
             DockerCommand::Sbom(common) => {
                 if !common.allow_subprocess {
                     return Err("docker sbom requires --allow-subprocess".to_string());
                 }
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_sbom"));
+                let tag = image_tag_for_run(&run_id);
+                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                fs::create_dir_all(&artifact_dir)
+                    .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
+                let spdx_path = artifact_dir.join("sbom.spdx.json");
+                let cyclonedx_path = artifact_dir.join("sbom.cyclonedx.json");
+                let spdx_out = spdx_path.display().to_string();
+                let cyclonedx_out = cyclonedx_path.display().to_string();
+                let (spdx_code, spdx_stdout, spdx_stderr) = run_subprocess(
+                    &repo_root,
+                    "syft",
+                    &[tag.as_str(), "-o", "spdx-json", "--file", spdx_out.as_str()],
+                )?;
+                let (cyclonedx_code, _, cyclonedx_stderr) = run_subprocess(
+                    &repo_root,
+                    "syft",
+                    &[tag.as_str(), "-o", "cyclonedx-json", "--file", cyclonedx_out.as_str()],
+                )?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
-                    "text": "docker sbom wrapper is defined (subprocess-gated)",
-                    "rows": [{"action":"sbom","repo_root": repo_root.display().to_string(),"tool":"syft"}],
+                    "text": "docker sbom executed",
+                    "rows": [
+                        {"action":"sbom","repo_root": repo_root.display().to_string(),"tool":"syft","format":"spdx-json","path":spdx_path.display().to_string(),"stdout":spdx_stdout,"stderr":spdx_stderr,"contract_id":"DOCKER-008"},
+                        {"action":"sbom","repo_root": repo_root.display().to_string(),"tool":"syft","format":"cyclonedx-json","path":cyclonedx_path.display().to_string(),"stderr":cyclonedx_stderr,"contract_id":"DOCKER-008"}
+                    ],
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, 0)
+                emit(&common, payload, if spdx_code == 0 && cyclonedx_code == 0 { 0 } else { 1 })
             }
             DockerCommand::Lock(common) => {
                 if !common.allow_write {
@@ -418,12 +726,22 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 let lock_path = repo_root.join("ops/inventory/image-digests.lock.json");
                 if let Some(parent) = lock_path.parent() {
                     fs::create_dir_all(parent)
-                        .map_err(|e| format!("cannot create {}: {e}", parent.display()))?;
+                    .map_err(|e| format!("cannot create {}: {e}", parent.display()))?;
                 }
+                let run_id = common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_lock"));
+                let tag = image_tag_for_run(&run_id);
+                let (inspect_code, inspect_stdout, inspect_stderr) =
+                    run_subprocess(&repo_root, "docker", &["image", "inspect", &tag, "--format", "{{.Id}}"])
+                        .unwrap_or((1, String::new(), String::new()));
                 let lock_payload = serde_json::json!({
                     "schema_version": 1,
                     "kind": "docker_image_lock",
-                    "images": [],
+                    "images": [{"tag": tag, "digest": inspect_stdout.trim(), "inspect_status": inspect_code, "inspect_stderr": inspect_stderr}],
                     "timestamp_policy": "forbidden_by_default"
                 });
                 fs::write(
@@ -442,35 +760,18 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             }
             DockerCommand::Policy { command } => match command {
                 DockerPolicyCommand::Check(common) => {
-                    let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                    let docker_root = repo_root.join("docker");
-                    let mut rows = Vec::new();
-                    let mut errors = 0usize;
-                    if docker_root.exists() {
-                        for file in walk_files(&docker_root) {
-                            if let Ok(text) = fs::read_to_string(&file) {
-                                let rel = file.strip_prefix(&repo_root).unwrap_or(&file);
-                                for line in text.lines() {
-                                    let trimmed = line.trim();
-                                    if trimmed.contains(":latest") {
-                                        errors += 1;
-                                        rows.push(serde_json::json!({"path": rel.display().to_string(), "violation": "floating_latest_tag", "line": trimmed}));
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    let code = run_docker_command(true, DockerCommand::Validate(common.clone()));
                     let payload = serde_json::json!({
                         "schema_version": 1,
                         "action": "policy_check",
-                        "status": if errors == 0 { "ok" } else { "failed" },
-                        "text": "docker policy check for floating tags",
-                        "rows": rows,
-                        "summary": {"errors": errors, "warnings": 0},
+                        "status": if code == 0 { "ok" } else { "failed" },
+                        "text": "docker policy check delegates to docker validate",
+                        "rows": [{"action":"delegate","to":"docker validate","exit_code":code}],
+                        "summary": {"errors": if code == 0 { 0 } else { 1 }, "warnings": 0},
                         "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                         "duration_ms": started.elapsed().as_millis() as u64
                     });
-                    emit(&common, payload, if errors == 0 { 0 } else { 1 })
+                    emit(&common, payload, code)
                 }
             },
             DockerCommand::Push(args) => {
@@ -503,15 +804,38 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 if !args.common.allow_network {
                     return Err("docker release requires --allow-network".to_string());
                 }
-                let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+                let validate_code = run_docker_command(true, DockerCommand::Validate(args.common.clone()));
+                let build_code = run_docker_command(true, DockerCommand::Build(args.common.clone()));
+                let smoke_code = run_docker_command(true, DockerCommand::Smoke(args.common.clone()));
+                let sbom_code = run_docker_command(true, DockerCommand::Sbom(args.common.clone()));
+                let scan_code = run_docker_command(true, DockerCommand::Scan(args.common.clone()));
+                let push_code = run_docker_command(
+                    true,
+                    DockerCommand::Push(crate::cli::DockerReleaseArgs {
+                        common: args.common.clone(),
+                        i_know_what_im_doing: true,
+                    }),
+                );
                 let payload = serde_json::json!({
                     "schema_version": 1,
-                    "text": "docker release wrapper is defined (explicit release gate)",
-                    "rows": [{"action":"release","repo_root": repo_root.display().to_string()}],
+                    "text": "docker release executed",
+                    "rows": [
+                        {"action":"validate","exit_code":validate_code},
+                        {"action":"build","exit_code":build_code},
+                        {"action":"smoke","exit_code":smoke_code},
+                        {"action":"sbom","exit_code":sbom_code},
+                        {"action":"scan","exit_code":scan_code},
+                        {"action":"push","exit_code":push_code}
+                    ],
                     "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write, "network": args.common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&args.common, payload, 0)
+                let code = [validate_code, build_code, smoke_code, sbom_code, scan_code, push_code]
+                    .iter()
+                    .copied()
+                    .max()
+                    .unwrap_or(0);
+                emit(&args.common, payload, code)
             }
         }
     })();
