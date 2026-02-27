@@ -12,14 +12,18 @@ Commands:
   schema            
   inventory-domain  
   report-domain     
+  evidence          
   tools             
   suite             
   doctor            
   validate          
+  graph             
   inventory         
   docs              
+  docs-verify       
   conformance       
   report            
+  readiness         
   render            
   install           
   status            
