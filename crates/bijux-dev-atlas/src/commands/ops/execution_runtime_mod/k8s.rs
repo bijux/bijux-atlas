@@ -273,6 +273,80 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
     Ok((rendered, if error_count == 0 { 0 } else { 1 }))
 }
 
+pub(crate) fn run_ops_k8s_ports(common: &OpsCommonArgs) -> Result<(String, i32), String> {
+    if !common.allow_subprocess {
+        return Err("OPS_EFFECT_ERROR: k8s ports requires --allow-subprocess".to_string());
+    }
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let ops_root =
+        resolve_ops_root(&repo_root, common.ops_root.clone()).map_err(|e| e.to_stable_message())?;
+    let mut profiles = load_profiles(&ops_root).map_err(|e| e.to_stable_message())?;
+    profiles.sort_by(|a, b| a.name.cmp(&b.name));
+    let profile =
+        resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
+    let process = OpsProcess::new(true);
+    ensure_k8s_safety(&process, &repo_root, &profile, common.force, "bijux-atlas")
+        .map_err(|e| e.to_stable_message())?;
+    let (svc_stdout, svc_event) = process
+        .run_subprocess(
+            "kubectl",
+            &[
+                "get".to_string(),
+                "service".to_string(),
+                "-n".to_string(),
+                "bijux-atlas".to_string(),
+                "-o".to_string(),
+                "json".to_string(),
+            ],
+            &repo_root,
+        )
+        .map_err(|e| e.to_stable_message())?;
+    let services: Value = serde_json::from_str(&svc_stdout)
+        .map_err(|e| format!("failed parsing service json: {e}"))?;
+    let rows = services
+        .get("items")
+        .and_then(Value::as_array)
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|svc| {
+            let name = svc
+                .get("metadata")
+                .and_then(|v| v.get("name"))
+                .and_then(Value::as_str)
+                .unwrap_or("unknown")
+                .to_string();
+            let cluster_ip = svc
+                .get("spec")
+                .and_then(|v| v.get("clusterIP"))
+                .and_then(Value::as_str)
+                .unwrap_or("")
+                .to_string();
+            let ports = svc
+                .get("spec")
+                .and_then(|v| v.get("ports"))
+                .and_then(Value::as_array)
+                .cloned()
+                .unwrap_or_default();
+            serde_json::json!({
+                "kind":"service_port_discovery",
+                "service": name,
+                "cluster_ip": cluster_ip,
+                "ports": ports
+            })
+        })
+        .collect::<Vec<_>>();
+    let payload = serde_json::json!({
+        "schema_version":1,
+        "text":"k8s ports discovery complete",
+        "rows": rows,
+        "subprocess_events":[svc_event],
+        "summary":{"total":1,"errors":0,"warnings":0}
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
+}
+
 pub(crate) fn run_ops_k8s_wait(args: &crate::cli::OpsK8sWaitArgs) -> Result<(String, i32), String> {
     let common = &args.common;
     if !common.allow_subprocess {

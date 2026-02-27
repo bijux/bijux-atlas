@@ -51,6 +51,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 "stack-versions" => serde_json::json!({"action":"stack-versions","purpose":"emit deterministic stack component version inventory","effects_required":["fs_read"],"output":"versions.json"}),
                 "conformance" | "k8s-test" => serde_json::json!({"action":"conformance","purpose":"run ops conformance status checks","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "k8s-smoke" => serde_json::json!({"action":"k8s-smoke","purpose":"run cluster smoke checks against health/query paths","effects_required":["subprocess","network"],"flags":["--allow-subprocess","--allow-network"]}),
+                "k8s-ports" => serde_json::json!({"action":"k8s-ports","purpose":"discover service and endpoint ports for evidence collection","effects_required":["subprocess"],"flags":["--allow-subprocess"]}),
                 "load-plan" => serde_json::json!({"action":"load-plan","purpose":"resolve load suite to script env and thresholds","effects_required":[]}),
                 "load-run" => serde_json::json!({"action":"load-run","purpose":"run k6 load suite and collect summary","effects_required":["subprocess","network","fs_write"]}),
                 "load-report" => serde_json::json!({"action":"load-report","purpose":"parse k6 summary into structured report","effects_required":[]}),
@@ -413,6 +414,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
         OpsCommand::K8sConformance(common) => {
             crate::ops_execution_runtime::run_ops_k8s_conformance(&common)
         }
+        OpsCommand::K8sPorts(common) => crate::ops_execution_runtime::run_ops_k8s_ports(&common),
         OpsCommand::K8sWait(args) => crate::ops_execution_runtime::run_ops_k8s_wait(&args),
         OpsCommand::K8sLogs(args) => crate::ops_execution_runtime::run_ops_k8s_logs(&args),
         OpsCommand::K8sPortForward(args) => {

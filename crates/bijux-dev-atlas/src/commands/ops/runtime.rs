@@ -50,6 +50,7 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         | OpsCommand::Cleanup(common)
         | OpsCommand::K8sPlan(common)
         | OpsCommand::K8sDryRun(common)
+        | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common) => Some(common),
         OpsCommand::Explain { common, .. } | OpsCommand::ExplainProfile { common, .. } => {
             Some(common)
@@ -134,6 +135,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             }),
             OpsK8sCommand::Install(args) => OpsCommand::Install(args),
             OpsK8sCommand::Uninstall(common) => OpsCommand::Down(common),
+            OpsK8sCommand::Ports(common) => OpsCommand::K8sPorts(common),
             OpsK8sCommand::Diff(common) => OpsCommand::Explain {
                 action: "k8s-diff".to_string(),
                 common,

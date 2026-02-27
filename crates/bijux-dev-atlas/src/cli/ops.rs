@@ -106,6 +106,8 @@ pub enum OpsCommand {
     #[command(hide = true)]
     K8sConformance(OpsCommonArgs),
     #[command(hide = true)]
+    K8sPorts(OpsCommonArgs),
+    #[command(hide = true)]
     K8sWait(OpsK8sWaitArgs),
     #[command(hide = true)]
     K8sLogs(OpsK8sLogsArgs),
@@ -150,6 +152,7 @@ pub enum OpsK8sCommand {
     Validate(OpsCommonArgs),
     Install(OpsInstallArgs),
     Uninstall(OpsCommonArgs),
+    Ports(OpsCommonArgs),
     Diff(OpsCommonArgs),
     Rollout(OpsCommonArgs),
     Plan(OpsCommonArgs),

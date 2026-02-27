@@ -63,6 +63,7 @@ fn force_json_ops(command: &mut OpsCommand) {
         | OpsCommand::Cleanup(common)
         | OpsCommand::K8sPlan(common)
         | OpsCommand::K8sDryRun(common)
+        | OpsCommand::K8sPorts(common)
         | OpsCommand::K8sConformance(common)
         | OpsCommand::LoadPlan { common, .. }
         | OpsCommand::LoadRun { common, .. }
@@ -146,6 +147,7 @@ fn force_json_ops(command: &mut OpsCommand) {
             crate::cli::OpsK8sCommand::Validate(common)
             | crate::cli::OpsK8sCommand::Plan(common)
             | crate::cli::OpsK8sCommand::Uninstall(common)
+            | crate::cli::OpsK8sCommand::Ports(common)
             | crate::cli::OpsK8sCommand::Diff(common)
             | crate::cli::OpsK8sCommand::Rollout(common)
             | crate::cli::OpsK8sCommand::DryRun(common)
@@ -324,6 +326,7 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             | OpsCommand::Cleanup(common)
             | OpsCommand::K8sPlan(common)
             | OpsCommand::K8sDryRun(common)
+            | OpsCommand::K8sPorts(common)
             | OpsCommand::K8sConformance(common) => common.repo_root = Some(root.clone()),
             OpsCommand::LoadPlan { common, .. }
             | OpsCommand::LoadRun { common, .. }
@@ -429,6 +432,7 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                 crate::cli::OpsK8sCommand::Validate(common)
                 | crate::cli::OpsK8sCommand::Plan(common)
                 | crate::cli::OpsK8sCommand::Uninstall(common)
+                | crate::cli::OpsK8sCommand::Ports(common)
                 | crate::cli::OpsK8sCommand::Diff(common)
                 | crate::cli::OpsK8sCommand::Rollout(common)
                 | crate::cli::OpsK8sCommand::DryRun(common)

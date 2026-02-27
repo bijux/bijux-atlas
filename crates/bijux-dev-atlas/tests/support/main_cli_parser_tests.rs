@@ -153,6 +153,13 @@ mod tests {
                 "bijux-dev-atlas",
                 "ops",
                 "k8s",
+                "ports",
+                "--allow-subprocess",
+            ],
+            vec![
+                "bijux-dev-atlas",
+                "ops",
+                "k8s",
                 "port-forward",
                 "--allow-subprocess",
                 "--allow-network",

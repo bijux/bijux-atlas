@@ -214,6 +214,18 @@ fn ops_k8s_logs_requires_allow_subprocess() {
 }
 
 #[test]
+fn ops_k8s_ports_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "k8s", "ports", "--format", "json"])
+        .output()
+        .expect("ops k8s ports");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("k8s ports requires --allow-subprocess"));
+}
+
+#[test]
 fn ops_k8s_smoke_requires_allow_subprocess() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
