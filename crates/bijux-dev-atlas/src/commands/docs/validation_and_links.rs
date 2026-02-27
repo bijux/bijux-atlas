@@ -76,6 +76,7 @@ pub(crate) fn docs_validate_payload(
     let mut body_hashes = BTreeMap::<String, Vec<String>>::new();
     let mut docs_pages = BTreeSet::<String>::new();
     let mut indexed_links = BTreeSet::<String>::new();
+    let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
             .strip_prefix(&ctx.docs_root)
@@ -91,7 +92,6 @@ pub(crate) fn docs_validate_payload(
         }
         let text = fs::read_to_string(&file).unwrap_or_default();
         if rel.ends_with("INDEX.md") || rel == "INDEX.md" || rel == "index.md" {
-            let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
             for cap in link_re.captures_iter(&text) {
                 let target = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
                 if target.starts_with("http://")
