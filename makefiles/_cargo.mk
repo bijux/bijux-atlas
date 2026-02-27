@@ -47,6 +47,7 @@ lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\bdbg!\(' crates
 	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas-server crates/bijux-atlas-core crates/bijux-atlas-model crates/bijux-atlas-query crates/bijux-atlas-store crates/bijux-atlas-policies --glob '!**/tests/**' --glob '!**/benches/**'
 	@! rg -n 'reqwest\s*=.*blocking' crates/bijux-atlas-server/Cargo.toml
+	@! rg -n 'reqwest::blocking' crates/bijux-atlas-server/src
 
 lint-clippy-json: ## Emit clippy diagnostics as a machine-readable artifact
 	@mkdir -p artifacts/lint

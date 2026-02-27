@@ -9,6 +9,7 @@ use std::fs;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
+use tracing::instrument;
 
 #[derive(Debug, Clone)]
 pub struct RetryPolicy {
@@ -188,7 +189,7 @@ impl S3LikeBackend {
             .timeout(Duration::from_secs(15))
             .redirect(reqwest::redirect::Policy::none())
             .build()
-            .expect("reqwest client build")
+            .unwrap_or_else(|_| reqwest::Client::new())
     }
 
     fn validate_url(&self, url: &str) -> Result<(), CacheError> {
@@ -225,6 +226,7 @@ impl S3LikeBackend {
         Ok(headers)
     }
 
+    #[instrument(name = "store_s3_get_with_retry", skip(self))]
     async fn get_with_retry(&self, url: &str) -> Result<Vec<u8>, CacheError> {
         self.validate_url(url)?;
         let client = self.client();
@@ -262,6 +264,7 @@ impl S3LikeBackend {
         }
     }
 
+    #[instrument(name = "store_s3_get_catalog_with_retry", skip(self))]
     async fn get_catalog_with_retry(
         &self,
         url: &str,
@@ -324,6 +327,7 @@ impl S3LikeBackend {
         }
     }
 
+    #[instrument(name = "store_s3_get_resume_with_retry", skip(self))]
     async fn get_resume_with_retry(&self, url: &str) -> Result<Vec<u8>, CacheError> {
         self.validate_url(url)?;
         let client = self.client();
@@ -400,6 +404,7 @@ impl S3LikeBackend {
         }
     }
 
+    #[instrument(name = "store_s3_get_optional_checksum_with_retry", skip(self))]
     async fn get_optional_checksum_with_retry(
         &self,
         url: &str,
