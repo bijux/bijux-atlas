@@ -15,14 +15,9 @@ This page documents the curated public make targets. Make remains a delegation l
 
 ## Docker Targets
 
-- `make docker` (alias of `make docker-validate`)
-- `make docker-validate`
-- `make docker-build`
-- `make docker-smoke`
-- `make docker-sbom`
-- `make docker-scan`
-- `make docker-lock`
-- `make docker-release`
+- `make docker` (alias of `make docker-contracts`)
+- `make docker-contracts`
+- `make docker-contracts-effect`
 - `make docker-gate`
 
 ## Policy

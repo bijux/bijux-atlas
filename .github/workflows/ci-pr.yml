@@ -375,7 +375,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "artifacts/${RUN_ID}"
-          make docker-gate > "artifacts/${RUN_ID}/docker-gate.stdout.log" 2> "artifacts/${RUN_ID}/docker-gate.stderr.log"
+          make docker-contracts > "artifacts/${RUN_ID}/docker-contracts.stdout.log" 2> "artifacts/${RUN_ID}/docker-contracts.stderr.log"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

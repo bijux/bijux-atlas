@@ -6,7 +6,7 @@ Container build, validation, and release behavior is defined by executable gates
 
 - Keep docker policy minimal, machine-readable, and enforceable.
 - Keep docker docs limited to this file and `docker/CONTRACT.md`.
-- Route all operational behavior through `bijux dev atlas docker ...` and make wrappers.
+- Route all operational behavior through `bijux dev atlas contracts docker ...` and make wrappers.
 
 ## Canonical Files
 
@@ -20,13 +20,9 @@ Root `Dockerfile` is a shim symlink to the canonical runtime Dockerfile.
 ## Canonical Commands
 
 ```bash
-make docker-validate
-make docker-build
-make docker-smoke
-make docker-sbom
-make docker-scan
-make docker-lock
-make docker-release
+make docker-contracts
+make docker-contracts-effect
+make docker-gate
 ```
 
 ## Artifacts
