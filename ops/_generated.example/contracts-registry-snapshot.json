@@ -543,6 +543,96 @@
       "title": "observe effect alerts load contract"
     },
     {
+      "id": "OPS-ROOT-001",
+      "tests": [
+        {
+          "test_id": "ops.root.allowed_surface",
+          "title": "ops root contains only canonical files and domain directories"
+        }
+      ],
+      "title": "ops root allowed surface contract"
+    },
+    {
+      "id": "OPS-ROOT-002",
+      "tests": [
+        {
+          "test_id": "ops.root.forbid_extra_markdown",
+          "title": "ops root forbids markdown files other than README.md and CONTRACT.md"
+        }
+      ],
+      "title": "ops root markdown contract"
+    },
+    {
+      "id": "OPS-ROOT-003",
+      "tests": [
+        {
+          "test_id": "ops.root.no_shell_script_files",
+          "title": "ops tree contains no shell script files or bash shebangs"
+        }
+      ],
+      "title": "ops no shell scripts contract"
+    },
+    {
+      "id": "OPS-ROOT-004",
+      "tests": [
+        {
+          "test_id": "ops.root.max_directory_depth",
+          "title": "ops file paths remain within configured depth budget"
+        }
+      ],
+      "title": "ops max directory depth contract"
+    },
+    {
+      "id": "OPS-ROOT-005",
+      "tests": [
+        {
+          "test_id": "ops.root.filename_policy",
+          "title": "ops filenames follow stable lowercase policy with explicit allowlist exceptions"
+        }
+      ],
+      "title": "ops filename policy contract"
+    },
+    {
+      "id": "OPS-ROOT-006",
+      "tests": [
+        {
+          "test_id": "ops.root.generated_gitignore_policy",
+          "title": "ops/_generated is gitignored with explicit .gitkeep exception"
+        }
+      ],
+      "title": "ops generated gitignore policy contract"
+    },
+    {
+      "id": "OPS-ROOT-007",
+      "tests": [
+        {
+          "test_id": "ops.root.generated_example_secret_guard",
+          "title": "ops/_generated.example is secret-free and json payloads are parseable"
+        }
+      ],
+      "title": "ops generated example secret guard contract"
+    },
+    {
+      "id": "OPS-ROOT-008",
+      "tests": [
+        {
+          "test_id": "ops.root.placeholder_dirs_allowlist",
+          "title": "ops placeholder directories are explicitly allowlisted"
+        }
+      ],
+      "title": "ops placeholder directory contract"
+    },
+    {
+      "id": "OPS-ROOT-009",
+      "tests": [
+        {
+          "test_id": "ops.root.policy_files_inventory_coverage",
+          "title": "ops policy/config files are covered by inventory sources"
+        }
+      ],
+      "title": "ops policy inventory coverage contract"
+    },
+    {
       "id": "OPS-ROOT-010",
       "tests": [
         {

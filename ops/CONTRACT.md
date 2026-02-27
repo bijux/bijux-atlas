@@ -309,6 +309,51 @@ Tests:
 - `ops.docs.policy_keyword_requires_contract_id` (static, Pure): operations docs with policy keywords must reference OPS contract ids
 - `ops.docs.index_crosslinks_contracts` (static, Pure): operations index must state docs/contracts boundary and include OPS references
 
+#### OPS-ROOT-001 ops root allowed surface contract
+
+Tests:
+- `ops.root.allowed_surface` (static, Pure): ops root contains only canonical files and domain directories
+
+#### OPS-ROOT-002 ops root markdown contract
+
+Tests:
+- `ops.root.forbid_extra_markdown` (static, Pure): ops root forbids markdown files other than README.md and CONTRACT.md
+
+#### OPS-ROOT-003 ops no shell scripts contract
+
+Tests:
+- `ops.root.no_shell_script_files` (static, Pure): ops tree contains no shell script files or bash shebangs
+
+#### OPS-ROOT-004 ops max directory depth contract
+
+Tests:
+- `ops.root.max_directory_depth` (static, Pure): ops file paths remain within configured depth budget
+
+#### OPS-ROOT-005 ops filename policy contract
+
+Tests:
+- `ops.root.filename_policy` (static, Pure): ops filenames follow stable lowercase policy with explicit allowlist exceptions
+
+#### OPS-ROOT-006 ops generated gitignore policy contract
+
+Tests:
+- `ops.root.generated_gitignore_policy` (static, Pure): ops/_generated is gitignored with explicit .gitkeep exception
+
+#### OPS-ROOT-007 ops generated example secret guard contract
+
+Tests:
+- `ops.root.generated_example_secret_guard` (static, Pure): ops/_generated.example is secret-free and json payloads are parseable
+
+#### OPS-ROOT-008 ops placeholder directory contract
+
+Tests:
+- `ops.root.placeholder_dirs_allowlist` (static, Pure): ops placeholder directories are explicitly allowlisted
+
+#### OPS-ROOT-009 ops policy inventory coverage contract
+
+Tests:
+- `ops.root.policy_files_inventory_coverage` (static, Pure): ops policy/config files are covered by inventory sources
+
 #### OPS-ROOT-010 ops deleted doc name guard contract
 
 Tests:
