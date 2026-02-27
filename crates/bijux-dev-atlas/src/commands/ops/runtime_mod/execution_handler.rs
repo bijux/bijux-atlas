@@ -435,7 +435,8 @@ pub(super) fn dispatch_execution(
                     }
                 });
 
-                let expected = repo_root.join("ops/_generated.example/control-plane-surface-list.json");
+                let expected =
+                    repo_root.join("ops/_generated.example/control-plane-surface-list.json");
                 if check {
                     let existing = std::fs::read_to_string(&expected).map_err(|err| {
                         format!(

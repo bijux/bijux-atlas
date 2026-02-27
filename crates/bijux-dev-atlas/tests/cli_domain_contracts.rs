@@ -671,3 +671,29 @@ fn ops_pins_update_requires_allow_write() {
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("pins update requires --allow-write"));
 }
+
+#[test]
+fn ops_generate_surface_list_check_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "ops",
+            "generate",
+            "surface-list",
+            "--check",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("ops generate surface-list check");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload
+            .get("summary")
+            .and_then(|v| v.get("errors"))
+            .and_then(|v| v.as_u64()),
+        Some(0)
+    );
+}

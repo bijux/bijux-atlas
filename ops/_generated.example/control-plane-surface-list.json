@@ -1,15 +1,479 @@
 {
-  "schema_version": 1,
-  "generated_by": "bijux dev atlas ops control-plane surface-list --write-example",
-  "status": "pass",
-  "surfaces": [
-    "check",
-    "docs",
-    "configs",
-    "ops"
-  ],
   "crate_alignment": {
     "source": "cargo metadata",
     "status": "pass"
-  }
+  },
+  "generated_by": "bijux dev atlas ops generate surface-list --write-example",
+  "ops_taxonomy": {
+    "domains": [
+      "datasets",
+      "docs",
+      "e2e",
+      "inventory",
+      "k8s",
+      "load",
+      "observe",
+      "report",
+      "schema",
+      "stack"
+    ],
+    "entries": [
+      {
+        "domain": "datasets",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "offline"
+        ],
+        "verb": "ingest"
+      },
+      {
+        "domain": "datasets",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "list"
+      },
+      {
+        "domain": "datasets",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "offline"
+        ],
+        "verb": "promote"
+      },
+      {
+        "domain": "datasets",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "offline"
+        ],
+        "verb": "publish"
+      },
+      {
+        "domain": "datasets",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "qc"
+      },
+      {
+        "domain": "datasets",
+        "subverb": null,
+        "tags": [
+          "destructive",
+          "offline"
+        ],
+        "verb": "rollback"
+      },
+      {
+        "domain": "docs",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "build"
+      },
+      {
+        "domain": "e2e",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "list-suites"
+      },
+      {
+        "domain": "e2e",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online"
+        ],
+        "verb": "realdata"
+      },
+      {
+        "domain": "e2e",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online"
+        ],
+        "verb": "run"
+      },
+      {
+        "domain": "e2e",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "online"
+        ],
+        "verb": "smoke"
+      },
+      {
+        "domain": "inventory",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "coverage"
+      },
+      {
+        "domain": "inventory",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "diff"
+      },
+      {
+        "domain": "inventory",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "graph"
+      },
+      {
+        "domain": "inventory",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "orphan-check"
+      },
+      {
+        "domain": "inventory",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "validate"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online",
+          "requireskind"
+        ],
+        "verb": "conformance"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "online"
+        ],
+        "verb": "diff"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online",
+          "requireskind"
+        ],
+        "verb": "install"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "render"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "online"
+        ],
+        "verb": "rollout"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online",
+          "requireskind"
+        ],
+        "verb": "test"
+      },
+      {
+        "domain": "k8s",
+        "subverb": null,
+        "tags": [
+          "destructive",
+          "online"
+        ],
+        "verb": "uninstall"
+      },
+      {
+        "domain": "load",
+        "subverb": "update",
+        "tags": [
+          "slow",
+          "offline"
+        ],
+        "verb": "baseline"
+      },
+      {
+        "domain": "load",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "evaluate"
+      },
+      {
+        "domain": "load",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "list-suites"
+      },
+      {
+        "domain": "load",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "report"
+      },
+      {
+        "domain": "load",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online"
+        ],
+        "verb": "run"
+      },
+      {
+        "domain": "observe",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "dashboards"
+      },
+      {
+        "domain": "observe",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "destructive",
+          "offline"
+        ],
+        "verb": "down"
+      },
+      {
+        "domain": "observe",
+        "subverb": "run",
+        "tags": [
+          "slow",
+          "offline"
+        ],
+        "verb": "drill"
+      },
+      {
+        "domain": "observe",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "snapshot"
+      },
+      {
+        "domain": "observe",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online"
+        ],
+        "verb": "up"
+      },
+      {
+        "domain": "observe",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "validate"
+      },
+      {
+        "domain": "report",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "bundle"
+      },
+      {
+        "domain": "report",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "diff"
+      },
+      {
+        "domain": "report",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "generate"
+      },
+      {
+        "domain": "report",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "readiness"
+      },
+      {
+        "domain": "schema",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "coverage"
+      },
+      {
+        "domain": "schema",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "diff"
+      },
+      {
+        "domain": "schema",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "regen-index"
+      },
+      {
+        "domain": "schema",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "validate"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "doctor"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "destructive",
+          "requireskind"
+        ],
+        "verb": "down"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "logs"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "ports"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "destructive",
+          "offline"
+        ],
+        "verb": "reset"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "status"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "slow",
+          "online",
+          "requireskind",
+          "requiresdocker"
+        ],
+        "verb": "up"
+      }
+    ]
+  },
+  "schema_version": 1,
+  "status": "pass",
+  "surfaces": [
+    "check",
+    "configs",
+    "docs",
+    "ops"
+  ]
 }
