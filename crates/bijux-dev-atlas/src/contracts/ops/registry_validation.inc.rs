@@ -148,16 +148,45 @@ fn validate_registry(rows: &[Contract], repo_root: &Path) -> Result<(), String> 
 }
 
 fn validate_no_orphan_test_functions(repo_root: &Path) -> Result<(), String> {
-    let registry_path = repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/ops_registry.inc.rs");
-    let module_path = repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/mod.rs");
-    let registry = fs::read_to_string(&registry_path)
-        .map_err(|e| format!("read {} failed: {e}", registry_path.display()))?;
-    let module = fs::read_to_string(&module_path)
-        .map_err(|e| format!("read {} failed: {e}", module_path.display()))?;
-    let referenced = format!("{registry}\n{module}");
+    let ops_dir = repo_root.join("crates/bijux-dev-atlas/src/contracts/ops");
+    let mut reference_sources = Vec::new();
+    reference_sources.push(
+        fs::read_to_string(repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/mod.rs"))
+            .map_err(|e| format!("read contracts ops module failed: {e}"))?,
+    );
+    let mut assembly_files = sorted_dir_entries(&ops_dir);
+    assembly_files.retain(|path| {
+        path.file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| {
+                matches!(
+                    name,
+                    "ops_registry.inc.rs"
+                        | "root_surface.inc.rs"
+                        | "inventory.inc.rs"
+                        | "schema.inc.rs"
+                        | "datasets.inc.rs"
+                        | "e2e.inc.rs"
+                        | "env.inc.rs"
+                        | "stack.inc.rs"
+                        | "k8s.inc.rs"
+                        | "observe.inc.rs"
+                        | "load.inc.rs"
+                        | "report.inc.rs"
+                        | "pillars.inc.rs"
+                )
+            })
+    });
+    for path in assembly_files {
+        reference_sources.push(
+            fs::read_to_string(&path)
+                .map_err(|e| format!("read {} failed: {e}", path.display()))?,
+        );
+    }
+    let referenced = reference_sources.join("\n");
 
     let mut files = Vec::new();
-    walk_files(&repo_root.join("crates/bijux-dev-atlas/src/contracts/ops"), &mut files);
+    walk_files(&ops_dir, &mut files);
     files.sort();
     for path in files {
         let Some(name) = path.file_name().and_then(|v| v.to_str()) else {

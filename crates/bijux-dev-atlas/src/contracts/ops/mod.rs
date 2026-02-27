@@ -38,12 +38,17 @@ fn ops_root(repo_root: &Path) -> PathBuf {
     repo_root.join("ops")
 }
 
-fn walk_files(root: &Path, out: &mut Vec<PathBuf>) {
+fn sorted_dir_entries(root: &Path) -> Vec<PathBuf> {
     let Ok(entries) = std::fs::read_dir(root) else {
-        return;
+        return Vec::new();
     };
-    for entry in entries.flatten() {
-        let path = entry.path();
+    let mut paths = entries.flatten().map(|entry| entry.path()).collect::<Vec<_>>();
+    paths.sort();
+    paths
+}
+
+fn walk_files(root: &Path, out: &mut Vec<PathBuf>) {
+    for path in sorted_dir_entries(root) {
         if path.is_dir() {
             walk_files(&path, out);
         } else {
@@ -85,6 +90,18 @@ fn sha256_text(content: &str) -> String {
 }
 
 include!("registry_validation.inc.rs");
+include!("root_surface.inc.rs");
+include!("inventory.inc.rs");
+include!("schema.inc.rs");
+include!("datasets.inc.rs");
+include!("e2e.inc.rs");
+include!("env.inc.rs");
+include!("stack.inc.rs");
+include!("k8s.inc.rs");
+include!("observe.inc.rs");
+include!("load.inc.rs");
+include!("report.inc.rs");
+include!("pillars.inc.rs");
 
 fn ops_markdown_allowed(rel: &str) -> bool {
     if rel == "ops/README.md" || rel == "ops/CONTRACT.md" {
