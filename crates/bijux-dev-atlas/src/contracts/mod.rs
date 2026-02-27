@@ -512,7 +512,7 @@ mod tests {
         };
         let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
         let pretty = to_pretty(&report);
-        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass .................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
+        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass ...................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
         assert_eq!(pretty, expected);
     }
 

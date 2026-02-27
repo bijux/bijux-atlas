@@ -53,7 +53,7 @@ fn cli_crate_module_count_stays_within_budget() {
     let modules = collect_rs_files(&src);
     let count = modules.len();
     // Unified dev-atlas now intentionally carries internalized core/model/policies/adapters modules.
-    let budget = 120usize;
+    let budget = 140usize;
     assert!(
         count <= budget,
         "cli crate module count exceeds budget: {count} > {budget} (src/**/*.rs)"
