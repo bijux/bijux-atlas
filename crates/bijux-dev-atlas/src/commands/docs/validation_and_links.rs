@@ -23,6 +23,37 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"
         ));
     }
+    for required in ["INDEX.md", "START_HERE.md"] {
+        if !ctx.docs_root.join(required).exists() {
+            issues.errors.push(format!(
+                "DOCS_STRUCTURE_ERROR: missing required docs entrypoint `docs/{required}`"
+            ));
+        }
+    }
+    let mut top_level_dirs = BTreeSet::<String>::new();
+    let mut page_counts = BTreeMap::<String, usize>::new();
+    for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
+        let rel = file.strip_prefix(&ctx.docs_root).unwrap_or(&file);
+        if let Some(component) = rel.components().next().and_then(|c| c.as_os_str().to_str()) {
+            if component != "_generated" && component != "_drafts" {
+                top_level_dirs.insert(component.to_string());
+                *page_counts.entry(component.to_string()).or_insert(0) += 1;
+            }
+        }
+    }
+    if top_level_dirs.len() > 8 {
+        issues.warnings.push(format!(
+            "DOCS_BUDGET_WARN: docs top-level category count {} exceeds budget 8",
+            top_level_dirs.len()
+        ));
+    }
+    for (category, pages) in page_counts {
+        if pages > 40 {
+            issues.warnings.push(format!(
+                "DOCS_BUDGET_WARN: docs category `{category}` has {pages} pages (soft budget=40)"
+            ));
+        }
+    }
     for (_, rel) in mkdocs_nav_refs(&ctx.repo_root)? {
         if !ctx.docs_root.join(&rel).exists() {
             issues.errors.push(format!(
