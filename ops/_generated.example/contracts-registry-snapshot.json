@@ -1133,6 +1133,66 @@
       "title": "ops deleted doc name guard contract"
     },
     {
+      "id": "OPS-ROOT-011",
+      "tests": [
+        {
+          "test_id": "ops.root.markdown_allowlist_only",
+          "title": "ops markdown files are restricted to explicit allowlist paths"
+        }
+      ],
+      "title": "ops markdown allowlist contract"
+    },
+    {
+      "id": "OPS-ROOT-012",
+      "tests": [
+        {
+          "test_id": "ops.root.single_readme_per_pillar",
+          "title": "each non-root pillar has exactly one README.md at pillar root"
+        }
+      ],
+      "title": "ops pillar readme cardinality contract"
+    },
+    {
+      "id": "OPS-ROOT-013",
+      "tests": [
+        {
+          "test_id": "ops.root.markdown_allowlist_file_valid",
+          "title": "markdown allowlist inventory file exists and is non-empty"
+        }
+      ],
+      "title": "ops markdown allowlist inventory contract"
+    },
+    {
+      "id": "OPS-ROOT-014",
+      "tests": [
+        {
+          "test_id": "ops.root.no_procedure_docs_in_ops",
+          "title": "procedure-like language in ops markdown requires OPS contract references"
+        }
+      ],
+      "title": "ops procedure text contract"
+    },
+    {
+      "id": "OPS-ROOT-015",
+      "tests": [
+        {
+          "test_id": "ops.root.no_extra_pillar_markdown",
+          "title": "ops pillar markdown surface is restricted to allowlisted files"
+        }
+      ],
+      "title": "ops pillar markdown minimalism contract"
+    },
+    {
+      "id": "OPS-ROOT-016",
+      "tests": [
+        {
+          "test_id": "ops.root.deleted_markdown_denylist",
+          "title": "historically deleted markdown paths must not be reintroduced"
+        }
+      ],
+      "title": "ops deleted markdown denylist contract"
+    },
+    {
       "id": "OPS-ROOT-SURFACE-001",
       "tests": [
         {
@@ -1191,6 +1251,46 @@
         }
       ],
       "title": "ops root command surface ad-hoc group guard contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-007",
+      "tests": [
+        {
+          "test_id": "ops.root_surface.command_purpose_defined",
+          "title": "each command action defines a stable purpose string"
+        }
+      ],
+      "title": "ops root command surface purpose contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-008",
+      "tests": [
+        {
+          "test_id": "ops.root_surface.command_supports_json",
+          "title": "each command action declares json output support"
+        }
+      ],
+      "title": "ops root command surface json output contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-009",
+      "tests": [
+        {
+          "test_id": "ops.root_surface.command_dry_run_policy",
+          "title": "each command action declares dry-run policy where applicable"
+        }
+      ],
+      "title": "ops root command surface dry-run policy contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-010",
+      "tests": [
+        {
+          "test_id": "ops.root_surface.artifacts_root_policy",
+          "title": "each command action declares artifacts root write policy"
+        }
+      ],
+      "title": "ops root command surface artifacts policy contract"
     },
     {
       "id": "OPS-RPT-001",
