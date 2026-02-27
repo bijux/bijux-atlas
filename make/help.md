@@ -15,7 +15,15 @@ The public surface is defined by `CURATED_TARGETS` in `makefiles/root.mk` and pr
 - lint: run strict workspace lint checks.
 - test: run workspace automated test suites.
 - build: build workspace binaries.
-- docker: run docker policy and build validation.
+- docker: alias of `docker-validate`.
+- docker-validate: run docker validation gates.
+- docker-build: run docker build gate.
+- docker-smoke: run docker smoke gate.
+- docker-sbom: run docker sbom gate.
+- docker-scan: run docker vulnerability scan gate.
+- docker-lock: run docker digest lock gate.
+- docker-release: run docker release gate (explicit override).
+- docker-gate: run complete docker gate sequence.
 - k8s-render: render Kubernetes manifests deterministically.
 - k8s-validate: run Kubernetes manifest validation and policy checks.
 - stack-up: stand up local ops stack.
