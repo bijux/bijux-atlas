@@ -247,11 +247,19 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         format!("bijux-atlas:{}", run_id.as_str())
     }
 
-    fn docker_artifact_dir(repo_root: &Path, run_id: &RunId) -> PathBuf {
-        repo_root
-            .join("artifacts")
-            .join(run_id.as_str())
-            .join("docker")
+    fn docker_artifact_dir(common: &DockerCommonArgs, repo_root: &Path, run_id: &RunId) -> PathBuf {
+        let root = common
+            .artifacts_root
+            .as_ref()
+            .map(|p| {
+                if p.is_absolute() {
+                    p.clone()
+                } else {
+                    repo_root.join(p)
+                }
+            })
+            .unwrap_or_else(|| repo_root.join("artifacts"));
+        root.join(run_id.as_str()).join("docker")
     }
 
     fn run_subprocess(
@@ -523,6 +531,30 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                         "evidence": trimmed
                     }));
                 }
+                if trimmed.starts_with("ADD ") && (trimmed.contains("http://") || trimmed.contains("https://")) {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-004",
+                        "gate_id":"docker.contract.path_scope",
+                        "kind":"add_remote_url_forbidden",
+                        "file": rel,
+                        "line": idx + 1,
+                        "evidence": trimmed
+                    }));
+                }
+                if trimmed.starts_with("RUN ")
+                    && (trimmed.contains("curl") || trimmed.contains("wget"))
+                    && trimmed.contains('|')
+                    && trimmed.contains("sh")
+                {
+                    rows.push(serde_json::json!({
+                        "contract_id":"DOCKER-004",
+                        "gate_id":"docker.contract.path_scope",
+                        "kind":"curl_pipe_sh_forbidden",
+                        "file": rel,
+                        "line": idx + 1,
+                        "evidence": trimmed
+                    }));
+                }
                 if !trimmed.starts_with("FROM ") {
                     continue;
                 }
@@ -652,7 +684,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                let artifact_dir = docker_artifact_dir(&common, &repo_root, &run_id);
                 fs::create_dir_all(&artifact_dir)
                     .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
                 let validate_report_path = artifact_dir.join("validate.json");
@@ -675,7 +707,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     .transpose()?
                     .unwrap_or_else(|| RunId::from_seed("docker_build"));
                 let tag = image_tag_for_run(&run_id);
-                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                let artifact_dir = docker_artifact_dir(&common, &repo_root, &run_id);
                 fs::create_dir_all(&artifact_dir)
                     .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
                 let (code, stdout, stderr) = run_subprocess(
@@ -773,7 +805,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     .transpose()?
                     .unwrap_or_else(|| RunId::from_seed("docker_scan"));
                 let tag = image_tag_for_run(&run_id);
-                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                let artifact_dir = docker_artifact_dir(&common, &repo_root, &run_id);
                 fs::create_dir_all(&artifact_dir)
                     .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
                 let report_path = artifact_dir.join("scan.trivy.json");
@@ -808,7 +840,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     .transpose()?
                     .unwrap_or_else(|| RunId::from_seed("docker_sbom"));
                 let tag = image_tag_for_run(&run_id);
-                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                let artifact_dir = docker_artifact_dir(&common, &repo_root, &run_id);
                 fs::create_dir_all(&artifact_dir)
                     .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
                 let spdx_path = artifact_dir.join("sbom.spdx.json");
@@ -904,14 +936,31 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     return Err("docker push requires --allow-network".to_string());
                 }
                 let repo_root = resolve_repo_root(args.common.repo_root.clone())?;
+                let run_id = args
+                    .common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_push"));
+                let tag = image_tag_for_run(&run_id);
+                let artifact_dir = docker_artifact_dir(&args.common, &repo_root, &run_id);
+                fs::create_dir_all(&artifact_dir)
+                    .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
+                let (code, stdout, stderr) = run_subprocess(&repo_root, "docker", &["push", &tag])?;
+                fs::write(artifact_dir.join("push.stdout.log"), &stdout)
+                    .map_err(|e| format!("cannot write push stdout log: {e}"))?;
+                fs::write(artifact_dir.join("push.stderr.log"), &stderr)
+                    .map_err(|e| format!("cannot write push stderr log: {e}"))?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
-                    "text": "docker push wrapper is defined (explicit release gate)",
-                    "rows": [{"action":"push","repo_root": repo_root.display().to_string()}],
+                    "run_id": run_id.as_str(),
+                    "text": "docker push executed",
+                    "rows": [{"action":"push","repo_root": repo_root.display().to_string(),"image_tag":tag,"stdout":stdout,"stderr":stderr}],
                     "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write, "network": args.common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&args.common, payload, 0)
+                emit(&args.common, payload, code)
             }
             DockerCommand::Release(args) => {
                 if !args.i_know_what_im_doing {

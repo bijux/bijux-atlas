@@ -184,6 +184,8 @@ pub struct BuildCleanArgs {
 pub struct DockerCommonArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
     #[arg(long, value_enum, default_value_t = FormatArg::Text)]
     pub format: FormatArg,
     #[arg(long)]
