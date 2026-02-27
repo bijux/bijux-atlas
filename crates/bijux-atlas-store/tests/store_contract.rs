@@ -5,8 +5,8 @@ use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use bijux_atlas_store::{
-    dataset_artifact_paths, manifest_lock_path, merge_catalogs, ArtifactStore, LocalFsStore,
-    StoreErrorCode, StoreMetricsCollector,
+    dataset_artifact_paths, manifest_lock_path, merge_catalogs, validate_backend_compiled,
+    ArtifactStore, BackendKind, LocalFsStore, StoreErrorCode, StoreMetricsCollector,
 };
 #[cfg(feature = "backend-s3")]
 use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
@@ -181,6 +181,23 @@ fn store_error_code_maps_to_core_error_code() {
     assert_eq!(
         StoreErrorCode::Validation.as_error_code(),
         ErrorCode::InvalidQueryParameter
+    );
+}
+
+#[test]
+fn runtime_backend_validation_reports_feature_requirements() {
+    let local = validate_backend_compiled(BackendKind::Local);
+    assert!(local.is_ok());
+
+    let s3 = validate_backend_compiled(BackendKind::S3Like);
+    #[cfg(feature = "backend-s3")]
+    assert!(s3.is_ok());
+    #[cfg(not(feature = "backend-s3"))]
+    assert!(
+        s3
+            .expect_err("s3 backend should be unavailable without backend-s3 feature")
+            .contains("backend-s3"),
+        "error must explain how to enable backend"
     );
 }
 

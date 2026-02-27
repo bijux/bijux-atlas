@@ -85,6 +85,12 @@ jobs:
           make lint-policy-enforce > "${logs_root}/lint-policy-enforce.stdout.log" 2> "${logs_root}/lint-policy-enforce.stderr.log"
           make lint-clippy-json > "${logs_root}/lint-clippy-json.stdout.log" 2> "${logs_root}/lint-clippy-json.stderr.log"
           cp artifacts/lint/clippy.json "${report_root}/clippy.json"
+          cargo tree -p bijux-atlas-store --edges normal --no-default-features --features backend-local > "${report_root}/store-deps-backend-local.txt"
+          cargo tree -p bijux-atlas-store --edges normal --no-default-features --features backend-s3 > "${report_root}/store-deps-backend-s3.txt"
+          cargo check -q -p bijux-atlas-store --no-default-features --features backend-local > "${logs_root}/store-backend-local-check.stdout.log" 2> "${logs_root}/store-backend-local-check.stderr.log"
+          cargo check -q -p bijux-atlas-store --no-default-features --features backend-s3 > "${logs_root}/store-backend-s3-check.stdout.log" 2> "${logs_root}/store-backend-s3-check.stderr.log"
+          cargo test -q -p bijux-atlas-store --no-default-features --features backend-local local_backend_roundtrip_is_hermetic -- --exact > "${logs_root}/store-backend-local-test.stdout.log" 2> "${logs_root}/store-backend-local-test.stderr.log"
+          cargo test -q -p bijux-atlas-store --no-default-features --features backend-s3 http_backend_reads_from_hermetic_cached_objects -- --exact > "${logs_root}/store-backend-s3-test.stdout.log" 2> "${logs_root}/store-backend-s3-test.stderr.log"
           cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml > "${logs_root}/fmt-check.stdout.log" 2> "${logs_root}/fmt-check.stderr.log"
           cargo test --workspace --locked > "${logs_root}/workspace-test.stdout.log" 2> "${logs_root}/workspace-test.stderr.log"
           cargo test -q -p bijux-atlas-server runtime_startup_config_contract_artifacts_match_generated > "${logs_root}/runtime-startup-config-contract.stdout.log" 2> "${logs_root}/runtime-startup-config-contract.stderr.log"
@@ -93,15 +99,15 @@ jobs:
           cargo run -q -p bijux-dev-atlas -- check list --suite ci_fast --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_fast.json"
           cargo run -q -p bijux-dev-atlas -- demo quickstart --format json > "${report_root}/demo-quickstart.json"
           python - <<'PY'
-import json, os, pathlib
-run_id=os.environ["RUN_ID"]
-p=pathlib.Path(f"artifacts/{run_id}/reports/demo-quickstart.json")
-payload=json.loads(p.read_text())
-assert payload["schema_version"]==1
-assert payload["steps_budget"] <= 5
-assert payload["duration_budget_minutes"] <= 3
-assert len(payload["steps"]) <= payload["steps_budget"]
-PY
+          import json, os, pathlib
+          run_id=os.environ["RUN_ID"]
+          p=pathlib.Path(f"artifacts/{run_id}/reports/demo-quickstart.json")
+          payload=json.loads(p.read_text())
+          assert payload["schema_version"]==1
+          assert payload["steps_budget"] <= 5
+          assert payload["duration_budget_minutes"] <= 3
+          assert len(payload["steps"]) <= payload["steps_budget"]
+          PY
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
@@ -172,6 +178,12 @@ PY
           make lint-policy-enforce > "${logs_root}/lint-policy-enforce.stdout.log" 2> "${logs_root}/lint-policy-enforce.stderr.log"
           make lint-clippy-json > "${logs_root}/lint-clippy-json.stdout.log" 2> "${logs_root}/lint-clippy-json.stderr.log"
           cp artifacts/lint/clippy.json "${report_root}/clippy.json"
+          cargo tree -p bijux-atlas-store --edges normal --no-default-features --features backend-local > "${report_root}/store-deps-backend-local.txt"
+          cargo tree -p bijux-atlas-store --edges normal --no-default-features --features backend-s3 > "${report_root}/store-deps-backend-s3.txt"
+          cargo check -q -p bijux-atlas-store --no-default-features --features backend-local > "${logs_root}/store-backend-local-check.stdout.log" 2> "${logs_root}/store-backend-local-check.stderr.log"
+          cargo check -q -p bijux-atlas-store --no-default-features --features backend-s3 > "${logs_root}/store-backend-s3-check.stdout.log" 2> "${logs_root}/store-backend-s3-check.stderr.log"
+          cargo test -q -p bijux-atlas-store --no-default-features --features backend-local local_backend_roundtrip_is_hermetic -- --exact > "${logs_root}/store-backend-local-test.stdout.log" 2> "${logs_root}/store-backend-local-test.stderr.log"
+          cargo test -q -p bijux-atlas-store --no-default-features --features backend-s3 http_backend_reads_from_hermetic_cached_objects -- --exact > "${logs_root}/store-backend-s3-test.stdout.log" 2> "${logs_root}/store-backend-s3-test.stderr.log"
           cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml > "${logs_root}/fmt-check.stdout.log" 2> "${logs_root}/fmt-check.stderr.log"
           cargo test --workspace --locked > "${logs_root}/workspace-test.stdout.log" 2> "${logs_root}/workspace-test.stderr.log"
           cargo test -q -p bijux-atlas-server runtime_startup_config_contract_artifacts_match_generated > "${logs_root}/runtime-startup-config-contract.stdout.log" 2> "${logs_root}/runtime-startup-config-contract.stderr.log"

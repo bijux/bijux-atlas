@@ -3,6 +3,7 @@
 #![forbid(unsafe_code)]
 
 mod backend;
+mod backend_capabilities;
 pub mod backends;
 mod catalog;
 mod contracts;
@@ -19,6 +20,7 @@ pub use backend::{
     PublishLockGuard, StoreError, StoreErrorCode, StoreInstrumentation, StoreMetrics,
     StoreMetricsCollector,
 };
+pub use backend_capabilities::{validate_backend_compiled, BackendKind};
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,
 };
