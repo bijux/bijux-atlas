@@ -25,6 +25,7 @@ docker-release:
 
 docker-gate:
 	@$(MAKE) -s docker-validate
+	@$(DEV_ATLAS) docker policy check --run-id $(DOCKER_RUN_ID)-docker-policy-check --format json
 	@$(MAKE) -s docker-build
 	@$(MAKE) -s docker-smoke
 	@$(MAKE) -s docker-sbom
