@@ -10,11 +10,13 @@ ops: ## Canonical ops gate
 
 ops-contracts: ## Run static ops contracts via dev-atlas contracts runner
 	@mkdir -p artifacts/contracts
-	@$(DEV_ATLAS) contracts ops --mode static --format json --artifacts-root artifacts/contracts > artifacts/contracts/ops-static.json
+	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --format json --artifacts-root artifacts/contracts"
+	@$(DEV_ATLAS) contracts ops --mode static --format json --artifacts-root artifacts/contracts | tee artifacts/contracts/ops-static.json >/dev/null
 
 ops-contracts-effect: ## Run effect ops contracts via dev-atlas contracts runner
 	@mkdir -p artifacts/contracts
-	@$(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --format json --artifacts-root artifacts/contracts > artifacts/contracts/ops-effect.json
+	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --format json --artifacts-root artifacts/contracts"
+	@$(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --format json --artifacts-root artifacts/contracts | tee artifacts/contracts/ops-effect.json >/dev/null
 
 ops-help: ## Show ops control-plane command surface
 	@$(DEV_ATLAS) ops --help
