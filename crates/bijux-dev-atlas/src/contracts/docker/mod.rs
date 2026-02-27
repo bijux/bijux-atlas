@@ -140,9 +140,6 @@ fn has_floating_tag(from_ref: &str) -> bool {
 }
 
 fn extract_copy_sources(args: &str) -> Vec<String> {
-    if args.contains("--from=") {
-        return Vec::new();
-    }
     let trimmed = args.trim();
     if trimmed.starts_with('[') {
         if let Ok(values) = serde_json::from_str::<Vec<String>>(trimmed) {
@@ -152,7 +149,16 @@ fn extract_copy_sources(args: &str) -> Vec<String> {
         }
         return Vec::new();
     }
-    let tokens = trimmed.split_whitespace().collect::<Vec<_>>();
+    let mut tokens = trimmed.split_whitespace().collect::<Vec<_>>();
+    while tokens.first().is_some_and(|tok| tok.starts_with("--")) {
+        if tokens.first().is_some_and(|tok| tok.starts_with("--from=")) {
+            return Vec::new();
+        }
+        if tokens.first().is_some_and(|tok| *tok == "--from") {
+            return Vec::new();
+        }
+        tokens.remove(0);
+    }
     if tokens.len() < 2 {
         return Vec::new();
     }
@@ -569,8 +575,9 @@ fn test_labels_required_present(ctx: &RunContext) -> TestResult {
         let mut found = BTreeSet::new();
         for ins in &instructions {
             if ins.keyword == "LABEL" {
+                let args_lc = ins.args.to_ascii_lowercase();
                 for key in &required {
-                    if ins.args.contains(key) {
+                    if args_lc.contains(&key.to_ascii_lowercase()) {
                         found.insert(key.to_ascii_lowercase());
                     }
                 }
@@ -618,12 +625,14 @@ fn test_labels_required_nonempty(ctx: &RunContext) -> TestResult {
             if ins.keyword != "LABEL" {
                 continue;
             }
+            let args_lc = ins.args.to_ascii_lowercase();
             for key in &required {
-                if ins.args.contains(key) {
+                let key_lc = key.to_ascii_lowercase();
+                if args_lc.contains(&key_lc) {
                     let token = ins
                         .args
                         .split_whitespace()
-                        .find(|t| t.contains(key))
+                        .find(|t| t.to_ascii_lowercase().contains(&key_lc))
                         .unwrap_or_default();
                     if token.ends_with("=\"\"") || token.ends_with('=') {
                         violations.push(violation(
@@ -1217,5 +1226,52 @@ mod tests {
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 0, "report had failures");
+    }
+
+    #[test]
+    fn parser_handles_multiline_and_preserves_start_line() {
+        let text = include_str!("../../../tests/fixtures/dockerfiles/parser_edge_cases.Dockerfile");
+        let instructions = parse_dockerfile(text);
+        let label = instructions
+            .iter()
+            .find(|ins| ins.keyword == "LABEL")
+            .expect("label instruction");
+        assert_eq!(label.line, 7);
+        assert!(label.args.contains("org.opencontainers.image.ref.name"));
+    }
+
+    #[test]
+    fn from_parser_handles_platform_prefix_and_alias() {
+        let text = include_str!("../../../tests/fixtures/dockerfiles/parser_edge_cases.Dockerfile");
+        let instructions = parse_dockerfile(text);
+        let from = instructions
+            .iter()
+            .find(|ins| ins.keyword == "FROM")
+            .expect("from instruction");
+        let from_ref = parse_from_ref(&from.args).expect("from ref");
+        assert_eq!(
+            from_ref,
+            "rust:${RUST_VERSION}@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        );
+    }
+
+    #[test]
+    fn copy_parser_ignores_copy_from_and_reads_json_array_sources() {
+        let text = include_str!("../../../tests/fixtures/dockerfiles/parser_edge_cases.Dockerfile");
+        let instructions = parse_dockerfile(text);
+        let copy_with_from = instructions
+            .iter()
+            .find(|ins| ins.keyword == "COPY" && ins.args.contains("--from=builder"))
+            .expect("copy --from");
+        assert!(extract_copy_sources(&copy_with_from.args).is_empty());
+
+        let copy_json = instructions
+            .iter()
+            .find(|ins| ins.keyword == "COPY" && ins.args.starts_with('['))
+            .expect("json copy");
+        assert_eq!(
+            extract_copy_sources(&copy_json.args),
+            vec!["Cargo.toml".to_string(), "README.md".to_string()]
+        );
     }
 }

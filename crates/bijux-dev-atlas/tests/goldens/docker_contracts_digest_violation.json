@@ -1,0 +1,10 @@
+[
+  {
+    "contract_id": "DOCKER-007",
+    "test_id": "docker.from.digest_required",
+    "file": "docker/images/runtime/Dockerfile",
+    "line": 1,
+    "message": "FROM image must include digest pin unless allowlisted",
+    "evidence": "rust:1.85.0"
+  }
+]

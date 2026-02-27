@@ -1,0 +1,10 @@
+[
+  {
+    "contract_id": "DOCKER-006",
+    "test_id": "docker.from.no_latest",
+    "file": "docker/images/runtime/Dockerfile",
+    "line": 1,
+    "message": "latest tag in FROM is forbidden",
+    "evidence": "rust:latest"
+  }
+]
