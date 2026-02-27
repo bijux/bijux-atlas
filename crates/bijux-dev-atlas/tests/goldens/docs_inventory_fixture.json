@@ -8,12 +8,32 @@
   "duration_ms": 0,
   "nav": [
     {
+      "path": "reference/commands.md",
+      "title": "Commands"
+    },
+    {
+      "path": "reference/configs.md",
+      "title": "Configs"
+    },
+    {
       "path": "index.md",
       "title": "Home"
     },
     {
       "path": "sub/intro.md",
       "title": "Intro"
+    },
+    {
+      "path": "reference/make-targets.md",
+      "title": "Make Targets"
+    },
+    {
+      "path": "reference/schemas.md",
+      "title": "Schemas"
+    },
+    {
+      "path": "START_HERE.md",
+      "title": "Start Here"
     }
   ],
   "options": {
@@ -24,7 +44,27 @@
   "pages": [
     {
       "in_nav": true,
+      "path": "START_HERE.md"
+    },
+    {
+      "in_nav": true,
       "path": "index.md"
+    },
+    {
+      "in_nav": true,
+      "path": "reference/commands.md"
+    },
+    {
+      "in_nav": true,
+      "path": "reference/configs.md"
+    },
+    {
+      "in_nav": true,
+      "path": "reference/make-targets.md"
+    },
+    {
+      "in_nav": true,
+      "path": "reference/schemas.md"
     },
     {
       "in_nav": true,

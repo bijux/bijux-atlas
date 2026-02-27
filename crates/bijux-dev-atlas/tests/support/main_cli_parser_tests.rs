@@ -327,7 +327,15 @@ mod tests {
         let paths = refs.into_iter().map(|(_, p)| p).collect::<Vec<_>>();
         assert_eq!(
             paths,
-            vec!["index.md".to_string(), "sub/intro.md".to_string()]
+            vec![
+                "reference/commands.md".to_string(),
+                "reference/configs.md".to_string(),
+                "index.md".to_string(),
+                "sub/intro.md".to_string(),
+                "reference/make-targets.md".to_string(),
+                "reference/schemas.md".to_string(),
+                "START_HERE.md".to_string(),
+            ]
         );
     }
 

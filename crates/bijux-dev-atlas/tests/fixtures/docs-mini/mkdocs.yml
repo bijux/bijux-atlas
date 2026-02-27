@@ -2,5 +2,11 @@ site_name: docs-mini
 docs_dir: docs
 nav:
   - Home: index.md
+  - Start Here: START_HERE.md
+  - Reference:
+      - Commands: reference/commands.md
+      - Schemas: reference/schemas.md
+      - Configs: reference/configs.md
+      - Make Targets: reference/make-targets.md
   - Guide:
       - Intro: sub/intro.md
