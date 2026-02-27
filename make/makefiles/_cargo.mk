@@ -66,7 +66,7 @@ test: ## Run workspace tests with cargo nextest
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default}"
 	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" | tee $(ARTIFACT_ROOT)/test/$(RUN_ID)/report.txt >/dev/null
+	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" | tee $(ARTIFACT_ROOT)/test/$(RUN_ID)/report.txt
 
 test-slow: ## Run only slow_ tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \

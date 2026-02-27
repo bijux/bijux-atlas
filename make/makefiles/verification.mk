@@ -15,7 +15,7 @@ VERIFICATION_ACCEPT_CODES__configs ?= 0 2
 VERIFICATION_ACCEPT_CODES_docs ?= 0 2
 VERIFICATION_ACCEPT_CODES__docs ?= 0 2
 
-verification: ## Run every target declared in makefiles/<module>.mk
+verification: ## Run every target declared in make/makefiles/<module>.mk
 	@module="$(VERIFICATION_MODULE)"; \
 	if [ -z "$$module" ]; then \
 		printf '%s\n' "usage: make verification <module>"; \
@@ -25,9 +25,9 @@ verification: ## Run every target declared in makefiles/<module>.mk
 
 _verification-run:
 	@module="$(VERIFICATION_MODULE)"; \
-	mk_file="makefiles/$$module.mk"; \
+	mk_file="make/makefiles/$$module.mk"; \
 	if [ ! -f "$$mk_file" ]; then \
-		underscore_file="makefiles/_$$module.mk"; \
+		underscore_file="make/makefiles/_$$module.mk"; \
 		if [ -f "$$underscore_file" ]; then \
 			mk_file="$$underscore_file"; \
 		fi; \

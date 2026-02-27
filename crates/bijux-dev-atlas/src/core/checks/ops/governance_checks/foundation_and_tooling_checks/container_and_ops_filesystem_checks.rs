@@ -176,7 +176,7 @@ pub(super) fn check_ops_no_makefiles(ctx: &CheckContext<'_>) -> Result<Vec<Viola
         violations.push(violation(
             "OPS_MAKEFILE_FORBIDDEN",
             format!("ops must not contain Makefiles: {}", rel.display()),
-            "remove Makefile from ops/ and delegate through makefiles/*.mk wrappers",
+            "remove Makefile from ops/ and delegate through make/makefiles/*.mk wrappers",
             Some(rel),
         ));
     }

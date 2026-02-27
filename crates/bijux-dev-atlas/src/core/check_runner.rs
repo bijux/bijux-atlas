@@ -398,7 +398,7 @@ fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>,
         Ok(vec![Violation {
             schema_version: crate::model::schema_version(),
             code: known_violation_id("make_contract_missing"),
-            message: "missing makefiles/CONTRACT.md".to_string(),
+            message: "missing make/makefiles/CONTRACT.md".to_string(),
             hint: Some("restore make contract doc".to_string()),
             path: Some(known_artifact_path(target.display().to_string())),
             line: None,

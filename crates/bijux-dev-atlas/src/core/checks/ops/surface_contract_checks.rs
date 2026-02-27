@@ -15,7 +15,7 @@ pub(super) fn checks_ops_makefile_routes_dev_atlas(
             violations.push(violation(
                 "OPS_MAKEFILE_TARGET_MISSING",
                 format!("ops make wrapper target missing `{target}`"),
-                "add thin ops wrapper target in makefiles/_ops.mk",
+                "add thin ops wrapper target in make/makefiles/_ops.mk",
                 Some(rel),
             ));
         }
@@ -66,8 +66,8 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
     if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
         violations.push(violation(
             "MAKE_OPS_BIJUX_VARIABLES_MISSING",
-            "makefiles/_ops.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
-            "declare BIJUX and BIJUX_DEV_ATLAS wrapper variables in makefiles/_ops.mk",
+            "make/makefiles/_ops.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX and BIJUX_DEV_ATLAS wrapper variables in make/makefiles/_ops.mk",
             Some(rel),
         ));
     }
@@ -75,7 +75,8 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
         if line.trim_end().ends_with('\\') {
             violations.push(violation(
                 "MAKE_OPS_SINGLE_LINE_RECIPE_REQUIRED",
-                "makefiles/_ops.mk wrapper recipes must be single-line delegations".to_string(),
+                "make/makefiles/_ops.mk wrapper recipes must be single-line delegations"
+                    .to_string(),
                 "keep ops wrappers single-line and delegation-only",
                 Some(rel),
             ));
@@ -92,7 +93,7 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
         ) {
             violations.push(violation(
                 "MAKE_OPS_DELEGATION_ONLY_VIOLATION",
-                format!("makefiles/_ops.mk must be delegation-only: `{line}`"),
+                format!("make/makefiles/_ops.mk must be delegation-only: `{line}`"),
                 "ops wrappers may call make or bijux dev atlas only",
                 Some(rel),
             ));

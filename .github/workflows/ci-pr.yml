@@ -33,7 +33,7 @@ jobs:
               - '.github/**'
               - 'configs/docs/**'
               - 'configs/openapi/**'
-              - 'makefiles/_docs.mk'
+              - 'make/makefiles/_docs.mk'
 
   minimal-root-policies:
     runs-on: ubuntu-latest

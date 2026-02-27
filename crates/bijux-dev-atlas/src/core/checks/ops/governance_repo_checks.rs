@@ -56,22 +56,25 @@ pub(super) fn check_root_makefile_single_include_entrypoint(
         .filter(|line| !line.is_empty())
         .filter(|line| !line.starts_with('#'))
         .collect::<Vec<_>>();
-    if lines.len() == 1 && lines[0] == "include makefiles/root.mk" {
+    if lines.len() == 2
+        && lines[0] == "include make/public.mk"
+        && lines[1] == "include make/help.mk"
+    {
         return Ok(Vec::new());
     }
-    if !lines.contains(&"include makefiles/root.mk") {
+    if !lines.contains(&"include make/public.mk") || !lines.contains(&"include make/help.mk") {
         return Ok(vec![violation(
             "ROOT_MAKEFILE_MISSING_ROOT_INCLUDE",
-            "root Makefile must include makefiles/root.mk".to_string(),
-            "use root Makefile as a single include entrypoint",
+            "root Makefile must include make/public.mk and make/help.mk".to_string(),
+            "use root Makefile as a thin include entrypoint",
             Some(rel),
         )]);
     }
-    lines.retain(|line| *line != "include makefiles/root.mk");
+    lines.retain(|line| *line != "include make/public.mk" && *line != "include make/help.mk");
     Ok(vec![violation(
         "ROOT_MAKEFILE_NOT_SINGLE_INCLUDE_ENTRYPOINT",
-        "root Makefile contains logic beyond the single root include".to_string(),
-        "keep root Makefile to one line: `include makefiles/root.mk`",
+        "root Makefile contains logic beyond the include-only entrypoint".to_string(),
+        "keep root Makefile to two includes only: `include make/public.mk` and `include make/help.mk`",
         Some(rel),
     )])
 }
@@ -95,7 +98,7 @@ pub(super) fn check_makefiles_root_includes_sorted(
     } else {
         Ok(vec![violation(
             "MAKEFILES_ROOT_INCLUDES_NOT_SORTED",
-            "makefiles/root.mk include statements must be sorted".to_string(),
+            "make/makefiles/root.mk include statements must be sorted".to_string(),
             "sort include lines lexicographically for deterministic diffs",
             Some(rel),
         )])
@@ -111,7 +114,7 @@ pub(super) fn check_root_top_level_directories_contract(
         "crates",
         "docker",
         "docs",
-        "makefiles",
+        "make",
         "ops",
     ];
     let mut actual = fs::read_dir(ctx.repo_root)

@@ -5,12 +5,12 @@ Define stable boundaries between public make surface and internal make implement
 
 ## Public surface rules
 - `ops/schema/configs/public-surface.schema.json` is the SSOT for public make targets.
-- `makefiles/root.mk` is the publication surface for public targets (`.PHONY` includes public targets).
+- `make/makefiles/root.mk` is the publication surface for public targets (`.PHONY` includes public targets).
 - `make help` prints only curated public targets from SSOT.
 - Make recipes must call stable `bijux` command surfaces only.
 - Make recipes must not call internal suite plumbing directly from makefiles.
 - Makefiles may not contain tool logic (tool install, toolchain orchestration, cleanup, ad-hoc scripts).
-- Wrapper makefiles (`makefiles/dev.mk`, `makefiles/docs.mk`, `makefiles/ops.mk`, `makefiles/ci.mk`, `makefiles/policies.mk`) may only delegate to stable `bijux ...` entrypoints.
+- Wrapper makefiles (`make/makefiles/dev.mk`, `make/makefiles/_docs.mk`, `make/makefiles/_ops.mk`, `make/makefiles/ci.mk`, `make/makefiles/_policies.mk`) may only delegate to stable `bijux ...` entrypoints.
 - Wrapper make recipes must be single-line delegations; multi-line shell blocks in wrapper recipes are forbidden.
 - Make is wrapper-only: recipe bodies must not implement tool orchestration logic directly.
 - Forbidden in make recipes: raw `cargo`, raw `pytest`, and ad-hoc script execution paths.

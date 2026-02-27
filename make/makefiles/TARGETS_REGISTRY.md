@@ -7,4 +7,4 @@ Canonical registry file:
 - `configs/ops/make-target-registry.json`
 
 Generated documentation:
-- `makefiles/GENERATED_TARGETS.md`
+- `make/makefiles/GENERATED_TARGETS.md`

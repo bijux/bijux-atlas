@@ -298,7 +298,7 @@ fn scan_registry_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
         if rels.starts_with("artifacts/") || rels.contains("/target/") {
             continue;
         }
-        if rels == "makefiles/GENERATED_TARGETS.md" {
+        if rels == "make/makefiles/GENERATED_TARGETS.md" {
             continue;
         }
         if !is_allowed_doc_location(&rels) {
@@ -322,7 +322,7 @@ fn is_allowed_doc_location(path: &str) -> bool {
         || path.starts_with("ops/")
         || path.starts_with("configs/")
         || path.starts_with("docker/")
-        || path.starts_with("makefiles/")
+        || path.starts_with("make/makefiles/")
         || path.starts_with(".github/")
 }
 

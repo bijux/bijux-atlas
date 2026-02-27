@@ -34,7 +34,7 @@ _internal-list: ## Print curated make target names
 _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
 	@case " $(CURATED_TARGETS) " in \
-	  *" $${TARGET} "*) echo "$${TARGET}: delegated via makefiles/*.mk wrappers to bijux dev atlas or cargo" ;; \
+	  *" $${TARGET} "*) echo "$${TARGET}: delegated via make/makefiles/*.mk wrappers to bijux dev atlas or cargo" ;; \
 	  *) echo "$${TARGET}: not available (unsupported target removed during Rust control-plane cutover)"; exit 2 ;; \
 	esac
 

@@ -517,7 +517,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
-                            "generated_make_targets": "makefiles/GENERATED_TARGETS.md"
+                            "generated_make_targets": "make/makefiles/GENERATED_TARGETS.md"
                         },
                         "changes_summary": {
                             "message": "docs registry updated",

@@ -7,18 +7,18 @@ Owner: `build-and-release`
 - Make is a thin wrapper layer.
 - Wrapper recipes delegate to stable `cargo ...` or dev control-plane surfaces.
 - Public target surface is defined by make metadata and rendered by `make help`.
-- `makefiles/root.mk` is the publish/router file, not a second control-plane.
+- `make/makefiles/root.mk` is the publish/router file, not a second control-plane.
 
-See `makefiles/CONTRACT.md` for normative rules.
+See `make/makefiles/CONTRACT.md` for normative rules.
 
 ## Canonical wrapper files
-- `makefiles/dev.mk`
-- `makefiles/ci.mk`
-- `makefiles/_docs.mk`
-- `makefiles/_ops.mk`
-- `makefiles/_configs.mk`
-- `makefiles/docker.mk`
-- `makefiles/_policies.mk`
+- `make/makefiles/dev.mk`
+- `make/makefiles/ci.mk`
+- `make/makefiles/_docs.mk`
+- `make/makefiles/_ops.mk`
+- `make/makefiles/_configs.mk`
+- `make/makefiles/docker.mk`
+- `make/makefiles/_policies.mk`
 
 ## Minimal public UX
 - `make help`

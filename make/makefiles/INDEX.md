@@ -18,7 +18,7 @@
 
 ## References
 
-- `makefiles/PHILOSOPHY.md`
-- `makefiles/TARGETS_REGISTRY.md`
-- `makefiles/CI_LANES.md`
-- `makefiles/GENERATED_TARGETS.md`
+- `make/makefiles/PHILOSOPHY.md`
+- `make/makefiles/TARGETS_REGISTRY.md`
+- `make/makefiles/CI_LANES.md`
+- `make/makefiles/GENERATED_TARGETS.md`
