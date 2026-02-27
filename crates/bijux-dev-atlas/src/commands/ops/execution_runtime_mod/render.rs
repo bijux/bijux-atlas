@@ -250,6 +250,7 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
     }
     errors.extend(scan_forbidden_kinds(rendered));
     errors.extend(scan_unpinned_images(rendered));
+    errors.extend(scan_invalid_image_refs(rendered));
     errors.extend(scan_timestamps(rendered));
     errors.sort();
     errors.dedup();
@@ -326,12 +327,63 @@ fn scan_unpinned_images(rendered: &str) -> Vec<String> {
     errors
 }
 
+fn scan_invalid_image_refs(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    for line in rendered.lines() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("image:") {
+            continue;
+        }
+        let ref_value = trimmed
+            .trim_start_matches("image:")
+            .trim()
+            .trim_matches('"')
+            .trim_matches('\'');
+        let at_count = ref_value.matches('@').count();
+        if at_count > 1 {
+            errors.push(format!(
+                "rendered image contains multiple digest separators: {trimmed}"
+            ));
+        }
+        if at_count == 1 && !ref_value.contains("@sha256:") {
+            errors.push(format!(
+                "rendered image uses invalid digest format (expected @sha256:...): {trimmed}"
+            ));
+        }
+    }
+    errors
+}
+
 fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
     let mut errors = Vec::new();
     if rendered.contains("kind: ClusterRole") {
         errors.push("rendered output includes forbidden resource `kind: ClusterRole`".to_string());
     }
     errors
+}
+
+#[cfg(test)]
+mod render_tests {
+    use super::{scan_invalid_image_refs, scan_unpinned_images};
+
+    #[test]
+    fn rendered_image_reference_must_not_have_multiple_digest_separators() {
+        let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:abc@sha256:def";
+        let errors = scan_invalid_image_refs(rendered);
+        assert!(
+            errors
+                .iter()
+                .any(|e| e.contains("multiple digest separators")),
+            "expected invalid image reference error, got {errors:?}"
+        );
+    }
+
+    #[test]
+    fn rendered_image_reference_accepts_digest_form() {
+        let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111";
+        let errors = scan_unpinned_images(rendered);
+        assert!(errors.is_empty(), "expected digest pinned image, got {errors:?}");
+    }
 }
 
 fn validate_helm_dependencies(ops_root: &Path) -> Vec<String> {
@@ -476,4 +528,3 @@ fn resolve_render_inputs(
     }
     Ok((render_path, index_path))
 }
-

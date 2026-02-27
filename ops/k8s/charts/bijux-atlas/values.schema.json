@@ -30,7 +30,47 @@
       "description": "Chart values key `hpa` from SSOT contract."
     },
     "image": {
-      "description": "Chart values key `image` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1,
+          "not": {
+            "pattern": "@"
+          }
+        },
+        "tag": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^(|sha256:[a-f0-9]{64})$"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        }
+      },
+      "required": ["repository", "tag", "digest", "pullPolicy"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "digest": {
+                "minLength": 1
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "tag": {
+                "maxLength": 0
+              }
+            }
+          }
+        }
+      ]
     },
     "ingress": {
       "description": "Chart values key `ingress` from SSOT contract."

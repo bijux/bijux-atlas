@@ -52,6 +52,9 @@
 - Render determinism is mandatory: same chart plus same values must produce identical manifests.
 - Rollout safety contract must align with install matrix profile names, values files, and suite assignments.
 - Release snapshot and inventory index generation must be deterministic for identical authored inputs.
+- `image.repository` is repository-only and must not contain `@`; digest pinning uses `image.digest`.
+- `cache.initPrewarm.enabled=true` requires `cache.pinnedDatasets` to be non-empty so `--dataset` is always explicit.
+- HPA is an opt-in contract; defaults keep `hpa.enabled=false` unless metrics prerequisites are intentionally configured.
 
 ## Runtime Evidence Mapping
 

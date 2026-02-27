@@ -20,7 +20,11 @@ spec:
     spec:
       containers:
         - name: atlas-server
+          {{- if .Values.image.digest }}
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           ports:
             - containerPort: {{ .Values.service.port }}
   strategy:
