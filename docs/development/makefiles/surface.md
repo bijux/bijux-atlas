@@ -1,153 +1,32 @@
-# Makefiles Public Surface
+# Make Public Surface
 
-Generated from `ops/schema/configs/public-surface.schema.json`. Do not edit manually.
+- Owner: `bijux-atlas-platform`
+- Tier: `stable`
+- Audience: `developers`
+- Source-of-truth: `make/help.md`, `make/target-list.json`, `makefiles/root.mk`
 
-## Core Gates
-- `make root`
-- `make root-local`
-- `make ci`
-- `make nightly`
-- `make ops-prereqs`
-- `make ops-doctor`
-- `make ops-contracts-check`
-- `make ops-k8s-suite`
-- `make ops-load-suite`
-- `make ops-e2e-smoke`
-- `make ops-local-full`
-- `make list`
-- `make ops-check`
-- `make ops-smoke`
-- `make ops-k8s-smoke`
-- `make ops-observability-verify`
-- `make report`
-- `make configs-check`
+This page documents the curated public make targets. Make remains a delegation layer; behavior is enforced by `bijux dev atlas` commands and cargo lanes.
 
-## Public Targets
-- `make ci`
-- `make clean`
-- `make configs-check`
-- `make docs`
+## Canonical Commands
+
+- List targets: `make help`
+- Validate make governance: `make doctor`
+- Refresh target inventory: `make make-target-list`
+
+## Docker Targets
+
+- `make docker` (alias of `make docker-validate`)
+- `make docker-validate`
 - `make docker-build`
-- `make docker-push`
-- `make docker-scan`
 - `make docker-smoke`
-- `make doctor`
-- `make explain`
-- `make format`
-- `make gates`
-- `make help`
-- `make inventory`
-- `make list`
-- `make nightly`
-- `make ops-alerts-validate`
-- `make ops-artifacts-open`
-- `make ops-baseline-policy-check`
-- `make ops-cache-pin-set`
-- `make ops-cache-status`
-- `make ops-catalog-validate`
-- `make ops-check`
-- `make ops-clean`
-- `make ops-contracts-check`
-- `make ops-dashboards-validate`
-- `make ops-dataset-federated-registry-test`
-- `make ops-dataset-multi-release-test`
-- `make ops-dataset-promotion-sim`
-- `make ops-dataset-qc`
-- `make ops-datasets-fetch`
-- `make ops-deploy`
-- `make ops-doctor`
-- `make ops-down`
-- `make ops-drill-corruption-dataset`
-- `make ops-drill-memory-growth`
-- `make ops-drill-otel-outage`
-- `make ops-drill-overload`
-- `make ops-drill-pod-churn`
-- `make ops-drill-rate-limit`
-- `make ops-drill-rollback`
-- `make ops-drill-rollback-under-load`
-- `make ops-drill-store-outage`
-- `make ops-drill-suite`
-- `make ops-drill-toxiproxy-latency`
-- `make ops-drill-upgrade`
-- `make ops-drill-upgrade-under-load`
-- `make ops-e2e-smoke`
-- `make ops-full`
-- `make ops-full-pr`
-- `make ops-gc-smoke`
-- `make ops-gen`
-- `make ops-gen-check`
-- `make ops-incident-repro-kit`
-- `make ops-k8s-smoke`
-- `make ops-k8s-suite`
-- `make ops-k8s-template-tests`
-- `make ops-k8s-tests`
-- `make ops-load-ci`
-- `make ops-load-full`
-- `make ops-load-manifest-validate`
-- `make ops-load-nightly`
-- `make ops-load-shedding`
-- `make ops-load-smoke`
-- `make ops-load-soak`
-- `make ops-load-suite`
-- `make ops-local-full`
-- `make ops-local-full-stack`
-- `make ops-metrics-check`
-- `make ops-observability-down`
-- `make ops-observability-install`
-- `make ops-observability-mode`
-- `make ops-observability-uninstall`
-- `make ops-observability-verify`
-- `make ops-observability-pack-conformance-report`
-- `make ops-observability-pack-export`
-- `make ops-observability-pack-health`
-- `make ops-observability-pack-smoke`
-- `make ops-observability-pack-verify`
-- `make ops-observability-smoke`
-- `make ops-observability-validate`
-- `make ops-open-grafana`
-- `make ops-openapi-validate`
-- `make ops-perf-baseline-update`
-- `make ops-perf-cold-start`
-- `make ops-perf-nightly`
-- `make ops-perf-report`
-- `make ops-perf-warm-start`
-- `make ops-prereqs`
-- `make ops-proof-cached-only`
-- `make ops-publish`
-- `make ops-readiness-scorecard`
-- `make ops-realdata`
-- `make ops-redeploy`
-- `make ops-ref-grade-local`
-- `make ops-ref-grade-nightly`
-- `make ops-ref-grade-pr`
-- `make ops-release-matrix`
-- `make ops-release-rollback`
-- `make ops-release-update`
-- `make ops-report`
-- `make ops-slo-alert-proof`
-- `make ops-slo-burn`
-- `make ops-slo-report`
-- `make ops-smoke`
-- `make ops-tools-check`
-- `make ops-traces-check`
-- `make ops-undeploy`
-- `make ops-up`
-- `make ops-values-validate`
-- `make ops-warm`
-- `make ops-warm-datasets`
-- `make ops-warm-shards`
-- `make ops-warm-top`
-- `make prereqs`
-- `make report`
-- `make root`
-- `make root-local`
-- `make root-local-fast`
-- `make root-local-summary`
-- `make scripts-check`
-- `make verify-inventory`
+- `make docker-sbom`
+- `make docker-scan`
+- `make docker-lock`
+- `make docker-release`
+- `make docker-gate`
 
-## Public Ops Run Commands
-- `bijux dev atlas ops verify-tools --allow-subprocess --format text`
-- `bijux dev atlas ops doctor --format text`
-- `bijux dev atlas ops install --kind --apply --profile kind --allow-subprocess --allow-write --format text`
-- `bijux dev atlas ops down --profile kind --allow-subprocess --format text`
+## Policy
+
+- Do not call private/internal make targets from CI.
+- Do not add docker commands outside `makefiles/docker.mk`.
+- Do not duplicate this list in other docs; point to `make help`.

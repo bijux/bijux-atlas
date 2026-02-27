@@ -294,86 +294,6 @@
       "used_in": []
     },
     {
-      "name": "docker",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-build",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-check",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-lock",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-policy-check",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-push",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-release",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-sbom",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-scan",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "docker-smoke",
-      "defined_in": [
-        "makefiles/_docker.mk"
-      ],
-      "visibility": "internal",
-      "used_in": []
-    },
-    {
       "name": "docs",
       "defined_in": [
         "makefiles/_docs.mk"
@@ -888,6 +808,105 @@
       ],
       "visibility": "public",
       "used_in": []
+    },
+    {
+      "name": "docker",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-validate",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-build",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-smoke",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-sbom",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-scan",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-lock",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-release",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "docker-gate",
+      "defined_in": [
+        "makefiles/docker.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/docker-gate.yml",
+        ".github/workflows/ci-pr.yml"
+      ]
     }
   ]
 }

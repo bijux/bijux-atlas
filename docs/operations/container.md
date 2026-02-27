@@ -11,10 +11,13 @@ This page defines how container images map into Kubernetes chart deployment.
 
 ## Image Contract
 
+- Validate policy and static contracts via `make docker-validate`.
 - Build image via `make docker-build`.
 - Smoke image via `make docker-smoke`.
+- Generate SBOM via `make docker-sbom`.
 - Scan image via `make docker-scan`.
-- Push image via `make docker-push` (CI only).
+- Run the full docker lane via `make docker-gate`.
+- Release (explicit override) via `make docker-release` (CI only).
 
 ## Digest and Pinning
 
@@ -40,7 +43,5 @@ Image must contain OCI labels:
 ## Verify
 
 ```bash
-make docker-build
-make docker-smoke
-make ops-k8s-suite
+make docker-gate
 ```
