@@ -1,0 +1,688 @@
+{
+  "contracts": [
+    {
+      "id": "OPS-000",
+      "tests": [
+        {
+          "test_id": "ops.dir.allow_only_known_domain_dirs",
+          "title": "ops root allows only canonical domain directories"
+        },
+        {
+          "test_id": "ops.dir.allowed_root_files",
+          "title": "ops root allows only contract/readme root files"
+        },
+        {
+          "test_id": "ops.dir.forbid_extra_markdown_recursive",
+          "title": "ops forbids recursive markdown outside approved surface"
+        },
+        {
+          "test_id": "ops.dir.forbid_extra_markdown_root",
+          "title": "ops root forbids extra markdown"
+        }
+      ],
+      "title": "ops directory contract"
+    },
+    {
+      "id": "OPS-001",
+      "tests": [
+        {
+          "test_id": "ops.generated.example.allowed_files",
+          "title": "ops/_generated.example allows only committed artifact formats"
+        },
+        {
+          "test_id": "ops.generated.runtime.allowed_files",
+          "title": "ops/_generated allows only runtime artifact formats"
+        },
+        {
+          "test_id": "ops.generated.runtime.no_example_files",
+          "title": "ops/_generated forbids example artifacts"
+        }
+      ],
+      "title": "ops generated lifecycle contract"
+    },
+    {
+      "id": "OPS-002",
+      "tests": [
+        {
+          "test_id": "ops.domain.forbid_legacy_docs",
+          "title": "legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden"
+        },
+        {
+          "test_id": "ops.domain.required_contract_and_readme",
+          "title": "each ops domain includes README.md and CONTRACT.md"
+        }
+      ],
+      "title": "ops required domain files contract"
+    },
+    {
+      "id": "OPS-003",
+      "tests": [
+        {
+          "test_id": "ops.markdown_budget.contract",
+          "title": "CONTRACT markdown files stay within line budget"
+        },
+        {
+          "test_id": "ops.markdown_budget.readme",
+          "title": "README markdown files stay within line budget"
+        }
+      ],
+      "title": "ops markdown budget contract"
+    },
+    {
+      "id": "OPS-004",
+      "tests": [
+        {
+          "test_id": "ops.docs.readme_ssot_boundary",
+          "title": "ops root readme remains navigation-only and references docs/operations"
+        }
+      ],
+      "title": "ops docs ssot boundary contract"
+    },
+    {
+      "id": "OPS-005",
+      "tests": [
+        {
+          "test_id": "ops.contract_doc.generated_match",
+          "title": "ops CONTRACT.md matches generated output from contract registry"
+        }
+      ],
+      "title": "ops contract document generation contract"
+    },
+    {
+      "id": "OPS-DATASET-001",
+      "tests": [
+        {
+          "test_id": "ops.dataset.manifest_and_lock_consistent",
+          "title": "dataset manifest and lock ids are consistent"
+        }
+      ],
+      "title": "datasets manifest lock contract"
+    },
+    {
+      "id": "OPS-DATASET-002",
+      "tests": [
+        {
+          "test_id": "ops.dataset.fixture_inventory_matches_disk",
+          "title": "fixture inventory matches fixture directories and references"
+        }
+      ],
+      "title": "datasets fixture inventory contract"
+    },
+    {
+      "id": "OPS-DATASET-003",
+      "tests": [
+        {
+          "test_id": "ops.dataset.no_fixture_drift_without_promotion_record",
+          "title": "fixture drift requires explicit promotion rule coverage"
+        }
+      ],
+      "title": "datasets fixture drift promotion contract"
+    },
+    {
+      "id": "OPS-DATASET-004",
+      "tests": [
+        {
+          "test_id": "ops.dataset.release_diff_fixtures_deterministic",
+          "title": "release-diff fixture lock and golden payloads are deterministic"
+        }
+      ],
+      "title": "datasets release diff determinism contract"
+    },
+    {
+      "id": "OPS-DOCS-001",
+      "tests": [
+        {
+          "test_id": "ops.docs.index_crosslinks_contracts",
+          "title": "operations index must state docs/contracts boundary and include OPS references"
+        },
+        {
+          "test_id": "ops.docs.policy_keyword_requires_contract_id",
+          "title": "operations docs with policy keywords must reference OPS contract ids"
+        }
+      ],
+      "title": "operations docs policy linkage contract"
+    },
+    {
+      "id": "OPS-E2E-001",
+      "tests": [
+        {
+          "test_id": "ops.e2e.suites_reference_real_scenarios",
+          "title": "e2e suites reference concrete scenario ids and runnable entrypoints"
+        }
+      ],
+      "title": "e2e suites reference contract"
+    },
+    {
+      "id": "OPS-E2E-002",
+      "tests": [
+        {
+          "test_id": "ops.e2e.smoke_manifest_valid",
+          "title": "smoke manifest is structured and points to existing lock"
+        }
+      ],
+      "title": "e2e smoke manifest contract"
+    },
+    {
+      "id": "OPS-E2E-003",
+      "tests": [
+        {
+          "test_id": "ops.e2e.fixtures_lock_matches_allowlist",
+          "title": "fixtures lock digest and fixture files match allowlist policy"
+        }
+      ],
+      "title": "e2e fixtures lock contract"
+    },
+    {
+      "id": "OPS-E2E-004",
+      "tests": [
+        {
+          "test_id": "ops.e2e.realdata_snapshots_schema_valid_and_pinned",
+          "title": "realdata snapshots are parseable and pinned to canonical queries"
+        }
+      ],
+      "title": "e2e realdata snapshot contract"
+    },
+    {
+      "id": "OPS-E2E-E-001",
+      "tests": [
+        {
+          "test_id": "ops.e2e.effect.smoke_suite_passes_contract",
+          "title": "effect lane requires smoke suite declaration in e2e suite registry"
+        }
+      ],
+      "title": "e2e effect smoke suite contract"
+    },
+    {
+      "id": "OPS-E2E-E-002",
+      "tests": [
+        {
+          "test_id": "ops.e2e.effect.realdata_scenario_passes_contract",
+          "title": "effect lane requires non-empty realdata scenario contract set"
+        }
+      ],
+      "title": "e2e effect realdata suite contract"
+    },
+    {
+      "id": "OPS-ENV-001",
+      "tests": [
+        {
+          "test_id": "ops.env.overlays_schema_valid",
+          "title": "all required environment overlays are structurally valid"
+        }
+      ],
+      "title": "environment overlay schema contract"
+    },
+    {
+      "id": "OPS-ENV-002",
+      "tests": [
+        {
+          "test_id": "ops.env.profiles_complete",
+          "title": "base/ci/dev/prod overlays exist and match profile identity"
+        }
+      ],
+      "title": "environment profile completeness contract"
+    },
+    {
+      "id": "OPS-ENV-003",
+      "tests": [
+        {
+          "test_id": "ops.env.no_unknown_keys",
+          "title": "environment overlays reject unknown keys"
+        }
+      ],
+      "title": "environment key strictness contract"
+    },
+    {
+      "id": "OPS-INV-001",
+      "tests": [
+        {
+          "test_id": "ops.inventory.completeness",
+          "title": "inventory registers all domains and policy files"
+        }
+      ],
+      "title": "inventory completeness contract"
+    },
+    {
+      "id": "OPS-INV-002",
+      "tests": [
+        {
+          "test_id": "ops.inventory.no_orphan_files",
+          "title": "ops files must be mapped through inventory sources"
+        }
+      ],
+      "title": "inventory orphan files contract"
+    },
+    {
+      "id": "OPS-INV-003",
+      "tests": [
+        {
+          "test_id": "ops.inventory.no_duplicate_ssot_sources",
+          "title": "duplicate ssot markdown sources are forbidden"
+        }
+      ],
+      "title": "inventory duplicate source contract"
+    },
+    {
+      "id": "OPS-INV-004",
+      "tests": [
+        {
+          "test_id": "ops.inventory.authority_tiers_enforced",
+          "title": "authority tier exceptions are structured and expiry-bound"
+        }
+      ],
+      "title": "inventory authority tier contract"
+    },
+    {
+      "id": "OPS-INV-005",
+      "tests": [
+        {
+          "test_id": "ops.inventory.control_graph_validated",
+          "title": "control graph edges and node mappings are valid and acyclic"
+        }
+      ],
+      "title": "inventory control graph contract"
+    },
+    {
+      "id": "OPS-K8S-001",
+      "tests": [
+        {
+          "test_id": "ops.k8s.chart_renders_static",
+          "title": "helm chart source includes required files and static render inputs"
+        }
+      ],
+      "title": "k8s static chart render contract"
+    },
+    {
+      "id": "OPS-K8S-002",
+      "tests": [
+        {
+          "test_id": "ops.k8s.values_files_validate_schema",
+          "title": "install-matrix values files exist and are parseable against chart schema surface"
+        }
+      ],
+      "title": "k8s values schema validation contract"
+    },
+    {
+      "id": "OPS-K8S-003",
+      "tests": [
+        {
+          "test_id": "ops.k8s.install_matrix_complete",
+          "title": "install matrix covers canonical profile set and references existing files"
+        }
+      ],
+      "title": "k8s install matrix completeness contract"
+    },
+    {
+      "id": "OPS-K8S-004",
+      "tests": [
+        {
+          "test_id": "ops.k8s.no_forbidden_k8s_objects",
+          "title": "helm templates must not introduce forbidden cluster-scope object kinds"
+        }
+      ],
+      "title": "k8s forbidden object policy contract"
+    },
+    {
+      "id": "OPS-K8S-E-001",
+      "tests": [
+        {
+          "test_id": "ops.k8s.effect.helm_install_contract_defined",
+          "title": "effect lane requires kind install profile in k8s install matrix"
+        }
+      ],
+      "title": "k8s effect helm install contract"
+    },
+    {
+      "id": "OPS-K8S-E-002",
+      "tests": [
+        {
+          "test_id": "ops.k8s.effect.rollout_safety_contract_satisfied",
+          "title": "effect lane requires rollout safety contract checks"
+        }
+      ],
+      "title": "k8s effect rollout safety contract"
+    },
+    {
+      "id": "OPS-K8S-E-003",
+      "tests": [
+        {
+          "test_id": "ops.k8s.effect.service_endpoints_reachable_contract",
+          "title": "effect lane requires non-empty k8s suite coverage for endpoint checks"
+        }
+      ],
+      "title": "k8s effect endpoint reachability contract"
+    },
+    {
+      "id": "OPS-LOAD-001",
+      "tests": [
+        {
+          "test_id": "ops.load.scenarios_schema_valid",
+          "title": "load scenarios are parseable and include required fields"
+        }
+      ],
+      "title": "load scenario schema contract"
+    },
+    {
+      "id": "OPS-LOAD-002",
+      "tests": [
+        {
+          "test_id": "ops.load.thresholds_exist_for_each_suite",
+          "title": "every load suite has a matching thresholds file"
+        }
+      ],
+      "title": "load thresholds coverage contract"
+    },
+    {
+      "id": "OPS-LOAD-003",
+      "tests": [
+        {
+          "test_id": "ops.load.pinned_queries_lock_consistent",
+          "title": "pinned query lock digests match source query payload"
+        }
+      ],
+      "title": "load pinned query lock contract"
+    },
+    {
+      "id": "OPS-LOAD-004",
+      "tests": [
+        {
+          "test_id": "ops.load.baselines_schema_valid",
+          "title": "load baselines are parseable and contain required fields"
+        }
+      ],
+      "title": "load baseline schema contract"
+    },
+    {
+      "id": "OPS-LOAD-005",
+      "tests": [
+        {
+          "test_id": "ops.load.no_scenario_without_slo_mapping",
+          "title": "smoke/pr load suites must be represented in inventory SLO mappings"
+        }
+      ],
+      "title": "load scenario to slo mapping contract"
+    },
+    {
+      "id": "OPS-LOAD-E-001",
+      "tests": [
+        {
+          "test_id": "ops.load.effect.k6_suite_executes_contract",
+          "title": "effect lane requires at least one k6 load suite definition"
+        }
+      ],
+      "title": "load effect k6 execution contract"
+    },
+    {
+      "id": "OPS-LOAD-E-002",
+      "tests": [
+        {
+          "test_id": "ops.load.effect.thresholds_enforced_report_emitted",
+          "title": "effect lane requires thresholds contract and emitted load summary report"
+        }
+      ],
+      "title": "load effect thresholds report contract"
+    },
+    {
+      "id": "OPS-LOAD-E-003",
+      "tests": [
+        {
+          "test_id": "ops.load.effect.baseline_comparison_produced",
+          "title": "effect lane requires emitted load drift comparison report"
+        }
+      ],
+      "title": "load effect baseline comparison contract"
+    },
+    {
+      "id": "OPS-OBS-001",
+      "tests": [
+        {
+          "test_id": "ops.observe.alert_rules_exist_parseable",
+          "title": "required alert rule sources exist and are parseable"
+        }
+      ],
+      "title": "observability alert rules contract"
+    },
+    {
+      "id": "OPS-OBS-002",
+      "tests": [
+        {
+          "test_id": "ops.observe.dashboard_json_parseable_golden_diff",
+          "title": "dashboard json parses and matches golden identity and panel structure"
+        }
+      ],
+      "title": "observability dashboard golden contract"
+    },
+    {
+      "id": "OPS-OBS-003",
+      "tests": [
+        {
+          "test_id": "ops.observe.telemetry_goldens_required_profiles",
+          "title": "telemetry goldens exist for required profiles and are indexed"
+        }
+      ],
+      "title": "observability telemetry golden profile contract"
+    },
+    {
+      "id": "OPS-OBS-004",
+      "tests": [
+        {
+          "test_id": "ops.observe.readiness_schema_valid",
+          "title": "readiness contract is parseable and uses canonical requirement set"
+        }
+      ],
+      "title": "observability readiness schema contract"
+    },
+    {
+      "id": "OPS-OBS-E-001",
+      "tests": [
+        {
+          "test_id": "ops.observe.effect.scrape_metrics_contract",
+          "title": "effect lane requires non-empty metrics scrape contract"
+        }
+      ],
+      "title": "observe effect metrics scrape contract"
+    },
+    {
+      "id": "OPS-OBS-E-002",
+      "tests": [
+        {
+          "test_id": "ops.observe.effect.trace_structure_contract",
+          "title": "effect lane requires trace structure golden contract"
+        }
+      ],
+      "title": "observe effect trace structure contract"
+    },
+    {
+      "id": "OPS-OBS-E-003",
+      "tests": [
+        {
+          "test_id": "ops.observe.effect.alerts_load_contract",
+          "title": "effect lane requires parseable alert rule inputs"
+        }
+      ],
+      "title": "observe effect alerts load contract"
+    },
+    {
+      "id": "OPS-ROOT-010",
+      "tests": [
+        {
+          "test_id": "ops.root.forbid_deleted_doc_names",
+          "title": "forbidden legacy ops markdown names must not be reintroduced"
+        }
+      ],
+      "title": "ops deleted doc name guard contract"
+    },
+    {
+      "id": "OPS-RPT-001",
+      "tests": [
+        {
+          "test_id": "ops.report.schema_is_ssot",
+          "title": "report schema is parseable and mirrored under ops/schema/report"
+        }
+      ],
+      "title": "report schema ssot contract"
+    },
+    {
+      "id": "OPS-RPT-002",
+      "tests": [
+        {
+          "test_id": "ops.report.generated_reports_schema_valid",
+          "title": "generated report payloads are parseable and include schema_version"
+        }
+      ],
+      "title": "report generated payload contract"
+    },
+    {
+      "id": "OPS-RPT-003",
+      "tests": [
+        {
+          "test_id": "ops.report.evidence_levels_complete",
+          "title": "evidence levels include minimal standard and forensic"
+        }
+      ],
+      "title": "report evidence levels contract"
+    },
+    {
+      "id": "OPS-RPT-004",
+      "tests": [
+        {
+          "test_id": "ops.report.diff_contract_exists",
+          "title": "generated report diff includes base target and change set"
+        }
+      ],
+      "title": "report diff structure contract"
+    },
+    {
+      "id": "OPS-SCHEMA-001",
+      "tests": [
+        {
+          "test_id": "ops.schema.parseable_documents",
+          "title": "ops json/yaml policy documents are parseable"
+        }
+      ],
+      "title": "schema parseability contract"
+    },
+    {
+      "id": "OPS-SCHEMA-002",
+      "tests": [
+        {
+          "test_id": "ops.schema.index_complete",
+          "title": "generated schema index covers all schema sources"
+        }
+      ],
+      "title": "schema index completeness contract"
+    },
+    {
+      "id": "OPS-SCHEMA-003",
+      "tests": [
+        {
+          "test_id": "ops.schema.no_unversioned",
+          "title": "schema sources use stable .schema.json naming"
+        }
+      ],
+      "title": "schema naming contract"
+    },
+    {
+      "id": "OPS-SCHEMA-004",
+      "tests": [
+        {
+          "test_id": "ops.schema.budget_policy",
+          "title": "schema count stays within per-domain budgets"
+        }
+      ],
+      "title": "schema budget contract"
+    },
+    {
+      "id": "OPS-SCHEMA-005",
+      "tests": [
+        {
+          "test_id": "ops.schema.evolution_lock",
+          "title": "compatibility lock tracks schema evolution targets"
+        }
+      ],
+      "title": "schema evolution lock contract"
+    },
+    {
+      "id": "OPS-STACK-001",
+      "tests": [
+        {
+          "test_id": "ops.stack.stack_toml_parseable_complete",
+          "title": "stack.toml parses and includes canonical ci kind local profiles"
+        }
+      ],
+      "title": "stack toml profile contract"
+    },
+    {
+      "id": "OPS-STACK-002",
+      "tests": [
+        {
+          "test_id": "ops.stack.service_dependency_contract_valid",
+          "title": "service dependency contract entries are parseable and resolve to files"
+        }
+      ],
+      "title": "stack service dependency contract"
+    },
+    {
+      "id": "OPS-STACK-003",
+      "tests": [
+        {
+          "test_id": "ops.stack.versions_manifest_schema_valid",
+          "title": "version manifest is parseable and image refs are digest pinned"
+        }
+      ],
+      "title": "stack version manifest contract"
+    },
+    {
+      "id": "OPS-STACK-004",
+      "tests": [
+        {
+          "test_id": "ops.stack.dependency_graph_generated_acyclic",
+          "title": "dependency graph is parseable and references real cluster/components"
+        }
+      ],
+      "title": "stack dependency graph contract"
+    },
+    {
+      "id": "OPS-STACK-E-001",
+      "tests": [
+        {
+          "test_id": "ops.stack.effect.kind_cluster_up_profile_dev",
+          "title": "effect lane requires kind dev cluster contract inputs"
+        }
+      ],
+      "title": "stack effect kind cluster contract"
+    },
+    {
+      "id": "OPS-STACK-E-002",
+      "tests": [
+        {
+          "test_id": "ops.stack.effect.core_components_present",
+          "title": "effect lane requires core stack component manifests"
+        }
+      ],
+      "title": "stack effect component rollout contract"
+    },
+    {
+      "id": "OPS-STACK-E-003",
+      "tests": [
+        {
+          "test_id": "ops.stack.effect.ports_inventory_mapped",
+          "title": "effect lane requires stack ports inventory contract sample"
+        }
+      ],
+      "title": "stack effect ports inventory contract"
+    },
+    {
+      "id": "OPS-STACK-E-004",
+      "tests": [
+        {
+          "test_id": "ops.stack.effect.health_report_generated",
+          "title": "effect lane requires stack health report contract sample"
+        }
+      ],
+      "title": "stack effect health report contract"
+    }
+  ],
+  "domain": "ops",
+  "schema_version": 1
+}

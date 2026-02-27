@@ -1,5 +1,5 @@
-pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
-    Ok(vec![
+pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
+    let rows = vec![
         Contract {
             id: ContractId("OPS-000".to_string()),
             title: "ops directory contract",
@@ -708,7 +708,9 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_ops_e2e_e_002_realdata_scenario_passes_contract,
             }],
         },
-    ])
+    ];
+    validate_registry(&rows, repo_root)?;
+    Ok(rows)
 }
 
 pub fn contract_explain(contract_id: &str) -> &'static str {

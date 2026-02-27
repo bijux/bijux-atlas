@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::fs;
 use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
@@ -83,6 +84,8 @@ fn sha256_text(content: &str) -> String {
     format!("{:x}", hasher.finalize())
 }
 
+include!("registry_validation.inc.rs");
+
 fn ops_markdown_allowed(rel: &str) -> bool {
     if rel == "ops/README.md" || rel == "ops/CONTRACT.md" {
         return true;
@@ -124,6 +127,7 @@ fn inventory_paths(repo_root: &Path) -> (BTreeSet<String>, BTreeSet<String>) {
 
     (authoritative, contracts_map_items)
 }
+
 
 fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-000";
@@ -742,6 +746,7 @@ fn test_ops_inv_003_no_duplicate_ssot(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
 
 include!("ops_extended.inc.rs");
 
