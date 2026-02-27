@@ -9,6 +9,7 @@ use std::fmt;
 use std::path::{Path, PathBuf};
 
 pub mod docker;
+pub mod ops;
 
 pub trait ContractRegistry {
     fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String>;

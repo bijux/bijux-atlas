@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{ContractsCommand, ContractsFormatArg, ContractsModeArg, PoliciesCommand};
+use crate::cli::{
+    ContractsCommand, ContractsFormatArg, ContractsModeArg, ContractsOpsDomainArg, PoliciesCommand,
+};
 use crate::*;
 use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
@@ -56,6 +58,22 @@ pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
 pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i32 {
+    fn ops_domain_filter(domain: ContractsOpsDomainArg) -> String {
+        match domain {
+            ContractsOpsDomainArg::Root => "OPS-000*".to_string(),
+            ContractsOpsDomainArg::Datasets => "OPS-DATASET-*".to_string(),
+            ContractsOpsDomainArg::E2e => "OPS-E2E-*".to_string(),
+            ContractsOpsDomainArg::Env => "OPS-ENV-*".to_string(),
+            ContractsOpsDomainArg::Inventory => "OPS-INV-*".to_string(),
+            ContractsOpsDomainArg::K8s => "OPS-K8S-*".to_string(),
+            ContractsOpsDomainArg::Load => "OPS-LOAD-*".to_string(),
+            ContractsOpsDomainArg::Observe => "OPS-OBS-*".to_string(),
+            ContractsOpsDomainArg::Report => "OPS-RPT-*".to_string(),
+            ContractsOpsDomainArg::Schema => "OPS-SCHEMA-*".to_string(),
+            ContractsOpsDomainArg::Stack => "OPS-STACK-*".to_string(),
+        }
+    }
+
     let run = (|| -> Result<(String, i32), String> {
         match command {
             ContractsCommand::Docker(args) => {
@@ -152,6 +170,109 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     &repo_root,
                     &options,
                 )?;
+                let format_json = args.json || args.format == ContractsFormatArg::Json;
+                let rendered = if format_json {
+                    serde_json::to_string_pretty(&contracts::to_json(&report))
+                        .map_err(|e| format!("encode contracts report failed: {e}"))?
+                } else {
+                    contracts::to_pretty(&report)
+                };
+                Ok((rendered, report.exit_code()))
+            }
+            ContractsCommand::Ops(args) => {
+                let repo_root = resolve_repo_root(args.repo_root)?;
+                let registry = contracts::ops::contracts(&repo_root)?;
+                if let Some(contract_id) = args.explain {
+                    let Some(contract) = registry
+                        .iter()
+                        .find(|entry| entry.id.0.eq_ignore_ascii_case(&contract_id))
+                    else {
+                        return Err(format!("unknown ops contract id `{contract_id}`"));
+                    };
+                    let explanation = contracts::ops::contract_explain(&contract.id.0);
+                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
+                        serde_json::to_string_pretty(&serde_json::json!({
+                            "schema_version": 1,
+                            "domain": "ops",
+                            "contract_id": contract.id.0,
+                            "title": contract.title,
+                            "tests": contract.tests.iter().map(|case| serde_json::json!({
+                                "test_id": case.id.0,
+                                "title": case.title
+                            })).collect::<Vec<_>>(),
+                            "explain": explanation
+                        }))
+                        .map_err(|e| format!("encode contracts explain failed: {e}"))?
+                    } else {
+                        let mut out = String::new();
+                        out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
+                        out.push_str("Tests:\n");
+                        for case in &contract.tests {
+                            out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
+                        }
+                        out.push_str("\nHow to fix:\n");
+                        out.push_str(&explanation);
+                        out.push('\n');
+                        out
+                    };
+                    return Ok((rendered, 0));
+                }
+                if args.list {
+                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
+                        serde_json::to_string_pretty(&serde_json::json!({
+                            "schema_version": 1,
+                            "domain": "ops",
+                            "contracts": registry.iter().map(|contract| serde_json::json!({
+                                "id": contract.id.0,
+                                "title": contract.title,
+                                "tests": if args.list_tests {
+                                    contract.tests.iter().map(|case| serde_json::json!({
+                                        "test_id": case.id.0,
+                                        "title": case.title
+                                    })).collect::<Vec<_>>()
+                                } else {
+                                    Vec::<serde_json::Value>::new()
+                                }
+                            })).collect::<Vec<_>>()
+                        }))
+                        .map_err(|e| format!("encode contracts list failed: {e}"))?
+                    } else {
+                        let mut out = String::new();
+                        out.push_str("Contracts: ops\n");
+                        for contract in &registry {
+                            out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
+                            if args.list_tests {
+                                for case in &contract.tests {
+                                    out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
+                                }
+                            }
+                        }
+                        out
+                    };
+                    return Ok((rendered, 0));
+                }
+                let mode = match args.mode {
+                    ContractsModeArg::Static => contracts::Mode::Static,
+                    ContractsModeArg::Effect => contracts::Mode::Effect,
+                };
+                let contract_filter = if let Some(domain) = args.domain {
+                    Some(ops_domain_filter(domain))
+                } else {
+                    args.filter
+                };
+                let options = contracts::RunOptions {
+                    mode,
+                    allow_subprocess: args.allow_subprocess,
+                    allow_network: args.allow_network,
+                    skip_missing_tools: args.skip_missing_tools,
+                    timeout_seconds: args.timeout_seconds,
+                    fail_fast: args.fail_fast,
+                    contract_filter,
+                    test_filter: args.filter_test,
+                    list_only: args.list,
+                    artifacts_root: args.artifacts_root,
+                };
+                let report = contracts::run("ops", contracts::ops::contracts, &repo_root, &options)?;
                 let format_json = args.json || args.format == ContractsFormatArg::Json;
                 let rendered = if format_json {
                     serde_json::to_string_pretty(&contracts::to_json(&report))

@@ -232,6 +232,7 @@ pub struct ConfigsCommonArgs {
 #[derive(Subcommand, Debug)]
 pub enum ContractsCommand {
     Docker(ContractsDockerArgs),
+    Ops(ContractsOpsArgs),
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
@@ -258,6 +259,57 @@ pub struct ContractsDockerArgs {
     pub format: ContractsFormatArg,
     #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
     pub mode: ContractsModeArg,
+    #[arg(long, default_value_t = false)]
+    pub fail_fast: bool,
+    #[arg(long)]
+    pub filter: Option<String>,
+    #[arg(long)]
+    pub filter_test: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub list: bool,
+    #[arg(long, default_value_t = false)]
+    pub list_tests: bool,
+    #[arg(long)]
+    pub explain: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub skip_missing_tools: bool,
+    #[arg(long, default_value_t = 300)]
+    pub timeout_seconds: u64,
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractsOpsDomainArg {
+    Root,
+    Datasets,
+    E2e,
+    Env,
+    Inventory,
+    K8s,
+    Load,
+    Observe,
+    Report,
+    Schema,
+    Stack,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractsOpsArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub json: bool,
+    #[arg(long, value_enum, default_value_t = ContractsFormatArg::Pretty)]
+    pub format: ContractsFormatArg,
+    #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
+    pub mode: ContractsModeArg,
+    #[arg(long, value_enum)]
+    pub domain: Option<ContractsOpsDomainArg>,
     #[arg(long, default_value_t = false)]
     pub fail_fast: bool,
     #[arg(long)]

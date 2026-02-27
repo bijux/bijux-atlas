@@ -231,6 +231,7 @@ fn force_json_configs(command: &mut ConfigsCommand) {
 fn force_json_contracts(command: &mut ContractsCommand) {
     match command {
         ContractsCommand::Docker(args) => args.json = true,
+        ContractsCommand::Ops(args) => args.json = true,
     }
 }
 
@@ -558,6 +559,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Contracts { command } => match command {
             ContractsCommand::Docker(args) => args.repo_root = Some(root.clone()),
+            ContractsCommand::Ops(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {
             crate::cli::WorkflowsCommand::Validate { repo_root, .. }
