@@ -27,3 +27,6 @@
 - [ ] No direct infra patch/fixup was added under `ops/e2e/**`.
 - [ ] `make policies/boundaries-check` is green.
 - [ ] Stack/k8s smoke coverage ran in CI for this PR.
+
+## Docs Checklist (required if touching `docs/**`, `mkdocs.yml`, or command docs output)
+- [ ] Completed `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` checklist items in PR description.
