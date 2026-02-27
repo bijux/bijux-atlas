@@ -4,6 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG IMAGE_VERSION=dev-local
 ARG VCS_REF=unknown
 ARG BUILD_DATE=1970-01-01T00:00:00Z
+ARG SOURCE_DATE_EPOCH=0
 ARG IMAGE_PROVENANCE=local
 
 FROM rust:1.84.1-bookworm@sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88 AS builder
@@ -44,4 +45,5 @@ LABEL org.opencontainers.image.version="${IMAGE_VERSION}"
 LABEL org.opencontainers.image.revision="${VCS_REF}"
 LABEL org.opencontainers.image.created="${BUILD_DATE}"
 LABEL org.opencontainers.image.ref.name="${IMAGE_PROVENANCE}"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
 ENTRYPOINT ["/app/bijux-atlas", "atlas", "serve"]

@@ -72,6 +72,106 @@ Tests:
 Tests:
 - `docker.images.forbidden_extra` (static, Pure): docker image directories are allowlisted
 
+### DOCKER-014 branch-like tags forbidden
+
+Tests:
+- `docker.from.no_branch_like_tags` (static, Pure): FROM does not use main, master, edge, or nightly tags
+
+### DOCKER-015 base image allowlist
+
+Tests:
+- `docker.from.allowlisted_base_images` (static, Pure): FROM images are declared in docker/bases.lock
+
+### DOCKER-016 base image lock digest
+
+Tests:
+- `docker.from.digest_matches_lock` (static, Pure): FROM image digests match docker/bases.lock
+
+### DOCKER-017 from arg defaults
+
+Tests:
+- `docker.from.args_have_defaults` (static, Pure): ARG values referenced by FROM have defaults
+
+### DOCKER-018 from platform override
+
+Tests:
+- `docker.from.no_platform_override` (static, Pure): FROM does not use --platform unless policy allows it
+
+### DOCKER-019 shell instruction policy
+
+Tests:
+- `docker.shell.explicit_policy` (static, Pure): Dockerfile SHELL usage follows docker policy
+
+### DOCKER-020 package manager cleanup
+
+Tests:
+- `docker.run.package_manager_cleanup` (static, Pure): package manager installs include deterministic cleanup
+
+### DOCKER-021 runtime non-root user
+
+Tests:
+- `docker.runtime.non_root` (static, Pure): final runtime stage uses a non-root user
+
+### DOCKER-022 final stage user declaration
+
+Tests:
+- `docker.final_stage.user_required` (static, Pure): final stage declares USER explicitly
+
+### DOCKER-023 final stage workdir
+
+Tests:
+- `docker.final_stage.workdir_required` (static, Pure): final stage declares WORKDIR explicitly
+
+### DOCKER-024 final stage process entry
+
+Tests:
+- `docker.final_stage.entrypoint_or_cmd_required` (static, Pure): final stage declares ENTRYPOINT or CMD
+
+### DOCKER-025 release labels contract
+
+Tests:
+- `docker.labels.contract_fields` (static, Pure): release labels include provenance, timestamp, and license fields
+
+### DOCKER-026 secret copy guard
+
+Tests:
+- `docker.copy.no_secrets` (static, Pure): COPY does not include secret-like files
+
+### DOCKER-027 add instruction forbidden
+
+Tests:
+- `docker.add.forbidden` (static, Pure): Dockerfiles use COPY instead of ADD unless explicitly allowlisted
+
+### DOCKER-028 multistage build required
+
+Tests:
+- `docker.build.multistage_required` (static, Pure): builds that compile artifacts use a builder stage
+
+### DOCKER-029 dockerignore required entries
+
+Tests:
+- `docker.ignore.required_entries` (static, Pure): .dockerignore includes deterministic exclusions
+
+### DOCKER-030 reproducible build args
+
+Tests:
+- `docker.args.repro_build_args` (static, Pure): reproducible build args are declared
+
+### DOCKER-031 final stage network isolation
+
+Tests:
+- `docker.final_stage.no_network` (static, Pure): final stage does not fetch over the network
+
+### DOCKER-032 final stage package manager isolation
+
+Tests:
+- `docker.final_stage.no_package_manager` (static, Pure): final stage does not run package managers
+
+### DOCKER-033 image smoke manifest
+
+Tests:
+- `docker.images.smoke_manifest` (static, Pure): each Docker image is listed with a smoke command in docker/images.manifest.json
+
 ### DOCKER-100 build succeeds
 
 Tests:

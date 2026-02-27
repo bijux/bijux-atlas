@@ -211,6 +211,76 @@ fn allowed_tag_exceptions(policy: &Value) -> BTreeSet<String> {
         .collect()
 }
 
+fn load_json(path: &Path) -> Result<Value, String> {
+    let text = std::fs::read_to_string(path)
+        .map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    serde_json::from_str(&text).map_err(|e| format!("parse {} failed: {e}", path.display()))
+}
+
+fn load_bases_lock(repo_root: &Path) -> Result<BTreeMap<String, String>, String> {
+    let path = repo_root.join("docker/bases.lock");
+    let payload = load_json(&path)?;
+    let mut rows = BTreeMap::new();
+    for entry in payload["images"].as_array().cloned().unwrap_or_default() {
+        let image = entry
+            .get("image")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| format!("{} is missing image field", path.display()))?;
+        let digest = entry
+            .get("digest")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| format!("{} is missing digest field", path.display()))?;
+        rows.insert(image.to_string(), digest.to_string());
+    }
+    if rows.is_empty() {
+        return Err(format!("{} has no image entries", path.display()));
+    }
+    Ok(rows)
+}
+
+fn load_images_manifest(repo_root: &Path) -> Result<Value, String> {
+    load_json(&repo_root.join("docker/images.manifest.json"))
+}
+
+fn split_from_image(from_ref: &str) -> (String, Option<String>, Option<String>) {
+    let (base, digest) = match from_ref.split_once('@') {
+        Some((image, digest)) => (image.to_string(), Some(digest.to_string())),
+        None => (from_ref.to_string(), None),
+    };
+    let image = base.clone();
+    let tag = image
+        .rfind(':')
+        .filter(|idx| image.rfind('/').map(|slash| idx > &slash).unwrap_or(true))
+        .map(|idx| image[idx + 1..].to_string());
+    (base, tag, digest)
+}
+
+fn final_stage_bounds(instructions: &[DockerInstruction]) -> Option<(usize, usize)> {
+    let from_positions = instructions
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, ins)| (ins.keyword == "FROM").then_some(idx))
+        .collect::<Vec<_>>();
+    let start = *from_positions.last()?;
+    Some((start, instructions.len()))
+}
+
+fn arg_defaults(instructions: &[DockerInstruction]) -> BTreeMap<String, (bool, usize)> {
+    let mut out = BTreeMap::new();
+    for ins in instructions {
+        if ins.keyword != "ARG" {
+            continue;
+        }
+        let raw = ins.args.trim();
+        let name = raw.split('=').next().unwrap_or("").trim();
+        if name.is_empty() {
+            continue;
+        }
+        out.insert(name.to_string(), (raw.contains('='), ins.line));
+    }
+    out
+}
+
 fn test_from_no_latest(ctx: &RunContext) -> TestResult {
     let rows = match dockerfiles_with_instructions(ctx) {
         Ok(v) => v,
@@ -273,6 +343,801 @@ fn test_from_no_floating_tags(ctx: &RunContext) -> TestResult {
                     Some(from_ref),
                 ));
             }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_from_no_branch_like_tags(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let forbidden = ["main", "master", "edge", "nightly"];
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword != "FROM" {
+                continue;
+            }
+            let Some(from_ref) = parse_from_ref(&ins.args) else {
+                continue;
+            };
+            let (_, tag, _) = split_from_image(&from_ref);
+            if tag
+                .as_deref()
+                .is_some_and(|value| forbidden.iter().any(|candidate| candidate == &value))
+            {
+                violations.push(violation(
+                    "DOCKER-014",
+                    "docker.from.no_branch_like_tags",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "branch-like tags in FROM are forbidden",
+                    Some(from_ref),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_from_images_allowlisted(ctx: &RunContext) -> TestResult {
+    let allowlist = match load_bases_lock(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword != "FROM" {
+                continue;
+            }
+            let Some(from_ref) = parse_from_ref(&ins.args) else {
+                continue;
+            };
+            let (base, _, _) = split_from_image(&from_ref);
+            let image = base.split('@').next().unwrap_or(&base).to_string();
+            let normalized = image.split('@').next().unwrap_or(&image).to_string();
+            let without_digest = normalized.split('@').next().unwrap_or(&normalized).to_string();
+            let without_tag = without_digest.clone();
+            let lookup = without_tag
+                .split_once('@')
+                .map(|(value, _)| value.to_string())
+                .unwrap_or(without_tag);
+            if !allowlist.contains_key(&lookup) {
+                violations.push(violation(
+                    "DOCKER-015",
+                    "docker.from.allowlisted_base_images",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "FROM image must be declared in docker/bases.lock",
+                    Some(lookup),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_from_digest_matches_bases_lock(ctx: &RunContext) -> TestResult {
+    let allowlist = match load_bases_lock(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword != "FROM" {
+                continue;
+            }
+            let Some(from_ref) = parse_from_ref(&ins.args) else {
+                continue;
+            };
+            let (base, _, digest) = split_from_image(&from_ref);
+            let image = base.split('@').next().unwrap_or(&base).to_string();
+            let Some(expected) = allowlist.get(&image) else {
+                continue;
+            };
+            let actual = digest
+                .as_deref()
+                .map(|v| v.to_string())
+                .unwrap_or_default();
+            if actual != *expected {
+                violations.push(violation(
+                    "DOCKER-016",
+                    "docker.from.digest_matches_lock",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "FROM digest must match docker/bases.lock",
+                    Some(format!("expected={expected} actual={actual}")),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_from_args_have_defaults(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let args = arg_defaults(&instructions);
+        for ins in instructions {
+            if ins.keyword != "FROM" {
+                continue;
+            }
+            let Some(from_ref) = parse_from_ref(&ins.args) else {
+                continue;
+            };
+            let bytes = from_ref.as_bytes();
+            let mut idx = 0usize;
+            while idx + 3 < bytes.len() {
+                if bytes[idx] == b'$' && bytes[idx + 1] == b'{' {
+                    let end = from_ref[idx + 2..].find('}');
+                    if let Some(end) = end {
+                        let name = &from_ref[idx + 2..idx + 2 + end];
+                        let has_default = args.get(name).map(|entry| entry.0).unwrap_or(false);
+                        if !has_default {
+                            violations.push(violation(
+                                "DOCKER-017",
+                                "docker.from.args_have_defaults",
+                                Some(rel.clone()),
+                                Some(ins.line),
+                                "ARG referenced by FROM must have a default value",
+                                Some(name.to_string()),
+                            ));
+                        }
+                        idx += end + 3;
+                        continue;
+                    }
+                }
+                idx += 1;
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_from_no_platform_override(ctx: &RunContext) -> TestResult {
+    let dctx = match load_ctx(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    if dctx
+        .policy
+        .get("allow_platform_in_from")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false)
+    {
+        return TestResult::Pass;
+    }
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword == "FROM" && ins.args.contains("--platform") {
+                violations.push(violation(
+                    "DOCKER-018",
+                    "docker.from.no_platform_override",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "--platform in FROM is forbidden unless explicitly allowed by policy",
+                    Some(ins.args),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_shell_policy(ctx: &RunContext) -> TestResult {
+    let dctx = match load_ctx(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let policy = dctx
+        .policy
+        .get("shell_policy")
+        .and_then(|v| v.as_str())
+        .unwrap_or("forbid");
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let shell_count = instructions.iter().filter(|ins| ins.keyword == "SHELL").count();
+        match policy {
+            "required" if shell_count == 0 => violations.push(violation(
+                "DOCKER-019",
+                "docker.shell.explicit_policy",
+                Some(rel.clone()),
+                Some(1),
+                "Dockerfile must declare SHELL explicitly",
+                None,
+            )),
+            "forbid" if shell_count > 0 => violations.push(violation(
+                "DOCKER-019",
+                "docker.shell.explicit_policy",
+                Some(rel.clone()),
+                Some(1),
+                "Dockerfile must not declare SHELL when shell_policy=forbid",
+                None,
+            )),
+            _ => {}
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_package_manager_cleanup(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword != "RUN" {
+                continue;
+            }
+            let args = ins.args.to_ascii_lowercase();
+            if args.contains("apk add") && !args.contains("--no-cache") {
+                violations.push(violation(
+                    "DOCKER-020",
+                    "docker.run.package_manager_cleanup",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "apk add requires --no-cache",
+                    Some(ins.args.clone()),
+                ));
+            }
+            if args.contains("apt-get install") && !args.contains("rm -rf /var/lib/apt/lists/*") {
+                violations.push(violation(
+                    "DOCKER-020",
+                    "docker.run.package_manager_cleanup",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "apt-get install requires apt lists cleanup in the same RUN instruction",
+                    Some(ins.args),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_runtime_non_root(ctx: &RunContext) -> TestResult {
+    let dctx = match load_ctx(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let exceptions = dctx
+        .policy
+        .get("allow_root_runtime_images")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let Some((start, end)) = final_stage_bounds(&instructions) else {
+            continue;
+        };
+        let final_from = parse_from_ref(&instructions[start].args).unwrap_or_default();
+        if exceptions.contains(&final_from) {
+            continue;
+        }
+        let has_nonroot_user = instructions[start..end].iter().any(|ins| {
+            ins.keyword == "USER"
+                && !matches!(
+                    ins.args.trim().to_ascii_lowercase().as_str(),
+                    "" | "root" | "0" | "0:0" | "root:root"
+                )
+        });
+        if !has_nonroot_user {
+            violations.push(violation(
+                "DOCKER-021",
+                "docker.runtime.non_root",
+                Some(rel.clone()),
+                Some(instructions[start].line),
+                "final runtime stage must run as a non-root user",
+                Some(final_from),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_final_stage_has_user(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let Some((start, end)) = final_stage_bounds(&instructions) else {
+            continue;
+        };
+        if !instructions[start..end].iter().any(|ins| ins.keyword == "USER") {
+            violations.push(violation(
+                "DOCKER-022",
+                "docker.final_stage.user_required",
+                Some(rel.clone()),
+                Some(instructions[start].line),
+                "final stage must declare USER",
+                None,
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_final_stage_has_workdir(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let Some((start, end)) = final_stage_bounds(&instructions) else {
+            continue;
+        };
+        if !instructions[start..end].iter().any(|ins| ins.keyword == "WORKDIR") {
+            violations.push(violation(
+                "DOCKER-023",
+                "docker.final_stage.workdir_required",
+                Some(rel.clone()),
+                Some(instructions[start].line),
+                "final stage must declare WORKDIR",
+                None,
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_final_stage_has_entrypoint_or_cmd(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let Some((start, end)) = final_stage_bounds(&instructions) else {
+            continue;
+        };
+        if !instructions[start..end]
+            .iter()
+            .any(|ins| ins.keyword == "ENTRYPOINT" || ins.keyword == "CMD")
+        {
+            violations.push(violation(
+                "DOCKER-024",
+                "docker.final_stage.entrypoint_or_cmd_required",
+                Some(rel.clone()),
+                Some(instructions[start].line),
+                "final stage must declare ENTRYPOINT or CMD",
+                None,
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_label_contract_fields(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let labels = instructions
+            .iter()
+            .filter(|ins| ins.keyword == "LABEL")
+            .map(|ins| ins.args.to_ascii_lowercase())
+            .collect::<Vec<_>>();
+        let joined = labels.join(" ");
+        for required in [
+            "org.opencontainers.image.source",
+            "org.opencontainers.image.revision",
+            "org.opencontainers.image.created",
+            "org.opencontainers.image.licenses",
+        ] {
+            if !joined.contains(required) {
+                violations.push(violation(
+                    "DOCKER-025",
+                    "docker.labels.contract_fields",
+                    Some(rel.clone()),
+                    Some(1),
+                    "required release label is missing",
+                    Some(required.to_string()),
+                ));
+            }
+        }
+        let build_date_valid = instructions.iter().any(|ins| {
+            ins.keyword == "ARG"
+                && ins.args.starts_with("BUILD_DATE=")
+                && ins.args.contains('T')
+                && ins.args.ends_with('Z')
+        });
+        if !build_date_valid {
+            violations.push(violation(
+                "DOCKER-025",
+                "docker.labels.contract_fields",
+                Some(rel.clone()),
+                Some(1),
+                "BUILD_DATE default must use an RFC3339 UTC timestamp format",
+                None,
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_copy_no_secrets(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    let forbidden = ["id_rsa", ".env", ".pem"];
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword != "COPY" {
+                continue;
+            }
+            for src in extract_copy_sources(&ins.args) {
+                if forbidden.iter().any(|pattern| src.contains(pattern)) {
+                    violations.push(violation(
+                        "DOCKER-026",
+                        "docker.copy.no_secrets",
+                        Some(rel.clone()),
+                        Some(ins.line),
+                        "COPY must not include secret-like files",
+                        Some(src),
+                    ));
+                }
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_add_forbidden(ctx: &RunContext) -> TestResult {
+    let dctx = match load_ctx(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let exceptions = dctx
+        .policy
+        .get("allow_add_exceptions")
+        .and_then(|v| v.as_array())
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword == "ADD" && !exceptions.contains(&rel) {
+                violations.push(violation(
+                    "DOCKER-027",
+                    "docker.add.forbidden",
+                    Some(rel.clone()),
+                    Some(ins.line),
+                    "ADD is forbidden; use COPY unless explicitly allowlisted",
+                    Some(ins.args),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_compiling_images_are_multistage(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let compiles = instructions.iter().any(|ins| {
+            ins.keyword == "RUN"
+                && (ins.args.contains("cargo build")
+                    || ins.args.contains("go build")
+                    || ins.args.contains("npm run build")
+                    || ins.args.contains("pip wheel"))
+        });
+        let from_count = instructions.iter().filter(|ins| ins.keyword == "FROM").count();
+        let has_builder_alias = instructions.iter().any(|ins| {
+            ins.keyword == "FROM" && ins.args.to_ascii_lowercase().contains(" as builder")
+        });
+        if compiles && (from_count < 2 || !has_builder_alias) {
+            violations.push(violation(
+                "DOCKER-028",
+                "docker.build.multistage_required",
+                Some(rel.clone()),
+                Some(1),
+                "images that compile artifacts must use a multi-stage build with a builder stage",
+                None,
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_dockerignore_required_entries(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join(".dockerignore");
+    let text = match std::fs::read_to_string(&path) {
+        Ok(v) => v,
+        Err(e) => {
+            return TestResult::Fail(vec![violation(
+                "DOCKER-029",
+                "docker.ignore.required_entries",
+                Some(".dockerignore".to_string()),
+                Some(1),
+                &format!(".dockerignore is required: {e}"),
+                None,
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for required in [".git", "artifacts", "target"] {
+        if !text.contains(required) {
+            violations.push(violation(
+                "DOCKER-029",
+                "docker.ignore.required_entries",
+                Some(".dockerignore".to_string()),
+                Some(1),
+                "required .dockerignore entry is missing",
+                Some(required.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_repro_build_args_present(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let args = arg_defaults(&instructions);
+        for required in ["SOURCE_DATE_EPOCH", "BUILD_DATE"] {
+            if !args.contains_key(required) {
+                violations.push(violation(
+                    "DOCKER-030",
+                    "docker.args.repro_build_args",
+                    Some(rel.clone()),
+                    Some(1),
+                    "required reproducible build ARG is missing",
+                    Some(required.to_string()),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_no_network_in_final_stage(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let Some((start, end)) = final_stage_bounds(&instructions) else {
+            continue;
+        };
+        for ins in &instructions[start..end] {
+            if ins.keyword == "RUN" {
+                let args = ins.args.to_ascii_lowercase();
+                if args.contains("curl ") || args.contains("wget ") {
+                    violations.push(violation(
+                        "DOCKER-031",
+                        "docker.final_stage.no_network",
+                        Some(rel.clone()),
+                        Some(ins.line),
+                        "final stage must not fetch over the network",
+                        Some(ins.args.clone()),
+                    ));
+                }
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_no_package_manager_in_final_stage(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        let Some((start, end)) = final_stage_bounds(&instructions) else {
+            continue;
+        };
+        for ins in &instructions[start..end] {
+            if ins.keyword == "RUN" {
+                let args = ins.args.to_ascii_lowercase();
+                if ["apt-get", "apt ", "apk add", "yum ", "dnf "]
+                    .iter()
+                    .any(|token| args.contains(token))
+                {
+                    violations.push(violation(
+                        "DOCKER-032",
+                        "docker.final_stage.no_package_manager",
+                        Some(rel.clone()),
+                        Some(ins.line),
+                        "final stage must not run package managers",
+                        Some(ins.args.clone()),
+                    ));
+                }
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_images_have_smoke_manifest(ctx: &RunContext) -> TestResult {
+    let manifest = match load_images_manifest(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut declared = BTreeSet::new();
+    let mut violations = Vec::new();
+    for image in manifest["images"].as_array().cloned().unwrap_or_default() {
+        let name = image
+            .get("name")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        let dockerfile = image
+            .get("dockerfile")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .to_string();
+        let smoke = image
+            .get("smoke")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        if name.is_empty() || dockerfile.is_empty() || smoke.is_empty() {
+            violations.push(violation(
+                "DOCKER-033",
+                "docker.images.smoke_manifest",
+                Some("docker/images.manifest.json".to_string()),
+                Some(1),
+                "each image manifest entry must include name, dockerfile, and non-empty smoke command",
+                Some(name),
+            ));
+            continue;
+        }
+        declared.insert(dockerfile);
+    }
+    let discovered = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    for (rel, _) in discovered {
+        if !declared.contains(&rel) {
+            violations.push(violation(
+                "DOCKER-033",
+                "docker.images.smoke_manifest",
+                Some("docker/images.manifest.json".to_string()),
+                Some(1),
+                "each Dockerfile must have a smoke manifest entry",
+                Some(rel),
+            ));
         }
     }
     if violations.is_empty() {
@@ -779,4 +1644,3 @@ fn test_required_images_exist(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

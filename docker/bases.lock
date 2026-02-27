@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "images": [
+    {
+      "name": "builder",
+      "image": "rust:1.84.1-bookworm",
+      "digest": "sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88"
+    },
+    {
+      "name": "runtime",
+      "image": "gcr.io/distroless/cc-debian12:nonroot",
+      "digest": "sha256:7e5b8df2f4d36f5599ef4ab856d7d444922531709becb03f3368c6d797d0a5eb"
+    }
+  ]
+}

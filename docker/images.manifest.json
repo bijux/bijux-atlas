@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "images": [
+    {
+      "name": "runtime",
+      "dockerfile": "docker/images/runtime/Dockerfile",
+      "context": ".",
+      "smoke": [
+        "/app/bijux-atlas",
+        "version"
+      ]
+    }
+  ]
+}

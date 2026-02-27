@@ -15,12 +15,18 @@
   "allowed_builder_images": [
     "rust:1.84.1-bookworm@sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88"
   ],
+  "allow_platform_in_from": false,
+  "shell_policy": "forbid",
+  "allow_root_runtime_images": [],
+  "allow_add_exceptions": [],
+  "allow_secret_copy_patterns": [],
   "required_oci_labels": [
     "org.opencontainers.image.source",
     "org.opencontainers.image.version",
     "org.opencontainers.image.revision",
     "org.opencontainers.image.created",
-    "org.opencontainers.image.ref.name"
+    "org.opencontainers.image.ref.name",
+    "org.opencontainers.image.licenses"
   ],
   "runtime_image_max_bytes": 450000000,
   "sbom": {
