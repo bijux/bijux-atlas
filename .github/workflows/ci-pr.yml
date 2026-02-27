@@ -273,8 +273,10 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/ci-supply-chain"
           mkdir -p "${report_root}" "${logs_root}"
+          cargo install --locked cargo-deny >/dev/null 2> "${logs_root}/cargo-deny-install.stderr.log"
+          cargo deny --config configs/security/deny.toml check > "${logs_root}/deny.stdout.log" 2> "${logs_root}/deny.stderr.log"
           cargo audit > "${logs_root}/audit.stdout.log" 2> "${logs_root}/audit.stderr.log"
-          printf '{"schema_version":1,"kind":"supply_chain_report_v1","command":"cargo audit","status":"ok"}\n' > "${report_root}/supply-chain.json"
+          printf '{"schema_version":1,"kind":"supply_chain_report_v1","commands":["cargo deny --config configs/security/deny.toml check","cargo audit"],"status":"ok"}\n' > "${report_root}/supply-chain.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/supply-chain.json"
           printf "- lane: supply-chain\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/supply-chain.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
