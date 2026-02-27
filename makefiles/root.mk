@@ -51,6 +51,7 @@ doctor: ## Run Rust control-plane doctor suite as JSON
 	@$(MAKE) -s make-size-budget-check
 	@$(MAKE) -s make-include-cycle-check
 	@mkdir -p $(ARTIFACT_ROOT)/doctor/$(RUN_ID)
+	@$(DEV_ATLAS) check tree-budgets --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/tree-budgets.json >/dev/null
 	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
