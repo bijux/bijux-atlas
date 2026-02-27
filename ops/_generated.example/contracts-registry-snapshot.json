@@ -283,6 +283,46 @@
       "title": "inventory control graph contract"
     },
     {
+      "id": "OPS-INV-006",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_id_format",
+          "title": "all ops contract ids follow OPS-<PILLAR>-NNN format"
+        }
+      ],
+      "title": "inventory contract id format contract"
+    },
+    {
+      "id": "OPS-INV-PILLARS-001",
+      "tests": [
+        {
+          "test_id": "ops.inventory.pillars.exists_and_validates",
+          "title": "pillars.json exists and validates"
+        }
+      ],
+      "title": "inventory pillars registry contract"
+    },
+    {
+      "id": "OPS-INV-PILLARS-002",
+      "tests": [
+        {
+          "test_id": "ops.inventory.pillars.every_pillar_dir_exists",
+          "title": "every declared non-root pillar has a matching ops directory"
+        }
+      ],
+      "title": "inventory pillar directory contract"
+    },
+    {
+      "id": "OPS-INV-PILLARS-003",
+      "tests": [
+        {
+          "test_id": "ops.inventory.pillars.no_extra_pillar_dirs",
+          "title": "ops root has no undeclared pillar directories"
+        }
+      ],
+      "title": "inventory pillar strictness contract"
+    },
+    {
       "id": "OPS-K8S-001",
       "tests": [
         {
