@@ -13,6 +13,7 @@ use crate::{
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 use std::io::{self, Write};
+use std::process::Command as ProcessCommand;
 
 fn force_json_output(command: &mut Command) {
     match command {
@@ -24,6 +25,7 @@ fn force_json_output(command: &mut Command) {
         Command::Configs { command } => force_json_configs(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
+        Command::Validate { format, .. } => *format = FormatArg::Json,
         Command::Docker { .. }
         | Command::Build { .. }
         | Command::Workflows { .. }
@@ -533,6 +535,11 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
         },
+        Command::Validate { repo_root, .. } => {
+            if repo_root.is_none() {
+                *repo_root = Some(root.clone());
+            }
+        }
         Command::Version { .. }
         | Command::Help { .. }
         | Command::Docker { .. }
@@ -646,6 +653,103 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 1
             }
         },
+        Command::Validate {
+            repo_root,
+            profile,
+            format,
+            out,
+        } => {
+            let exe = match std::env::current_exe() {
+                Ok(path) => path,
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas validate failed: {err}");
+                    return 1;
+                }
+            };
+            let mut check_args = vec![
+                "check".to_string(),
+                "run".to_string(),
+                "--suite".to_string(),
+                "ci_pr".to_string(),
+                "--format".to_string(),
+                "json".to_string(),
+            ];
+            if let Some(root) = &repo_root {
+                check_args.push("--repo-root".to_string());
+                check_args.push(root.display().to_string());
+            }
+            let check_out = match ProcessCommand::new(&exe).args(&check_args).output() {
+                Ok(v) => v,
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas validate failed: {err}");
+                    return 1;
+                }
+            };
+            let check_payload: serde_json::Value = match serde_json::from_slice(&check_out.stdout) {
+                Ok(v) => v,
+                Err(_) => {
+                    serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&check_out.stderr)})
+                }
+            };
+
+            let mut ops_args = vec![
+                "ops".to_string(),
+                "validate".to_string(),
+                "--profile".to_string(),
+                profile,
+                "--format".to_string(),
+                "json".to_string(),
+            ];
+            if let Some(root) = &repo_root {
+                ops_args.push("--repo-root".to_string());
+                ops_args.push(root.display().to_string());
+            }
+            let ops_out = match ProcessCommand::new(&exe).args(&ops_args).output() {
+                Ok(v) => v,
+                Err(err) => {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas validate failed: {err}");
+                    return 1;
+                }
+            };
+            let ops_payload: serde_json::Value = match serde_json::from_slice(&ops_out.stdout) {
+                Ok(v) => v,
+                Err(_) => {
+                    serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&ops_out.stderr)})
+                }
+            };
+
+            let ok = check_out.status.success() && ops_out.status.success();
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "status": if ok { "ok" } else { "failed" },
+                "text": if ok { "validate completed" } else { "validate failed" },
+                "checks_ci_pr": check_payload,
+                "ops_validate": ops_payload,
+            });
+            let rendered = match format {
+                FormatArg::Json => {
+                    serde_json::to_string_pretty(&payload).unwrap_or_else(|_| "{}".to_string())
+                }
+                FormatArg::Text => {
+                    if ok {
+                        "validate completed: check run --suite ci_pr + ops validate".to_string()
+                    } else {
+                        "validate failed: rerun with --format json for details".to_string()
+                    }
+                }
+                FormatArg::Jsonl => payload.to_string(),
+            };
+            if let Some(path) = out {
+                if let Err(err) = std::fs::write(&path, format!("{rendered}\n")) {
+                    let _ = writeln!(io::stderr(), "bijux-dev-atlas validate failed: {err}");
+                    return 1;
+                }
+            }
+            if !cli.quiet && !rendered.is_empty() {
+                let _ = writeln!(io::stdout(), "{rendered}");
+            }
+            if ok { 0 } else { 1 }
+        }
         Command::Check { command } => {
             let result = match command {
                 CheckCommand::Registry { command } => match command {

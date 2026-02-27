@@ -117,4 +117,14 @@ pub enum Command {
         #[command(subcommand)]
         command: CheckCommand,
     },
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, default_value = "kind")]
+        profile: String,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
 }

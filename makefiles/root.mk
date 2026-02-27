@@ -83,8 +83,7 @@ verify: ## Run repo verification orchestration via dev-atlas checks
 	@$(DEV_ATLAS) check run --suite ci --format json
 
 validate: ## Reviewer entrypoint: run strict control-plane validation gates
-	@$(DEV_ATLAS) check run --suite ci_pr --format json
-	@$(DEV_ATLAS) ops validate --profile kind --format json
+	@$(DEV_ATLAS) validate --profile kind --format json
 
 lanes: ## Print CI lane mapping to dev-atlas suites
 	@printf '%s\n' "ci-fast -> check run --suite ci_fast"; \

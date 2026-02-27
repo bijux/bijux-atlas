@@ -61,6 +61,19 @@ fn ops_list_supports_json_format() {
 }
 
 #[test]
+fn validate_meta_command_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["validate", "--help"])
+        .output()
+        .expect("validate help");
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    assert!(text.contains("--profile"));
+    assert!(text.contains("--format"));
+}
+
+#[test]
 fn ops_explain_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
