@@ -16,6 +16,7 @@ RUN apt-get update \
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY configs/rust/rustfmt.toml /workspace/configs/rust/rustfmt.toml
 COPY configs/rust/clippy.toml /workspace/configs/rust/clippy.toml
+COPY configs/contracts /workspace/configs/contracts
 COPY configs/security/deny.toml /workspace/configs/security/deny.toml
 COPY crates ./crates
 

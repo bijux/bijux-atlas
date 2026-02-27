@@ -66,7 +66,7 @@ fn test_effect_smoke_version(ctx: &RunContext) -> TestResult {
             "--entrypoint",
             "/app/bijux-atlas",
             &image,
-            "--version",
+            "version",
         ],
         "docker-smoke-version.stdout.log",
         "docker-smoke-version.stderr.log",
@@ -203,4 +203,3 @@ fn test_effect_scan_passes_policy(ctx: &RunContext) -> TestResult {
         )])
     }
 }
-

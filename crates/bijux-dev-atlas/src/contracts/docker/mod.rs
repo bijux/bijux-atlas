@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
+use std::fs::File;
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::process::Stdio;
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -218,13 +221,28 @@ fn run_command_with_artifacts(
     stdout_name: &str,
     stderr_name: &str,
 ) -> Result<std::process::Output, String> {
+    eprintln!("contracts-effect: start `{program}` {}", args.join(" "));
+    let artifact_dir = effect_artifact_dir(ctx);
+    let mut stdout_path = None;
+    let mut stderr_path = None;
     let mut command = Command::new(program);
-    command
-        .args(args)
-        .current_dir(&ctx.repo_root)
-        .env("TZ", "UTC")
-        .env("LC_ALL", "C")
-        .env("LANG", "C");
+    command.args(args).current_dir(&ctx.repo_root).stdin(Stdio::null());
+    if let Some(dir) = &artifact_dir {
+        let out_path = dir.join(stdout_name);
+        let err_path = dir.join(stderr_name);
+        let out_file = File::create(&out_path)
+            .map_err(|e| format!("create {} failed: {e}", out_path.display()))?;
+        let err_file = File::create(&err_path)
+            .map_err(|e| format!("create {} failed: {e}", err_path.display()))?;
+        command.stdout(Stdio::from(out_file));
+        command.stderr(Stdio::from(err_file));
+        stdout_path = Some(out_path);
+        stderr_path = Some(err_path);
+    } else {
+        command.stdout(Stdio::piped());
+        command.stderr(Stdio::piped());
+    }
+    command.env("TZ", "UTC").env("LC_ALL", "C").env("LANG", "C");
     let mut child = match command.spawn() {
         Ok(v) => v,
         Err(e) if e.kind() == std::io::ErrorKind::NotFound && ctx.skip_missing_tools => {
@@ -251,10 +269,34 @@ fn run_command_with_artifacts(
             Err(e) => return Err(format!("wait for `{program}` failed: {e}")),
         }
     }
-    let output = child
-        .wait_with_output()
-        .map_err(|e| format!("collect `{program}` output failed: {e}"))?;
-    if let Some(dir) = effect_artifact_dir(ctx) {
+    let output = if let (Some(out_path), Some(err_path)) = (stdout_path, stderr_path) {
+        let status = child
+            .wait()
+            .map_err(|e| format!("wait for `{program}` failed: {e}"))?;
+        let mut stdout = Vec::new();
+        let mut stderr = Vec::new();
+        File::open(&out_path)
+            .and_then(|mut f| f.read_to_end(&mut stdout))
+            .map_err(|e| format!("read {} failed: {e}", out_path.display()))?;
+        File::open(&err_path)
+            .and_then(|mut f| f.read_to_end(&mut stderr))
+            .map_err(|e| format!("read {} failed: {e}", err_path.display()))?;
+        std::process::Output {
+            status,
+            stdout,
+            stderr,
+        }
+    } else {
+        child
+            .wait_with_output()
+            .map_err(|e| format!("collect `{program}` output failed: {e}"))?
+    };
+    eprintln!(
+        "contracts-effect: done `{program}` exit={:?} elapsed={}s",
+        output.status.code(),
+        started.elapsed().as_secs()
+    );
+    if let Some(dir) = artifact_dir {
         let _ = std::fs::write(dir.join(stdout_name), &output.stdout);
         let _ = std::fs::write(dir.join(stderr_name), &output.stderr);
     }
