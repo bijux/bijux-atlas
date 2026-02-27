@@ -81,6 +81,7 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/contracts/mod.rs",
             "src/contracts/docker/mod.rs",
             "src/contracts/ops/mod.rs",
+            "src/contracts/ops/ops_extended.inc.rs",
             "src/contracts/docker/contracts_static_checks.inc.rs",
             "src/contracts/docker/contracts_tests.inc.rs",
             "src/core/checks/ops/ops/inventory_and_artifact_checks.rs",

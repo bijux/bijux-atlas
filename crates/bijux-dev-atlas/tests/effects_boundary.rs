@@ -51,6 +51,7 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/contracts/mod.rs",
         "src/contracts/docker/mod.rs",
         "src/contracts/ops/mod.rs",
+        "src/contracts/ops/ops_extended.inc.rs",
         "src/contracts/docker/contracts_static_checks.inc.rs",
         "src/contracts/docker/contracts_tests.inc.rs",
         "src/commands/ops/runtime_mod/core_handler.rs",
