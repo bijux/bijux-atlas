@@ -36,6 +36,10 @@ struct ServerCliArgs {
     store_root: Option<PathBuf>,
     #[arg(long)]
     cache_root: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    print_effective_config: bool,
+    #[arg(long, default_value_t = false)]
+    validate_config: bool,
 }
 
 fn env_bool(name: &str, default: bool) -> bool {
@@ -346,6 +350,61 @@ fn validate_runtime_env_contract() -> Result<(), String> {
     ))
 }
 
+fn redact_effective_config(
+    startup: &bijux_atlas_server::RuntimeStartupConfig,
+    api: &ApiConfig,
+    cache: &DatasetCacheConfig,
+) -> Result<serde_json::Value, String> {
+    let mut api_json =
+        serde_json::to_value(api).map_err(|err| format!("serialize api config: {err}"))?;
+    if let Some(obj) = api_json.as_object_mut() {
+        if obj.contains_key("redis_url") {
+            obj.insert("redis_url".to_string(), serde_json::json!("<redacted>"));
+        }
+        if obj.contains_key("allowed_api_keys") {
+            obj.insert("allowed_api_keys".to_string(), serde_json::json!(["<redacted>"]));
+        }
+        if obj.contains_key("hmac_secret") {
+            obj.insert("hmac_secret".to_string(), serde_json::json!("<redacted>"));
+        }
+    }
+    let startup_json =
+        serde_json::to_value(startup).map_err(|err| format!("serialize startup config: {err}"))?;
+    let cache_json =
+        serde_json::to_value(cache).map_err(|err| format!("serialize cache config: {err}"))?;
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "atlas_server_effective_config_v1",
+        "startup": startup_json,
+        "api": api_json,
+        "cache": cache_json
+    }))
+}
+
+fn validate_prod_config_contract(
+    bind_addr: &str,
+    api: &ApiConfig,
+    cache: &DatasetCacheConfig,
+) -> Result<(), String> {
+    let env_name = env::var("ATLAS_ENV").unwrap_or_else(|_| "dev".to_string());
+    if !env_name.eq_ignore_ascii_case("prod") {
+        return Ok(());
+    }
+    if bind_addr.contains("127.0.0.1") || bind_addr.contains("localhost") {
+        return Err("ATLAS_ENV=prod forbids localhost/loopback bind addresses".to_string());
+    }
+    if cache.cached_only_mode {
+        return Err("ATLAS_ENV=prod forbids ATLAS_CACHED_ONLY_MODE=true".to_string());
+    }
+    if api.redis_url.as_deref().is_none_or(str::is_empty) {
+        return Err("ATLAS_ENV=prod requires ATLAS_REDIS_URL".to_string());
+    }
+    if api.require_api_key && api.allowed_api_keys.is_empty() {
+        return Err("ATLAS_ENV=prod requires non-empty ATLAS_ALLOWED_API_KEYS when api key auth is enabled".to_string());
+    }
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() -> Result<(), String> {
     let cli = ServerCliArgs::parse();
@@ -358,9 +417,9 @@ async fn main() -> Result<(), String> {
         cli.store_root.as_deref(),
         cli.cache_root.as_deref(),
     )?;
-    let bind_addr = startup.bind_addr;
-    let store_root = startup.store_root;
-    let cache_root = startup.cache_root;
+    let bind_addr = startup.bind_addr.clone();
+    let store_root = startup.store_root.clone();
+    let cache_root = startup.cache_root.clone();
 
     let pinned: HashSet<_> = env::var("ATLAS_PINNED_DATASETS")
         .unwrap_or_default()
@@ -476,6 +535,21 @@ async fn main() -> Result<(), String> {
         ..ApiConfig::default()
     };
     bijux_atlas_server::validate_startup_config_contract(&api_cfg, &cache_cfg)?;
+    validate_prod_config_contract(&bind_addr, &api_cfg, &cache_cfg)?;
+
+    if cli.validate_config {
+        info!("configuration validated");
+        return Ok(());
+    }
+    if cli.print_effective_config {
+        let payload = redact_effective_config(&startup, &api_cfg, &cache_cfg)?;
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&payload)
+                .map_err(|err| format!("render effective config: {err}"))?
+        );
+        return Ok(());
+    }
 
     let startup_warmup_jitter_max_ms = cache_cfg.startup_warmup_jitter_max_ms;
     let startup_warmup = coordinated_startup_warmup_datasets(

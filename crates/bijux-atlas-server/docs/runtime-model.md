@@ -14,6 +14,12 @@ The server runtime is async-first and executes request paths on Tokio.
 - Every external request must define explicit timeouts.
 - External calls are traced with spans so latency and retry behavior are observable.
 
+## Config Operations
+
+- `atlas-server --validate-config` validates startup and runtime contracts without starting the server.
+- `atlas-server --print-effective-config` prints the fully resolved configuration with secrets redacted.
+- Resolution order remains `CLI > ENV > config file > defaults`.
+
 ## Blocking Policy
 
 - `reqwest` blocking mode is forbidden in `bijux-atlas-server`.
