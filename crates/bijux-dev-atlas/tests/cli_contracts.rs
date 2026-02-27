@@ -257,6 +257,26 @@ fn contracts_ops_ci_requires_artifacts_root() {
 }
 
 #[test]
+fn contracts_ci_forbids_skip_without_explicit_override() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .env("CI", "true")
+        .args([
+            "contracts",
+            "ops",
+            "--skip",
+            "OPS-ROOT-*",
+            "--artifacts-root",
+            "artifacts/tests/contracts-ci-skip",
+        ])
+        .output()
+        .expect("contracts ops ci skip");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("forbid --skip"));
+}
+
+#[test]
 fn contracts_ops_json_report_matches_schema() {
     let artifacts_root = repo_root().join("artifacts/tests/contracts-json-schema");
     fs::create_dir_all(&artifacts_root).expect("mkdir artifacts");

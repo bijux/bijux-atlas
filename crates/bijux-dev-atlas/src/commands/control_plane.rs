@@ -83,6 +83,18 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         Ok(())
     }
 
+    fn require_skip_policy(skip_contracts: &[String]) -> Result<(), String> {
+        if std::env::var_os("CI").is_some()
+            && !skip_contracts.is_empty()
+            && std::env::var_os("CONTRACTS_ALLOW_SKIP").is_none()
+        {
+            return Err(
+                "CI contracts runs forbid --skip unless CONTRACTS_ALLOW_SKIP is set".to_string(),
+            );
+        }
+        Ok(())
+    }
+
     fn ops_domain_filter(domain: ContractsOpsDomainArg) -> String {
         match domain {
             ContractsOpsDomainArg::Root => "OPS-ROOT-*".to_string(),
@@ -442,6 +454,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
         require_artifacts_root_in_ci(&common.artifacts_root)?;
         require_effect_allowances(common.mode, common.allow_subprocess, common.allow_network)?;
+        require_skip_policy(&common.skip_contracts)?;
 
         let selected_domains = all_domains(&repo_root)?
             .into_iter()
