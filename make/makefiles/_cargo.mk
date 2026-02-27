@@ -1,16 +1,19 @@
 # Scope: canonical Rust cargo gates delegated to cargo-native tooling.
 # Public targets: audit, check, coverage, fmt, lint, test
 SHELL := /bin/sh
+CARGO_TERM_PROGRESS_WHEN ?= always
+CARGO_TERM_PROGRESS_WIDTH ?= 120
+CARGO_TERM_VERBOSE ?= false
 
 audit: ## Run cargo dependency audit
 	@command -v cargo-audit >/dev/null 2>&1 || { \
 		echo "cargo-audit is required. Install with: cargo install cargo-audit"; \
 		exit 1; \
 	}
-	@cargo audit
+	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo audit
 
 check: ## Run cargo check for the workspace
-	@cargo check --workspace --all-targets
+	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo check --workspace --all-targets
 
 coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 	@command -v cargo-llvm-cov >/dev/null 2>&1 || { \
@@ -18,8 +21,8 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 		exit 1; \
 	}
 	@mkdir -p artifacts/coverage
-	@cargo llvm-cov nextest --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/nextest/nextest.toml --user-config-file none --run-ignored all
-	@cargo llvm-cov report
+	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo llvm-cov nextest --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/nextest/nextest.toml --user-config-file none --run-ignored all --cargo-quiet
+	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo llvm-cov report
 
 fmt: ## Run cargo fmt --check
 	@printf '%s\n' "run: cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml"
@@ -29,12 +32,7 @@ fmt: ## Run cargo fmt --check
 lint: ## Run cargo clippy with warnings denied
 	@printf '%s\n' "run: cargo clippy --workspace --all-targets --all-features --locked -D warnings"
 	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
-	@printf '%s\n' "building [1/1] lint"
-	@log="$(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt"; \
-	if ! CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked -- -D warnings >"$$log" 2>&1; then \
-		tail -n 200 "$$log" >&2; \
-		exit 1; \
-	fi
+	@CLIPPY_CONF_DIR=configs/rust CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
 
 lint-policy-report: ## Emit effective lint policy report artifact
 	@mkdir -p artifacts/lint
@@ -61,7 +59,7 @@ lint-policy-enforce: ## Enforce repository lint drift guards
 
 lint-clippy-json: ## Emit clippy diagnostics as a machine-readable artifact
 	@mkdir -p artifacts/lint
-	@CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked --message-format=json -- -D warnings > artifacts/lint/clippy.json
+	@CLIPPY_CONF_DIR=configs/rust CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo clippy --workspace --all-targets --all-features --locked --message-format=json -- -D warnings > artifacts/lint/clippy.json
 	@printf '%s\n' "artifacts/lint/clippy.json"
 
 test: ## Run workspace tests with cargo nextest
@@ -71,18 +69,13 @@ test: ## Run workspace tests with cargo nextest
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default}"
 	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
-	@printf '%s\n' "building [1/1] test"
-	@log="$(ARTIFACT_ROOT)/test/$(RUN_ID)/report.txt"; \
-	if ! cargo nextest run --workspace --cargo-quiet --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" >"$$log" 2>&1; then \
-		tail -n 200 "$$log" >&2; \
-		exit 1; \
-	fi
+	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}"
 
 test-slow: ## Run only slow_ tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)"
+	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)"
 
 .PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow
