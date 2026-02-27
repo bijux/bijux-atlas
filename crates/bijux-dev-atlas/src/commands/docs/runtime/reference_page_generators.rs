@@ -52,6 +52,10 @@ fn docs_reference_target_contents(
             render_docs_reference_make_targets(repo_root)?,
         ),
         (
+            "docs/reference/repo-map.md",
+            render_docs_reference_repo_map(repo_root)?,
+        ),
+        (
             "docs/operations/reference/ops-surface.md",
             render_docs_reference_ops_surface(repo_root)?,
         ),
@@ -225,6 +229,37 @@ fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<Str
     out.push_str("## Targets\n\n| Target | Surface | Description |\n| --- | --- | --- |\n");
     for (name, surface, description) in rows {
         out.push_str(&format!("| `{name}` | `{surface}` | {description} |\n"));
+    }
+    Ok(out)
+}
+
+fn render_docs_reference_repo_map(repo_root: &std::path::Path) -> Result<String, String> {
+    let mut out = String::new();
+    out.push_str("# Repository Map\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n");
+    out.push_str("- Tier: `generated`\n");
+    out.push_str("- Audience: `operators`\n");
+    out.push_str("- Source-of-truth: repository filesystem snapshot\n\n");
+    out.push_str("## Top-Level Directories\n\n| Directory | Markdown Files | Total Files |\n| --- | --- | --- |\n");
+
+    let mut dirs = std::fs::read_dir(repo_root)
+        .map_err(|e| format!("list repo root failed: {e}"))?
+        .filter_map(Result::ok)
+        .filter(|e| e.path().is_dir())
+        .filter_map(|e| e.file_name().to_str().map(str::to_string))
+        .collect::<Vec<_>>();
+    dirs.sort();
+    for dir in dirs {
+        if dir.starts_with(".git") {
+            continue;
+        }
+        let root = repo_root.join(&dir);
+        let files = walk_files_local(root.as_path());
+        let md_count = files
+            .iter()
+            .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+            .count();
+        out.push_str(&format!("| `{dir}` | `{md_count}` | `{}` |\n", files.len()));
     }
     Ok(out)
 }

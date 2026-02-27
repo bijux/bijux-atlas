@@ -44,3 +44,4 @@ Expected output: docs checks pass with no orphan pages.
 - [Schemas Reference](schemas.md)
 - [Configs Reference](configs.md)
 - [Make Targets Reference](make-targets.md)
+- [Repository Map](repo-map.md)
