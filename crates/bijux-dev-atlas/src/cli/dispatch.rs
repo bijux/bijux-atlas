@@ -143,13 +143,15 @@ fn force_json_ops(command: &mut OpsCommand) {
         },
         OpsCommand::K8s { command } => match command {
             crate::cli::OpsK8sCommand::Render(args) => args.common.format = FormatArg::Json,
-            crate::cli::OpsK8sCommand::Plan(common)
+            crate::cli::OpsK8sCommand::Validate(common)
+            | crate::cli::OpsK8sCommand::Plan(common)
             | crate::cli::OpsK8sCommand::Uninstall(common)
             | crate::cli::OpsK8sCommand::Diff(common)
             | crate::cli::OpsK8sCommand::Rollout(common)
             | crate::cli::OpsK8sCommand::DryRun(common)
             | crate::cli::OpsK8sCommand::Conformance(common)
-            | crate::cli::OpsK8sCommand::Test(common) => common.format = FormatArg::Json,
+            | crate::cli::OpsK8sCommand::Test(common)
+            | crate::cli::OpsK8sCommand::Smoke(common) => common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Install(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Apply(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Wait(args) => args.common.format = FormatArg::Json,
@@ -420,13 +422,15 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                 crate::cli::OpsK8sCommand::Render(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
-                crate::cli::OpsK8sCommand::Plan(common)
+                crate::cli::OpsK8sCommand::Validate(common)
+                | crate::cli::OpsK8sCommand::Plan(common)
                 | crate::cli::OpsK8sCommand::Uninstall(common)
                 | crate::cli::OpsK8sCommand::Diff(common)
                 | crate::cli::OpsK8sCommand::Rollout(common)
                 | crate::cli::OpsK8sCommand::DryRun(common)
                 | crate::cli::OpsK8sCommand::Conformance(common)
-                | crate::cli::OpsK8sCommand::Test(common) => common.repo_root = Some(root.clone()),
+                | crate::cli::OpsK8sCommand::Test(common)
+                | crate::cli::OpsK8sCommand::Smoke(common) => common.repo_root = Some(root.clone()),
                 crate::cli::OpsK8sCommand::Install(args) => {
                     args.common.repo_root = Some(root.clone())
                 }

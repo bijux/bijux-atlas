@@ -147,6 +147,7 @@ pub enum OpsStackCommand {
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsK8sCommand {
     Render(OpsRenderArgs),
+    Validate(OpsCommonArgs),
     Install(OpsInstallArgs),
     Uninstall(OpsCommonArgs),
     Diff(OpsCommonArgs),
@@ -159,6 +160,7 @@ pub enum OpsK8sCommand {
     Logs(OpsK8sLogsArgs),
     PortForward(OpsK8sPortForwardArgs),
     Test(OpsCommonArgs),
+    Smoke(OpsCommonArgs),
     Status(OpsStatusArgs),
 }
 

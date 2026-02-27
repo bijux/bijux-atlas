@@ -4,8 +4,8 @@ use crate::cli::OpsInstallArgs;
 use crate::cli::{
     OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsInventoryCommand,
     OpsGenerateCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
-    OpsObsDrillCommand, OpsPinsCommand, OpsReportCommand, OpsSchemaCommand, OpsStackCommand,
-    OpsSuiteCommand, OpsToolsCommand,
+    OpsObsDrillCommand, OpsPinsCommand, OpsRenderArgs, OpsRenderTarget, OpsReportCommand,
+    OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -123,6 +123,15 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         },
         OpsCommand::K8s { command } => match command {
             OpsK8sCommand::Render(args) => OpsCommand::Render(args),
+            OpsK8sCommand::Validate(common) => OpsCommand::Render(OpsRenderArgs {
+                common,
+                target: OpsRenderTarget::Helm,
+                check: true,
+                write: false,
+                stdout: false,
+                diff: false,
+                helm_binary: None,
+            }),
             OpsK8sCommand::Install(args) => OpsCommand::Install(args),
             OpsK8sCommand::Uninstall(common) => OpsCommand::Down(common),
             OpsK8sCommand::Diff(common) => OpsCommand::Explain {
@@ -141,6 +150,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsK8sCommand::Logs(args) => OpsCommand::K8sLogs(args),
             OpsK8sCommand::PortForward(args) => OpsCommand::K8sPortForward(args),
             OpsK8sCommand::Test(common) => OpsCommand::K8sConformance(common),
+            OpsK8sCommand::Smoke(common) => OpsCommand::K8sConformance(common),
             OpsK8sCommand::Status(args) => OpsCommand::Status(args),
         },
         OpsCommand::Load { command } => match command {

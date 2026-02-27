@@ -65,6 +65,7 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/ops-kind"
           mkdir -p "${report_root}" "${logs_root}"
           make ops-kind-up > "${report_root}/ops-kind-up.json" 2> "${logs_root}/ops-kind-up.stderr.log"
+          make ops-k8s-smoke > "${report_root}/ops-k8s-smoke.json" 2> "${logs_root}/ops-k8s-smoke.stderr.log"
           if [ "${{ github.event.inputs.run_conformance || 'true' }}" = "true" ]; then
             make ops-k8s > "${report_root}/ops-k8s.json" 2> "${logs_root}/ops-k8s.stderr.log"
           fi

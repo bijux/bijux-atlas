@@ -148,6 +148,18 @@ fn ops_k8s_test_requires_allow_subprocess() {
 }
 
 #[test]
+fn ops_k8s_validate_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "k8s", "validate", "--format", "json"])
+        .output()
+        .expect("ops k8s validate");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("helm render requires --allow-subprocess"));
+}
+
+#[test]
 fn ops_k8s_apply_requires_explicit_apply_flag() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -199,6 +211,18 @@ fn ops_k8s_logs_requires_allow_subprocess() {
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("k8s logs requires --allow-subprocess"));
+}
+
+#[test]
+fn ops_k8s_smoke_requires_allow_subprocess() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["ops", "k8s", "smoke", "--format", "json"])
+        .output()
+        .expect("ops k8s smoke");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("k8s conformance requires --allow-subprocess"));
 }
 
 #[test]
