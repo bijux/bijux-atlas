@@ -7,6 +7,7 @@ use crate::ops_commands::{
 use crate::*;
 use serde_json::Value;
 use std::io::Write;
+use std::path::Path;
 use std::time::Instant;
 
 pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32), String> {
@@ -78,8 +79,23 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
     };
 
     let mut validation_errors = validate_render_output(&rendered_manifest, args.target);
+    let mut kubeconform_result = None;
     if matches!(args.target, OpsRenderTarget::Helm) {
         validation_errors.extend(validate_helm_dependencies(&ops_root));
+        if args.check {
+            if common.allow_subprocess {
+                let (kube_errors, result) =
+                    run_kubeconform_validation(&process, &repo_root, &rendered_manifest)?;
+                validation_errors.extend(kube_errors);
+                kubeconform_result = Some(result);
+            } else {
+                kubeconform_result = Some(serde_json::json!({
+                    "tool":"kubeconform",
+                    "status":"skipped",
+                    "reason":"kubeconform requires --allow-subprocess"
+                }));
+            }
+        }
     }
     validation_errors.sort();
     validation_errors.dedup();
@@ -223,6 +239,7 @@ pub(crate) fn run_ops_render(args: &cli::OpsRenderArgs) -> Result<(String, i32),
             "written_files": written_files,
             "render_index_files": rows,
             "validation_errors": validation_errors,
+            "kubeconform": kubeconform_result,
             "subprocess_events": subprocess_events
         }],
         "summary": {
@@ -256,6 +273,46 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
     errors.sort();
     errors.dedup();
     errors
+}
+
+fn run_kubeconform_validation(
+    process: &OpsProcess,
+    repo_root: &Path,
+    rendered: &str,
+) -> Result<(Vec<String>, Value), String> {
+    let tmp_dir = repo_root.join("artifacts/tmp/k8s-validate");
+    fs::create_dir_all(&tmp_dir)
+        .map_err(|err| format!("failed to create {}: {err}", tmp_dir.display()))?;
+    let manifest_path = tmp_dir.join("rendered.yaml");
+    fs::write(&manifest_path, rendered)
+        .map_err(|err| format!("failed to write {}: {err}", manifest_path.display()))?;
+    let args = vec![
+        "-strict".to_string(),
+        "-summary".to_string(),
+        manifest_path.display().to_string(),
+    ];
+    match process.run_subprocess("kubeconform", &args, repo_root) {
+        Ok((stdout, event)) => Ok((
+            Vec::new(),
+            serde_json::json!({
+                "tool":"kubeconform",
+                "status":"ok",
+                "stdout": stdout,
+                "subprocess_event": event
+            }),
+        )),
+        Err(err) => {
+            let message = err.to_stable_message();
+            Ok((
+                vec![format!("kubeconform validation failed: {message}")],
+                serde_json::json!({
+                    "tool":"kubeconform",
+                    "status":"failed",
+                    "error": message
+                }),
+            ))
+        }
+    }
 }
 
 fn latest_render_hash(
