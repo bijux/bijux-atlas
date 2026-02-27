@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "groups_path": "configs/inventory/groups.json",
+  "consumers_path": "configs/inventory/consumers.json",
+  "owners_path": "configs/inventory/owners.json"
+}

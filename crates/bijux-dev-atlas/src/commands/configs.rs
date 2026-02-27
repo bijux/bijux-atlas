@@ -419,8 +419,35 @@ pub(crate) fn configs_validate_payload(
             }
         }
     }
+    let inventory_manifest_path = ctx.repo_root.join("configs/inventory.json");
     let groups_path = ctx.repo_root.join("configs/inventory/groups.json");
     let consumers_path = ctx.repo_root.join("configs/inventory/consumers.json");
+    if !inventory_manifest_path.exists() {
+        errors.push(
+            "CONFIGS_LAYOUT_ERROR: missing canonical inventory manifest `configs/inventory.json`"
+                .to_string(),
+        );
+    } else {
+        let inventory_text = fs::read_to_string(&inventory_manifest_path).map_err(|e| {
+            format!("failed to read {}: {e}", inventory_manifest_path.display())
+        })?;
+        let inventory_json: serde_json::Value = serde_json::from_str(&inventory_text).map_err(
+            |e| format!("failed to parse {}: {e}", inventory_manifest_path.display()),
+        )?;
+        for key in ["groups_path", "consumers_path", "owners_path"] {
+            let Some(path) = inventory_json[key].as_str() else {
+                errors.push(format!(
+                    "CONFIGS_SCHEMA_ERROR: configs/inventory.json missing string key `{key}`"
+                ));
+                continue;
+            };
+            if !ctx.repo_root.join(path).exists() {
+                errors.push(format!(
+                    "CONFIGS_LAYOUT_ERROR: configs/inventory.json references missing path `{path}`"
+                ));
+            }
+        }
+    }
     let mut allowed_groups = std::collections::BTreeSet::<String>::new();
     let mut max_top_level_dirs = 20usize;
     if groups_path.exists() {
