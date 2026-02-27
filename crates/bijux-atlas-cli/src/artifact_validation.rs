@@ -70,7 +70,7 @@ pub(crate) fn validate_policy(output_mode: OutputMode) -> Result<(), String> {
     let workspace = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .and_then(|p| p.parent())
-        .expect("workspace root")
+        .ok_or_else(|| "failed to resolve workspace root from CARGO_MANIFEST_DIR".to_string())?
         .to_path_buf();
     let policy = load_policy_from_workspace(&workspace).map_err(|e| e.to_string())?;
     let canonical = canonical_config_json(&policy).map_err(|e| e.to_string())?;
@@ -98,7 +98,7 @@ pub(crate) fn explain_policy(
     let workspace = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .and_then(|p| p.parent())
-        .expect("workspace root")
+        .ok_or_else(|| "failed to resolve workspace root from CARGO_MANIFEST_DIR".to_string())?
         .to_path_buf();
     let policy = load_policy_from_workspace(&workspace).map_err(|e| e.to_string())?;
     let active_mode = mode_override.unwrap_or(policy.mode);

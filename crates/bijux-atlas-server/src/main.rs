@@ -18,7 +18,7 @@ use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::net::TcpListener;
-use tracing::{error, info};
+use tracing::{error, info, warn};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 #[cfg(feature = "jemalloc")]
@@ -257,12 +257,14 @@ fn chrono_like_millis() -> u128 {
         .map_or(0, |d| d.as_millis())
 }
 
-async fn wait_for_shutdown_signal() {
+async fn wait_for_shutdown_signal() -> Result<(), String> {
     #[cfg(unix)]
     {
         use tokio::signal::unix::{signal, SignalKind};
-        let mut sigterm = signal(SignalKind::terminate()).expect("register SIGTERM");
-        let mut sigint = signal(SignalKind::interrupt()).expect("register SIGINT");
+        let mut sigterm = signal(SignalKind::terminate())
+            .map_err(|e| format!("failed to register SIGTERM handler: {e}"))?;
+        let mut sigint = signal(SignalKind::interrupt())
+            .map_err(|e| format!("failed to register SIGINT handler: {e}"))?;
         tokio::select! {
             _ = sigterm.recv() => {}
             _ = sigint.recv() => {}
@@ -270,18 +272,21 @@ async fn wait_for_shutdown_signal() {
     }
     #[cfg(not(unix))]
     {
-        let _ = tokio::signal::ctrl_c().await;
+        tokio::signal::ctrl_c()
+            .await
+            .map_err(|e| format!("failed to register ctrl-c handler: {e}"))?;
     }
+    Ok(())
 }
 
-fn init_tracing() {
+fn init_tracing() -> Result<(), String> {
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
     let log_json = env_bool("ATLAS_LOG_JSON", true);
     if env_bool("ATLAS_OTEL_ENABLED", false) {
         let exporter = opentelemetry_otlp::SpanExporter::builder()
             .with_http()
             .build()
-            .expect("otlp exporter");
+            .map_err(|e| format!("failed to build OTLP span exporter: {e}"))?;
         let tracer = opentelemetry_sdk::trace::TracerProvider::builder()
             .with_batch_exporter(exporter, opentelemetry_sdk::runtime::Tokio)
             .build()
@@ -310,6 +315,7 @@ fn init_tracing() {
             .with(tracing_subscriber::fmt::layer())
             .init();
     }
+    Ok(())
 }
 
 fn validate_runtime_env_contract() -> Result<(), String> {
@@ -377,7 +383,7 @@ fn validate_prod_config_contract(
 #[tokio::main]
 async fn main() -> Result<(), String> {
     let cli = ServerCliArgs::parse();
-    init_tracing();
+    init_tracing()?;
     validate_runtime_env_contract()?;
 
     let startup = load_runtime_startup_config(
@@ -649,7 +655,9 @@ async fn main() -> Result<(), String> {
     let state_for_shutdown = state.clone();
     axum::serve(listener, app)
         .with_graceful_shutdown(async move {
-            wait_for_shutdown_signal().await;
+            if let Err(err) = wait_for_shutdown_signal().await {
+                warn!("shutdown signal handler failed: {err}");
+            }
             accepting.store(false, Ordering::Relaxed);
             // Stop admitting heavy work first, then drain remaining requests.
             state_for_shutdown.begin_shutdown_drain_heavy();
