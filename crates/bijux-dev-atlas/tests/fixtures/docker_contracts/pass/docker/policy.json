@@ -1,11 +1,17 @@
 {
   "schema_version": 1,
   "allow_tagged_images_exceptions": [],
+  "allow_platform_in_from": false,
+  "shell_policy": "forbid",
+  "allow_root_runtime_images": [],
+  "allow_add_exceptions": [],
+  "allow_secret_copy_patterns": [],
   "required_oci_labels": [
     "org.opencontainers.image.source",
     "org.opencontainers.image.version",
     "org.opencontainers.image.revision",
     "org.opencontainers.image.created",
-    "org.opencontainers.image.ref.name"
+    "org.opencontainers.image.ref.name",
+    "org.opencontainers.image.licenses"
   ]
 }

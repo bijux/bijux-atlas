@@ -39,6 +39,24 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
     .expect("symlink");
     bijux_dev_atlas::contracts::docker::sync_contract_markdown(tmp.path())
         .expect("sync contract doc");
+    fs::write(tmp.path().join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("dockerignore");
+    fs::write(
+        tmp.path().join("docker/bases.lock"),
+        serde_json::json!({
+            "schema_version": 1,
+            "images": [
+                {"name": "builder", "image": "rust:1.84.1-bookworm", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+                {"name": "runtime", "image": "gcr.io/distroless/cc-debian12:nonroot", "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+            ]
+        }).to_string(),
+    ).expect("bases lock");
+    fs::write(
+        tmp.path().join("docker/images.manifest.json"),
+        serde_json::json!({
+            "schema_version": 1,
+            "images": [{"name": "runtime", "dockerfile": "docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
+        }).to_string(),
+    ).expect("manifest");
     tmp
 }
 

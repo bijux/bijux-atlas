@@ -4,16 +4,59 @@
         std::fs::write(base.join("docker/images/runtime/Dockerfile"), dockerfile).expect("write dockerfile");
         std::fs::write(base.join("docker/README.md"), "# docker\n").expect("write readme");
         std::fs::write(
+            base.join("docker/bases.lock"),
+            serde_json::json!({
+                "schema_version": 1,
+                "images": [
+                    {
+                        "name": "builder",
+                        "image": "rust:1",
+                        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    },
+                    {
+                        "name": "runtime",
+                        "image": "gcr.io/distroless/cc-debian12:nonroot",
+                        "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                    }
+                ]
+            })
+            .to_string(),
+        )
+        .expect("write bases lock");
+        std::fs::write(
+            base.join("docker/images.manifest.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "images": [
+                    {
+                        "name": "runtime",
+                        "dockerfile": "docker/images/runtime/Dockerfile",
+                        "context": ".",
+                        "smoke": ["/app/bijux-atlas", "version"]
+                    }
+                ]
+            })
+            .to_string(),
+        )
+        .expect("write images manifest");
+        std::fs::write(base.join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("write dockerignore");
+        std::fs::write(
             base.join("docker/policy.json"),
             serde_json::json!({
                 "schema_version": 1,
                 "allow_tagged_images_exceptions": [],
+                "allow_platform_in_from": false,
+                "shell_policy": "forbid",
+                "allow_root_runtime_images": [],
+                "allow_add_exceptions": [],
+                "allow_secret_copy_patterns": [],
                 "required_oci_labels": [
                     "org.opencontainers.image.source",
                     "org.opencontainers.image.version",
                     "org.opencontainers.image.revision",
                     "org.opencontainers.image.created",
-                    "org.opencontainers.image.ref.name"
+                    "org.opencontainers.image.ref.name",
+                    "org.opencontainers.image.licenses"
                 ]
             })
             .to_string(),
@@ -63,7 +106,7 @@
         let tmp = tempfile::tempdir().expect("tempdir");
         mk_repo(
             tmp.path(),
-            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"x\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nCOPY Cargo.toml /workspace/Cargo.toml\n",
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY Cargo.toml /workspace/Cargo.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/Cargo.toml /app/Cargo.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
         std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
         std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
@@ -161,11 +204,90 @@
     }
 
     #[test]
+    fn detects_branch_like_tag_violation() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:nightly AS builder\nWORKDIR /workspace\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
+        );
+        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
+        sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &crate::contracts::RunOptions {
+                mode: crate::contracts::Mode::Static,
+                allow_subprocess: false,
+                allow_network: false,
+                allow_k8s: false,
+                allow_fs_write: false,
+                allow_docker_daemon: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
+                fail_fast: false,
+                contract_filter: Some("DOCKER-014".to_string()),
+                test_filter: None,
+                only_contracts: Vec::new(),
+                only_tests: Vec::new(),
+                skip_contracts: Vec::new(),
+                tags: Vec::new(),
+                list_only: false,
+                artifacts_root: None,
+            },
+        )
+        .expect("run contracts");
+        assert_eq!(report.fail_count(), 1);
+    }
+
+    #[test]
+    fn detects_missing_smoke_manifest_entry() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
+        );
+        std::fs::write(
+            tmp.path().join("docker/images.manifest.json"),
+            serde_json::json!({"schema_version": 1, "images": []}).to_string(),
+        )
+        .expect("overwrite manifest");
+        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
+        sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &crate::contracts::RunOptions {
+                mode: crate::contracts::Mode::Static,
+                allow_subprocess: false,
+                allow_network: false,
+                allow_k8s: false,
+                allow_fs_write: false,
+                allow_docker_daemon: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
+                fail_fast: false,
+                contract_filter: Some("DOCKER-033".to_string()),
+                test_filter: None,
+                only_contracts: Vec::new(),
+                only_tests: Vec::new(),
+                skip_contracts: Vec::new(),
+                tags: Vec::new(),
+                list_only: false,
+                artifacts_root: None,
+            },
+        )
+        .expect("run contracts");
+        assert!(report.fail_count() > 0);
+    }
+
+    #[test]
     fn labels_are_checked_case_insensitively() {
         let tmp = tempfile::tempdir().expect("tempdir");
         mk_repo(
             tmp.path(),
-            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLABEL ORG.OPENCONTAINERS.IMAGE.SOURCE=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.VERSION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REVISION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.CREATED=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REF.NAME=\"x\"\n",
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nUSER nonroot:nonroot\nLABEL ORG.OPENCONTAINERS.IMAGE.SOURCE=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.VERSION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REVISION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.CREATED=\"1970-01-01T00:00:00Z\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REF.NAME=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.LICENSES=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
         );
         std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
             .expect("symlink");

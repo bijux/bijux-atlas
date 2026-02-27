@@ -25,17 +25,45 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
         serde_json::json!({
             "schema_version": 1,
             "allow_tagged_images_exceptions": [],
+            "allow_platform_in_from": false,
+            "shell_policy": "forbid",
+            "allow_root_runtime_images": [],
+            "allow_add_exceptions": [],
+            "allow_secret_copy_patterns": [],
             "required_oci_labels": [
                 "org.opencontainers.image.source",
                 "org.opencontainers.image.version",
                 "org.opencontainers.image.revision",
                 "org.opencontainers.image.created",
-                "org.opencontainers.image.ref.name"
+                "org.opencontainers.image.ref.name",
+                "org.opencontainers.image.licenses"
             ]
         })
         .to_string(),
     )
     .expect("write policy");
+    fs::write(base.join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("dockerignore");
+    fs::write(
+        base.join("docker/bases.lock"),
+        serde_json::json!({
+            "schema_version": 1,
+            "images": [
+                {"name": "builder", "image": "rust:1.84.1-bookworm", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+                {"name": "runtime", "image": "gcr.io/distroless/cc-debian12:nonroot", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+            ]
+        })
+        .to_string(),
+    )
+    .expect("bases");
+    fs::write(
+        base.join("docker/images.manifest.json"),
+        serde_json::json!({
+            "schema_version": 1,
+            "images": [{"name": "runtime", "dockerfile": "docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
+        })
+        .to_string(),
+    )
+    .expect("manifest");
     #[cfg(unix)]
     std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", base.join("Dockerfile"))
         .expect("symlink root dockerfile");
