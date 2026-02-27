@@ -520,6 +520,106 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_ops_stack_004_dependency_graph_generated_acyclic,
             }],
         },
+        Contract {
+            id: ContractId("OPS-STACK-E-001".to_string()),
+            title: "stack effect kind cluster contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.effect.kind_cluster_up_profile_dev".to_string()),
+                title: "effect lane requires kind dev cluster contract inputs",
+                kind: TestKind::Subprocess,
+                run: test_ops_stack_e_001_kind_cluster_up_profile_dev,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-E-002".to_string()),
+            title: "stack effect component rollout contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.effect.core_components_present".to_string()),
+                title: "effect lane requires core stack component manifests",
+                kind: TestKind::Subprocess,
+                run: test_ops_stack_e_002_core_components_present,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-E-003".to_string()),
+            title: "stack effect ports inventory contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.effect.ports_inventory_mapped".to_string()),
+                title: "effect lane requires stack ports inventory contract sample",
+                kind: TestKind::Subprocess,
+                run: test_ops_stack_e_003_ports_inventory_mapped,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-E-004".to_string()),
+            title: "stack effect health report contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.effect.health_report_generated".to_string()),
+                title: "effect lane requires stack health report contract sample",
+                kind: TestKind::Subprocess,
+                run: test_ops_stack_e_004_stack_health_report_generated,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-E-001".to_string()),
+            title: "k8s effect helm install contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.effect.helm_install_contract_defined".to_string()),
+                title: "effect lane requires kind install profile in k8s install matrix",
+                kind: TestKind::Subprocess,
+                run: test_ops_k8s_e_001_helm_install_contract_defined,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-E-002".to_string()),
+            title: "k8s effect rollout safety contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.effect.rollout_safety_contract_satisfied".to_string()),
+                title: "effect lane requires rollout safety contract checks",
+                kind: TestKind::Subprocess,
+                run: test_ops_k8s_e_002_rollout_safety_contract_satisfied,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-E-003".to_string()),
+            title: "k8s effect endpoint reachability contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.effect.service_endpoints_reachable_contract".to_string()),
+                title: "effect lane requires non-empty k8s suite coverage for endpoint checks",
+                kind: TestKind::Network,
+                run: test_ops_k8s_e_003_service_endpoints_reachable_contract,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-OBS-E-001".to_string()),
+            title: "observe effect metrics scrape contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.effect.scrape_metrics_contract".to_string()),
+                title: "effect lane requires non-empty metrics scrape contract",
+                kind: TestKind::Network,
+                run: test_ops_obs_e_001_scrape_metrics_contract,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-OBS-E-002".to_string()),
+            title: "observe effect trace structure contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.effect.trace_structure_contract".to_string()),
+                title: "effect lane requires trace structure golden contract",
+                kind: TestKind::Network,
+                run: test_ops_obs_e_002_trace_structure_contract,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-OBS-E-003".to_string()),
+            title: "observe effect alerts load contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.effect.alerts_load_contract".to_string()),
+                title: "effect lane requires parseable alert rule inputs",
+                kind: TestKind::Network,
+                run: test_ops_obs_e_003_alerts_load_contract,
+            }],
+        },
     ])
 }
 
@@ -572,6 +672,16 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-STACK-002" => "Ensures service dependency contract entries are structurally valid.",
         "OPS-STACK-003" => "Ensures stack version manifest is parseable and digest pinned.",
         "OPS-STACK-004" => "Ensures stack dependency graph references real assets and consistent profile links.",
+        "OPS-STACK-E-001" => "Effect lane contract for kind dev cluster bring-up inputs.",
+        "OPS-STACK-E-002" => "Effect lane contract for core stack component rollout manifests.",
+        "OPS-STACK-E-003" => "Effect lane contract for stack ports inventory mapping evidence.",
+        "OPS-STACK-E-004" => "Effect lane contract for stack health report evidence.",
+        "OPS-K8S-E-001" => "Effect lane contract for helm install profile coverage in k8s matrix.",
+        "OPS-K8S-E-002" => "Effect lane contract for rollout safety checks declaration.",
+        "OPS-K8S-E-003" => "Effect lane contract for service endpoint reachability suite coverage.",
+        "OPS-OBS-E-001" => "Effect lane contract for metrics scrape evidence input.",
+        "OPS-OBS-E-002" => "Effect lane contract for trace structure evidence input.",
+        "OPS-OBS-E-003" => "Effect lane contract for alert rule loading inputs.",
         _ => "No explanation registered for this contract id.",
     }
 }
