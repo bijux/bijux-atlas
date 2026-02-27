@@ -32,10 +32,13 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
         OpsCommand::List(common)
         | OpsCommand::Doctor(common)
         | OpsCommand::Validate(common)
+        | OpsCommand::Graph(common)
         | OpsCommand::Inventory(common)
         | OpsCommand::Docs(common)
+        | OpsCommand::DocsVerify(common)
         | OpsCommand::Conformance(common)
         | OpsCommand::Report(common)
+        | OpsCommand::Readiness(common)
         | OpsCommand::ListProfiles(common)
         | OpsCommand::ListTools(common)
         | OpsCommand::VerifyTools(common)
@@ -281,6 +284,15 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 action: "report-bundle".to_string(),
                 common,
             },
+        },
+        OpsCommand::Graph(common) => OpsCommand::Explain {
+            action: "inventory-graph".to_string(),
+            common,
+        },
+        OpsCommand::DocsVerify(common) => OpsCommand::Docs(common),
+        OpsCommand::Readiness(common) => OpsCommand::Explain {
+            action: "report-readiness".to_string(),
+            common,
         },
         OpsCommand::Evidence { command } => match command {
             OpsEvidenceCommand::Collect(common) => OpsCommand::Explain {
