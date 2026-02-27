@@ -103,6 +103,7 @@ pub struct DocsGrepArgs {
 pub enum ConfigsCommand {
     Print(ConfigsCommonArgs),
     List(ConfigsCommonArgs),
+    Verify(ConfigsCommonArgs),
     Doctor(ConfigsCommonArgs),
     Validate(ConfigsCommonArgs),
     Lint(ConfigsCommonArgs),

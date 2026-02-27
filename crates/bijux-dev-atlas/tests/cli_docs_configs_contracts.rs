@@ -337,6 +337,20 @@ fn configs_list_supports_json_format() {
 }
 
 #[test]
+fn configs_verify_supports_json_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["configs", "verify", "--format", "json"])
+        .output()
+        .expect("configs verify json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("schema_version").and_then(|v| v.as_u64()), Some(1));
+    assert!(payload.get("rows").and_then(|v| v.as_array()).is_some());
+}
+
+#[test]
 fn configs_inventory_writes_artifact_when_allow_write_enabled() {
     let artifact_root = repo_root().join("artifacts/tests/configs_inventory_write");
     if artifact_root.exists() {

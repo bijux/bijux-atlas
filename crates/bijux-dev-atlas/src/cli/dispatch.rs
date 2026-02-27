@@ -219,6 +219,7 @@ fn force_json_configs(command: &mut ConfigsCommand) {
     match command {
         ConfigsCommand::Print(common)
         | ConfigsCommand::List(common)
+        | ConfigsCommand::Verify(common)
         | ConfigsCommand::Doctor(common)
         | ConfigsCommand::Validate(common)
         | ConfigsCommand::Lint(common)
@@ -282,12 +283,15 @@ fn apply_fail_fast(command: &mut Command) {
         },
         Command::Configs { command } => match command {
             ConfigsCommand::Doctor(common)
+            | ConfigsCommand::Verify(common)
             | ConfigsCommand::Validate(common)
             | ConfigsCommand::Lint(common)
             | ConfigsCommand::Inventory(common)
             | ConfigsCommand::Diff(common) => common.strict = true,
             ConfigsCommand::Fmt { check, .. } => *check = true,
-            ConfigsCommand::Print(_) | ConfigsCommand::List(_) | ConfigsCommand::Compile(_) => {}
+            ConfigsCommand::Print(_)
+            | ConfigsCommand::List(_)
+            | ConfigsCommand::Compile(_) => {}
         },
         _ => {}
     }
@@ -512,6 +516,7 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
         Command::Configs { command } => match command {
             ConfigsCommand::Print(common)
             | ConfigsCommand::List(common)
+            | ConfigsCommand::Verify(common)
             | ConfigsCommand::Doctor(common)
             | ConfigsCommand::Validate(common)
             | ConfigsCommand::Lint(common)
