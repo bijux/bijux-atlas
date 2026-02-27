@@ -7,6 +7,7 @@ This repository enforces a strict lint baseline with explicit scope:
 - `unwrap`/`expect` are allowed in tests only.
 - `todo!()` is forbidden everywhere.
 - `dbg!()`, `println!()`, and `eprintln!()` are denied by clippy policy.
+- `panic!()` is forbidden in library crates.
 - `unused_crate_dependencies` is denied.
 
 Source of truth:
@@ -18,5 +19,5 @@ CI enforcement:
 
 - `make lint` runs `cargo clippy --workspace --all-targets --all-features --locked -- -D warnings`
 - `make lint-policy-report` writes `artifacts/lint/effective-clippy-policy.txt`
-- `make lint-policy-enforce` enforces drift checks for `todo!`, `dbg!`, non-test `println!/eprintln!` in core crates, and `reqwest/blocking` in server
+- `make lint-policy-enforce` enforces drift checks for `todo!`, `dbg!`, non-test `println!/eprintln!`, library `panic!`, and `reqwest/blocking` in server
 - `make lint-clippy-json` writes `artifacts/lint/clippy.json`

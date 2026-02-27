@@ -5,6 +5,9 @@
 #![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
 #![deny(clippy::todo)]
 
+use clap as _;
+use regex as _;
+
 pub mod adapters;
 pub(crate) mod commands;
 pub mod core;

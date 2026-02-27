@@ -45,7 +45,8 @@ lint-policy-report: ## Emit effective lint policy report artifact
 lint-policy-enforce: ## Enforce repository lint drift guards
 	@! rg -n '\btodo!\(' crates
 	@! rg -n '\bdbg!\(' crates
-	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas-server crates/bijux-atlas-core crates/bijux-atlas-model crates/bijux-atlas-query crates/bijux-atlas-store crates/bijux-atlas-policies --glob '!**/tests/**' --glob '!**/benches/**'
+	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas-server/src crates/bijux-atlas-core/src crates/bijux-atlas-model/src crates/bijux-atlas-query/src crates/bijux-atlas-store/src crates/bijux-atlas-policies/src crates/bijux-atlas-ingest/src crates/bijux-atlas-api/src crates/bijux-dev-atlas/src --glob '!**/tests/**' --glob '!**/benches/**' --glob '!**/main.rs' --glob '!**/bin/**'
+	@! rg -n '\bpanic!\(' crates/bijux-atlas-core crates/bijux-atlas-model crates/bijux-atlas-ingest crates/bijux-atlas-store crates/bijux-atlas-query crates/bijux-atlas-api crates/bijux-atlas-policies --glob '!**/tests/**' --glob '!**/benches/**'
 	@! rg -n 'reqwest\s*=.*blocking' crates/bijux-atlas-server/Cargo.toml
 	@! rg -n 'reqwest::blocking' crates/bijux-atlas-server/src
 
