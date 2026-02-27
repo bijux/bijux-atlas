@@ -113,6 +113,26 @@ Tests:
 Tests:
 - `ops.inventory.contract_id_format` (static, Pure): all ops contract ids follow OPS-<PILLAR>-NNN format
 
+#### OPS-INV-007 inventory gates registry contract
+
+Tests:
+- `ops.inventory.gates_registry_mapped` (static, Pure): gates registry exists and maps each gate to one action id
+
+#### OPS-INV-008 inventory drills registry contract
+
+Tests:
+- `ops.inventory.drills_registry_mapped` (static, Pure): drills registry ids map to runnable observe drill definitions
+
+#### OPS-INV-009 inventory owners registry contract
+
+Tests:
+- `ops.inventory.owners_registry_complete` (static, Pure): owners registry exists and includes all ops domain directories
+
+#### OPS-INV-010 inventory schema coverage contract
+
+Tests:
+- `ops.inventory.schema_coverage` (static, Pure): inventory schema directory includes required registry schemas
+
 #### OPS-INV-PILLARS-001 inventory pillars registry contract
 
 Tests:

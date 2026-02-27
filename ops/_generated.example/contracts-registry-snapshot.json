@@ -293,6 +293,46 @@
       "title": "inventory contract id format contract"
     },
     {
+      "id": "OPS-INV-007",
+      "tests": [
+        {
+          "test_id": "ops.inventory.gates_registry_mapped",
+          "title": "gates registry exists and maps each gate to one action id"
+        }
+      ],
+      "title": "inventory gates registry contract"
+    },
+    {
+      "id": "OPS-INV-008",
+      "tests": [
+        {
+          "test_id": "ops.inventory.drills_registry_mapped",
+          "title": "drills registry ids map to runnable observe drill definitions"
+        }
+      ],
+      "title": "inventory drills registry contract"
+    },
+    {
+      "id": "OPS-INV-009",
+      "tests": [
+        {
+          "test_id": "ops.inventory.owners_registry_complete",
+          "title": "owners registry exists and includes all ops domain directories"
+        }
+      ],
+      "title": "inventory owners registry contract"
+    },
+    {
+      "id": "OPS-INV-010",
+      "tests": [
+        {
+          "test_id": "ops.inventory.schema_coverage",
+          "title": "inventory schema directory includes required registry schemas"
+        }
+      ],
+      "title": "inventory schema coverage contract"
+    },
+    {
       "id": "OPS-INV-PILLARS-001",
       "tests": [
         {
