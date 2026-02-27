@@ -1034,6 +1034,76 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         match command {
             ContractsCommand::Docker(args) => {
                 let repo_root = resolve_repo_root(args.repo_root)?;
+                let registry = contracts::docker::contracts(&repo_root)?;
+                if let Some(contract_id) = args.explain {
+                    let Some(contract) = registry
+                        .iter()
+                        .find(|entry| entry.id.0.eq_ignore_ascii_case(&contract_id))
+                    else {
+                        return Err(format!("unknown docker contract id `{contract_id}`"));
+                    };
+                    let explanation = contracts::docker::contract_explain(&contract.id.0);
+                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
+                        serde_json::to_string_pretty(&serde_json::json!({
+                            "schema_version": 1,
+                            "domain": "docker",
+                            "contract_id": contract.id.0,
+                            "title": contract.title,
+                            "tests": contract.tests.iter().map(|case| serde_json::json!({
+                                "test_id": case.id.0,
+                                "title": case.title
+                            })).collect::<Vec<_>>(),
+                            "explain": explanation
+                        }))
+                        .map_err(|e| format!("encode contracts explain failed: {e}"))?
+                    } else {
+                        let mut out = String::new();
+                        out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
+                        out.push_str("Tests:\n");
+                        for case in &contract.tests {
+                            out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
+                        }
+                        out.push_str("\nHow to fix:\n");
+                        out.push_str(&explanation);
+                        out.push('\n');
+                        out
+                    };
+                    return Ok((rendered, 0));
+                }
+                if args.list {
+                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
+                        serde_json::to_string_pretty(&serde_json::json!({
+                            "schema_version": 1,
+                            "domain": "docker",
+                            "contracts": registry.iter().map(|contract| serde_json::json!({
+                                "id": contract.id.0,
+                                "title": contract.title,
+                                "tests": if args.list_tests {
+                                    contract.tests.iter().map(|case| serde_json::json!({
+                                        "test_id": case.id.0,
+                                        "title": case.title
+                                    })).collect::<Vec<_>>()
+                                } else {
+                                    Vec::<serde_json::Value>::new()
+                                }
+                            })).collect::<Vec<_>>()
+                        }))
+                        .map_err(|e| format!("encode contracts list failed: {e}"))?
+                    } else {
+                        let mut out = String::new();
+                        out.push_str("Contracts: docker\n");
+                        for contract in &registry {
+                            out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
+                            if args.list_tests {
+                                for case in &contract.tests {
+                                    out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
+                                }
+                            }
+                        }
+                        out
+                    };
+                    return Ok((rendered, 0));
+                }
                 let mode = match args.mode {
                     ContractsModeArg::Static => contracts::Mode::Static,
                     ContractsModeArg::Effect => contracts::Mode::Effect,

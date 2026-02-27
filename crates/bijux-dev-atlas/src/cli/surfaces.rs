@@ -267,6 +267,10 @@ pub struct ContractsDockerArgs {
     #[arg(long, default_value_t = false)]
     pub list: bool,
     #[arg(long, default_value_t = false)]
+    pub list_tests: bool,
+    #[arg(long)]
+    pub explain: Option<String>,
+    #[arg(long, default_value_t = false)]
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
     pub allow_network: bool,

@@ -1105,6 +1105,29 @@ pub fn sync_contract_markdown(repo_root: &Path) -> Result<(), String> {
     std::fs::write(&path, rendered).map_err(|e| format!("write {} failed: {e}", path.display()))
 }
 
+pub fn contract_explain(contract_id: &str) -> String {
+    match contract_id {
+        "DOCKER-007" => [
+            "Use digest-pinned base images in every FROM instruction.",
+            "Format: registry/repo:tag@sha256:<digest>.",
+            "If a temporary exception is required, add an exact image reference to docker/policy.json allow_tagged_images_exceptions.",
+        ]
+        .join("\n"),
+        "DOCKER-006" => [
+            "Do not use :latest or floating tags in FROM instructions.",
+            "Pin the image with a digest and keep tags deterministic.",
+        ]
+        .join("\n"),
+        "DOCKER-008" => [
+            "Declare all required OCI labels with non-empty values.",
+            "Use LABEL directives for org.opencontainers.image.* keys required by policy.",
+        ]
+        .join("\n"),
+        _ => "Fix violations listed for this contract and rerun `bijux dev atlas contracts docker`."
+            .to_string(),
+    }
+}
+
 pub struct DockerContractRegistry;
 
 impl ContractRegistry for DockerContractRegistry {
