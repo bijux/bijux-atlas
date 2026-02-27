@@ -33,6 +33,36 @@ fn read_target_registry(repo_root: &Path) -> Result<Value, String> {
     serde_json::from_str(&text).map_err(|e| format!("parse {} failed: {e}", path.display()))
 }
 
+fn sorted_makefiles(repo_root: &Path) -> Vec<std::path::PathBuf> {
+    let mut files = Vec::new();
+    let roots = [
+        repo_root.join("Makefile"),
+        repo_root.join("make"),
+        repo_root.join("make/makefiles"),
+    ];
+    for root in roots {
+        if root.is_file() {
+            files.push(root);
+            continue;
+        }
+        let Ok(entries) = std::fs::read_dir(&root) else {
+            continue;
+        };
+        let mut paths = entries.flatten().map(|entry| entry.path()).collect::<Vec<_>>();
+        paths.sort();
+        for path in paths {
+            if path.extension().and_then(|value| value.to_str()) == Some("mk")
+                || path.file_name().and_then(|value| value.to_str()) == Some("Makefile")
+            {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    files.dedup();
+    files
+}
+
 fn test_make_000_allowed_surface(ctx: &RunContext) -> TestResult {
     let contract_id = "MAKE-000";
     let test_id = "make.surface.allowed_files";
@@ -434,6 +464,151 @@ fn test_make_006_shell_is_pinned(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_make_007_include_graph_acyclic(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-007";
+    let test_id = "make.includes.acyclic";
+    let files = sorted_makefiles(&ctx.repo_root);
+    let mut edges = std::collections::BTreeMap::<String, Vec<String>>::new();
+    let mut violations = Vec::new();
+    for path in &files {
+        let rel_path = rel(path, &ctx.repo_root);
+        let Ok(text) = std::fs::read_to_string(path) else {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                path,
+                &ctx.repo_root,
+                "make include source must be readable",
+            ));
+            continue;
+        };
+        let mut includes = Vec::new();
+        for line in text.lines() {
+            let trimmed = line.trim();
+            if let Some(include_path) = trimmed.strip_prefix("include ") {
+                includes.push(include_path.trim().to_string());
+            }
+        }
+        includes.sort();
+        includes.dedup();
+        edges.insert(rel_path, includes);
+    }
+    fn visit(
+        node: &str,
+        edges: &std::collections::BTreeMap<String, Vec<String>>,
+        visiting: &mut BTreeSet<String>,
+        visited: &mut BTreeSet<String>,
+    ) -> Option<String> {
+        if visited.contains(node) {
+            return None;
+        }
+        if !visiting.insert(node.to_string()) {
+            return Some(node.to_string());
+        }
+        for next in edges.get(node).into_iter().flatten() {
+            if edges.contains_key(next) {
+                if let Some(cycle) = visit(next, edges, visiting, visited) {
+                    return Some(cycle);
+                }
+            }
+        }
+        visiting.remove(node);
+        visited.insert(node.to_string());
+        None
+    }
+    let mut visiting = BTreeSet::new();
+    let mut visited = BTreeSet::new();
+    for node in edges.keys() {
+        if let Some(cycle) = visit(node, &edges, &mut visiting, &mut visited) {
+            let path = ctx.repo_root.join(&cycle);
+            violations.push(violation(
+                contract_id,
+                test_id,
+                &path,
+                &ctx.repo_root,
+                "make include graph must be acyclic",
+            ));
+            break;
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_008_no_duplicate_targets(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-008";
+    let test_id = "make.targets.unique";
+    let files = sorted_makefiles(&ctx.repo_root);
+    let mut owners = std::collections::BTreeMap::<String, String>::new();
+    let mut violations = Vec::new();
+    for path in files {
+        let Ok(text) = std::fs::read_to_string(&path) else {
+            continue;
+        };
+        for line in text.lines() {
+            if line.starts_with('\t') || line.starts_with(' ') {
+                continue;
+            }
+            let trimmed = line.trim_start();
+            if trimmed.contains('=') {
+                continue;
+            }
+            let Some((name, _)) = trimmed.split_once(':') else {
+                continue;
+            };
+            let target = name.trim();
+            if target.is_empty() || target.starts_with('.') || target.contains(' ') {
+                continue;
+            }
+            let path_rel = rel(&path, &ctx.repo_root);
+            if let Some(previous) = owners.insert(target.to_string(), path_rel.clone()) {
+                if previous != path_rel {
+                    violations.push(violation(
+                        contract_id,
+                        test_id,
+                        &path,
+                        &ctx.repo_root,
+                        &format!("target `{target}` is declared in more than one make source"),
+                    ));
+                }
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_009_oneshell_forbidden(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-009";
+    let test_id = "make.runtime.oneshell_forbidden";
+    let mut violations = Vec::new();
+    for path in sorted_makefiles(&ctx.repo_root) {
+        let Ok(text) = std::fs::read_to_string(&path) else {
+            continue;
+        };
+        if text.lines().any(|line| line.trim() == ".ONESHELL:") {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                &path,
+                &ctx.repo_root,
+                ".ONESHELL is forbidden in curated make wrappers",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         Contract {
@@ -506,6 +681,36 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_make_006_shell_is_pinned,
             }],
         },
+        Contract {
+            id: ContractId("MAKE-007".to_string()),
+            title: "make include graph",
+            tests: vec![TestCase {
+                id: TestId("make.includes.acyclic".to_string()),
+                title: "make include graph is acyclic",
+                kind: TestKind::Pure,
+                run: test_make_007_include_graph_acyclic,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-008".to_string()),
+            title: "make unique target declarations",
+            tests: vec![TestCase {
+                id: TestId("make.targets.unique".to_string()),
+                title: "make target names are unique across curated sources",
+                kind: TestKind::Pure,
+                run: test_make_008_no_duplicate_targets,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-009".to_string()),
+            title: "make oneshell policy",
+            tests: vec![TestCase {
+                id: TestId("make.runtime.oneshell_forbidden".to_string()),
+                title: "curated make wrappers forbid .ONESHELL",
+                kind: TestKind::Pure,
+                run: test_make_009_oneshell_forbidden,
+            }],
+        },
     ])
 }
 
@@ -525,6 +730,12 @@ pub fn contract_explain(contract_id: &str) -> String {
             .to_string(),
         "MAKE-006" => "Pin the shell used by curated make wrappers so runtime behavior stays deterministic."
             .to_string(),
+        "MAKE-007" => "Keep the make include graph acyclic so wrapper composition remains inspectable and deterministic."
+            .to_string(),
+        "MAKE-008" => "Prevent duplicate target declarations across curated make sources."
+            .to_string(),
+        "MAKE-009" => "Forbid .ONESHELL so recipe behavior stays line-scoped and predictable."
+            .to_string(),
         _ => "Unknown make contract id.".to_string(),
     }
 }
@@ -532,7 +743,9 @@ pub fn contract_explain(contract_id: &str) -> String {
 pub fn contract_gate_command(contract_id: &str) -> &'static str {
     match contract_id {
         "MAKE-000" | "MAKE-001" | "MAKE-002" | "MAKE-003" | "MAKE-004" | "MAKE-005"
-        | "MAKE-006" => "bijux dev atlas contracts make --mode static",
+        | "MAKE-006" | "MAKE-007" | "MAKE-008" | "MAKE-009" => {
+            "bijux dev atlas contracts make --mode static"
+        }
         _ => "bijux dev atlas contracts make --mode static",
     }
 }
