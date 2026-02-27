@@ -543,6 +543,46 @@
       "title": "load scenario to slo mapping contract"
     },
     {
+      "id": "OPS-LOAD-006",
+      "tests": [
+        {
+          "test_id": "ops.load.drift_report_generator_schema_valid",
+          "title": "load drift report exists and is schema-valid"
+        }
+      ],
+      "title": "load drift report schema contract"
+    },
+    {
+      "id": "OPS-LOAD-007",
+      "tests": [
+        {
+          "test_id": "ops.load.result_schema_validates_sample_output",
+          "title": "load result schema validates generated sample summary envelope"
+        }
+      ],
+      "title": "load result schema sample contract"
+    },
+    {
+      "id": "OPS-LOAD-008",
+      "tests": [
+        {
+          "test_id": "ops.load.cheap_survival_in_minimal_gate_suite",
+          "title": "cheap-only-survival suite is present in minimal gate lanes"
+        }
+      ],
+      "title": "load cheap survival suite gate contract"
+    },
+    {
+      "id": "OPS-LOAD-009",
+      "tests": [
+        {
+          "test_id": "ops.load.cold_start_p99_in_minimal_gate_suite",
+          "title": "cold-start-p99 suite is present in required confidence lanes"
+        }
+      ],
+      "title": "load cold start p99 suite gate contract"
+    },
+    {
       "id": "OPS-LOAD-E-001",
       "tests": [
         {
@@ -661,6 +701,16 @@
         }
       ],
       "title": "observability drills manifest contract"
+    },
+    {
+      "id": "OPS-OBS-010",
+      "tests": [
+        {
+          "test_id": "ops.observe.overload_behavior_contract_enforced",
+          "title": "overload behavior contract exists and maps to load suite coverage"
+        }
+      ],
+      "title": "observability overload behavior contract"
     },
     {
       "id": "OPS-OBS-E-001",

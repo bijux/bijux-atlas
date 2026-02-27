@@ -242,6 +242,26 @@ Tests:
 Tests:
 - `ops.load.no_scenario_without_slo_mapping` (static, Pure): smoke/pr load suites must be represented in inventory SLO mappings
 
+#### OPS-LOAD-006 load drift report schema contract
+
+Tests:
+- `ops.load.drift_report_generator_schema_valid` (static, Pure): load drift report exists and is schema-valid
+
+#### OPS-LOAD-007 load result schema sample contract
+
+Tests:
+- `ops.load.result_schema_validates_sample_output` (static, Pure): load result schema validates generated sample summary envelope
+
+#### OPS-LOAD-008 load cheap survival suite gate contract
+
+Tests:
+- `ops.load.cheap_survival_in_minimal_gate_suite` (static, Pure): cheap-only-survival suite is present in minimal gate lanes
+
+#### OPS-LOAD-009 load cold start p99 suite gate contract
+
+Tests:
+- `ops.load.cold_start_p99_in_minimal_gate_suite` (static, Pure): cold-start-p99 suite is present in required confidence lanes
+
 #### OPS-LOAD-E-001 load effect k6 execution contract
 
 Tests:
@@ -303,6 +323,11 @@ Tests:
 
 Tests:
 - `ops.observe.drills_manifest_exists_runnable` (static, Pure): drills manifest is populated with runnable drill definitions
+
+#### OPS-OBS-010 observability overload behavior contract
+
+Tests:
+- `ops.observe.overload_behavior_contract_enforced` (static, Pure): overload behavior contract exists and maps to load suite coverage
 
 #### OPS-OBS-E-001 observe effect metrics scrape contract
 
