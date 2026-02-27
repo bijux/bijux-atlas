@@ -62,6 +62,21 @@ Tests:
 Tests:
 - `ops.datasets.dataset_store_layout_contract_enforced` (static, Pure): dataset ids and fixture paths follow canonical store layout
 
+#### OPS-DATASETS-011 datasets fixture archive lock contract
+
+Tests:
+- `ops.datasets.fixture_archives_match_manifest_lock` (static, Pure): fixture archives are checksummed and match manifest lock entries
+
+#### OPS-DATASETS-012 datasets provenance fields contract
+
+Tests:
+- `ops.datasets.real_datasets_have_provenance` (static, Pure): real datasets declare explicit provenance fields
+
+#### OPS-DATASETS-013 datasets file type boundary contract
+
+Tests:
+- `ops.datasets.allowed_file_types_only` (static, Pure): datasets tree contains only allowlisted file types
+
 ### Pillar: e2e
 
 #### OPS-E2E-001 e2e suites reference contract

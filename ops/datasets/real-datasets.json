@@ -4,6 +4,9 @@
     {
       "id": "110/homo_sapiens/GRCh38",
       "kind": "download",
+      "source_kind": "fixture-release",
+      "source_ref": "github-release:v1",
+      "review_status": "reviewed-placeholder",
       "archive": "bijux-atlas-medium-fixture-v1.tar.gz",
       "url": "ops/datasets/fixtures/medium/v1/assets/bijux-atlas-medium-fixture-v1.tar.gz",
       "public_url": "https://github.com/bijux/bijux-atlas-ops/datasets/fixtures/releases/download/v1/bijux-atlas-medium-fixture-v1.tar.gz",
@@ -18,6 +21,9 @@
     {
       "id": "111/homo_sapiens/GRCh38",
       "kind": "derived",
+      "source_kind": "derived-from-release",
+      "source_ref": "110/homo_sapiens/GRCh38",
+      "review_status": "reviewed-placeholder",
       "derived_from": "110/homo_sapiens/GRCh38",
       "transform": "crates/bijux-dev-atlas/src/bijux-dev-atlas/commands/ops/datasets/fixtures/derive_release_111.py",
       "files": {

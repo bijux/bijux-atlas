@@ -27,8 +27,8 @@
     },
     {
       "pillar": "datasets",
-      "target": 10,
-      "max": 10,
+      "target": 13,
+      "max": 13,
       "required_classes": [
         "safety"
       ]
