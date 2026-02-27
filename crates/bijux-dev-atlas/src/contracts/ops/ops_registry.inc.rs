@@ -65,6 +65,7 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-PILLARS-001" => "Validates pillars SSOT exists and parses as inventory metadata.",
         "OPS-INV-PILLARS-002" => "Validates each declared pillar has a concrete directory under ops/.",
         "OPS-INV-PILLARS-003" => "Validates there are no undeclared pillar directories in ops root.",
+        "OPS-INV-DEBT-001" => "Ensures contract debt registry exists with an owner and target milestone for each deferred item.",
         "OPS-SCHEMA-001" => "Ensures ops json/yaml policy documents are parseable.",
         "OPS-SCHEMA-002" => "Ensures generated schema index matches on-disk schema sources.",
         "OPS-SCHEMA-003" => "Enforces stable .schema.json naming for schema source files.",

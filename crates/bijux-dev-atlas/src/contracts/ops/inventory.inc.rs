@@ -239,5 +239,15 @@ fn inventory_contracts() -> Vec<Contract> {
                 run: test_ops_inv_pillars_003_no_extra_pillar_dirs,
             }],
         },
+        Contract {
+            id: ContractId("OPS-INV-DEBT-001".to_string()),
+            title: "inventory contract debt registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_debt.exists_and_complete".to_string()),
+                title: "contract debt registry exists with owner and target milestone for each entry",
+                kind: TestKind::Pure,
+                run: test_ops_inv_debt_001_debt_list_exists_and_complete,
+            }],
+        },
     ]
 }

@@ -535,6 +535,80 @@ fn read_contract_gate_map(root: &Path) -> Result<serde_json::Value, String> {
         .ok_or_else(|| "ops/inventory/contract-gate-map.json is missing or invalid".to_string())
 }
 
+fn test_ops_inv_debt_001_debt_list_exists_and_complete(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-DEBT-001";
+    let test_id = "ops.inventory.contract_debt.exists_and_complete";
+    let debt_path = ctx.repo_root.join("ops/inventory/contract-debt.json");
+    let schema_path = ctx
+        .repo_root
+        .join("ops/schema/inventory/contract-debt.schema.json");
+    let Some(payload) = read_json(&debt_path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contract debt registry must exist and be valid json",
+            Some("ops/inventory/contract-debt.json".to_string()),
+        )]);
+    };
+    if !schema_path.is_file() {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contract debt schema must exist",
+            Some("ops/schema/inventory/contract-debt.schema.json".to_string()),
+        )]);
+    }
+    let Some(items) = payload.get("items").and_then(|value| value.as_array()) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contract debt registry must define items array",
+            Some("ops/inventory/contract-debt.json".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    let mut ids = BTreeSet::new();
+    for item in items {
+        let item_id = item.get("id").and_then(|value| value.as_str()).unwrap_or("");
+        if item_id.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "debt item id must be non-empty",
+                Some("ops/inventory/contract-debt.json".to_string()),
+            ));
+            continue;
+        }
+        if !ids.insert(item_id.to_string()) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "debt item ids must be unique",
+                Some(format!("ops/inventory/contract-debt.json:{item_id}")),
+            ));
+        }
+        for field in ["owner", "target_milestone"] {
+            if item
+                .get(field)
+                .and_then(|value| value.as_str())
+                .is_none_or(str::is_empty)
+            {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "debt items must define owner and target_milestone",
+                    Some(format!("ops/inventory/contract-debt.json:{item_id}:{field}")),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_inv_map_001_every_contract_id_mapped(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-MAP-001";
     let test_id = "ops.inventory.contract_gate_map.every_contract_mapped";
@@ -1974,7 +2048,7 @@ fn test_ops_schema_004_budget_policy(ctx: &RunContext) -> TestResult {
         ("datasets", 20),
         ("e2e", 12),
         ("env", 5),
-        ("inventory", 30),
+        ("inventory", 31),
         ("k8s", 12),
         ("load", 15),
         ("meta", 20),

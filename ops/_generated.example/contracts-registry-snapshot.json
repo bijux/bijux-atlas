@@ -411,6 +411,16 @@
       "title": "inventory schema coverage contract"
     },
     {
+      "id": "OPS-INV-DEBT-001",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_debt.exists_and_complete",
+          "title": "contract debt registry exists with owner and target milestone for each entry"
+        }
+      ],
+      "title": "inventory contract debt registry contract"
+    },
+    {
       "id": "OPS-INV-MAP-001",
       "tests": [
         {

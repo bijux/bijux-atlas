@@ -14,6 +14,7 @@
 - [ ] OpenAPI drift reviewed (`make openapi-drift`).
 - [ ] No new bypass entries were introduced (attach `artifacts/atlas-dev/check/policies-bypass-report.json` or link CI artifact).
 - [ ] No new ops scripts were added; use `bijux dev atlas` command families instead.
+- [ ] Any new ops contract includes gate mapping, tests, and schema updates where applicable.
 
 ## Risk
 - [ ] Breaking change: explain in PR body and update compatibility docs.

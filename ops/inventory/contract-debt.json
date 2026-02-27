@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "ops-contract-cap",
+      "owner": "bijux-atlas-operations",
+      "pillar": "inventory",
+      "summary": "Curate the ops registry from 159 contracts down to the essential-first cap of 100 without losing coverage.",
+      "target_milestone": "v0.1.0"
+    },
+    {
+      "id": "ops-contract-count-gate",
+      "owner": "bijux-atlas-operations",
+      "pillar": "inventory",
+      "summary": "Add OPS-INV-COUNT-001 only after the live registry satisfies the 100-contract cap so the gate is introduced as an enforcing contract instead of a known failure.",
+      "target_milestone": "v0.1.0"
+    }
+  ]
+}

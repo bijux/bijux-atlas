@@ -223,6 +223,11 @@ Tests:
 Tests:
 - `ops.inventory.schema_coverage` (static, Pure): inventory schema directory includes required registry schemas
 
+#### OPS-INV-DEBT-001 inventory contract debt registry contract
+
+Tests:
+- `ops.inventory.contract_debt.exists_and_complete` (static, Pure): contract debt registry exists with owner and target milestone for each entry
+
 #### OPS-INV-MAP-001 inventory contract gate map coverage contract
 
 Tests:
