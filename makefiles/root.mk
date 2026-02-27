@@ -20,7 +20,7 @@ include makefiles/k8s.mk
 include makefiles/verification.mk
 
 CURATED_TARGETS := \
-	help doctor fmt lint test build docker docker-validate docker-build docker-smoke docker-sbom docker-scan docker-lock docker-release docker-gate \
+	help doctor fmt lint test build docker docker-contracts docker-contracts-effect docker-gate \
 	k8s-render k8s-validate stack-up stack-down \
 	ops-fast ops-pr ops-nightly make-target-list
 

@@ -1,34 +1,14 @@
 DOCKER_RUN_ID ?= $(RUN_ID)
+DOCKER_CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/docker-contracts/$(DOCKER_RUN_ID)
 
-docker: docker-validate
+docker: docker-contracts
 
-docker-validate:
-	@$(DEV_ATLAS) docker validate --run-id $(DOCKER_RUN_ID)-$@ --format json
+docker-contracts:
+	@$(DEV_ATLAS) contracts docker --mode static --artifacts-root $(DOCKER_CONTRACTS_ARTIFACT_ROOT) --format json
 
-docker-build:
-	@$(DEV_ATLAS) docker build --allow-subprocess --run-id $(DOCKER_RUN_ID)-$@ --format json
+docker-contracts-effect:
+	@$(DEV_ATLAS) contracts docker --mode effect --allow-subprocess --allow-network --artifacts-root $(DOCKER_CONTRACTS_ARTIFACT_ROOT) --format json
 
-docker-smoke:
-	@$(DEV_ATLAS) docker smoke --allow-subprocess --run-id $(DOCKER_RUN_ID)-$@ --format json
+docker-gate: docker-contracts
 
-docker-sbom:
-	@$(DEV_ATLAS) docker sbom --allow-subprocess --run-id $(DOCKER_RUN_ID)-$@ --format json
-
-docker-scan:
-	@$(DEV_ATLAS) docker scan --allow-subprocess --allow-network --run-id $(DOCKER_RUN_ID)-$@ --format json
-
-docker-lock:
-	@$(DEV_ATLAS) docker lock --allow-write --run-id $(DOCKER_RUN_ID)-$@ --format json
-
-docker-release:
-	@$(DEV_ATLAS) docker release --allow-subprocess --allow-network --i-know-what-im-doing --run-id $(DOCKER_RUN_ID)-$@ --format json
-
-docker-gate:
-	@$(MAKE) -s docker-validate
-	@$(DEV_ATLAS) docker policy check --run-id $(DOCKER_RUN_ID)-docker-policy-check --format json
-	@$(MAKE) -s docker-build
-	@$(MAKE) -s docker-smoke
-	@$(MAKE) -s docker-sbom
-	@$(MAKE) -s docker-scan
-
-.PHONY: docker docker-validate docker-build docker-smoke docker-sbom docker-scan docker-lock docker-release docker-gate
+.PHONY: docker docker-contracts docker-contracts-effect docker-gate
