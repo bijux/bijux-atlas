@@ -403,6 +403,56 @@
       "title": "k8s forbidden object policy contract"
     },
     {
+      "id": "OPS-K8S-005",
+      "tests": [
+        {
+          "test_id": "ops.k8s.rbac_minimalism",
+          "title": "helm templates must not declare cluster-admin or wildcard rbac grants"
+        }
+      ],
+      "title": "k8s rbac minimalism contract"
+    },
+    {
+      "id": "OPS-K8S-006",
+      "tests": [
+        {
+          "test_id": "ops.k8s.pod_security_and_probes",
+          "title": "deployment template includes pod security hardening and readiness/liveness probes"
+        }
+      ],
+      "title": "k8s pod security and probes contract"
+    },
+    {
+      "id": "OPS-K8S-007",
+      "tests": [
+        {
+          "test_id": "ops.k8s.rollout_safety_enforced",
+          "title": "rollout safety contract is valid and rollout template enforces rollout steps"
+        }
+      ],
+      "title": "k8s rollout safety contract"
+    },
+    {
+      "id": "OPS-K8S-008",
+      "tests": [
+        {
+          "test_id": "ops.k8s.conformance_suite_runnable",
+          "title": "k8s conformance suite exists and control-plane exposes conformance verb"
+        }
+      ],
+      "title": "k8s conformance suite contract"
+    },
+    {
+      "id": "OPS-K8S-009",
+      "tests": [
+        {
+          "test_id": "ops.k8s.install_matrix_and_generated_consistency",
+          "title": "install matrix and generated k8s artifacts stay aligned and schema-versioned"
+        }
+      ],
+      "title": "k8s install matrix generated consistency contract"
+    },
+    {
       "id": "OPS-K8S-E-001",
       "tests": [
         {

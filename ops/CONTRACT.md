@@ -170,6 +170,31 @@ Tests:
 Tests:
 - `ops.k8s.no_forbidden_k8s_objects` (static, Pure): helm templates must not introduce forbidden cluster-scope object kinds
 
+#### OPS-K8S-005 k8s rbac minimalism contract
+
+Tests:
+- `ops.k8s.rbac_minimalism` (static, Pure): helm templates must not declare cluster-admin or wildcard rbac grants
+
+#### OPS-K8S-006 k8s pod security and probes contract
+
+Tests:
+- `ops.k8s.pod_security_and_probes` (static, Pure): deployment template includes pod security hardening and readiness/liveness probes
+
+#### OPS-K8S-007 k8s rollout safety contract
+
+Tests:
+- `ops.k8s.rollout_safety_enforced` (static, Pure): rollout safety contract is valid and rollout template enforces rollout steps
+
+#### OPS-K8S-008 k8s conformance suite contract
+
+Tests:
+- `ops.k8s.conformance_suite_runnable` (static, Pure): k8s conformance suite exists and control-plane exposes conformance verb
+
+#### OPS-K8S-009 k8s install matrix generated consistency contract
+
+Tests:
+- `ops.k8s.install_matrix_and_generated_consistency` (static, Pure): install matrix and generated k8s artifacts stay aligned and schema-versioned
+
 #### OPS-K8S-E-001 k8s effect helm install contract
 
 Tests:
