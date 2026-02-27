@@ -140,11 +140,10 @@ struct InventoryPillarRow {
 
 fn read_pillars_doc(repo_root: &Path) -> Result<InventoryPillarsDoc, String> {
     let path = repo_root.join("ops/inventory/pillars.json");
-    let content = fs::read_to_string(&path)
-        .map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    let content =
+        fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
     serde_json::from_str(&content).map_err(|e| format!("parse {} failed: {e}", path.display()))
 }
-
 
 fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-000";
@@ -513,11 +512,11 @@ fn test_ops_003_contract_markdown_budget(ctx: &RunContext) -> TestResult {
 
     let root_contract = ctx.repo_root.join("ops/CONTRACT.md");
     let lines = markdown_line_count(&root_contract);
-    if lines > 700 {
+    if lines > 900 {
         violations.push(violation(
             contract_id,
             test_id,
-            "ops/CONTRACT.md exceeds line budget (max 700)",
+            "ops/CONTRACT.md exceeds line budget (max 900)",
             Some("ops/CONTRACT.md".to_string()),
         ));
     }

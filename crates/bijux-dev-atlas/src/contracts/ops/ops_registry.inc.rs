@@ -765,6 +765,66 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-RPT-005".to_string()),
+            title: "report readiness score determinism contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.readiness_score_deterministic".to_string()),
+                title: "readiness score report is schema-versioned and uses canonical input keys",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_005_readiness_score_deterministic,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-006".to_string()),
+            title: "report release evidence bundle contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.release_evidence_bundle_schema_valid".to_string()),
+                title: "release evidence bundle is parseable and references existing artifacts",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_006_release_evidence_bundle_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-007".to_string()),
+            title: "report historical comparison contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.historical_comparison_schema_valid".to_string()),
+                title: "historical comparison report includes schema and readiness trend fields",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_007_historical_comparison_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-008".to_string()),
+            title: "report unified example contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.unified_report_example_schema_valid".to_string()),
+                title: "unified report example includes required schema and summary sections",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_008_unified_report_example_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-009".to_string()),
+            title: "report canonical json output contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.outputs_canonical_json".to_string()),
+                title: "report outputs are canonical pretty json with deterministic key ordering",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_009_report_outputs_canonical_json,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-010".to_string()),
+            title: "report lane aggregation contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.lane_reports_aggregated_in_unified_report".to_string()),
+                title: "unified report summary totals are derived from lane report statuses",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_010_lane_reports_aggregated_in_unified_report,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-STACK-001".to_string()),
             title: "stack toml profile contract",
             tests: vec![TestCase {
@@ -1069,6 +1129,12 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-RPT-002" => "Ensures generated report payloads are parseable and include schema_version.",
         "OPS-RPT-003" => "Ensures report evidence levels include minimal standard and forensic tiers.",
         "OPS-RPT-004" => "Ensures generated report diff includes base target and change structure.",
+        "OPS-RPT-005" => "Ensures readiness score report is deterministic and keyed by canonical input sources.",
+        "OPS-RPT-006" => "Ensures release evidence bundle is parseable and references existing report artifacts.",
+        "OPS-RPT-007" => "Ensures historical comparison report includes required trend and readiness signals.",
+        "OPS-RPT-008" => "Ensures unified report example contains required schema, lane, summary, and budget sections.",
+        "OPS-RPT-009" => "Ensures report outputs use canonical pretty JSON formatting and deterministic key ordering.",
+        "OPS-RPT-010" => "Ensures unified report summary is an aggregate of emitted per-lane statuses.",
         "OPS-STACK-001" => "Ensures stack.toml parses and defines canonical execution profiles.",
         "OPS-STACK-002" => "Ensures service dependency contract entries are structurally valid.",
         "OPS-STACK-003" => "Ensures stack version manifest is parseable and digest pinned.",
