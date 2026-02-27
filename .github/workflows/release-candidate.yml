@@ -102,6 +102,15 @@ jobs:
           printf -- "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- release check: %s\n- ops readiness: %s\n- input version: %s\n" \
             "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${report_root}/release-check.json" "${report_root}/ops-readiness.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Generate report checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          sha256sum "${report_root}/release-candidate.json" > "${report_root}/release-candidate.sha256"
+          sha256sum "${report_root}/docs-completeness.json" > "${report_root}/docs-completeness.sha256"
+          sha256sum "${report_root}/release-check.json" > "${report_root}/release-check.sha256"
+          sha256sum "${report_root}/ops-readiness.json" > "${report_root}/ops-readiness.sha256"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
