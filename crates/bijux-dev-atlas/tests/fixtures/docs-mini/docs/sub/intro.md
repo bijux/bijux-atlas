@@ -1,3 +1,3 @@
 # Intro
 
-Return to [Home](../index.md#home).
+Return to [Start Here](../START_HERE.md#start-here).
