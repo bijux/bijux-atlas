@@ -75,7 +75,7 @@ fn runtime_dockerfile_copy_paths_exist() {
 fn runtime_dockerfile_base_images_follow_digest_policy() {
     let root = workspace_root();
     let dockerfile = root.join("docker/images/runtime/Dockerfile");
-    let policy_path = root.join("docker/contracts/digest-pinning.json");
+    let policy_path = root.join("docker/policy.json");
     let docker_text = fs::read_to_string(&dockerfile).expect("read dockerfile");
     let policy_text = fs::read_to_string(&policy_path).expect("read digest policy");
     let policy: serde_json::Value = serde_json::from_str(&policy_text).expect("policy json");
@@ -125,44 +125,26 @@ fn runtime_dockerfile_base_images_follow_digest_policy() {
 }
 
 #[test]
-fn docker_build_network_policy_is_documented() {
-    let root = workspace_root();
-    let policy_path = root.join("docker/contracts/BUILD_NETWORK_POLICY.md");
-    let text = fs::read_to_string(&policy_path).expect("read docker build network policy");
-    assert!(
-        text.contains("docker/images/runtime/Dockerfile"),
-        "build network policy must scope runtime Dockerfile exceptions"
-    );
-    assert!(
-        text.contains("cargo build --locked"),
-        "build network policy must document cargo lockfile-constrained exception"
-    );
-}
-
-#[test]
 fn runtime_dockerfile_has_no_unapproved_network_build_steps() {
     let root = workspace_root();
     let dockerfile = root.join("docker/images/runtime/Dockerfile");
     let text = fs::read_to_string(&dockerfile).expect("read dockerfile");
-    let disallowed = [
-        "curl ",
-        "wget ",
-        "git clone",
-        "pip ",
-        "npm ",
-        "go get",
-        "apk add",
-        "dnf ",
-        "yum ",
-        "cargo install",
-    ];
+    let policy_path = root.join("docker/policy.json");
+    let policy_text = fs::read_to_string(&policy_path).expect("read docker policy");
+    let policy: serde_json::Value = serde_json::from_str(&policy_text).expect("policy json");
+    let disallowed = policy["build_network_policy"]["forbidden_tokens"]
+        .as_array()
+        .expect("forbidden_tokens")
+        .iter()
+        .filter_map(|v| v.as_str())
+        .collect::<Vec<_>>();
     let mut violations = Vec::new();
     for (idx, raw) in text.lines().enumerate() {
         let line = raw.trim();
         if !line.starts_with("RUN ") {
             continue;
         }
-        for token in disallowed {
+        for token in &disallowed {
             if line.contains(token) {
                 violations.push(format!(
                     "{}:{} uses disallowed networked build token `{}` in `{}`",

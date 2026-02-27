@@ -214,42 +214,11 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         )
     }
 
-    fn run_instruction_has_unapproved_network_usage(line: &str) -> bool {
-        let trimmed = line.trim();
-        if !trimmed.starts_with("RUN ") {
-            return false;
-        }
-        let allowed = [
-            "apt-get update",
-            "apt-get install",
-            "rm -rf /var/lib/apt/lists/*",
-            "cargo build --locked",
-            "--mount=type=cache",
-        ];
-        if allowed.iter().any(|token| trimmed.contains(token)) {
-            return false;
-        }
-        let disallowed = [
-            "curl ",
-            "wget ",
-            "git clone",
-            "pip ",
-            "npm ",
-            "go get",
-            "apk add",
-            "dnf ",
-            "yum ",
-            "apt ",
-            "cargo install",
-        ];
-        disallowed.iter().any(|token| trimmed.contains(token))
-    }
-
     fn validate_runtime_dockerfile(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
         let dockerfile = repo_root.join("docker/images/runtime/Dockerfile");
         let text = fs::read_to_string(&dockerfile)
             .map_err(|e| format!("failed to read {}: {e}", dockerfile.display()))?;
-        let policy_path = repo_root.join("docker/contracts/digest-pinning.json");
+        let policy_path = repo_root.join("docker/policy.json");
         let policy_text = fs::read_to_string(&policy_path)
             .map_err(|e| format!("failed to read {}: {e}", policy_path.display()))?;
         let policy: serde_json::Value = serde_json::from_str(&policy_text)
@@ -259,6 +228,20 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             .ok_or_else(|| "digest pinning policy missing allowlist array".to_string())?
             .iter()
             .filter_map(|v| v.as_str())
+            .collect::<Vec<_>>();
+        let allowed_network_tokens = policy["build_network_policy"]["allowed_tokens"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect::<Vec<_>>();
+        let forbidden_network_tokens = policy["build_network_policy"]["forbidden_tokens"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
             .collect::<Vec<_>>();
 
         let mut rows = Vec::new();
@@ -280,7 +263,14 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 }
             }
             let trimmed = line.trim();
-            if run_instruction_has_unapproved_network_usage(trimmed) {
+            if trimmed.starts_with("RUN ")
+                && !allowed_network_tokens
+                    .iter()
+                    .any(|token| trimmed.contains(token))
+                && forbidden_network_tokens
+                    .iter()
+                    .any(|token| trimmed.contains(token))
+            {
                 violations += 1;
                 rows.push(serde_json::json!({
                     "kind":"build_network_policy_violation",

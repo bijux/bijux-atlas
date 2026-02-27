@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "forbid_latest": true,
+  "require_digest_pins": true,
+  "allow_tagged_images_exceptions": [],
+  "allowed_runtime_images": [
+    "gcr.io/distroless/cc-debian12:nonroot@sha256:7e5b8df2f4d36f5599ef4ab856d7d444922531709becb03f3368c6d797d0a5eb"
+  ],
+  "allowed_builder_images": [
+    "rust:1.84.1-bookworm@sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88"
+  ],
+  "required_oci_labels": [
+    "org.opencontainers.image.source",
+    "org.opencontainers.image.version",
+    "org.opencontainers.image.revision",
+    "org.opencontainers.image.created",
+    "org.opencontainers.image.ref.name"
+  ],
+  "runtime_image_max_bytes": 450000000,
+  "sbom": {
+    "required_for_release": true,
+    "formats": [
+      "spdx-json",
+      "cyclonedx-json"
+    ]
+  },
+  "build_network_policy": {
+    "allowed_tokens": [
+      "apt-get update",
+      "apt-get install",
+      "rm -rf /var/lib/apt/lists/*",
+      "cargo build --locked",
+      "--mount=type=cache"
+    ],
+    "forbidden_tokens": [
+      "curl ",
+      "wget ",
+      "git clone",
+      "pip ",
+      "npm ",
+      "go get",
+      "apk add",
+      "dnf ",
+      "yum ",
+      "apt ",
+      "cargo install"
+    ]
+  }
+}
