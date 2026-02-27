@@ -207,7 +207,8 @@ fn force_json_docs(command: &mut DocsCommand) {
         | DocsCommand::Clean(common)
         | DocsCommand::Lint(common)
         | DocsCommand::Links(common)
-        | DocsCommand::Inventory(common) => common.format = FormatArg::Json,
+        | DocsCommand::Inventory(common)
+        | DocsCommand::ShrinkReport(common) => common.format = FormatArg::Json,
         DocsCommand::Serve(args) => args.common.format = FormatArg::Json,
         DocsCommand::Grep(args) => args.common.format = FormatArg::Json,
         DocsCommand::Registry { command } => match command {
@@ -277,6 +278,7 @@ fn apply_fail_fast(command: &mut Command) {
             | DocsCommand::Serve(_)
             | DocsCommand::Clean(_)
             | DocsCommand::Inventory(_)
+            | DocsCommand::ShrinkReport(_)
             | DocsCommand::Grep(_) => {}
             DocsCommand::Registry { command } => match command {
                 crate::cli::DocsRegistryCommand::Build(_)
@@ -505,7 +507,8 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             | DocsCommand::Clean(common)
             | DocsCommand::Lint(common)
             | DocsCommand::Links(common)
-            | DocsCommand::Inventory(common) => common.repo_root = Some(root.clone()),
+            | DocsCommand::Inventory(common)
+            | DocsCommand::ShrinkReport(common) => common.repo_root = Some(root.clone()),
             DocsCommand::Serve(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Grep(args) => args.common.repo_root = Some(root.clone()),
             DocsCommand::Registry { command } => match command {

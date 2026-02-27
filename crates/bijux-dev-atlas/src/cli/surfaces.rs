@@ -33,6 +33,7 @@ pub enum DocsCommand {
     Lint(DocsCommonArgs),
     Links(DocsCommonArgs),
     Inventory(DocsCommonArgs),
+    ShrinkReport(DocsCommonArgs),
     Grep(DocsGrepArgs),
     Reference {
         #[command(subcommand)]

@@ -74,6 +74,29 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
+            DocsCommand::ShrinkReport(common) => {
+                let ctx = docs_context(&common)?;
+                let mut payload = docs_shrink_report_payload(&ctx, &common)?;
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                if common.allow_write {
+                    let report_path = ctx
+                        .repo_root
+                        .join("ops/_generated.example/docs-shrink-report.json");
+                    if let Some(parent) = report_path.parent() {
+                        fs::create_dir_all(parent).map_err(|e| {
+                            format!("failed to create {}: {e}", parent.display())
+                        })?;
+                    }
+                    fs::write(
+                        &report_path,
+                        serde_json::to_string_pretty(&payload)
+                            .map_err(|e| format!("encode docs shrink report failed: {e}"))?,
+                    )
+                    .map_err(|e| format!("write {} failed: {e}", report_path.display()))?;
+                }
+                let code = if payload["status"] == "pass" { 0 } else { 1 };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
             DocsCommand::Reference { command } => match command {
                 crate::cli::DocsReferenceCommand::Generate(common) => {
                     let ctx = docs_context(&common)?;
@@ -658,4 +681,47 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
             1
         }
     }
+}
+
+fn docs_shrink_report_payload(
+    ctx: &DocsContext,
+    common: &DocsCommonArgs,
+) -> Result<serde_json::Value, String> {
+    let inventory = docs_inventory_payload(ctx, common)?;
+    let mut counts = BTreeMap::<String, usize>::new();
+    for row in inventory["rows"].as_array().into_iter().flatten() {
+        if let Some(path) = row["path"].as_str() {
+            let p = std::path::Path::new(path);
+            if p.components().next().and_then(|c| c.as_os_str().to_str()) == Some("docs") {
+                let mut it = p.components();
+                let _ = it.next();
+                if let Some(dir) = it.next().and_then(|c| c.as_os_str().to_str()) {
+                    if dir != "_generated" && dir != "_drafts" {
+                        *counts.entry(dir.to_string()).or_insert(0) += 1;
+                    }
+                }
+            }
+        }
+    }
+    let mut top_directories = counts
+        .iter()
+        .map(|(dir, count)| serde_json::json!({"directory": dir, "markdown_count": count}))
+        .collect::<Vec<_>>();
+    top_directories.sort_by(|a, b| {
+        b["markdown_count"]
+            .as_u64()
+            .cmp(&a["markdown_count"].as_u64())
+            .then(a["directory"].as_str().cmp(&b["directory"].as_str()))
+    });
+    let max_md_per_dir = counts.values().copied().max().unwrap_or(0);
+    let status = if max_md_per_dir > 40 { "fail" } else { "pass" };
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "status": status,
+        "max_md_per_dir": max_md_per_dir,
+        "top_directories": top_directories,
+        "budget": { "max_md_per_dir": 40 },
+        "text": if status == "pass" { "docs shrink report passed" } else { "docs shrink report failed" }
+    }))
 }
