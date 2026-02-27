@@ -420,6 +420,106 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_ops_obs_002_dashboard_json_parseable_golden_diff,
             }],
         },
+        Contract {
+            id: ContractId("OPS-OBS-003".to_string()),
+            title: "observability telemetry golden profile contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.telemetry_goldens_required_profiles".to_string()),
+                title: "telemetry goldens exist for required profiles and are indexed",
+                kind: TestKind::Pure,
+                run: test_ops_obs_003_telemetry_goldens_required_profiles,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-OBS-004".to_string()),
+            title: "observability readiness schema contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.readiness_schema_valid".to_string()),
+                title: "readiness contract is parseable and uses canonical requirement set",
+                kind: TestKind::Pure,
+                run: test_ops_obs_004_readiness_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-001".to_string()),
+            title: "report schema ssot contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.schema_is_ssot".to_string()),
+                title: "report schema is parseable and mirrored under ops/schema/report",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_001_report_schema_ssot,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-002".to_string()),
+            title: "report generated payload contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.generated_reports_schema_valid".to_string()),
+                title: "generated report payloads are parseable and include schema_version",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_002_generated_reports_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-003".to_string()),
+            title: "report evidence levels contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.evidence_levels_complete".to_string()),
+                title: "evidence levels include minimal standard and forensic",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_003_evidence_levels_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-RPT-004".to_string()),
+            title: "report diff structure contract",
+            tests: vec![TestCase {
+                id: TestId("ops.report.diff_contract_exists".to_string()),
+                title: "generated report diff includes base target and change set",
+                kind: TestKind::Pure,
+                run: test_ops_rpt_004_report_diff_contract_exists,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-001".to_string()),
+            title: "stack toml profile contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.stack_toml_parseable_complete".to_string()),
+                title: "stack.toml parses and includes canonical ci kind local profiles",
+                kind: TestKind::Pure,
+                run: test_ops_stack_001_stack_toml_parseable_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-002".to_string()),
+            title: "stack service dependency contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.service_dependency_contract_valid".to_string()),
+                title: "service dependency contract entries are parseable and resolve to files",
+                kind: TestKind::Pure,
+                run: test_ops_stack_002_service_dependency_contract_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-003".to_string()),
+            title: "stack version manifest contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.versions_manifest_schema_valid".to_string()),
+                title: "version manifest is parseable and image refs are digest pinned",
+                kind: TestKind::Pure,
+                run: test_ops_stack_003_versions_manifest_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-STACK-004".to_string()),
+            title: "stack dependency graph contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.dependency_graph_generated_acyclic".to_string()),
+                title: "dependency graph is parseable and references real cluster/components",
+                kind: TestKind::Pure,
+                run: test_ops_stack_004_dependency_graph_generated_acyclic,
+            }],
+        },
     ])
 }
 
@@ -462,6 +562,16 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-LOAD-005" => "Ensures smoke/pr load suites are covered by inventory SLO mappings.",
         "OPS-OBS-001" => "Ensures observability alert rules exist and are parseable.",
         "OPS-OBS-002" => "Ensures observability dashboard json aligns with committed golden identity.",
+        "OPS-OBS-003" => "Ensures telemetry goldens for required profiles exist and are indexed.",
+        "OPS-OBS-004" => "Ensures readiness contract is parseable and contains canonical requirements.",
+        "OPS-RPT-001" => "Ensures report schema is the SSOT and mirrored under ops/schema/report.",
+        "OPS-RPT-002" => "Ensures generated report payloads are parseable and include schema_version.",
+        "OPS-RPT-003" => "Ensures report evidence levels include minimal standard and forensic tiers.",
+        "OPS-RPT-004" => "Ensures generated report diff includes base target and change structure.",
+        "OPS-STACK-001" => "Ensures stack.toml parses and defines canonical execution profiles.",
+        "OPS-STACK-002" => "Ensures service dependency contract entries are structurally valid.",
+        "OPS-STACK-003" => "Ensures stack version manifest is parseable and digest pinned.",
+        "OPS-STACK-004" => "Ensures stack dependency graph references real assets and consistent profile links.",
         _ => "No explanation registered for this contract id.",
     }
 }
