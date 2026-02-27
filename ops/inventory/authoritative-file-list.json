@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
   "authoritative_paths": [
-    "ops/ARTIFACTS.md",
+    "ops/README.md",
+    "ops/CONTRACT.md",
     "ops/inventory/contracts-map.json",
     "ops/inventory/authority-index.json",
     "ops/inventory/authoritative-file-list.json",
@@ -18,7 +19,12 @@
     "ops/inventory/pin-freeze.json",
     "ops/inventory/registry.toml",
     "ops/inventory/toolchain.json",
-    "ops/inventory/tools.toml"
+    "ops/inventory/tools.toml",
+    "ops/datasets/fixture-policy.json",
+    "ops/datasets/rollback-policy.json",
+    "ops/e2e/reproducibility-policy.json",
+    "ops/inventory/policies/dev-atlas-policy.json",
+    "ops/load/contracts/deterministic-seed-policy.json"
   ],
   "derived_paths": [
     "ops/inventory/contracts.json"
