@@ -258,20 +258,64 @@ fn contracts_ops_effect_mode_requires_explicit_allow_flags() {
         .expect("contracts ops effect mode");
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
-    assert!(stderr.contains("effect mode requires both --allow-subprocess and --allow-network"));
+    assert!(stderr.contains("effect mode requires"));
+    assert!(stderr.contains("--allow-subprocess"));
+    assert!(stderr.contains("--allow-network"));
 }
 
 #[test]
-fn contracts_ops_ci_requires_artifacts_root() {
+fn contracts_ops_ci_uses_default_artifacts_root() {
+    let out = repo_root().join("artifacts/contracts/ops/static/local/ops.json");
+    let inventory = repo_root().join("artifacts/contracts/ops/static/local/ops.inventory.json");
+    let maturity = repo_root().join("artifacts/contracts/ops/static/local/ops.maturity.json");
+    if out.exists() {
+        fs::remove_file(&out).expect("remove prior report");
+    }
+    if inventory.exists() {
+        fs::remove_file(&inventory).expect("remove prior inventory");
+    }
+    if maturity.exists() {
+        fs::remove_file(&maturity).expect("remove prior maturity");
+    }
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .env("CI", "true")
         .args(["contracts", "ops", "--format", "json"])
         .output()
         .expect("contracts ops ci");
+    assert!(output.status.success());
+    let written = fs::read_to_string(out).expect("read generated default report");
+    let payload: serde_json::Value = serde_json::from_str(&written).expect("json file");
+    assert_eq!(payload["domain"].as_str(), Some("ops"));
+    let inventory_payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(inventory).expect("inventory file"))
+            .expect("inventory json");
+    assert_eq!(inventory_payload["domain"].as_str(), Some("ops"));
+    let maturity_payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(maturity).expect("maturity file"))
+            .expect("maturity json");
+    assert_eq!(maturity_payload["domain"].as_str(), Some("ops"));
+    assert!(maturity_payload["maturity"].is_object());
+}
+
+#[test]
+fn contracts_docker_effect_requires_only_selected_effect_flags() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "docker",
+            "--mode",
+            "effect",
+            "--filter-contract",
+            "DOCKER-100",
+        ])
+        .output()
+        .expect("contracts docker effect mode");
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
-    assert!(stderr.contains("CI contracts runs require --artifacts-root"));
+    assert!(stderr.contains("--allow-subprocess"));
+    assert!(!stderr.contains("--allow-network"));
 }
 
 #[test]
