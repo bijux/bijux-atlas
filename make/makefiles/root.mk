@@ -6,6 +6,7 @@ ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 
 include make/makefiles/_cargo.mk
+include make/makefiles/_macro.mk
 include make/makefiles/_configs.mk
 include make/makefiles/_docs.mk
 include make/makefiles/docker.mk
