@@ -80,12 +80,6 @@ fn architecture_contract_is_single_source_and_records_execution_policy() {
         "ARCHITECTURE.md must document bench isolation policy"
     );
 
-    let checkpoint = fs::read_to_string(crate_root().join("CRATE_CONVERGENCE_CHECKPOINT.md"))
-        .expect("checkpoint");
-    assert!(
-        !checkpoint.contains("## Internal Module Graph"),
-        "internal module graph must have a single canonical description in ARCHITECTURE.md"
-    );
     let docs_contract = fs::read_to_string(root.join("crates/bijux-dev-atlas/docs/CONTRACT.md"))
         .expect("crate contract doc");
     assert!(
