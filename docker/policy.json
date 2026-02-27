@@ -3,6 +3,12 @@
   "forbid_latest": true,
   "require_digest_pins": true,
   "allow_tagged_images_exceptions": [],
+  "required_image_directories": [
+    "runtime"
+  ],
+  "allowed_image_directories": [
+    "runtime"
+  ],
   "allowed_runtime_images": [
     "gcr.io/distroless/cc-debian12:nonroot@sha256:7e5b8df2f4d36f5599ef4ab856d7d444922531709becb03f3368c6d797d0a5eb"
   ],

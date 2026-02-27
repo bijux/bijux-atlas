@@ -980,6 +980,113 @@ fn test_copy_no_parent_traversal(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn image_directories_with_dockerfile(repo_root: &Path) -> Result<BTreeSet<String>, String> {
+    let images_root = repo_root.join("docker/images");
+    let mut out = BTreeSet::new();
+    if !images_root.exists() {
+        return Ok(out);
+    }
+    let entries = std::fs::read_dir(&images_root)
+        .map_err(|e| format!("read_dir {} failed: {e}", images_root.display()))?;
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("read docker/images entry failed: {e}"))?;
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+        let dockerfile = path.join("Dockerfile");
+        if dockerfile.exists() {
+            out.insert(
+                path.file_name()
+                    .and_then(|name| name.to_str())
+                    .unwrap_or_default()
+                    .to_string(),
+            );
+        }
+    }
+    Ok(out)
+}
+
+fn required_image_directories(policy: &Value) -> BTreeSet<String> {
+    policy["required_image_directories"]
+        .as_array()
+        .cloned()
+        .unwrap_or_else(|| vec![Value::String("runtime".to_string())])
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect()
+}
+
+fn allowed_image_directories(policy: &Value) -> BTreeSet<String> {
+    policy["allowed_image_directories"]
+        .as_array()
+        .cloned()
+        .unwrap_or_else(|| vec![Value::String("runtime".to_string())])
+        .into_iter()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect()
+}
+
+fn test_required_images_exist(ctx: &RunContext) -> TestResult {
+    let dctx = match load_ctx(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let required = required_image_directories(&dctx.policy);
+    let discovered = match image_directories_with_dockerfile(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for image in required {
+        if !discovered.contains(&image) {
+            violations.push(violation(
+                "DOCKER-012",
+                "docker.images.required_exist",
+                Some("docker/images".to_string()),
+                Some(1),
+                "required docker image directory is missing a Dockerfile",
+                Some(image),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_forbidden_extra_images(ctx: &RunContext) -> TestResult {
+    let dctx = match load_ctx(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let allowed = allowed_image_directories(&dctx.policy);
+    let discovered = match image_directories_with_dockerfile(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for image in discovered {
+        if !allowed.contains(&image) {
+            violations.push(violation(
+                "DOCKER-013",
+                "docker.images.forbidden_extra",
+                Some(format!("docker/images/{image}/Dockerfile")),
+                Some(1),
+                "docker image directory is not allowlisted",
+                Some(image),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_effect_build_runtime_image(ctx: &RunContext) -> TestResult {
     let image = image_tag();
     let dockerfile = "docker/images/runtime/Dockerfile";
@@ -1339,6 +1446,26 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             ],
         },
         Contract {
+            id: ContractId("DOCKER-012".to_string()),
+            title: "required images exist",
+            tests: vec![TestCase {
+                id: TestId("docker.images.required_exist".to_string()),
+                title: "required image directories include Dockerfile",
+                kind: TestKind::Pure,
+                run: test_required_images_exist,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-013".to_string()),
+            title: "forbidden extra images",
+            tests: vec![TestCase {
+                id: TestId("docker.images.forbidden_extra".to_string()),
+                title: "docker image directories are allowlisted",
+                kind: TestKind::Pure,
+                run: test_forbidden_extra_images,
+            }],
+        },
+        Contract {
             id: ContractId("DOCKER-100".to_string()),
             title: "build succeeds",
             tests: vec![TestCase {
@@ -1634,5 +1761,108 @@ mod tests {
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 0, "uppercase label keys should pass");
+    }
+
+    #[test]
+    fn required_image_contract_fails_when_runtime_missing() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        std::fs::create_dir_all(tmp.path().join("docker/images/dev")).expect("mkdir image");
+        std::fs::write(
+            tmp.path().join("docker/images/dev/Dockerfile"),
+            "FROM scratch\n",
+        )
+        .expect("write dockerfile");
+        std::fs::write(tmp.path().join("docker/README.md"), "# docker\n").expect("write readme");
+        std::fs::write(
+            tmp.path().join("docker/policy.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "required_image_directories": ["runtime"],
+                "allowed_image_directories": ["runtime", "dev"],
+                "allow_tagged_images_exceptions": [],
+                "required_oci_labels": [
+                    "org.opencontainers.image.source",
+                    "org.opencontainers.image.version",
+                    "org.opencontainers.image.revision",
+                    "org.opencontainers.image.created",
+                    "org.opencontainers.image.ref.name"
+                ]
+            })
+            .to_string(),
+        )
+        .expect("write policy");
+        sync_contract_markdown(tmp.path()).expect("sync contract");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &crate::contracts::RunOptions {
+                mode: crate::contracts::Mode::Static,
+                allow_subprocess: false,
+                allow_network: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
+                fail_fast: false,
+                contract_filter: Some("DOCKER-012".to_string()),
+                test_filter: None,
+                list_only: false,
+                artifacts_root: None,
+            },
+        )
+        .expect("run");
+        assert!(report.fail_count() > 0, "expected missing runtime violation");
+    }
+
+    #[test]
+    fn forbidden_extra_images_contract_detects_unallowlisted_directory() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"x\"\nLABEL org.opencontainers.image.ref.name=\"x\"\n",
+        );
+        std::fs::create_dir_all(tmp.path().join("docker/images/extra")).expect("mkdir extra image");
+        std::fs::write(
+            tmp.path().join("docker/images/extra/Dockerfile"),
+            "FROM scratch\n",
+        )
+        .expect("write extra dockerfile");
+        std::fs::write(
+            tmp.path().join("docker/policy.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "required_image_directories": ["runtime"],
+                "allowed_image_directories": ["runtime"],
+                "allow_tagged_images_exceptions": [],
+                "required_oci_labels": [
+                    "org.opencontainers.image.source",
+                    "org.opencontainers.image.version",
+                    "org.opencontainers.image.revision",
+                    "org.opencontainers.image.created",
+                    "org.opencontainers.image.ref.name"
+                ]
+            })
+            .to_string(),
+        )
+        .expect("overwrite policy");
+        sync_contract_markdown(tmp.path()).expect("sync contract");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &crate::contracts::RunOptions {
+                mode: crate::contracts::Mode::Static,
+                allow_subprocess: false,
+                allow_network: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
+                fail_fast: false,
+                contract_filter: Some("DOCKER-013".to_string()),
+                test_filter: None,
+                list_only: false,
+                artifacts_root: None,
+            },
+        )
+        .expect("run");
+        assert!(report.fail_count() > 0, "expected forbidden extra image violation");
     }
 }

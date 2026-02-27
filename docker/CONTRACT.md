@@ -62,6 +62,16 @@ Tests:
 - `docker.copy.no_absolute_sources` (static, Pure): COPY absolute sources are forbidden
 - `docker.copy.no_parent_traversal` (static, Pure): COPY sources must not use parent traversal
 
+### DOCKER-012 required images exist
+
+Tests:
+- `docker.images.required_exist` (static, Pure): required image directories include Dockerfile
+
+### DOCKER-013 forbidden extra images
+
+Tests:
+- `docker.images.forbidden_extra` (static, Pure): docker image directories are allowlisted
+
 ### DOCKER-100 build succeeds
 
 Tests:
