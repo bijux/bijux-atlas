@@ -464,6 +464,56 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-E2E-005".to_string()),
+            title: "e2e taxonomy coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.taxonomy_covers_scenarios".to_string()),
+                title: "taxonomy categories cover canonical scenario classification",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_005_taxonomy_covers_scenarios,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-006".to_string()),
+            title: "e2e reproducibility enforcement contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.reproducibility_policy_enforced".to_string()),
+                title: "reproducibility policy checks and deterministic summary ordering are enforced",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_006_reproducibility_policy_enforced,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-007".to_string()),
+            title: "e2e coverage matrix determinism contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.coverage_matrix_deterministic".to_string()),
+                title: "coverage matrix rows and coverage sets are complete and deterministic",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_007_coverage_matrix_deterministic,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-008".to_string()),
+            title: "e2e realdata scenario registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.realdata_registry_and_snapshots_valid".to_string()),
+                title: "realdata scenarios and snapshots are structurally valid and runnable",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_008_realdata_registry_and_snapshots_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-009".to_string()),
+            title: "e2e surface artifact boundary contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.no_stray_e2e_artifacts".to_string()),
+                title: "e2e root contains only declared artifact directories and files",
+                kind: TestKind::Pure,
+                run: test_ops_e2e_009_no_stray_e2e_artifacts,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-ENV-001".to_string()),
             title: "environment overlay schema contract",
             tests: vec![TestCase {
@@ -900,6 +950,11 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-E2E-002" => "Ensures smoke manifest structure and lock references are valid.",
         "OPS-E2E-003" => "Ensures fixture lock digest and allowlist file policy remain consistent.",
         "OPS-E2E-004" => "Ensures realdata snapshots are parseable and pinned to canonical queries.",
+        "OPS-E2E-005" => "Ensures taxonomy categories classify each declared e2e scenario.",
+        "OPS-E2E-006" => "Ensures reproducibility policy and deterministic e2e summary ordering are enforced.",
+        "OPS-E2E-007" => "Ensures coverage matrix rows and coverage sets are deterministic and complete.",
+        "OPS-E2E-008" => "Ensures realdata scenarios and snapshots are structurally valid and runnable.",
+        "OPS-E2E-009" => "Ensures e2e directory surface is restricted to declared artifacts only.",
         "OPS-ENV-001" => "Ensures required environment overlays satisfy structural schema rules.",
         "OPS-ENV-002" => "Ensures base/ci/dev/prod overlay coverage and profile identity consistency.",
         "OPS-ENV-003" => "Enforces strict known-key policy for environment overlay payloads.",
