@@ -603,6 +603,41 @@ fn test_ops_e2e_002_smoke_manifest_valid(ctx: &RunContext) -> TestResult {
             "smoke manifest queries_lock must reference existing file",
             Some(manifest_rel.to_string()),
         ));
+    } else if let Ok(contents) = fs::read_to_string(ctx.repo_root.join(queries_lock)) {
+        let entries = contents
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .map(ToOwned::to_owned)
+            .collect::<Vec<_>>();
+        if entries.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "smoke manifest queries_lock must contain at least one query",
+                Some(queries_lock.to_string()),
+            ));
+        } else {
+            let unique = entries.iter().cloned().collect::<BTreeSet<_>>();
+            if unique.len() != entries.len() {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "smoke manifest queries_lock entries must be unique",
+                    Some(queries_lock.to_string()),
+                ));
+            }
+            let mut sorted = entries.clone();
+            sorted.sort();
+            if entries != sorted {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "smoke manifest queries_lock entries must stay lexicographically sorted",
+                    Some(queries_lock.to_string()),
+                ));
+            }
+        }
     }
     if manifest
         .get("steps")
@@ -1280,6 +1315,7 @@ fn test_ops_e2e_010_summary_schema_valid(ctx: &RunContext) -> TestResult {
     let summary_rel = "ops/e2e/generated/e2e-summary.json";
     let suites_rel = "ops/e2e/suites/suites.json";
     let scenarios_rel = "ops/e2e/scenarios/scenarios.json";
+    let expectations_rel = "ops/e2e/expectations/expectations.json";
     let Some(summary) = read_json(&ctx.repo_root.join(summary_rel)) else {
         return TestResult::Fail(vec![violation(
             contract_id,
@@ -1302,6 +1338,14 @@ fn test_ops_e2e_010_summary_schema_valid(ctx: &RunContext) -> TestResult {
             test_id,
             "e2e scenarios registry must be valid json",
             Some(scenarios_rel.to_string()),
+        )]);
+    };
+    let Some(expectations) = read_json(&ctx.repo_root.join(expectations_rel)) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "e2e expectations registry must be valid json",
+            Some(expectations_rel.to_string()),
         )]);
     };
     let mut violations = Vec::new();
@@ -1399,6 +1443,25 @@ fn test_ops_e2e_010_summary_schema_valid(ctx: &RunContext) -> TestResult {
             test_id,
             "e2e summary scenario_ids must match scenarios registry",
             Some(summary_rel.to_string()),
+        ));
+    }
+    let expectation_ids: BTreeSet<String> = expectations
+        .get("expectations")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|v| {
+            v.get("scenario_id")
+                .and_then(|id| id.as_str())
+                .map(|s| s.to_string())
+        })
+        .collect();
+    if expectation_ids != scenarios_declared {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "e2e expectations must cover every declared public scenario exactly once",
+            Some(expectations_rel.to_string()),
         ));
     }
     if violations.is_empty() {
