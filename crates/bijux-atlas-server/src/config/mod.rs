@@ -246,6 +246,37 @@ Validation: all resolved fields are required and must be non-empty.\n",
     )
 }
 
+pub fn effective_config_payload(
+    startup: &RuntimeStartupConfig,
+    api: &ApiConfig,
+    cache: &crate::DatasetCacheConfig,
+) -> Result<serde_json::Value, String> {
+    let mut api_json =
+        serde_json::to_value(api).map_err(|err| format!("serialize api config: {err}"))?;
+    if let Some(obj) = api_json.as_object_mut() {
+        if obj.contains_key("redis_url") {
+            obj.insert("redis_url".to_string(), serde_json::json!("<redacted>"));
+        }
+        if obj.contains_key("allowed_api_keys") {
+            obj.insert("allowed_api_keys".to_string(), serde_json::json!(["<redacted>"]));
+        }
+        if obj.contains_key("hmac_secret") {
+            obj.insert("hmac_secret".to_string(), serde_json::json!("<redacted>"));
+        }
+    }
+    let startup_json = serde_json::to_value(startup)
+        .map_err(|err| format!("serialize startup config: {err}"))?;
+    let cache_json =
+        serde_json::to_value(cache).map_err(|err| format!("serialize cache config: {err}"))?;
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "atlas_server_effective_config_v1",
+        "startup": startup_json,
+        "api": api_json,
+        "cache": cache_json
+    }))
+}
+
 fn resolve_runtime_startup_config(
     file_cfg: RuntimeStartupConfigFile,
     cli_bind_addr: Option<&str>,
@@ -442,6 +473,32 @@ mod tests {
         assert_eq!(
             generated_docs, expected_docs,
             "runtime startup config docs drift; regenerate docs/generated/runtime-startup-config.md"
+        );
+    }
+
+    #[test]
+    fn effective_config_snapshot_matches_generated() {
+        let startup = RuntimeStartupConfig {
+            bind_addr: DEFAULT_BIND_ADDR.to_string(),
+            store_root: PathBuf::from(DEFAULT_STORE_ROOT),
+            cache_root: PathBuf::from(DEFAULT_CACHE_ROOT),
+        };
+        let payload = effective_config_payload(
+            &startup,
+            &ApiConfig::default(),
+            &crate::DatasetCacheConfig::default(),
+        )
+        .expect("effective config payload");
+
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let snapshot_path = root.join("docs/generated/effective-config.snapshot.json");
+        let expected: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(&snapshot_path).expect("read effective config snapshot"),
+        )
+        .expect("parse effective config snapshot");
+        assert_eq!(
+            payload, expected,
+            "effective config snapshot drift; regenerate docs/generated/effective-config.snapshot.json"
         );
     }
 }

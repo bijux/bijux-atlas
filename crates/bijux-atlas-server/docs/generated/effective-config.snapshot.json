@@ -1,0 +1,162 @@
+{
+  "api": {
+    "adaptive_heavy_limit_factor": 0.5,
+    "adaptive_rate_limit_factor": 0.5,
+    "allow_min_viable_response": true,
+    "allowed_api_keys": [
+      "<redacted>"
+    ],
+    "compression_min_bytes": 4096,
+    "concurrency_cheap": 128,
+    "concurrency_heavy": 16,
+    "concurrency_medium": 64,
+    "continue_download_on_request_timeout_for_warmup": true,
+    "cors_allowed_origins": [],
+    "disable_heavy_endpoints": false,
+    "discovery_ttl": {
+      "nanos": 0,
+      "secs": 30
+    },
+    "emergency_global_breaker": false,
+    "enable_api_key_rate_limit": false,
+    "enable_audit_log": false,
+    "enable_cheap_only_survival": false,
+    "enable_debug_datasets": false,
+    "enable_exemplars": false,
+    "enable_redis_rate_limit": false,
+    "enable_redis_response_cache": false,
+    "enable_response_compression": true,
+    "heavy_worker_pool_size": 8,
+    "hmac_max_skew_secs": 300,
+    "hmac_required": false,
+    "hmac_secret": "<redacted>",
+    "immutable_gene_ttl": {
+      "nanos": 0,
+      "secs": 900
+    },
+    "max_body_bytes": 16384,
+    "max_header_bytes": 16384,
+    "max_request_queue_depth": 256,
+    "max_sequence_bases": 20000,
+    "max_uri_bytes": 2048,
+    "memory_pressure_rss_bytes": 3221225472,
+    "memory_pressure_shed_enabled": false,
+    "query_coalesce_ttl": {
+      "nanos": 500000000,
+      "secs": 0
+    },
+    "rate_limit_per_api_key": {
+      "capacity": 100.0,
+      "refill_per_sec": 30.0
+    },
+    "rate_limit_per_ip": {
+      "capacity": 30.0,
+      "refill_per_sec": 10.0
+    },
+    "readiness_requires_catalog": true,
+    "redis_breaker_failure_threshold": 8,
+    "redis_breaker_open_ms": 3000,
+    "redis_cache_max_cardinality": 100000,
+    "redis_cache_max_key_bytes": 256,
+    "redis_cache_ttl_max_secs": 60,
+    "redis_prefix": "atlas",
+    "redis_response_cache_ttl_secs": 30,
+    "redis_retry_attempts": 2,
+    "redis_timeout_ms": 50,
+    "redis_url": "<redacted>",
+    "request_timeout": {
+      "nanos": 0,
+      "secs": 5
+    },
+    "require_api_key": false,
+    "response_max_bytes": 524288,
+    "sequence_api_key_required_bases": 5000,
+    "sequence_rate_limit_per_ip": {
+      "capacity": 15.0,
+      "refill_per_sec": 5.0
+    },
+    "sequence_ttl": {
+      "nanos": 0,
+      "secs": 300
+    },
+    "shed_latency_min_samples": 50,
+    "shed_latency_p95_threshold_ms": 900,
+    "shed_load_enabled": false,
+    "slow_query_threshold": {
+      "nanos": 200000000,
+      "secs": 0
+    },
+    "sql_timeout": {
+      "nanos": 800000000,
+      "secs": 0
+    }
+  },
+  "cache": {
+    "breaker_failure_threshold": 3,
+    "breaker_open_duration": {
+      "nanos": 0,
+      "secs": 30
+    },
+    "cached_only_mode": false,
+    "catalog_backoff_base_ms": 250,
+    "catalog_breaker_failure_threshold": 5,
+    "catalog_breaker_open_ms": 5000,
+    "dataset_open_timeout": {
+      "nanos": 0,
+      "secs": 3
+    },
+    "disk_high_watermark_pct": 90,
+    "disk_low_watermark_pct": 75,
+    "disk_root": "artifacts/server-cache",
+    "eviction_check_interval": {
+      "nanos": 0,
+      "secs": 30
+    },
+    "fail_readiness_on_missing_warmup": false,
+    "idle_ttl": {
+      "nanos": 0,
+      "secs": 1800
+    },
+    "integrity_reverify_interval": {
+      "nanos": 0,
+      "secs": 300
+    },
+    "max_concurrent_downloads": 3,
+    "max_concurrent_downloads_node": null,
+    "max_connections_per_dataset": 8,
+    "max_dataset_count": 8,
+    "max_disk_bytes": 4294967296,
+    "max_open_shards_per_pod": 16,
+    "max_total_connections": 64,
+    "pinned_datasets": [],
+    "quarantine_after_corruption_failures": 3,
+    "quarantine_retry_ttl": {
+      "nanos": 0,
+      "secs": 300
+    },
+    "read_only_fs": false,
+    "registry_freeze_mode": false,
+    "registry_ttl": {
+      "nanos": 0,
+      "secs": 15
+    },
+    "sqlite_pragma_cache_kib": 32768,
+    "sqlite_pragma_mmap_bytes": 268435456,
+    "startup_warmup": [],
+    "startup_warmup_jitter_max_ms": 0,
+    "startup_warmup_limit": 8,
+    "store_breaker_failure_threshold": 5,
+    "store_breaker_open_duration": {
+      "nanos": 0,
+      "secs": 20
+    },
+    "store_retry_budget": 20
+  },
+  "kind": "atlas_server_effective_config_v1",
+  "schema_version": 1,
+  "startup": {
+    "bind_addr": "0.0.0.0:8080",
+    "cache_root": "artifacts/server-cache",
+    "store_root": "artifacts/server-store"
+  }
+}

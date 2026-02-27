@@ -350,37 +350,6 @@ fn validate_runtime_env_contract() -> Result<(), String> {
     ))
 }
 
-fn redact_effective_config(
-    startup: &bijux_atlas_server::RuntimeStartupConfig,
-    api: &ApiConfig,
-    cache: &DatasetCacheConfig,
-) -> Result<serde_json::Value, String> {
-    let mut api_json =
-        serde_json::to_value(api).map_err(|err| format!("serialize api config: {err}"))?;
-    if let Some(obj) = api_json.as_object_mut() {
-        if obj.contains_key("redis_url") {
-            obj.insert("redis_url".to_string(), serde_json::json!("<redacted>"));
-        }
-        if obj.contains_key("allowed_api_keys") {
-            obj.insert("allowed_api_keys".to_string(), serde_json::json!(["<redacted>"]));
-        }
-        if obj.contains_key("hmac_secret") {
-            obj.insert("hmac_secret".to_string(), serde_json::json!("<redacted>"));
-        }
-    }
-    let startup_json =
-        serde_json::to_value(startup).map_err(|err| format!("serialize startup config: {err}"))?;
-    let cache_json =
-        serde_json::to_value(cache).map_err(|err| format!("serialize cache config: {err}"))?;
-    Ok(serde_json::json!({
-        "schema_version": 1,
-        "kind": "atlas_server_effective_config_v1",
-        "startup": startup_json,
-        "api": api_json,
-        "cache": cache_json
-    }))
-}
-
 fn validate_prod_config_contract(
     bind_addr: &str,
     api: &ApiConfig,
@@ -542,7 +511,7 @@ async fn main() -> Result<(), String> {
         return Ok(());
     }
     if cli.print_effective_config {
-        let payload = redact_effective_config(&startup, &api_cfg, &cache_cfg)?;
+        let payload = bijux_atlas_server::effective_config_payload(&startup, &api_cfg, &cache_cfg)?;
         println!(
             "{}",
             serde_json::to_string_pretty(&payload)

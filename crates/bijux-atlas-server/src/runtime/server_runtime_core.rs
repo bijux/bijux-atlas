@@ -363,7 +363,7 @@ async fn cors_middleware(
 }
 
 pub use config::{
-    load_runtime_startup_config, runtime_startup_config_docs_markdown,
+    effective_config_payload, load_runtime_startup_config, runtime_startup_config_docs_markdown,
     runtime_startup_config_schema_json, validate_startup_config_contract, ApiConfig,
     RateLimitConfig, RuntimeStartupConfig,
 };
