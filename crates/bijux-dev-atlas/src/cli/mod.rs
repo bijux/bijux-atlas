@@ -6,7 +6,7 @@
 
 use std::path::PathBuf;
 
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 
 mod checks;
 mod dispatch;
@@ -127,4 +127,26 @@ pub enum Command {
         #[arg(long)]
         out: Option<PathBuf>,
     },
+    #[command(hide = true)]
+    Release {
+        #[command(subcommand)]
+        command: ReleaseCommand,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ReleaseCommand {
+    Check(ReleaseCheckArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ReleaseCheckArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, default_value = "kind")]
+    pub profile: String,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }

@@ -2,7 +2,7 @@
 
 use crate::cli::{
     CheckCommand, CheckRegistryCommand, Cli, Command, ConfigsCommand, DocsCommand, FormatArg,
-    OpsCommand, PoliciesCommand,
+    OpsCommand, PoliciesCommand, ReleaseCommand,
 };
 use crate::{
     plugin_metadata_json, run_build_command, run_capabilities_command, run_check_doctor,
@@ -26,6 +26,9 @@ fn force_json_output(command: &mut Command) {
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
+        Command::Release { command } => match command {
+            ReleaseCommand::Check(args) => args.format = FormatArg::Json,
+        },
         Command::Docker { .. }
         | Command::Build { .. }
         | Command::Workflows { .. }
@@ -553,6 +556,13 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                 *repo_root = Some(root.clone());
             }
         }
+        Command::Release { command } => match command {
+            ReleaseCommand::Check(args) => {
+                if args.repo_root.is_none() {
+                    args.repo_root = Some(root.clone());
+                }
+            }
+        },
         Command::Version { .. }
         | Command::Help { .. }
         | Command::Docker { .. }
@@ -763,6 +773,101 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
             if ok { 0 } else { 1 }
         }
+        Command::Release { command } => match command {
+            ReleaseCommand::Check(args) => {
+                let exe = match std::env::current_exe() {
+                    Ok(path) => path,
+                    Err(err) => {
+                        let _ =
+                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
+                        return 1;
+                    }
+                };
+
+                let mut validate_args = vec![
+                    "validate".to_string(),
+                    "--profile".to_string(),
+                    args.profile.clone(),
+                    "--format".to_string(),
+                    "json".to_string(),
+                ];
+                if let Some(root) = &args.repo_root {
+                    validate_args.push("--repo-root".to_string());
+                    validate_args.push(root.display().to_string());
+                }
+                let validate_out = match ProcessCommand::new(&exe).args(&validate_args).output() {
+                    Ok(v) => v,
+                    Err(err) => {
+                        let _ =
+                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
+                        return 1;
+                    }
+                };
+                let validate_payload: serde_json::Value =
+                    serde_json::from_slice(&validate_out.stdout).unwrap_or_else(|_| {
+                        serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&validate_out.stderr)})
+                    });
+
+                let mut readiness_args = vec![
+                    "ops".to_string(),
+                    "validate".to_string(),
+                    "--profile".to_string(),
+                    args.profile.clone(),
+                    "--format".to_string(),
+                    "json".to_string(),
+                ];
+                if let Some(root) = &args.repo_root {
+                    readiness_args.push("--repo-root".to_string());
+                    readiness_args.push(root.display().to_string());
+                }
+                let readiness_out = match ProcessCommand::new(&exe).args(&readiness_args).output()
+                {
+                    Ok(v) => v,
+                    Err(err) => {
+                        let _ =
+                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
+                        return 1;
+                    }
+                };
+                let readiness_payload: serde_json::Value =
+                    serde_json::from_slice(&readiness_out.stdout).unwrap_or_else(|_| {
+                        serde_json::json!({"status":"failed","stderr": String::from_utf8_lossy(&readiness_out.stderr)})
+                    });
+
+                let ok = validate_out.status.success() && readiness_out.status.success();
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "status": if ok { "ok" } else { "failed" },
+                    "text": if ok { "release check passed" } else { "release check failed" },
+                    "validate": validate_payload,
+                    "ops_validate": readiness_payload
+                });
+                let rendered = match args.format {
+                    FormatArg::Json => serde_json::to_string_pretty(&payload)
+                        .unwrap_or_else(|_| "{}".to_string()),
+                    FormatArg::Text => {
+                        if ok {
+                            "release check passed: validate + ops validate".to_string()
+                        } else {
+                            "release check failed: rerun with --format json for details"
+                                .to_string()
+                        }
+                    }
+                    FormatArg::Jsonl => payload.to_string(),
+                };
+                if let Some(path) = args.out {
+                    if let Err(err) = std::fs::write(&path, format!("{rendered}\n")) {
+                        let _ =
+                            writeln!(io::stderr(), "bijux-dev-atlas release check failed: {err}");
+                        return 1;
+                    }
+                }
+                if !cli.quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                if ok { 0 } else { 1 }
+            }
+        },
         Command::Check { command } => {
             let result = match command {
                 CheckCommand::Registry { command } => match command {

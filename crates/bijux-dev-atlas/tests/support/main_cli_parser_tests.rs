@@ -254,6 +254,16 @@ mod tests {
     }
 
     #[test]
+    fn release_subcommands_parse() {
+        let cli = crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "release", "check"])
+            .expect("parse");
+        match cli.command {
+            Some(crate::cli::Command::Release { .. }) => {}
+            _ => panic!("expected release command"),
+        }
+    }
+
+    #[test]
     fn top_level_version_and_help_inventory_parse() {
         for argv in [
             vec!["bijux-dev-atlas", "version"],
