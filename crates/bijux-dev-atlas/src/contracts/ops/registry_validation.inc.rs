@@ -41,7 +41,7 @@ fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
     if contract_id.starts_with("OPS-SCHEMA-") {
         return Some("schema");
     }
-    if contract_id.starts_with("OPS-DATASET-") {
+    if contract_id.starts_with("OPS-DATASETS-") || contract_id.starts_with("OPS-DATASET-") {
         return Some("datasets");
     }
     if contract_id.starts_with("OPS-E2E-") {

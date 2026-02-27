@@ -392,8 +392,8 @@ fn test_ops_root_009_inventory_coverage_for_policy_files(ctx: &RunContext) -> Te
 }
 
 fn test_ops_dataset_003_no_fixture_drift_without_promotion_record(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-DATASET-003";
-    let test_id = "ops.dataset.no_fixture_drift_without_promotion_record";
+    let contract_id = "OPS-DATASETS-003";
+    let test_id = "ops.datasets.no_fixture_drift_without_promotion_record";
     let index_path = ctx.repo_root.join("ops/datasets/generated/dataset-index.json");
     let Some(index) = read_json(&index_path) else {
         return TestResult::Fail(vec![violation(
@@ -447,8 +447,8 @@ fn test_ops_dataset_003_no_fixture_drift_without_promotion_record(ctx: &RunConte
 }
 
 fn test_ops_dataset_004_release_diff_fixtures_are_deterministic(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-DATASET-004";
-    let test_id = "ops.dataset.release_diff_fixtures_deterministic";
+    let contract_id = "OPS-DATASETS-004";
+    let test_id = "ops.datasets.release_diff_fixtures_deterministic";
     let lock_path = ctx
         .repo_root
         .join("ops/datasets/fixtures/release-diff/v1/manifest.lock");

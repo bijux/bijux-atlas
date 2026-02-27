@@ -782,8 +782,8 @@ fn test_ops_schema_005_evolution_lock(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_dataset_001_manifest_and_lock(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-DATASET-001";
-    let test_id = "ops.dataset.manifest_and_lock_consistent";
+    let contract_id = "OPS-DATASETS-001";
+    let test_id = "ops.datasets.manifest_and_lock_consistent";
     let manifest_path = ctx.repo_root.join("ops/datasets/manifest.json");
     let lock_path = ctx.repo_root.join("ops/datasets/manifest.lock");
     let Some(manifest) = read_json(&manifest_path) else {
@@ -834,8 +834,8 @@ fn test_ops_dataset_001_manifest_and_lock(ctx: &RunContext) -> TestResult {
     }
 }
 fn test_ops_dataset_002_fixture_inventory_matches_disk(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-DATASET-002";
-    let test_id = "ops.dataset.fixture_inventory_matches_disk";
+    let contract_id = "OPS-DATASETS-002";
+    let test_id = "ops.datasets.fixture_inventory_matches_disk";
     let inventory_path = ctx.repo_root.join("ops/datasets/generated/fixture-inventory.json");
     let Some(inventory) = read_json(&inventory_path) else {
         return TestResult::Fail(vec![violation(
