@@ -354,6 +354,16 @@ pub fn run(
 }
 
 pub fn to_pretty(report: &RunReport) -> String {
+    fn dotted(label: &str, status: &str) -> String {
+        const WIDTH: usize = 72;
+        let left = if label.len() >= WIDTH {
+            label.to_string()
+        } else {
+            format!("{label} {}", ".".repeat(WIDTH - label.len()))
+        };
+        format!("{left} {status}")
+    }
+
     let mut out = String::new();
     out.push_str(&format!(
         "Contracts: {} (mode={})\n",
@@ -361,17 +371,35 @@ pub fn to_pretty(report: &RunReport) -> String {
     ));
     for contract in &report.contracts {
         out.push_str(&format!(
-            "{} {} {}\n",
-            contract.id,
-            contract.title,
-            contract.status.as_colored()
+            "{}\n",
+            dotted(
+                &format!("{} {}", contract.id, contract.title),
+                contract.status.as_colored()
+            )
         ));
         for case in report
             .cases
             .iter()
             .filter(|c| c.contract_id == contract.id)
         {
-            out.push_str(&format!("  {} {}\n", case.test_id, case.status.as_colored()));
+            out.push_str(&format!(
+                "  {}\n",
+                dotted(&case.test_id, case.status.as_colored())
+            ));
+            for violation in &case.violations {
+                let location = match (&violation.file, violation.line) {
+                    (Some(file), Some(line)) => format!("{file}:{line}"),
+                    (Some(file), None) => file.clone(),
+                    _ => "unknown-location".to_string(),
+                };
+                out.push_str(&format!("    - {}: {}\n", location, violation.message));
+                if let Some(evidence) = &violation.evidence {
+                    out.push_str(&format!("      evidence: {}\n", evidence.trim()));
+                }
+            }
+            if let Some(note) = &case.note {
+                out.push_str(&format!("    - note: {note}\n"));
+            }
         }
     }
     out.push_str(&format!(
@@ -484,7 +512,7 @@ mod tests {
         };
         let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
         let pretty = to_pretty(&report);
-        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
+        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass .................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
         assert_eq!(pretty, expected);
     }
 
