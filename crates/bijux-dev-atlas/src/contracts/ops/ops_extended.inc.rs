@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: Apache-2.0
-
 fn test_ops_inv_pillars_001_exists_and_validates(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-PILLARS-001";
     let test_id = "ops.inventory.pillars.exists_and_validates";
@@ -19,7 +18,6 @@ fn test_ops_inv_pillars_001_exists_and_validates(ctx: &RunContext) -> TestResult
         )]),
     }
 }
-
 fn test_ops_inv_pillars_002_every_pillar_dir_exists(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-PILLARS-002";
     let test_id = "ops.inventory.pillars.every_pillar_dir_exists";
@@ -48,7 +46,6 @@ fn test_ops_inv_pillars_002_every_pillar_dir_exists(ctx: &RunContext) -> TestRes
         TestResult::Fail(violations)
     }
 }
-
 fn test_ops_inv_pillars_003_no_extra_pillar_dirs(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-PILLARS-003";
     let test_id = "ops.inventory.pillars.no_extra_pillar_dirs";
@@ -98,7 +95,6 @@ fn test_ops_inv_pillars_003_no_extra_pillar_dirs(ctx: &RunContext) -> TestResult
         TestResult::Fail(violations)
     }
 }
-
 fn test_ops_inv_006_contract_id_format(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-006";
     let test_id = "ops.inventory.contract_id_format";
@@ -127,7 +123,6 @@ fn test_ops_inv_006_contract_id_format(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-
 fn is_iso_date(value: &str) -> bool {
     let bytes = value.as_bytes();
     if bytes.len() != 10 {
@@ -139,7 +134,6 @@ fn is_iso_date(value: &str) -> bool {
         && bytes[7] == b'-'
         && bytes[8..10].iter().all(u8::is_ascii_digit)
 }
-
 fn test_ops_inv_004_authority_tiers_enforced(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-004";
     let test_id = "ops.inventory.authority_tiers_enforced";
@@ -196,7 +190,6 @@ fn test_ops_inv_004_authority_tiers_enforced(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-
 fn test_ops_inv_005_control_graph_validated(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-INV-005";
     let test_id = "ops.inventory.control_graph_validated";
@@ -727,7 +720,6 @@ fn test_ops_schema_004_budget_policy(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-
 fn test_ops_schema_005_evolution_lock(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-SCHEMA-005";
     let test_id = "ops.schema.evolution_lock";
@@ -841,7 +833,6 @@ fn test_ops_dataset_001_manifest_and_lock(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-
 fn test_ops_dataset_002_fixture_inventory_matches_disk(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-DATASET-002";
     let test_id = "ops.dataset.fixture_inventory_matches_disk";
@@ -907,8 +898,6 @@ fn test_ops_dataset_002_fixture_inventory_matches_disk(ctx: &RunContext) -> Test
         TestResult::Fail(violations)
     }
 }
-
-
 include!("ops_domains_31_40.inc.rs");
 include!("ops_domains_41_50.inc.rs");
 include!("ops_domains_51_60.inc.rs");
