@@ -221,7 +221,6 @@ fn run_command_with_artifacts(
     stdout_name: &str,
     stderr_name: &str,
 ) -> Result<std::process::Output, String> {
-    eprintln!("contracts-effect: start `{program}` {}", args.join(" "));
     let artifact_dir = effect_artifact_dir(ctx);
     let mut stdout_path = None;
     let mut stderr_path = None;
@@ -291,11 +290,6 @@ fn run_command_with_artifacts(
             .wait_with_output()
             .map_err(|e| format!("collect `{program}` output failed: {e}"))?
     };
-    eprintln!(
-        "contracts-effect: done `{program}` exit={:?} elapsed={}s",
-        output.status.code(),
-        started.elapsed().as_secs()
-    );
     if let Some(dir) = artifact_dir {
         let _ = std::fs::write(dir.join(stdout_name), &output.stdout);
         let _ = std::fs::write(dir.join(stderr_name), &output.stderr);
