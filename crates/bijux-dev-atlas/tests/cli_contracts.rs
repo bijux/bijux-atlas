@@ -132,6 +132,24 @@ fn contracts_snapshot_writes_ops_registry_file() {
 }
 
 #[test]
+fn contracts_snapshot_defaults_to_artifacts_root() {
+    let out = repo_root().join("artifacts/contracts/docker/registry-snapshot.json");
+    if out.exists() {
+        fs::remove_file(&out).expect("remove prior snapshot");
+    }
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "snapshot", "--domain", "docker"])
+        .output()
+        .expect("contracts snapshot default path");
+    assert!(output.status.success());
+    let written = fs::read_to_string(out).expect("read snapshot");
+    let payload: serde_json::Value = serde_json::from_str(&written).expect("json file");
+    assert_eq!(payload["domain"].as_str(), Some("docker"));
+    assert!(payload["contracts"].is_array());
+}
+
+#[test]
 fn contracts_ops_supports_filter_contract_alias() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
