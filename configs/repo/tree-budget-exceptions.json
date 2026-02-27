@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "allow_path_prefixes": [
+    "docs/_generated/",
+    "ops/_generated.example/"
+  ]
+}

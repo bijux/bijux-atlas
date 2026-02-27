@@ -723,6 +723,99 @@ pub(crate) fn run_check_doctor(
     Ok((rendered, exit))
 }
 
+pub(crate) fn run_check_tree_budgets(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(repo_root)?;
+    let mut errors = Vec::<String>::new();
+    let mut deepest = Vec::<(String, usize)>::new();
+
+    let rules = [
+        ("configs", 4usize, 10usize),
+        ("docs", 4usize, 10usize),
+        ("ops", 5usize, usize::MAX),
+    ];
+
+    let exceptions_path = repo_root.join("configs/repo/tree-budget-exceptions.json");
+    let exception_prefixes = if exceptions_path.exists() {
+        let text = fs::read_to_string(&exceptions_path)
+            .map_err(|e| format!("failed to read {}: {e}", exceptions_path.display()))?;
+        let value: serde_json::Value = serde_json::from_str(&text)
+            .map_err(|e| format!("failed to parse {}: {e}", exceptions_path.display()))?;
+        value["allow_path_prefixes"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect::<Vec<_>>()
+    } else {
+        Vec::new()
+    };
+
+    for (root_name, max_depth, max_top_dirs) in rules {
+        let root = repo_root.join(root_name);
+        if !root.exists() {
+            continue;
+        }
+        let top_level_dirs = fs::read_dir(&root)
+            .map_err(|e| format!("failed to list {}: {e}", root.display()))?
+            .filter_map(Result::ok)
+            .filter(|entry| entry.path().is_dir())
+            .count();
+        if top_level_dirs > max_top_dirs {
+            errors.push(format!(
+                "TREE_BUDGET_ERROR: `{root_name}` top-level dirs {top_level_dirs} exceed budget {max_top_dirs}"
+            ));
+        }
+
+        for file in walk_files_local(&root) {
+            let rel = file
+                .strip_prefix(&repo_root)
+                .unwrap_or(&file)
+                .display()
+                .to_string();
+            if exception_prefixes.iter().any(|prefix| rel.starts_with(prefix)) {
+                continue;
+            }
+            let depth = file
+                .strip_prefix(&root)
+                .unwrap_or(&file)
+                .components()
+                .count();
+            deepest.push((rel.clone(), depth));
+            if depth > max_depth {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: `{rel}` depth {depth} exceeds `{root_name}` budget {max_depth}"
+                ));
+            }
+        }
+    }
+
+    deepest.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
+    deepest.truncate(20);
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "text": if errors.is_empty() { "tree budgets passed" } else { "tree budgets failed" },
+        "errors": errors,
+        "deepest_paths": deepest
+            .iter()
+            .map(|(path, depth)| serde_json::json!({"path": path, "depth": depth}))
+            .collect::<Vec<_>>(),
+        "exceptions_file": if exceptions_path.exists() {
+            serde_json::Value::String("configs/repo/tree-budget-exceptions.json".to_string())
+        } else {
+            serde_json::Value::Null
+        }
+    });
+
+    let rendered = emit_payload(format, out, &payload)?;
+    Ok((rendered, if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 }))
+}
+
 pub(crate) fn run_check_registry_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,
