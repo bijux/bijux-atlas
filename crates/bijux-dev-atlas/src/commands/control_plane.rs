@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommand, ContractsFormatArg, ContractsModeArg, ContractsOpsDomainArg,
-    ContractsSnapshotDomainArg, PoliciesCommand,
+    ContractsCommand, ContractsCommonArgs, ContractsFormatArg, ContractsModeArg,
+    ContractsOpsDomainArg, ContractsSnapshotDomainArg, PoliciesCommand,
 };
 use crate::*;
 use bijux_dev_atlas::contracts;
@@ -10,6 +10,7 @@ use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::fs;
 use std::io::{self, Write};
+use std::path::Path;
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -59,9 +60,7 @@ pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
 pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i32 {
-    fn require_artifacts_root_in_ci(
-        artifacts_root: &Option<PathBuf>,
-    ) -> Result<(), String> {
+    fn require_artifacts_root_in_ci(artifacts_root: &Option<PathBuf>) -> Result<(), String> {
         if std::env::var_os("CI").is_some() && artifacts_root.is_none() {
             return Err(
                 "CI contracts runs require --artifacts-root for deterministic evidence output"
@@ -100,6 +99,25 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
     }
 
+    fn common_format(common: &ContractsCommonArgs) -> ContractsFormatArg {
+        if common.json {
+            ContractsFormatArg::Json
+        } else {
+            common.format
+        }
+    }
+
+    fn write_optional(path: &Option<PathBuf>, rendered: &str) -> Result<(), String> {
+        if let Some(path) = path {
+            if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+            }
+            fs::write(path, rendered).map_err(|e| format!("write {} failed: {e}", path.display()))?;
+        }
+        Ok(())
+    }
+
     fn ops_mapped_gates(repo_root: &Path, contract_id: &str) -> Vec<String> {
         let path = repo_root.join("ops/inventory/contract-gate-map.json");
         let Ok(text) = fs::read_to_string(path) else {
@@ -128,269 +146,438 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             .unwrap_or_default()
     }
 
-    let run = (|| -> Result<(String, i32), String> {
-        match command {
-            ContractsCommand::Docker(args) => {
-                let repo_root = resolve_repo_root(args.repo_root)?;
-                let registry = contracts::docker::contracts(&repo_root)?;
-                if let Some(contract_id) = args.explain {
-                    let Some(contract) = registry
-                        .iter()
-                        .find(|entry| entry.id.0.eq_ignore_ascii_case(&contract_id))
-                    else {
-                        return Err(format!("unknown docker contract id `{contract_id}`"));
-                    };
-                    let explanation = contracts::docker::contract_explain(&contract.id.0);
-                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
-                        serde_json::to_string_pretty(&serde_json::json!({
-                            "schema_version": 1,
-                            "domain": "docker",
-                            "contract_id": contract.id.0,
-                            "title": contract.title,
-                            "tests": contract.tests.iter().map(|case| serde_json::json!({
-                                "test_id": case.id.0,
-                                "title": case.title
-                            })).collect::<Vec<_>>(),
-                            "mapped_gate": "bijux dev atlas contracts docker --mode static",
-                            "explain": explanation
-                        }))
-                        .map_err(|e| format!("encode contracts explain failed: {e}"))?
-                    } else {
-                        let mut out = String::new();
-                        out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
-                        out.push_str("Tests:\n");
-                        for case in &contract.tests {
-                            out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
+    #[derive(Clone, Copy)]
+    struct DomainDescriptor {
+        name: &'static str,
+        contracts_fn: fn(&Path) -> Result<Vec<contracts::Contract>, String>,
+        explain_fn: fn(&str) -> String,
+        gate_fn: fn(&str) -> &'static str,
+    }
+
+    fn domain_descriptor(name: &str) -> Option<DomainDescriptor> {
+        match name {
+            "docker" => Some(DomainDescriptor {
+                name: "docker",
+                contracts_fn: contracts::docker::contracts,
+                explain_fn: contracts::docker::contract_explain,
+                gate_fn: |_id| "bijux dev atlas contracts docker --mode static",
+            }),
+            "make" => Some(DomainDescriptor {
+                name: "make",
+                contracts_fn: contracts::make::contracts,
+                explain_fn: contracts::make::contract_explain,
+                gate_fn: contracts::make::contract_gate_command,
+            }),
+            "ops" => Some(DomainDescriptor {
+                name: "ops",
+                contracts_fn: contracts::ops::contracts,
+                explain_fn: |id| contracts::ops::contract_explain(id).to_string(),
+                gate_fn: contracts::ops::contract_gate_command,
+            }),
+            _ => None,
+        }
+    }
+
+    fn all_domains(repo_root: &Path) -> Result<Vec<(DomainDescriptor, Vec<contracts::Contract>)>, String> {
+        let mut out = Vec::new();
+        for name in ["docker", "make", "ops"] {
+            let descriptor = domain_descriptor(name).expect("known domain");
+            out.push((descriptor, (descriptor.contracts_fn)(repo_root)?));
+        }
+        Ok(out)
+    }
+
+    fn registry_lints(repo_root: &Path) -> Result<Vec<contracts::RegistryLint>, String> {
+        let mut rows = Vec::new();
+        for (descriptor, registry) in all_domains(repo_root)? {
+            rows.extend(contracts::registry_snapshot(descriptor.name, &registry));
+        }
+        Ok(contracts::lint_registry_rows(&rows))
+    }
+
+    fn render_registry_lints(
+        lints: &[contracts::RegistryLint],
+        format: ContractsFormatArg,
+    ) -> Result<String, String> {
+        if lints.is_empty() {
+            return Ok(String::new());
+        }
+        match format {
+            ContractsFormatArg::Json => serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "status": "invalid",
+                "lints": lints.iter().map(|lint| serde_json::json!({
+                    "code": lint.code,
+                    "message": lint.message
+                })).collect::<Vec<_>>()
+            }))
+            .map_err(|e| format!("encode contracts lint report failed: {e}")),
+            _ => Ok(lints
+                .iter()
+                .map(|lint| format!("{}: {}", lint.code, lint.message))
+                .collect::<Vec<_>>()
+                .join("\n")),
+        }
+    }
+
+    fn render_list(
+        domains: &[(DomainDescriptor, Vec<contracts::Contract>)],
+        include_tests: bool,
+        format: ContractsFormatArg,
+    ) -> Result<String, String> {
+        let mut rows = Vec::new();
+        for (descriptor, registry) in domains {
+            rows.extend(contracts::registry_snapshot(descriptor.name, registry));
+        }
+        rows.sort_by(|a, b| a.domain.cmp(&b.domain).then(a.id.cmp(&b.id)));
+        match format {
+            ContractsFormatArg::Json => serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "contracts": rows.iter().map(|row| serde_json::json!({
+                    "domain": row.domain,
+                    "id": row.id,
+                    "title": row.title,
+                    "tests": row.test_ids.iter().map(|test_id| serde_json::json!({
+                        "test_id": test_id
+                    })).collect::<Vec<_>>()
+                })).collect::<Vec<_>>()
+            }))
+            .map_err(|e| format!("encode contracts list failed: {e}")),
+            _ => {
+                let mut out = String::new();
+                out.push_str("DOMAIN   CONTRACT ID        TITLE\n");
+                for row in rows {
+                    out.push_str(&format!("{:<8} {:<18} {}\n", row.domain, row.id, row.title));
+                    if include_tests {
+                        for test_id in row.test_ids {
+                            out.push_str(&format!("         - {}\n", test_id));
                         }
-                        out.push_str("\nHow to fix:\n");
-                        out.push_str(explanation.as_str());
-                        out.push_str("\n\nMapped gate:\n");
-                        out.push_str("bijux dev atlas contracts docker --mode static");
-                        out.push('\n');
-                        out
-                    };
-                    return Ok((rendered, 0));
+                    }
                 }
-                require_artifacts_root_in_ci(&args.artifacts_root)?;
-                require_effect_allowances(args.mode, args.allow_subprocess, args.allow_network)?;
-                if args.list {
-                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
-                        serde_json::to_string_pretty(&serde_json::json!({
-                            "schema_version": 1,
-                            "domain": "docker",
-                            "contracts": registry.iter().map(|contract| serde_json::json!({
-                                "id": contract.id.0,
-                                "title": contract.title,
-                                "tests": contract.tests.iter().map(|case| serde_json::json!({
-                                    "test_id": case.id.0,
-                                    "title": case.title
-                                })).collect::<Vec<_>>()
-                            })).collect::<Vec<_>>()
-                        }))
-                        .map_err(|e| format!("encode contracts list failed: {e}"))?
-                    } else {
-                        let mut out = String::new();
-                        out.push_str("Contracts: docker\n");
-                        for contract in &registry {
-                            out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
-                            for case in &contract.tests {
-                                out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
-                            }
-                        }
-                        out
-                    };
-                    return Ok((rendered, 0));
-                }
-                let mode = match args.mode {
-                    ContractsModeArg::Static => contracts::Mode::Static,
-                    ContractsModeArg::Effect => contracts::Mode::Effect,
-                };
-                let options = contracts::RunOptions {
-                    mode,
-                    allow_subprocess: args.allow_subprocess,
-                    allow_network: args.allow_network,
-                    skip_missing_tools: args.skip_missing_tools,
-                    timeout_seconds: args.timeout_seconds,
-                    fail_fast: args.fail_fast,
-                    contract_filter: args.filter_contract,
-                    test_filter: args.filter_test,
-                    list_only: args.list,
-                    artifacts_root: args.artifacts_root,
-                };
-                let report =
-                    contracts::run("docker", contracts::docker::contracts, &repo_root, &options)?;
-                let rendered = if args.json || args.format == ContractsFormatArg::Json {
-                    serde_json::to_string_pretty(&contracts::to_json(&report))
-                        .map_err(|e| format!("encode contracts report failed: {e}"))?
-                } else if args.format == ContractsFormatArg::Junit {
-                    contracts::to_junit(&report)?
-                } else {
-                    contracts::to_pretty(&report)
-                };
-                Ok((rendered, report.exit_code()))
-            }
-            ContractsCommand::Ops(args) => {
-                let repo_root = resolve_repo_root(args.repo_root)?;
-                let registry = contracts::ops::contracts(&repo_root)?;
-                if let Some(contract_id) = args.explain {
-                    let Some(contract) = registry
-                        .iter()
-                        .find(|entry| entry.id.0.eq_ignore_ascii_case(&contract_id))
-                    else {
-                        return Err(format!("unknown ops contract id `{contract_id}`"));
-                    };
-                    let explanation = contracts::ops::contract_explain(&contract.id.0);
-                    let mapped_gates = ops_mapped_gates(&repo_root, &contract.id.0);
-                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
-                        serde_json::to_string_pretty(&serde_json::json!({
-                            "schema_version": 1,
-                            "domain": "ops",
-                            "contract_id": contract.id.0,
-                            "title": contract.title,
-                            "tests": contract.tests.iter().map(|case| serde_json::json!({
-                                "test_id": case.id.0,
-                                "title": case.title
-                            })).collect::<Vec<_>>(),
-                            "mapped_gate": contracts::ops::contract_gate_command(&contract.id.0),
-                            "mapped_gates": mapped_gates,
-                            "explain": explanation
-                        }))
-                        .map_err(|e| format!("encode contracts explain failed: {e}"))?
-                    } else {
-                        let mut out = String::new();
-                        out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
-                        out.push_str("Tests:\n");
-                        for case in &contract.tests {
-                            out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
-                        }
-                        out.push_str("\nHow to fix:\n");
-                        out.push_str(explanation);
-                        out.push_str("\n\nMapped gate:\n");
-                        out.push_str(contracts::ops::contract_gate_command(&contract.id.0));
-                        if !mapped_gates.is_empty() {
-                            out.push_str("\nMapped gate ids:\n");
-                            for gate_id in &mapped_gates {
-                                out.push_str(&format!("- {gate_id}\n"));
-                            }
-                        }
-                        out.push('\n');
-                        out
-                    };
-                    return Ok((rendered, 0));
-                }
-                require_artifacts_root_in_ci(&args.artifacts_root)?;
-                require_effect_allowances(args.mode, args.allow_subprocess, args.allow_network)?;
-                if args.list {
-                    let rendered = if args.json || args.format == ContractsFormatArg::Json {
-                        serde_json::to_string_pretty(&serde_json::json!({
-                            "schema_version": 1,
-                            "domain": "ops",
-                            "contracts": registry.iter().map(|contract| serde_json::json!({
-                                "id": contract.id.0,
-                                "title": contract.title,
-                                "tests": contract.tests.iter().map(|case| serde_json::json!({
-                                    "test_id": case.id.0,
-                                    "title": case.title
-                                })).collect::<Vec<_>>()
-                            })).collect::<Vec<_>>()
-                        }))
-                        .map_err(|e| format!("encode contracts list failed: {e}"))?
-                    } else {
-                        let mut out = String::new();
-                        out.push_str("Contracts: ops\n");
-                        for contract in &registry {
-                            out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
-                            for case in &contract.tests {
-                                out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
-                            }
-                        }
-                        out
-                    };
-                    return Ok((rendered, 0));
-                }
-                let mode = match args.mode {
-                    ContractsModeArg::Static => contracts::Mode::Static,
-                    ContractsModeArg::Effect => contracts::Mode::Effect,
-                };
-                let contract_filter = if let Some(domain) = args.domain {
-                    Some(ops_domain_filter(domain))
-                } else {
-                    args.filter_contract
-                };
-                let options = contracts::RunOptions {
-                    mode,
-                    allow_subprocess: args.allow_subprocess,
-                    allow_network: args.allow_network,
-                    skip_missing_tools: args.skip_missing_tools,
-                    timeout_seconds: args.timeout_seconds,
-                    fail_fast: args.fail_fast,
-                    contract_filter,
-                    test_filter: args.filter_test,
-                    list_only: args.list,
-                    artifacts_root: args.artifacts_root,
-                };
-                let report =
-                    contracts::run("ops", contracts::ops::contracts, &repo_root, &options)?;
-                let rendered = if args.json || args.format == ContractsFormatArg::Json {
-                    serde_json::to_string_pretty(&contracts::to_json(&report))
-                        .map_err(|e| format!("encode contracts report failed: {e}"))?
-                } else if args.format == ContractsFormatArg::Junit {
-                    contracts::to_junit(&report)?
-                } else {
-                    contracts::to_pretty(&report)
-                };
-                Ok((rendered, report.exit_code()))
-            }
-            ContractsCommand::Snapshot(args) => {
-                let repo_root = resolve_repo_root(args.repo_root)?;
-                let (domain, mut registry, default_rel) = match args.domain {
-                    ContractsSnapshotDomainArg::Docker => (
-                        "docker",
-                        contracts::docker::contracts(&repo_root)?,
-                        PathBuf::from("docker/_generated/contracts-registry-snapshot.json"),
-                    ),
-                    ContractsSnapshotDomainArg::Ops => (
-                        "ops",
-                        contracts::ops::contracts(&repo_root)?,
-                        PathBuf::from("ops/_generated/control-plane-surface-list.json"),
-                    ),
-                };
-                let payload = if domain == "ops" {
-                    contracts::ops::render_registry_snapshot_json(&repo_root)?
-                } else {
-                    registry.sort_by_key(|c| c.id.0.clone());
-                    let contracts = registry
-                        .into_iter()
-                        .map(|mut c| {
-                            c.tests.sort_by_key(|t| t.id.0.clone());
-                            serde_json::json!({
-                                "id": c.id.0,
-                                "title": c.title,
-                                "tests": c.tests.into_iter().map(|t| serde_json::json!({
-                                    "test_id": t.id.0,
-                                    "title": t.title
-                                })).collect::<Vec<_>>()
-                            })
-                        })
-                        .collect::<Vec<_>>();
-                    serde_json::json!({
-                        "schema_version": 1,
-                        "domain": domain,
-                        "contracts": contracts,
-                    })
-                };
-                let rendered = serde_json::to_string_pretty(&payload)
-                    .map_err(|e| format!("encode contracts snapshot failed: {e}"))?;
-                let out_path = args.out.unwrap_or_else(|| repo_root.join(default_rel));
-                if let Some(parent) = out_path.parent() {
-                    fs::create_dir_all(parent)
-                        .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
-                }
-                fs::write(&out_path, format!("{rendered}\n"))
-                    .map_err(|e| format!("write {} failed: {e}", out_path.display()))?;
-                Ok((rendered, 0))
+                Ok(out)
             }
         }
+    }
+
+    fn explain_test(
+        domain: &str,
+        contract: &contracts::Contract,
+        test: &contracts::TestCase,
+        format: ContractsFormatArg,
+    ) -> Result<String, String> {
+        let effects = match test.kind {
+            contracts::TestKind::Pure => Vec::<&str>::new(),
+            contracts::TestKind::Subprocess => vec!["subprocess"],
+            contracts::TestKind::Network => vec!["network"],
+        };
+        let payload = serde_json::json!({
+            "schema_version": 1,
+            "domain": domain,
+            "contract_id": contract.id.0,
+            "contract_title": contract.title,
+            "test_id": test.id.0,
+            "test_title": test.title,
+            "kind": format!("{:?}", test.kind).to_ascii_lowercase(),
+            "inputs_read": ["repository workspace"],
+            "outputs_written": ["artifacts root when configured"],
+            "effects_required": effects,
+        });
+        match format {
+            ContractsFormatArg::Json => serde_json::to_string_pretty(&payload)
+                .map_err(|e| format!("encode test explanation failed: {e}")),
+            _ => Ok(format!(
+                "{} {}\n{} {}\nInputs read:\n- repository workspace\nOutputs written:\n- artifacts root when configured\nEffects required:\n{}",
+                contract.id.0,
+                contract.title,
+                test.id.0,
+                test.title,
+                if effects.is_empty() {
+                    "- none".to_string()
+                } else {
+                    effects
+                        .into_iter()
+                        .map(|effect| format!("- {effect}"))
+                        .collect::<Vec<_>>()
+                        .join("\n")
+                }
+            )),
+        }
+    }
+
+    fn run_one(
+        descriptor: &DomainDescriptor,
+        repo_root: &Path,
+        common: &ContractsCommonArgs,
+        contract_filter: Option<String>,
+    ) -> Result<contracts::RunReport, String> {
+        let mode = match common.mode {
+            ContractsModeArg::Static => contracts::Mode::Static,
+            ContractsModeArg::Effect => contracts::Mode::Effect,
+        };
+        let options = contracts::RunOptions {
+            mode,
+            allow_subprocess: common.allow_subprocess,
+            allow_network: common.allow_network,
+            skip_missing_tools: common.skip_missing_tools,
+            timeout_seconds: common.timeout_seconds,
+            fail_fast: common.fail_fast,
+            contract_filter,
+            test_filter: common.filter_test.clone(),
+            only_contracts: common.only_contracts.clone(),
+            only_tests: common.only_tests.clone(),
+            skip_contracts: common.skip_contracts.clone(),
+            tags: common.tags.clone(),
+            list_only: false,
+            artifacts_root: common.artifacts_root.clone(),
+        };
+        contracts::run(descriptor.name, descriptor.contracts_fn, repo_root, &options)
+    }
+
+    let run = (|| -> Result<(String, i32), String> {
+        if let ContractsCommand::Snapshot(args) = &command {
+            let repo_root = resolve_repo_root(args.repo_root.clone())?;
+            let domains = all_domains(&repo_root)?;
+            let (domain_name, rows, default_rel) = match args.domain {
+                ContractsSnapshotDomainArg::All => (
+                    "all",
+                    domains
+                        .iter()
+                        .flat_map(|(descriptor, registry)| {
+                            contracts::registry_snapshot(descriptor.name, registry)
+                        })
+                        .collect::<Vec<_>>(),
+                    PathBuf::from("artifacts/contracts/all/registry-snapshot.json"),
+                ),
+                ContractsSnapshotDomainArg::Docker => (
+                    "docker",
+                    contracts::registry_snapshot(
+                        "docker",
+                        &domains
+                            .iter()
+                            .find(|(descriptor, _)| descriptor.name == "docker")
+                            .expect("docker domain")
+                            .1,
+                    ),
+                    PathBuf::from("docker/_generated/contracts-registry-snapshot.json"),
+                ),
+                ContractsSnapshotDomainArg::Make => (
+                    "make",
+                    contracts::registry_snapshot(
+                        "make",
+                        &domains
+                            .iter()
+                            .find(|(descriptor, _)| descriptor.name == "make")
+                            .expect("make domain")
+                            .1,
+                    ),
+                    PathBuf::from("make/contracts-registry-snapshot.json"),
+                ),
+                ContractsSnapshotDomainArg::Ops => (
+                    "ops",
+                    contracts::registry_snapshot(
+                        "ops",
+                        &domains
+                            .iter()
+                            .find(|(descriptor, _)| descriptor.name == "ops")
+                            .expect("ops domain")
+                            .1,
+                    ),
+                    PathBuf::from("ops/_generated/control-plane-surface-list.json"),
+                ),
+            };
+            let payload = serde_json::json!({
+                "schema_version": 1,
+                "domain": domain_name,
+                "contracts": rows.iter().map(|row| serde_json::json!({
+                    "domain": row.domain,
+                    "id": row.id,
+                    "title": row.title,
+                    "tests": row.test_ids,
+                })).collect::<Vec<_>>()
+            });
+            let rendered = serde_json::to_string_pretty(&payload)
+                .map_err(|e| format!("encode contracts snapshot failed: {e}"))?;
+            let out_path = args.out.clone().unwrap_or_else(|| repo_root.join(default_rel));
+            if let Some(parent) = out_path.parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+            }
+            fs::write(&out_path, format!("{rendered}\n"))
+                .map_err(|e| format!("write {} failed: {e}", out_path.display()))?;
+            return Ok((rendered, 0));
+        }
+
+        let (repo_root, common, domain_names, contract_filter_override) = match &command {
+            ContractsCommand::All(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["docker", "make", "ops"],
+                None,
+            ),
+            ContractsCommand::Docker(args) => (
+                resolve_repo_root(args.common.repo_root.clone())?,
+                args.common.clone(),
+                vec!["docker"],
+                None,
+            ),
+            ContractsCommand::Make(args) => (
+                resolve_repo_root(args.common.repo_root.clone())?,
+                args.common.clone(),
+                vec!["make"],
+                None,
+            ),
+            ContractsCommand::Ops(args) => (
+                resolve_repo_root(args.common.repo_root.clone())?,
+                args.common.clone(),
+                vec!["ops"],
+                args.domain.map(ops_domain_filter),
+            ),
+            ContractsCommand::Snapshot(_) => unreachable!("handled above"),
+        };
+
+        let format = common_format(&common);
+        let lints = registry_lints(&repo_root)?;
+        if !lints.is_empty() {
+            return Ok((render_registry_lints(&lints, format)?, 2));
+        }
+        require_artifacts_root_in_ci(&common.artifacts_root)?;
+        require_effect_allowances(common.mode, common.allow_subprocess, common.allow_network)?;
+
+        let selected_domains = all_domains(&repo_root)?
+            .into_iter()
+            .filter(|(descriptor, _)| domain_names.iter().any(|name| descriptor.name == *name))
+            .collect::<Vec<_>>();
+
+        if common.list || common.list_tests {
+            return Ok((render_list(&selected_domains, common.list_tests, format)?, 0));
+        }
+
+        if let Some(test_id) = &common.explain_test {
+            for (descriptor, registry) in &selected_domains {
+                for contract in registry {
+                    if let Some(test) = contract
+                        .tests
+                        .iter()
+                        .find(|test| test.id.0.eq_ignore_ascii_case(test_id))
+                    {
+                        return Ok((explain_test(descriptor.name, contract, test, format)?, 0));
+                    }
+                }
+            }
+            return Err(format!("unknown contract test id `{test_id}`"));
+        }
+
+        if let Some(contract_id) = &common.explain {
+            for (descriptor, registry) in &selected_domains {
+                if let Some(contract) = registry
+                    .iter()
+                    .find(|entry| entry.id.0.eq_ignore_ascii_case(contract_id))
+                {
+                    let mapped_gates = if descriptor.name == "ops" {
+                        ops_mapped_gates(&repo_root, &contract.id.0)
+                    } else {
+                        Vec::new()
+                    };
+                    let payload = serde_json::json!({
+                        "schema_version": 1,
+                        "domain": descriptor.name,
+                        "contract_id": contract.id.0,
+                        "title": contract.title,
+                        "tests": contract.tests.iter().map(|case| serde_json::json!({
+                            "test_id": case.id.0,
+                            "title": case.title
+                        })).collect::<Vec<_>>(),
+                        "mapped_gate": (descriptor.gate_fn)(&contract.id.0),
+                        "mapped_gates": mapped_gates,
+                        "mapped_command": (descriptor.gate_fn)(&contract.id.0),
+                        "explain": (descriptor.explain_fn)(&contract.id.0)
+                    });
+                    let rendered = match format {
+                        ContractsFormatArg::Json => serde_json::to_string_pretty(&payload)
+                            .map_err(|e| format!("encode contracts explain failed: {e}"))?,
+                        _ => {
+                            let mut out = String::new();
+                            out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
+                            out.push_str("Tests:\n");
+                            for case in &contract.tests {
+                                out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
+                            }
+                            out.push_str("\nIntent:\n");
+                            out.push_str(&(descriptor.explain_fn)(&contract.id.0));
+                            out.push_str("\n\nMapped gate:\n");
+                            out.push_str((descriptor.gate_fn)(&contract.id.0));
+                            out.push('\n');
+                            if !mapped_gates.is_empty() {
+                                out.push_str("Mapped gates:\n");
+                                for gate in mapped_gates {
+                                    out.push_str(&format!("- {gate}\n"));
+                                }
+                            }
+                            out
+                        }
+                    };
+                    return Ok((rendered, 0));
+                }
+            }
+            return Err(format!("unknown contract id `{contract_id}`"));
+        }
+
+        let mut reports = Vec::new();
+        for (descriptor, _) in &selected_domains {
+            reports.push(run_one(
+                descriptor,
+                &repo_root,
+                &common,
+                contract_filter_override.clone().or_else(|| common.filter_contract.clone()),
+            )?);
+        }
+
+        let rendered = match format {
+            ContractsFormatArg::Human => {
+                if reports.len() == 1 {
+                    contracts::to_pretty(&reports[0])
+                } else {
+                    contracts::to_pretty_all(&reports)
+                }
+            }
+            ContractsFormatArg::Json => serde_json::to_string_pretty(&if reports.len() == 1 {
+                contracts::to_json(&reports[0])
+            } else {
+                contracts::to_json_all(&reports)
+            })
+            .map_err(|e| format!("encode contracts report failed: {e}"))?,
+            ContractsFormatArg::Junit => {
+                if reports.len() == 1 {
+                    contracts::to_junit(&reports[0])?
+                } else {
+                    contracts::to_junit_all(&reports)?
+                }
+            }
+            ContractsFormatArg::Github => contracts::to_github(&reports),
+        };
+
+        let json_rendered = serde_json::to_string_pretty(&if reports.len() == 1 {
+            contracts::to_json(&reports[0])
+        } else {
+            contracts::to_json_all(&reports)
+        })
+        .map_err(|e| format!("encode contracts json report failed: {e}"))?;
+        let junit_rendered = if reports.len() == 1 {
+            contracts::to_junit(&reports[0])?
+        } else {
+            contracts::to_junit_all(&reports)?
+        };
+        write_optional(&common.json_out, &json_rendered)?;
+        write_optional(&common.junit_out, &junit_rendered)?;
+
+        Ok((
+            rendered,
+            reports
+                .iter()
+                .map(contracts::RunReport::exit_code)
+                .max()
+                .unwrap_or(0),
+        ))
     })();
 
     match run {

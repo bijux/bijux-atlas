@@ -231,7 +231,9 @@ pub struct ConfigsCommonArgs {
 }
 #[derive(Subcommand, Debug)]
 pub enum ContractsCommand {
+    All(ContractsCommonArgs),
     Docker(ContractsDockerArgs),
+    Make(ContractsMakeArgs),
     Ops(ContractsOpsArgs),
     Snapshot(ContractsSnapshotArgs),
 }
@@ -244,20 +246,22 @@ pub enum ContractsModeArg {
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ContractsFormatArg {
-    Pretty,
+    #[value(alias = "pretty", alias = "text")]
+    Human,
     Json,
     Junit,
+    Github,
 }
 
 #[derive(Args, Debug, Clone)]
-pub struct ContractsDockerArgs {
+pub struct ContractsCommonArgs {
     #[arg(long)]
     pub repo_root: Option<PathBuf>,
     #[arg(long)]
     pub artifacts_root: Option<PathBuf>,
     #[arg(long, default_value_t = false)]
     pub json: bool,
-    #[arg(long, value_enum, default_value_t = ContractsFormatArg::Pretty)]
+    #[arg(long, value_enum, default_value_t = ContractsFormatArg::Human)]
     pub format: ContractsFormatArg,
     #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
     pub mode: ContractsModeArg,
@@ -267,12 +271,26 @@ pub struct ContractsDockerArgs {
     pub filter_contract: Option<String>,
     #[arg(long)]
     pub filter_test: Option<String>,
+    #[arg(long = "only")]
+    pub only_contracts: Vec<String>,
+    #[arg(long = "only-test")]
+    pub only_tests: Vec<String>,
+    #[arg(long = "skip")]
+    pub skip_contracts: Vec<String>,
+    #[arg(long = "tag")]
+    pub tags: Vec<String>,
     #[arg(long, default_value_t = false)]
     pub list: bool,
     #[arg(long, default_value_t = false)]
     pub list_tests: bool,
     #[arg(long)]
     pub explain: Option<String>,
+    #[arg(long = "explain-test")]
+    pub explain_test: Option<String>,
+    #[arg(long = "json-out")]
+    pub json_out: Option<PathBuf>,
+    #[arg(long = "junit-out")]
+    pub junit_out: Option<PathBuf>,
     #[arg(long, default_value_t = false)]
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
@@ -281,6 +299,12 @@ pub struct ContractsDockerArgs {
     pub skip_missing_tools: bool,
     #[arg(long, default_value_t = 300)]
     pub timeout_seconds: u64,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractsDockerArgs {
+    #[command(flatten)]
+    pub common: ContractsCommonArgs,
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
@@ -300,43 +324,23 @@ pub enum ContractsOpsDomainArg {
 
 #[derive(Args, Debug, Clone)]
 pub struct ContractsOpsArgs {
-    #[arg(long)]
-    pub repo_root: Option<PathBuf>,
-    #[arg(long)]
-    pub artifacts_root: Option<PathBuf>,
-    #[arg(long, default_value_t = false)]
-    pub json: bool,
-    #[arg(long, value_enum, default_value_t = ContractsFormatArg::Pretty)]
-    pub format: ContractsFormatArg,
-    #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
-    pub mode: ContractsModeArg,
+    #[command(flatten)]
+    pub common: ContractsCommonArgs,
     #[arg(long, value_enum)]
     pub domain: Option<ContractsOpsDomainArg>,
-    #[arg(long, default_value_t = false)]
-    pub fail_fast: bool,
-    #[arg(long = "filter-contract", alias = "filter")]
-    pub filter_contract: Option<String>,
-    #[arg(long)]
-    pub filter_test: Option<String>,
-    #[arg(long, default_value_t = false)]
-    pub list: bool,
-    #[arg(long, default_value_t = false)]
-    pub list_tests: bool,
-    #[arg(long)]
-    pub explain: Option<String>,
-    #[arg(long, default_value_t = false)]
-    pub allow_subprocess: bool,
-    #[arg(long, default_value_t = false)]
-    pub allow_network: bool,
-    #[arg(long, default_value_t = false)]
-    pub skip_missing_tools: bool,
-    #[arg(long, default_value_t = 300)]
-    pub timeout_seconds: u64,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractsMakeArgs {
+    #[command(flatten)]
+    pub common: ContractsCommonArgs,
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ContractsSnapshotDomainArg {
+    All,
     Docker,
+    Make,
     Ops,
 }
 

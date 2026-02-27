@@ -230,8 +230,10 @@ fn force_json_configs(command: &mut ConfigsCommand) {
 
 fn force_json_contracts(command: &mut ContractsCommand) {
     match command {
-        ContractsCommand::Docker(args) => args.json = true,
-        ContractsCommand::Ops(args) => args.json = true,
+        ContractsCommand::All(args) => args.json = true,
+        ContractsCommand::Docker(args) => args.common.json = true,
+        ContractsCommand::Make(args) => args.common.json = true,
+        ContractsCommand::Ops(args) => args.common.json = true,
         ContractsCommand::Snapshot(_) => {}
     }
 }
@@ -299,6 +301,13 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | ConfigsCommand::Diff(common) => common.strict = true,
             ConfigsCommand::Fmt { check, .. } => *check = true,
             ConfigsCommand::Print(_) | ConfigsCommand::List(_) | ConfigsCommand::Compile(_) => {}
+        },
+        Command::Contracts { command } => match command {
+            ContractsCommand::All(args) => args.fail_fast = true,
+            ContractsCommand::Docker(args) => args.common.fail_fast = true,
+            ContractsCommand::Make(args) => args.common.fail_fast = true,
+            ContractsCommand::Ops(args) => args.common.fail_fast = true,
+            ContractsCommand::Snapshot(_) => {}
         },
         _ => {}
     }
@@ -557,8 +566,10 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
         },
         Command::Contracts { command } => match command {
-            ContractsCommand::Docker(args) => args.repo_root = Some(root.clone()),
-            ContractsCommand::Ops(args) => args.repo_root = Some(root.clone()),
+            ContractsCommand::All(args) => args.repo_root = Some(root.clone()),
+            ContractsCommand::Docker(args) => args.common.repo_root = Some(root.clone()),
+            ContractsCommand::Make(args) => args.common.repo_root = Some(root.clone()),
+            ContractsCommand::Ops(args) => args.common.repo_root = Some(root.clone()),
             ContractsCommand::Snapshot(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {

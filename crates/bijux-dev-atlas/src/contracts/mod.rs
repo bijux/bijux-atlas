@@ -5,10 +5,12 @@
 //! filterable execution, pretty and JSON output, and explicit effect gating.
 
 use std::cmp::Ordering;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::path::{Path, PathBuf};
 
 pub mod docker;
+pub mod make;
 pub mod ops;
 
 pub trait ContractRegistry {
@@ -93,6 +95,10 @@ pub struct RunOptions {
     pub fail_fast: bool,
     pub contract_filter: Option<String>,
     pub test_filter: Option<String>,
+    pub only_contracts: Vec<String>,
+    pub only_tests: Vec<String>,
+    pub skip_contracts: Vec<String>,
+    pub tags: Vec<String>,
     pub list_only: bool,
     pub artifacts_root: Option<PathBuf>,
 }
@@ -149,6 +155,18 @@ pub struct RunReport {
     pub cases: Vec<CaseReport>,
 }
 
+pub struct RegistrySnapshotRow {
+    pub domain: String,
+    pub id: String,
+    pub title: String,
+    pub test_ids: Vec<String>,
+}
+
+pub struct RegistryLint {
+    pub code: &'static str,
+    pub message: String,
+}
+
 impl RunReport {
     pub fn total_contracts(&self) -> usize {
         self.contracts.len()
@@ -195,6 +213,155 @@ impl RunReport {
             0
         }
     }
+}
+
+fn matches_any_filter(filters: &[String], value: &str) -> bool {
+    filters.is_empty() || filters.iter().any(|filter| wildcard_match(filter, value))
+}
+
+fn matches_skip_filter(filters: &[String], value: &str) -> bool {
+    !filters.is_empty() && filters.iter().any(|filter| wildcard_match(filter, value))
+}
+
+fn derived_contract_tags(contract: &Contract) -> BTreeSet<&'static str> {
+    let mut tags = BTreeSet::from(["ci"]);
+    let mut has_pure = false;
+    let mut has_effect = false;
+    for case in &contract.tests {
+        match case.kind {
+            TestKind::Pure => has_pure = true,
+            TestKind::Subprocess | TestKind::Network => has_effect = true,
+        }
+    }
+    if has_pure {
+        tags.insert("static");
+    }
+    if has_effect {
+        tags.insert("effect");
+        tags.insert("local");
+        tags.insert("slow");
+    }
+    tags
+}
+
+fn matches_tags(filters: &[String], contract: &Contract) -> bool {
+    if filters.is_empty() {
+        return true;
+    }
+    let tags = derived_contract_tags(contract);
+    filters.iter().any(|filter| {
+        tags.iter()
+            .any(|tag| wildcard_match(&filter.to_ascii_lowercase(), tag))
+    })
+}
+
+pub fn registry_snapshot(
+    domain: &str,
+    contracts: &[Contract],
+) -> Vec<RegistrySnapshotRow> {
+    let mut rows = contracts
+        .iter()
+        .map(|contract| {
+            let mut test_ids = contract
+                .tests
+                .iter()
+                .map(|case| case.id.0.clone())
+                .collect::<Vec<_>>();
+            test_ids.sort();
+            RegistrySnapshotRow {
+                domain: domain.to_string(),
+                id: contract.id.0.clone(),
+                title: contract.title.to_string(),
+                test_ids,
+            }
+        })
+        .collect::<Vec<_>>();
+    rows.sort_by(|a, b| a.domain.cmp(&b.domain).then(a.id.cmp(&b.id)));
+    rows
+}
+
+pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
+    let id_re = regex::Regex::new(r"^[A-Z]+(?:-[A-Z0-9]+)*-[0-9]{3,}$").expect("valid regex");
+    let test_id_re = regex::Regex::new(r"^[a-z0-9]+(?:\.[a-z0-9_]+)+$").expect("valid regex");
+    let mut lints = Vec::new();
+    let mut contract_ids = BTreeMap::<String, Vec<String>>::new();
+    let mut test_ids = BTreeMap::<String, Vec<String>>::new();
+    let mut normalized_titles = BTreeMap::<String, Vec<String>>::new();
+
+    for row in rows {
+        contract_ids
+            .entry(row.id.clone())
+            .or_default()
+            .push(format!("{}:{}", row.domain, row.id));
+        normalized_titles
+            .entry(row.title.trim().to_ascii_lowercase())
+            .or_default()
+            .push(format!("{}:{}", row.domain, row.id));
+        if row.test_ids.is_empty() {
+            lints.push(RegistryLint {
+                code: "empty-contract",
+                message: format!("{} has no tests", row.id),
+            });
+        }
+        if !id_re.is_match(&row.id) {
+            lints.push(RegistryLint {
+                code: "contract-id-format",
+                message: format!("{} does not match required contract id format", row.id),
+            });
+        }
+        let simplified_title = row
+            .title
+            .replace(" contract", "")
+            .replace(" policy", "")
+            .trim()
+            .to_string();
+        if simplified_title.is_empty() {
+            lints.push(RegistryLint {
+                code: "title-filler",
+                message: format!("{} title collapses to filler words only", row.id),
+            });
+        }
+        for test_id in &row.test_ids {
+            test_ids
+                .entry(test_id.clone())
+                .or_default()
+                .push(format!("{}:{}", row.id, test_id));
+            if !test_id_re.is_match(test_id) {
+                lints.push(RegistryLint {
+                    code: "test-id-format",
+                    message: format!("{test_id} does not use dotted namespace format"),
+                });
+            }
+        }
+    }
+
+    for (contract_id, owners) in contract_ids {
+        if owners.len() > 1 {
+            lints.push(RegistryLint {
+                code: "duplicate-contract-id",
+                message: format!("duplicate contract id {contract_id}: {}", owners.join(", ")),
+            });
+        }
+    }
+    for (test_id, owners) in test_ids {
+        if owners.len() > 1 {
+            lints.push(RegistryLint {
+                code: "duplicate-test-id",
+                message: format!("duplicate test id {test_id}: {}", owners.join(", ")),
+            });
+        }
+    }
+    for (title, owners) in normalized_titles {
+        if owners.len() > 1 {
+            lints.push(RegistryLint {
+                code: "duplicate-title",
+                message: format!("duplicate contract title `{title}`: {}", owners.join(", ")),
+            });
+        }
+    }
+
+    lints.sort_by(|a, b| a.code.cmp(b.code).then(a.message.cmp(&b.message)));
+    lints
 }
 
 fn wildcard_match(pattern: &str, text: &str) -> bool {
@@ -266,7 +433,11 @@ pub fn run(
     let mut case_rows = Vec::new();
 
     for contract in contracts {
-        if !matches_filter(&options.contract_filter, &contract.id.0) {
+        if !matches_filter(&options.contract_filter, &contract.id.0)
+            || !matches_any_filter(&options.only_contracts, &contract.id.0)
+            || matches_skip_filter(&options.skip_contracts, &contract.id.0)
+            || !matches_tags(&options.tags, &contract)
+        {
             continue;
         }
         let mut cases = contract.tests;
@@ -274,7 +445,9 @@ pub fn run(
         let mut contract_status = CaseStatus::Pass;
         let mut has_case = false;
         for case in cases {
-            if !matches_filter(&options.test_filter, &case.id.0) {
+            if !matches_filter(&options.test_filter, &case.id.0)
+                || !matches_any_filter(&options.only_tests, &case.id.0)
+            {
                 continue;
             }
             has_case = true;
@@ -457,6 +630,118 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
     })
 }
 
+pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
+    let contracts = reports.iter().map(RunReport::total_contracts).sum::<usize>();
+    let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
+    let pass = reports.iter().map(RunReport::pass_count).sum::<usize>();
+    let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
+    let skip = reports.iter().map(RunReport::skip_count).sum::<usize>();
+    let error = reports.iter().map(RunReport::error_count).sum::<usize>();
+    let exit_code = if error > 0 {
+        1
+    } else if fail > 0 {
+        2
+    } else {
+        0
+    };
+    serde_json::json!({
+        "schema_version": 1,
+        "domain": "all",
+        "summary": {
+            "contracts": contracts,
+            "tests": tests,
+            "pass": pass,
+            "fail": fail,
+            "skip": skip,
+            "error": error,
+            "exit_code": exit_code
+        },
+        "domains": reports.iter().map(to_json).collect::<Vec<_>>()
+    })
+}
+
+pub fn to_pretty_all(reports: &[RunReport]) -> String {
+    let mut out = String::new();
+    for (index, report) in reports.iter().enumerate() {
+        if index > 0 {
+            out.push('\n');
+        }
+        out.push_str(&to_pretty(report));
+    }
+    let contracts = reports.iter().map(RunReport::total_contracts).sum::<usize>();
+    let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
+    let pass = reports.iter().map(RunReport::pass_count).sum::<usize>();
+    let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
+    let skip = reports.iter().map(RunReport::skip_count).sum::<usize>();
+    let error = reports.iter().map(RunReport::error_count).sum::<usize>();
+    out.push_str(&format!(
+        "\nSummary: {} contracts, {} tests: {} pass, {} fail, {} skip, {} error\n",
+        contracts, tests, pass, fail, skip, error
+    ));
+    out
+}
+
+pub fn to_github(reports: &[RunReport]) -> String {
+    let mut out = to_pretty_all(reports);
+    for report in reports {
+        for case in &report.cases {
+            match case.status {
+                CaseStatus::Fail => {
+                    for violation in &case.violations {
+                        let file = violation.file.clone().unwrap_or_default();
+                        let line = violation.line.unwrap_or(1);
+                        out.push_str(&format!(
+                            "::error file={},line={},title={}::{}\n",
+                            file, line, case.test_id, violation.message
+                        ));
+                    }
+                }
+                CaseStatus::Error => {
+                    out.push_str(&format!(
+                        "::error title={}::{}\n",
+                        case.test_id,
+                        case.note.clone().unwrap_or_else(|| "error".to_string())
+                    ));
+                }
+                CaseStatus::Skip => {
+                    out.push_str(&format!(
+                        "::notice title={}::{}\n",
+                        case.test_id,
+                        case.note.clone().unwrap_or_else(|| "skipped".to_string())
+                    ));
+                }
+                CaseStatus::Pass => {}
+            }
+        }
+    }
+    out
+}
+
+pub fn to_junit_all(reports: &[RunReport]) -> Result<String, String> {
+    let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
+    let failures = reports.iter().map(RunReport::fail_count).sum::<usize>();
+    let errors = reports.iter().map(RunReport::error_count).sum::<usize>();
+    let skipped = reports.iter().map(RunReport::skip_count).sum::<usize>();
+    let mut out = String::new();
+    out.push_str("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    out.push_str(&format!(
+        "<testsuites tests=\"{}\" failures=\"{}\" errors=\"{}\" skipped=\"{}\">",
+        tests, failures, errors, skipped
+    ));
+    for report in reports {
+        let suite = to_junit(report)?;
+        let start = suite
+            .find("<testsuite")
+            .ok_or_else(|| "invalid junit suite".to_string())?;
+        let end = suite
+            .rfind("</testsuite>")
+            .ok_or_else(|| "invalid junit suite".to_string())?;
+        out.push_str(&suite[start..end + "</testsuite>".len()]);
+    }
+    out.push_str("</testsuites>\n");
+    Ok(out)
+}
+
 fn xml_escape(input: &str) -> String {
     input
         .replace('&', "&amp;")
@@ -582,6 +867,10 @@ mod tests {
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -602,6 +891,10 @@ mod tests {
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -644,6 +937,10 @@ mod tests {
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -678,6 +975,10 @@ mod tests {
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -711,6 +1012,10 @@ mod tests {
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -766,6 +1071,10 @@ mod tests {
             fail_fast: true,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -821,6 +1130,10 @@ mod tests {
             fail_fast: false,
             contract_filter: Some("OPS-ROOT-*".to_string()),
             test_filter: Some("ops.root.surface.allow*".to_string()),
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -877,6 +1190,10 @@ mod tests {
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
             list_only: false,
             artifacts_root: None,
         };
@@ -938,4 +1255,5 @@ mod tests {
         assert_eq!(fail_report.exit_code(), 2);
         assert_eq!(error_report.exit_code(), 1);
     }
+
 }
