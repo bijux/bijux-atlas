@@ -33,6 +33,34 @@ fn registry_lints_detect_duplicate_contract_and_test_ids() {
 }
 
 #[test]
+fn registry_lints_detect_invalid_id_duplicate_title_and_filler_only_title() {
+    let rows = vec![
+        RegistrySnapshotRow {
+            domain: "docker".to_string(),
+            id: "docker-1".to_string(),
+            title: "policy contract".to_string(),
+            test_ids: vec!["docker.sample.one".to_string()],
+        },
+        RegistrySnapshotRow {
+            domain: "ops".to_string(),
+            id: "OPS-ROOT-001".to_string(),
+            title: "shared title".to_string(),
+            test_ids: vec!["ops.root.one".to_string()],
+        },
+        RegistrySnapshotRow {
+            domain: "make".to_string(),
+            id: "MAKE-001".to_string(),
+            title: "shared title".to_string(),
+            test_ids: vec!["make.targets.one".to_string()],
+        },
+    ];
+    let lints = lint_registry_rows(&rows);
+    assert!(lints.iter().any(|lint| lint.code == "contract-id-format"));
+    assert!(lints.iter().any(|lint| lint.code == "title-filler"));
+    assert!(lints.iter().any(|lint| lint.code == "duplicate-title"));
+}
+
+#[test]
 fn run_honors_only_skip_and_tag_filters() {
     fn registry(_: &Path) -> Result<Vec<Contract>, String> {
         Ok(vec![
@@ -63,6 +91,9 @@ fn run_honors_only_skip_and_tag_filters() {
         mode: Mode::Static,
         allow_subprocess: false,
         allow_network: false,
+        allow_k8s: false,
+        allow_fs_write: false,
+        allow_docker_daemon: false,
         skip_missing_tools: false,
         timeout_seconds: 30,
         fail_fast: false,

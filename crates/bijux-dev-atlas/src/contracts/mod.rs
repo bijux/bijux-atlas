@@ -8,6 +8,7 @@ use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 pub mod docker;
 pub mod make;
@@ -28,6 +29,44 @@ pub enum TestKind {
     Pure,
     Subprocess,
     Network,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub enum EffectKind {
+    Subprocess,
+    Network,
+    K8s,
+    FsWrite,
+    DockerDaemon,
+}
+
+impl EffectKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Subprocess => "subprocess",
+            Self::Network => "network",
+            Self::K8s => "k8s",
+            Self::FsWrite => "fs-write",
+            Self::DockerDaemon => "docker-daemon",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractMode {
+    Static,
+    Effect,
+    Both,
+}
+
+impl ContractMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Static => "static",
+            Self::Effect => "effect",
+            Self::Both => "both",
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -82,6 +121,9 @@ pub struct RunContext {
     pub mode: Mode,
     pub allow_subprocess: bool,
     pub allow_network: bool,
+    pub allow_k8s: bool,
+    pub allow_fs_write: bool,
+    pub allow_docker_daemon: bool,
     pub skip_missing_tools: bool,
     pub timeout_seconds: u64,
 }
@@ -90,6 +132,9 @@ pub struct RunOptions {
     pub mode: Mode,
     pub allow_subprocess: bool,
     pub allow_network: bool,
+    pub allow_k8s: bool,
+    pub allow_fs_write: bool,
+    pub allow_docker_daemon: bool,
     pub skip_missing_tools: bool,
     pub timeout_seconds: u64,
     pub fail_fast: bool,
@@ -145,12 +190,21 @@ pub struct CaseReport {
 pub struct ContractSummary {
     pub id: String,
     pub title: String,
+    pub mode: ContractMode,
+    pub effects: Vec<EffectKind>,
     pub status: CaseStatus,
+}
+
+pub struct RunMetadata {
+    pub run_id: String,
+    pub commit_sha: Option<String>,
+    pub dirty_tree: bool,
 }
 
 pub struct RunReport {
     pub domain: String,
     pub mode: Mode,
+    pub metadata: RunMetadata,
     pub contracts: Vec<ContractSummary>,
     pub cases: Vec<CaseReport>,
 }
@@ -223,6 +277,35 @@ fn matches_skip_filter(filters: &[String], value: &str) -> bool {
     !filters.is_empty() && filters.iter().any(|filter| wildcard_match(filter, value))
 }
 
+pub fn contract_mode(contract: &Contract) -> ContractMode {
+    let has_pure = contract.tests.iter().any(|case| case.kind == TestKind::Pure);
+    let has_effect = contract
+        .tests
+        .iter()
+        .any(|case| matches!(case.kind, TestKind::Subprocess | TestKind::Network));
+    match (has_pure, has_effect) {
+        (true, true) => ContractMode::Both,
+        (false, true) => ContractMode::Effect,
+        _ => ContractMode::Static,
+    }
+}
+
+pub fn contract_effects(contract: &Contract) -> Vec<EffectKind> {
+    let mut effects = BTreeSet::new();
+    for case in &contract.tests {
+        match case.kind {
+            TestKind::Pure => {}
+            TestKind::Subprocess => {
+                effects.insert(EffectKind::Subprocess);
+            }
+            TestKind::Network => {
+                effects.insert(EffectKind::Network);
+            }
+        }
+    }
+    effects.into_iter().collect()
+}
+
 fn derived_contract_tags(contract: &Contract) -> BTreeSet<&'static str> {
     let mut tags = BTreeSet::from(["ci"]);
     let mut has_pure = false;
@@ -252,6 +335,56 @@ fn matches_tags(filters: &[String], contract: &Contract) -> bool {
     filters.iter().any(|filter| {
         tags.iter()
             .any(|tag| wildcard_match(&filter.to_ascii_lowercase(), tag))
+    })
+}
+
+fn run_metadata(repo_root: &Path) -> RunMetadata {
+    let repo_display = repo_root.display().to_string();
+    let run_id = std::env::var("RUN_ID")
+        .ok()
+        .filter(|value| !value.trim().is_empty())
+        .unwrap_or_else(|| "local".to_string());
+    let commit_sha = Command::new("git")
+        .args(["-C", &repo_display, "rev-parse", "HEAD"])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_string())
+        .filter(|value| !value.is_empty());
+    let dirty_tree = Command::new("git")
+        .args(["-C", &repo_display, "status", "--porcelain"])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .map(|output| !output.stdout.is_empty())
+        .unwrap_or(false);
+    RunMetadata {
+        run_id,
+        commit_sha,
+        dirty_tree,
+    }
+}
+
+pub fn maturity_score(contracts: &[ContractSummary]) -> serde_json::Value {
+    let total = contracts.len().max(1) as f64;
+    let mapped_gates = contracts.len() as f64;
+    let explain = contracts.len() as f64;
+    let json_schema = contracts.len() as f64;
+    let effect_safety = contracts
+        .iter()
+        .filter(|contract| {
+            contract.mode == ContractMode::Static
+                || contract
+                    .effects
+                    .iter()
+                    .all(|effect| matches!(effect, EffectKind::Subprocess | EffectKind::Network))
+        })
+        .count() as f64;
+    serde_json::json!({
+        "mapped_gates_pct": ((mapped_gates / total) * 100.0).round() as u64,
+        "explain_pct": ((explain / total) * 100.0).round() as u64,
+        "json_schema_pct": ((json_schema / total) * 100.0).round() as u64,
+        "effect_safety_pct": ((effect_safety / total) * 100.0).round() as u64,
     })
 }
 
@@ -311,10 +444,13 @@ pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
         }
         let simplified_title = row
             .title
-            .replace(" contract", "")
-            .replace(" policy", "")
-            .trim()
-            .to_string();
+            .split_whitespace()
+            .filter(|word| {
+                let word = word.to_ascii_lowercase();
+                word != "contract" && word != "policy"
+            })
+            .collect::<Vec<_>>()
+            .join(" ");
         if simplified_title.is_empty() {
             lints.push(RegistryLint {
                 code: "title-filler",
@@ -425,6 +561,9 @@ pub fn run(
         mode: options.mode,
         allow_subprocess: options.allow_subprocess,
         allow_network: options.allow_network,
+        allow_k8s: options.allow_k8s,
+        allow_fs_write: options.allow_fs_write,
+        allow_docker_daemon: options.allow_docker_daemon,
         skip_missing_tools: options.skip_missing_tools,
         timeout_seconds: options.timeout_seconds,
     };
@@ -440,6 +579,10 @@ pub fn run(
         {
             continue;
         }
+        let contract_mode = contract_mode(&contract);
+        let contract_effects = contract_effects(&contract);
+        let contract_id = contract.id.0.clone();
+        let contract_title = contract.title.to_string();
         let mut cases = contract.tests;
         cases.sort_by_key(|t| t.id.0.clone());
         let mut contract_status = CaseStatus::Pass;
@@ -479,8 +622,8 @@ pub fn run(
                 TestResult::Error(err) => (Vec::new(), Some(err)),
             };
             case_rows.push(CaseReport {
-                contract_id: contract.id.0.clone(),
-                contract_title: contract.title.to_string(),
+                contract_id: contract_id.clone(),
+                contract_title: contract_title.clone(),
                 test_id: case.id.0,
                 test_title: case.title.to_string(),
                 kind: case.kind,
@@ -494,8 +637,10 @@ pub fn run(
         }
         if has_case {
             contract_rows.push(ContractSummary {
-                id: contract.id.0,
-                title: contract.title.to_string(),
+                id: contract_id,
+                title: contract_title,
+                mode: contract_mode,
+                effects: contract_effects,
                 status: contract_status,
             });
         }
@@ -507,6 +652,7 @@ pub fn run(
     let report = RunReport {
         domain: domain.to_string(),
         mode: options.mode,
+        metadata: run_metadata(repo_root),
         contracts: contract_rows,
         cases: case_rows,
     };
@@ -522,6 +668,33 @@ pub fn run(
                 .map_err(|e| format!("encode contracts report failed: {e}"))?,
         )
         .map_err(|e| format!("write {} failed: {e}", json_path.display()))?;
+        let inventory_path = out_dir.join(format!("{domain}.inventory.json"));
+        std::fs::write(
+            &inventory_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "domain": domain,
+                "contracts": report.contracts.iter().map(|contract| serde_json::json!({
+                    "id": contract.id,
+                    "title": contract.title,
+                    "mode": contract.mode.as_str(),
+                    "effects": contract.effects.iter().map(|effect| effect.as_str()).collect::<Vec<_>>(),
+                })).collect::<Vec<_>>()
+            }))
+            .map_err(|e| format!("encode contracts inventory failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", inventory_path.display()))?;
+        let maturity_path = out_dir.join(format!("{domain}.maturity.json"));
+        std::fs::write(
+            &maturity_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "domain": domain,
+                "maturity": maturity_score(&report.contracts),
+            }))
+            .map_err(|e| format!("encode contracts maturity failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", maturity_path.display()))?;
     }
 
     Ok(report)
@@ -596,6 +769,9 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
         "schema_version": 1,
         "domain": report.domain,
         "mode": report.mode.to_string(),
+        "run_id": report.metadata.run_id,
+        "commit_sha": report.metadata.commit_sha,
+        "dirty_tree": report.metadata.dirty_tree,
         "summary": {
             "contracts": report.total_contracts(),
             "tests": report.total_tests(),
@@ -605,9 +781,12 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "error": report.error_count(),
             "exit_code": report.exit_code()
         },
+        "maturity": maturity_score(&report.contracts),
         "contracts": report.contracts.iter().map(|c| serde_json::json!({
             "id": c.id,
             "title": c.title,
+            "mode": c.mode.as_str(),
+            "effects": c.effects.iter().map(|effect| effect.as_str()).collect::<Vec<_>>(),
             "status": c.status.as_str()
         })).collect::<Vec<_>>(),
         "tests": report.cases.iter().map(|t| serde_json::json!({
@@ -647,6 +826,9 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
     serde_json::json!({
         "schema_version": 1,
         "domain": "all",
+        "run_id": reports.first().map(|report| report.metadata.run_id.clone()).unwrap_or_else(|| "local".to_string()),
+        "commit_sha": reports.first().and_then(|report| report.metadata.commit_sha.clone()),
+        "dirty_tree": reports.first().map(|report| report.metadata.dirty_tree).unwrap_or(false),
         "summary": {
             "contracts": contracts,
             "tests": tests,
@@ -656,6 +838,12 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
             "error": error,
             "exit_code": exit_code
         },
+        "maturity": serde_json::json!({
+            "domains": reports.iter().map(|report| serde_json::json!({
+                "domain": report.domain,
+                "scores": maturity_score(&report.contracts)
+            })).collect::<Vec<_>>()
+        }),
         "domains": reports.iter().map(to_json).collect::<Vec<_>>()
     })
 }
@@ -862,6 +1050,9 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 300,
             fail_fast: false,
@@ -886,6 +1077,9 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 300,
             fail_fast: false,
@@ -932,6 +1126,9 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 300,
             fail_fast: false,
@@ -970,6 +1167,9 @@ mod tests {
             mode: Mode::Effect,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 30,
             fail_fast: false,
@@ -1007,6 +1207,9 @@ mod tests {
             mode: Mode::Effect,
             allow_subprocess: true,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 30,
             fail_fast: false,
@@ -1066,6 +1269,9 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 30,
             fail_fast: true,
@@ -1125,6 +1331,9 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 30,
             fail_fast: false,
@@ -1185,6 +1394,9 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: false,
             timeout_seconds: 30,
             fail_fast: false,
@@ -1217,9 +1429,16 @@ mod tests {
         let fail_report = RunReport {
             domain: "ops".to_string(),
             mode: Mode::Static,
+            metadata: RunMetadata {
+                run_id: "test".to_string(),
+                commit_sha: None,
+                dirty_tree: false,
+            },
             contracts: vec![ContractSummary {
                 id: "OPS-ROOT-001".to_string(),
                 title: "fail".to_string(),
+                mode: ContractMode::Static,
+                effects: Vec::new(),
                 status: CaseStatus::Fail,
             }],
             cases: vec![CaseReport {
@@ -1236,9 +1455,16 @@ mod tests {
         let error_report = RunReport {
             domain: "ops".to_string(),
             mode: Mode::Static,
+            metadata: RunMetadata {
+                run_id: "test".to_string(),
+                commit_sha: None,
+                dirty_tree: false,
+            },
             contracts: vec![ContractSummary {
                 id: "OPS-ROOT-002".to_string(),
                 title: "error".to_string(),
+                mode: ContractMode::Static,
+                effects: Vec::new(),
                 status: CaseStatus::Error,
             }],
             cases: vec![CaseReport {

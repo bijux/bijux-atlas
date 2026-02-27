@@ -330,6 +330,9 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             mode,
             allow_subprocess: common.allow_subprocess,
             allow_network: common.allow_network,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
             skip_missing_tools: common.skip_missing_tools,
             timeout_seconds: common.timeout_seconds,
             fail_fast: common.fail_fast,
@@ -370,7 +373,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             .expect("docker domain")
                             .1,
                     ),
-                    PathBuf::from("docker/_generated/contracts-registry-snapshot.json"),
+                    PathBuf::from("artifacts/contracts/docker/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Make => (
                     "make",
@@ -382,7 +385,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             .expect("make domain")
                             .1,
                     ),
-                    PathBuf::from("make/contracts-registry-snapshot.json"),
+                    PathBuf::from("artifacts/contracts/make/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Ops => (
                     "ops",
@@ -394,7 +397,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             .expect("ops domain")
                             .1,
                     ),
-                    PathBuf::from("ops/_generated/control-plane-surface-list.json"),
+                    PathBuf::from("artifacts/contracts/ops/registry-snapshot.json"),
                 ),
             };
             let payload = serde_json::json!({
