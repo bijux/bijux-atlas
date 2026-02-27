@@ -458,6 +458,9 @@ mod tests {
             ("report", "diff", None),
             ("report", "readiness", None),
             ("report", "bundle", None),
+            ("evidence", "collect", None),
+            ("evidence", "verify", None),
+            ("runbook", "generate", None),
         ] {
             assert!(
                 present.contains(&required),
