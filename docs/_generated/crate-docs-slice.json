@@ -2201,6 +2201,26 @@
         "doc_version": "v1",
         "keywords": [
           "bijux-atlas-server",
+          "runtime-model"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-server/docs/runtime-model.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "bijux-atlas-server",
+          "runtime-model"
+        ],
+        "topic": "runtime-model"
+      },
+      {
+        "crate": "bijux-atlas-server",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "bijux-atlas-server",
           "testing"
         ],
         "last_reviewed": "2026-02-25",
@@ -2242,6 +2262,26 @@
         "doc_type": "concept",
         "doc_version": "v1",
         "keywords": [
+          "attack-surface-budget",
+          "bijux-atlas-store"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "attack-surface-budget",
+          "bijux-atlas-store"
+        ],
+        "topic": "ATTACK_SURFACE_BUDGET"
+      },
+      {
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
           "backends-and-guarantees",
           "bijux-atlas-store"
         ],
@@ -2256,6 +2296,26 @@
           "bijux-atlas-store"
         ],
         "topic": "BACKENDS_AND_GUARANTEES"
+      },
+      {
+        "crate": "bijux-atlas-store",
+        "doc_type": "concept",
+        "doc_version": "v1",
+        "keywords": [
+          "backend-feature-matrix",
+          "bijux-atlas-store"
+        ],
+        "last_reviewed": "2026-02-25",
+        "lifecycle": "stable",
+        "owner": "docs-governance",
+        "path": "crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md",
+        "review_due": "2026-08-24",
+        "stability": "stable",
+        "tags": [
+          "backend-feature-matrix",
+          "bijux-atlas-store"
+        ],
+        "topic": "BACKEND_FEATURE_MATRIX"
       },
       {
         "crate": "bijux-atlas-store",

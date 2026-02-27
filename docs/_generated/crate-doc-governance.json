@@ -203,7 +203,7 @@
     {
       "crate": "bijux-atlas-server",
       "diagram_count": 3,
-      "docs_dir_count": 18,
+      "docs_dir_count": 19,
       "freshness_docs": 0,
       "has": [
         "ARCHITECTURE.md",
@@ -231,7 +231,7 @@
     {
       "crate": "bijux-atlas-store",
       "diagram_count": 3,
-      "docs_dir_count": 14,
+      "docs_dir_count": 16,
       "freshness_docs": 0,
       "has": [
         "ARCHITECTURE.md",
@@ -296,8 +296,8 @@
     "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-model` has 14 docs under crate/docs (budget=10)",
     "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-policies` has 13 docs under crate/docs (budget=10)",
     "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-query` has 13 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-server` has 18 docs under crate/docs (budget=10)",
-    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-store` has 14 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-server` has 19 docs under crate/docs (budget=10)",
+    "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-atlas-store` has 16 docs under crate/docs (budget=10)",
     "CRATE_DOCS_DIR_BUDGET_WARN: `bijux-dev-atlas` has 11 docs under crate/docs (budget=10)",
     "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-dev-atlas` has non-canonical root doc `ERRORS.md`",
     "CRATE_DOC_CROSSLINK_WARN: `bijux-atlas-core` docs/INDEX.md should reference `architecture.md`",
@@ -332,7 +332,6 @@
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-server` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-atlas-store` has no `Last Reviewed:` metadata in crate docs",
     "CRATE_DOC_FRESHNESS_WARN: `bijux-dev-atlas` has no `Last Reviewed:` metadata in crate docs",
-    "CRATE_DOC_LINK_WARN: `bijux-atlas-store` README.md should link to crate docs/",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-api` owner metadata present in 9/23 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-cli` owner metadata present in 9/20 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-core` owner metadata present in 8/22 docs",
@@ -340,8 +339,8 @@
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-model` owner metadata present in 9/23 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-policies` owner metadata present in 10/22 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-query` owner metadata present in 7/21 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-server` owner metadata present in 9/26 docs",
-    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-store` owner metadata present in 9/22 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-server` owner metadata present in 9/27 docs",
+    "CRATE_DOC_OWNER_METADATA_WARN: `bijux-atlas-store` owner metadata present in 9/24 docs",
     "CRATE_DOC_OWNER_METADATA_WARN: `bijux-dev-atlas` owner metadata present in 12/21 docs"
   ]
 }

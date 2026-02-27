@@ -30,11 +30,11 @@
     },
     {
       "crate": "bijux-atlas-server",
-      "doc_count": 18
+      "doc_count": 19
     },
     {
       "crate": "bijux-atlas-store",
-      "doc_count": 14
+      "doc_count": 16
     },
     {
       "crate": "bijux-dev-atlas",

@@ -8,6 +8,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md"
     },
     {
@@ -63,7 +68,27 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "configs/NAMING.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/OWNERS.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "configs/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/ci/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/ci/README.md"
     },
     {
       "crate": null,
@@ -94,1116 +119,6 @@
       "crate": null,
       "doc_type": "concept",
       "from": "configs/docs/environment-contract.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/cspell-json-reporter/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/cspell-pipe/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/cspell-resolver/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/cspell-service-bus/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/cspell-types/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-ada/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-aws/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-bash/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-companies/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-companies/dict/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-cpp/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-csharp/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-css/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-dart/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-data-science/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-django/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-docker/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-dotnet/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-elixir/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-en-gb/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-en_us/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-filetypes/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-flutter/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-fonts/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-fsharp/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-fullstack/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-gaming-terms/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-git/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-golang/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-google/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-haskell/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-html/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-java/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-julia/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-k8s/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-latex/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-lua/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-makefile/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-monkeyc/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-node/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-npm/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-php/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-php/dict/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-powershell/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-public-licenses/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-python/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-r/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-ruby/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-rust/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-scala/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-shell/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-shell/dict/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-software-terms/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-sql/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-svelte/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-swift/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-terraform/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-typescript/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dict-vue/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/dynamic-import/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/filetypes/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/strong-weak-map/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@cspell/url/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@nodelib/fs.scandir/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@nodelib/fs.stat/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@nodelib/fs.walk/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/@sindresorhus/merge-streams/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/ansi-regex/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/argparse/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/argparse/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/array-timsort/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/braces/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/callsites/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/chalk-template/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/chalk/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/clear-module/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/commander/Readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/comment-json/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/core-util-is/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-config-lib/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-dictionary/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-gitignore/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-glob/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-grammar/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-io/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-lib/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell-trie-lib/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/cspell/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/entities/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/env-paths/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/esprima/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/fast-equals/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/fast-glob/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/fast-json-stable-stringify/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/fastq/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/fastq/SECURITY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/file-entry-cache/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/fill-range/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/find-up-simple/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/flat-cache/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/flatted/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/gensequence/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/get-stdin/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/glob-parent/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/glob-parent/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/global-directory/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/globby/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/ignore/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/import-fresh/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/import-meta-resolve/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/ini/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/is-extglob/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/is-glob/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/is-number/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/js-yaml/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/js-yaml/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/json-buffer/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/jsonc-parser/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/jsonc-parser/LICENSE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/jsonc-parser/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/jsonc-parser/SECURITY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/keyv/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/linkify-it/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdown-it/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint-cli2/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint-micromark/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/CONTRIBUTING.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/CustomRules.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/Prettier.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/Rules.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md001.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md003.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md004.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md005.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md007.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md009.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md010.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md011.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md012.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md013.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md014.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md018.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md019.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md020.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md021.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md022.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md023.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md024.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md025.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md026.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md027.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md028.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md029.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md030.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md031.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md032.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md033.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md034.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md035.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md036.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md037.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md038.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md039.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md040.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md041.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md042.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md043.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md044.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md045.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md046.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md047.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md048.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md049.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md050.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md051.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md052.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md053.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md054.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md055.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md056.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/doc/md058.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/helpers/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/mdurl/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/merge2/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/micromatch/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/parent-module/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/path-type/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/picomatch/CHANGELOG.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/picomatch/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/punycode.js/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/queue-microtask/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/resolve-from/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/reusify/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/reusify/SECURITY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/run-parallel/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/semver/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/slash/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/strip-ansi/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/to-regex-range/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/uc.micro/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/unicorn-magic/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/vscode-languageserver-textdocument/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/vscode-uri/LICENSE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/vscode-uri/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/vscode-uri/SECURITY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/xdg-basedir/readme.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "configs/docs/node_modules/yaml/README.md"
     },
     {
       "crate": null,
@@ -1284,6 +199,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "configs/repo/root-symlink-shims.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "configs/rust/LINT_POLICY.md"
     },
     {
       "crate": null,
@@ -2243,6 +1163,11 @@
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
+      "from": "crates/bijux-atlas-server/docs/runtime-model.md"
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "doc_type": "concept",
       "from": "crates/bijux-atlas-server/docs/testing.md"
     },
     {
@@ -2303,7 +1228,17 @@
     {
       "crate": "bijux-atlas-store",
       "doc_type": "concept",
+      "from": "crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md"
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "doc_type": "concept",
       "from": "crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md"
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "doc_type": "concept",
+      "from": "crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md"
     },
     {
       "crate": "bijux-atlas-store",
@@ -2483,7 +1418,87 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/configs-lifecycle.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
     },
     {
       "crate": null,
@@ -2494,6 +1509,26 @@
       "crate": null,
       "doc_type": "concept",
       "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/configs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md"
     },
     {
       "crate": null,
@@ -2512,18 +1547,6 @@
     },
     {
       "crate": null,
-      "doc_type": "spec"},
-    {
-      "crate": null,
-      "doc_type": "spec"},
-    {
-      "crate": null,
-      "doc_type": "spec"},
-    {
-      "crate": null,
-      "doc_type": "spec"},
-    {
-      "crate": null,
       "doc_type": "concept",
       "from": "docs/AUTHORS.md"
     },
@@ -2531,6 +1554,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/OWNERS.md"
     },
     {
       "crate": null,
@@ -3091,6 +2119,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/development/ci/supply-chain-and-runtime-security.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/config-changelog.md"
     },
     {
       "crate": null,
@@ -4175,6 +3208,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/commands.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/compatibility/INDEX.md"
     },
     {
@@ -4196,6 +3234,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/compatibility/umbrella-atlas-matrix.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/configs.md"
     },
     {
       "crate": null,
@@ -4291,6 +3334,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/ingestion/supported-layouts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/make-targets.md"
     },
     {
       "crate": null,
@@ -4430,6 +3478,16 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/repo-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "from": "docs/reference/schemas.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/science/INDEX.md"
     },
     {
@@ -4521,6 +3579,11 @@
       "crate": null,
       "doc_type": "reference",
       "from": "docs/reference/store/no-implicit-default-dataset.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/release/INDEX.md"
     },
     {
       "crate": null,
@@ -4700,37 +3763,47 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/security/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/start/INDEX.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/taxonomy-map.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "makefiles/CI_LANES.md"
+      "from": "make/makefiles/CI_LANES.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "makefiles/CONTRACT.md"
+      "from": "make/makefiles/CONTRACT.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "makefiles/INDEX.md"
+      "from": "make/makefiles/INDEX.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "makefiles/PHILOSOPHY.md"
+      "from": "make/makefiles/PHILOSOPHY.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "makefiles/README.md"
+      "from": "make/makefiles/README.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "makefiles/TARGETS_REGISTRY.md"
+      "from": "make/makefiles/TARGETS_REGISTRY.md"
     },
     {
       "crate": null,

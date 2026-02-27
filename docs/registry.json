@@ -28,6 +28,28 @@
       "doc_version": "v1",
       "keywords": [
         ".github",
+        "docs-governance",
+        "pull-request-template"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": ".github/PULL_REQUEST_TEMPLATE/docs-governance.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        ".github",
+        "docs-governance",
+        "pull-request-template"
+      ],
+      "topic": "docs-governance"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        ".github",
         "ops-e2e-boundary",
         "pull-request-template"
       ],
@@ -244,12 +266,92 @@
       "doc_version": "v1",
       "keywords": [
         "configs",
+        "naming"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/NAMING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "naming"
+      ],
+      "topic": "NAMING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "owners"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/OWNERS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "owners"
+      ],
+      "topic": "OWNERS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
         "readme"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
       "path": "configs/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "readme"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/ci/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "index"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/ci/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -379,5608 +481,6 @@
         "environment-contract"
       ],
       "topic": "environment-contract"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "cspell-bundled-dicts",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "cspell-bundled-dicts",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "cspell-json-reporter",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/cspell-json-reporter/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "cspell-json-reporter",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "cspell-pipe",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/cspell-pipe/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "cspell-pipe",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "cspell-resolver",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/cspell-resolver/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "cspell-resolver",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "cspell-service-bus",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/cspell-service-bus/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "cspell-service-bus",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "cspell-types",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/cspell-types/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "cspell-types",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-ada",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-ada/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-ada",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-aws",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-aws/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-aws",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-bash",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-bash/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-bash",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-companies",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-companies/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-companies",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-companies",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-companies/dict/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-companies",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-cpp",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-cpp/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-cpp",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-cryptocurrencies",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-cryptocurrencies",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-csharp",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-csharp/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-csharp",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-css",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-css/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-css",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-dart",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-dart/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-dart",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-data-science",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-data-science/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-data-science",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-django",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-django/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-django",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-docker",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-docker/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-docker",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-dotnet",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-dotnet/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-dotnet",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-dotnet",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-dotnet",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-elixir",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-elixir/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-elixir",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-en-common-misspellings",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-en-common-misspellings",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-en-gb",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-en-gb/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-en-gb",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-en-us",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-en_us/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-en-us",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-filetypes",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-filetypes/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-filetypes",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-flutter",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-flutter/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-flutter",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-fonts",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-fonts/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-fonts",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-fsharp",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-fsharp/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-fsharp",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-fullstack",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-fullstack/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-fullstack",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-gaming-terms",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-gaming-terms/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-gaming-terms",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-git",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-git/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-git",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-golang",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-golang/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-golang",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-google",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-google/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-google",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-haskell",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-haskell/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-haskell",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-html-symbol-entities",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-html-symbol-entities",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-html",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-html/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-html",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-java",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-java/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-java",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-julia",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-julia/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-julia",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-k8s",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-k8s/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-k8s",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-latex",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-latex/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-latex",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-lorem-ipsum",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-lorem-ipsum",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-lua",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-lua/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-lua",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-makefile",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-makefile/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-makefile",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-monkeyc",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-monkeyc/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-monkeyc",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-node",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-node/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-node",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-npm",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-npm/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-npm",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-php",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-php/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-php",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-php",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-php/dict/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-php",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-powershell",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-powershell/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-powershell",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-public-licenses",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-public-licenses/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-public-licenses",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-python",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-python/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-python",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-r",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-r/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-r",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-ruby",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-ruby/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-ruby",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-rust",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-rust/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-rust",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-scala",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-scala/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-scala",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-shell",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-shell/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-shell",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-shell",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-shell/dict/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict",
-        "dict-shell",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-software-terms",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-software-terms/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-software-terms",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-sql",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-sql/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-sql",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-svelte",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-svelte/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-svelte",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-swift",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-swift/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-swift",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-terraform",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-terraform/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-terraform",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-typescript",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-typescript/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-typescript",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dict-vue",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dict-vue/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dict-vue",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "dynamic-import",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/dynamic-import/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "dynamic-import",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "filetypes",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/filetypes/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "filetypes",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "node-modules",
-        "readme",
-        "strong-weak-map"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/strong-weak-map/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "node-modules",
-        "readme",
-        "strong-weak-map"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@cspell",
-        "configs",
-        "node-modules",
-        "readme",
-        "url"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@cspell/url/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@cspell",
-        "configs",
-        "node-modules",
-        "readme",
-        "url"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@nodelib",
-        "configs",
-        "fs.scandir",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@nodelib/fs.scandir/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@nodelib",
-        "configs",
-        "fs.scandir",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@nodelib",
-        "configs",
-        "fs.stat",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@nodelib/fs.stat/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@nodelib",
-        "configs",
-        "fs.stat",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@nodelib",
-        "configs",
-        "fs.walk",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@nodelib/fs.walk/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@nodelib",
-        "configs",
-        "fs.walk",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "@sindresorhus",
-        "configs",
-        "merge-streams",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/@sindresorhus/merge-streams/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "@sindresorhus",
-        "configs",
-        "merge-streams",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ansi-regex",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/ansi-regex/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ansi-regex",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "argparse",
-        "changelog",
-        "configs",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/argparse/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "argparse",
-        "changelog",
-        "configs",
-        "node-modules"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "argparse",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/argparse/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "argparse",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "array-timsort",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/array-timsort/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "array-timsort",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "braces",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/braces/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "braces",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "callsites",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/callsites/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "callsites",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "chalk-template",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/chalk-template/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "chalk-template",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "chalk",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/chalk/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "chalk",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "clear-module",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/clear-module/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "clear-module",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "commander",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/commander/Readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "commander",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "Readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "comment-json",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/comment-json/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "comment-json",
-        "configs",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "core-util-is",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/core-util-is/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "core-util-is",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-config-lib",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-config-lib/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-config-lib",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-dictionary",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-dictionary/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-dictionary",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-gitignore",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-gitignore/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-gitignore",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-glob",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-glob/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-glob",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-grammar",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-grammar/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-grammar",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-io",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-io/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-io",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-lib",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-lib/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-lib",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell-trie-lib",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell-trie-lib/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell-trie-lib",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "cspell",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/cspell/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "cspell",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "entities",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/entities/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "entities",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "env-paths",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/env-paths/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "env-paths",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "esprima",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/esprima/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "esprima",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "fast-equals",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/fast-equals/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "fast-equals",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "fast-glob",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/fast-glob/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "fast-glob",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "fast-json-stable-stringify",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/fast-json-stable-stringify/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "fast-json-stable-stringify",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "fastq",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/fastq/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "fastq",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "fastq",
-        "node-modules",
-        "security"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/fastq/SECURITY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "fastq",
-        "node-modules",
-        "security"
-      ],
-      "topic": "SECURITY"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "file-entry-cache",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/file-entry-cache/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "file-entry-cache",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "fill-range",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/fill-range/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "fill-range",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "find-up-simple",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/find-up-simple/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "find-up-simple",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "flat-cache",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/flat-cache/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "flat-cache",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "flatted",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/flatted/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "flatted",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "gensequence",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/gensequence/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "gensequence",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "get-stdin",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/get-stdin/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "get-stdin",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "changelog",
-        "configs",
-        "glob-parent",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/glob-parent/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "changelog",
-        "configs",
-        "glob-parent",
-        "node-modules"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "glob-parent",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/glob-parent/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "glob-parent",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "global-directory",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/global-directory/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "global-directory",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "globby",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/globby/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "globby",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "ignore",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/ignore/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "ignore",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "import-fresh",
-        "node-modules",
-        "parent-module",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "import-fresh",
-        "node-modules",
-        "parent-module",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "import-fresh",
-        "node-modules",
-        "readme",
-        "resolve-from"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "import-fresh",
-        "node-modules",
-        "readme",
-        "resolve-from"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "import-fresh",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/import-fresh/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "import-fresh",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "import-meta-resolve",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/import-meta-resolve/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "import-meta-resolve",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "ini",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/ini/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "ini",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "is-extglob",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/is-extglob/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "is-extglob",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "is-glob",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/is-glob/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "is-glob",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "is-number",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/is-number/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "is-number",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "changelog",
-        "configs",
-        "js-yaml",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/js-yaml/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "changelog",
-        "configs",
-        "js-yaml",
-        "node-modules"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "js-yaml",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/js-yaml/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "js-yaml",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "json-buffer",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/json-buffer/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "json-buffer",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "changelog",
-        "configs",
-        "jsonc-parser",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/jsonc-parser/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "changelog",
-        "configs",
-        "jsonc-parser",
-        "node-modules"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "jsonc-parser",
-        "license",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/jsonc-parser/LICENSE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "jsonc-parser",
-        "license",
-        "node-modules"
-      ],
-      "topic": "LICENSE"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "jsonc-parser",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/jsonc-parser/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "jsonc-parser",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "jsonc-parser",
-        "node-modules",
-        "security"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/jsonc-parser/SECURITY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "jsonc-parser",
-        "node-modules",
-        "security"
-      ],
-      "topic": "SECURITY"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "keyv",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/keyv/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "keyv",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "linkify-it",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/linkify-it/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "linkify-it",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdown-it",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdown-it/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdown-it",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdownlint-cli2-formatter-default",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdownlint-cli2-formatter-default",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "changelog",
-        "configs",
-        "markdownlint-cli2",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "changelog",
-        "configs",
-        "markdownlint-cli2",
-        "node-modules"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdownlint-cli2",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint-cli2/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdownlint-cli2",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdownlint-cli2",
-        "node-modules",
-        "schema",
-        "validatingconfiguration"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdownlint-cli2",
-        "node-modules",
-        "schema",
-        "validatingconfiguration"
-      ],
-      "topic": "ValidatingConfiguration"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdownlint-micromark",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint-micromark/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdownlint-micromark",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "changelog",
-        "configs",
-        "markdownlint",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "changelog",
-        "configs",
-        "markdownlint",
-        "node-modules"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "contributing",
-        "markdownlint",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/CONTRIBUTING.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "contributing",
-        "markdownlint",
-        "node-modules"
-      ],
-      "topic": "CONTRIBUTING"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdownlint",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdownlint",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "customrules",
-        "doc",
-        "markdownlint",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/CustomRules.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "customrules",
-        "doc",
-        "markdownlint",
-        "node-modules"
-      ],
-      "topic": "CustomRules"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "node-modules",
-        "prettier"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/Prettier.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "node-modules",
-        "prettier"
-      ],
-      "topic": "Prettier"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "node-modules",
-        "releaseprocess"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "node-modules",
-        "releaseprocess"
-      ],
-      "topic": "ReleaseProcess"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "node-modules",
-        "rules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/Rules.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "node-modules",
-        "rules"
-      ],
-      "topic": "Rules"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md001",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md001.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md001",
-        "node-modules"
-      ],
-      "topic": "md001"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md003",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md003.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md003",
-        "node-modules"
-      ],
-      "topic": "md003"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md004",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md004.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md004",
-        "node-modules"
-      ],
-      "topic": "md004"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md005",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md005.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md005",
-        "node-modules"
-      ],
-      "topic": "md005"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md007",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md007.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md007",
-        "node-modules"
-      ],
-      "topic": "md007"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md009",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md009.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md009",
-        "node-modules"
-      ],
-      "topic": "md009"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md010",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md010.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md010",
-        "node-modules"
-      ],
-      "topic": "md010"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md011",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md011.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md011",
-        "node-modules"
-      ],
-      "topic": "md011"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md012",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md012.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md012",
-        "node-modules"
-      ],
-      "topic": "md012"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md013",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md013.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md013",
-        "node-modules"
-      ],
-      "topic": "md013"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md014",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md014.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md014",
-        "node-modules"
-      ],
-      "topic": "md014"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md018",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md018.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md018",
-        "node-modules"
-      ],
-      "topic": "md018"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md019",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md019.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md019",
-        "node-modules"
-      ],
-      "topic": "md019"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md020",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md020.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md020",
-        "node-modules"
-      ],
-      "topic": "md020"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md021",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md021.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md021",
-        "node-modules"
-      ],
-      "topic": "md021"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md022",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md022.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md022",
-        "node-modules"
-      ],
-      "topic": "md022"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md023",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md023.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md023",
-        "node-modules"
-      ],
-      "topic": "md023"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md024",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md024.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md024",
-        "node-modules"
-      ],
-      "topic": "md024"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md025",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md025.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md025",
-        "node-modules"
-      ],
-      "topic": "md025"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md026",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md026.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md026",
-        "node-modules"
-      ],
-      "topic": "md026"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md027",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md027.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md027",
-        "node-modules"
-      ],
-      "topic": "md027"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md028",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md028.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md028",
-        "node-modules"
-      ],
-      "topic": "md028"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md029",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md029.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md029",
-        "node-modules"
-      ],
-      "topic": "md029"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md030",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md030.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md030",
-        "node-modules"
-      ],
-      "topic": "md030"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md031",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md031.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md031",
-        "node-modules"
-      ],
-      "topic": "md031"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md032",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md032.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md032",
-        "node-modules"
-      ],
-      "topic": "md032"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md033",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md033.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md033",
-        "node-modules"
-      ],
-      "topic": "md033"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md034",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md034.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md034",
-        "node-modules"
-      ],
-      "topic": "md034"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md035",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md035.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md035",
-        "node-modules"
-      ],
-      "topic": "md035"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md036",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md036.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md036",
-        "node-modules"
-      ],
-      "topic": "md036"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md037",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md037.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md037",
-        "node-modules"
-      ],
-      "topic": "md037"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md038",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md038.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md038",
-        "node-modules"
-      ],
-      "topic": "md038"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md039",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md039.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md039",
-        "node-modules"
-      ],
-      "topic": "md039"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md040",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md040.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md040",
-        "node-modules"
-      ],
-      "topic": "md040"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md041",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md041.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md041",
-        "node-modules"
-      ],
-      "topic": "md041"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md042",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md042.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md042",
-        "node-modules"
-      ],
-      "topic": "md042"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md043",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md043.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md043",
-        "node-modules"
-      ],
-      "topic": "md043"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md044",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md044.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md044",
-        "node-modules"
-      ],
-      "topic": "md044"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md045",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md045.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md045",
-        "node-modules"
-      ],
-      "topic": "md045"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md046",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md046.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md046",
-        "node-modules"
-      ],
-      "topic": "md046"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md047",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md047.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md047",
-        "node-modules"
-      ],
-      "topic": "md047"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md048",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md048.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md048",
-        "node-modules"
-      ],
-      "topic": "md048"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md049",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md049.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md049",
-        "node-modules"
-      ],
-      "topic": "md049"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md050",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md050.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md050",
-        "node-modules"
-      ],
-      "topic": "md050"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md051",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md051.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md051",
-        "node-modules"
-      ],
-      "topic": "md051"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md052",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md052.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md052",
-        "node-modules"
-      ],
-      "topic": "md052"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md053",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md053.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md053",
-        "node-modules"
-      ],
-      "topic": "md053"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md054",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md054.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md054",
-        "node-modules"
-      ],
-      "topic": "md054"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md055",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md055.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md055",
-        "node-modules"
-      ],
-      "topic": "md055"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md056",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md056.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md056",
-        "node-modules"
-      ],
-      "topic": "md056"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md058",
-        "node-modules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/doc/md058.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "doc",
-        "markdownlint",
-        "md058",
-        "node-modules"
-      ],
-      "topic": "md058"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "helpers",
-        "markdownlint",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/helpers/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "helpers",
-        "markdownlint",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "markdownlint",
-        "node-modules",
-        "schema",
-        "validatingconfiguration"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "markdownlint",
-        "node-modules",
-        "schema",
-        "validatingconfiguration"
-      ],
-      "topic": "ValidatingConfiguration"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "mdurl",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/mdurl/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "mdurl",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "merge2",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/merge2/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "merge2",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "micromatch",
-        "node-modules",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/micromatch/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "micromatch",
-        "node-modules",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "parent-module",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/parent-module/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "parent-module",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "path-type",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/path-type/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "path-type",
-        "readme"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "changelog",
-        "configs",
-        "node-modules",
-        "picomatch"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/picomatch/CHANGELOG.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "changelog",
-        "configs",
-        "node-modules",
-        "picomatch"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "picomatch",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/picomatch/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "picomatch",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "punycode.js",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/punycode.js/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "punycode.js",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "queue-microtask",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/queue-microtask/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "queue-microtask",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "resolve-from"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/resolve-from/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "resolve-from"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "reusify"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/reusify/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "reusify"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "reusify",
-        "security"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/reusify/SECURITY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "reusify",
-        "security"
-      ],
-      "topic": "SECURITY"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "run-parallel"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/run-parallel/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "run-parallel"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "semver"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/semver/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "semver"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "slash"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/slash/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "slash"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "strip-ansi"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/strip-ansi/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "strip-ansi"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "to-regex-range"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/to-regex-range/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "to-regex-range"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "uc.micro"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/uc.micro/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "uc.micro"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "unicorn-magic"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/unicorn-magic/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "unicorn-magic"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "vscode-languageserver-textdocument"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/vscode-languageserver-textdocument/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "vscode-languageserver-textdocument"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "license",
-        "node-modules",
-        "vscode-uri"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/vscode-uri/LICENSE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "license",
-        "node-modules",
-        "vscode-uri"
-      ],
-      "topic": "LICENSE"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "vscode-uri"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/vscode-uri/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "vscode-uri"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "security",
-        "vscode-uri"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/vscode-uri/SECURITY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "security",
-        "vscode-uri"
-      ],
-      "topic": "SECURITY"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "xdg-basedir"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/xdg-basedir/readme.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "xdg-basedir"
-      ],
-      "topic": "readme"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs",
-        "node-modules",
-        "readme",
-        "yaml"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "configs/docs/node_modules/yaml/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs",
-        "node-modules",
-        "readme",
-        "yaml"
-      ],
-      "topic": "README"
     },
     {
       "crate": null,
@@ -6339,6 +839,28 @@
         "root-symlink-shims"
       ],
       "topic": "root-symlink-shims"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "lint-policy",
+        "rust"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "configs/rust/LINT_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "lint-policy",
+        "rust"
+      ],
+      "topic": "LINT_POLICY"
     },
     {
       "crate": null,
@@ -10212,6 +4734,26 @@
       "doc_version": "v1",
       "keywords": [
         "bijux-atlas-server",
+        "runtime-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-server/docs/runtime-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "runtime-model"
+      ],
+      "topic": "runtime-model"
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-server",
         "testing"
       ],
       "last_reviewed": "2026-02-25",
@@ -10457,6 +4999,26 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "attack-surface-budget",
+        "bijux-atlas-store"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "attack-surface-budget",
+        "bijux-atlas-store"
+      ],
+      "topic": "ATTACK_SURFACE_BUDGET"
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "backends-and-guarantees",
         "bijux-atlas-store"
       ],
@@ -10471,6 +5033,26 @@
         "bijux-atlas-store"
       ],
       "topic": "BACKENDS_AND_GUARANTEES"
+    },
+    {
+      "crate": "bijux-atlas-store",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "backend-feature-matrix",
+        "bijux-atlas-store"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "backend-feature-matrix",
+        "bijux-atlas-store"
+      ],
+      "topic": "BACKEND_FEATURE_MATRIX"
     },
     {
       "crate": "bijux-atlas-store",
@@ -11191,6 +5773,62 @@
         "configs",
         "configs-mini",
         "fixtures",
+        "naming",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "naming",
+        "tests"
+      ],
+      "topic": "NAMING"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "owners",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "owners",
+        "tests"
+      ],
+      "topic": "OWNERS"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
         "readme",
         "tests"
       ],
@@ -11209,6 +5847,404 @@
         "tests"
       ],
       "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "index",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "index",
+        "tests"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "index",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "index",
+        "tests"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "config-diff",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "config-diff",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "tests"
+      ],
+      "topic": "config-diff"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-lifecycle",
+        "configs-mini",
+        "fixtures",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/configs-lifecycle.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-lifecycle",
+        "configs-mini",
+        "fixtures",
+        "tests"
+      ],
+      "topic": "configs-lifecycle"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "environment-contract",
+        "fixtures",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "environment-contract",
+        "fixtures",
+        "tests"
+      ],
+      "topic": "environment-contract"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "schema-overview",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "schema-overview",
+        "tests"
+      ],
+      "topic": "schema-overview"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "schema-validation",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "schema-validation",
+        "tests"
+      ],
+      "topic": "schema-validation"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "lint-policy",
+        "rust",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "configs-mini",
+        "fixtures",
+        "lint-policy",
+        "rust",
+        "tests"
+      ],
+      "topic": "LINT_POLICY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docker",
+        "docker-contracts",
+        "fail-latest",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docker",
+        "docker-contracts",
+        "fail-latest",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docker",
+        "docker-contracts",
+        "fail-patterns",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docker",
+        "docker-contracts",
+        "fail-patterns",
+        "fixtures",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docker",
+        "docker-contracts",
+        "fixtures",
+        "pass",
+        "readme",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docker",
+        "docker-contracts",
+        "fixtures",
+        "pass",
+        "readme",
+        "tests"
+      ],
+      "topic": "README"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "start-here",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "start-here",
+        "tests"
+      ],
+      "topic": "START_HERE"
     },
     {
       "crate": null,
@@ -11266,6 +6302,118 @@
     },
     {
       "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "commands",
+        "docs-mini",
+        "fixtures",
+        "reference",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "commands",
+        "docs-mini",
+        "fixtures",
+        "reference",
+        "tests"
+      ],
+      "topic": "commands"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "configs",
+        "docs-mini",
+        "fixtures",
+        "reference",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/configs.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "configs",
+        "docs-mini",
+        "fixtures",
+        "reference",
+        "tests"
+      ],
+      "topic": "configs"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "make-targets",
+        "reference",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "make-targets",
+        "reference",
+        "tests"
+      ],
+      "topic": "make-targets"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "reference",
+        "schemas",
+        "tests"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-dev-atlas",
+        "docs-mini",
+        "fixtures",
+        "reference",
+        "schemas",
+        "tests"
+      ],
+      "topic": "schemas"
+    },
+    {
+      "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
@@ -11302,7 +6450,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-platform",
       "path": "docker/CONTRACT.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11331,90 +6479,6 @@
         "readme"
       ],
       "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "docker",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docker-governance",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "docker",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "docker",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "docker",
-        "readme"
-      ],
-      "topic": "README"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "docker",
-        "image-policy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docker-governance",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "docker",
-        "image-policy"
-      ],
-      "topic": "image-policy"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "docker",
-        "reproducibility"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docker-governance",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "docker",
-        "reproducibility"
-      ],
-      "topic": "reproducibility"
     },
     {
       "crate": null,
@@ -11451,6 +6515,24 @@
         "contract"
       ],
       "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "owners"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/OWNERS.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "owners"
+      ],
+      "topic": "OWNERS"
     },
     {
       "crate": null,
@@ -13715,6 +8797,26 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "config-changelog",
+        "development"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/config-changelog.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "config-changelog",
+        "development"
+      ],
+      "topic": "config-changelog"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "config-versioning",
         "development"
       ],
@@ -13923,7 +9025,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-platform",
       "path": "docs/development/makefiles/surface.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -18299,6 +13401,26 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "commands",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/commands.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "commands",
+        "reference"
+      ],
+      "topic": "commands"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "compatibility",
         "index",
         "reference"
@@ -18403,6 +13525,26 @@
         "umbrella-atlas-matrix"
       ],
       "topic": "umbrella-atlas-matrix"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "configs",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/configs.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "configs",
+        "reference"
+      ],
+      "topic": "configs"
     },
     {
       "crate": null,
@@ -18821,6 +13963,26 @@
         "supported-layouts"
       ],
       "topic": "supported-layouts"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "make-targets",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/make-targets.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "make-targets",
+        "reference"
+      ],
+      "topic": "make-targets"
     },
     {
       "crate": null,
@@ -19421,6 +14583,46 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "reference",
+        "repo-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/repo-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "repo-map"
+      ],
+      "topic": "repo-map"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "reference",
+        "schemas"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/reference/schemas.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "reference",
+        "schemas"
+      ],
+      "topic": "schemas"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "index",
         "reference",
         "science"
@@ -19833,6 +15035,26 @@
         "store"
       ],
       "topic": "no-implicit-default-dataset"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/release/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "release"
+      ],
+      "topic": "INDEX"
     },
     {
       "crate": null,
@@ -20539,6 +15761,46 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "index",
+        "security"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/security/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "security"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "start"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/start/INDEX.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "start"
+      ],
+      "topic": "INDEX"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "taxonomy-map"
       ],
       "last_reviewed": "2026-02-25",
@@ -20558,16 +15820,18 @@
       "doc_version": "v1",
       "keywords": [
         "ci-lanes",
+        "make",
         "makefiles"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "build-and-release",
-      "path": "makefiles/CI_LANES.md",
+      "path": "make/makefiles/CI_LANES.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
         "ci-lanes",
+        "make",
         "makefiles"
       ],
       "topic": "CI_LANES"
@@ -20578,16 +15842,18 @@
       "doc_version": "v1",
       "keywords": [
         "contract",
+        "make",
         "makefiles"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "makefiles/CONTRACT.md",
+      "path": "make/makefiles/CONTRACT.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
         "contract",
+        "make",
         "makefiles"
       ],
       "topic": "CONTRACT"
@@ -20598,16 +15864,18 @@
       "doc_version": "v1",
       "keywords": [
         "index",
+        "make",
         "makefiles"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "build-and-release",
-      "path": "makefiles/INDEX.md",
+      "path": "make/makefiles/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
         "index",
+        "make",
         "makefiles"
       ],
       "topic": "INDEX"
@@ -20617,16 +15885,18 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "make",
         "makefiles",
         "philosophy"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "makefiles/PHILOSOPHY.md",
+      "path": "make/makefiles/PHILOSOPHY.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
+        "make",
         "makefiles",
         "philosophy"
       ],
@@ -20637,16 +15907,18 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "make",
         "makefiles",
         "readme"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "makefiles/README.md",
+      "path": "make/makefiles/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
+        "make",
         "makefiles",
         "readme"
       ],
@@ -20657,16 +15929,18 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "make",
         "makefiles",
         "targets-registry"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "makefiles/TARGETS_REGISTRY.md",
+      "path": "make/makefiles/TARGETS_REGISTRY.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
+        "make",
         "makefiles",
         "targets-registry"
       ],

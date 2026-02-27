@@ -12,6 +12,14 @@
       "breadcrumbs": [
         ".github",
         ".github/PULL_REQUEST_TEMPLATE",
+        ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
+      ],
+      "path": ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
+    },
+    {
+      "breadcrumbs": [
+        ".github",
+        ".github/PULL_REQUEST_TEMPLATE",
         ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md"
       ],
       "path": ".github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md"
@@ -86,9 +94,39 @@
     {
       "breadcrumbs": [
         "configs",
+        "configs/NAMING.md"
+      ],
+      "path": "configs/NAMING.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/OWNERS.md"
+      ],
+      "path": "configs/OWNERS.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
         "configs/README.md"
       ],
       "path": "configs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/ci",
+        "configs/ci/INDEX.md"
+      ],
+      "path": "configs/ci/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/ci",
+        "configs/ci/README.md"
+      ],
+      "path": "configs/ci/README.md"
     },
     {
       "breadcrumbs": [
@@ -137,2365 +175,6 @@
         "configs/docs/environment-contract.md"
       ],
       "path": "configs/docs/environment-contract.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/cspell-bundled-dicts",
-        "configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/cspell-bundled-dicts/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/cspell-json-reporter",
-        "configs/docs/node_modules/@cspell/cspell-json-reporter/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/cspell-json-reporter/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/cspell-pipe",
-        "configs/docs/node_modules/@cspell/cspell-pipe/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/cspell-pipe/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/cspell-resolver",
-        "configs/docs/node_modules/@cspell/cspell-resolver/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/cspell-resolver/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/cspell-service-bus",
-        "configs/docs/node_modules/@cspell/cspell-service-bus/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/cspell-service-bus/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/cspell-types",
-        "configs/docs/node_modules/@cspell/cspell-types/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/cspell-types/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-ada",
-        "configs/docs/node_modules/@cspell/dict-ada/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-ada/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-aws",
-        "configs/docs/node_modules/@cspell/dict-aws/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-aws/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-bash",
-        "configs/docs/node_modules/@cspell/dict-bash/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-bash/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-companies",
-        "configs/docs/node_modules/@cspell/dict-companies/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-companies/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-companies",
-        "configs/docs/node_modules/@cspell/dict-companies/dict",
-        "configs/docs/node_modules/@cspell/dict-companies/dict/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-companies/dict/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-cpp",
-        "configs/docs/node_modules/@cspell/dict-cpp/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-cpp/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-cryptocurrencies",
-        "configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-cryptocurrencies/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-csharp",
-        "configs/docs/node_modules/@cspell/dict-csharp/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-csharp/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-css",
-        "configs/docs/node_modules/@cspell/dict-css/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-css/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-dart",
-        "configs/docs/node_modules/@cspell/dict-dart/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-dart/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-data-science",
-        "configs/docs/node_modules/@cspell/dict-data-science/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-data-science/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-django",
-        "configs/docs/node_modules/@cspell/dict-django/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-django/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-docker",
-        "configs/docs/node_modules/@cspell/dict-docker/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-docker/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-dotnet",
-        "configs/docs/node_modules/@cspell/dict-dotnet/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-dotnet/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-dotnet",
-        "configs/docs/node_modules/@cspell/dict-dotnet/dict",
-        "configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-dotnet/dict/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-elixir",
-        "configs/docs/node_modules/@cspell/dict-elixir/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-elixir/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-en-common-misspellings",
-        "configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-en-common-misspellings/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-en-gb",
-        "configs/docs/node_modules/@cspell/dict-en-gb/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-en-gb/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-en_us",
-        "configs/docs/node_modules/@cspell/dict-en_us/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-en_us/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-filetypes",
-        "configs/docs/node_modules/@cspell/dict-filetypes/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-filetypes/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-flutter",
-        "configs/docs/node_modules/@cspell/dict-flutter/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-flutter/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-fonts",
-        "configs/docs/node_modules/@cspell/dict-fonts/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-fonts/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-fsharp",
-        "configs/docs/node_modules/@cspell/dict-fsharp/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-fsharp/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-fullstack",
-        "configs/docs/node_modules/@cspell/dict-fullstack/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-fullstack/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-gaming-terms",
-        "configs/docs/node_modules/@cspell/dict-gaming-terms/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-gaming-terms/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-git",
-        "configs/docs/node_modules/@cspell/dict-git/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-git/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-golang",
-        "configs/docs/node_modules/@cspell/dict-golang/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-golang/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-google",
-        "configs/docs/node_modules/@cspell/dict-google/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-google/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-haskell",
-        "configs/docs/node_modules/@cspell/dict-haskell/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-haskell/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-html-symbol-entities",
-        "configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-html-symbol-entities/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-html",
-        "configs/docs/node_modules/@cspell/dict-html/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-html/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-java",
-        "configs/docs/node_modules/@cspell/dict-java/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-java/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-julia",
-        "configs/docs/node_modules/@cspell/dict-julia/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-julia/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-k8s",
-        "configs/docs/node_modules/@cspell/dict-k8s/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-k8s/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-latex",
-        "configs/docs/node_modules/@cspell/dict-latex/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-latex/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-lorem-ipsum",
-        "configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-lorem-ipsum/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-lua",
-        "configs/docs/node_modules/@cspell/dict-lua/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-lua/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-makefile",
-        "configs/docs/node_modules/@cspell/dict-makefile/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-makefile/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-monkeyc",
-        "configs/docs/node_modules/@cspell/dict-monkeyc/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-monkeyc/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-node",
-        "configs/docs/node_modules/@cspell/dict-node/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-node/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-npm",
-        "configs/docs/node_modules/@cspell/dict-npm/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-npm/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-php",
-        "configs/docs/node_modules/@cspell/dict-php/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-php/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-php",
-        "configs/docs/node_modules/@cspell/dict-php/dict",
-        "configs/docs/node_modules/@cspell/dict-php/dict/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-php/dict/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-powershell",
-        "configs/docs/node_modules/@cspell/dict-powershell/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-powershell/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-public-licenses",
-        "configs/docs/node_modules/@cspell/dict-public-licenses/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-public-licenses/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-python",
-        "configs/docs/node_modules/@cspell/dict-python/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-python/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-r",
-        "configs/docs/node_modules/@cspell/dict-r/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-r/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-ruby",
-        "configs/docs/node_modules/@cspell/dict-ruby/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-ruby/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-rust",
-        "configs/docs/node_modules/@cspell/dict-rust/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-rust/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-scala",
-        "configs/docs/node_modules/@cspell/dict-scala/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-scala/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-shell",
-        "configs/docs/node_modules/@cspell/dict-shell/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-shell/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-shell",
-        "configs/docs/node_modules/@cspell/dict-shell/dict",
-        "configs/docs/node_modules/@cspell/dict-shell/dict/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-shell/dict/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-software-terms",
-        "configs/docs/node_modules/@cspell/dict-software-terms/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-software-terms/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-sql",
-        "configs/docs/node_modules/@cspell/dict-sql/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-sql/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-svelte",
-        "configs/docs/node_modules/@cspell/dict-svelte/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-svelte/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-swift",
-        "configs/docs/node_modules/@cspell/dict-swift/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-swift/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-terraform",
-        "configs/docs/node_modules/@cspell/dict-terraform/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-terraform/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-typescript",
-        "configs/docs/node_modules/@cspell/dict-typescript/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-typescript/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dict-vue",
-        "configs/docs/node_modules/@cspell/dict-vue/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dict-vue/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/dynamic-import",
-        "configs/docs/node_modules/@cspell/dynamic-import/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/dynamic-import/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/filetypes",
-        "configs/docs/node_modules/@cspell/filetypes/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/filetypes/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/strong-weak-map",
-        "configs/docs/node_modules/@cspell/strong-weak-map/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/strong-weak-map/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@cspell",
-        "configs/docs/node_modules/@cspell/url",
-        "configs/docs/node_modules/@cspell/url/README.md"
-      ],
-      "path": "configs/docs/node_modules/@cspell/url/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@nodelib",
-        "configs/docs/node_modules/@nodelib/fs.scandir",
-        "configs/docs/node_modules/@nodelib/fs.scandir/README.md"
-      ],
-      "path": "configs/docs/node_modules/@nodelib/fs.scandir/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@nodelib",
-        "configs/docs/node_modules/@nodelib/fs.stat",
-        "configs/docs/node_modules/@nodelib/fs.stat/README.md"
-      ],
-      "path": "configs/docs/node_modules/@nodelib/fs.stat/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@nodelib",
-        "configs/docs/node_modules/@nodelib/fs.walk",
-        "configs/docs/node_modules/@nodelib/fs.walk/README.md"
-      ],
-      "path": "configs/docs/node_modules/@nodelib/fs.walk/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/@sindresorhus",
-        "configs/docs/node_modules/@sindresorhus/merge-streams",
-        "configs/docs/node_modules/@sindresorhus/merge-streams/readme.md"
-      ],
-      "path": "configs/docs/node_modules/@sindresorhus/merge-streams/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/ansi-regex",
-        "configs/docs/node_modules/ansi-regex/readme.md"
-      ],
-      "path": "configs/docs/node_modules/ansi-regex/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/argparse",
-        "configs/docs/node_modules/argparse/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/argparse/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/argparse",
-        "configs/docs/node_modules/argparse/README.md"
-      ],
-      "path": "configs/docs/node_modules/argparse/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/array-timsort",
-        "configs/docs/node_modules/array-timsort/README.md"
-      ],
-      "path": "configs/docs/node_modules/array-timsort/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/braces",
-        "configs/docs/node_modules/braces/README.md"
-      ],
-      "path": "configs/docs/node_modules/braces/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/callsites",
-        "configs/docs/node_modules/callsites/readme.md"
-      ],
-      "path": "configs/docs/node_modules/callsites/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/chalk-template",
-        "configs/docs/node_modules/chalk-template/readme.md"
-      ],
-      "path": "configs/docs/node_modules/chalk-template/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/chalk",
-        "configs/docs/node_modules/chalk/readme.md"
-      ],
-      "path": "configs/docs/node_modules/chalk/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/clear-module",
-        "configs/docs/node_modules/clear-module/readme.md"
-      ],
-      "path": "configs/docs/node_modules/clear-module/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/commander",
-        "configs/docs/node_modules/commander/Readme.md"
-      ],
-      "path": "configs/docs/node_modules/commander/Readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/comment-json",
-        "configs/docs/node_modules/comment-json/README.md"
-      ],
-      "path": "configs/docs/node_modules/comment-json/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/core-util-is",
-        "configs/docs/node_modules/core-util-is/README.md"
-      ],
-      "path": "configs/docs/node_modules/core-util-is/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-config-lib",
-        "configs/docs/node_modules/cspell-config-lib/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-config-lib/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-dictionary",
-        "configs/docs/node_modules/cspell-dictionary/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-dictionary/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-gitignore",
-        "configs/docs/node_modules/cspell-gitignore/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-gitignore/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-glob",
-        "configs/docs/node_modules/cspell-glob/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-glob/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-grammar",
-        "configs/docs/node_modules/cspell-grammar/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-grammar/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-io",
-        "configs/docs/node_modules/cspell-io/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-io/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-lib",
-        "configs/docs/node_modules/cspell-lib/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-lib/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell-trie-lib",
-        "configs/docs/node_modules/cspell-trie-lib/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell-trie-lib/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/cspell",
-        "configs/docs/node_modules/cspell/README.md"
-      ],
-      "path": "configs/docs/node_modules/cspell/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/entities",
-        "configs/docs/node_modules/entities/readme.md"
-      ],
-      "path": "configs/docs/node_modules/entities/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/env-paths",
-        "configs/docs/node_modules/env-paths/readme.md"
-      ],
-      "path": "configs/docs/node_modules/env-paths/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/esprima",
-        "configs/docs/node_modules/esprima/README.md"
-      ],
-      "path": "configs/docs/node_modules/esprima/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/fast-equals",
-        "configs/docs/node_modules/fast-equals/README.md"
-      ],
-      "path": "configs/docs/node_modules/fast-equals/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/fast-glob",
-        "configs/docs/node_modules/fast-glob/README.md"
-      ],
-      "path": "configs/docs/node_modules/fast-glob/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/fast-json-stable-stringify",
-        "configs/docs/node_modules/fast-json-stable-stringify/README.md"
-      ],
-      "path": "configs/docs/node_modules/fast-json-stable-stringify/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/fastq",
-        "configs/docs/node_modules/fastq/README.md"
-      ],
-      "path": "configs/docs/node_modules/fastq/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/fastq",
-        "configs/docs/node_modules/fastq/SECURITY.md"
-      ],
-      "path": "configs/docs/node_modules/fastq/SECURITY.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/file-entry-cache",
-        "configs/docs/node_modules/file-entry-cache/README.md"
-      ],
-      "path": "configs/docs/node_modules/file-entry-cache/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/fill-range",
-        "configs/docs/node_modules/fill-range/README.md"
-      ],
-      "path": "configs/docs/node_modules/fill-range/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/find-up-simple",
-        "configs/docs/node_modules/find-up-simple/readme.md"
-      ],
-      "path": "configs/docs/node_modules/find-up-simple/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/flat-cache",
-        "configs/docs/node_modules/flat-cache/README.md"
-      ],
-      "path": "configs/docs/node_modules/flat-cache/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/flatted",
-        "configs/docs/node_modules/flatted/README.md"
-      ],
-      "path": "configs/docs/node_modules/flatted/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/gensequence",
-        "configs/docs/node_modules/gensequence/README.md"
-      ],
-      "path": "configs/docs/node_modules/gensequence/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/get-stdin",
-        "configs/docs/node_modules/get-stdin/readme.md"
-      ],
-      "path": "configs/docs/node_modules/get-stdin/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/glob-parent",
-        "configs/docs/node_modules/glob-parent/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/glob-parent/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/glob-parent",
-        "configs/docs/node_modules/glob-parent/README.md"
-      ],
-      "path": "configs/docs/node_modules/glob-parent/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/global-directory",
-        "configs/docs/node_modules/global-directory/readme.md"
-      ],
-      "path": "configs/docs/node_modules/global-directory/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/globby",
-        "configs/docs/node_modules/globby/readme.md"
-      ],
-      "path": "configs/docs/node_modules/globby/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/ignore",
-        "configs/docs/node_modules/ignore/README.md"
-      ],
-      "path": "configs/docs/node_modules/ignore/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/import-fresh",
-        "configs/docs/node_modules/import-fresh/node_modules",
-        "configs/docs/node_modules/import-fresh/node_modules/parent-module",
-        "configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md"
-      ],
-      "path": "configs/docs/node_modules/import-fresh/node_modules/parent-module/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/import-fresh",
-        "configs/docs/node_modules/import-fresh/node_modules",
-        "configs/docs/node_modules/import-fresh/node_modules/resolve-from",
-        "configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md"
-      ],
-      "path": "configs/docs/node_modules/import-fresh/node_modules/resolve-from/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/import-fresh",
-        "configs/docs/node_modules/import-fresh/readme.md"
-      ],
-      "path": "configs/docs/node_modules/import-fresh/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/import-meta-resolve",
-        "configs/docs/node_modules/import-meta-resolve/readme.md"
-      ],
-      "path": "configs/docs/node_modules/import-meta-resolve/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/ini",
-        "configs/docs/node_modules/ini/README.md"
-      ],
-      "path": "configs/docs/node_modules/ini/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/is-extglob",
-        "configs/docs/node_modules/is-extglob/README.md"
-      ],
-      "path": "configs/docs/node_modules/is-extglob/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/is-glob",
-        "configs/docs/node_modules/is-glob/README.md"
-      ],
-      "path": "configs/docs/node_modules/is-glob/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/is-number",
-        "configs/docs/node_modules/is-number/README.md"
-      ],
-      "path": "configs/docs/node_modules/is-number/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/js-yaml",
-        "configs/docs/node_modules/js-yaml/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/js-yaml/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/js-yaml",
-        "configs/docs/node_modules/js-yaml/README.md"
-      ],
-      "path": "configs/docs/node_modules/js-yaml/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/json-buffer",
-        "configs/docs/node_modules/json-buffer/README.md"
-      ],
-      "path": "configs/docs/node_modules/json-buffer/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/jsonc-parser",
-        "configs/docs/node_modules/jsonc-parser/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/jsonc-parser/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/jsonc-parser",
-        "configs/docs/node_modules/jsonc-parser/LICENSE.md"
-      ],
-      "path": "configs/docs/node_modules/jsonc-parser/LICENSE.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/jsonc-parser",
-        "configs/docs/node_modules/jsonc-parser/README.md"
-      ],
-      "path": "configs/docs/node_modules/jsonc-parser/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/jsonc-parser",
-        "configs/docs/node_modules/jsonc-parser/SECURITY.md"
-      ],
-      "path": "configs/docs/node_modules/jsonc-parser/SECURITY.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/keyv",
-        "configs/docs/node_modules/keyv/README.md"
-      ],
-      "path": "configs/docs/node_modules/keyv/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/linkify-it",
-        "configs/docs/node_modules/linkify-it/README.md"
-      ],
-      "path": "configs/docs/node_modules/linkify-it/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdown-it",
-        "configs/docs/node_modules/markdown-it/README.md"
-      ],
-      "path": "configs/docs/node_modules/markdown-it/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint-cli2-formatter-default",
-        "configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint-cli2-formatter-default/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint-cli2",
-        "configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint-cli2/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint-cli2",
-        "configs/docs/node_modules/markdownlint-cli2/README.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint-cli2/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint-cli2",
-        "configs/docs/node_modules/markdownlint-cli2/schema",
-        "configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint-cli2/schema/ValidatingConfiguration.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint-micromark",
-        "configs/docs/node_modules/markdownlint-micromark/README.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint-micromark/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/CONTRIBUTING.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/CONTRIBUTING.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/README.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/CustomRules.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/CustomRules.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/Prettier.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/Prettier.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/ReleaseProcess.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/Rules.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/Rules.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md001.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md001.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md003.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md003.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md004.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md004.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md005.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md005.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md007.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md007.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md009.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md009.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md010.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md010.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md011.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md011.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md012.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md012.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md013.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md013.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md014.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md014.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md018.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md018.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md019.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md019.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md020.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md020.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md021.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md021.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md022.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md022.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md023.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md023.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md024.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md024.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md025.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md025.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md026.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md026.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md027.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md027.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md028.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md028.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md029.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md029.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md030.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md030.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md031.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md031.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md032.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md032.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md033.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md033.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md034.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md034.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md035.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md035.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md036.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md036.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md037.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md037.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md038.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md038.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md039.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md039.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md040.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md040.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md041.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md041.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md042.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md042.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md043.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md043.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md044.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md044.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md045.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md045.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md046.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md046.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md047.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md047.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md048.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md048.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md049.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md049.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md050.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md050.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md051.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md051.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md052.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md052.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md053.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md053.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md054.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md054.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md055.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md055.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md056.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md056.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/doc",
-        "configs/docs/node_modules/markdownlint/doc/md058.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/doc/md058.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/helpers",
-        "configs/docs/node_modules/markdownlint/helpers/README.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/helpers/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/markdownlint",
-        "configs/docs/node_modules/markdownlint/schema",
-        "configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md"
-      ],
-      "path": "configs/docs/node_modules/markdownlint/schema/ValidatingConfiguration.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/mdurl",
-        "configs/docs/node_modules/mdurl/README.md"
-      ],
-      "path": "configs/docs/node_modules/mdurl/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/merge2",
-        "configs/docs/node_modules/merge2/README.md"
-      ],
-      "path": "configs/docs/node_modules/merge2/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/micromatch",
-        "configs/docs/node_modules/micromatch/README.md"
-      ],
-      "path": "configs/docs/node_modules/micromatch/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/parent-module",
-        "configs/docs/node_modules/parent-module/readme.md"
-      ],
-      "path": "configs/docs/node_modules/parent-module/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/path-type",
-        "configs/docs/node_modules/path-type/readme.md"
-      ],
-      "path": "configs/docs/node_modules/path-type/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/picomatch",
-        "configs/docs/node_modules/picomatch/CHANGELOG.md"
-      ],
-      "path": "configs/docs/node_modules/picomatch/CHANGELOG.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/picomatch",
-        "configs/docs/node_modules/picomatch/README.md"
-      ],
-      "path": "configs/docs/node_modules/picomatch/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/punycode.js",
-        "configs/docs/node_modules/punycode.js/README.md"
-      ],
-      "path": "configs/docs/node_modules/punycode.js/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/queue-microtask",
-        "configs/docs/node_modules/queue-microtask/README.md"
-      ],
-      "path": "configs/docs/node_modules/queue-microtask/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/resolve-from",
-        "configs/docs/node_modules/resolve-from/readme.md"
-      ],
-      "path": "configs/docs/node_modules/resolve-from/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/reusify",
-        "configs/docs/node_modules/reusify/README.md"
-      ],
-      "path": "configs/docs/node_modules/reusify/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/reusify",
-        "configs/docs/node_modules/reusify/SECURITY.md"
-      ],
-      "path": "configs/docs/node_modules/reusify/SECURITY.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/run-parallel",
-        "configs/docs/node_modules/run-parallel/README.md"
-      ],
-      "path": "configs/docs/node_modules/run-parallel/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/semver",
-        "configs/docs/node_modules/semver/README.md"
-      ],
-      "path": "configs/docs/node_modules/semver/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/slash",
-        "configs/docs/node_modules/slash/readme.md"
-      ],
-      "path": "configs/docs/node_modules/slash/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/strip-ansi",
-        "configs/docs/node_modules/strip-ansi/readme.md"
-      ],
-      "path": "configs/docs/node_modules/strip-ansi/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/to-regex-range",
-        "configs/docs/node_modules/to-regex-range/README.md"
-      ],
-      "path": "configs/docs/node_modules/to-regex-range/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/uc.micro",
-        "configs/docs/node_modules/uc.micro/README.md"
-      ],
-      "path": "configs/docs/node_modules/uc.micro/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/unicorn-magic",
-        "configs/docs/node_modules/unicorn-magic/readme.md"
-      ],
-      "path": "configs/docs/node_modules/unicorn-magic/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/vscode-languageserver-textdocument",
-        "configs/docs/node_modules/vscode-languageserver-textdocument/README.md"
-      ],
-      "path": "configs/docs/node_modules/vscode-languageserver-textdocument/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/vscode-uri",
-        "configs/docs/node_modules/vscode-uri/LICENSE.md"
-      ],
-      "path": "configs/docs/node_modules/vscode-uri/LICENSE.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/vscode-uri",
-        "configs/docs/node_modules/vscode-uri/README.md"
-      ],
-      "path": "configs/docs/node_modules/vscode-uri/README.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/vscode-uri",
-        "configs/docs/node_modules/vscode-uri/SECURITY.md"
-      ],
-      "path": "configs/docs/node_modules/vscode-uri/SECURITY.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/xdg-basedir",
-        "configs/docs/node_modules/xdg-basedir/readme.md"
-      ],
-      "path": "configs/docs/node_modules/xdg-basedir/readme.md"
-    },
-    {
-      "breadcrumbs": [
-        "configs",
-        "configs/docs",
-        "configs/docs/node_modules",
-        "configs/docs/node_modules/yaml",
-        "configs/docs/node_modules/yaml/README.md"
-      ],
-      "path": "configs/docs/node_modules/yaml/README.md"
     },
     {
       "breadcrumbs": [
@@ -2629,6 +308,14 @@
         "configs/repo/root-symlink-shims.md"
       ],
       "path": "configs/repo/root-symlink-shims.md"
+    },
+    {
+      "breadcrumbs": [
+        "configs",
+        "configs/rust",
+        "configs/rust/LINT_POLICY.md"
+      ],
+      "path": "configs/rust/LINT_POLICY.md"
     },
     {
       "breadcrumbs": [
@@ -4292,6 +1979,15 @@
         "crates",
         "crates/bijux-atlas-server",
         "crates/bijux-atlas-server/docs",
+        "crates/bijux-atlas-server/docs/runtime-model.md"
+      ],
+      "path": "crates/bijux-atlas-server/docs/runtime-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-server",
+        "crates/bijux-atlas-server/docs",
         "crates/bijux-atlas-server/docs/testing.md"
       ],
       "path": "crates/bijux-atlas-server/docs/testing.md"
@@ -4393,9 +2089,27 @@
         "crates",
         "crates/bijux-atlas-store",
         "crates/bijux-atlas-store/docs",
+        "crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md"
+      ],
+      "path": "crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-store",
+        "crates/bijux-atlas-store/docs",
         "crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md"
       ],
       "path": "crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-store",
+        "crates/bijux-atlas-store/docs",
+        "crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md"
+      ],
+      "path": "crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md"
     },
     {
       "breadcrumbs": [
@@ -4713,9 +2427,214 @@
         "crates/bijux-dev-atlas/tests/fixtures",
         "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
         "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
         "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md"
       ],
       "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/configs-lifecycle.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/configs-lifecycle.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust",
+        "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker",
+        "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md"
     },
     {
       "breadcrumbs": [
@@ -4750,6 +2669,58 @@
         "crates/bijux-dev-atlas/tests/fixtures",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/configs.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/configs.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/make-targets.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md"
+      ],
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/schemas.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-dev-atlas",
+        "crates/bijux-dev-atlas/tests",
+        "crates/bijux-dev-atlas/tests/fixtures",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini",
+        "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub",
         "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md"
       ],
@@ -4771,22 +2742,6 @@
     },
     {
       "breadcrumbs": [
-        "docker",
-        "docker/contracts"]},
-    {
-      "breadcrumbs": [
-        "docker",
-        "docker/contracts"]},
-    {
-      "breadcrumbs": [
-        "docker",
-        "docker/contracts"]},
-    {
-      "breadcrumbs": [
-        "docker",
-        "docker/contracts"]},
-    {
-      "breadcrumbs": [
         "docs",
         "docs/AUTHORS.md"
       ],
@@ -4798,6 +2753,13 @@
         "docs/CONTRACT.md"
       ],
       "path": "docs/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/OWNERS.md"
+      ],
+      "path": "docs/OWNERS.md"
     },
     {
       "breadcrumbs": [
@@ -5713,6 +3675,14 @@
         "docs/development/ci/supply-chain-and-runtime-security.md"
       ],
       "path": "docs/development/ci/supply-chain-and-runtime-security.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/config-changelog.md"
+      ],
+      "path": "docs/development/config-changelog.md"
     },
     {
       "breadcrumbs": [
@@ -7580,6 +5550,14 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/commands.md"
+      ],
+      "path": "docs/reference/commands.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/compatibility",
         "docs/reference/compatibility/INDEX.md"
       ],
@@ -7620,6 +5598,14 @@
         "docs/reference/compatibility/umbrella-atlas-matrix.md"
       ],
       "path": "docs/reference/compatibility/umbrella-atlas-matrix.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/configs.md"
+      ],
+      "path": "docs/reference/configs.md"
     },
     {
       "breadcrumbs": [
@@ -7791,6 +5777,14 @@
         "docs/reference/ingestion/supported-layouts.md"
       ],
       "path": "docs/reference/ingestion/supported-layouts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/make-targets.md"
+      ],
+      "path": "docs/reference/make-targets.md"
     },
     {
       "breadcrumbs": [
@@ -8039,6 +6033,22 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/repo-map.md"
+      ],
+      "path": "docs/reference/repo-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
+        "docs/reference/schemas.md"
+      ],
+      "path": "docs/reference/schemas.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/science",
         "docs/reference/science/INDEX.md"
       ],
@@ -8205,6 +6215,14 @@
         "docs/reference/store/no-implicit-default-dataset.md"
       ],
       "path": "docs/reference/store/no-implicit-default-dataset.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/release",
+        "docs/release/INDEX.md"
+      ],
+      "path": "docs/release/INDEX.md"
     },
     {
       "breadcrumbs": [
@@ -8489,51 +6507,73 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/security",
+        "docs/security/INDEX.md"
+      ],
+      "path": "docs/security/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/start",
+        "docs/start/INDEX.md"
+      ],
+      "path": "docs/start/INDEX.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/taxonomy-map.md"
       ],
       "path": "docs/taxonomy-map.md"
     },
     {
       "breadcrumbs": [
-        "makefiles",
-        "makefiles/CI_LANES.md"
+        "make",
+        "make/makefiles",
+        "make/makefiles/CI_LANES.md"
       ],
-      "path": "makefiles/CI_LANES.md"
+      "path": "make/makefiles/CI_LANES.md"
     },
     {
       "breadcrumbs": [
-        "makefiles",
-        "makefiles/CONTRACT.md"
+        "make",
+        "make/makefiles",
+        "make/makefiles/CONTRACT.md"
       ],
-      "path": "makefiles/CONTRACT.md"
+      "path": "make/makefiles/CONTRACT.md"
     },
     {
       "breadcrumbs": [
-        "makefiles",
-        "makefiles/INDEX.md"
+        "make",
+        "make/makefiles",
+        "make/makefiles/INDEX.md"
       ],
-      "path": "makefiles/INDEX.md"
+      "path": "make/makefiles/INDEX.md"
     },
     {
       "breadcrumbs": [
-        "makefiles",
-        "makefiles/PHILOSOPHY.md"
+        "make",
+        "make/makefiles",
+        "make/makefiles/PHILOSOPHY.md"
       ],
-      "path": "makefiles/PHILOSOPHY.md"
+      "path": "make/makefiles/PHILOSOPHY.md"
     },
     {
       "breadcrumbs": [
-        "makefiles",
-        "makefiles/README.md"
+        "make",
+        "make/makefiles",
+        "make/makefiles/README.md"
       ],
-      "path": "makefiles/README.md"
+      "path": "make/makefiles/README.md"
     },
     {
       "breadcrumbs": [
-        "makefiles",
-        "makefiles/TARGETS_REGISTRY.md"
+        "make",
+        "make/makefiles",
+        "make/makefiles/TARGETS_REGISTRY.md"
       ],
-      "path": "makefiles/TARGETS_REGISTRY.md"
+      "path": "make/makefiles/TARGETS_REGISTRY.md"
     },
     {
       "breadcrumbs": [
