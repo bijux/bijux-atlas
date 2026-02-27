@@ -8,15 +8,19 @@
       "version": "1.0.0"
     },
     {
-      "path": "ops/inventory/owners.json",
+      "path": "ops/datasets/CONTRACT.md",
       "version": 1
     },
     {
-      "path": "ops/inventory/pillars.json",
+      "path": "ops/datasets/fixtures/CONTRACT.md",
       "version": 1
     },
     {
-      "path": "ops/inventory/surfaces.json",
+      "path": "ops/e2e/CONTRACT.md",
+      "version": 1
+    },
+    {
+      "path": "ops/inventory/contract-gate-map.json",
       "version": 1
     },
     {
@@ -28,11 +32,15 @@
       "version": 1
     },
     {
-      "path": "ops/inventory/pin-freeze.json",
+      "path": "ops/inventory/owners.json",
       "version": 1
     },
     {
-      "path": "ops/stack/CONTRACT.md",
+      "path": "ops/inventory/pillars.json",
+      "version": 1
+    },
+    {
+      "path": "ops/inventory/pin-freeze.json",
       "version": 1
     },
     {
@@ -40,7 +48,7 @@
       "version": 1
     },
     {
-      "path": "ops/stack/stack.toml",
+      "path": "ops/inventory/surfaces.json",
       "version": 1
     },
     {
@@ -52,10 +60,6 @@
       "version": 1
     },
     {
-      "path": "ops/observe/CONTRACT.md",
-      "version": 1
-    },
-    {
       "path": "ops/load/CONTRACT.md",
       "version": 1
     },
@@ -64,11 +68,7 @@
       "version": 1
     },
     {
-      "path": "ops/datasets/CONTRACT.md",
-      "version": 1
-    },
-    {
-      "path": "ops/e2e/CONTRACT.md",
+      "path": "ops/observe/CONTRACT.md",
       "version": 1
     },
     {
@@ -76,7 +76,11 @@
       "version": 1
     },
     {
-      "path": "ops/datasets/fixtures/CONTRACT.md",
+      "path": "ops/stack/CONTRACT.md",
+      "version": 1
+    },
+    {
+      "path": "ops/stack/stack.toml",
       "version": 1
     }
   ]

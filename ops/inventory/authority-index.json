@@ -153,5 +153,16 @@
     "ops/inventory/contracts/",
     "ops/inventory/policies/",
     "ops/inventory/meta/"
+  ],
+  "authoritative_paths": [
+    "ops/inventory/contract-gate-map.json"
+  ],
+  "items": [
+    {
+      "path": "ops/inventory/contract-gate-map.json",
+      "schema": "ops/schema/inventory/contract-gate-map.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    }
   ]
 }

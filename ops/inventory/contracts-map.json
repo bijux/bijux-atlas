@@ -5,8 +5,26 @@
   "registry_meaning": "authoritative list of authored inventory artifacts and their schema contracts",
   "items": [
     {
-      "path": "ops/inventory/control-graph.json",
-      "schema": "ops/schema/inventory/control-graph.schema.json",
+      "path": "ops/datasets/consumer-list.json",
+      "schema": "ops/schema/datasets/consumer-list.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_fixture_governance"
+    },
+    {
+      "path": "ops/datasets/freeze-policy.json",
+      "schema": "ops/schema/datasets/freeze-policy.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_fixture_governance"
+    },
+    {
+      "path": "ops/datasets/manifest.json",
+      "schema": "ops/schema/datasets/manifest.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_orphan_data_artifacts"
+    },
+    {
+      "path": "ops/inventory/authoritative-file-list.json",
+      "schema": "ops/schema/inventory/authoritative-file-list.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
@@ -17,9 +35,75 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/authoritative-file-list.json",
-      "schema": "ops/schema/inventory/authoritative-file-list.schema.json",
+      "path": "ops/inventory/contract-gate-map.json",
+      "schema": "ops/schema/inventory/contract-gate-map.schema.json",
       "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/contracts.json",
+      "schema": "ops/schema/inventory/contracts.schema.json",
+      "generator": "bijux dev atlas ops gen run",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/control-graph.json",
+      "schema": "ops/schema/inventory/control-graph.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/drill-contract-links.json",
+      "schema": "ops/schema/inventory/drill-contract-links.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/drills.json",
+      "schema": "ops/schema/inventory/drills.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/gates.json",
+      "schema": "ops/schema/inventory/gates.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/gc-pins.json",
+      "schema": "ops/schema/inventory/gc-pins.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/generated-committed-mirror.json",
+      "schema": "ops/schema/inventory/generated-committed-mirror.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/layers.json",
+      "schema": "ops/schema/inventory/layers.schema.json",
+      "generator": "bijux dev atlas ops gen run",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/namespaces.json",
+      "schema": "ops/schema/inventory/namespaces.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/observability-coverage-map.json",
+      "schema": "ops/schema/inventory/observability-coverage-map.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_fixture_governance"
+    },
+    {
+      "path": "ops/inventory/owner-docs.fragments.json",
+      "schema": "ops/schema/inventory/owner-docs.fragments.schema.json",
+      "generator": "bijux dev atlas ops migrate inventory-fragments",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -35,21 +119,9 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/surfaces.json",
-      "schema": "ops/schema/inventory/surfaces.schema.json",
-      "generator": "bijux dev atlas ops gen run",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/contracts.json",
-      "schema": "ops/schema/inventory/contracts.schema.json",
-      "generator": "bijux dev atlas ops gen run",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/layers.json",
-      "schema": "ops/schema/inventory/layers.schema.json",
-      "generator": "bijux dev atlas ops gen run",
+      "path": "ops/inventory/pin-freeze.json",
+      "schema": "ops/schema/inventory/pin-freeze.schema.json",
+      "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -59,26 +131,8 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/gc-pins.json",
-      "schema": "ops/schema/inventory/gc-pins.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/pin-freeze.json",
-      "schema": "ops/schema/inventory/pin-freeze.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/drills.json",
-      "schema": "ops/schema/inventory/drills.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/drill-contract-links.json",
-      "schema": "ops/schema/inventory/drill-contract-links.schema.json",
+      "path": "ops/inventory/registry.toml",
+      "schema": "ops/schema/inventory/registry.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
@@ -89,21 +143,9 @@
       "consumer": "checks_ops_fixture_governance"
     },
     {
-      "path": "ops/inventory/observability-coverage-map.json",
-      "schema": "ops/schema/inventory/observability-coverage-map.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_fixture_governance"
-    },
-    {
-      "path": "ops/inventory/gates.json",
-      "schema": "ops/schema/inventory/gates.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/namespaces.json",
-      "schema": "ops/schema/inventory/namespaces.schema.json",
-      "generator": "manual",
+      "path": "ops/inventory/surfaces.json",
+      "schema": "ops/schema/inventory/surfaces.schema.json",
+      "generator": "bijux dev atlas ops gen run",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
@@ -119,48 +161,6 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
-      "path": "ops/inventory/registry.toml",
-      "schema": "ops/schema/inventory/registry.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/owner-docs.fragments.json",
-      "schema": "ops/schema/inventory/owner-docs.fragments.schema.json",
-      "generator": "bijux dev atlas ops migrate inventory-fragments",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/inventory/generated-committed-mirror.json",
-      "schema": "ops/schema/inventory/generated-committed-mirror.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
-      "path": "ops/datasets/manifest.json",
-      "schema": "ops/schema/datasets/manifest.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_orphan_data_artifacts"
-    },
-    {
-      "path": "ops/datasets/consumer-list.json",
-      "schema": "ops/schema/datasets/consumer-list.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_fixture_governance"
-    },
-    {
-      "path": "ops/datasets/freeze-policy.json",
-      "schema": "ops/schema/datasets/freeze-policy.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_fixture_governance"
-    },
-    {
-      "path": "ops/stack/service-dependency-contract.json",
-      "schema": "ops/schema/stack/service-dependency-contract.schema.json",
-      "generator": "manual",
-      "consumer": "checks_ops_inventory_contract_integrity"
-    },
-    {
       "path": "ops/k8s/rollout-safety-contract.json",
       "schema": "ops/schema/k8s/rollout-safety-contract.schema.json",
       "generator": "manual",
@@ -169,6 +169,12 @@
     {
       "path": "ops/stack/evolution-policy.json",
       "schema": "ops/schema/stack/evolution-policy.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/stack/service-dependency-contract.json",
+      "schema": "ops/schema/stack/service-dependency-contract.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     }
