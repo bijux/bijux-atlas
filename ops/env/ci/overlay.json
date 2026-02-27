@@ -2,6 +2,8 @@
   "schema_version": 1,
   "environment": "ci",
   "values": {
+    "namespace": "atlas-e2e",
+    "cluster_profile": "kind",
     "allow_write": false,
     "allow_subprocess": false,
     "network_mode": "restricted"

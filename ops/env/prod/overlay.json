@@ -2,8 +2,10 @@
   "schema_version": 1,
   "environment": "prod",
   "values": {
+    "namespace": "atlas-e2e",
+    "cluster_profile": "kind",
     "allow_write": false,
-    "allow_subprocess": true,
+    "allow_subprocess": false,
     "network_mode": "restricted"
   }
 }

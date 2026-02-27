@@ -2,6 +2,8 @@
   "schema_version": 1,
   "environment": "dev",
   "values": {
+    "namespace": "atlas-e2e",
+    "cluster_profile": "kind",
     "allow_write": true,
     "allow_subprocess": true,
     "network_mode": "local"

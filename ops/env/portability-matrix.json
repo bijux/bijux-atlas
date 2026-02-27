@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "environments": [
+    "base",
+    "ci",
+    "dev",
+    "prod"
+  ],
+  "dimensions": [
+    "filesystem",
+    "subprocess",
+    "network"
+  ],
+  "generated_by": "bijux dev atlas ops env"
+}

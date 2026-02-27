@@ -24,6 +24,7 @@
     "ops/datasets/fixture-policy.json",
     "ops/datasets/rollback-policy.json",
     "ops/e2e/reproducibility-policy.json",
+    "ops/env/portability-matrix.json",
     "ops/inventory/policies/dev-atlas-policy.json",
     "ops/load/contracts/deterministic-seed-policy.json"
   ],
