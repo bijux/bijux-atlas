@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "allow_tagged_images_exceptions": [],
+  "required_oci_labels": [
+    "org.opencontainers.image.source",
+    "org.opencontainers.image.version",
+    "org.opencontainers.image.revision",
+    "org.opencontainers.image.created",
+    "org.opencontainers.image.ref.name"
+  ]
+}
