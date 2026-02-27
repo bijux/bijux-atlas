@@ -7,7 +7,7 @@ use crate::cli::{
 use crate::{
     plugin_metadata_json, run_build_command, run_capabilities_command, run_check_doctor,
     run_check_explain, run_check_list, run_check_registry_doctor, run_check_run,
-    run_check_tree_budgets,
+    run_check_repo_doctor, run_check_tree_budgets,
     run_configs_command, run_demo_command, run_docker_command, run_docs_command, run_gates_command,
     run_help_inventory_command, run_ops_command, run_policies_command,
     run_print_boundaries_command, run_version_command, run_workflows_command,
@@ -260,7 +260,8 @@ fn force_json_check(command: &mut CheckCommand) {
         CheckCommand::Explain { format, .. }
         | CheckCommand::Doctor { format, .. }
         | CheckCommand::Run { format, .. }
-        | CheckCommand::TreeBudgets { format, .. } => *format = FormatArg::Json,
+        | CheckCommand::TreeBudgets { format, .. }
+        | CheckCommand::RepoDoctor { format, .. } => *format = FormatArg::Json,
     }
 }
 
@@ -553,7 +554,8 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             | CheckCommand::Explain { repo_root, .. }
             | CheckCommand::Doctor { repo_root, .. }
             | CheckCommand::Run { repo_root, .. }
-            | CheckCommand::TreeBudgets { repo_root, .. } => *repo_root = Some(root.clone()),
+            | CheckCommand::TreeBudgets { repo_root, .. }
+            | CheckCommand::RepoDoctor { repo_root, .. } => *repo_root = Some(root.clone()),
         },
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
@@ -970,6 +972,11 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     format,
                     out,
                 } => run_check_tree_budgets(repo_root, format, out),
+                CheckCommand::RepoDoctor {
+                    repo_root,
+                    format,
+                    out,
+                } => run_check_repo_doctor(repo_root, format, out),
             };
             match result {
                 Ok((rendered, code)) => {

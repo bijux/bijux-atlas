@@ -979,6 +979,142 @@ pub(crate) fn run_check_tree_budgets(
     Ok((rendered, if payload["errors"].as_array().is_some_and(|v| !v.is_empty()) { 1 } else { 0 }))
 }
 
+pub(crate) fn run_check_repo_doctor(
+    repo_root: Option<PathBuf>,
+    format: FormatArg,
+    out: Option<PathBuf>,
+) -> Result<(String, i32), String> {
+    let root = resolve_repo_root(repo_root)?;
+    let (tree_rendered, tree_code) =
+        run_check_tree_budgets(Some(root.clone()), FormatArg::Json, None)?;
+    let tree_payload: serde_json::Value =
+        serde_json::from_str(&tree_rendered).map_err(|e| format!("tree payload parse failed: {e}"))?;
+
+    let docs_payload = docs_validate_payload(
+        &docs_context(&DocsCommonArgs {
+            repo_root: Some(root.clone()),
+            artifacts_root: None,
+            run_id: None,
+            format: FormatArg::Json,
+            out: None,
+            allow_subprocess: false,
+            allow_write: false,
+            allow_network: false,
+            strict: true,
+            include_drafts: false,
+        })?,
+        &DocsCommonArgs {
+            repo_root: Some(root.clone()),
+            artifacts_root: None,
+            run_id: None,
+            format: FormatArg::Json,
+            out: None,
+            allow_subprocess: false,
+            allow_write: false,
+            allow_network: false,
+            strict: true,
+            include_drafts: false,
+        },
+    )?;
+    let docs_code = if docs_payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+        1
+    } else {
+        0
+    };
+
+    let configs_payload = configs_validate_payload(
+        &configs_context(&ConfigsCommonArgs {
+            repo_root: Some(root.clone()),
+            artifacts_root: None,
+            run_id: None,
+            format: FormatArg::Json,
+            out: None,
+            allow_write: false,
+            allow_subprocess: false,
+            allow_network: false,
+            strict: true,
+        })?,
+        &ConfigsCommonArgs {
+            repo_root: Some(root.clone()),
+            artifacts_root: None,
+            run_id: None,
+            format: FormatArg::Json,
+            out: None,
+            allow_write: false,
+            allow_subprocess: false,
+            allow_network: false,
+            strict: true,
+        },
+    )?;
+    let configs_code = if configs_payload["errors"].as_array().is_some_and(|v| !v.is_empty()) {
+        1
+    } else {
+        0
+    };
+
+    let mut docs_indexes = walk_files_local(&root.join("docs"))
+        .into_iter()
+        .filter_map(|p| {
+            let rel = p.strip_prefix(&root).ok()?.display().to_string();
+            if rel.ends_with("/INDEX.md") || rel == "docs/INDEX.md" {
+                Some(rel)
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+    docs_indexes.sort();
+    let mut make_targets = Vec::<String>::new();
+    let target_list_path = root.join("make/target-list.json");
+    if target_list_path.exists() {
+        let value: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&target_list_path)
+                .map_err(|e| format!("read {} failed: {e}", target_list_path.display()))?,
+        )
+        .map_err(|e| format!("parse {} failed: {e}", target_list_path.display()))?;
+        make_targets = value["public_targets"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect();
+        make_targets.sort();
+    }
+    let mut config_groups = fs::read_dir(root.join("configs"))
+        .map_err(|e| format!("list configs failed: {e}"))?
+        .filter_map(Result::ok)
+        .filter(|entry| entry.path().is_dir())
+        .filter_map(|entry| entry.file_name().to_str().map(str::to_string))
+        .collect::<Vec<_>>();
+    config_groups.sort();
+
+    let snapshot = serde_json::json!({
+        "schema_version": 1,
+        "make_public_targets": make_targets,
+        "docs_indexes": docs_indexes,
+        "config_groups": config_groups
+    });
+
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "text": if tree_code == 0 && docs_code == 0 && configs_code == 0 { "repo doctor passed" } else { "repo doctor failed" },
+        "checks": {
+            "tree_budgets": tree_payload,
+            "docs_validate": docs_payload,
+            "configs_validate": configs_payload
+        },
+        "surface_snapshot": snapshot
+    });
+    let rendered = emit_payload(format, out, &payload)?;
+    let code = if tree_code == 0 && docs_code == 0 && configs_code == 0 {
+        0
+    } else {
+        1
+    };
+    Ok((rendered, code))
+}
+
 pub(crate) fn run_check_registry_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,

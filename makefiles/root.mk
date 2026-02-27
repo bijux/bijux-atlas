@@ -43,7 +43,7 @@ _internal-surface: ## Print make surface and docs pointers for Rust control plan
 	@printf '%s\n' "Docs: docs/development/tooling/dev-atlas-ops.md docs/development/tooling/dev-atlas-docs.md"
 
 doctor: ## Run Rust control-plane doctor suite as JSON
-	@printf '%s\n' "run: $(DEV_ATLAS) ops doctor --profile $(PROFILE) --format json"
+	@printf '%s\n' "run: $(DEV_ATLAS) check repo-doctor --format json"
 	@$(MAKE) -s make-contract-check
 	@$(MAKE) -s make-target-governance-check
 	@$(MAKE) -s make-ci-surface-check
@@ -52,7 +52,7 @@ doctor: ## Run Rust control-plane doctor suite as JSON
 	@$(MAKE) -s make-include-cycle-check
 	@mkdir -p $(ARTIFACT_ROOT)/doctor/$(RUN_ID)
 	@$(DEV_ATLAS) check tree-budgets --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/tree-budgets.json >/dev/null
-	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
+	@$(DEV_ATLAS) check repo-doctor --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
 	@$(DEV_ATLAS) check run --domain make --format json
