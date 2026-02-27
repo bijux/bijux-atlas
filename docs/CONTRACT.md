@@ -4,6 +4,13 @@
 
 Define the canonical documentation surface and validation rules for repository docs.
 
+## Audience Contract
+
+- `new engineer`: onboarding flow and first-run references.
+- `operator`: runbooks and operational remediation guides.
+- `developer`: architecture and implementation constraints.
+- `reference`: generated command/schema/config inventories.
+
 ## SSOT Inputs
 
 - `mkdocs.yml` defines docs navigation and published page surface
@@ -25,3 +32,6 @@ Define the canonical documentation surface and validation rules for repository d
 - Docs must not introduce legacy governance references (`bijux dev atlas`, `tooling/areas`, `xtask`, legacy bijux dev atlas make targets)
 - Runtime and dev command surface docs must exist and match their command contracts/help snapshots
 - Orphan markdown pages must be avoided unless intentionally excluded from published docs surface
+- Docs path depth budget is `<= 4` for governed markdown pages.
+- Top-level docs category budget is `<= 8`.
+- Documentation types use stable prefixes: `howto-*`, `concept-*`, `reference-*`, `runbook-*`, `adr-*`.
