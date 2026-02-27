@@ -31,6 +31,7 @@ fn force_json_output(command: &mut Command) {
         },
         Command::Docker { .. }
         | Command::Build { .. }
+        | Command::Ci { .. }
         | Command::Workflows { .. }
         | Command::Gates { .. }
         | Command::Capabilities { .. } => {}
@@ -551,6 +552,13 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
         },
+        Command::Ci { command } | Command::Workflows { command } => match command {
+            crate::cli::WorkflowsCommand::Validate { repo_root, .. }
+            | crate::cli::WorkflowsCommand::Doctor { repo_root, .. }
+            | crate::cli::WorkflowsCommand::Surface { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
+        },
         Command::Validate { repo_root, .. } => {
             if repo_root.is_none() {
                 *repo_root = Some(root.clone());
@@ -567,7 +575,6 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
         | Command::Help { .. }
         | Command::Docker { .. }
         | Command::Build { .. }
-        | Command::Workflows { .. }
         | Command::Gates { .. }
         | Command::Capabilities { .. } => {}
     }
@@ -662,6 +669,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Docker { command } => run_docker_command(cli.quiet, command),
         Command::Build { command } => run_build_command(cli.quiet, command),
         Command::Policies { command } => run_policies_command(cli.quiet, command),
+        Command::Ci { command } => run_workflows_command(cli.quiet, command),
         Command::Workflows { command } => run_workflows_command(cli.quiet, command),
         Command::Gates { command } => run_gates_command(cli.quiet, command),
         Command::Capabilities { format, out } => match run_capabilities_command(format, out) {

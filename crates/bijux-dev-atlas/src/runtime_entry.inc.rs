@@ -421,6 +421,56 @@ pub(crate) fn run_workflows_command(quiet: bool, command: WorkflowsCommand) -> i
                 1
             }
         },
+        WorkflowsCommand::Doctor {
+            repo_root,
+            format,
+            out,
+            include_internal,
+            include_slow,
+        } => match run_check_doctor(repo_root, include_internal, include_slow, format, out) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas workflows doctor failed: {err}");
+                1
+            }
+        },
+        WorkflowsCommand::Surface {
+            repo_root,
+            format,
+            out,
+            include_internal,
+            include_slow,
+        } => match run_check_list(CheckListOptions {
+            repo_root,
+            suite: None,
+            domain: Some(DomainArg::Workflows),
+            tag: None,
+            id: None,
+            include_internal,
+            include_slow,
+            format,
+            out,
+        }) {
+            Ok((rendered, code)) => {
+                if !quiet && !rendered.is_empty() {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas workflows surface failed: {err}");
+                1
+            }
+        },
     }
 }
 

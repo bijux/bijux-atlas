@@ -101,6 +101,10 @@ pub enum Command {
         #[command(subcommand)]
         command: WorkflowsCommand,
     },
+    Ci {
+        #[command(subcommand)]
+        command: WorkflowsCommand,
+    },
     #[command(hide = true)]
     Gates {
         #[command(subcommand)]
