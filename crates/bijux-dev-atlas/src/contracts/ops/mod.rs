@@ -3,6 +3,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
+use serde::Deserialize;
 use serde_json::Value;
 
 use super::{
@@ -729,6 +730,8 @@ fn test_ops_inv_003_no_duplicate_ssot(ctx: &RunContext) -> TestResult {
     }
 }
 
+include!("ops_extended.inc.rs");
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         Contract {
@@ -861,6 +864,96 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_ops_inv_003_no_duplicate_ssot,
             }],
         },
+        Contract {
+            id: ContractId("OPS-INV-004".to_string()),
+            title: "inventory authority tier contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.authority_tiers_enforced".to_string()),
+                title: "authority tier exceptions are structured and expiry-bound",
+                kind: TestKind::Pure,
+                run: test_ops_inv_004_authority_tiers_enforced,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-005".to_string()),
+            title: "inventory control graph contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.control_graph_validated".to_string()),
+                title: "control graph edges and node mappings are valid and acyclic",
+                kind: TestKind::Pure,
+                run: test_ops_inv_005_control_graph_validated,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-SCHEMA-001".to_string()),
+            title: "schema parseability contract",
+            tests: vec![TestCase {
+                id: TestId("ops.schema.parseable_documents".to_string()),
+                title: "ops json/yaml policy documents are parseable",
+                kind: TestKind::Pure,
+                run: test_ops_schema_001_parseable_documents,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-SCHEMA-002".to_string()),
+            title: "schema index completeness contract",
+            tests: vec![TestCase {
+                id: TestId("ops.schema.index_complete".to_string()),
+                title: "generated schema index covers all schema sources",
+                kind: TestKind::Pure,
+                run: test_ops_schema_002_schema_index_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-SCHEMA-003".to_string()),
+            title: "schema naming contract",
+            tests: vec![TestCase {
+                id: TestId("ops.schema.no_unversioned".to_string()),
+                title: "schema sources use stable .schema.json naming",
+                kind: TestKind::Pure,
+                run: test_ops_schema_003_no_unversioned_schemas,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-SCHEMA-004".to_string()),
+            title: "schema budget contract",
+            tests: vec![TestCase {
+                id: TestId("ops.schema.budget_policy".to_string()),
+                title: "schema count stays within per-domain budgets",
+                kind: TestKind::Pure,
+                run: test_ops_schema_004_budget_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-SCHEMA-005".to_string()),
+            title: "schema evolution lock contract",
+            tests: vec![TestCase {
+                id: TestId("ops.schema.evolution_lock".to_string()),
+                title: "compatibility lock tracks schema evolution targets",
+                kind: TestKind::Pure,
+                run: test_ops_schema_005_evolution_lock,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-DATASET-001".to_string()),
+            title: "datasets manifest lock contract",
+            tests: vec![TestCase {
+                id: TestId("ops.dataset.manifest_and_lock_consistent".to_string()),
+                title: "dataset manifest and lock ids are consistent",
+                kind: TestKind::Pure,
+                run: test_ops_dataset_001_manifest_and_lock,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-DATASET-002".to_string()),
+            title: "datasets fixture inventory contract",
+            tests: vec![TestCase {
+                id: TestId("ops.dataset.fixture_inventory_matches_disk".to_string()),
+                title: "fixture inventory matches fixture directories and references",
+                kind: TestKind::Pure,
+                run: test_ops_dataset_002_fixture_inventory_matches_disk,
+            }],
+        },
     ])
 }
 
@@ -874,6 +967,15 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-001" => "Ensures domain and policy registration completeness in inventory sources.",
         "OPS-INV-002" => "Prevents orphan ops files that are not mapped by inventory references.",
         "OPS-INV-003" => "Forbids duplicate SSOT markdown documents when inventory is authoritative.",
+        "OPS-INV-004" => "Enforces authority-tier exception structure with explicit expiry metadata.",
+        "OPS-INV-005" => "Validates inventory control-graph integrity, mappings, and cycle safety.",
+        "OPS-SCHEMA-001" => "Ensures ops json/yaml policy documents are parseable.",
+        "OPS-SCHEMA-002" => "Ensures generated schema index matches on-disk schema sources.",
+        "OPS-SCHEMA-003" => "Enforces stable .schema.json naming for schema source files.",
+        "OPS-SCHEMA-004" => "Enforces per-domain schema count budgets to limit sprawl.",
+        "OPS-SCHEMA-005" => "Requires compatibility lock coverage for schema evolution governance.",
+        "OPS-DATASET-001" => "Ensures datasets manifest and lock use the same dataset id set.",
+        "OPS-DATASET-002" => "Ensures fixture inventory maps cleanly to fixture directories and references.",
         _ => "No explanation registered for this contract id.",
     }
 }
