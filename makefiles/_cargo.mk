@@ -42,6 +42,17 @@ lint-policy-report: ## Emit effective lint policy report artifact
 	} > artifacts/lint/effective-clippy-policy.txt
 	@printf '%s\n' "artifacts/lint/effective-clippy-policy.txt"
 
+lint-policy-enforce: ## Enforce repository lint drift guards
+	@! rg -n '\btodo!\(' crates
+	@! rg -n '\bdbg!\(' crates
+	@! rg -n '\b(?:println|eprintln)!\(' crates/bijux-atlas-server crates/bijux-atlas-core crates/bijux-atlas-model crates/bijux-atlas-query crates/bijux-atlas-store crates/bijux-atlas-policies --glob '!**/tests/**' --glob '!**/benches/**'
+	@! rg -n 'reqwest\s*=.*blocking' crates/bijux-atlas-server/Cargo.toml
+
+lint-clippy-json: ## Emit clippy diagnostics as a machine-readable artifact
+	@mkdir -p artifacts/lint
+	@CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked --message-format=json -- -D warnings > artifacts/lint/clippy.json
+	@printf '%s\n' "artifacts/lint/clippy.json"
+
 test: ## Run workspace tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
@@ -56,4 +67,4 @@ test-slow: ## Run only slow_ tests with cargo nextest
 	}
 	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)"
 
-.PHONY: audit check coverage fmt lint lint-policy-report test test-slow
+.PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow

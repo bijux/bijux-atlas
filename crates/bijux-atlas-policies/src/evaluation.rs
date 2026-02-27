@@ -122,8 +122,19 @@ const POLICY_RULES: &[RuleSpec] = &[
 
 #[must_use]
 pub fn evaluate_policy_set(policy: &PolicySet) -> Vec<PolicyViolation> {
-    let value = serde_json::to_value(policy).expect("policy set must serialize");
     let mut violations = Vec::new();
+    let value = match serde_json::to_value(policy) {
+        Ok(value) => value,
+        Err(error) => {
+            violations.push(PolicyViolation {
+                id: "policy.serialization.failure",
+                severity: PolicySeverity::Error,
+                message: "policy set serialization failed",
+                evidence: error.to_string(),
+            });
+            return violations;
+        }
+    };
 
     for rule in POLICY_RULES {
         apply_rule(&value, *rule, &mut violations);
