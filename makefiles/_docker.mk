@@ -1,13 +1,13 @@
 DOCKER_RUN_ID ?= docker_run
 
 docker: ## Canonical docker gate
-	@$(DEV_ATLAS) docker check --allow-subprocess --format json
+	@$(DEV_ATLAS) docker validate --format json
 
 docker-build: ## Build docker images via dev-atlas wrapper
 	@$(DEV_ATLAS) docker build --allow-subprocess --run-id $(DOCKER_RUN_ID) --format json
 
 docker-check: ## Run docker check wrapper via dev-atlas
-	@$(DEV_ATLAS) docker check --allow-subprocess --run-id $(DOCKER_RUN_ID) --format json
+	@$(DEV_ATLAS) docker validate --run-id $(DOCKER_RUN_ID) --format json
 
 docker-smoke: ## Run docker smoke wrapper via dev-atlas
 	@$(DEV_ATLAS) docker smoke --allow-subprocess --run-id $(DOCKER_RUN_ID) --format json

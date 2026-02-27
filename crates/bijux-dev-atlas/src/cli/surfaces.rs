@@ -119,6 +119,7 @@ pub enum ConfigsCommand {
 
 #[derive(Subcommand, Debug)]
 pub enum DockerCommand {
+    Validate(DockerCommonArgs),
     Build(DockerCommonArgs),
     Check(DockerCommonArgs),
     Smoke(DockerCommonArgs),

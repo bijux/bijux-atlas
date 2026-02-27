@@ -196,6 +196,86 @@ pub(crate) fn run_policies_report(
 }
 
 pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
+    fn extract_copy_sources(line: &str) -> Option<Vec<String>> {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("COPY ") || trimmed.contains("--from=") {
+            return None;
+        }
+        let rest = trimmed.trim_start_matches("COPY ").trim();
+        let tokens: Vec<&str> = rest.split_whitespace().collect();
+        if tokens.len() < 2 {
+            return None;
+        }
+        Some(
+            tokens[..tokens.len() - 1]
+                .iter()
+                .map(|s| s.trim_matches('"').to_string())
+                .collect(),
+        )
+    }
+
+    fn validate_runtime_dockerfile(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
+        let dockerfile = repo_root.join("docker/images/runtime/Dockerfile");
+        let text = fs::read_to_string(&dockerfile)
+            .map_err(|e| format!("failed to read {}: {e}", dockerfile.display()))?;
+        let policy_path = repo_root.join("docker/contracts/digest-pinning.json");
+        let policy_text = fs::read_to_string(&policy_path)
+            .map_err(|e| format!("failed to read {}: {e}", policy_path.display()))?;
+        let policy: serde_json::Value = serde_json::from_str(&policy_text)
+            .map_err(|e| format!("failed to parse {}: {e}", policy_path.display()))?;
+        let exceptions = policy["allow_tagged_images_exceptions"]
+            .as_array()
+            .ok_or_else(|| "digest pinning policy missing allowlist array".to_string())?
+            .iter()
+            .filter_map(|v| v.as_str())
+            .collect::<Vec<_>>();
+
+        let mut rows = Vec::new();
+        let mut violations = 0usize;
+        for (idx, line) in text.lines().enumerate() {
+            if let Some(srcs) = extract_copy_sources(line) {
+                for src in srcs {
+                    if src == "." || src.starts_with('/') {
+                        continue;
+                    }
+                    if !repo_root.join(&src).exists() {
+                        violations += 1;
+                        rows.push(serde_json::json!({
+                            "kind":"copy_source_missing",
+                            "line": idx + 1,
+                            "path": src
+                        }));
+                    }
+                }
+            }
+            let trimmed = line.trim();
+            if !trimmed.starts_with("FROM ") {
+                continue;
+            }
+            let from_spec = trimmed
+                .split_whitespace()
+                .nth(1)
+                .ok_or_else(|| format!("invalid FROM line in {}: {}", dockerfile.display(), trimmed))?;
+            let uses_latest = from_spec.ends_with(":latest") || from_spec == "latest";
+            let is_digest_pinned = from_spec.contains("@sha256:");
+            let is_allowlisted = exceptions.iter().any(|e| e == &from_spec);
+            if uses_latest || (!is_digest_pinned && !is_allowlisted) {
+                violations += 1;
+                rows.push(serde_json::json!({
+                    "kind":"base_image_policy_violation",
+                    "line": idx + 1,
+                    "image": from_spec
+                }));
+            }
+        }
+        rows.push(serde_json::json!({
+            "kind":"summary",
+            "dockerfile": dockerfile.display().to_string(),
+            "violations": violations
+        }));
+        Ok(rows)
+    }
+
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
         let emit = |common: &DockerCommonArgs, payload: serde_json::Value, code: i32| {
@@ -203,6 +283,24 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             Ok((rendered, code))
         };
         match command {
+            DockerCommand::Validate(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let rows = validate_runtime_dockerfile(&repo_root)?;
+                let violations = rows
+                    .iter()
+                    .filter(|r| r["kind"] != "summary")
+                    .count();
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "status": if violations == 0 { "ok" } else { "failed" },
+                    "text": if violations == 0 { "docker validate passed" } else { "docker validate found violations" },
+                    "rows": rows,
+                    "summary": {"errors": violations, "warnings": 0},
+                    "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
+                    "duration_ms": started.elapsed().as_millis() as u64
+                });
+                emit(&common, payload, if violations == 0 { 0 } else { 1 })
+            }
             DockerCommand::Build(common) => {
                 if !common.allow_subprocess {
                     return Err("docker build requires --allow-subprocess".to_string());
