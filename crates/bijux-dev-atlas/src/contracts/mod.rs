@@ -221,6 +221,14 @@ pub struct RegistryLint {
     pub message: String,
 }
 
+pub struct EffectRequirement {
+    pub allow_subprocess: bool,
+    pub allow_network: bool,
+    pub allow_k8s: bool,
+    pub allow_fs_write: bool,
+    pub allow_docker_daemon: bool,
+}
+
 impl RunReport {
     pub fn total_contracts(&self) -> usize {
         self.contracts.len()
@@ -259,10 +267,8 @@ impl RunReport {
     }
 
     pub fn exit_code(&self) -> i32 {
-        if self.error_count() > 0 {
+        if self.error_count() > 0 || self.fail_count() > 0 {
             1
-        } else if self.fail_count() > 0 {
-            2
         } else {
             0
         }
@@ -500,6 +506,86 @@ pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
     lints
 }
 
+pub fn lint_contracts(catalogs: &[(&str, &[Contract])]) -> Vec<RegistryLint> {
+    let mut lints = Vec::new();
+    for (domain, contracts) in catalogs {
+        for contract in *contracts {
+            let mode = contract_mode(contract);
+            let effects = contract_effects(contract);
+            match mode {
+                ContractMode::Static if !effects.is_empty() => lints.push(RegistryLint {
+                    code: "static-effects",
+                    message: format!(
+                        "{}:{} derives static mode but exposes effect kinds",
+                        domain, contract.id.0
+                    ),
+                }),
+                ContractMode::Effect if effects.is_empty() => lints.push(RegistryLint {
+                    code: "effect-missing-effects",
+                    message: format!(
+                        "{}:{} derives effect mode but has no effect kinds",
+                        domain, contract.id.0
+                    ),
+                }),
+                ContractMode::Both if effects.is_empty() => lints.push(RegistryLint {
+                    code: "mixed-missing-effects",
+                    message: format!(
+                        "{}:{} derives mixed mode but has no effect kinds",
+                        domain, contract.id.0
+                    ),
+                }),
+                _ => {}
+            }
+        }
+    }
+    lints.sort_by(|a, b| a.code.cmp(b.code).then(a.message.cmp(&b.message)));
+    lints
+}
+
+pub fn required_effects_for_selection(
+    contracts: &[Contract],
+    mode: Mode,
+    contract_filter: Option<&str>,
+    test_filter: Option<&str>,
+    only_contracts: &[String],
+    only_tests: &[String],
+    skip_contracts: &[String],
+    tags: &[String],
+) -> EffectRequirement {
+    let mut required = EffectRequirement {
+        allow_subprocess: false,
+        allow_network: false,
+        allow_k8s: false,
+        allow_fs_write: false,
+        allow_docker_daemon: false,
+    };
+    if mode != Mode::Effect {
+        return required;
+    }
+    for contract in contracts {
+        if !matches_filter(&contract_filter.map(ToOwned::to_owned), &contract.id.0)
+            || !matches_any_filter(only_contracts, &contract.id.0)
+            || matches_skip_filter(skip_contracts, &contract.id.0)
+            || !matches_tags(tags, contract)
+        {
+            continue;
+        }
+        for case in &contract.tests {
+            if !matches_filter(&test_filter.map(ToOwned::to_owned), &case.id.0)
+                || !matches_any_filter(only_tests, &case.id.0)
+            {
+                continue;
+            }
+            match case.kind {
+                TestKind::Pure => {}
+                TestKind::Subprocess => required.allow_subprocess = true,
+                TestKind::Network => required.allow_network = true,
+            }
+        }
+    }
+    required
+}
+
 fn wildcard_match(pattern: &str, text: &str) -> bool {
     let mut regex = String::from("^");
     for ch in pattern.chars() {
@@ -658,7 +744,7 @@ pub fn run(
     };
 
     if let Some(root) = &options.artifacts_root {
-        let out_dir = root.join("contracts");
+        let out_dir = root.clone();
         std::fs::create_dir_all(&out_dir)
             .map_err(|e| format!("create contracts artifact dir failed: {e}"))?;
         let json_path = out_dir.join(format!("{domain}.json"));
@@ -816,13 +902,7 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
     let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
     let skip = reports.iter().map(RunReport::skip_count).sum::<usize>();
     let error = reports.iter().map(RunReport::error_count).sum::<usize>();
-    let exit_code = if error > 0 {
-        1
-    } else if fail > 0 {
-        2
-    } else {
-        0
-    };
+    let exit_code = if error > 0 || fail > 0 { 1 } else { 0 };
     serde_json::json!({
         "schema_version": 1,
         "domain": "all",
@@ -1425,7 +1505,7 @@ mod tests {
     }
 
     #[test]
-    fn fail_exit_code_is_two_and_error_exit_code_is_one() {
+    fn fail_and_error_exit_code_are_one() {
         let fail_report = RunReport {
             domain: "ops".to_string(),
             mode: Mode::Static,
@@ -1478,7 +1558,7 @@ mod tests {
                 note: Some("panic".to_string()),
             }],
         };
-        assert_eq!(fail_report.exit_code(), 2);
+        assert_eq!(fail_report.exit_code(), 1);
         assert_eq!(error_report.exit_code(), 1);
     }
 

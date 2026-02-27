@@ -60,27 +60,8 @@ pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
 pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i32 {
-    fn require_artifacts_root_in_ci(artifacts_root: &Option<PathBuf>) -> Result<(), String> {
-        if std::env::var_os("CI").is_some() && artifacts_root.is_none() {
-            return Err(
-                "CI contracts runs require --artifacts-root for deterministic evidence output"
-                    .to_string(),
-            );
-        }
-        Ok(())
-    }
-
-    fn require_effect_allowances(
-        mode: ContractsModeArg,
-        allow_subprocess: bool,
-        allow_network: bool,
-    ) -> Result<(), String> {
-        if mode == ContractsModeArg::Effect && (!allow_subprocess || !allow_network) {
-            return Err(
-                "effect mode requires both --allow-subprocess and --allow-network".to_string(),
-            );
-        }
-        Ok(())
+    fn usage_error(message: impl Into<String>) -> Result<(String, i32), String> {
+        Err(format!("usage: {}", message.into()))
     }
 
     fn require_skip_policy(skip_contracts: &[String]) -> Result<(), String> {
@@ -322,17 +303,28 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         common: &ContractsCommonArgs,
         contract_filter: Option<String>,
     ) -> Result<contracts::RunReport, String> {
+        let run_id = std::env::var("RUN_ID")
+            .ok()
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or_else(|| "local".to_string());
         let mode = match common.mode {
             ContractsModeArg::Static => contracts::Mode::Static,
             ContractsModeArg::Effect => contracts::Mode::Effect,
         };
+        let artifacts_root = common.artifacts_root.clone().unwrap_or_else(|| {
+            repo_root.join("artifacts")
+                .join("contracts")
+                .join(descriptor.name)
+                .join(mode.to_string())
+                .join(&run_id)
+        });
         let options = contracts::RunOptions {
             mode,
             allow_subprocess: common.allow_subprocess,
             allow_network: common.allow_network,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
+            allow_k8s: common.allow_k8s,
+            allow_fs_write: common.allow_fs_write,
+            allow_docker_daemon: common.allow_docker_daemon,
             skip_missing_tools: common.skip_missing_tools,
             timeout_seconds: common.timeout_seconds,
             fail_fast: common.fail_fast,
@@ -343,7 +335,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             skip_contracts: common.skip_contracts.clone(),
             tags: common.tags.clone(),
             list_only: false,
-            artifacts_root: common.artifacts_root.clone(),
+            artifacts_root: Some(artifacts_root),
         };
         contracts::run(descriptor.name, descriptor.contracts_fn, repo_root, &options)
     }
@@ -455,14 +447,20 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         if !lints.is_empty() {
             return Ok((render_registry_lints(&lints, format)?, 2));
         }
-        require_artifacts_root_in_ci(&common.artifacts_root)?;
-        require_effect_allowances(common.mode, common.allow_subprocess, common.allow_network)?;
         require_skip_policy(&common.skip_contracts)?;
 
         let selected_domains = all_domains(&repo_root)?
             .into_iter()
             .filter(|(descriptor, _)| domain_names.iter().any(|name| descriptor.name == *name))
             .collect::<Vec<_>>();
+        let catalogs = selected_domains
+            .iter()
+            .map(|(descriptor, registry)| (descriptor.name, registry.as_slice()))
+            .collect::<Vec<_>>();
+        let derived_lints = contracts::lint_contracts(&catalogs);
+        if !derived_lints.is_empty() {
+            return Ok((render_registry_lints(&derived_lints, format)?, 2));
+        }
 
         if common.list || common.list_tests {
             return Ok((render_list(&selected_domains, common.list_tests, format)?, 0));
@@ -480,7 +478,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     }
                 }
             }
-            return Err(format!("unknown contract test id `{test_id}`"));
+            return usage_error(format!("unknown contract test id `{test_id}`"));
         }
 
         if let Some(contract_id) = &common.explain {
@@ -535,7 +533,57 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     return Ok((rendered, 0));
                 }
             }
-            return Err(format!("unknown contract id `{contract_id}`"));
+            return usage_error(format!("unknown contract id `{contract_id}`"));
+        }
+
+        if common.mode == ContractsModeArg::Effect {
+            let contract_filter = contract_filter_override
+                .clone()
+                .or_else(|| common.filter_contract.clone());
+            let mut requires_subprocess = false;
+            let mut requires_network = false;
+            let mut requires_k8s = false;
+            let mut requires_fs_write = false;
+            let mut requires_docker_daemon = false;
+            for (_, registry) in &selected_domains {
+                let required = contracts::required_effects_for_selection(
+                    registry,
+                    contracts::Mode::Effect,
+                    contract_filter.as_deref(),
+                    common.filter_test.as_deref(),
+                    &common.only_contracts,
+                    &common.only_tests,
+                    &common.skip_contracts,
+                    &common.tags,
+                );
+                requires_subprocess |= required.allow_subprocess;
+                requires_network |= required.allow_network;
+                requires_k8s |= required.allow_k8s;
+                requires_fs_write |= required.allow_fs_write;
+                requires_docker_daemon |= required.allow_docker_daemon;
+            }
+            let mut missing = Vec::new();
+            if requires_subprocess && !common.allow_subprocess {
+                missing.push("--allow-subprocess");
+            }
+            if requires_network && !common.allow_network {
+                missing.push("--allow-network");
+            }
+            if requires_k8s && !common.allow_k8s {
+                missing.push("--allow-k8s");
+            }
+            if requires_fs_write && !common.allow_fs_write {
+                missing.push("--allow-fs-write");
+            }
+            if requires_docker_daemon && !common.allow_docker_daemon {
+                missing.push("--allow-docker-daemon");
+            }
+            if !missing.is_empty() {
+                return usage_error(format!(
+                    "effect mode requires {} for the selected contracts",
+                    missing.join(", ")
+                ));
+            }
         }
 
         let mut reports = Vec::new();
@@ -608,8 +656,13 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             code
         }
         Err(err) => {
-            let _ = writeln!(io::stderr(), "bijux-dev-atlas contracts failed: {err}");
-            1
+            let (message, code) = if let Some(detail) = err.strip_prefix("usage: ") {
+                (detail.to_string(), 2)
+            } else {
+                (err, 3)
+            };
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas contracts failed: {message}");
+            code
         }
     }
 }
