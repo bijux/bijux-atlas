@@ -11344,7 +11344,6 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docker-governance",
-      "path": "docker/contracts/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -11366,7 +11365,6 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docker/contracts/README.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -11388,7 +11386,6 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docker-governance",
-      "path": "docker/contracts/image-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -11410,7 +11407,6 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docker-governance",
-      "path": "docker/contracts/reproducibility.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [

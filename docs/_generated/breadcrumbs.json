@@ -4772,35 +4772,19 @@
     {
       "breadcrumbs": [
         "docker",
-        "docker/contracts",
-        "docker/contracts/INDEX.md"
-      ],
-      "path": "docker/contracts/INDEX.md"
-    },
+        "docker/contracts"]},
     {
       "breadcrumbs": [
         "docker",
-        "docker/contracts",
-        "docker/contracts/README.md"
-      ],
-      "path": "docker/contracts/README.md"
-    },
+        "docker/contracts"]},
     {
       "breadcrumbs": [
         "docker",
-        "docker/contracts",
-        "docker/contracts/image-policy.md"
-      ],
-      "path": "docker/contracts/image-policy.md"
-    },
+        "docker/contracts"]},
     {
       "breadcrumbs": [
         "docker",
-        "docker/contracts",
-        "docker/contracts/reproducibility.md"
-      ],
-      "path": "docker/contracts/reproducibility.md"
-    },
+        "docker/contracts"]},
     {
       "breadcrumbs": [
         "docs",

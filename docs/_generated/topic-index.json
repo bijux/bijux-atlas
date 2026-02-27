@@ -393,7 +393,6 @@
       "crates/bijux-atlas-store/docs/INDEX.md",
       "crates/bijux-dev-atlas/docs/INDEX.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
-      "docker/contracts/INDEX.md",
       "docs/_assets/INDEX.md",
       "docs/_assets/diagrams/INDEX.md",
       "docs/_lint/INDEX.md",
@@ -786,7 +785,6 @@
       "crates/bijux-dev-atlas/README.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md",
       "docker/README.md",
-      "docker/contracts/README.md",
       "docs/contracts/README.md",
       "makefiles/README.md",
       "ops/README.md",
@@ -1442,7 +1440,6 @@
       "docs/operations/how-to-run-locally.md"
     ],
     "image-policy": [
-      "docker/contracts/image-policy.md"
     ],
     "immutability-and-aliases": [
       "docs/product/immutability-and-aliases.md"
@@ -1981,7 +1978,6 @@
       "docs/development/repo-surface.md"
     ],
     "reproducibility": [
-      "docker/contracts/reproducibility.md",
       "docs/operations/load/reproducibility.md"
     ],
     "reproducible-build-hints": [

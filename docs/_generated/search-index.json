@@ -7322,7 +7322,6 @@
         "docker",
         "index"
       ],
-      "path": "docker/contracts/INDEX.md",
       "tags": [
         "contracts",
         "docker",
@@ -7336,7 +7335,6 @@
         "docker",
         "readme"
       ],
-      "path": "docker/contracts/README.md",
       "tags": [
         "contracts",
         "docker",
@@ -7350,7 +7348,6 @@
         "docker",
         "image-policy"
       ],
-      "path": "docker/contracts/image-policy.md",
       "tags": [
         "contracts",
         "docker",
@@ -7364,7 +7361,6 @@
         "docker",
         "reproducibility"
       ],
-      "path": "docker/contracts/reproducibility.md",
       "tags": [
         "contracts",
         "docker",

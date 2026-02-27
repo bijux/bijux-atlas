@@ -506,10 +506,6 @@ License: Apache-2.0
 | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/sub/intro.md` | `concept` | `docs-governance` | `stable` |
 | `docker/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `docker/README.md` | `concept` | `docs-governance` | `stable` |
-| `docker/contracts/INDEX.md` | `spec` | `docker-governance` | `stable` |
-| `docker/contracts/README.md` | `spec` | `docs-governance` | `stable` |
-| `docker/contracts/image-policy.md` | `spec` | `docker-governance` | `stable` |
-| `docker/contracts/reproducibility.md` | `spec` | `docker-governance` | `stable` |
 | `docs/AUTHORS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_DESCRIPTION_SNIPPET.md` | `concept` | `docs-governance` | `stable` |

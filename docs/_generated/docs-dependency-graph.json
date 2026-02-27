@@ -2512,24 +2512,16 @@
     },
     {
       "crate": null,
-      "doc_type": "spec",
-      "from": "docker/contracts/INDEX.md"
-    },
+      "doc_type": "spec"},
     {
       "crate": null,
-      "doc_type": "spec",
-      "from": "docker/contracts/README.md"
-    },
+      "doc_type": "spec"},
     {
       "crate": null,
-      "doc_type": "spec",
-      "from": "docker/contracts/image-policy.md"
-    },
+      "doc_type": "spec"},
     {
       "crate": null,
-      "doc_type": "spec",
-      "from": "docker/contracts/reproducibility.md"
-    },
+      "doc_type": "spec"},
     {
       "crate": null,
       "doc_type": "concept",
