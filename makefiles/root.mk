@@ -66,6 +66,7 @@ dev-atlas: ## Print canonical dev-atlas invocation and examples
 	@printf '%s\n' "  $(DEV_ATLAS) ops validate --profile kind --format json"
 
 doctor: ## Run Rust control-plane doctor suite as JSON
+	@$(MAKE) -s make-contract-check
 	@$(DEV_ATLAS) check doctor --format json
 
 check-gates: ## Run Rust control-plane CI-fast check suite
