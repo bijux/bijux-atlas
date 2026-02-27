@@ -10,6 +10,61 @@ fn test_id_matches_policy(test_id: &str) -> bool {
         })
 }
 
+use regex::Regex;
+
+fn normalize_title_for_compare(title: &str) -> String {
+    title
+        .to_ascii_lowercase()
+        .chars()
+        .map(|ch| if ch.is_ascii_alphanumeric() { ch } else { ' ' })
+        .collect::<String>()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
+    if contract_id.starts_with("OPS-000")
+        || contract_id.starts_with("OPS-001")
+        || contract_id.starts_with("OPS-002")
+        || contract_id.starts_with("OPS-003")
+        || contract_id.starts_with("OPS-004")
+        || contract_id.starts_with("OPS-005")
+        || contract_id.starts_with("OPS-ROOT-")
+        || contract_id.starts_with("OPS-DOCS-")
+    {
+        return Some("root-surface");
+    }
+    if contract_id.starts_with("OPS-INV-") {
+        return Some("inventory");
+    }
+    if contract_id.starts_with("OPS-SCHEMA-") {
+        return Some("schema");
+    }
+    if contract_id.starts_with("OPS-DATASET-") {
+        return Some("datasets");
+    }
+    if contract_id.starts_with("OPS-E2E-") {
+        return Some("e2e");
+    }
+    if contract_id.starts_with("OPS-ENV-") {
+        return Some("env");
+    }
+    if contract_id.starts_with("OPS-STACK-") {
+        return Some("stack");
+    }
+    if contract_id.starts_with("OPS-K8S-") {
+        return Some("k8s");
+    }
+    if contract_id.starts_with("OPS-LOAD-") {
+        return Some("load");
+    }
+    if contract_id.starts_with("OPS-OBS-") || contract_id.starts_with("OPS-RPT-") {
+        return Some("observe");
+    }
+    None
+}
+
 pub fn contract_gate_command(contract_id: &str) -> &'static str {
     if contract_id.contains("-E-") {
         "bijux dev atlas contracts ops --mode effect --allow-subprocess --allow-network"
@@ -43,14 +98,43 @@ pub fn render_registry_snapshot_json(repo_root: &Path) -> Result<Value, String> 
 }
 
 fn validate_registry(rows: &[Contract], repo_root: &Path) -> Result<(), String> {
+    let id_pattern = Regex::new(r"^OPS-(?:[A-Z0-9]+(?:-[A-Z0-9]+)*-)?\d{3}$")
+        .map_err(|e| format!("compile contract id regex failed: {e}"))?;
     let mut contract_ids = BTreeSet::new();
     let mut test_ids = BTreeSet::new();
+    let mut normalized_titles = BTreeSet::new();
     for contract in rows {
         if !contract_ids.insert(contract.id.0.clone()) {
             return Err(format!("duplicate contract id in ops registry: {}", contract.id.0));
         }
+        if !id_pattern.is_match(&contract.id.0) {
+            return Err(format!(
+                "contract id does not match required OPS id format: {}",
+                contract.id.0
+            ));
+        }
+        if classify_contract_pillar(&contract.id.0).is_none() {
+            return Err(format!(
+                "contract id is not classified into exactly one ops pillar: {}",
+                contract.id.0
+            ));
+        }
+        let normalized = normalize_title_for_compare(contract.title);
+        if !normalized_titles.insert(normalized.clone()) {
+            return Err(format!(
+                "duplicate contract intent title detected in ops registry: {}",
+                contract.title
+            ));
+        }
         if contract.tests.is_empty() {
             return Err(format!("contract has no tests: {}", contract.id.0));
+        }
+        if contract.tests.len() > 6 {
+            return Err(format!(
+                "contract has too many tests and should be split: {} ({} tests)",
+                contract.id.0,
+                contract.tests.len()
+            ));
         }
         for case in &contract.tests {
             if !test_id_matches_policy(&case.id.0) {

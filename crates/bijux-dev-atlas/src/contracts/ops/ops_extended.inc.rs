@@ -1,5 +1,133 @@
 // SPDX-License-Identifier: Apache-2.0
 
+fn test_ops_inv_pillars_001_exists_and_validates(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-PILLARS-001";
+    let test_id = "ops.inventory.pillars.exists_and_validates";
+    match read_pillars_doc(&ctx.repo_root) {
+        Ok(doc) if !doc.pillars.is_empty() => TestResult::Pass,
+        Ok(_) => TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "pillars.json must declare at least one pillar",
+            Some("ops/inventory/pillars.json".to_string()),
+        )]),
+        Err(_) => TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "pillars.json is missing or invalid json",
+            Some("ops/inventory/pillars.json".to_string()),
+        )]),
+    }
+}
+
+fn test_ops_inv_pillars_002_every_pillar_dir_exists(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-PILLARS-002";
+    let test_id = "ops.inventory.pillars.every_pillar_dir_exists";
+    let doc = match read_pillars_doc(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let mut violations = Vec::new();
+    for pillar in doc.pillars {
+        if pillar.id == "root-surface" {
+            continue;
+        }
+        let path = ctx.repo_root.join(format!("ops/{}", pillar.id));
+        if !path.is_dir() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "pillar directory listed in pillars.json is missing",
+                Some(format!("ops/{}", pillar.id)),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_pillars_003_no_extra_pillar_dirs(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-PILLARS-003";
+    let test_id = "ops.inventory.pillars.no_extra_pillar_dirs";
+    let doc = match read_pillars_doc(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let declared: BTreeSet<String> = doc
+        .pillars
+        .into_iter()
+        .filter(|p| p.id != "root-surface")
+        .map(|p| p.id)
+        .collect();
+    let root = ops_root(&ctx.repo_root);
+    let Ok(entries) = fs::read_dir(&root) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "ops root directory is missing",
+            Some("ops".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+        let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
+            continue;
+        };
+        if name == "_generated" || name == "_generated.example" {
+            continue;
+        }
+        if !declared.contains(name) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "ops root includes undeclared pillar directory",
+                Some(format!("ops/{name}")),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_006_contract_id_format(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-006";
+    let test_id = "ops.inventory.contract_id_format";
+    let rows = match contracts(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let id_pattern = match regex::Regex::new(r"^OPS-(?:[A-Z0-9]+(?:-[A-Z0-9]+)*-)?\d{3}$") {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err.to_string()),
+    };
+    let mut violations = Vec::new();
+    for row in rows {
+        if !id_pattern.is_match(&row.id.0) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "contract id does not match required OPS id format",
+                Some(row.id.0),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn is_iso_date(value: &str) -> bool {
     let bytes = value.as_bytes();
     if bytes.len() != 10 {

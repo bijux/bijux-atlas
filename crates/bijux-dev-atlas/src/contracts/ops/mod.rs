@@ -128,6 +128,23 @@ fn inventory_paths(repo_root: &Path) -> (BTreeSet<String>, BTreeSet<String>) {
     (authoritative, contracts_map_items)
 }
 
+#[derive(Debug, Deserialize)]
+struct InventoryPillarsDoc {
+    pillars: Vec<InventoryPillarRow>,
+}
+
+#[derive(Debug, Deserialize)]
+struct InventoryPillarRow {
+    id: String,
+}
+
+fn read_pillars_doc(repo_root: &Path) -> Result<InventoryPillarsDoc, String> {
+    let path = repo_root.join("ops/inventory/pillars.json");
+    let content = fs::read_to_string(&path)
+        .map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    serde_json::from_str(&content).map_err(|e| format!("parse {} failed: {e}", path.display()))
+}
+
 
 fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-000";
@@ -747,7 +764,6 @@ fn test_ops_inv_003_no_duplicate_ssot(ctx: &RunContext) -> TestResult {
     }
 }
 
-
 include!("ops_extended.inc.rs");
 
 include!("ops_registry.inc.rs");
@@ -895,26 +911,43 @@ fn test_ops_docs_002_index_crosslinks_contracts(ctx: &RunContext) -> TestResult 
 }
 
 pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
-    let rows = contracts(repo_root)?;
+    let mut rows = contracts(repo_root)?;
+    rows.sort_by_key(|c| c.id.0.clone());
     let mut out = String::new();
     out.push_str("# Ops Contract\n\n");
     out.push_str("- Owner: `bijux-atlas-operations`\n");
     out.push_str("- Enforced by: `bijux dev atlas contracts ops`\n\n");
+    out.push_str("## Naming\n\n");
+    out.push_str("- Contract ID: `OPS-<PILLAR>-NNN`\n");
+    out.push_str("- Test ID: `ops.<pillar>.<topic>[.<name>]`\n\n");
     out.push_str("## Contract Registry\n\n");
+
+    let mut by_pillar: BTreeMap<String, Vec<&Contract>> = BTreeMap::new();
     for contract in &rows {
-        out.push_str(&format!("### {} {}\n\n", contract.id.0, contract.title));
-        out.push_str("Tests:\n");
-        for case in &contract.tests {
-            let mode = match case.kind {
-                TestKind::Pure => "static",
-                TestKind::Subprocess | TestKind::Network => "effect",
-            };
-            out.push_str(&format!(
-                "- `{}` ({mode}, {:?}): {}\n",
-                case.id.0, case.kind, case.title
-            ));
+        let pillar = classify_contract_pillar(&contract.id.0).unwrap_or("unclassified");
+        by_pillar
+            .entry(pillar.to_string())
+            .or_default()
+            .push(contract);
+    }
+
+    for (pillar, contracts) in by_pillar {
+        out.push_str(&format!("### Pillar: {pillar}\n\n"));
+        for contract in contracts {
+            out.push_str(&format!("#### {} {}\n\n", contract.id.0, contract.title));
+            out.push_str("Tests:\n");
+            for case in &contract.tests {
+                let mode = match case.kind {
+                    TestKind::Pure => "static",
+                    TestKind::Subprocess | TestKind::Network => "effect",
+                };
+                out.push_str(&format!(
+                    "- `{}` ({mode}, {:?}): {}\n",
+                    case.id.0, case.kind, case.title
+                ));
+            }
+            out.push('\n');
         }
-        out.push('\n');
     }
     out.push_str("## Rule\n\n");
     out.push_str("- Contract ID or test ID missing from this document means it does not exist.\n");

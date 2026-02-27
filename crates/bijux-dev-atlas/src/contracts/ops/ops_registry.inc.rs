@@ -189,6 +189,46 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-INV-006".to_string()),
+            title: "inventory contract id format contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_id_format".to_string()),
+                title: "all ops contract ids follow OPS-<PILLAR>-NNN format",
+                kind: TestKind::Pure,
+                run: test_ops_inv_006_contract_id_format,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-PILLARS-001".to_string()),
+            title: "inventory pillars registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.pillars.exists_and_validates".to_string()),
+                title: "pillars.json exists and validates",
+                kind: TestKind::Pure,
+                run: test_ops_inv_pillars_001_exists_and_validates,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-PILLARS-002".to_string()),
+            title: "inventory pillar directory contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.pillars.every_pillar_dir_exists".to_string()),
+                title: "every declared non-root pillar has a matching ops directory",
+                kind: TestKind::Pure,
+                run: test_ops_inv_pillars_002_every_pillar_dir_exists,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-PILLARS-003".to_string()),
+            title: "inventory pillar strictness contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.pillars.no_extra_pillar_dirs".to_string()),
+                title: "ops root has no undeclared pillar directories",
+                kind: TestKind::Pure,
+                run: test_ops_inv_pillars_003_no_extra_pillar_dirs,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-SCHEMA-001".to_string()),
             title: "schema parseability contract",
             tests: vec![TestCase {
@@ -728,6 +768,10 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-003" => "Forbids duplicate SSOT markdown documents when inventory is authoritative.",
         "OPS-INV-004" => "Enforces authority-tier exception structure with explicit expiry metadata.",
         "OPS-INV-005" => "Validates inventory control-graph integrity, mappings, and cycle safety.",
+        "OPS-INV-006" => "Validates contract id format consistency in the ops contract registry.",
+        "OPS-INV-PILLARS-001" => "Validates pillars SSOT exists and parses as inventory metadata.",
+        "OPS-INV-PILLARS-002" => "Validates each declared pillar has a concrete directory under ops/.",
+        "OPS-INV-PILLARS-003" => "Validates there are no undeclared pillar directories in ops root.",
         "OPS-SCHEMA-001" => "Ensures ops json/yaml policy documents are parseable.",
         "OPS-SCHEMA-002" => "Ensures generated schema index matches on-disk schema sources.",
         "OPS-SCHEMA-003" => "Enforces stable .schema.json naming for schema source files.",
