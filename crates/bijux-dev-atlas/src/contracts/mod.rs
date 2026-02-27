@@ -354,14 +354,17 @@ pub fn run(
 }
 
 pub fn to_pretty(report: &RunReport) -> String {
-    fn dotted(label: &str, status: &str) -> String {
-        const WIDTH: usize = 72;
-        let left = if label.len() >= WIDTH {
+    fn dotted_with_width(label: &str, status: &str, width: usize) -> String {
+        let left = if label.len() >= width {
             label.to_string()
         } else {
-            format!("{label} {}", ".".repeat(WIDTH - label.len()))
+            format!("{label} {}", ".".repeat(width - label.len()))
         };
         format!("{left} {status}")
+    }
+    fn dotted(label: &str, status: &str) -> String {
+        const WIDTH: usize = 72;
+        dotted_with_width(label, status, WIDTH)
     }
 
     let mut out = String::new();
@@ -382,7 +385,11 @@ pub fn to_pretty(report: &RunReport) -> String {
             .iter()
             .filter(|c| c.contract_id == contract.id)
         {
-            out.push_str(&format!("{}\n", dotted(&case.test_id, case.status.as_colored())));
+            // Keep two-space indentation while preserving a shared status column with contract rows.
+            out.push_str(&format!(
+                "  {}\n",
+                dotted_with_width(&case.test_id, case.status.as_colored(), 70)
+            ));
             for violation in &case.violations {
                 let location = match (&violation.file, violation.line) {
                     (Some(file), Some(line)) => format!("{file}:{line}"),
@@ -512,7 +519,7 @@ mod tests {
         };
         let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
         let pretty = to_pretty(&report);
-        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\ndocker.sample.pass ...................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
+        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass .................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
         assert_eq!(pretty, expected);
     }
 
