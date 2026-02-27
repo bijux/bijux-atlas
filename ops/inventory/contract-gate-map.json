@@ -2,60 +2,6 @@
   "mappings": [
     {
       "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-000",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-001",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-002",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-003",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-004",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-005",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-DATASETS-001",
       "effects_required": [],
       "gate_ids": [
@@ -141,15 +87,6 @@
       "effects_required": [],
       "gate_ids": [
         "ops.gate.fixtures"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-DOCS-001",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.structure"
       ],
       "static_only": true
     },
@@ -962,6 +899,96 @@
     },
     {
       "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-001",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-002",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-003",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-004",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-005",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-006",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-007",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-008",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-009",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-REPORT-010",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.observe-coverage"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-ROOT-001",
       "effects_required": [],
       "gate_ids": [
@@ -1106,6 +1133,69 @@
     },
     {
       "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-017",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-018",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-019",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-020",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-021",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-022",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-023",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-ROOT-SURFACE-001",
       "effects_required": [],
       "gate_ids": [
@@ -1191,96 +1281,6 @@
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-001",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-002",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-003",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-004",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-005",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-006",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-007",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-008",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-009",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
-      ],
-      "static_only": true
-    },
-    {
-      "command": "bijux dev atlas ops check",
-      "contract_id": "OPS-RPT-010",
-      "effects_required": [],
-      "gate_ids": [
-        "ops.gate.observe-coverage"
       ],
       "static_only": true
     },

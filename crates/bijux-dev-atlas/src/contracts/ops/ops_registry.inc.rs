@@ -1,7 +1,7 @@
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
     let rows = vec![
         Contract {
-            id: ContractId("OPS-000".to_string()),
+            id: ContractId("OPS-ROOT-017".to_string()),
             title: "ops directory contract",
             tests: vec![
                 TestCase {
@@ -31,7 +31,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             ],
         },
         Contract {
-            id: ContractId("OPS-001".to_string()),
+            id: ContractId("OPS-ROOT-018".to_string()),
             title: "ops generated lifecycle contract",
             tests: vec![
                 TestCase {
@@ -55,7 +55,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             ],
         },
         Contract {
-            id: ContractId("OPS-002".to_string()),
+            id: ContractId("OPS-ROOT-019".to_string()),
             title: "ops required domain files contract",
             tests: vec![
                 TestCase {
@@ -73,7 +73,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             ],
         },
         Contract {
-            id: ContractId("OPS-003".to_string()),
+            id: ContractId("OPS-ROOT-020".to_string()),
             title: "ops markdown budget contract",
             tests: vec![
                 TestCase {
@@ -91,7 +91,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             ],
         },
         Contract {
-            id: ContractId("OPS-004".to_string()),
+            id: ContractId("OPS-ROOT-021".to_string()),
             title: "ops docs ssot boundary contract",
             tests: vec![TestCase {
                 id: TestId("ops.docs.readme_ssot_boundary".to_string()),
@@ -101,7 +101,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-005".to_string()),
+            id: ContractId("OPS-ROOT-022".to_string()),
             title: "ops contract document generation contract",
             tests: vec![TestCase {
                 id: TestId("ops.contract_doc.generated_match".to_string()),
@@ -211,7 +211,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-DOCS-001".to_string()),
+            id: ContractId("OPS-ROOT-023".to_string()),
             title: "operations docs policy linkage contract",
             tests: vec![
                 TestCase {
@@ -992,7 +992,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
         Contract { id: ContractId("OPS-OBS-009".to_string()), title: "observability drills manifest contract", tests: vec![TestCase { id: TestId("ops.observe.drills_manifest_exists_runnable".to_string()), title: "drills manifest is populated with runnable drill definitions", kind: TestKind::Pure, run: test_ops_obs_009_drills_manifest_exists_runnable, }] },
         Contract { id: ContractId("OPS-OBS-010".to_string()), title: "observability overload behavior contract", tests: vec![TestCase { id: TestId("ops.observe.overload_behavior_contract_enforced".to_string()), title: "overload behavior contract exists and maps to load suite coverage", kind: TestKind::Pure, run: test_ops_obs_010_overload_behavior_contract_enforced, }] },
         Contract {
-            id: ContractId("OPS-RPT-001".to_string()),
+            id: ContractId("OPS-REPORT-001".to_string()),
             title: "report schema ssot contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.schema_is_ssot".to_string()),
@@ -1002,7 +1002,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-002".to_string()),
+            id: ContractId("OPS-REPORT-002".to_string()),
             title: "report generated payload contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.generated_reports_schema_valid".to_string()),
@@ -1012,7 +1012,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-003".to_string()),
+            id: ContractId("OPS-REPORT-003".to_string()),
             title: "report evidence levels contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.evidence_levels_complete".to_string()),
@@ -1022,7 +1022,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-004".to_string()),
+            id: ContractId("OPS-REPORT-004".to_string()),
             title: "report diff structure contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.diff_contract_exists".to_string()),
@@ -1032,7 +1032,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-005".to_string()),
+            id: ContractId("OPS-REPORT-005".to_string()),
             title: "report readiness score determinism contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.readiness_score_deterministic".to_string()),
@@ -1042,7 +1042,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-006".to_string()),
+            id: ContractId("OPS-REPORT-006".to_string()),
             title: "report release evidence bundle contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.release_evidence_bundle_schema_valid".to_string()),
@@ -1052,7 +1052,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-007".to_string()),
+            id: ContractId("OPS-REPORT-007".to_string()),
             title: "report historical comparison contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.historical_comparison_schema_valid".to_string()),
@@ -1062,7 +1062,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-008".to_string()),
+            id: ContractId("OPS-REPORT-008".to_string()),
             title: "report unified example contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.unified_report_example_schema_valid".to_string()),
@@ -1072,7 +1072,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-009".to_string()),
+            id: ContractId("OPS-REPORT-009".to_string()),
             title: "report canonical json output contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.outputs_canonical_json".to_string()),
@@ -1082,7 +1082,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
-            id: ContractId("OPS-RPT-010".to_string()),
+            id: ContractId("OPS-REPORT-010".to_string()),
             title: "report lane aggregation contract",
             tests: vec![TestCase {
                 id: TestId("ops.report.lane_reports_aggregated_in_unified_report".to_string()),
@@ -1293,12 +1293,12 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 
 pub fn contract_explain(contract_id: &str) -> &'static str {
     match contract_id {
-        "OPS-000" => "Defines the only allowed root ops filesystem surface and markdown envelope.",
-        "OPS-001" => "Governs generated artifact lifecycle boundaries under _generated and _generated.example.",
-        "OPS-002" => "Requires per-domain README/CONTRACT and forbids legacy duplicate docs.",
-        "OPS-003" => "Enforces markdown size budgets so contracts stay concise and reviewable.",
-        "OPS-004" => "Enforces SSOT boundary: ops README is navigation-only and points to docs/operations.",
-        "OPS-005" => "Ensures ops/CONTRACT.md is generated from and synchronized with registry metadata.",
+        "OPS-ROOT-017" => "Defines the only allowed root ops filesystem surface and markdown envelope.",
+        "OPS-ROOT-018" => "Governs generated artifact lifecycle boundaries under _generated and _generated.example.",
+        "OPS-ROOT-019" => "Requires per-domain README/CONTRACT and forbids legacy duplicate docs.",
+        "OPS-ROOT-020" => "Enforces markdown size budgets so contracts stay concise and reviewable.",
+        "OPS-ROOT-021" => "Enforces SSOT boundary: ops README is navigation-only and points to docs/operations.",
+        "OPS-ROOT-022" => "Ensures ops/CONTRACT.md is generated from and synchronized with registry metadata.",
         "OPS-ROOT-001" => "Constrains ops root surface to canonical control-plane files and domain directories.",
         "OPS-ROOT-002" => "Forbids extra markdown documents at ops root beyond README.md and CONTRACT.md.",
         "OPS-ROOT-003" => "Forbids shell script artifacts and bash shebangs in ops policy/config trees.",
@@ -1309,7 +1309,7 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-ROOT-008" => "Requires placeholder directories to be explicitly listed in inventory allowlist.",
         "OPS-ROOT-009" => "Requires ops policy/config artifacts to be covered by inventory mappings.",
         "OPS-ROOT-010" => "Prevents reintroduction of deleted legacy ops markdown policy documents.",
-        "OPS-DOCS-001" => "Ensures operations docs policy statements reference executable OPS contract IDs.",
+        "OPS-ROOT-023" => "Ensures operations docs policy statements reference executable OPS contract IDs.",
         "OPS-INV-001" => "Ensures domain and policy registration completeness in inventory sources.",
         "OPS-INV-002" => "Prevents orphan ops files that are not mapped by inventory references.",
         "OPS-INV-003" => "Forbids duplicate SSOT markdown documents when inventory is authoritative.",
@@ -1418,16 +1418,16 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-OBS-008" => "Ensures telemetry index artifacts remain schema-versioned and deterministic.",
         "OPS-OBS-009" => "Ensures observability drills manifest includes runnable drill definitions.",
         "OPS-OBS-010" => "Ensures overload behavior contract exists and is mapped to load-suite enforcement coverage.",
-        "OPS-RPT-001" => "Ensures report schema is the SSOT and mirrored under ops/schema/report.",
-        "OPS-RPT-002" => "Ensures generated report payloads are parseable and include schema_version.",
-        "OPS-RPT-003" => "Ensures report evidence levels include minimal standard and forensic tiers.",
-        "OPS-RPT-004" => "Ensures generated report diff includes base target and change structure.",
-        "OPS-RPT-005" => "Ensures readiness score report is deterministic and keyed by canonical input sources.",
-        "OPS-RPT-006" => "Ensures release evidence bundle is parseable and references existing report artifacts.",
-        "OPS-RPT-007" => "Ensures historical comparison report includes required trend and readiness signals.",
-        "OPS-RPT-008" => "Ensures unified report example contains required schema, lane, summary, and budget sections.",
-        "OPS-RPT-009" => "Ensures report outputs use canonical pretty JSON formatting and deterministic key ordering.",
-        "OPS-RPT-010" => "Ensures unified report summary is an aggregate of emitted per-lane statuses.",
+        "OPS-REPORT-001" => "Ensures report schema is the SSOT and mirrored under ops/schema/report.",
+        "OPS-REPORT-002" => "Ensures generated report payloads are parseable and include schema_version.",
+        "OPS-REPORT-003" => "Ensures report evidence levels include minimal standard and forensic tiers.",
+        "OPS-REPORT-004" => "Ensures generated report diff includes base target and change structure.",
+        "OPS-REPORT-005" => "Ensures readiness score report is deterministic and keyed by canonical input sources.",
+        "OPS-REPORT-006" => "Ensures release evidence bundle is parseable and references existing report artifacts.",
+        "OPS-REPORT-007" => "Ensures historical comparison report includes required trend and readiness signals.",
+        "OPS-REPORT-008" => "Ensures unified report example contains required schema, lane, summary, and budget sections.",
+        "OPS-REPORT-009" => "Ensures report outputs use canonical pretty JSON formatting and deterministic key ordering.",
+        "OPS-REPORT-010" => "Ensures unified report summary is an aggregate of emitted per-lane statuses.",
         "OPS-STACK-001" => "Ensures stack.toml parses and defines canonical execution profiles.",
         "OPS-STACK-002" => "Ensures service dependency contract entries are structurally valid.",
         "OPS-STACK-003" => "Ensures stack version manifest is parseable and digest pinned.",

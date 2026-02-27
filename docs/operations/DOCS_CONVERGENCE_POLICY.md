@@ -25,4 +25,4 @@ Every Tier-2 page must identify audience and source-of-truth headers.
 
 - `checks_ops_docs_governance`
 
-Related contracts: OPS-DOCS-001, OPS-000.
+Related contracts: OPS-ROOT-023, OPS-ROOT-017.

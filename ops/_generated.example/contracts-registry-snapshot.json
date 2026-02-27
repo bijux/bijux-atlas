@@ -1,94 +1,6 @@
 {
   "contracts": [
     {
-      "id": "OPS-000",
-      "tests": [
-        {
-          "test_id": "ops.dir.allow_only_known_domain_dirs",
-          "title": "ops root allows only canonical domain directories"
-        },
-        {
-          "test_id": "ops.dir.allowed_root_files",
-          "title": "ops root allows only contract/readme root files"
-        },
-        {
-          "test_id": "ops.dir.forbid_extra_markdown_recursive",
-          "title": "ops forbids recursive markdown outside approved surface"
-        },
-        {
-          "test_id": "ops.dir.forbid_extra_markdown_root",
-          "title": "ops root forbids extra markdown"
-        }
-      ],
-      "title": "ops directory contract"
-    },
-    {
-      "id": "OPS-001",
-      "tests": [
-        {
-          "test_id": "ops.generated.example.allowed_files",
-          "title": "ops/_generated.example allows only committed artifact formats"
-        },
-        {
-          "test_id": "ops.generated.runtime.allowed_files",
-          "title": "ops/_generated allows only runtime artifact formats"
-        },
-        {
-          "test_id": "ops.generated.runtime.no_example_files",
-          "title": "ops/_generated forbids example artifacts"
-        }
-      ],
-      "title": "ops generated lifecycle contract"
-    },
-    {
-      "id": "OPS-002",
-      "tests": [
-        {
-          "test_id": "ops.domain.forbid_legacy_docs",
-          "title": "legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden"
-        },
-        {
-          "test_id": "ops.domain.required_contract_and_readme",
-          "title": "each ops domain includes README.md and CONTRACT.md"
-        }
-      ],
-      "title": "ops required domain files contract"
-    },
-    {
-      "id": "OPS-003",
-      "tests": [
-        {
-          "test_id": "ops.markdown_budget.contract",
-          "title": "CONTRACT markdown files stay within line budget"
-        },
-        {
-          "test_id": "ops.markdown_budget.readme",
-          "title": "README markdown files stay within line budget"
-        }
-      ],
-      "title": "ops markdown budget contract"
-    },
-    {
-      "id": "OPS-004",
-      "tests": [
-        {
-          "test_id": "ops.docs.readme_ssot_boundary",
-          "title": "ops root readme remains navigation-only and references docs/operations"
-        }
-      ],
-      "title": "ops docs ssot boundary contract"
-    },
-    {
-      "id": "OPS-005",
-      "tests": [
-        {
-          "test_id": "ops.contract_doc.generated_match",
-          "title": "ops CONTRACT.md matches generated output from contract registry"
-        }
-      ],
-      "title": "ops contract document generation contract"
-    },
-    {
       "id": "OPS-DATASETS-001",
       "tests": [
         {
@@ -187,20 +99,6 @@
         }
       ],
       "title": "datasets store layout contract"
-    },
-    {
-      "id": "OPS-DOCS-001",
-      "tests": [
-        {
-          "test_id": "ops.docs.index_crosslinks_contracts",
-          "title": "operations index must state docs/contracts boundary and include OPS references"
-        },
-        {
-          "test_id": "ops.docs.policy_keyword_requires_contract_id",
-          "title": "operations docs with policy keywords must reference OPS contract ids"
-        }
-      ],
-      "title": "operations docs policy linkage contract"
     },
     {
       "id": "OPS-E2E-001",
@@ -1033,6 +931,106 @@
       "title": "observe effect alerts load contract"
     },
     {
+      "id": "OPS-REPORT-001",
+      "tests": [
+        {
+          "test_id": "ops.report.schema_is_ssot",
+          "title": "report schema is parseable and mirrored under ops/schema/report"
+        }
+      ],
+      "title": "report schema ssot contract"
+    },
+    {
+      "id": "OPS-REPORT-002",
+      "tests": [
+        {
+          "test_id": "ops.report.generated_reports_schema_valid",
+          "title": "generated report payloads are parseable and include schema_version"
+        }
+      ],
+      "title": "report generated payload contract"
+    },
+    {
+      "id": "OPS-REPORT-003",
+      "tests": [
+        {
+          "test_id": "ops.report.evidence_levels_complete",
+          "title": "evidence levels include minimal standard and forensic"
+        }
+      ],
+      "title": "report evidence levels contract"
+    },
+    {
+      "id": "OPS-REPORT-004",
+      "tests": [
+        {
+          "test_id": "ops.report.diff_contract_exists",
+          "title": "generated report diff includes base target and change set"
+        }
+      ],
+      "title": "report diff structure contract"
+    },
+    {
+      "id": "OPS-REPORT-005",
+      "tests": [
+        {
+          "test_id": "ops.report.readiness_score_deterministic",
+          "title": "readiness score report is schema-versioned and uses canonical input keys"
+        }
+      ],
+      "title": "report readiness score determinism contract"
+    },
+    {
+      "id": "OPS-REPORT-006",
+      "tests": [
+        {
+          "test_id": "ops.report.release_evidence_bundle_schema_valid",
+          "title": "release evidence bundle is parseable and references existing artifacts"
+        }
+      ],
+      "title": "report release evidence bundle contract"
+    },
+    {
+      "id": "OPS-REPORT-007",
+      "tests": [
+        {
+          "test_id": "ops.report.historical_comparison_schema_valid",
+          "title": "historical comparison report includes schema and readiness trend fields"
+        }
+      ],
+      "title": "report historical comparison contract"
+    },
+    {
+      "id": "OPS-REPORT-008",
+      "tests": [
+        {
+          "test_id": "ops.report.unified_report_example_schema_valid",
+          "title": "unified report example includes required schema and summary sections"
+        }
+      ],
+      "title": "report unified example contract"
+    },
+    {
+      "id": "OPS-REPORT-009",
+      "tests": [
+        {
+          "test_id": "ops.report.outputs_canonical_json",
+          "title": "report outputs are canonical pretty json with deterministic key ordering"
+        }
+      ],
+      "title": "report canonical json output contract"
+    },
+    {
+      "id": "OPS-REPORT-010",
+      "tests": [
+        {
+          "test_id": "ops.report.lane_reports_aggregated_in_unified_report",
+          "title": "unified report summary totals are derived from lane report statuses"
+        }
+      ],
+      "title": "report lane aggregation contract"
+    },
+    {
       "id": "OPS-ROOT-001",
       "tests": [
         {
@@ -1193,6 +1191,108 @@
       "title": "ops deleted markdown denylist contract"
     },
     {
+      "id": "OPS-ROOT-017",
+      "tests": [
+        {
+          "test_id": "ops.dir.allow_only_known_domain_dirs",
+          "title": "ops root allows only canonical domain directories"
+        },
+        {
+          "test_id": "ops.dir.allowed_root_files",
+          "title": "ops root allows only contract/readme root files"
+        },
+        {
+          "test_id": "ops.dir.forbid_extra_markdown_recursive",
+          "title": "ops forbids recursive markdown outside approved surface"
+        },
+        {
+          "test_id": "ops.dir.forbid_extra_markdown_root",
+          "title": "ops root forbids extra markdown"
+        }
+      ],
+      "title": "ops directory contract"
+    },
+    {
+      "id": "OPS-ROOT-018",
+      "tests": [
+        {
+          "test_id": "ops.generated.example.allowed_files",
+          "title": "ops/_generated.example allows only committed artifact formats"
+        },
+        {
+          "test_id": "ops.generated.runtime.allowed_files",
+          "title": "ops/_generated allows only runtime artifact formats"
+        },
+        {
+          "test_id": "ops.generated.runtime.no_example_files",
+          "title": "ops/_generated forbids example artifacts"
+        }
+      ],
+      "title": "ops generated lifecycle contract"
+    },
+    {
+      "id": "OPS-ROOT-019",
+      "tests": [
+        {
+          "test_id": "ops.domain.forbid_legacy_docs",
+          "title": "legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden"
+        },
+        {
+          "test_id": "ops.domain.required_contract_and_readme",
+          "title": "each ops domain includes README.md and CONTRACT.md"
+        }
+      ],
+      "title": "ops required domain files contract"
+    },
+    {
+      "id": "OPS-ROOT-020",
+      "tests": [
+        {
+          "test_id": "ops.markdown_budget.contract",
+          "title": "CONTRACT markdown files stay within line budget"
+        },
+        {
+          "test_id": "ops.markdown_budget.readme",
+          "title": "README markdown files stay within line budget"
+        }
+      ],
+      "title": "ops markdown budget contract"
+    },
+    {
+      "id": "OPS-ROOT-021",
+      "tests": [
+        {
+          "test_id": "ops.docs.readme_ssot_boundary",
+          "title": "ops root readme remains navigation-only and references docs/operations"
+        }
+      ],
+      "title": "ops docs ssot boundary contract"
+    },
+    {
+      "id": "OPS-ROOT-022",
+      "tests": [
+        {
+          "test_id": "ops.contract_doc.generated_match",
+          "title": "ops CONTRACT.md matches generated output from contract registry"
+        }
+      ],
+      "title": "ops contract document generation contract"
+    },
+    {
+      "id": "OPS-ROOT-023",
+      "tests": [
+        {
+          "test_id": "ops.docs.index_crosslinks_contracts",
+          "title": "operations index must state docs/contracts boundary and include OPS references"
+        },
+        {
+          "test_id": "ops.docs.policy_keyword_requires_contract_id",
+          "title": "operations docs with policy keywords must reference OPS contract ids"
+        }
+      ],
+      "title": "operations docs policy linkage contract"
+    },
+    {
       "id": "OPS-ROOT-SURFACE-001",
       "tests": [
         {
@@ -1291,106 +1391,6 @@
         }
       ],
       "title": "ops root command surface artifacts policy contract"
-    },
-    {
-      "id": "OPS-RPT-001",
-      "tests": [
-        {
-          "test_id": "ops.report.schema_is_ssot",
-          "title": "report schema is parseable and mirrored under ops/schema/report"
-        }
-      ],
-      "title": "report schema ssot contract"
-    },
-    {
-      "id": "OPS-RPT-002",
-      "tests": [
-        {
-          "test_id": "ops.report.generated_reports_schema_valid",
-          "title": "generated report payloads are parseable and include schema_version"
-        }
-      ],
-      "title": "report generated payload contract"
-    },
-    {
-      "id": "OPS-RPT-003",
-      "tests": [
-        {
-          "test_id": "ops.report.evidence_levels_complete",
-          "title": "evidence levels include minimal standard and forensic"
-        }
-      ],
-      "title": "report evidence levels contract"
-    },
-    {
-      "id": "OPS-RPT-004",
-      "tests": [
-        {
-          "test_id": "ops.report.diff_contract_exists",
-          "title": "generated report diff includes base target and change set"
-        }
-      ],
-      "title": "report diff structure contract"
-    },
-    {
-      "id": "OPS-RPT-005",
-      "tests": [
-        {
-          "test_id": "ops.report.readiness_score_deterministic",
-          "title": "readiness score report is schema-versioned and uses canonical input keys"
-        }
-      ],
-      "title": "report readiness score determinism contract"
-    },
-    {
-      "id": "OPS-RPT-006",
-      "tests": [
-        {
-          "test_id": "ops.report.release_evidence_bundle_schema_valid",
-          "title": "release evidence bundle is parseable and references existing artifacts"
-        }
-      ],
-      "title": "report release evidence bundle contract"
-    },
-    {
-      "id": "OPS-RPT-007",
-      "tests": [
-        {
-          "test_id": "ops.report.historical_comparison_schema_valid",
-          "title": "historical comparison report includes schema and readiness trend fields"
-        }
-      ],
-      "title": "report historical comparison contract"
-    },
-    {
-      "id": "OPS-RPT-008",
-      "tests": [
-        {
-          "test_id": "ops.report.unified_report_example_schema_valid",
-          "title": "unified report example includes required schema and summary sections"
-        }
-      ],
-      "title": "report unified example contract"
-    },
-    {
-      "id": "OPS-RPT-009",
-      "tests": [
-        {
-          "test_id": "ops.report.outputs_canonical_json",
-          "title": "report outputs are canonical pretty json with deterministic key ordering"
-        }
-      ],
-      "title": "report canonical json output contract"
-    },
-    {
-      "id": "OPS-RPT-010",
-      "tests": [
-        {
-          "test_id": "ops.report.lane_reports_aggregated_in_unified_report",
-          "title": "unified report summary totals are derived from lane report statuses"
-        }
-      ],
-      "title": "report lane aggregation contract"
     },
     {
       "id": "OPS-SCHEMA-001",

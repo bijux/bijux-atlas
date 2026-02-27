@@ -24,15 +24,7 @@ fn normalize_title_for_compare(title: &str) -> String {
 }
 
 fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
-    if contract_id.starts_with("OPS-000")
-        || contract_id.starts_with("OPS-001")
-        || contract_id.starts_with("OPS-002")
-        || contract_id.starts_with("OPS-003")
-        || contract_id.starts_with("OPS-004")
-        || contract_id.starts_with("OPS-005")
-        || contract_id.starts_with("OPS-ROOT-")
-        || contract_id.starts_with("OPS-DOCS-")
-    {
+    if contract_id.starts_with("OPS-ROOT-") {
         return Some("root-surface");
     }
     if contract_id.starts_with("OPS-INV-") {
@@ -41,7 +33,7 @@ fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
     if contract_id.starts_with("OPS-SCHEMA-") {
         return Some("schema");
     }
-    if contract_id.starts_with("OPS-DATASETS-") || contract_id.starts_with("OPS-DATASET-") {
+    if contract_id.starts_with("OPS-DATASETS-") {
         return Some("datasets");
     }
     if contract_id.starts_with("OPS-E2E-") {
@@ -59,8 +51,11 @@ fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
     if contract_id.starts_with("OPS-LOAD-") {
         return Some("load");
     }
-    if contract_id.starts_with("OPS-OBS-") || contract_id.starts_with("OPS-RPT-") {
+    if contract_id.starts_with("OPS-OBS-") {
         return Some("observe");
+    }
+    if contract_id.starts_with("OPS-REPORT-") {
+        return Some("report");
     }
     None
 }
@@ -153,10 +148,13 @@ fn validate_registry(rows: &[Contract], repo_root: &Path) -> Result<(), String> 
 }
 
 fn validate_no_orphan_test_functions(repo_root: &Path) -> Result<(), String> {
-    let registry = fs::read_to_string(
-        repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/ops_registry.inc.rs"),
-    )
-    .map_err(|e| format!("read ops registry source failed: {e}"))?;
+    let registry_path = repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/ops_registry.inc.rs");
+    let module_path = repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/mod.rs");
+    let registry = fs::read_to_string(&registry_path)
+        .map_err(|e| format!("read {} failed: {e}", registry_path.display()))?;
+    let module = fs::read_to_string(&module_path)
+        .map_err(|e| format!("read {} failed: {e}", module_path.display()))?;
+    let referenced = format!("{registry}\n{module}");
 
     let mut files = Vec::new();
     walk_files(&repo_root.join("crates/bijux-dev-atlas/src/contracts/ops"), &mut files);
@@ -174,7 +172,7 @@ fn validate_no_orphan_test_functions(repo_root: &Path) -> Result<(), String> {
             let line = line.trim_start();
             if let Some(rest) = line.strip_prefix("fn test_ops_") {
                 let fn_name = format!("test_ops_{}", rest.split('(').next().unwrap_or_default());
-                if !registry.contains(&format!("run: {fn_name},")) {
+                if !referenced.contains(&format!("run: {fn_name},")) {
                     return Err(format!(
                         "orphan test function is not referenced by ops registry: {fn_name}"
                     ));

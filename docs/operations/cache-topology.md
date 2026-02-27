@@ -42,4 +42,4 @@ Local and CI environments use different storage pressure profiles. This page def
 - Use per-pod cache for predictable isolation in constrained dev machines.
 - Use per-node cache for scale rehearsal and realistic warm-reuse patterns.
 
-Related contracts: OPS-DOCS-001, OPS-000.
+Related contracts: OPS-ROOT-023, OPS-ROOT-017.

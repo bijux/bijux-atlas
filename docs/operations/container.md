@@ -42,4 +42,4 @@ Image must contain OCI labels:
 make docker-gate
 ```
 
-Related contracts: OPS-DOCS-001, OPS-000.
+Related contracts: OPS-ROOT-023, OPS-ROOT-017.

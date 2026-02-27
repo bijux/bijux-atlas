@@ -86,15 +86,15 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
 
     fn ops_domain_filter(domain: ContractsOpsDomainArg) -> String {
         match domain {
-            ContractsOpsDomainArg::Root => "OPS-000*".to_string(),
-            ContractsOpsDomainArg::Datasets => "OPS-DATASET-*".to_string(),
+            ContractsOpsDomainArg::Root => "OPS-ROOT-*".to_string(),
+            ContractsOpsDomainArg::Datasets => "OPS-DATASETS-*".to_string(),
             ContractsOpsDomainArg::E2e => "OPS-E2E-*".to_string(),
             ContractsOpsDomainArg::Env => "OPS-ENV-*".to_string(),
             ContractsOpsDomainArg::Inventory => "OPS-INV-*".to_string(),
             ContractsOpsDomainArg::K8s => "OPS-K8S-*".to_string(),
             ContractsOpsDomainArg::Load => "OPS-LOAD-*".to_string(),
             ContractsOpsDomainArg::Observe => "OPS-OBS-*".to_string(),
-            ContractsOpsDomainArg::Report => "OPS-RPT-*".to_string(),
+            ContractsOpsDomainArg::Report => "OPS-REPORT-*".to_string(),
             ContractsOpsDomainArg::Schema => "OPS-SCHEMA-*".to_string(),
             ContractsOpsDomainArg::Stack => "OPS-STACK-*".to_string(),
         }

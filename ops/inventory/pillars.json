@@ -17,7 +17,7 @@
       "id": "datasets",
       "owner": "bijux-atlas-operations",
       "required_dir": "ops/datasets",
-      "contract_prefix": "OPS-DATASET"
+      "contract_prefix": "OPS-DATASETS"
     },
     {
       "id": "e2e",
@@ -59,7 +59,7 @@
       "id": "report",
       "owner": "bijux-atlas-operations",
       "required_dir": "ops/report",
-      "contract_prefix": "OPS-RPT"
+      "contract_prefix": "OPS-REPORT"
     }
   ]
 }

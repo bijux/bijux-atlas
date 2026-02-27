@@ -27,7 +27,7 @@ Does not define product semantics or internal crate APIs.
 ## Contract Boundary
 
 Operational policies are enforced by contracts; docs are walkthroughs.
-Policy statements in this directory must link to executable contract IDs such as `OPS-000`, `OPS-005`, and `OPS-DOCS-001`.
+Policy statements in this directory must link to executable contract IDs such as `OPS-ROOT-017`, `OPS-ROOT-022`, and `OPS-ROOT-023`.
 
 ## Contracts
 

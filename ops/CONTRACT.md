@@ -489,100 +489,59 @@ Tests:
 Tests:
 - `ops.observe.effect.alerts_load_contract` (effect, Network): effect lane requires parseable alert rule inputs
 
-#### OPS-RPT-001 report schema ssot contract
+### Pillar: report
+
+#### OPS-REPORT-001 report schema ssot contract
 
 Tests:
 - `ops.report.schema_is_ssot` (static, Pure): report schema is parseable and mirrored under ops/schema/report
 
-#### OPS-RPT-002 report generated payload contract
+#### OPS-REPORT-002 report generated payload contract
 
 Tests:
 - `ops.report.generated_reports_schema_valid` (static, Pure): generated report payloads are parseable and include schema_version
 
-#### OPS-RPT-003 report evidence levels contract
+#### OPS-REPORT-003 report evidence levels contract
 
 Tests:
 - `ops.report.evidence_levels_complete` (static, Pure): evidence levels include minimal standard and forensic
 
-#### OPS-RPT-004 report diff structure contract
+#### OPS-REPORT-004 report diff structure contract
 
 Tests:
 - `ops.report.diff_contract_exists` (static, Pure): generated report diff includes base target and change set
 
-#### OPS-RPT-005 report readiness score determinism contract
+#### OPS-REPORT-005 report readiness score determinism contract
 
 Tests:
 - `ops.report.readiness_score_deterministic` (static, Pure): readiness score report is schema-versioned and uses canonical input keys
 
-#### OPS-RPT-006 report release evidence bundle contract
+#### OPS-REPORT-006 report release evidence bundle contract
 
 Tests:
 - `ops.report.release_evidence_bundle_schema_valid` (static, Pure): release evidence bundle is parseable and references existing artifacts
 
-#### OPS-RPT-007 report historical comparison contract
+#### OPS-REPORT-007 report historical comparison contract
 
 Tests:
 - `ops.report.historical_comparison_schema_valid` (static, Pure): historical comparison report includes schema and readiness trend fields
 
-#### OPS-RPT-008 report unified example contract
+#### OPS-REPORT-008 report unified example contract
 
 Tests:
 - `ops.report.unified_report_example_schema_valid` (static, Pure): unified report example includes required schema and summary sections
 
-#### OPS-RPT-009 report canonical json output contract
+#### OPS-REPORT-009 report canonical json output contract
 
 Tests:
 - `ops.report.outputs_canonical_json` (static, Pure): report outputs are canonical pretty json with deterministic key ordering
 
-#### OPS-RPT-010 report lane aggregation contract
+#### OPS-REPORT-010 report lane aggregation contract
 
 Tests:
 - `ops.report.lane_reports_aggregated_in_unified_report` (static, Pure): unified report summary totals are derived from lane report statuses
 
 ### Pillar: root-surface
-
-#### OPS-000 ops directory contract
-
-Tests:
-- `ops.dir.allowed_root_files` (static, Pure): ops root allows only contract/readme root files
-- `ops.dir.forbid_extra_markdown_root` (static, Pure): ops root forbids extra markdown
-- `ops.dir.allow_only_known_domain_dirs` (static, Pure): ops root allows only canonical domain directories
-- `ops.dir.forbid_extra_markdown_recursive` (static, Pure): ops forbids recursive markdown outside approved surface
-
-#### OPS-001 ops generated lifecycle contract
-
-Tests:
-- `ops.generated.runtime.allowed_files` (static, Pure): ops/_generated allows only runtime artifact formats
-- `ops.generated.example.allowed_files` (static, Pure): ops/_generated.example allows only committed artifact formats
-- `ops.generated.runtime.no_example_files` (static, Pure): ops/_generated forbids example artifacts
-
-#### OPS-002 ops required domain files contract
-
-Tests:
-- `ops.domain.required_contract_and_readme` (static, Pure): each ops domain includes README.md and CONTRACT.md
-- `ops.domain.forbid_legacy_docs` (static, Pure): legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden
-
-#### OPS-003 ops markdown budget contract
-
-Tests:
-- `ops.markdown_budget.readme` (static, Pure): README markdown files stay within line budget
-- `ops.markdown_budget.contract` (static, Pure): CONTRACT markdown files stay within line budget
-
-#### OPS-004 ops docs ssot boundary contract
-
-Tests:
-- `ops.docs.readme_ssot_boundary` (static, Pure): ops root readme remains navigation-only and references docs/operations
-
-#### OPS-005 ops contract document generation contract
-
-Tests:
-- `ops.contract_doc.generated_match` (static, Pure): ops CONTRACT.md matches generated output from contract registry
-
-#### OPS-DOCS-001 operations docs policy linkage contract
-
-Tests:
-- `ops.docs.policy_keyword_requires_contract_id` (static, Pure): operations docs with policy keywords must reference OPS contract ids
-- `ops.docs.index_crosslinks_contracts` (static, Pure): operations index must state docs/contracts boundary and include OPS references
 
 #### OPS-ROOT-001 ops root allowed surface contract
 
@@ -663,6 +622,49 @@ Tests:
 
 Tests:
 - `ops.root.deleted_markdown_denylist` (static, Pure): historically deleted markdown paths must not be reintroduced
+
+#### OPS-ROOT-017 ops directory contract
+
+Tests:
+- `ops.dir.allowed_root_files` (static, Pure): ops root allows only contract/readme root files
+- `ops.dir.forbid_extra_markdown_root` (static, Pure): ops root forbids extra markdown
+- `ops.dir.allow_only_known_domain_dirs` (static, Pure): ops root allows only canonical domain directories
+- `ops.dir.forbid_extra_markdown_recursive` (static, Pure): ops forbids recursive markdown outside approved surface
+
+#### OPS-ROOT-018 ops generated lifecycle contract
+
+Tests:
+- `ops.generated.runtime.allowed_files` (static, Pure): ops/_generated allows only runtime artifact formats
+- `ops.generated.example.allowed_files` (static, Pure): ops/_generated.example allows only committed artifact formats
+- `ops.generated.runtime.no_example_files` (static, Pure): ops/_generated forbids example artifacts
+
+#### OPS-ROOT-019 ops required domain files contract
+
+Tests:
+- `ops.domain.required_contract_and_readme` (static, Pure): each ops domain includes README.md and CONTRACT.md
+- `ops.domain.forbid_legacy_docs` (static, Pure): legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden
+
+#### OPS-ROOT-020 ops markdown budget contract
+
+Tests:
+- `ops.markdown_budget.readme` (static, Pure): README markdown files stay within line budget
+- `ops.markdown_budget.contract` (static, Pure): CONTRACT markdown files stay within line budget
+
+#### OPS-ROOT-021 ops docs ssot boundary contract
+
+Tests:
+- `ops.docs.readme_ssot_boundary` (static, Pure): ops root readme remains navigation-only and references docs/operations
+
+#### OPS-ROOT-022 ops contract document generation contract
+
+Tests:
+- `ops.contract_doc.generated_match` (static, Pure): ops CONTRACT.md matches generated output from contract registry
+
+#### OPS-ROOT-023 operations docs policy linkage contract
+
+Tests:
+- `ops.docs.policy_keyword_requires_contract_id` (static, Pure): operations docs with policy keywords must reference OPS contract ids
+- `ops.docs.index_crosslinks_contracts` (static, Pure): operations index must state docs/contracts boundary and include OPS references
 
 #### OPS-ROOT-SURFACE-001 ops root command surface required commands contract
 

@@ -60,4 +60,4 @@ Canonical Kubernetes operations flow and contract-aligned make entrypoints.
   - `make ops-smoke`
   - `make ops-observability-validate`
 
-Related contracts: OPS-DOCS-001, OPS-000.
+Related contracts: OPS-ROOT-023, OPS-ROOT-017.

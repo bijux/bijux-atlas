@@ -146,7 +146,7 @@ fn read_pillars_doc(repo_root: &Path) -> Result<InventoryPillarsDoc, String> {
 }
 
 fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-000";
+    let contract_id = "OPS-ROOT-017";
     let test_id = "ops.dir.allowed_root_files";
     let root = ops_root(&ctx.repo_root);
     let Ok(entries) = std::fs::read_dir(&root) else {
@@ -183,7 +183,7 @@ fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-000";
+    let contract_id = "OPS-ROOT-017";
     let test_id = "ops.dir.forbid_extra_markdown_root";
     let root = ops_root(&ctx.repo_root);
     let Ok(entries) = std::fs::read_dir(&root) else {
@@ -228,7 +228,7 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_000_allow_only_known_domain_dirs(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-000";
+    let contract_id = "OPS-ROOT-017";
     let test_id = "ops.dir.allow_only_known_domain_dirs";
     let root = ops_root(&ctx.repo_root);
     let Ok(entries) = std::fs::read_dir(&root) else {
@@ -271,7 +271,7 @@ fn test_ops_000_allow_only_known_domain_dirs(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_000_forbid_extra_markdown_recursive(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-000";
+    let contract_id = "OPS-ROOT-017";
     let test_id = "ops.dir.forbid_extra_markdown_recursive";
     let ops_root = ops_root(&ctx.repo_root);
     let mut files = Vec::new();
@@ -306,7 +306,7 @@ fn test_ops_000_forbid_extra_markdown_recursive(ctx: &RunContext) -> TestResult 
 }
 
 fn test_ops_001_generated_runtime_allowed_files(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-001";
+    let contract_id = "OPS-ROOT-018";
     let test_id = "ops.generated.runtime.allowed_files";
     let root = ctx.repo_root.join("ops/_generated");
     if !root.exists() {
@@ -343,7 +343,7 @@ fn test_ops_001_generated_runtime_allowed_files(ctx: &RunContext) -> TestResult 
 }
 
 fn test_ops_001_generated_example_allowed_files(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-001";
+    let contract_id = "OPS-ROOT-018";
     let test_id = "ops.generated.example.allowed_files";
     let root = ctx.repo_root.join("ops/_generated.example");
     if !root.exists() {
@@ -380,7 +380,7 @@ fn test_ops_001_generated_example_allowed_files(ctx: &RunContext) -> TestResult 
 }
 
 fn test_ops_001_generated_runtime_forbid_example_files(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-001";
+    let contract_id = "OPS-ROOT-018";
     let test_id = "ops.generated.runtime.no_example_files";
     let root = ctx.repo_root.join("ops/_generated");
     if !root.exists() {
@@ -416,7 +416,7 @@ fn test_ops_001_generated_runtime_forbid_example_files(ctx: &RunContext) -> Test
 }
 
 fn test_ops_002_domain_required_files(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-002";
+    let contract_id = "OPS-ROOT-019";
     let test_id = "ops.domain.required_contract_and_readme";
     let mut violations = Vec::new();
 
@@ -443,7 +443,7 @@ fn test_ops_002_domain_required_files(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_002_forbid_legacy_domain_docs(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-002";
+    let contract_id = "OPS-ROOT-019";
     let test_id = "ops.domain.forbid_legacy_docs";
     let mut violations = Vec::new();
 
@@ -470,7 +470,7 @@ fn test_ops_002_forbid_legacy_domain_docs(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_003_readme_markdown_budget(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-003";
+    let contract_id = "OPS-ROOT-020";
     let test_id = "ops.markdown_budget.readme";
     let mut violations = Vec::new();
 
@@ -506,7 +506,7 @@ fn test_ops_003_readme_markdown_budget(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_003_contract_markdown_budget(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-003";
+    let contract_id = "OPS-ROOT-020";
     let test_id = "ops.markdown_budget.contract";
     let mut violations = Vec::new();
 
@@ -542,7 +542,7 @@ fn test_ops_003_contract_markdown_budget(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_004_readme_ssot_boundary(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-004";
+    let contract_id = "OPS-ROOT-021";
     let test_id = "ops.docs.readme_ssot_boundary";
     let path = ctx.repo_root.join("ops/README.md");
     let Ok(content) = std::fs::read_to_string(&path) else {
@@ -808,7 +808,7 @@ fn test_ops_root_010_forbid_deleted_doc_names(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_contract_doc_generated_match(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-005";
+    let contract_id = "OPS-ROOT-022";
     let test_id = "ops.contract_doc.generated_match";
     let expected = match render_contract_markdown(&ctx.repo_root) {
         Ok(text) => text,
@@ -838,7 +838,7 @@ fn has_ops_contract_id(content: &str) -> bool {
 }
 
 fn test_ops_docs_001_policy_keyword_requires_contract_id(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-DOCS-001";
+    let contract_id = "OPS-ROOT-023";
     let test_id = "ops.docs.policy_keyword_requires_contract_id";
     let root = ctx.repo_root.join("docs/operations");
     let Ok(entries) = std::fs::read_dir(&root) else {
@@ -884,7 +884,7 @@ fn test_ops_docs_001_policy_keyword_requires_contract_id(ctx: &RunContext) -> Te
 }
 
 fn test_ops_docs_002_index_crosslinks_contracts(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-DOCS-002";
+    let contract_id = "OPS-ROOT-023";
     let test_id = "ops.docs.index_crosslinks_contracts";
     let path = ctx.repo_root.join("docs/operations/INDEX.md");
     let Ok(content) = std::fs::read_to_string(&path) else {

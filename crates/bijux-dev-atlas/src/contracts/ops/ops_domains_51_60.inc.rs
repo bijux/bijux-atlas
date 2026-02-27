@@ -139,7 +139,7 @@ fn test_ops_obs_004_readiness_schema_valid(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_rpt_001_report_schema_ssot(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-001";
+    let contract_id = "OPS-REPORT-001";
     let test_id = "ops.report.schema_is_ssot";
     let rel = "ops/report/schema.json";
     let Some(schema) = read_json(&ctx.repo_root.join(rel)) else {
@@ -187,7 +187,7 @@ fn test_ops_rpt_001_report_schema_ssot(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_rpt_002_generated_reports_schema_valid(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-002";
+    let contract_id = "OPS-REPORT-002";
     let test_id = "ops.report.generated_reports_schema_valid";
     let generated = [
         "ops/report/generated/historical-comparison.json",
@@ -223,7 +223,7 @@ fn test_ops_rpt_002_generated_reports_schema_valid(ctx: &RunContext) -> TestResu
 }
 
 fn test_ops_rpt_003_evidence_levels_complete(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-003";
+    let contract_id = "OPS-REPORT-003";
     let test_id = "ops.report.evidence_levels_complete";
     let rel = "ops/report/evidence-levels.json";
     let Some(levels) = read_json(&ctx.repo_root.join(rel)) else {
@@ -260,7 +260,7 @@ fn test_ops_rpt_003_evidence_levels_complete(ctx: &RunContext) -> TestResult {
 }
 
 fn test_ops_rpt_004_report_diff_contract_exists(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-004";
+    let contract_id = "OPS-REPORT-004";
     let test_id = "ops.report.diff_contract_exists";
     let rel = "ops/report/generated/report-diff.json";
     let Some(diff) = read_json(&ctx.repo_root.join(rel)) else {
@@ -304,7 +304,7 @@ fn test_ops_rpt_004_report_diff_contract_exists(ctx: &RunContext) -> TestResult 
 }
 
 fn test_ops_rpt_005_readiness_score_deterministic(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-005";
+    let contract_id = "OPS-REPORT-005";
     let test_id = "ops.report.readiness_score_deterministic";
     let rel = "ops/report/generated/readiness-score.json";
     let Some(report) = read_json(&ctx.repo_root.join(rel)) else {
@@ -366,7 +366,7 @@ fn test_ops_rpt_005_readiness_score_deterministic(ctx: &RunContext) -> TestResul
 }
 
 fn test_ops_rpt_006_release_evidence_bundle_schema_valid(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-006";
+    let contract_id = "OPS-REPORT-006";
     let test_id = "ops.report.release_evidence_bundle_schema_valid";
     let rel = "ops/report/generated/release-evidence-bundle.json";
     let Some(bundle) = read_json(&ctx.repo_root.join(rel)) else {
@@ -429,7 +429,7 @@ fn test_ops_rpt_006_release_evidence_bundle_schema_valid(ctx: &RunContext) -> Te
 }
 
 fn test_ops_rpt_007_historical_comparison_schema_valid(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-007";
+    let contract_id = "OPS-REPORT-007";
     let test_id = "ops.report.historical_comparison_schema_valid";
     let rel = "ops/report/generated/historical-comparison.json";
     let Some(history) = read_json(&ctx.repo_root.join(rel)) else {
@@ -485,7 +485,7 @@ fn test_ops_rpt_007_historical_comparison_schema_valid(ctx: &RunContext) -> Test
 }
 
 fn test_ops_rpt_008_unified_report_example_schema_valid(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-008";
+    let contract_id = "OPS-REPORT-008";
     let test_id = "ops.report.unified_report_example_schema_valid";
     let rel = "ops/report/examples/unified-report-example.json";
     let Some(unified) = read_json(&ctx.repo_root.join(rel)) else {
@@ -545,7 +545,7 @@ fn test_ops_rpt_008_unified_report_example_schema_valid(ctx: &RunContext) -> Tes
 }
 
 fn test_ops_rpt_009_report_outputs_canonical_json(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-009";
+    let contract_id = "OPS-REPORT-009";
     let test_id = "ops.report.outputs_canonical_json";
     let mut files = Vec::new();
     walk_files(&ctx.repo_root.join("ops/report/generated"), &mut files);
@@ -614,7 +614,7 @@ fn test_ops_rpt_009_report_outputs_canonical_json(ctx: &RunContext) -> TestResul
 }
 
 fn test_ops_rpt_010_lane_reports_aggregated_in_unified_report(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-RPT-010";
+    let contract_id = "OPS-REPORT-010";
     let test_id = "ops.report.lane_reports_aggregated_in_unified_report";
     let rel = "ops/report/examples/unified-report-example.json";
     let Some(unified) = read_json(&ctx.repo_root.join(rel)) else {

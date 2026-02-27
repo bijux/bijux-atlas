@@ -22,4 +22,4 @@
 - Narrative docs must link to generated command references instead of embedding long command lists.
 - Do not instruct operators to edit generated directories under `ops/_generated*` directly.
 
-Related contracts: OPS-DOCS-001, OPS-000.
+Related contracts: OPS-ROOT-023, OPS-ROOT-017.
