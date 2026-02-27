@@ -863,6 +863,56 @@
       "title": "stack dependency graph contract"
     },
     {
+      "id": "OPS-STACK-005",
+      "tests": [
+        {
+          "test_id": "ops.stack.kind_profiles_consistent",
+          "title": "dev perf and small kind profiles exist and reference valid cluster configs"
+        }
+      ],
+      "title": "stack kind profile consistency contract"
+    },
+    {
+      "id": "OPS-STACK-006",
+      "tests": [
+        {
+          "test_id": "ops.stack.ports_inventory_matches_stack",
+          "title": "ports inventory endpoints are unique and aligned with stack components"
+        }
+      ],
+      "title": "stack ports inventory consistency contract"
+    },
+    {
+      "id": "OPS-STACK-007",
+      "tests": [
+        {
+          "test_id": "ops.stack.health_report_generator_contract",
+          "title": "health report sample has schema envelope and stack generator provenance"
+        }
+      ],
+      "title": "stack health report generator contract"
+    },
+    {
+      "id": "OPS-STACK-008",
+      "tests": [
+        {
+          "test_id": "ops.stack.stack_commands_registered",
+          "title": "stack command surface snapshot contains up and down verbs"
+        }
+      ],
+      "title": "stack command surface contract"
+    },
+    {
+      "id": "OPS-STACK-009",
+      "tests": [
+        {
+          "test_id": "ops.stack.offline_profile_policy",
+          "title": "offline claims require offline or airgap profile coverage"
+        }
+      ],
+      "title": "stack offline profile policy contract"
+    },
+    {
       "id": "OPS-STACK-E-001",
       "tests": [
         {

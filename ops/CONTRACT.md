@@ -453,6 +453,31 @@ Tests:
 Tests:
 - `ops.stack.dependency_graph_generated_acyclic` (static, Pure): dependency graph is parseable and references real cluster/components
 
+#### OPS-STACK-005 stack kind profile consistency contract
+
+Tests:
+- `ops.stack.kind_profiles_consistent` (static, Pure): dev perf and small kind profiles exist and reference valid cluster configs
+
+#### OPS-STACK-006 stack ports inventory consistency contract
+
+Tests:
+- `ops.stack.ports_inventory_matches_stack` (static, Pure): ports inventory endpoints are unique and aligned with stack components
+
+#### OPS-STACK-007 stack health report generator contract
+
+Tests:
+- `ops.stack.health_report_generator_contract` (static, Pure): health report sample has schema envelope and stack generator provenance
+
+#### OPS-STACK-008 stack command surface contract
+
+Tests:
+- `ops.stack.stack_commands_registered` (static, Pure): stack command surface snapshot contains up and down verbs
+
+#### OPS-STACK-009 stack offline profile policy contract
+
+Tests:
+- `ops.stack.offline_profile_policy` (static, Pure): offline claims require offline or airgap profile coverage
+
 #### OPS-STACK-E-001 stack effect kind cluster contract
 
 Tests:
