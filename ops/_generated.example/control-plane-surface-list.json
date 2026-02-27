@@ -465,6 +465,15 @@
           "requiresdocker"
         ],
         "verb": "up"
+      },
+      {
+        "domain": "stack",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "versions"
       }
     ]
   },

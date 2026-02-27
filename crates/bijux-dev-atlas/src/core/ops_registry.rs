@@ -60,6 +60,12 @@ pub fn builtin_ops_registry() -> Vec<OpsCommandSpec> {
         },
         OpsCommandSpec {
             domain: "stack",
+            verb: "versions",
+            subverb: None,
+            tags: &[OpsTag::Fast, OpsTag::Offline],
+        },
+        OpsCommandSpec {
+            domain: "stack",
             verb: "doctor",
             subverb: None,
             tags: &[OpsTag::Fast, OpsTag::Offline],
@@ -336,6 +342,8 @@ pub fn ops_domains() -> BTreeSet<&'static str> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeSet;
+
     use super::{builtin_ops_registry, ops_domains};
 
     #[test]
@@ -372,5 +380,72 @@ mod tests {
             sorted.len(),
             "ops registry entries must be unique"
         );
+    }
+
+    #[test]
+    fn ops_registry_covers_required_domain_verbs() {
+        let entries = builtin_ops_registry();
+        let present: BTreeSet<(&str, &str, Option<&str>)> = entries
+            .iter()
+            .map(|entry| (entry.domain, entry.verb, entry.subverb))
+            .collect();
+
+        for required in [
+            ("stack", "up", None),
+            ("stack", "down", None),
+            ("stack", "status", None),
+            ("stack", "logs", None),
+            ("stack", "ports", None),
+            ("stack", "versions", None),
+            ("stack", "doctor", None),
+            ("stack", "reset", None),
+            ("k8s", "render", None),
+            ("k8s", "install", None),
+            ("k8s", "uninstall", None),
+            ("k8s", "test", None),
+            ("k8s", "conformance", None),
+            ("k8s", "diff", None),
+            ("k8s", "rollout", None),
+            ("load", "run", None),
+            ("load", "baseline", Some("update")),
+            ("load", "evaluate", None),
+            ("load", "report", None),
+            ("load", "list-suites", None),
+            ("observe", "up", None),
+            ("observe", "down", None),
+            ("observe", "validate", None),
+            ("observe", "snapshot", None),
+            ("observe", "drill", Some("run")),
+            ("observe", "dashboards", None),
+            ("datasets", "list", None),
+            ("datasets", "ingest", None),
+            ("datasets", "publish", None),
+            ("datasets", "promote", None),
+            ("datasets", "rollback", None),
+            ("datasets", "qc", None),
+            ("e2e", "run", None),
+            ("e2e", "smoke", None),
+            ("e2e", "realdata", None),
+            ("e2e", "list-suites", None),
+            ("schema", "validate", None),
+            ("schema", "diff", None),
+            ("schema", "coverage", None),
+            ("schema", "regen-index", None),
+            ("inventory", "validate", None),
+            ("inventory", "graph", None),
+            ("inventory", "diff", None),
+            ("inventory", "coverage", None),
+            ("inventory", "orphan-check", None),
+            ("report", "generate", None),
+            ("report", "diff", None),
+            ("report", "readiness", None),
+            ("report", "bundle", None),
+        ] {
+            assert!(
+                present.contains(&required),
+                "missing required ops command spec: {:?}",
+                required
+            );
+        }
     }
 }
