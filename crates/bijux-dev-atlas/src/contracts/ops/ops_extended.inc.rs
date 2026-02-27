@@ -1461,6 +1461,17 @@ fn test_ops_root_surface_005_commands_grouped_by_pillar(ctx: &RunContext) -> Tes
         "stack",
         "root",
     ]);
+    let required_domains: BTreeSet<&str> = BTreeSet::from([
+        "datasets",
+        "e2e",
+        "env",
+        "k8s",
+        "load",
+        "observe",
+        "stack",
+        "root",
+    ]);
+    let mut seen_domains = BTreeSet::new();
     let mut violations = Vec::new();
     for action in surface_json
         .get("actions")
@@ -1479,6 +1490,43 @@ fn test_ops_root_surface_005_commands_grouped_by_pillar(ctx: &RunContext) -> Tes
                 test_id,
                 "command action domain must be an approved pillar group",
                 Some(action_id.to_string()),
+            ));
+            continue;
+        }
+        seen_domains.insert(domain.to_string());
+        let argv = action
+            .get("argv")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+            .collect::<Vec<_>>();
+        if domain == "root" {
+            if argv.is_empty() {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    "root command group must define a non-empty argv surface",
+                    Some(action_id.to_string()),
+                ));
+            }
+        } else if argv.first().map(|segment| segment.as_str()) != Some(domain) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "command argv must start with its declared command group",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    for domain in required_domains {
+        if !seen_domains.contains(domain) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "required ops command group is missing from the registered surface",
+                Some(domain.to_string()),
             ));
         }
     }
@@ -1631,11 +1679,24 @@ fn test_ops_root_surface_009_command_dry_run_policy(ctx: &RunContext) -> TestRes
             .get("dry_run")
             .and_then(|v| v.as_str())
             .unwrap_or_default();
+        let artifacts_policy = action
+            .get("artifacts_policy")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
         if policy != "required" && policy != "optional" && policy != "not_applicable" {
             violations.push(violation(
                 contract_id,
                 test_id,
                 "dry_run policy must be required|optional|not_applicable",
+                Some(action_id.to_string()),
+            ));
+            continue;
+        }
+        if (policy == "required" || policy == "optional") && artifacts_policy != "artifacts_root_only" {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "commands that support dry-run must write artifacts only under artifacts_root",
                 Some(action_id.to_string()),
             ));
         }
@@ -1670,11 +1731,24 @@ fn test_ops_root_surface_010_artifacts_root_policy(ctx: &RunContext) -> TestResu
             .get("artifacts_policy")
             .and_then(|v| v.as_str())
             .unwrap_or_default();
+        let dry_run = action
+            .get("dry_run")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
         if policy != "artifacts_root_only" && policy != "none" {
             violations.push(violation(
                 contract_id,
                 test_id,
                 "artifacts_policy must be artifacts_root_only or none",
+                Some(action_id.to_string()),
+            ));
+            continue;
+        }
+        if dry_run != "not_applicable" && policy != "artifacts_root_only" {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "commands with runtime execution must not write outside artifacts_root",
                 Some(action_id.to_string()),
             ));
         }

@@ -248,7 +248,7 @@
       "purpose": "ops cache prune command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.cache.status",
@@ -432,7 +432,7 @@
       "purpose": "ops deploy apply command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.deploy.plan",
@@ -468,7 +468,7 @@
       "purpose": "ops deploy rollback command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.e2e.run",
@@ -738,7 +738,7 @@
       "purpose": "ops kind down command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.kind.fault",
@@ -756,7 +756,7 @@
       "purpose": "ops kind fault command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.kind.reset",
@@ -774,7 +774,7 @@
       "purpose": "ops kind reset command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.kind.up",
@@ -792,7 +792,7 @@
       "purpose": "ops kind up command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.kind.validate",
@@ -954,7 +954,7 @@
       "purpose": "ops observe up command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.observe.validate",
@@ -1154,7 +1154,7 @@
       "purpose": "ops root down command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.explain",
@@ -1170,7 +1170,7 @@
       "purpose": "ops root explain command",
       "supports_json": true,
       "dry_run": "optional",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.help",
@@ -1186,7 +1186,7 @@
       "purpose": "ops root help command",
       "supports_json": true,
       "dry_run": "optional",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.k8s-checks-layout",
@@ -1394,7 +1394,7 @@
       "purpose": "ops root restart command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.root-lanes",
@@ -1554,7 +1554,7 @@
       "purpose": "ops root up command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.warm",
@@ -1622,7 +1622,7 @@
       "purpose": "ops stack down command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.report",
@@ -1658,7 +1658,7 @@
       "purpose": "ops stack restart command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.status",
@@ -1694,7 +1694,7 @@
       "purpose": "ops stack up command",
       "supports_json": true,
       "dry_run": "required",
-      "artifacts_policy": "none"
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.validate",
