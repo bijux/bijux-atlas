@@ -41,4 +41,19 @@ make-ci-surface-check: ## Ensure workflow make calls use bounded public targets
 		}; \
 	done
 
-.PHONY: make-contract-check make-target-governance-check make-ci-surface-check
+make-public-surface-sync-check: ## Ensure make target list matches configs/make/public-targets.json
+	@set -euo pipefail; \
+	tmp_make="$$(mktemp)"; \
+	tmp_cfg="$$(mktemp)"; \
+	jq -r '.public_targets[]' make/target-list.json | sort > "$$tmp_make"; \
+	jq -r '.public_targets[].name' configs/make/public-targets.json | sort > "$$tmp_cfg"; \
+	diff -u "$$tmp_cfg" "$$tmp_make" >/dev/null || { echo "governance violation: make public target list drift vs configs/make/public-targets.json" >&2; rm -f "$$tmp_make" "$$tmp_cfg"; exit 1; }; \
+	rm -f "$$tmp_make" "$$tmp_cfg"
+
+make-size-budget-check: ## Enforce make directory size budget
+	@set -euo pipefail; \
+	max_loc=200; \
+	actual_loc="$$(find make -type f \( -name '*.mk' -o -name '*.md' \) | xargs wc -l | tail -n 1 | awk '{print $$1}')"; \
+	test "$$actual_loc" -le "$$max_loc" || { echo "governance violation: make/ size budget exceeded ($$actual_loc > $$max_loc)" >&2; exit 1; }
+
+.PHONY: make-contract-check make-target-governance-check make-ci-surface-check make-public-surface-sync-check make-size-budget-check

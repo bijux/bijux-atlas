@@ -1,38 +1,24 @@
 {
-  "max_public_targets": 18,
+  "max_public_targets": 25,
   "target_public_targets": 15,
   "public_targets": [
     {
-      "name": "root",
-      "description": "Run CI-fast lane set and print lane summary",
+      "name": "help",
+      "description": "Show bounded public target surface",
       "lanes": [
+        "dev",
         "ci"
       ],
-      "area": "policies"
+      "area": "make"
     },
     {
-      "name": "root-local",
-      "description": "Run local full lane set and print lane summary",
+      "name": "doctor",
+      "description": "Run control-plane doctor gate",
       "lanes": [
-        "dev"
-      ],
-      "area": "policies"
-    },
-    {
-      "name": "ci",
-      "description": "Run deterministic CI superset",
-      "lanes": [
+        "dev",
         "ci"
       ],
-      "area": "policies"
-    },
-    {
-      "name": "nightly",
-      "description": "Run slow nightly suites",
-      "lanes": [
-        "ci"
-      ],
-      "area": "policies"
+      "area": "make"
     },
     {
       "name": "fmt",
@@ -61,26 +47,26 @@
       "area": "cargo"
     },
     {
-      "name": "audit",
-      "description": "Run dependency and policy audits",
+      "name": "build",
+      "description": "Run workspace build lane",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "cargo"
+      "area": "make"
     },
     {
-      "name": "docs",
-      "description": "Run docs verification lane",
+      "name": "docker",
+      "description": "Run docker validate lane",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "docs"
+      "area": "make"
     },
     {
-      "name": "ops",
-      "description": "Run ops verification lane",
+      "name": "k8s-render",
+      "description": "Render manifests via control plane",
       "lanes": [
         "dev",
         "ci"
@@ -88,8 +74,8 @@
       "area": "ops"
     },
     {
-      "name": "k8s",
-      "description": "Run canonical k8s verification lane",
+      "name": "k8s-validate",
+      "description": "Validate manifests via control plane",
       "lanes": [
         "dev",
         "ci"
@@ -97,8 +83,8 @@
       "area": "ops"
     },
     {
-      "name": "load",
-      "description": "Run canonical load verification lane",
+      "name": "stack-up",
+      "description": "Start local stack via control plane",
       "lanes": [
         "dev",
         "ci"
@@ -106,8 +92,8 @@
       "area": "ops"
     },
     {
-      "name": "observe",
-      "description": "Run canonical observability verification lane",
+      "name": "stack-down",
+      "description": "Stop local stack via control plane",
       "lanes": [
         "dev",
         "ci"
@@ -115,8 +101,8 @@
       "area": "ops"
     },
     {
-      "name": "doctor",
-      "description": "Print tool and environment diagnostics",
+      "name": "ops-fast",
+      "description": "Run fast CI suite checks",
       "lanes": [
         "dev",
         "ci"
@@ -124,13 +110,30 @@
       "area": "ops"
     },
     {
-      "name": "report",
-      "description": "Print latest lane summary and confidence report",
+      "name": "ops-pr",
+      "description": "Run pull request CI suite checks",
       "lanes": [
         "dev",
         "ci"
       ],
       "area": "ops"
+    },
+    {
+      "name": "ops-nightly",
+      "description": "Run nightly CI suite checks",
+      "lanes": [
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "make-target-list",
+      "description": "Generate make target inventory artifact",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
     }
   ]
 }
