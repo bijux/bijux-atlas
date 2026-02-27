@@ -6,7 +6,18 @@
       "description": "Chart values key `affinity` from SSOT contract."
     },
     "alertRules": {
-      "description": "Chart values key `alertRules` from SSOT contract."
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "runbookUrlBase": {
+          "type": "string",
+          "pattern": "^https?://.+"
+        }
+      },
+      "required": ["enabled", "runbookUrlBase"]
     },
     "cache": {
       "description": "Chart values key `cache` from SSOT contract."

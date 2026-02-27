@@ -251,6 +251,7 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
     errors.extend(scan_forbidden_kinds(rendered));
     errors.extend(scan_unpinned_images(rendered));
     errors.extend(scan_invalid_image_refs(rendered));
+    errors.extend(scan_invalid_runbook_urls(rendered));
     errors.extend(scan_timestamps(rendered));
     errors.sort();
     errors.dedup();
@@ -348,6 +349,27 @@ fn scan_invalid_image_refs(rendered: &str) -> Vec<String> {
         if at_count == 1 && !ref_value.contains("@sha256:") {
             errors.push(format!(
                 "rendered image uses invalid digest format (expected @sha256:...): {trimmed}"
+            ));
+        }
+    }
+    errors
+}
+
+fn scan_invalid_runbook_urls(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    for line in rendered.lines() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("runbook:") {
+            continue;
+        }
+        let value = trimmed
+            .trim_start_matches("runbook:")
+            .trim()
+            .trim_matches('"')
+            .trim_matches('\'');
+        if !(value.starts_with("https://") || value.starts_with("http://")) {
+            errors.push(format!(
+                "rendered alert runbook must be absolute URL: {trimmed}"
             ));
         }
     }

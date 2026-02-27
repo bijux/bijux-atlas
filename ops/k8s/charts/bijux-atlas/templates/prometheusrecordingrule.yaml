@@ -1,0 +1,16 @@
+{{- if .Values.alertRules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "bijux-atlas.fullname" . }}-recording
+  labels:
+    {{- include "bijux-atlas.labels" . | nindent 4 }}
+spec:
+  groups:
+    - name: bijux-atlas-recording
+      rules:
+        - record: bijux:http_request_latency_p95_seconds:route_v1_genes
+          expr: max_over_time(bijux_http_request_latency_p95_seconds{subsystem="atlas",route="/v1/genes"}[5m])
+        - record: bijux:inflight_heavy_queries:avg_5m
+          expr: avg_over_time(bijux_inflight_heavy_queries{subsystem="atlas"}[5m])
+{{- end }}

@@ -133,6 +133,7 @@ metrics:
 
 alertRules:
   enabled: true
+  runbookUrlBase: "https://github.com/bijux/bijux-atlas/blob/main/"
 
 hpa:
   enabled: false

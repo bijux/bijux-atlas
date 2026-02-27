@@ -1,7 +1,11 @@
 {{- if and .Values.alertRules.enabled (not .Values.serviceMonitor.enabled) }}
 {{- fail "alertRules.enabled=true requires serviceMonitor.enabled=true" }}
 {{- end }}
+{{- if and .Values.alertRules.enabled (not (or (hasPrefix "https://" .Values.alertRules.runbookUrlBase) (hasPrefix "http://" .Values.alertRules.runbookUrlBase))) }}
+{{- fail "alertRules.runbookUrlBase must start with http:// or https://" }}
+{{- end }}
 {{- if .Values.alertRules.enabled }}
+{{- $runbookBase := trimSuffix "/" .Values.alertRules.runbookUrlBase }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -27,7 +31,7 @@ spec:
           annotations:
             summary: "High 5xx error rate"
             description: "5xx ratio exceeded 0.5% over 10m."
-            runbook: "docs/operations/runbooks/incident-playbook.md"
+            runbook: "{{ $runbookBase }}/docs/operations/runbooks/incident-playbook.md"
         - alert: BijuxAtlasP95LatencyRegression
           expr: bijux_http_request_latency_p95_seconds{subsystem="atlas",route="/v1/genes"} > 0.8
           for: 15m
@@ -38,7 +42,7 @@ spec:
           annotations:
             summary: "v1/genes p95 latency above SLO"
             description: "p95 latency above 800ms for 15m."
-            runbook: "docs/operations/runbooks/incident-playbook.md"
+            runbook: "{{ $runbookBase }}/docs/operations/runbooks/incident-playbook.md"
         - alert: BijuxAtlasStoreDownloadFailures
           expr: increase(bijux_store_download_failure_total{subsystem="atlas"}[10m]) > 5
           for: 10m
@@ -49,7 +53,7 @@ spec:
           annotations:
             summary: "Store download failures elevated"
             description: "More than 5 store download failures in 10m."
-            runbook: "docs/operations/runbooks/store-outage.md"
+            runbook: "{{ $runbookBase }}/docs/operations/runbooks/store-outage.md"
         - alert: BijuxAtlasCacheThrash
           expr: |
             rate(bijux_dataset_misses{subsystem="atlas"}[10m])
@@ -63,5 +67,5 @@ spec:
           annotations:
             summary: "Cache thrash detected"
             description: "Dataset miss rate is significantly higher than hit rate."
-            runbook: "docs/operations/runbooks/store-outage.md"
+            runbook: "{{ $runbookBase }}/docs/operations/runbooks/store-outage.md"
 {{- end }}

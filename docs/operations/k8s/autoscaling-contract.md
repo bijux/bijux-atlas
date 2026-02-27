@@ -26,7 +26,10 @@ Does not guarantee exact replica counts at exact timestamps or guarantee product
 ## Contracts
 
 - Values entrypoints: `values.hpa`, `values.metrics.customMetrics`, and `values.serviceMonitor`.
+- HPA is opt-in; default chart values keep `hpa.enabled=false`.
 - `hpa.enabled=true` requires `metrics.customMetrics.enabled=true`.
+- `hpa.enabled=true` requires `serviceMonitor.enabled=true`.
+- If HPA objects are present, `custom.metrics.k8s.io` must be discoverable in cluster APIs.
 - `hpa.cpuUtilization` must be within `1..100`.
 - `hpa.behavior.scaleUp.policies` and `hpa.behavior.scaleDown.policies` must be non-empty.
 - HPA checks require `metrics.k8s.io` API readiness; custom metrics checks require `custom.metrics.k8s.io`.
