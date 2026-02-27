@@ -223,6 +223,41 @@ Tests:
 Tests:
 - `ops.inventory.schema_coverage` (static, Pure): inventory schema directory includes required registry schemas
 
+#### OPS-INV-MAP-001 inventory contract gate map coverage contract
+
+Tests:
+- `ops.inventory.contract_gate_map.every_contract_mapped` (static, Pure): every contract id is mapped in contract-gate-map
+
+#### OPS-INV-MAP-002 inventory contract gate map gate reference contract
+
+Tests:
+- `ops.inventory.contract_gate_map.mapped_gates_exist` (static, Pure): every mapped gate id exists in gates registry
+
+#### OPS-INV-MAP-003 inventory contract gate map command surface contract
+
+Tests:
+- `ops.inventory.contract_gate_map.mapped_commands_registered` (static, Pure): every mapped command is registered in ops command surface
+
+#### OPS-INV-MAP-004 inventory contract gate map effects annotation contract
+
+Tests:
+- `ops.inventory.contract_gate_map.effects_annotation_matches_mode` (static, Pure): effects annotations match contract test kinds and execution mode
+
+#### OPS-INV-MAP-005 inventory contract gate map orphan gate contract
+
+Tests:
+- `ops.inventory.contract_gate_map.no_orphan_gates` (static, Pure): every gate id is referenced by at least one contract mapping
+
+#### OPS-INV-MAP-006 inventory contract gate map orphan contract contract
+
+Tests:
+- `ops.inventory.contract_gate_map.no_orphan_contracts` (static, Pure): every contract maps to gate ids or is explicitly static-only
+
+#### OPS-INV-MAP-007 inventory contract gate map static purity contract
+
+Tests:
+- `ops.inventory.contract_gate_map.static_only_contracts_are_pure` (static, Pure): static-only mappings are restricted to pure test contracts
+
 #### OPS-INV-PILLARS-001 inventory pillars registry contract
 
 Tests:

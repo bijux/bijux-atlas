@@ -513,6 +513,76 @@
       "title": "inventory schema coverage contract"
     },
     {
+      "id": "OPS-INV-MAP-001",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.every_contract_mapped",
+          "title": "every contract id is mapped in contract-gate-map"
+        }
+      ],
+      "title": "inventory contract gate map coverage contract"
+    },
+    {
+      "id": "OPS-INV-MAP-002",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.mapped_gates_exist",
+          "title": "every mapped gate id exists in gates registry"
+        }
+      ],
+      "title": "inventory contract gate map gate reference contract"
+    },
+    {
+      "id": "OPS-INV-MAP-003",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.mapped_commands_registered",
+          "title": "every mapped command is registered in ops command surface"
+        }
+      ],
+      "title": "inventory contract gate map command surface contract"
+    },
+    {
+      "id": "OPS-INV-MAP-004",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.effects_annotation_matches_mode",
+          "title": "effects annotations match contract test kinds and execution mode"
+        }
+      ],
+      "title": "inventory contract gate map effects annotation contract"
+    },
+    {
+      "id": "OPS-INV-MAP-005",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.no_orphan_gates",
+          "title": "every gate id is referenced by at least one contract mapping"
+        }
+      ],
+      "title": "inventory contract gate map orphan gate contract"
+    },
+    {
+      "id": "OPS-INV-MAP-006",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.no_orphan_contracts",
+          "title": "every contract maps to gate ids or is explicitly static-only"
+        }
+      ],
+      "title": "inventory contract gate map orphan contract contract"
+    },
+    {
+      "id": "OPS-INV-MAP-007",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.static_only_contracts_are_pure",
+          "title": "static-only mappings are restricted to pure test contracts"
+        }
+      ],
+      "title": "inventory contract gate map static purity contract"
+    },
+    {
       "id": "OPS-INV-PILLARS-001",
       "tests": [
         {
