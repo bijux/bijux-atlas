@@ -126,6 +126,7 @@ fn force_json_ops(command: &mut OpsCommand) {
             | crate::cli::OpsStackCommand::Down(common)
             | crate::cli::OpsStackCommand::Logs(common)
             | crate::cli::OpsStackCommand::Ports(common)
+            | crate::cli::OpsStackCommand::Versions(common)
             | crate::cli::OpsStackCommand::Doctor(common) => common.format = FormatArg::Json,
             crate::cli::OpsStackCommand::Status(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsStackCommand::Reset(args) => args.common.format = FormatArg::Json,
@@ -384,6 +385,7 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                 | crate::cli::OpsStackCommand::Down(common)
                 | crate::cli::OpsStackCommand::Logs(common)
                 | crate::cli::OpsStackCommand::Ports(common)
+                | crate::cli::OpsStackCommand::Versions(common)
                 | crate::cli::OpsStackCommand::Doctor(common) => {
                     common.repo_root = Some(root.clone())
                 }

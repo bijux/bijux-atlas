@@ -478,6 +478,20 @@ pub(super) fn dispatch_execution(
                     }
                     std::fs::write(&expected, encoded)
                         .map_err(|err| format!("failed to write {}: {err}", expected.display()))?;
+                    let generated =
+                        repo_root.join("ops/_generated/control-plane-surface-list.json");
+                    if let Some(parent) = generated.parent() {
+                        std::fs::create_dir_all(parent).map_err(|err| {
+                            format!("failed to create {}: {err}", parent.display())
+                        })?;
+                    }
+                    std::fs::copy(&expected, &generated).map_err(|err| {
+                        format!(
+                            "failed to mirror {} to {}: {err}",
+                            expected.display(),
+                            generated.display()
+                        )
+                    })?;
                 }
 
                 let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));

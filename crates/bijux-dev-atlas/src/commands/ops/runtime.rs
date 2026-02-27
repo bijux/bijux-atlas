@@ -40,6 +40,10 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
                 action: "stack-ports".to_string(),
                 common,
             },
+            OpsStackCommand::Versions(common) => OpsCommand::Explain {
+                action: "stack-versions".to_string(),
+                common,
+            },
             OpsStackCommand::Doctor(common) => OpsCommand::Doctor(common),
             OpsStackCommand::Status(mut args) => {
                 args.target = OpsStatusTarget::K8s;

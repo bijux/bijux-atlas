@@ -132,6 +132,7 @@ pub enum OpsStackCommand {
     Status(OpsStatusArgs),
     Logs(OpsCommonArgs),
     Ports(OpsCommonArgs),
+    Versions(OpsCommonArgs),
     Doctor(OpsCommonArgs),
     Reset(OpsResetArgs),
 }
