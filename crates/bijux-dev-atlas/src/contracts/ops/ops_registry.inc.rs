@@ -101,6 +101,44 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-005".to_string()),
+            title: "ops contract document generation contract",
+            tests: vec![TestCase {
+                id: TestId("ops.contract_doc.generated_match".to_string()),
+                title: "ops CONTRACT.md matches generated output from contract registry",
+                kind: TestKind::Pure,
+                run: test_ops_contract_doc_generated_match,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-010".to_string()),
+            title: "ops deleted doc name guard contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.forbid_deleted_doc_names".to_string()),
+                title: "forbidden legacy ops markdown names must not be reintroduced",
+                kind: TestKind::Pure,
+                run: test_ops_root_010_forbid_deleted_doc_names,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-DOCS-001".to_string()),
+            title: "operations docs policy linkage contract",
+            tests: vec![
+                TestCase {
+                    id: TestId("ops.docs.policy_keyword_requires_contract_id".to_string()),
+                    title: "operations docs with policy keywords must reference OPS contract ids",
+                    kind: TestKind::Pure,
+                    run: test_ops_docs_001_policy_keyword_requires_contract_id,
+                },
+                TestCase {
+                    id: TestId("ops.docs.index_crosslinks_contracts".to_string()),
+                    title: "operations index must state docs/contracts boundary and include OPS references",
+                    kind: TestKind::Pure,
+                    run: test_ops_docs_002_index_crosslinks_contracts,
+                },
+            ],
+        },
+        Contract {
             id: ContractId("OPS-INV-001".to_string()),
             title: "inventory completeness contract",
             tests: vec![TestCase {
@@ -680,6 +718,9 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-002" => "Requires per-domain README/CONTRACT and forbids legacy duplicate docs.",
         "OPS-003" => "Enforces markdown size budgets so contracts stay concise and reviewable.",
         "OPS-004" => "Enforces SSOT boundary: ops README is navigation-only and points to docs/operations.",
+        "OPS-005" => "Ensures ops/CONTRACT.md is generated from and synchronized with registry metadata.",
+        "OPS-ROOT-010" => "Prevents reintroduction of deleted legacy ops markdown policy documents.",
+        "OPS-DOCS-001" => "Ensures operations docs policy statements reference executable OPS contract IDs.",
         "OPS-INV-001" => "Ensures domain and policy registration completeness in inventory sources.",
         "OPS-INV-002" => "Prevents orphan ops files that are not mapped by inventory references.",
         "OPS-INV-003" => "Forbids duplicate SSOT markdown documents when inventory is authoritative.",

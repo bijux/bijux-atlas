@@ -1,141 +1,343 @@
-# Ops Contract (SSOT)
+# Ops Contract
 
 - Owner: `bijux-atlas-operations`
-- Authority Tier: `machine`
-- Audience: `mixed`
-- Contract version: `1.1.0`
-- kind-cluster-contract-hash: `b7cbaefe788fae38340ef3aa0bc1b79071b8da6f14e8379af029ac1a3e412960`
+- Enforced by: `bijux dev atlas contracts ops`
 
-## Purpose
+## Contract Registry
 
-`ops/` is the source of truth for operational inventory, schemas, environment overlays, observability configuration, load profiles, and end-to-end manifests.
-`bijux-dev-atlas` executes generation, validation, and orchestration against this contract.
-Ops is specification-only. Runtime behavior and orchestration logic live in `crates/bijux-dev-atlas`.
+### OPS-000 ops directory contract
 
-## Authority Hierarchy
+Tests:
+- `ops.dir.allowed_root_files` (static, Pure): ops root allows only contract/readme root files
+- `ops.dir.forbid_extra_markdown_root` (static, Pure): ops root forbids extra markdown
+- `ops.dir.allow_only_known_domain_dirs` (static, Pure): ops root allows only canonical domain directories
+- `ops.dir.forbid_extra_markdown_recursive` (static, Pure): ops forbids recursive markdown outside approved surface
 
-- Authoritative order is strict: `ops/inventory/**` (registry truth) -> `ops/schema/**` (validation contracts) -> `docs/**` (human explanation).
-- When two artifacts overlap semantically, the higher level in this hierarchy is authoritative and the lower level must reference it.
-- `ops/inventory/contracts-map.json` is the canonical authority index for inventory artifacts; `ops/inventory/contracts.json` is a generated mirror only.
-- `REQUIRED_FILES.md` is a presence contract only; field semantics are defined by `ops/schema/meta/required-files-contract.schema.json`.
+### OPS-001 ops generated lifecycle contract
 
-## Ownership
+Tests:
+- `ops.generated.runtime.allowed_files` (static, Pure): ops/_generated allows only runtime artifact formats
+- `ops.generated.example.allowed_files` (static, Pure): ops/_generated.example allows only committed artifact formats
+- `ops.generated.runtime.no_example_files` (static, Pure): ops/_generated forbids example artifacts
 
-- `ops/` stores specifications and contracts only.
-- Operational behavior is owned by `bijux-dev-atlas` and routed through `bijux dev atlas ops ...`.
-- New shell, python, or executable behavior under `ops/` is forbidden.
-- No `Makefile` is allowed under `ops/`; make behavior is owned by root `makefiles/` wrappers.
-- Fixture-like test helpers are allowed only as non-executable data under explicit fixture paths.
-- `makefiles/ops.mk` is a thin delegator to `bijux dev atlas ...` commands.
-- CI workflows must invoke ops behavior through `make` wrappers or `bijux dev atlas ops ...` commands only.
+### OPS-002 ops required domain files contract
 
-## Evolution Policy
+Tests:
+- `ops.domain.required_contract_and_readme` (static, Pure): each ops domain includes README.md and CONTRACT.md
+- `ops.domain.forbid_legacy_docs` (static, Pure): legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden
 
-- Schemas under `ops/schema/` are versioned APIs and require explicit compatibility handling.
-- Release pins are immutable after release publication; changes require a promoted replacement.
-- `_generated/` is ephemeral output only and must never be edited manually.
-- `_generated.example/` is curated evidence and is the only committed generated surface.
-- Naming uses intent nouns and canonical names. Use `observe` as the canonical observability domain name; `obs` is forbidden.
-- Compatibility migrations must be timeboxed and include explicit cutoff dates.
-- Legacy shell compatibility deadline: 2026-06-30.
+### OPS-003 ops markdown budget contract
 
-## Canonical Tree
+Tests:
+- `ops.markdown_budget.readme` (static, Pure): README markdown files stay within line budget
+- `ops.markdown_budget.contract` (static, Pure): CONTRACT markdown files stay within line budget
 
-- `ops/inventory/`: ownership, command surface, namespaces, toolchain, release pins, image pins, drill catalog.
-- `ops/schema/`: schema source of truth for inventory and reports.
-- `ops/env/`: overlays for `base`, `dev`, `ci`, `prod`.
-- `ops/observe/`: alert rules, dashboard definitions, telemetry wiring.
-- `ops/load/`: load manifests, suites, thresholds, scenarios, and query packs.
-- `ops/datasets/`: dataset lifecycle contracts and versioned fixture assets.
-- `ops/e2e/`: composed verification suites and expectations.
-- `ops/report/`: reporting schema, generated report artifacts, and report domain references.
-- `ops/_generated/`: runtime generated outputs.
-- `ops/_generated.example/`: committed generated examples only.
-- Canonical directory budget: keep the top-level canonical tree intentionally small; additions require contract updates and ownership review.
-- Directory budget policy: `ops/DIRECTORY_BUDGET_POLICY.md`.
+### OPS-004 ops docs ssot boundary contract
 
-## Canonical SSOT Map
+Tests:
+- `ops.docs.readme_ssot_boundary` (static, Pure): ops root readme remains navigation-only and references docs/operations
 
-Authored truth:
-- `ops/inventory/pins.yaml`, `ops/inventory/pin-freeze.json`, `ops/inventory/toolchain.json`, `ops/inventory/surfaces.json`, `ops/inventory/owners.json`, `ops/inventory/drills.json`, `ops/inventory/gates.json`, `ops/inventory/contracts-map.json`
-- `ops/load/suites/suites.json`, `ops/load/thresholds/*.thresholds.json`, `ops/load/scenarios/*.json`, `ops/load/load.toml`
-- `ops/observe/alerts/*.yaml`, `ops/observe/slo-definitions.json`, `ops/observe/alert-catalog.json`, `ops/observe/telemetry-drills.json`
-- `ops/datasets/manifest.json`, `ops/datasets/promotion-rules.json`, `ops/datasets/qc-metadata.json`, `ops/datasets/rollback-policy.json`, `ops/datasets/real-datasets.json`
-- `ops/e2e/suites/suites.json`, `ops/e2e/expectations/expectations.json`, `ops/e2e/reproducibility-policy.json`, `ops/e2e/taxonomy.json`
+### OPS-005 ops contract document generation contract
 
-Generated truth:
-- `ops/schema/generated/schema-index.json`, `ops/schema/generated/schema-index.md`, `ops/schema/generated/compatibility-lock.json`
-- `ops/stack/generated/*.json`, `ops/k8s/generated/*.json`, `ops/observe/generated/telemetry-index.json`, `ops/load/generated/*.json`, `ops/report/generated/*.json`, `ops/datasets/generated/*.json`, `ops/e2e/generated/*.json`
-- `ops/_generated/**` (ephemeral runtime outputs)
-- `ops/_generated.example/**` (curated committed generated evidence artifacts)
-- lifecycle policy: `ops/GENERATED_LIFECYCLE.md`
+Tests:
+- `ops.contract_doc.generated_match` (static, Pure): ops CONTRACT.md matches generated output from contract registry
 
-## Duplicate Truth Rule
+### OPS-ROOT-010 ops deleted doc name guard contract
 
-- No duplicate authored truth is allowed.
-- If the same semantic data appears in two paths, exactly one path must be authored and the other must be generated from it.
-- Generated copies must be explicitly marked in contract and generator policy documents.
-- Parallel authored registries that represent the same contract set are forbidden.
+Tests:
+- `ops.root.forbid_deleted_doc_names` (static, Pure): forbidden legacy ops markdown names must not be reintroduced
 
-## Fixture Policy
+### OPS-DOCS-001 operations docs policy linkage contract
 
-- Versioned fixture assets are allowed only under `ops/datasets/fixtures/**`.
-- Binary fixture artifacts are allowed only under versioned `assets/` directories with lock metadata.
-- Every fixture version must include lock metadata and deterministic source/query fixtures.
-- No loose binary assets are allowed outside the fixture policy subtree.
+Tests:
+- `ops.docs.policy_keyword_requires_contract_id` (static, Pure): operations docs with policy keywords must reference OPS contract ids
+- `ops.docs.index_crosslinks_contracts` (static, Pure): operations index must state docs/contracts boundary and include OPS references
 
-## Invariants
+### OPS-INV-001 inventory completeness contract
 
-- Command surface metadata is declared in `ops/inventory/surfaces.json`.
-- Ownership metadata is declared in `ops/inventory/owners.json`.
-- Policy registry source is `ops/inventory/policies/dev-atlas-policy.json`.
-- No semantic domain `obs` exists; only `observe` is valid across ids, keys, commands, and paths.
-- Gate requirement: forbid pattern `ops\.obs\.` and forbid `"obs"` domain keys after 2026-02-25.
-- Schemas live only under `ops/schema/`.
-- Generated runtime outputs are written only under `ops/_generated/`.
-- Committed generated outputs are written only under `ops/_generated.example/`.
-- Runtime evidence and artifacts are written under `artifacts/`.
-- Canonical artifact layout is defined in `ops/ARTIFACTS.md` and must not use `ops/_artifacts/`.
-- `_generated.example/` accepts only curated evidence indexes and curated report examples.
-- Symlinked directories under `ops/` are forbidden unless explicitly allowlisted.
-- Executable-bit files under `ops/` are forbidden.
-- `.sh` and `.py` files under `ops/` are forbidden except explicit fixture allowlist paths.
+Tests:
+- `ops.inventory.completeness` (static, Pure): inventory registers all domains and policy files
 
-## Stable vs Generated
+### OPS-INV-002 inventory orphan files contract
 
-Stable (reviewed):
-- `ops/CONTRACT.md`, `ops/INDEX.md`
-- inventory documents under `ops/inventory/`
-- schema documents under `ops/schema/`
-- env, observe, load, and e2e source manifests
+Tests:
+- `ops.inventory.no_orphan_files` (static, Pure): ops files must be mapped through inventory sources
 
-Generated (rebuildable):
-- `ops/_generated/**`
-- `ops/_generated.example/**` for committed examples only
-- `ops/_generated.example/**`
+### OPS-INV-003 inventory duplicate source contract
 
-Runtime outputs (ephemeral):
-- `artifacts/**`
+Tests:
+- `ops.inventory.no_duplicate_ssot_sources` (static, Pure): duplicate ssot markdown sources are forbidden
 
-## Schema Evolution
+### OPS-INV-004 inventory authority tier contract
 
-- Additive updates stay backward-compatible within a major version.
-- Breaking updates require a schema version bump and migration notes in this contract.
-- Contract conformance is gated by `bijux dev atlas` checks and CI suites.
+Tests:
+- `ops.inventory.authority_tiers_enforced` (static, Pure): authority tier exceptions are structured and expiry-bound
 
-## Contract Promotion Lifecycle
+### OPS-INV-005 inventory control graph contract
 
-- Draft changes: update authored contracts and schemas in the same change set.
-- Promotion gate: contract changes must pass `ops validate` and contract coverage checks.
-- Release promotion: promoted contracts require regenerated evidence artifacts in `_generated.example`.
+Tests:
+- `ops.inventory.control_graph_validated` (static, Pure): control graph edges and node mappings are valid and acyclic
 
-## Contract Deprecation
+### OPS-SCHEMA-001 schema parseability contract
 
-- Deprecated contract fields or files must be documented in `ops/DRIFT.md` with a removal date.
-- Deprecated authored paths must retain compatibility checks until removal.
-- Removal is allowed only after replacement contract paths are authoritative and enforced.
+Tests:
+- `ops.schema.parseable_documents` (static, Pure): ops json/yaml policy documents are parseable
 
-## Naming Policy
+### OPS-SCHEMA-002 schema index completeness contract
 
-- Names use durable intent-focused nouns.
-- Temporary or timeline-oriented naming is forbidden for committed paths and metadata keys.
+Tests:
+- `ops.schema.index_complete` (static, Pure): generated schema index covers all schema sources
+
+### OPS-SCHEMA-003 schema naming contract
+
+Tests:
+- `ops.schema.no_unversioned` (static, Pure): schema sources use stable .schema.json naming
+
+### OPS-SCHEMA-004 schema budget contract
+
+Tests:
+- `ops.schema.budget_policy` (static, Pure): schema count stays within per-domain budgets
+
+### OPS-SCHEMA-005 schema evolution lock contract
+
+Tests:
+- `ops.schema.evolution_lock` (static, Pure): compatibility lock tracks schema evolution targets
+
+### OPS-DATASET-001 datasets manifest lock contract
+
+Tests:
+- `ops.dataset.manifest_and_lock_consistent` (static, Pure): dataset manifest and lock ids are consistent
+
+### OPS-DATASET-002 datasets fixture inventory contract
+
+Tests:
+- `ops.dataset.fixture_inventory_matches_disk` (static, Pure): fixture inventory matches fixture directories and references
+
+### OPS-DATASET-003 datasets fixture drift promotion contract
+
+Tests:
+- `ops.dataset.no_fixture_drift_without_promotion_record` (static, Pure): fixture drift requires explicit promotion rule coverage
+
+### OPS-DATASET-004 datasets release diff determinism contract
+
+Tests:
+- `ops.dataset.release_diff_fixtures_deterministic` (static, Pure): release-diff fixture lock and golden payloads are deterministic
+
+### OPS-E2E-001 e2e suites reference contract
+
+Tests:
+- `ops.e2e.suites_reference_real_scenarios` (static, Pure): e2e suites reference concrete scenario ids and runnable entrypoints
+
+### OPS-E2E-002 e2e smoke manifest contract
+
+Tests:
+- `ops.e2e.smoke_manifest_valid` (static, Pure): smoke manifest is structured and points to existing lock
+
+### OPS-E2E-003 e2e fixtures lock contract
+
+Tests:
+- `ops.e2e.fixtures_lock_matches_allowlist` (static, Pure): fixtures lock digest and fixture files match allowlist policy
+
+### OPS-E2E-004 e2e realdata snapshot contract
+
+Tests:
+- `ops.e2e.realdata_snapshots_schema_valid_and_pinned` (static, Pure): realdata snapshots are parseable and pinned to canonical queries
+
+### OPS-ENV-001 environment overlay schema contract
+
+Tests:
+- `ops.env.overlays_schema_valid` (static, Pure): all required environment overlays are structurally valid
+
+### OPS-ENV-002 environment profile completeness contract
+
+Tests:
+- `ops.env.profiles_complete` (static, Pure): base/ci/dev/prod overlays exist and match profile identity
+
+### OPS-ENV-003 environment key strictness contract
+
+Tests:
+- `ops.env.no_unknown_keys` (static, Pure): environment overlays reject unknown keys
+
+### OPS-K8S-001 k8s static chart render contract
+
+Tests:
+- `ops.k8s.chart_renders_static` (static, Pure): helm chart source includes required files and static render inputs
+
+### OPS-K8S-002 k8s values schema validation contract
+
+Tests:
+- `ops.k8s.values_files_validate_schema` (static, Pure): install-matrix values files exist and are parseable against chart schema surface
+
+### OPS-K8S-003 k8s install matrix completeness contract
+
+Tests:
+- `ops.k8s.install_matrix_complete` (static, Pure): install matrix covers canonical profile set and references existing files
+
+### OPS-K8S-004 k8s forbidden object policy contract
+
+Tests:
+- `ops.k8s.no_forbidden_k8s_objects` (static, Pure): helm templates must not introduce forbidden cluster-scope object kinds
+
+### OPS-LOAD-001 load scenario schema contract
+
+Tests:
+- `ops.load.scenarios_schema_valid` (static, Pure): load scenarios are parseable and include required fields
+
+### OPS-LOAD-002 load thresholds coverage contract
+
+Tests:
+- `ops.load.thresholds_exist_for_each_suite` (static, Pure): every load suite has a matching thresholds file
+
+### OPS-LOAD-003 load pinned query lock contract
+
+Tests:
+- `ops.load.pinned_queries_lock_consistent` (static, Pure): pinned query lock digests match source query payload
+
+### OPS-LOAD-004 load baseline schema contract
+
+Tests:
+- `ops.load.baselines_schema_valid` (static, Pure): load baselines are parseable and contain required fields
+
+### OPS-LOAD-005 load scenario to slo mapping contract
+
+Tests:
+- `ops.load.no_scenario_without_slo_mapping` (static, Pure): smoke/pr load suites must be represented in inventory SLO mappings
+
+### OPS-OBS-001 observability alert rules contract
+
+Tests:
+- `ops.observe.alert_rules_exist_parseable` (static, Pure): required alert rule sources exist and are parseable
+
+### OPS-OBS-002 observability dashboard golden contract
+
+Tests:
+- `ops.observe.dashboard_json_parseable_golden_diff` (static, Pure): dashboard json parses and matches golden identity and panel structure
+
+### OPS-OBS-003 observability telemetry golden profile contract
+
+Tests:
+- `ops.observe.telemetry_goldens_required_profiles` (static, Pure): telemetry goldens exist for required profiles and are indexed
+
+### OPS-OBS-004 observability readiness schema contract
+
+Tests:
+- `ops.observe.readiness_schema_valid` (static, Pure): readiness contract is parseable and uses canonical requirement set
+
+### OPS-RPT-001 report schema ssot contract
+
+Tests:
+- `ops.report.schema_is_ssot` (static, Pure): report schema is parseable and mirrored under ops/schema/report
+
+### OPS-RPT-002 report generated payload contract
+
+Tests:
+- `ops.report.generated_reports_schema_valid` (static, Pure): generated report payloads are parseable and include schema_version
+
+### OPS-RPT-003 report evidence levels contract
+
+Tests:
+- `ops.report.evidence_levels_complete` (static, Pure): evidence levels include minimal standard and forensic
+
+### OPS-RPT-004 report diff structure contract
+
+Tests:
+- `ops.report.diff_contract_exists` (static, Pure): generated report diff includes base target and change set
+
+### OPS-STACK-001 stack toml profile contract
+
+Tests:
+- `ops.stack.stack_toml_parseable_complete` (static, Pure): stack.toml parses and includes canonical ci kind local profiles
+
+### OPS-STACK-002 stack service dependency contract
+
+Tests:
+- `ops.stack.service_dependency_contract_valid` (static, Pure): service dependency contract entries are parseable and resolve to files
+
+### OPS-STACK-003 stack version manifest contract
+
+Tests:
+- `ops.stack.versions_manifest_schema_valid` (static, Pure): version manifest is parseable and image refs are digest pinned
+
+### OPS-STACK-004 stack dependency graph contract
+
+Tests:
+- `ops.stack.dependency_graph_generated_acyclic` (static, Pure): dependency graph is parseable and references real cluster/components
+
+### OPS-STACK-E-001 stack effect kind cluster contract
+
+Tests:
+- `ops.stack.effect.kind_cluster_up_profile_dev` (effect, Subprocess): effect lane requires kind dev cluster contract inputs
+
+### OPS-STACK-E-002 stack effect component rollout contract
+
+Tests:
+- `ops.stack.effect.core_components_present` (effect, Subprocess): effect lane requires core stack component manifests
+
+### OPS-STACK-E-003 stack effect ports inventory contract
+
+Tests:
+- `ops.stack.effect.ports_inventory_mapped` (effect, Subprocess): effect lane requires stack ports inventory contract sample
+
+### OPS-STACK-E-004 stack effect health report contract
+
+Tests:
+- `ops.stack.effect.health_report_generated` (effect, Subprocess): effect lane requires stack health report contract sample
+
+### OPS-K8S-E-001 k8s effect helm install contract
+
+Tests:
+- `ops.k8s.effect.helm_install_contract_defined` (effect, Subprocess): effect lane requires kind install profile in k8s install matrix
+
+### OPS-K8S-E-002 k8s effect rollout safety contract
+
+Tests:
+- `ops.k8s.effect.rollout_safety_contract_satisfied` (effect, Subprocess): effect lane requires rollout safety contract checks
+
+### OPS-K8S-E-003 k8s effect endpoint reachability contract
+
+Tests:
+- `ops.k8s.effect.service_endpoints_reachable_contract` (effect, Network): effect lane requires non-empty k8s suite coverage for endpoint checks
+
+### OPS-OBS-E-001 observe effect metrics scrape contract
+
+Tests:
+- `ops.observe.effect.scrape_metrics_contract` (effect, Network): effect lane requires non-empty metrics scrape contract
+
+### OPS-OBS-E-002 observe effect trace structure contract
+
+Tests:
+- `ops.observe.effect.trace_structure_contract` (effect, Network): effect lane requires trace structure golden contract
+
+### OPS-OBS-E-003 observe effect alerts load contract
+
+Tests:
+- `ops.observe.effect.alerts_load_contract` (effect, Network): effect lane requires parseable alert rule inputs
+
+### OPS-LOAD-E-001 load effect k6 execution contract
+
+Tests:
+- `ops.load.effect.k6_suite_executes_contract` (effect, Subprocess): effect lane requires at least one k6 load suite definition
+
+### OPS-LOAD-E-002 load effect thresholds report contract
+
+Tests:
+- `ops.load.effect.thresholds_enforced_report_emitted` (effect, Subprocess): effect lane requires thresholds contract and emitted load summary report
+
+### OPS-LOAD-E-003 load effect baseline comparison contract
+
+Tests:
+- `ops.load.effect.baseline_comparison_produced` (effect, Subprocess): effect lane requires emitted load drift comparison report
+
+### OPS-E2E-E-001 e2e effect smoke suite contract
+
+Tests:
+- `ops.e2e.effect.smoke_suite_passes_contract` (effect, Subprocess): effect lane requires smoke suite declaration in e2e suite registry
+
+### OPS-E2E-E-002 e2e effect realdata suite contract
+
+Tests:
+- `ops.e2e.effect.realdata_scenario_passes_contract` (effect, Subprocess): effect lane requires non-empty realdata scenario contract set
+
+## Rule
+
+- Contract ID or test ID missing from this document means it does not exist.
