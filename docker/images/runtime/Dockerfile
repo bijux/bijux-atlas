@@ -6,7 +6,7 @@ ARG VCS_REF=unknown
 ARG BUILD_DATE=1970-01-01T00:00:00Z
 ARG IMAGE_PROVENANCE=local
 
-FROM rust:${RUST_VERSION}-bookworm AS builder
+FROM rust:1.84.1-bookworm@sha256:738ae99a3d75623f41e6882566b4ef37e38a9840244a47efd4a0ca22e9628b88 AS builder
 WORKDIR /workspace
 
 RUN apt-get update \
@@ -27,7 +27,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
     cargo build --locked --release -p bijux-atlas-server -p bijux-atlas-cli
 
-FROM gcr.io/distroless/cc-debian12:nonroot AS runtime
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:7e5b8df2f4d36f5599ef4ab856d7d444922531709becb03f3368c6d797d0a5eb AS runtime
 WORKDIR /app
 COPY --from=builder /workspace/artifacts/target/release/atlas-server /app/atlas-server
 COPY --from=builder /workspace/artifacts/target/release/bijux-atlas /app/bijux-atlas

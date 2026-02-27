@@ -214,6 +214,37 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         )
     }
 
+    fn run_instruction_has_unapproved_network_usage(line: &str) -> bool {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("RUN ") {
+            return false;
+        }
+        let allowed = [
+            "apt-get update",
+            "apt-get install",
+            "rm -rf /var/lib/apt/lists/*",
+            "cargo build --locked",
+            "--mount=type=cache",
+        ];
+        if allowed.iter().any(|token| trimmed.contains(token)) {
+            return false;
+        }
+        let disallowed = [
+            "curl ",
+            "wget ",
+            "git clone",
+            "pip ",
+            "npm ",
+            "go get",
+            "apk add",
+            "dnf ",
+            "yum ",
+            "apt ",
+            "cargo install",
+        ];
+        disallowed.iter().any(|token| trimmed.contains(token))
+    }
+
     fn validate_runtime_dockerfile(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
         let dockerfile = repo_root.join("docker/images/runtime/Dockerfile");
         let text = fs::read_to_string(&dockerfile)
@@ -249,6 +280,14 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 }
             }
             let trimmed = line.trim();
+            if run_instruction_has_unapproved_network_usage(trimmed) {
+                violations += 1;
+                rows.push(serde_json::json!({
+                    "kind":"build_network_policy_violation",
+                    "line": idx + 1,
+                    "instruction": trimmed
+                }));
+            }
             if !trimmed.starts_with("FROM ") {
                 continue;
             }

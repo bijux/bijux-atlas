@@ -3,6 +3,17 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use assert_cmd as _;
+use bijux_dev_atlas as _;
+use clap as _;
+use criterion as _;
+use regex as _;
+use serde as _;
+use serde_yaml as _;
+use sha2 as _;
+use tempfile as _;
+use toml as _;
+
 fn workspace_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
@@ -125,5 +136,47 @@ fn docker_build_network_policy_is_documented() {
     assert!(
         text.contains("cargo build --locked"),
         "build network policy must document cargo lockfile-constrained exception"
+    );
+}
+
+#[test]
+fn runtime_dockerfile_has_no_unapproved_network_build_steps() {
+    let root = workspace_root();
+    let dockerfile = root.join("docker/images/runtime/Dockerfile");
+    let text = fs::read_to_string(&dockerfile).expect("read dockerfile");
+    let disallowed = [
+        "curl ",
+        "wget ",
+        "git clone",
+        "pip ",
+        "npm ",
+        "go get",
+        "apk add",
+        "dnf ",
+        "yum ",
+        "cargo install",
+    ];
+    let mut violations = Vec::new();
+    for (idx, raw) in text.lines().enumerate() {
+        let line = raw.trim();
+        if !line.starts_with("RUN ") {
+            continue;
+        }
+        for token in disallowed {
+            if line.contains(token) {
+                violations.push(format!(
+                    "{}:{} uses disallowed networked build token `{}` in `{}`",
+                    dockerfile.display(),
+                    idx + 1,
+                    token.trim(),
+                    line
+                ));
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "runtime Dockerfile network policy violations:\n{}",
+        violations.join("\n")
     );
 }
