@@ -976,6 +976,467 @@ fn test_ops_inv_map_007_static_only_contracts_are_pure(ctx: &RunContext) -> Test
     }
 }
 
+fn test_ops_inv_map_008_effect_contracts_require_effect_kind(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-MAP-008";
+    let test_id = "ops.inventory.contract_gate_map.effect_contracts_require_effect_kind";
+    let rows = match contracts(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let contract_index: BTreeMap<String, Contract> =
+        rows.into_iter().map(|row| (row.id.0.clone(), row)).collect();
+    let map = match read_contract_gate_map(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "contract-gate-map must exist and be valid json",
+                Some("ops/inventory/contract-gate-map.json".to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for item in map
+        .get("mappings")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let static_only = item
+            .get("static_only")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        if static_only {
+            continue;
+        }
+        let cid = item
+            .get("contract_id")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let Some(contract) = contract_index.get(cid) else {
+            continue;
+        };
+        let has_effect_kind = contract.tests.iter().any(|case| {
+            matches!(case.kind, TestKind::Subprocess) || matches!(case.kind, TestKind::Network)
+        });
+        if !has_effect_kind {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "effect contract mapping requires at least one Subprocess or Network test",
+                Some(cid.to_string()),
+            ));
+        }
+        let effects: BTreeSet<String> = item
+            .get("effects_required")
+            .and_then(|v| v.as_array())
+            .map(|values| {
+                values
+                    .iter()
+                    .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                    .collect()
+            })
+            .unwrap_or_default();
+        if !effects.contains("subprocess") && !effects.contains("network") {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "effect contract mapping must declare subprocess or network in effects_required",
+                Some(cid.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_map_009_explain_shows_mapped_gates(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-MAP-009";
+    let test_id = "ops.inventory.contract_gate_map.explain_shows_mapped_gates";
+    let map = match read_contract_gate_map(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "contract-gate-map must exist and be valid json",
+                Some("ops/inventory/contract-gate-map.json".to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for item in map
+        .get("mappings")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let cid = item
+            .get("contract_id")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let gate_ids = item
+            .get("gate_ids")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let static_only = item
+            .get("static_only")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        if gate_ids.is_empty() && !static_only {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "mapped contracts must expose at least one gate id in explain output source",
+                Some(cid.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_map_010_mapping_sorted_canonical(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-MAP-010";
+    let test_id = "ops.inventory.contract_gate_map.mapping_sorted_canonical";
+    let map_path = ctx.repo_root.join("ops/inventory/contract-gate-map.json");
+    let Some(raw_map) = read_json(&map_path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contract-gate-map must exist and be valid json",
+            Some("ops/inventory/contract-gate-map.json".to_string()),
+        )]);
+    };
+    let mut mappings = match raw_map.get("mappings").and_then(|v| v.as_array()) {
+        Some(rows) => rows.clone(),
+        None => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "contract-gate-map must define mappings array",
+                Some("ops/inventory/contract-gate-map.json".to_string()),
+            )]);
+        }
+    };
+    mappings.sort_by(|a, b| {
+        let a_id = a.get("contract_id").and_then(|v| v.as_str()).unwrap_or_default();
+        let b_id = b.get("contract_id").and_then(|v| v.as_str()).unwrap_or_default();
+        a_id.cmp(b_id)
+    });
+    let canonical = serde_json::json!({
+        "schema_version": raw_map.get("schema_version").and_then(|v| v.as_i64()).unwrap_or(1),
+        "mappings": mappings,
+    });
+    let actual_text = match fs::read_to_string(&map_path) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err.to_string()),
+    };
+    let expected_text = match serde_json::to_string_pretty(&canonical) {
+        Ok(v) => format!("{v}\n"),
+        Err(err) => return TestResult::Error(err.to_string()),
+    };
+    if actual_text == expected_text {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contract-gate-map must be sorted by contract_id and canonical pretty json",
+            Some("ops/inventory/contract-gate-map.json".to_string()),
+        )])
+    }
+}
+
+fn ops_surface_command_set(root: &Path) -> BTreeSet<String> {
+    read_json(&root.join("ops/inventory/surfaces.json"))
+        .and_then(|v| v.get("bijux-dev-atlas_commands").cloned())
+        .and_then(|v| v.as_array().cloned())
+        .map(|rows| {
+            rows.into_iter()
+                .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+fn ops_surface_actions_to_command_set(root: &Path) -> BTreeSet<String> {
+    read_json(&root.join("ops/inventory/surfaces.json"))
+        .and_then(|v| v.get("actions").cloned())
+        .and_then(|v| v.as_array().cloned())
+        .map(|rows| {
+            rows.into_iter()
+                .filter_map(|row| row.get("command").and_then(|v| v.as_array()).cloned())
+                .map(|parts| {
+                    parts
+                        .into_iter()
+                        .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                        .collect::<Vec<_>>()
+                        .join(" ")
+                        .replace("bijux-dev-atlas", "bijux dev atlas")
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+fn test_ops_root_surface_001_required_commands_exist(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-001";
+    let test_id = "ops.root_surface.required_commands_exist";
+    let known = ops_surface_command_set(&ctx.repo_root);
+    let required = [
+        "bijux dev atlas ops stack up",
+        "bijux dev atlas ops stack down",
+        "bijux dev atlas ops k8s render",
+        "bijux dev atlas ops k8s check",
+        "bijux dev atlas ops load run",
+        "bijux dev atlas ops observe verify",
+        "bijux dev atlas ops list",
+    ];
+    let mut violations = Vec::new();
+    for command in required {
+        if !known.contains(command) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "required ops command is missing from command surface",
+                Some(command.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_002_no_hidden_commands(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-002";
+    let test_id = "ops.root_surface.no_hidden_commands";
+    let listed = ops_surface_command_set(&ctx.repo_root);
+    let from_actions = ops_surface_actions_to_command_set(&ctx.repo_root);
+    let mut violations = Vec::new();
+    for command in listed.difference(&from_actions) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "command is listed but has no matching action dispatch entry",
+            Some(command.to_string()),
+        ));
+    }
+    for command in from_actions.difference(&listed) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "action dispatch command is missing from listed command surface",
+            Some(command.to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_003_surface_ordering_deterministic(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-003";
+    let test_id = "ops.root_surface.surface_ordering_deterministic";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let Some(commands) = surface_json
+        .get("bijux-dev-atlas_commands")
+        .and_then(|v| v.as_array())
+    else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must define bijux-dev-atlas_commands",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let values: Vec<String> = commands
+        .iter()
+        .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+        .collect();
+    let mut sorted = values.clone();
+    sorted.sort();
+    if values == sorted {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "bijux-dev-atlas_commands must be sorted deterministically",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )])
+    }
+}
+
+fn test_ops_root_surface_004_commands_declare_effects(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-004";
+    let test_id = "ops.root_surface.commands_declare_effects";
+    let map = match read_contract_gate_map(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "contract-gate-map must exist and be valid json",
+                Some("ops/inventory/contract-gate-map.json".to_string()),
+            )]);
+        }
+    };
+    let mut has_seen = BTreeSet::new();
+    let mut violations = Vec::new();
+    for item in map
+        .get("mappings")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let command = item
+            .get("command")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if command.is_empty() {
+            continue;
+        }
+        has_seen.insert(command.to_string());
+        if item.get("effects_required").and_then(|v| v.as_array()).is_none() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "mapped command must declare effects_required array",
+                Some(command.to_string()),
+            ));
+        }
+    }
+    if has_seen.is_empty() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            "contract-gate-map must declare command-level effect requirements",
+            Some("ops/inventory/contract-gate-map.json".to_string()),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_005_commands_grouped_by_pillar(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-005";
+    let test_id = "ops.root_surface.commands_grouped_by_pillar";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let allowlist: BTreeSet<&str> = BTreeSet::from([
+        "actions",
+        "cache",
+        "datasets",
+        "deploy",
+        "e2e",
+        "env",
+        "gen",
+        "k8s",
+        "kind",
+        "load",
+        "observe",
+        "pins",
+        "stack",
+        "root",
+    ]);
+    let mut violations = Vec::new();
+    for action in surface_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let action_id = action.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let domain = action
+            .get("domain")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if domain.is_empty() || !allowlist.contains(domain) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "command action domain must be an approved pillar group",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_006_forbid_adhoc_command_groups(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-006";
+    let test_id = "ops.root_surface.forbid_adhoc_command_groups";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let denylist = ["misc", "util", "utils", "tmp", "legacy"];
+    let mut violations = Vec::new();
+    for action in surface_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let action_id = action.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let domain = action
+            .get("domain")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if denylist.contains(&domain) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "ad-hoc command groups are forbidden",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_schema_001_parseable_documents(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-SCHEMA-001";
     let test_id = "ops.schema.parseable_documents";

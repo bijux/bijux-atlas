@@ -8,8 +8,8 @@ use crate::*;
 use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
-use std::io::{self, Write};
 use std::fs;
+use std::io::{self, Write};
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -89,6 +89,34 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ContractsOpsDomainArg::Schema => "OPS-SCHEMA-*".to_string(),
             ContractsOpsDomainArg::Stack => "OPS-STACK-*".to_string(),
         }
+    }
+
+    fn ops_mapped_gates(repo_root: &Path, contract_id: &str) -> Vec<String> {
+        let path = repo_root.join("ops/inventory/contract-gate-map.json");
+        let Ok(text) = fs::read_to_string(path) else {
+            return Vec::new();
+        };
+        let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) else {
+            return Vec::new();
+        };
+        json.get("mappings")
+            .and_then(|v| v.as_array())
+            .and_then(|rows| {
+                rows.iter().find(|item| {
+                    item.get("contract_id")
+                        .and_then(|v| v.as_str())
+                        .is_some_and(|value| value.eq_ignore_ascii_case(contract_id))
+                })
+            })
+            .and_then(|item| item.get("gate_ids"))
+            .and_then(|v| v.as_array())
+            .map(|gate_ids| {
+                gate_ids
+                    .iter()
+                    .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                    .collect()
+            })
+            .unwrap_or_default()
     }
 
     let run = (|| -> Result<(String, i32), String> {
@@ -202,6 +230,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         return Err(format!("unknown ops contract id `{contract_id}`"));
                     };
                     let explanation = contracts::ops::contract_explain(&contract.id.0);
+                    let mapped_gates = ops_mapped_gates(&repo_root, &contract.id.0);
                     let rendered = if args.json || args.format == ContractsFormatArg::Json {
                         serde_json::to_string_pretty(&serde_json::json!({
                             "schema_version": 1,
@@ -213,6 +242,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                                 "title": case.title
                             })).collect::<Vec<_>>(),
                             "mapped_gate": contracts::ops::contract_gate_command(&contract.id.0),
+                            "mapped_gates": mapped_gates,
                             "explain": explanation
                         }))
                         .map_err(|e| format!("encode contracts explain failed: {e}"))?
@@ -227,6 +257,12 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         out.push_str(explanation);
                         out.push_str("\n\nMapped gate:\n");
                         out.push_str(contracts::ops::contract_gate_command(&contract.id.0));
+                        if !mapped_gates.is_empty() {
+                            out.push_str("\nMapped gate ids:\n");
+                            for gate_id in &mapped_gates {
+                                out.push_str(&format!("- {gate_id}\n"));
+                            }
+                        }
                         out.push('\n');
                         out
                     };

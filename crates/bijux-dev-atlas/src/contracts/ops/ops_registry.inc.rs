@@ -403,6 +403,99 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-INV-MAP-008".to_string()),
+            title: "inventory contract gate map effect kind contract",
+            tests: vec![TestCase {
+                id: TestId(
+                    "ops.inventory.contract_gate_map.effect_contracts_require_effect_kind"
+                        .to_string(),
+                ),
+                title: "effect mappings require subprocess or network test kinds and annotations",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_008_effect_contracts_require_effect_kind,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-009".to_string()),
+            title: "inventory contract gate map explain coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.explain_shows_mapped_gates".to_string()),
+                title: "contract explain source mappings expose gate ids for non-static contracts",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_009_explain_shows_mapped_gates,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-010".to_string()),
+            title: "inventory contract gate map canonical order contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.mapping_sorted_canonical".to_string()),
+                title: "contract-gate-map is sorted by contract id and canonical json",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_010_mapping_sorted_canonical,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-001".to_string()),
+            title: "ops root command surface required commands contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.required_commands_exist".to_string()),
+                title: "required ops command verbs exist in command surface registry",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_001_required_commands_exist,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-002".to_string()),
+            title: "ops root command surface no hidden commands contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.no_hidden_commands".to_string()),
+                title: "listed commands and action dispatch entries must match exactly",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_002_no_hidden_commands,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-003".to_string()),
+            title: "ops root command surface deterministic ordering contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.surface_ordering_deterministic".to_string()),
+                title: "command surface list is sorted deterministically",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_003_surface_ordering_deterministic,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-004".to_string()),
+            title: "ops root command surface effects declaration contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.commands_declare_effects".to_string()),
+                title: "mapped commands declare effects_required annotations",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_004_commands_declare_effects,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-005".to_string()),
+            title: "ops root command surface pillar grouping contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.commands_grouped_by_pillar".to_string()),
+                title: "ops command actions use approved pillar-style domain groups",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_005_commands_grouped_by_pillar,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-006".to_string()),
+            title: "ops root command surface ad-hoc group guard contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.forbid_adhoc_command_groups".to_string()),
+                title: "ops command actions must not use ad-hoc misc/util group names",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_006_forbid_adhoc_command_groups,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-INV-PILLARS-001".to_string()),
             title: "inventory pillars registry contract",
             tests: vec![TestCase {
@@ -1134,6 +1227,15 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-MAP-005" => "Ensures no gate id is orphaned outside contract-gate-map references.",
         "OPS-INV-MAP-006" => "Ensures every contract maps to gates or is explicitly static-only.",
         "OPS-INV-MAP-007" => "Ensures static-only map entries refer only to pure test contracts.",
+        "OPS-INV-MAP-008" => "Ensures effect mappings use effectful test kinds and explicit effect annotations.",
+        "OPS-INV-MAP-009" => "Ensures explain mapping source includes gate ids for non-static contracts.",
+        "OPS-INV-MAP-010" => "Ensures contract-gate-map is sorted by contract id and canonical json format.",
+        "OPS-ROOT-SURFACE-001" => "Ensures required ops stack/k8s/load/observe/list commands exist in router surface.",
+        "OPS-ROOT-SURFACE-002" => "Ensures listed command surface equals action dispatch surface with no hidden commands.",
+        "OPS-ROOT-SURFACE-003" => "Ensures command surface list ordering is deterministic.",
+        "OPS-ROOT-SURFACE-004" => "Ensures mapped commands include explicit effects_required declarations.",
+        "OPS-ROOT-SURFACE-005" => "Ensures command actions are grouped only under approved pillar-style domains.",
+        "OPS-ROOT-SURFACE-006" => "Forbids ad-hoc command group domains such as misc/util.",
         "OPS-INV-PILLARS-001" => "Validates pillars SSOT exists and parses as inventory metadata.",
         "OPS-INV-PILLARS-002" => "Validates each declared pillar has a concrete directory under ops/.",
         "OPS-INV-PILLARS-003" => "Validates there are no undeclared pillar directories in ops root.",

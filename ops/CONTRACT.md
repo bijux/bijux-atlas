@@ -258,6 +258,21 @@ Tests:
 Tests:
 - `ops.inventory.contract_gate_map.static_only_contracts_are_pure` (static, Pure): static-only mappings are restricted to pure test contracts
 
+#### OPS-INV-MAP-008 inventory contract gate map effect kind contract
+
+Tests:
+- `ops.inventory.contract_gate_map.effect_contracts_require_effect_kind` (static, Pure): effect mappings require subprocess or network test kinds and annotations
+
+#### OPS-INV-MAP-009 inventory contract gate map explain coverage contract
+
+Tests:
+- `ops.inventory.contract_gate_map.explain_shows_mapped_gates` (static, Pure): contract explain source mappings expose gate ids for non-static contracts
+
+#### OPS-INV-MAP-010 inventory contract gate map canonical order contract
+
+Tests:
+- `ops.inventory.contract_gate_map.mapping_sorted_canonical` (static, Pure): contract-gate-map is sorted by contract id and canonical json
+
 #### OPS-INV-PILLARS-001 inventory pillars registry contract
 
 Tests:
@@ -618,6 +633,36 @@ Tests:
 
 Tests:
 - `ops.root.forbid_deleted_doc_names` (static, Pure): forbidden legacy ops markdown names must not be reintroduced
+
+#### OPS-ROOT-SURFACE-001 ops root command surface required commands contract
+
+Tests:
+- `ops.root_surface.required_commands_exist` (static, Pure): required ops command verbs exist in command surface registry
+
+#### OPS-ROOT-SURFACE-002 ops root command surface no hidden commands contract
+
+Tests:
+- `ops.root_surface.no_hidden_commands` (static, Pure): listed commands and action dispatch entries must match exactly
+
+#### OPS-ROOT-SURFACE-003 ops root command surface deterministic ordering contract
+
+Tests:
+- `ops.root_surface.surface_ordering_deterministic` (static, Pure): command surface list is sorted deterministically
+
+#### OPS-ROOT-SURFACE-004 ops root command surface effects declaration contract
+
+Tests:
+- `ops.root_surface.commands_declare_effects` (static, Pure): mapped commands declare effects_required annotations
+
+#### OPS-ROOT-SURFACE-005 ops root command surface pillar grouping contract
+
+Tests:
+- `ops.root_surface.commands_grouped_by_pillar` (static, Pure): ops command actions use approved pillar-style domain groups
+
+#### OPS-ROOT-SURFACE-006 ops root command surface ad-hoc group guard contract
+
+Tests:
+- `ops.root_surface.forbid_adhoc_command_groups` (static, Pure): ops command actions must not use ad-hoc misc/util group names
 
 ### Pillar: schema
 
