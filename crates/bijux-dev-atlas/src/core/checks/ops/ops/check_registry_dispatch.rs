@@ -109,8 +109,8 @@ pub fn builtin_ops_check_fn(check_id: &CheckId) -> Option<CheckFn> {
         "checks_make_governance_wrappers_no_direct_cargo" => {
             Some(check_make_governance_wrappers_no_direct_cargo)
         }
-        "checks_docs_runtime_command_list_matches_contract" => {
-            Some(check_docs_runtime_command_list_matches_contract)
+        "checks_docs_command_list_matches_contract" => {
+            Some(check_docs_command_list_matches_contract)
         }
         "checks_docs_dev_command_list_matches_contract" => {
             Some(check_docs_dev_command_list_matches_contract)
@@ -253,7 +253,7 @@ pub fn builtin_ops_check_ids() -> BTreeSet<String> {
         "checks_make_governance_wrappers_bijux_only",
         "checks_workflows_governance_entrypoints_bijux_only",
         "checks_make_governance_wrappers_no_direct_cargo",
-        "checks_docs_runtime_command_list_matches_contract",
+        "checks_docs_command_list_matches_contract",
         "checks_docs_dev_command_list_matches_contract",
         "checks_docs_mkdocs_yaml_parseable",
         "checks_docs_mkdocs_nav_files_exist",

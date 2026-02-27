@@ -389,7 +389,7 @@ budget_ms = 1000
 visibility = "internal"
 
 [[checks]]
-id = "checks_docs_runtime_command_list_matches_contract"
+id = "checks_docs_command_list_matches_contract"
 domain = "docs"
 title = "runtime command list doc matches runtime command contract"
 docs = "docs/contracts/plugin/mode.md"

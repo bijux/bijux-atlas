@@ -138,7 +138,7 @@ pub(super) fn check_make_governance_wrappers_no_direct_cargo(
     Ok(violations)
 }
 
-pub(super) fn check_docs_runtime_command_list_matches_contract(
+pub(super) fn check_docs_command_list_matches_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
     let rel = Path::new("crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md");
@@ -148,7 +148,7 @@ pub(super) fn check_docs_runtime_command_list_matches_contract(
         Ok(Vec::new())
     } else {
         Ok(vec![violation(
-            "DOCS_RUNTIME_COMMAND_LIST_INVALID",
+            "DOCS_COMMAND_LIST_INVALID",
             "runtime command list doc must start with canonical `atlas` command".to_string(),
             "refresh runtime command list snapshot from bijux atlas --help",
             Some(rel),
