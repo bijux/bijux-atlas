@@ -381,6 +381,44 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     "line": 1
                 }));
             }
+            if rel.ends_with("/CONTRACT.md") && rel != "docker/CONTRACT.md" {
+                rows.push(serde_json::json!({
+                    "contract_id":"DOCKER-004",
+                    "gate_id":"docker.contract.path_scope",
+                    "kind":"nested_contract_forbidden",
+                    "file": rel,
+                    "line": 1
+                }));
+            }
+        }
+
+        let docs_root = repo_root.join("docs");
+        if docs_root.exists() {
+            for file in walk_files(&docs_root) {
+                let rel = file
+                    .strip_prefix(repo_root)
+                    .unwrap_or(&file)
+                    .display()
+                    .to_string();
+                if !rel.ends_with(".md") {
+                    continue;
+                }
+                let Ok(text) = fs::read_to_string(&file) else {
+                    continue;
+                };
+                for (idx, line) in text.lines().enumerate() {
+                    if line.contains("docker/contracts/") {
+                        rows.push(serde_json::json!({
+                            "contract_id":"DOCKER-004",
+                            "gate_id":"docker.contract.path_scope",
+                            "kind":"docs_docker_link_sanity_violation",
+                            "file": rel,
+                            "line": idx + 1,
+                            "evidence": "docker/contracts/"
+                        }));
+                    }
+                }
+            }
         }
 
         let root_dockerfile = repo_root.join("Dockerfile");
