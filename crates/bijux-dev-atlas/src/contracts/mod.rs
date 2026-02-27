@@ -326,7 +326,7 @@ pub fn run(
                 status: contract_status,
             });
         }
-        if options.fail_fast && contract_status == CaseStatus::Error {
+        if options.fail_fast && matches!(contract_status, CaseStatus::Fail | CaseStatus::Error) {
             break;
         }
     }
@@ -455,6 +455,77 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             })).collect::<Vec<_>>()
         })).collect::<Vec<_>>()
     })
+}
+
+fn xml_escape(input: &str) -> String {
+    input
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&apos;")
+}
+
+pub fn to_junit(report: &RunReport) -> Result<String, String> {
+    let tests = report.total_tests();
+    let failures = report.fail_count();
+    let errors = report.error_count();
+    let skipped = report.skip_count();
+    let mut out = String::new();
+    out.push_str("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    out.push_str(&format!(
+        "<testsuites><testsuite name=\"contracts.{}\" tests=\"{}\" failures=\"{}\" errors=\"{}\" skipped=\"{}\">",
+        xml_escape(&report.domain),
+        tests,
+        failures,
+        errors,
+        skipped
+    ));
+    for case in &report.cases {
+        out.push_str(&format!(
+            "<testcase classname=\"{}\" name=\"{}\">",
+            xml_escape(&case.contract_id),
+            xml_escape(&case.test_id)
+        ));
+        match case.status {
+            CaseStatus::Pass => {}
+            CaseStatus::Skip => {
+                let note = case.note.as_deref().unwrap_or("skipped");
+                out.push_str(&format!("<skipped message=\"{}\"/>", xml_escape(note)));
+            }
+            CaseStatus::Error => {
+                let note = case.note.as_deref().unwrap_or("error");
+                out.push_str(&format!(
+                    "<error message=\"{}\">{}</error>",
+                    xml_escape(note),
+                    xml_escape(note)
+                ));
+            }
+            CaseStatus::Fail => {
+                let detail = case
+                    .violations
+                    .iter()
+                    .map(|v| {
+                        let location = match (&v.file, v.line) {
+                            (Some(file), Some(line)) => format!("{file}:{line}"),
+                            (Some(file), None) => file.clone(),
+                            _ => "unknown-location".to_string(),
+                        };
+                        format!("{}: {}", location, v.message)
+                    })
+                    .collect::<Vec<_>>()
+                    .join("; ");
+                out.push_str(&format!(
+                    "<failure message=\"{}\">{}</failure>",
+                    xml_escape(&detail),
+                    xml_escape(&detail)
+                ));
+            }
+        }
+        out.push_str("</testcase>");
+    }
+    out.push_str("</testsuite></testsuites>\n");
+    Ok(out)
 }
 
 #[cfg(test)]
@@ -645,5 +716,62 @@ mod tests {
         };
         let report = run("docker", registry, Path::new("."), &options).expect("run");
         assert_eq!(report.error_count(), 1);
+    }
+
+    #[test]
+    fn fail_fast_stops_after_first_failing_contract() {
+        fn fail_case(_: &RunContext) -> TestResult {
+            TestResult::Fail(vec![Violation {
+                contract_id: "DOCKER-001".to_string(),
+                test_id: "docker.sample.fail".to_string(),
+                file: None,
+                line: None,
+                message: "failed".to_string(),
+                evidence: None,
+            }])
+        }
+        fn pass_case(_: &RunContext) -> TestResult {
+            TestResult::Pass
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![
+                Contract {
+                    id: ContractId("DOCKER-001".to_string()),
+                    title: "first",
+                    tests: vec![TestCase {
+                        id: TestId("docker.sample.fail".to_string()),
+                        title: "failing",
+                        kind: TestKind::Pure,
+                        run: fail_case,
+                    }],
+                },
+                Contract {
+                    id: ContractId("DOCKER-002".to_string()),
+                    title: "second",
+                    tests: vec![TestCase {
+                        id: TestId("docker.sample.pass".to_string()),
+                        title: "passing",
+                        kind: TestKind::Pure,
+                        run: pass_case,
+                    }],
+                },
+            ])
+        }
+        let options = RunOptions {
+            mode: Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 30,
+            fail_fast: true,
+            contract_filter: None,
+            test_filter: None,
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("docker", registry, Path::new("."), &options).expect("run");
+        assert_eq!(report.total_contracts(), 1);
+        assert_eq!(report.total_tests(), 1);
+        assert_eq!(report.fail_count(), 1);
     }
 }

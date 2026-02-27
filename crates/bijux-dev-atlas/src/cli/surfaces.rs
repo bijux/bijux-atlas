@@ -233,6 +233,7 @@ pub struct ConfigsCommonArgs {
 pub enum ContractsCommand {
     Docker(ContractsDockerArgs),
     Ops(ContractsOpsArgs),
+    Snapshot(ContractsSnapshotArgs),
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
@@ -245,6 +246,7 @@ pub enum ContractsModeArg {
 pub enum ContractsFormatArg {
     Pretty,
     Json,
+    Junit,
 }
 
 #[derive(Args, Debug, Clone)]
@@ -261,8 +263,8 @@ pub struct ContractsDockerArgs {
     pub mode: ContractsModeArg,
     #[arg(long, default_value_t = false)]
     pub fail_fast: bool,
-    #[arg(long)]
-    pub filter: Option<String>,
+    #[arg(long = "filter-contract", alias = "filter")]
+    pub filter_contract: Option<String>,
     #[arg(long)]
     pub filter_test: Option<String>,
     #[arg(long, default_value_t = false)]
@@ -312,8 +314,8 @@ pub struct ContractsOpsArgs {
     pub domain: Option<ContractsOpsDomainArg>,
     #[arg(long, default_value_t = false)]
     pub fail_fast: bool,
-    #[arg(long)]
-    pub filter: Option<String>,
+    #[arg(long = "filter-contract", alias = "filter")]
+    pub filter_contract: Option<String>,
     #[arg(long)]
     pub filter_test: Option<String>,
     #[arg(long, default_value_t = false)]
@@ -330,4 +332,20 @@ pub struct ContractsOpsArgs {
     pub skip_missing_tools: bool,
     #[arg(long, default_value_t = 300)]
     pub timeout_seconds: u64,
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractsSnapshotDomainArg {
+    Docker,
+    Ops,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractsSnapshotArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = ContractsSnapshotDomainArg::Ops)]
+    pub domain: ContractsSnapshotDomainArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
 }

@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommand, ContractsFormatArg, ContractsModeArg, ContractsOpsDomainArg, PoliciesCommand,
+    ContractsCommand, ContractsFormatArg, ContractsModeArg, ContractsOpsDomainArg,
+    ContractsSnapshotDomainArg, PoliciesCommand,
 };
 use crate::*;
 use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::io::{self, Write};
+use std::fs;
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -57,6 +59,22 @@ pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
 pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i32 {
+    fn require_artifacts_root_in_ci(
+        artifacts_root: &Option<PathBuf>,
+        mode: ContractsModeArg,
+    ) -> Result<(), String> {
+        if std::env::var_os("CI").is_some()
+            && mode == ContractsModeArg::Effect
+            && artifacts_root.is_none()
+        {
+            return Err(
+                "CI effect runs require --artifacts-root for deterministic evidence output"
+                    .to_string(),
+            );
+        }
+        Ok(())
+    }
+
     fn ops_domain_filter(domain: ContractsOpsDomainArg) -> String {
         match domain {
             ContractsOpsDomainArg::Root => "OPS-000*".to_string(),
@@ -96,6 +114,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                                 "test_id": case.id.0,
                                 "title": case.title
                             })).collect::<Vec<_>>(),
+                            "mapped_gate": "bijux dev atlas contracts docker --mode static",
                             "explain": explanation
                         }))
                         .map_err(|e| format!("encode contracts explain failed: {e}"))?
@@ -108,11 +127,14 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         }
                         out.push_str("\nHow to fix:\n");
                         out.push_str(explanation.as_str());
+                        out.push_str("\n\nMapped gate:\n");
+                        out.push_str("bijux dev atlas contracts docker --mode static");
                         out.push('\n');
                         out
                     };
                     return Ok((rendered, 0));
                 }
+                require_artifacts_root_in_ci(&args.artifacts_root, args.mode)?;
                 if args.list {
                     let rendered = if args.json || args.format == ContractsFormatArg::Json {
                         serde_json::to_string_pretty(&serde_json::json!({
@@ -121,14 +143,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             "contracts": registry.iter().map(|contract| serde_json::json!({
                                 "id": contract.id.0,
                                 "title": contract.title,
-                                "tests": if args.list_tests {
-                                    contract.tests.iter().map(|case| serde_json::json!({
-                                        "test_id": case.id.0,
-                                        "title": case.title
-                                    })).collect::<Vec<_>>()
-                                } else {
-                                    Vec::<serde_json::Value>::new()
-                                }
+                                "tests": contract.tests.iter().map(|case| serde_json::json!({
+                                    "test_id": case.id.0,
+                                    "title": case.title
+                                })).collect::<Vec<_>>()
                             })).collect::<Vec<_>>()
                         }))
                         .map_err(|e| format!("encode contracts list failed: {e}"))?
@@ -137,10 +155,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         out.push_str("Contracts: docker\n");
                         for contract in &registry {
                             out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
-                            if args.list_tests {
-                                for case in &contract.tests {
-                                    out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
-                                }
+                            for case in &contract.tests {
+                                out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
                             }
                         }
                         out
@@ -158,17 +174,18 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     skip_missing_tools: args.skip_missing_tools,
                     timeout_seconds: args.timeout_seconds,
                     fail_fast: args.fail_fast,
-                    contract_filter: args.filter,
+                    contract_filter: args.filter_contract,
                     test_filter: args.filter_test,
                     list_only: args.list,
                     artifacts_root: args.artifacts_root,
                 };
                 let report =
                     contracts::run("docker", contracts::docker::contracts, &repo_root, &options)?;
-                let format_json = args.json || args.format == ContractsFormatArg::Json;
-                let rendered = if format_json {
+                let rendered = if args.json || args.format == ContractsFormatArg::Json {
                     serde_json::to_string_pretty(&contracts::to_json(&report))
                         .map_err(|e| format!("encode contracts report failed: {e}"))?
+                } else if args.format == ContractsFormatArg::Junit {
+                    contracts::to_junit(&report)?
                 } else {
                     contracts::to_pretty(&report)
                 };
@@ -195,6 +212,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                                 "test_id": case.id.0,
                                 "title": case.title
                             })).collect::<Vec<_>>(),
+                            "mapped_gate": contracts::ops::contract_gate_command(&contract.id.0),
                             "explain": explanation
                         }))
                         .map_err(|e| format!("encode contracts explain failed: {e}"))?
@@ -207,11 +225,14 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         }
                         out.push_str("\nHow to fix:\n");
                         out.push_str(explanation);
+                        out.push_str("\n\nMapped gate:\n");
+                        out.push_str(contracts::ops::contract_gate_command(&contract.id.0));
                         out.push('\n');
                         out
                     };
                     return Ok((rendered, 0));
                 }
+                require_artifacts_root_in_ci(&args.artifacts_root, args.mode)?;
                 if args.list {
                     let rendered = if args.json || args.format == ContractsFormatArg::Json {
                         serde_json::to_string_pretty(&serde_json::json!({
@@ -220,14 +241,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             "contracts": registry.iter().map(|contract| serde_json::json!({
                                 "id": contract.id.0,
                                 "title": contract.title,
-                                "tests": if args.list_tests {
-                                    contract.tests.iter().map(|case| serde_json::json!({
-                                        "test_id": case.id.0,
-                                        "title": case.title
-                                    })).collect::<Vec<_>>()
-                                } else {
-                                    Vec::<serde_json::Value>::new()
-                                }
+                                "tests": contract.tests.iter().map(|case| serde_json::json!({
+                                    "test_id": case.id.0,
+                                    "title": case.title
+                                })).collect::<Vec<_>>()
                             })).collect::<Vec<_>>()
                         }))
                         .map_err(|e| format!("encode contracts list failed: {e}"))?
@@ -236,10 +253,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         out.push_str("Contracts: ops\n");
                         for contract in &registry {
                             out.push_str(&format!("{} {}\n", contract.id.0, contract.title));
-                            if args.list_tests {
-                                for case in &contract.tests {
-                                    out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
-                                }
+                            for case in &contract.tests {
+                                out.push_str(&format!("  - {} {}\n", case.id.0, case.title));
                             }
                         }
                         out
@@ -253,7 +268,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 let contract_filter = if let Some(domain) = args.domain {
                     Some(ops_domain_filter(domain))
                 } else {
-                    args.filter
+                    args.filter_contract
                 };
                 let options = contracts::RunOptions {
                     mode,
@@ -269,14 +284,64 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 };
                 let report =
                     contracts::run("ops", contracts::ops::contracts, &repo_root, &options)?;
-                let format_json = args.json || args.format == ContractsFormatArg::Json;
-                let rendered = if format_json {
+                let rendered = if args.json || args.format == ContractsFormatArg::Json {
                     serde_json::to_string_pretty(&contracts::to_json(&report))
                         .map_err(|e| format!("encode contracts report failed: {e}"))?
+                } else if args.format == ContractsFormatArg::Junit {
+                    contracts::to_junit(&report)?
                 } else {
                     contracts::to_pretty(&report)
                 };
                 Ok((rendered, report.exit_code()))
+            }
+            ContractsCommand::Snapshot(args) => {
+                let repo_root = resolve_repo_root(args.repo_root)?;
+                let (domain, mut registry, default_rel) = match args.domain {
+                    ContractsSnapshotDomainArg::Docker => (
+                        "docker",
+                        contracts::docker::contracts(&repo_root)?,
+                        PathBuf::from("docker/_generated/contracts-registry-snapshot.json"),
+                    ),
+                    ContractsSnapshotDomainArg::Ops => (
+                        "ops",
+                        contracts::ops::contracts(&repo_root)?,
+                        PathBuf::from("ops/_generated/control-plane-surface-list.json"),
+                    ),
+                };
+                let payload = if domain == "ops" {
+                    contracts::ops::render_registry_snapshot_json(&repo_root)?
+                } else {
+                    registry.sort_by_key(|c| c.id.0.clone());
+                    let contracts = registry
+                        .into_iter()
+                        .map(|mut c| {
+                            c.tests.sort_by_key(|t| t.id.0.clone());
+                            serde_json::json!({
+                                "id": c.id.0,
+                                "title": c.title,
+                                "tests": c.tests.into_iter().map(|t| serde_json::json!({
+                                    "test_id": t.id.0,
+                                    "title": t.title
+                                })).collect::<Vec<_>>()
+                            })
+                        })
+                        .collect::<Vec<_>>();
+                    serde_json::json!({
+                        "schema_version": 1,
+                        "domain": domain,
+                        "contracts": contracts,
+                    })
+                };
+                let rendered = serde_json::to_string_pretty(&payload)
+                    .map_err(|e| format!("encode contracts snapshot failed: {e}"))?;
+                let out_path = args.out.unwrap_or_else(|| repo_root.join(default_rel));
+                if let Some(parent) = out_path.parent() {
+                    fs::create_dir_all(parent)
+                        .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+                }
+                fs::write(&out_path, format!("{rendered}\n"))
+                    .map_err(|e| format!("write {} failed: {e}", out_path.display()))?;
+                Ok((rendered, 0))
             }
         }
     })();

@@ -14,6 +14,102 @@ fn repo_root() -> PathBuf {
 }
 
 #[test]
+fn contracts_ops_list_includes_tests_by_default() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--list", "--format", "json"])
+        .output()
+        .expect("contracts ops list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let contracts = payload["contracts"].as_array().expect("contracts array");
+    assert!(!contracts.is_empty());
+    let tests = contracts[0]["tests"].as_array().expect("tests array");
+    assert!(!tests.is_empty());
+}
+
+#[test]
+fn contracts_ops_supports_junit_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--format", "junit"])
+        .output()
+        .expect("contracts ops junit");
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    assert!(text.contains("<testsuite"));
+    assert!(text.contains("contracts.ops"));
+}
+
+#[test]
+fn contracts_snapshot_writes_ops_registry_file() {
+    let out = repo_root().join("artifacts/tests/contracts-ops-snapshot.json");
+    if let Some(parent) = out.parent() {
+        fs::create_dir_all(parent).expect("mkdir");
+    }
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "snapshot",
+            "--domain",
+            "ops",
+            "--out",
+            out.to_str().expect("out path"),
+        ])
+        .output()
+        .expect("contracts snapshot");
+    assert!(output.status.success());
+    let written = fs::read_to_string(out).expect("read out file");
+    let payload: serde_json::Value = serde_json::from_str(&written).expect("json file");
+    assert_eq!(payload["domain"].as_str(), Some("ops"));
+    assert!(payload["contracts"].is_array());
+}
+
+#[test]
+fn contracts_ops_supports_filter_contract_alias() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "ops",
+            "--format",
+            "json",
+            "--filter-contract",
+            "OPS-000",
+        ])
+        .output()
+        .expect("contracts ops filter-contract");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let contracts = payload["contracts"].as_array().expect("contracts array");
+    assert_eq!(contracts.len(), 1);
+    assert_eq!(contracts[0]["id"].as_str(), Some("OPS-000"));
+}
+
+#[test]
+fn contracts_ops_explain_includes_mapped_gate() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "ops",
+            "--explain",
+            "OPS-000",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("contracts ops explain");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert!(payload["mapped_gate"].as_str().is_some());
+}
+
+#[test]
 fn list_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
