@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "max_top_level_dirs": 20,
+  "allowed_groups": [
+    "contracts",
+    "coverage",
+    "docs",
+    "gates",
+    "inventory",
+    "layout",
+    "make",
+    "meta",
+    "nextest",
+    "openapi",
+    "ops",
+    "perf",
+    "policy",
+    "product",
+    "repo",
+    "rust",
+    "schema",
+    "security",
+    "shellcheck",
+    "slo"
+  ]
+}

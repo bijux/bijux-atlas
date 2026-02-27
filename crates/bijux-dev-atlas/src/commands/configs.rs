@@ -292,10 +292,80 @@ pub(crate) fn configs_validate_payload(
         "configs/README.md",
         "configs/contracts",
         "configs/schema",
+        "configs/NAMING.md",
+        "configs/OWNERS.md",
+        "configs/inventory/groups.json",
+        "configs/inventory/consumers.json",
     ] {
         if !ctx.repo_root.join(required).exists() {
             errors.push(format!(
                 "CONFIGS_SCHEMA_ERROR: missing required config path `{required}`"
+            ));
+        }
+    }
+    let groups_path = ctx.repo_root.join("configs/inventory/groups.json");
+    let consumers_path = ctx.repo_root.join("configs/inventory/consumers.json");
+    let mut allowed_groups = std::collections::BTreeSet::<String>::new();
+    let mut max_top_level_dirs = 20usize;
+    if groups_path.exists() {
+        let groups_text = fs::read_to_string(&groups_path)
+            .map_err(|e| format!("failed to read {}: {e}", groups_path.display()))?;
+        let groups_json: serde_json::Value = serde_json::from_str(&groups_text)
+            .map_err(|e| format!("failed to parse {}: {e}", groups_path.display()))?;
+        max_top_level_dirs = groups_json["max_top_level_dirs"]
+            .as_u64()
+            .map(|v| v as usize)
+            .unwrap_or(20);
+        for value in groups_json["allowed_groups"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+        {
+            if let Some(name) = value.as_str() {
+                allowed_groups.insert(name.to_string());
+            }
+        }
+    }
+    let mut consumer_groups = std::collections::BTreeSet::<String>::new();
+    if consumers_path.exists() {
+        let consumers_text = fs::read_to_string(&consumers_path)
+            .map_err(|e| format!("failed to read {}: {e}", consumers_path.display()))?;
+        let consumers_json: serde_json::Value = serde_json::from_str(&consumers_text)
+            .map_err(|e| format!("failed to parse {}: {e}", consumers_path.display()))?;
+        if let Some(groups_obj) = consumers_json["groups"].as_object() {
+            for (group, entries) in groups_obj {
+                let count = entries.as_array().map_or(0, Vec::len);
+                if count == 0 {
+                    errors.push(format!(
+                        "CONFIGS_SCHEMA_ERROR: group `{group}` has no declared consumers"
+                    ));
+                }
+                consumer_groups.insert(group.to_string());
+            }
+        }
+    }
+    let discovered_groups = std::fs::read_dir(&ctx.configs_root)
+        .map_err(|e| format!("failed to list {}: {e}", ctx.configs_root.display()))?
+        .filter_map(Result::ok)
+        .filter(|entry| entry.path().is_dir())
+        .filter_map(|entry| entry.file_name().to_str().map(str::to_string))
+        .collect::<std::collections::BTreeSet<_>>();
+    if discovered_groups.len() > max_top_level_dirs {
+        errors.push(format!(
+            "CONFIGS_LAYOUT_ERROR: top-level config group budget exceeded ({}/{})",
+            discovered_groups.len(),
+            max_top_level_dirs
+        ));
+    }
+    for group in &discovered_groups {
+        if !allowed_groups.is_empty() && !allowed_groups.contains(group) {
+            errors.push(format!(
+                "CONFIGS_LAYOUT_ERROR: top-level group `{group}` is not allowlisted in configs/inventory/groups.json"
+            ));
+        }
+        if !consumer_groups.is_empty() && !consumer_groups.contains(group) {
+            errors.push(format!(
+                "CONFIGS_LAYOUT_ERROR: top-level group `{group}` has no consumer mapping in configs/inventory/consumers.json"
             ));
         }
     }
@@ -307,6 +377,22 @@ pub(crate) fn configs_validate_payload(
             .to_string();
         if let Err(e) = parse_config_file(&file) {
             errors.push(e);
+        }
+        let rel_under_configs = file
+            .strip_prefix(&ctx.configs_root)
+            .unwrap_or(&file)
+            .to_path_buf();
+        let depth = rel_under_configs.components().count();
+        let ext = file
+            .extension()
+            .and_then(|v| v.to_str())
+            .unwrap_or_default();
+        let is_governed_config = matches!(ext, "json" | "toml" | "yaml" | "yml" | "md" | "txt");
+        let in_vendor_path = rel.contains("/node_modules/") || rel.contains("/.vale/styles/");
+        if is_governed_config && !in_vendor_path && depth > 4 {
+            errors.push(format!(
+                "CONFIGS_LAYOUT_ERROR: config path depth exceeds budget (depth={depth}) `{rel}`"
+            ));
         }
         if rel.contains(".example.secret") {
             warnings.push(format!("CONFIGS_SCHEMA_ERROR: secret-like config filename requires explicit allowlist `{rel}`"));

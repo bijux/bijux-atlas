@@ -20,3 +20,10 @@ Canonical configuration surface for repository behavior.
 - `configs/slo` owner: `bijux-atlas-operations`
 
 See also: `configs/inventory/owners.json`.
+
+## Governance Inputs
+
+- `configs/NAMING.md`
+- `configs/OWNERS.md`
+- `configs/inventory/groups.json`
+- `configs/inventory/consumers.json`
