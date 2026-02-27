@@ -8,7 +8,7 @@ RUN_ID ?= local
 include makefiles/_cargo.mk
 include makefiles/_configs.mk
 include makefiles/_docs.mk
-include makefiles/_docker.mk
+include makefiles/docker.mk
 include makefiles/_ops.mk
 include makefiles/_policies.mk
 include makefiles/build.mk

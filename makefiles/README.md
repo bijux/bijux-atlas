@@ -17,7 +17,7 @@ See `makefiles/CONTRACT.md` for normative rules.
 - `makefiles/_docs.mk`
 - `makefiles/_ops.mk`
 - `makefiles/_configs.mk`
-- `makefiles/_docker.mk`
+- `makefiles/docker.mk`
 - `makefiles/_policies.mk`
 
 ## Minimal public UX
