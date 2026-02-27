@@ -28,6 +28,7 @@
     "ops/_generated.example/incident-playbook-generation-report.json",
     "ops/_generated.example/inventory-completeness-score.json",
     "ops/_generated.example/inventory-index.json",
+    "ops/_generated.example/ops-contract-index.json",
     "ops/_generated.example/ops-evidence-bundle.json",
     "ops/_generated.example/ops-index.json",
     "ops/_generated.example/ops-ledger.json",
