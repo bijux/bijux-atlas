@@ -34,8 +34,8 @@
     "loc_allowlist": [
       "crates/bijux-atlas-server/src/lib.rs",
       "crates/bijux-dev-atlas/src/main.rs",
-      "crates/bijux-dev-atlas/src/ops_commands/runtime.rs",
-      "crates/bijux-dev-atlas/src/ops_runtime_execution/runtime.rs"
+      "crates/bijux-dev-atlas/src/commands/ops/runtime.rs",
+      "crates/bijux-dev-atlas/src/commands/ops/execution_runtime.rs"
     ],
     "max_depth_hard": 7,
     "max_loc_hard": 1000,

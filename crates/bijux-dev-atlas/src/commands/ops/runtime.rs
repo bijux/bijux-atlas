@@ -5,14 +5,14 @@ use crate::cli::{
     OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,
     OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
-use crate::ops_command_support::{
+use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
     load_toolchain_inventory_for_ops, load_tools_manifest, ops_exit, ops_pins_check_payload,
     parse_tool_overrides, render_ops_human, render_ops_validation_output, run_ops_checks,
     validate_load_manifest, validate_pins_completeness, validate_stack_manifest,
     verify_tools_snapshot, ToolMismatchCode,
 };
-use crate::ops_command_support::{
+use crate::ops_support::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };
 use crate::*;

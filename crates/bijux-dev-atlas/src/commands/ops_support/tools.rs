@@ -62,7 +62,7 @@ fn walk_files(root: &Path) -> Vec<PathBuf> {
 
 pub(crate) fn validate_pins_completeness(
     repo_root: &Path,
-    pins: &crate::ops_command_support::StackPinsToml,
+    pins: &crate::ops_support::StackPinsToml,
 ) -> Result<Vec<String>, OpsCommandError> {
     let mut errors = Vec::new();
     let stack_manifest: serde_json::Value = serde_json::from_str(
@@ -267,7 +267,7 @@ mod tests {
         )
         .expect("write values offline");
         std::fs::write(root.path().join("ops/inventory/contracts.json"),"{\"contracts\":[{\"path\":\"ops/inventory/tools.toml\"},{\"path\":\"ops/inventory/pins.yaml\"}]}").expect("write contracts");
-        let pins = crate::ops_command_support::StackPinsToml {
+        let pins = crate::ops_support::StackPinsToml {
             charts: std::collections::BTreeMap::new(),
             images: std::collections::BTreeMap::from([(
                 "redis".to_string(),

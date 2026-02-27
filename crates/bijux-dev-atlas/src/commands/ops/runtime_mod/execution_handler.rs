@@ -32,7 +32,7 @@ pub(super) fn dispatch_execution(
                 plan: false,
                 dry_run: "none".to_string(),
             };
-            match crate::ops_runtime_execution::run_ops_install(&args) {
+            match crate::ops_execution_runtime::run_ops_install(&args) {
                 Ok(ok) => Ok(ok),
                 Err(err) => {
                     let rollback = "rollback guidance: run `bijux dev atlas ops stack down --profile kind --allow-subprocess --allow-write --allow-network`";

@@ -18,11 +18,11 @@ mod docs_commands;
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
 #[path = "commands/ops_support.rs"]
-mod ops_command_support;
+mod ops_support;
 #[path = "commands/ops.rs"]
 mod ops_commands;
 #[path = "commands/ops/execution_runtime.rs"]
-mod ops_runtime_execution;
+mod ops_execution_runtime;
 
 use std::fs;
 use std::io::{self, Write};
@@ -61,7 +61,7 @@ pub(crate) use docs_commands::{
     docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
 pub(crate) use docs_commands::{docs_lint_payload, run_docs_command};
-pub(crate) use ops_command_support::{
+pub(crate) use ops_support::{
     OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,
     ToolDefinition, ToolchainInventory,
 };

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::ops_command_support::{load_load_manifest, validate_load_manifest};
+use crate::ops_support::{load_load_manifest, validate_load_manifest};
 use crate::ops_commands::{
     emit_payload, load_profiles, resolve_ops_root, resolve_profile, run_id_or_default, sha256_hex,
 };

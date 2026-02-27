@@ -308,7 +308,7 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 target: crate::cli::OpsStatusTarget::K8s,
             };
             let (status_rendered, status_code) =
-                crate::ops_runtime_execution::run_ops_status(&status_args)?;
+                crate::ops_execution_runtime::run_ops_status(&status_args)?;
             let errors = inventory_errors.len() + usize::from(status_code != 0);
             let status = if errors == 0 { "ok" } else { "failed" };
             let payload = serde_json::json!({
@@ -389,34 +389,34 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
             };
             Ok((rendered, code))
         }
-        OpsCommand::Render(args) => crate::ops_runtime_execution::run_ops_render(&args),
-        OpsCommand::Install(args) => crate::ops_runtime_execution::run_ops_install(&args),
-        OpsCommand::Status(args) => crate::ops_runtime_execution::run_ops_status(&args),
-        OpsCommand::K8sPlan(common) => crate::ops_runtime_execution::run_ops_k8s_plan(&common),
-        OpsCommand::K8sApply(args) => crate::ops_runtime_execution::run_ops_k8s_apply(&args, false),
+        OpsCommand::Render(args) => crate::ops_execution_runtime::run_ops_render(&args),
+        OpsCommand::Install(args) => crate::ops_execution_runtime::run_ops_install(&args),
+        OpsCommand::Status(args) => crate::ops_execution_runtime::run_ops_status(&args),
+        OpsCommand::K8sPlan(common) => crate::ops_execution_runtime::run_ops_k8s_plan(&common),
+        OpsCommand::K8sApply(args) => crate::ops_execution_runtime::run_ops_k8s_apply(&args, false),
         OpsCommand::K8sDryRun(common) => {
             let args = crate::cli::OpsK8sApplyArgs {
                 common: common.clone(),
                 apply: true,
             };
-            crate::ops_runtime_execution::run_ops_k8s_apply(&args, true)
+            crate::ops_execution_runtime::run_ops_k8s_apply(&args, true)
         }
         OpsCommand::K8sConformance(common) => {
-            crate::ops_runtime_execution::run_ops_k8s_conformance(&common)
+            crate::ops_execution_runtime::run_ops_k8s_conformance(&common)
         }
-        OpsCommand::K8sWait(args) => crate::ops_runtime_execution::run_ops_k8s_wait(&args),
-        OpsCommand::K8sLogs(args) => crate::ops_runtime_execution::run_ops_k8s_logs(&args),
+        OpsCommand::K8sWait(args) => crate::ops_execution_runtime::run_ops_k8s_wait(&args),
+        OpsCommand::K8sLogs(args) => crate::ops_execution_runtime::run_ops_k8s_logs(&args),
         OpsCommand::K8sPortForward(args) => {
-            crate::ops_runtime_execution::run_ops_k8s_port_forward(&args)
+            crate::ops_execution_runtime::run_ops_k8s_port_forward(&args)
         }
         OpsCommand::LoadPlan { suite, common } => {
-            crate::ops_runtime_execution::run_ops_load_plan(&common, &suite)
+            crate::ops_execution_runtime::run_ops_load_plan(&common, &suite)
         }
         OpsCommand::LoadRun { suite, common } => {
-            crate::ops_runtime_execution::run_ops_load_run(&common, &suite)
+            crate::ops_execution_runtime::run_ops_load_run(&common, &suite)
         }
         OpsCommand::LoadReport { suite, common } => {
-            crate::ops_runtime_execution::run_ops_load_report(&common, &suite, None)
+            crate::ops_execution_runtime::run_ops_load_report(&common, &suite, None)
         }
         OpsCommand::ListProfiles(common) => {
             let repo_root = resolve_repo_root(common.repo_root.clone())?;
