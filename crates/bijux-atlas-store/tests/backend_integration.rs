@@ -2,7 +2,9 @@
 
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
-use bijux_atlas_store::{ArtifactStore, HttpReadonlyStore, LocalFsStore};
+use bijux_atlas_store::{ArtifactStore, LocalFsStore};
+#[cfg(feature = "backend-s3")]
+use bijux_atlas_store::HttpReadonlyStore;
 use tempfile::tempdir;
 
 fn dataset() -> DatasetId {
@@ -57,6 +59,7 @@ fn local_backend_roundtrip_is_hermetic() {
 }
 
 #[test]
+#[cfg(feature = "backend-s3")]
 fn http_backend_reads_from_hermetic_cached_objects() {
     let cache = tempdir().expect("cache");
     let ds = dataset();

@@ -12,10 +12,12 @@ mod retry;
 
 #[cfg(feature = "backend-s3")]
 pub use backend::S3LikeStore;
+#[cfg(feature = "backend-s3")]
+pub use backend::HttpReadonlyStore;
 pub use backend::{
-    enforce_dataset_immutability, ArtifactStore, HttpReadonlyStore, LocalFsStore,
-    NoopInstrumentation, PublishLockGuard, StoreError, StoreErrorCode, StoreInstrumentation,
-    StoreMetrics, StoreMetricsCollector,
+    enforce_dataset_immutability, ArtifactStore, LocalFsStore, NoopInstrumentation,
+    PublishLockGuard, StoreError, StoreErrorCode, StoreInstrumentation, StoreMetrics,
+    StoreMetricsCollector,
 };
 pub use catalog::{
     canonical_catalog_json, merge_catalogs, sorted_catalog_entries, validate_catalog_strict,

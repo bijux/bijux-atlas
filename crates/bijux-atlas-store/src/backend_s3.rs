@@ -270,32 +270,6 @@ impl ArtifactStore for S3LikeStore {
     }
 }
 
-pub fn enforce_dataset_immutability(root: &Path, dataset: &DatasetId) -> Result<(), StoreError> {
-    let paths = dataset_artifact_paths(root, dataset);
-    if paths.manifest.exists() || paths.sqlite.exists() {
-        return Err(StoreError::new(
-            StoreErrorCode::Conflict,
-            "dataset already published; immutable artifacts must not be overwritten",
-        ));
-    }
-    Ok(())
-}
-
-fn write_and_sync(path: &Path, bytes: &[u8]) -> Result<(), StoreError> {
-    let mut file =
-        File::create(path).map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.write_all(bytes)
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    file.sync_all()
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))
-}
-
-fn sync_dir(dir: &Path) -> Result<(), StoreError> {
-    let f = File::open(dir).map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))?;
-    f.sync_all()
-        .map_err(|e| StoreError::new(StoreErrorCode::Io, e.to_string()))
-}
-
 fn handle_etag_response(
     response: Response,
     key: &str,

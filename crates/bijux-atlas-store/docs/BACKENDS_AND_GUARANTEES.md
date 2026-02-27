@@ -2,8 +2,8 @@
 
 ## Supported Backends
 
-- `LocalFsStore` (`backends::local`)
-- `HttpReadonlyStore` (`backends::http`)
+- `LocalFsStore` (`backends::local`, feature `backend-local`, default)
+- `HttpReadonlyStore` (`backends::http`, feature `backend-s3`)
 - `S3LikeStore` (`backends::s3`, feature `backend-s3`)
 
 ## Guarantees

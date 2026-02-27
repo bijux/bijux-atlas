@@ -7,7 +7,7 @@ Stable exports:
 - Traits: `StoreRead`, `StoreWrite`, `StoreAdmin`, `ArtifactStore`
 - Contract types: `StorePath`, `ArtifactRef`, `CatalogRef`
 - Trait: `ArtifactStore`
-- Backends: `LocalFsStore`, `HttpReadonlyStore`, `S3LikeStore` (`backend-s3`)
+- Backends: `LocalFsStore` (`backend-local`, default), `HttpReadonlyStore` (`backend-s3`), `S3LikeStore` (`backend-s3`)
 - Retry/config: `RetryPolicy`
 - Errors: `StoreError`, `StoreErrorCode`
 - Instrumentation: `StoreInstrumentation`, `NoopInstrumentation`, `StoreMetrics`

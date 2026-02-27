@@ -5,9 +5,11 @@ use bijux_atlas_model::{
     ArtifactChecksums, ArtifactManifest, Catalog, CatalogEntry, DatasetId, ManifestStats,
 };
 use bijux_atlas_store::{
-    dataset_artifact_paths, manifest_lock_path, merge_catalogs, ArtifactStore, HttpReadonlyStore,
-    LocalFsStore, S3LikeStore, StoreErrorCode, StoreMetricsCollector,
+    dataset_artifact_paths, manifest_lock_path, merge_catalogs, ArtifactStore, LocalFsStore,
+    StoreErrorCode, StoreMetricsCollector,
 };
+#[cfg(feature = "backend-s3")]
+use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
 use std::fs;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
@@ -131,6 +133,7 @@ fn local_publish_rejects_checksum_mismatch_without_finalizing() {
 }
 
 #[test]
+#[cfg(feature = "backend-s3")]
 fn cached_only_mode_never_touches_network() {
     let root = tempdir().expect("tempdir");
     let store = HttpReadonlyStore::new("http://127.0.0.1:9".to_string())
@@ -360,6 +363,7 @@ fn spawn_store_http_server() -> (String, Arc<AtomicUsize>, thread::JoinHandle<()
 }
 
 #[test]
+#[cfg(feature = "backend-s3")]
 fn s3_store_uses_etag_cache_and_handles_304_for_catalog() {
     let (base, catalog_requests, handle) = spawn_store_http_server();
 
@@ -498,6 +502,7 @@ fn fuzzish_checksum_failures_never_leave_partial_files() {
 }
 
 #[test]
+#[cfg(feature = "backend-s3")]
 fn s3_cached_only_mode_is_conformance_compatible() {
     let store = S3LikeStore::new("http://127.0.0.1:9".to_string(), "atlas".to_string())
         .with_cache(tempdir().expect("cache").path().to_path_buf(), true);
@@ -508,6 +513,7 @@ fn s3_cached_only_mode_is_conformance_compatible() {
 }
 
 #[test]
+#[cfg(feature = "backend-s3")]
 fn http_store_blocks_private_ssrf_targets() {
     let store = HttpReadonlyStore::new("http://127.0.0.1:8080".to_string());
     let err = store

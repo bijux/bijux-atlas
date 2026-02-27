@@ -3,22 +3,29 @@
 use crate::catalog::validate_catalog_strict;
 use crate::manifest::{verify_expected_sha256, ManifestLock};
 use crate::paths::{
-    dataset_artifact_paths, dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key,
-    dataset_sqlite_key, manifest_lock_path, publish_lock_path, CATALOG_FILE,
+    dataset_artifact_paths, manifest_lock_path, publish_lock_path, CATALOG_FILE,
 };
+#[cfg(feature = "backend-s3")]
+use crate::paths::{dataset_key_prefix, dataset_manifest_key, dataset_manifest_lock_key, dataset_sqlite_key};
+#[cfg(feature = "backend-s3")]
 use crate::retry::{BackoffPolicy, RetryPolicy};
 use bijux_atlas_core::ErrorCode;
 use bijux_atlas_model::{ArtifactManifest, Catalog, DatasetId};
+#[cfg(feature = "backend-s3")]
 use reqwest::blocking::{Client, Response};
+#[cfg(feature = "backend-s3")]
 use reqwest::header::{ETAG, IF_NONE_MATCH};
 use std::collections::BTreeMap;
+#[cfg(feature = "backend-s3")]
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
-use std::fs::{self, File, OpenOptions};
+use std::fs::{self, OpenOptions};
 use std::io::Write;
+#[cfg(feature = "backend-s3")]
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
+#[cfg(feature = "backend-s3")]
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -353,6 +360,7 @@ impl ArtifactStore for LocalFsStore {
 }
 
 #[derive(Clone)]
+#[cfg(feature = "backend-s3")]
 pub struct HttpReadonlyStore {
     pub base_url: String,
     pub cached_only_mode: bool,
@@ -364,12 +372,14 @@ pub struct HttpReadonlyStore {
 }
 
 #[derive(Debug, Default, Clone)]
+#[cfg(feature = "backend-s3")]
 struct CatalogCacheState {
     last_fetch: Option<Instant>,
     backoff_until: Option<Instant>,
     consecutive_errors: u32,
 }
 
+#[cfg(feature = "backend-s3")]
 impl HttpReadonlyStore {
     #[must_use]
     pub fn new(base_url: String) -> Self {
@@ -475,6 +485,7 @@ impl HttpReadonlyStore {
     }
 }
 
+#[cfg(feature = "backend-s3")]
 impl ArtifactStore for HttpReadonlyStore {
     fn list_datasets(&self) -> Result<Vec<DatasetId>, StoreError> {
         if let Ok(state) = self.catalog_state.lock() {

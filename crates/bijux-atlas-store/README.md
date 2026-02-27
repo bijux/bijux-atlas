@@ -20,8 +20,8 @@ Storage contracts and backend adapters for atlas artifacts.
 
 ## Backends
 
-- local filesystem: `backends::local::LocalFsStore`
-- HTTP read-only: `backends::http::HttpReadonlyStore`
+- local filesystem: `backends::local::LocalFsStore` (feature `backend-local`, default)
+- HTTP read-only: `backends::http::HttpReadonlyStore` (feature `backend-s3`)
 - S3-compatible: `backends::s3::S3LikeStore` (feature `backend-s3`)
 
 ## Stable API Guidance
