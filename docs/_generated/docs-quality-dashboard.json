@@ -19,7 +19,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `COMMAND_SURFACE` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 27 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRIBUTING` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `ERRORS` appears 3 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `ERRORS` appears 4 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `ERROR_TAXONOMY` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `EXAMPLES` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `EXIT_CODES` appears 2 times",
@@ -33,6 +33,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 210 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `REQUIRED_FILES` appears 12 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `SECURITY` appears 5 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `START_HERE` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `TESTING` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `VERSIONING` appears 11 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `ValidatingConfiguration` appears 2 times",
@@ -147,6 +148,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-server/docs/contracts.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-server/docs/effect-boundary-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-server/docs/failure-modes.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-server/src/cache/ARCHITECTURE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-store/ARCHITECTURE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-atlas-store/BENCHMARKS.md` has no inbound doc links",
@@ -162,7 +164,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/BENCHMARKS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/COMMAND_SURFACE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/CONTRACT.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/ERRORS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/ERROR_TAXONOMY.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/EXAMPLES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/TESTING.md` has no inbound doc links",
@@ -183,6 +185,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/PROJECT_DESCRIPTION_SNIPPET.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/PROJECT_IDENTITY.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/START_HERE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/STYLE.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_lint/duplicate-topics.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/_lint/observability-docs.md` has no inbound doc links",
@@ -238,6 +241,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/development/tooling/dev-atlas-ops.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/development/tooling/make-workflow-governance-entrypoints.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/docs/checks.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/engineering/lints.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/examples/catalog-example.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/examples/curl-requests.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/DOCS_FRONT_MATTER.md` has no inbound doc links",
@@ -425,7 +429,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 0,
-    "registered": 1084,
-    "warnings": 465
+    "registered": 1087,
+    "warnings": 469
   }
 }

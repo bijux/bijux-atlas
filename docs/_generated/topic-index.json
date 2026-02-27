@@ -207,9 +207,6 @@
     "COST_ESTIMATOR": [
       "crates/bijux-atlas-query/docs/COST_ESTIMATOR.md"
     ],
-    "CRATE_CONVERGENCE_CHECKPOINT": [
-      "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md"
-    ],
     "CRATE_INDEX": [
       "docs/root/CRATE_INDEX.md"
     ],
@@ -294,6 +291,7 @@
     "ERRORS": [
       "crates/bijux-atlas-api/docs/ERRORS.md",
       "crates/bijux-atlas-core/docs/ERRORS.md",
+      "crates/bijux-dev-atlas/ERRORS.md",
       "ops/ERRORS.md"
     ],
     "ERROR_TAXONOMY": [
@@ -951,6 +949,7 @@
       "docs/root/STABILITY_GUARANTEES.md"
     ],
     "START_HERE": [
+      "docs/START_HERE.md",
       "docs/root/START_HERE.md"
     ],
     "STYLE": [
@@ -1506,6 +1505,9 @@
     "limits": [
       "docs/reference/security/limits.md"
     ],
+    "lints": [
+      "docs/engineering/lints.md"
+    ],
     "load-failure-triage": [
       "docs/operations/runbooks/load-failure-triage.md"
     ],
@@ -2014,6 +2016,9 @@
     ],
     "runtime-policy": [
       "docs/operations/load/runtime-policy.md"
+    ],
+    "runtime-startup-config": [
+      "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md"
     ],
     "rust-toolchain": [
       "docs/development/tooling/rust-toolchain.md"

@@ -450,6 +450,7 @@ License: Apache-2.0
 | `crates/bijux-atlas-server/docs/effect-boundary-map.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-server/docs/effects.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-server/docs/failure-modes.md` | `concept` | `bijux-atlas-server` | `stable` |
+| `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-server/docs/public-api.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-atlas-server/docs/testing.md` | `concept` | `bijux-atlas-server` | `stable` |
 | `crates/bijux-atlas-server/src/cache/ARCHITECTURE.md` | `concept` | `docs-governance` | `stable` |
@@ -481,7 +482,7 @@ License: Apache-2.0
 | `crates/bijux-dev-atlas/BENCHMARKS.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/COMMAND_SURFACE.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/CONTRACT.md` | `concept` | `bijux-dev-atlas` | `stable` |
-| `crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md` | `concept` | `bijux-dev-atlas maintainers` | `stable` |
+| `crates/bijux-dev-atlas/ERRORS.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/ERROR_TAXONOMY.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/EXAMPLES.md` | `concept` | `bijux-dev-atlas` | `stable` |
 | `crates/bijux-dev-atlas/README.md` | `concept` | `docs-governance` | `stable` |
@@ -513,6 +514,7 @@ License: Apache-2.0
 | `docs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_DESCRIPTION_SNIPPET.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_IDENTITY.md` | `concept` | `docs-governance` | `stable` |
+| `docs/START_HERE.md` | `concept` | `docs-governance` | `stable` |
 | `docs/STYLE.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_assets/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_assets/diagrams/INDEX.md` | `concept` | `docs-governance` | `stable` |
@@ -665,6 +667,7 @@ License: Apache-2.0
 | `docs/development/tooling/tools.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/tooling/versioning-alignment.md` | `concept` | `docs-governance` | `stable` |
 | `docs/docs/checks.md` | `concept` | `docs-governance` | `stable` |
+| `docs/engineering/lints.md` | `concept` | `docs-governance` | `stable` |
 | `docs/examples/INDEX.md` | `concept` | `bijux-atlas-docs` | `stable` |
 | `docs/examples/catalog-example.md` | `concept` | `bijux-atlas-store` | `stable` |
 | `docs/examples/curl-requests.md` | `concept` | `bijux-atlas-api` | `stable` |

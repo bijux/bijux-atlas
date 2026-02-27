@@ -6599,6 +6599,20 @@
     {
       "keywords": [
         "bijux-atlas-server",
+        "generated",
+        "runtime-startup-config"
+      ],
+      "path": "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md",
+      "tags": [
+        "bijux-atlas-server",
+        "generated",
+        "runtime-startup-config"
+      ],
+      "topic": "runtime-startup-config"
+    },
+    {
+      "keywords": [
+        "bijux-atlas-server",
         "public-api"
       ],
       "path": "crates/bijux-atlas-server/docs/public-api.md",
@@ -6979,14 +6993,14 @@
     {
       "keywords": [
         "bijux-dev-atlas",
-        "crate-convergence-checkpoint"
+        "errors"
       ],
-      "path": "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md",
+      "path": "crates/bijux-dev-atlas/ERRORS.md",
       "tags": [
         "bijux-dev-atlas",
-        "crate-convergence-checkpoint"
+        "errors"
       ],
-      "topic": "CRATE_CONVERGENCE_CHECKPOINT"
+      "topic": "ERRORS"
     },
     {
       "keywords": [
@@ -7397,6 +7411,16 @@
         "project-identity"
       ],
       "topic": "PROJECT_IDENTITY"
+    },
+    {
+      "keywords": [
+        "start-here"
+      ],
+      "path": "docs/START_HERE.md",
+      "tags": [
+        "start-here"
+      ],
+      "topic": "START_HERE"
     },
     {
       "keywords": [
@@ -9281,6 +9305,18 @@
         "checks"
       ],
       "topic": "checks"
+    },
+    {
+      "keywords": [
+        "engineering",
+        "lints"
+      ],
+      "path": "docs/engineering/lints.md",
+      "tags": [
+        "engineering",
+        "lints"
+      ],
+      "topic": "lints"
     },
     {
       "keywords": [

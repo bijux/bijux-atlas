@@ -1,6 +1,6 @@
 {
   "rows": [
-    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-dev-atlas` has non-canonical root doc `CRATE_CONVERGENCE_CHECKPOINT.md`",
+    "CRATE_DOC_ALLOWED_TYPE_WARN: `bijux-dev-atlas` has non-canonical root doc `ERRORS.md`",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `caching.md` appears across crates: bijux-atlas-server, bijux-atlas-store",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `cli_command_list.md` appears across crates: bijux-atlas-cli, bijux-dev-atlas",
     "CRATE_DOC_DUPLICATE_CONCEPT_WARN: `contracts.md` appears across crates: bijux-atlas-api, bijux-atlas-policies, bijux-atlas-server, bijux-atlas-store",

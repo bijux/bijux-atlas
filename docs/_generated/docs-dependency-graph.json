@@ -2233,6 +2233,11 @@
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
+      "from": "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md"
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "doc_type": "concept",
       "from": "crates/bijux-atlas-server/docs/public-api.md"
     },
     {
@@ -2388,7 +2393,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md"
+      "from": "crates/bijux-dev-atlas/ERRORS.md"
     },
     {
       "crate": null,
@@ -2544,6 +2549,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/PROJECT_IDENTITY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/START_HERE.md"
     },
     {
       "crate": null,
@@ -3304,6 +3314,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/docs/checks.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/engineering/lints.md"
     },
     {
       "crate": null,

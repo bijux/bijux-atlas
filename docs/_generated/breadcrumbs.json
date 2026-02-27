@@ -4273,6 +4273,16 @@
         "crates",
         "crates/bijux-atlas-server",
         "crates/bijux-atlas-server/docs",
+        "crates/bijux-atlas-server/docs/generated",
+        "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md"
+      ],
+      "path": "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md"
+    },
+    {
+      "breadcrumbs": [
+        "crates",
+        "crates/bijux-atlas-server",
+        "crates/bijux-atlas-server/docs",
         "crates/bijux-atlas-server/docs/public-api.md"
       ],
       "path": "crates/bijux-atlas-server/docs/public-api.md"
@@ -4540,9 +4550,9 @@
       "breadcrumbs": [
         "crates",
         "crates/bijux-dev-atlas",
-        "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md"
+        "crates/bijux-dev-atlas/ERRORS.md"
       ],
-      "path": "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md"
+      "path": "crates/bijux-dev-atlas/ERRORS.md"
     },
     {
       "breadcrumbs": [
@@ -4818,6 +4828,13 @@
         "docs/PROJECT_IDENTITY.md"
       ],
       "path": "docs/PROJECT_IDENTITY.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/START_HERE.md"
+      ],
+      "path": "docs/START_HERE.md"
     },
     {
       "breadcrumbs": [
@@ -6075,6 +6092,14 @@
         "docs/docs/checks.md"
       ],
       "path": "docs/docs/checks.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/engineering",
+        "docs/engineering/lints.md"
+      ],
+      "path": "docs/engineering/lints.md"
     },
     {
       "breadcrumbs": [

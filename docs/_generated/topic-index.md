@@ -51,7 +51,6 @@
 | `CONTROL_PLANE` | `ops/CONTROL_PLANE.md` |
 | `CONTROL_PLANE_OVERVIEW` | `docs/root/CONTROL_PLANE_OVERVIEW.md` |
 | `COST_ESTIMATOR` | `crates/bijux-atlas-query/docs/COST_ESTIMATOR.md` |
-| `CRATE_CONVERGENCE_CHECKPOINT` | `crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md` |
 | `CRATE_INDEX` | `docs/root/CRATE_INDEX.md` |
 | `CustomRules` | `configs/docs/node_modules/markdownlint/doc/CustomRules.md` |
 | `DATA_MODEL` | `crates/bijux-atlas-model/DATA_MODEL.md` |
@@ -79,7 +78,7 @@
 | `END_TO_END_INVARIANTS` | `ops/e2e/END_TO_END_INVARIANTS.md` |
 | `ENGINE_CONTRACT` | `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` |
 | `ENSEMBL_LAYOUT` | `crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md` |
-| `ERRORS` | `crates/bijux-atlas-api/docs/ERRORS.md, crates/bijux-atlas-core/docs/ERRORS.md, ops/ERRORS.md` |
+| `ERRORS` | `crates/bijux-atlas-api/docs/ERRORS.md, crates/bijux-atlas-core/docs/ERRORS.md, crates/bijux-dev-atlas/ERRORS.md, ops/ERRORS.md` |
 | `ERROR_TAXONOMY` | `crates/bijux-atlas-api/ERROR_TAXONOMY.md, crates/bijux-atlas-cli/ERROR_TAXONOMY.md, crates/bijux-atlas-core/ERROR_TAXONOMY.md, crates/bijux-atlas-ingest/ERROR_TAXONOMY.md, crates/bijux-atlas-model/ERROR_TAXONOMY.md, crates/bijux-atlas-policies/ERROR_TAXONOMY.md, crates/bijux-atlas-query/ERROR_TAXONOMY.md, crates/bijux-atlas-server/ERROR_TAXONOMY.md, crates/bijux-atlas-store/ERROR_TAXONOMY.md, crates/bijux-dev-atlas/ERROR_TAXONOMY.md` |
 | `ESCALATION_MAPPING` | `ops/ESCALATION_MAPPING.md` |
 | `EVIDENCE_COMPLETENESS_CHECKLIST` | `ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md` |
@@ -187,7 +186,7 @@
 | `SLOS` | `docs/operations/slo/SLOS.md` |
 | `SSOT` | `ops/SSOT.md` |
 | `STABILITY_GUARANTEES` | `docs/root/STABILITY_GUARANTEES.md` |
-| `START_HERE` | `docs/root/START_HERE.md` |
+| `START_HERE` | `docs/START_HERE.md, docs/root/START_HERE.md` |
 | `STYLE` | `docs/STYLE.md` |
 | `SUPPLY_CHAIN_MODEL` | `ops/SUPPLY_CHAIN_MODEL.md` |
 | `TARGETS_REGISTRY` | `makefiles/TARGETS_REGISTRY.md` |
@@ -353,6 +352,7 @@
 | `layout-shell-migration` | `docs/architecture/layout-shell-migration.md` |
 | `lifecycle` | `docs/reference/datasets/lifecycle.md` |
 | `limits` | `docs/reference/security/limits.md` |
+| `lints` | `docs/engineering/lints.md` |
 | `load-failure-triage` | `docs/operations/runbooks/load-failure-triage.md` |
 | `local-cluster-setup` | `docs/quickstart/local-cluster-setup.md` |
 | `local-noise` | `docs/development/local-noise.md` |
@@ -511,6 +511,7 @@
 | `root-symlink-shims` | `configs/repo/root-symlink-shims.md` |
 | `runbook-dashboard-alert-map` | `docs/operations/observability/runbook-dashboard-alert-map.md` |
 | `runtime-policy` | `docs/operations/load/runtime-policy.md` |
+| `runtime-startup-config` | `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md` |
 | `rust-toolchain` | `docs/development/tooling/rust-toolchain.md` |
 | `schema` | `docs/operations/ops-system/schema.md` |
 | `schema-index` | `docs/operations/reference/schema-index.md, ops/schema/generated/schema-index.md` |

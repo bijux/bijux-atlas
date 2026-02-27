@@ -10170,6 +10170,28 @@
       "doc_version": "v1",
       "keywords": [
         "bijux-atlas-server",
+        "generated",
+        "runtime-startup-config"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "bijux-atlas-server",
+        "generated",
+        "runtime-startup-config"
+      ],
+      "topic": "runtime-startup-config"
+    },
+    {
+      "crate": "bijux-atlas-server",
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "bijux-atlas-server",
         "public-api"
       ],
       "last_reviewed": "2026-02-25",
@@ -10798,19 +10820,19 @@
       "doc_version": "v1",
       "keywords": [
         "bijux-dev-atlas",
-        "crate-convergence-checkpoint"
+        "errors"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "bijux-dev-atlas maintainers",
-      "path": "crates/bijux-dev-atlas/CRATE_CONVERGENCE_CHECKPOINT.md",
+      "owner": "bijux-dev-atlas",
+      "path": "crates/bijux-dev-atlas/ERRORS.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
         "bijux-dev-atlas",
-        "crate-convergence-checkpoint"
+        "errors"
       ],
-      "topic": "CRATE_CONVERGENCE_CHECKPOINT"
+      "topic": "ERRORS"
     },
     {
       "crate": null,
@@ -11469,6 +11491,24 @@
         "project-identity"
       ],
       "topic": "PROJECT_IDENTITY"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "start-here"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/START_HERE.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "start-here"
+      ],
+      "topic": "START_HERE"
     },
     {
       "crate": null,
@@ -14569,6 +14609,26 @@
         "checks"
       ],
       "topic": "checks"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "engineering",
+        "lints"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/engineering/lints.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "engineering",
+        "lints"
+      ],
+      "topic": "lints"
     },
     {
       "crate": null,
