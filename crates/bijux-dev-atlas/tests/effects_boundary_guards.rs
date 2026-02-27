@@ -68,6 +68,8 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/adapters/fs.rs",
             "src/adapters/mod.rs",
             "src/adapters/workspace_root.rs",
+            "src/cli/dispatch.rs",
+            "src/commands/configs.rs",
             "src/commands/docs/runtime/reference_page_generators.rs",
             "src/commands/ops/execution_runtime_mod/tests.rs",
             "src/commands/ops/execution_runtime_mod/install_status.rs",
@@ -76,9 +78,14 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/commands/ops/support/domain_support.rs",
             "src/commands/ops/support/manifests.rs",
             "src/commands/ops/support/tools.rs",
+            "src/contracts/mod.rs",
+            "src/contracts/docker/mod.rs",
+            "src/contracts/docker/contracts_static_checks.inc.rs",
+            "src/contracts/docker/contracts_tests.inc.rs",
             "src/core/checks/ops/ops/inventory_and_artifact_checks.rs",
             "src/core/ops_inventory/summary_and_fs_scan.rs",
             "src/runtime_entry.inc.rs",
+            "src/runtime_entry_checks_surface.inc.rs",
         ],
     );
 }
@@ -90,7 +97,10 @@ fn process_calls_are_constrained_to_explicit_allowlist() {
         &[
             "src/adapters/process.rs",
             "src/adapters/world.rs",
+            "src/cli/dispatch.rs",
+            "src/commands/control_plane_docker_runtime_helpers.inc.rs",
             "src/commands/docs/runtime/reference_page_generators.rs",
+            "src/contracts/docker/mod.rs",
             "src/runtime_entry.inc.rs",
         ],
     );

@@ -141,12 +141,17 @@ fn src_root_contains_only_canonical_module_dirs_and_entry_files() {
         "adapters".to_string(),
         "cli".to_string(),
         "commands".to_string(),
+        "contracts".to_string(),
         "core".to_string(),
         "lib.rs".to_string(),
         "main.rs".to_string(),
         "model".to_string(),
         "policies".to_string(),
         "ports".to_string(),
+        "runtime_entry.inc.rs".to_string(),
+        "runtime_entry_checks.inc.rs".to_string(),
+        "runtime_entry_checks_governance.inc.rs".to_string(),
+        "runtime_entry_checks_surface.inc.rs".to_string(),
     ];
     assert_eq!(
         names, expected,
