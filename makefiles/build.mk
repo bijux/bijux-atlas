@@ -1,7 +1,9 @@
 # Scope: thin build wrappers delegating to the Rust control plane.
 
 build: ## Build required binaries into artifacts/dist/bin
-	@$(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json
+	@printf '%s\n' "run: $(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json"
+	@mkdir -p $(ARTIFACT_ROOT)/build/$(RUN_ID)
+	@$(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json | tee $(ARTIFACT_ROOT)/build/$(RUN_ID)/report.json >/dev/null
 
 build-release: ## Build release bundle inputs (delegates to build bin contract)
 	@$(DEV_ATLAS) build bin --allow-subprocess --allow-write --format json

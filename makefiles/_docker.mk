@@ -1,7 +1,9 @@
 DOCKER_RUN_ID ?= docker_run
 
 docker: ## Canonical docker gate
-	@$(DEV_ATLAS) docker validate --format json
+	@printf '%s\n' "run: $(DEV_ATLAS) docker validate --format json"
+	@mkdir -p $(ARTIFACT_ROOT)/docker/$(RUN_ID)
+	@$(DEV_ATLAS) docker validate --format json | tee $(ARTIFACT_ROOT)/docker/$(RUN_ID)/report.json >/dev/null
 
 docker-build: ## Build docker images via dev-atlas wrapper
 	@$(DEV_ATLAS) docker build --allow-subprocess --run-id $(DOCKER_RUN_ID) --format json

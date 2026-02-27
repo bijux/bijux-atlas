@@ -22,10 +22,14 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 	@cargo llvm-cov report
 
 fmt: ## Run cargo fmt --check
-	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml
+	@printf '%s\n' "run: cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml"
+	@mkdir -p $(ARTIFACT_ROOT)/fmt/$(RUN_ID)
+	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml | tee $(ARTIFACT_ROOT)/fmt/$(RUN_ID)/report.txt >/dev/null
 
 lint: ## Run cargo clippy with warnings denied
-	@CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+	@printf '%s\n' "run: cargo clippy --workspace --all-targets --all-features --locked -D warnings"
+	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
+	@CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked -- -D warnings | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt >/dev/null
 
 lint-policy-report: ## Emit effective lint policy report artifact
 	@mkdir -p artifacts/lint
@@ -60,7 +64,9 @@ test: ## Run workspace tests with cargo nextest
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}"
+	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default}"
+	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
+	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" | tee $(ARTIFACT_ROOT)/test/$(RUN_ID)/report.txt >/dev/null
 
 test-slow: ## Run only slow_ tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
