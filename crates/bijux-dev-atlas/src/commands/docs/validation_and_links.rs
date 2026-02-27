@@ -74,12 +74,15 @@ pub(crate) fn docs_validate_payload(
         }
     }
     let mut body_hashes = BTreeMap::<String, Vec<String>>::new();
+    let mut docs_pages = BTreeSet::<String>::new();
+    let mut indexed_links = BTreeSet::<String>::new();
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file
             .strip_prefix(&ctx.docs_root)
             .unwrap_or(&file)
             .display()
             .to_string();
+        docs_pages.insert(rel.clone());
         let depth = rel.split('/').count();
         if depth > 4 {
             issues.errors.push(format!(
@@ -87,6 +90,27 @@ pub(crate) fn docs_validate_payload(
             ));
         }
         let text = fs::read_to_string(&file).unwrap_or_default();
+        if rel.ends_with("INDEX.md") || rel == "INDEX.md" || rel == "index.md" {
+            let link_re = Regex::new(r"\[[^\]]+\]\(([^)]+)\)").map_err(|e| e.to_string())?;
+            for cap in link_re.captures_iter(&text) {
+                let target = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
+                if target.starts_with("http://")
+                    || target.starts_with("https://")
+                    || target.starts_with('#')
+                    || target.starts_with("mailto:")
+                {
+                    continue;
+                }
+                let target_file = target.split('#').next().unwrap_or_default().trim();
+                if target_file.is_empty() {
+                    continue;
+                }
+                let resolved = file.parent().unwrap_or(&ctx.docs_root).join(target_file);
+                if let Ok(rel_target) = resolved.strip_prefix(&ctx.docs_root) {
+                    indexed_links.insert(rel_target.display().to_string());
+                }
+            }
+        }
         if text.contains("TODO") || text.contains("TBD") {
             issues.errors.push(format!(
                 "DOCS_TODO_ERROR: `{rel}` contains TODO/TBD marker"
@@ -152,6 +176,21 @@ pub(crate) fn docs_validate_payload(
             issues.warnings.push(format!(
                 "DOCS_DUPLICATION_WARN: duplicated content across {}",
                 paths.join(", ")
+            ));
+        }
+    }
+    for page in docs_pages {
+        if page == "INDEX.md"
+            || page == "index.md"
+            || page.ends_with("/INDEX.md")
+            || page.starts_with("_generated/")
+            || page.starts_with("_drafts/")
+        {
+            continue;
+        }
+        if !indexed_links.contains(&page) {
+            issues.errors.push(format!(
+                "DOCS_INDEX_ERROR: docs page `{page}` is not linked from any docs/**/INDEX.md"
             ));
         }
     }
