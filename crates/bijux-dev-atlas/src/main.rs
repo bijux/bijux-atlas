@@ -17,12 +17,12 @@ mod docs_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
-#[path = "commands/ops_support.rs"]
-mod ops_support;
 #[path = "commands/ops.rs"]
 mod ops_commands;
 #[path = "commands/ops/execution_runtime.rs"]
 mod ops_execution_runtime;
+#[path = "commands/ops/support.rs"]
+mod ops_support;
 
 use std::fs;
 use std::io::{self, Write};
@@ -61,11 +61,11 @@ pub(crate) use docs_commands::{
     docs_context, docs_links_payload, docs_validate_payload, walk_files_local,
 };
 pub(crate) use docs_commands::{docs_lint_payload, run_docs_command};
+pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
 pub(crate) use ops_support::{
     OpsCommandError, OpsFs, OpsProcess, StackProfile, StackProfiles, SurfacesInventory,
     ToolDefinition, ToolchainInventory,
 };
-pub(crate) use ops_commands::{emit_payload, normalize_tool_version_with_regex, run_ops_command};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_yaml::Value as YamlValue;

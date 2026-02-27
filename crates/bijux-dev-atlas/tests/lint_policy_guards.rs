@@ -35,8 +35,8 @@ fn no_unwrap_or_expect_in_non_test_dev_atlas_sources() {
         "crates/bijux-dev-atlas/src/core/logging.rs",
         "crates/bijux-dev-atlas/src/core/ops_inventory/summary_and_fs_scan.rs",
         "crates/bijux-dev-atlas/src/model/mod.rs",
-        "crates/bijux-dev-atlas/src/commands/ops_support/manifests.rs",
-        "crates/bijux-dev-atlas/src/commands/ops_support/tools.rs",
+        "crates/bijux-dev-atlas/src/commands/ops/support/manifests.rs",
+        "crates/bijux-dev-atlas/src/commands/ops/support/tools.rs",
     ]
     .into_iter()
     .collect();
