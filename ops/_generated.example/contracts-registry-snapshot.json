@@ -243,6 +243,56 @@
       "title": "e2e realdata snapshot contract"
     },
     {
+      "id": "OPS-E2E-005",
+      "tests": [
+        {
+          "test_id": "ops.e2e.taxonomy_covers_scenarios",
+          "title": "taxonomy categories cover canonical scenario classification"
+        }
+      ],
+      "title": "e2e taxonomy coverage contract"
+    },
+    {
+      "id": "OPS-E2E-006",
+      "tests": [
+        {
+          "test_id": "ops.e2e.reproducibility_policy_enforced",
+          "title": "reproducibility policy checks and deterministic summary ordering are enforced"
+        }
+      ],
+      "title": "e2e reproducibility enforcement contract"
+    },
+    {
+      "id": "OPS-E2E-007",
+      "tests": [
+        {
+          "test_id": "ops.e2e.coverage_matrix_deterministic",
+          "title": "coverage matrix rows and coverage sets are complete and deterministic"
+        }
+      ],
+      "title": "e2e coverage matrix determinism contract"
+    },
+    {
+      "id": "OPS-E2E-008",
+      "tests": [
+        {
+          "test_id": "ops.e2e.realdata_registry_and_snapshots_valid",
+          "title": "realdata scenarios and snapshots are structurally valid and runnable"
+        }
+      ],
+      "title": "e2e realdata scenario registry contract"
+    },
+    {
+      "id": "OPS-E2E-009",
+      "tests": [
+        {
+          "test_id": "ops.e2e.no_stray_e2e_artifacts",
+          "title": "e2e root contains only declared artifact directories and files"
+        }
+      ],
+      "title": "e2e surface artifact boundary contract"
+    },
+    {
       "id": "OPS-E2E-E-001",
       "tests": [
         {

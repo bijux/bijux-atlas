@@ -2,37 +2,37 @@
   "schema_version": 1,
   "rows": [
     {
-      "scenario_id": "smoke",
-      "covers": [
-        "stack",
-        "observe",
-        "datasets",
-        "load"
-      ]
-    },
-    {
       "scenario_id": "k8s-suite",
       "covers": [
-        "stack",
+        "k8s",
         "observe",
-        "k8s"
-      ]
-    },
-    {
-      "scenario_id": "realdata",
-      "covers": [
-        "stack",
-        "observe",
-        "datasets"
+        "stack"
       ]
     },
     {
       "scenario_id": "perf-e2e",
       "covers": [
-        "stack",
-        "observe",
         "datasets",
-        "load"
+        "load",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "realdata",
+      "covers": [
+        "datasets",
+        "observe",
+        "stack"
+      ]
+    },
+    {
+      "scenario_id": "smoke",
+      "covers": [
+        "datasets",
+        "load",
+        "observe",
+        "stack"
       ]
     }
   ],

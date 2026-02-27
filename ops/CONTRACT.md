@@ -84,6 +84,31 @@ Tests:
 Tests:
 - `ops.e2e.realdata_snapshots_schema_valid_and_pinned` (static, Pure): realdata snapshots are parseable and pinned to canonical queries
 
+#### OPS-E2E-005 e2e taxonomy coverage contract
+
+Tests:
+- `ops.e2e.taxonomy_covers_scenarios` (static, Pure): taxonomy categories cover canonical scenario classification
+
+#### OPS-E2E-006 e2e reproducibility enforcement contract
+
+Tests:
+- `ops.e2e.reproducibility_policy_enforced` (static, Pure): reproducibility policy checks and deterministic summary ordering are enforced
+
+#### OPS-E2E-007 e2e coverage matrix determinism contract
+
+Tests:
+- `ops.e2e.coverage_matrix_deterministic` (static, Pure): coverage matrix rows and coverage sets are complete and deterministic
+
+#### OPS-E2E-008 e2e realdata scenario registry contract
+
+Tests:
+- `ops.e2e.realdata_registry_and_snapshots_valid` (static, Pure): realdata scenarios and snapshots are structurally valid and runnable
+
+#### OPS-E2E-009 e2e surface artifact boundary contract
+
+Tests:
+- `ops.e2e.no_stray_e2e_artifacts` (static, Pure): e2e root contains only declared artifact directories and files
+
 #### OPS-E2E-E-001 e2e effect smoke suite contract
 
 Tests:
