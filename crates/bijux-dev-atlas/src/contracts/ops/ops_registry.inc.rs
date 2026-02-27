@@ -620,6 +620,56 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_ops_obs_e_003_alerts_load_contract,
             }],
         },
+        Contract {
+            id: ContractId("OPS-LOAD-E-001".to_string()),
+            title: "load effect k6 execution contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.effect.k6_suite_executes_contract".to_string()),
+                title: "effect lane requires at least one k6 load suite definition",
+                kind: TestKind::Subprocess,
+                run: test_ops_load_e_001_k6_suite_executes_contract,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-E-002".to_string()),
+            title: "load effect thresholds report contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.effect.thresholds_enforced_report_emitted".to_string()),
+                title: "effect lane requires thresholds contract and emitted load summary report",
+                kind: TestKind::Subprocess,
+                run: test_ops_load_e_002_thresholds_enforced_report_emitted,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-E-003".to_string()),
+            title: "load effect baseline comparison contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.effect.baseline_comparison_produced".to_string()),
+                title: "effect lane requires emitted load drift comparison report",
+                kind: TestKind::Subprocess,
+                run: test_ops_load_e_003_baseline_comparison_produced,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-E-001".to_string()),
+            title: "e2e effect smoke suite contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.effect.smoke_suite_passes_contract".to_string()),
+                title: "effect lane requires smoke suite declaration in e2e suite registry",
+                kind: TestKind::Subprocess,
+                run: test_ops_e2e_e_001_smoke_suite_passes_contract,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-E2E-E-002".to_string()),
+            title: "e2e effect realdata suite contract",
+            tests: vec![TestCase {
+                id: TestId("ops.e2e.effect.realdata_scenario_passes_contract".to_string()),
+                title: "effect lane requires non-empty realdata scenario contract set",
+                kind: TestKind::Subprocess,
+                run: test_ops_e2e_e_002_realdata_scenario_passes_contract,
+            }],
+        },
     ])
 }
 
@@ -682,6 +732,11 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-OBS-E-001" => "Effect lane contract for metrics scrape evidence input.",
         "OPS-OBS-E-002" => "Effect lane contract for trace structure evidence input.",
         "OPS-OBS-E-003" => "Effect lane contract for alert rule loading inputs.",
+        "OPS-LOAD-E-001" => "Effect lane contract for executable k6 load suite coverage.",
+        "OPS-LOAD-E-002" => "Effect lane contract for threshold enforcement and load summary emission.",
+        "OPS-LOAD-E-003" => "Effect lane contract for emitted load baseline drift comparison.",
+        "OPS-E2E-E-001" => "Effect lane contract for smoke suite declaration in e2e registry.",
+        "OPS-E2E-E-002" => "Effect lane contract for realdata scenario declaration in e2e registry.",
         _ => "No explanation registered for this contract id.",
     }
 }
