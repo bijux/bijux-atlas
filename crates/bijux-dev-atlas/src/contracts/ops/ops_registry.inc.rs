@@ -289,6 +289,46 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-INV-007".to_string()),
+            title: "inventory gates registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.gates_registry_mapped".to_string()),
+                title: "gates registry exists and maps each gate to one action id",
+                kind: TestKind::Pure,
+                run: test_ops_inv_007_gates_registry_mapped,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-008".to_string()),
+            title: "inventory drills registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.drills_registry_mapped".to_string()),
+                title: "drills registry ids map to runnable observe drill definitions",
+                kind: TestKind::Pure,
+                run: test_ops_inv_008_drills_registry_mapped,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-009".to_string()),
+            title: "inventory owners registry contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.owners_registry_complete".to_string()),
+                title: "owners registry exists and includes all ops domain directories",
+                kind: TestKind::Pure,
+                run: test_ops_inv_009_owners_registry_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-010".to_string()),
+            title: "inventory schema coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.schema_coverage".to_string()),
+                title: "inventory schema directory includes required registry schemas",
+                kind: TestKind::Pure,
+                run: test_ops_inv_010_inventory_schema_coverage,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-INV-PILLARS-001".to_string()),
             title: "inventory pillars registry contract",
             tests: vec![TestCase {
@@ -868,6 +908,10 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-004" => "Enforces authority-tier exception structure with explicit expiry metadata.",
         "OPS-INV-005" => "Validates inventory control-graph integrity, mappings, and cycle safety.",
         "OPS-INV-006" => "Validates contract id format consistency in the ops contract registry.",
+        "OPS-INV-007" => "Ensures gates registry exists with one unique mapped action per gate id.",
+        "OPS-INV-008" => "Ensures drills registry ids map to runnable observability drill definitions.",
+        "OPS-INV-009" => "Ensures owners registry covers each canonical ops domain directory.",
+        "OPS-INV-010" => "Ensures required inventory schema files exist under ops/schema/inventory.",
         "OPS-INV-PILLARS-001" => "Validates pillars SSOT exists and parses as inventory metadata.",
         "OPS-INV-PILLARS-002" => "Validates each declared pillar has a concrete directory under ops/.",
         "OPS-INV-PILLARS-003" => "Validates there are no undeclared pillar directories in ops root.",

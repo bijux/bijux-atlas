@@ -333,6 +333,210 @@ fn test_ops_inv_005_control_graph_validated(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_ops_inv_007_gates_registry_mapped(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-007";
+    let test_id = "ops.inventory.gates_registry_mapped";
+    let path = ctx.repo_root.join("ops/inventory/gates.json");
+    let Some(value) = read_json(&path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "gates registry must exist and be valid json",
+            Some("ops/inventory/gates.json".to_string()),
+        )]);
+    };
+    let Some(gates) = value.get("gates").and_then(|v| v.as_array()) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "gates registry must include a gates array",
+            Some("ops/inventory/gates.json".to_string()),
+        )]);
+    };
+    let mut ids = BTreeSet::new();
+    let mut violations = Vec::new();
+    for gate in gates {
+        let gate_id = gate.get("id").and_then(|v| v.as_str()).unwrap_or("");
+        let action_id = gate.get("action_id").and_then(|v| v.as_str()).unwrap_or("");
+        if gate_id.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "gate entry must have non-empty id",
+                Some("ops/inventory/gates.json".to_string()),
+            ));
+            continue;
+        }
+        if !ids.insert(gate_id.to_string()) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "gate ids must be unique",
+                Some("ops/inventory/gates.json".to_string()),
+            ));
+        }
+        if action_id.is_empty() || !action_id.starts_with("ops.") {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "gate action_id must be non-empty and start with ops.",
+                Some("ops/inventory/gates.json".to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_008_drills_registry_mapped(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-008";
+    let test_id = "ops.inventory.drills_registry_mapped";
+    let registry_path = ctx.repo_root.join("ops/inventory/drills.json");
+    let links_path = ctx.repo_root.join("ops/inventory/drill-contract-links.json");
+    let Some(registry) = read_json(&registry_path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "drills registry must exist and be valid json",
+            Some("ops/inventory/drills.json".to_string()),
+        )]);
+    };
+    let Some(links) = read_json(&links_path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "drill-contract-links must exist and be valid json",
+            Some("ops/inventory/drill-contract-links.json".to_string()),
+        )]);
+    };
+    let registry_ids: BTreeSet<String> = registry
+        .get("drills")
+        .and_then(|v| v.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                .collect()
+        })
+        .unwrap_or_default();
+    if registry_ids.is_empty() {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "drills registry must list at least one drill id",
+            Some("ops/inventory/drills.json".to_string()),
+        )]);
+    }
+    let mapped_ids: BTreeSet<String> = links
+        .get("links")
+        .and_then(|v| v.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|v| v.get("drill_id").and_then(|v| v.as_str()))
+                .map(ToOwned::to_owned)
+                .collect()
+        })
+        .unwrap_or_default();
+    let mut violations = Vec::new();
+    for drill_id in &registry_ids {
+        if !drill_id.starts_with("ops.drill.") {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "drill ids must use ops.drill.<name> format",
+                Some("ops/inventory/drills.json".to_string()),
+            ));
+            continue;
+        }
+        if !mapped_ids.contains(drill_id) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "drill id must map to at least one contract link entry",
+                Some(drill_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_009_owners_registry_complete(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-009";
+    let test_id = "ops.inventory.owners_registry_complete";
+    let owners_path = ctx.repo_root.join("ops/inventory/owners.json");
+    let Some(owners_doc) = read_json(&owners_path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "owners registry must exist and be valid json",
+            Some("ops/inventory/owners.json".to_string()),
+        )]);
+    };
+    let Some(areas) = owners_doc.get("areas").and_then(|v| v.as_object()) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "owners registry must contain areas object",
+            Some("ops/inventory/owners.json".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for domain in DOMAIN_DIRS {
+        let key = format!("ops/{domain}");
+        if !areas.contains_key(&key) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "owners registry must include every ops pillar/domain directory",
+                Some(key),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_inv_010_inventory_schema_coverage(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-010";
+    let test_id = "ops.inventory.schema_coverage";
+    let required = [
+        "contracts",
+        "tools",
+        "pins",
+        "gates",
+        "drills",
+        "owners",
+    ];
+    let mut violations = Vec::new();
+    for name in required {
+        let schema_path = ctx
+            .repo_root
+            .join(format!("ops/schema/inventory/{name}.schema.json"));
+        if !schema_path.exists() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "required inventory schema file missing",
+                Some(rel_to_root(&schema_path, &ctx.repo_root)),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_schema_001_parseable_documents(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-SCHEMA-001";
     let test_id = "ops.schema.parseable_documents";
