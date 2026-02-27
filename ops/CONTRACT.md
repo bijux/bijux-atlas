@@ -195,6 +195,11 @@ Tests:
 Tests:
 - `ops.k8s.install_matrix_and_generated_consistency` (static, Pure): install matrix and generated k8s artifacts stay aligned and schema-versioned
 
+#### OPS-K8S-010 k8s generated index determinism contract
+
+Tests:
+- `ops.k8s.generated_indexes_deterministic_schema_valid` (static, Pure): generated k8s indexes are schema-versioned and deterministic
+
 #### OPS-K8S-E-001 k8s effect helm install contract
 
 Tests:
@@ -273,6 +278,31 @@ Tests:
 
 Tests:
 - `ops.observe.readiness_schema_valid` (static, Pure): readiness contract is parseable and uses canonical requirement set
+
+#### OPS-OBS-005 observability alert catalog generation contract
+
+Tests:
+- `ops.observe.alert_catalog_generated_consistency` (static, Pure): alert catalog is populated and aligned with parsed alert rules
+
+#### OPS-OBS-006 observability slo burn-rate consistency contract
+
+Tests:
+- `ops.observe.slo_definitions_burn_rate_consistent` (static, Pure): slo definitions and burn-rate rules remain aligned
+
+#### OPS-OBS-007 observability public surface coverage contract
+
+Tests:
+- `ops.observe.public_surface_coverage_matches_rules` (static, Pure): public surface coverage rules include required surfaces
+
+#### OPS-OBS-008 observability telemetry index determinism contract
+
+Tests:
+- `ops.observe.telemetry_index_generated_deterministic` (static, Pure): telemetry index is schema-versioned and sorted deterministically
+
+#### OPS-OBS-009 observability drills manifest contract
+
+Tests:
+- `ops.observe.drills_manifest_exists_runnable` (static, Pure): drills manifest is populated with runnable drill definitions
 
 #### OPS-OBS-E-001 observe effect metrics scrape contract
 
