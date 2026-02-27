@@ -18,3 +18,5 @@ CI enforcement:
 
 - `make lint` runs `cargo clippy --workspace --all-targets --all-features --locked -- -D warnings`
 - `make lint-policy-report` writes `artifacts/lint/effective-clippy-policy.txt`
+- `make lint-policy-enforce` enforces drift checks for `todo!`, `dbg!`, non-test `println!/eprintln!` in core crates, and `reqwest/blocking` in server
+- `make lint-clippy-json` writes `artifacts/lint/clippy.json`
