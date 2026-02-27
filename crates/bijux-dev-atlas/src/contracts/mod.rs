@@ -282,7 +282,10 @@ pub fn run(
                     (Mode::Effect, TestKind::Network) if !options.allow_network => {
                         TestResult::Error("requires --allow-network".to_string())
                     }
-                    _ => (case.run)(&ctx),
+                    _ => match std::panic::catch_unwind(|| (case.run)(&ctx)) {
+                        Ok(v) => v,
+                        Err(_) => TestResult::Error("test panicked".to_string()),
+                    },
                 }
             };
             let status = case_status_from_result(&result);
@@ -434,6 +437,29 @@ mod tests {
         }])
     }
 
+    fn sample_contracts_failing(_repo_root: &Path) -> Result<Vec<Contract>, String> {
+        fn fail_case(_: &RunContext) -> TestResult {
+            TestResult::Fail(vec![Violation {
+                contract_id: "DOCKER-999".to_string(),
+                test_id: "docker.sample.fail".to_string(),
+                file: Some("docker/images/runtime/Dockerfile".to_string()),
+                line: Some(1),
+                message: "sample failure".to_string(),
+                evidence: Some("latest".to_string()),
+            }])
+        }
+        Ok(vec![Contract {
+            id: ContractId("DOCKER-999".to_string()),
+            title: "sample fail",
+            tests: vec![TestCase {
+                id: TestId("docker.sample.fail".to_string()),
+                title: "sample fail",
+                kind: TestKind::Pure,
+                run: fail_case,
+            }],
+        }])
+    }
+
     #[test]
     fn pretty_output_is_stable() {
         let options = RunOptions {
@@ -450,5 +476,61 @@ mod tests {
         let pretty = to_pretty(&report);
         let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
         assert_eq!(pretty, expected);
+    }
+
+    #[test]
+    fn json_serialization_contains_summary_and_tests() {
+        let options = RunOptions {
+            mode: Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("docker", sample_contracts_failing, Path::new("."), &options).expect("run");
+        let payload = to_json(&report);
+        assert_eq!(payload["schema_version"], 1);
+        assert_eq!(payload["summary"]["contracts"], 1);
+        assert_eq!(payload["summary"]["tests"], 1);
+        assert_eq!(payload["summary"]["fail"], 1);
+        assert_eq!(
+            payload["tests"][0]["violations"][0]["message"],
+            "sample failure"
+        );
+    }
+
+    #[test]
+    fn panic_in_test_case_becomes_error_result() {
+        fn panic_case(_: &RunContext) -> TestResult {
+            panic!("boom");
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![Contract {
+                id: ContractId("DOCKER-998".to_string()),
+                title: "panic case",
+                tests: vec![TestCase {
+                    id: TestId("docker.sample.panic".to_string()),
+                    title: "panic case",
+                    kind: TestKind::Pure,
+                    run: panic_case,
+                }],
+            }])
+        }
+        let options = RunOptions {
+            mode: Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("docker", registry, Path::new("."), &options).expect("run");
+        assert_eq!(report.error_count(), 1);
+        assert_eq!(report.exit_code(), 1);
     }
 }

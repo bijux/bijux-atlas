@@ -240,6 +240,12 @@ pub enum ContractsModeArg {
     Effect,
 }
 
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractsFormatArg {
+    Pretty,
+    Json,
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct ContractsDockerArgs {
     #[arg(long)]
@@ -248,6 +254,8 @@ pub struct ContractsDockerArgs {
     pub artifacts_root: Option<PathBuf>,
     #[arg(long, default_value_t = false)]
     pub json: bool,
+    #[arg(long, value_enum, default_value_t = ContractsFormatArg::Pretty)]
+    pub format: ContractsFormatArg,
     #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
     pub mode: ContractsModeArg,
     #[arg(long, default_value_t = false)]

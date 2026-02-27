@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommand, ContractsModeArg, DockerCommand, DockerCommonArgs, DockerPolicyCommand,
-    PoliciesCommand,
+    ContractsCommand, ContractsFormatArg, ContractsModeArg, DockerCommand, DockerCommonArgs,
+    DockerPolicyCommand, PoliciesCommand,
 };
 use crate::*;
 use bijux_dev_atlas::contracts;
@@ -1054,7 +1054,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     &repo_root,
                     &options,
                 )?;
-                let rendered = if args.json {
+                let format_json = args.json || args.format == ContractsFormatArg::Json;
+                let rendered = if format_json {
                     serde_json::to_string_pretty(&contracts::to_json(&report))
                         .map_err(|e| format!("encode contracts report failed: {e}"))?
                 } else {
