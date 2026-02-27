@@ -20,6 +20,7 @@ include makefiles/verification.mk
 CURATED_TARGETS := \
 	help list explain surface \
 	validate \
+	release-check \
 	dev-atlas doctor ci-local \
 	dev-doctor dev-ci dev-check-ci \
 	build build-release build-ci build-meta dist dist-verify clean-build clean-dist build-doctor \
@@ -84,6 +85,9 @@ verify: ## Run repo verification orchestration via dev-atlas checks
 
 validate: ## Reviewer entrypoint: run strict control-plane validation gates
 	@$(DEV_ATLAS) validate --profile kind --format json
+
+release-check: ## Release gate: aggregate validate and ops validate signals
+	@$(DEV_ATLAS) release check --profile kind --format json
 
 lanes: ## Print CI lane mapping to dev-atlas suites
 	@printf '%s\n' "ci-fast -> check run --suite ci_fast"; \
