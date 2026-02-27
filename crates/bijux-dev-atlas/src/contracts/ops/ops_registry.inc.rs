@@ -329,6 +329,80 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-INV-MAP-001".to_string()),
+            title: "inventory contract gate map coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.every_contract_mapped".to_string()),
+                title: "every contract id is mapped in contract-gate-map",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_001_every_contract_id_mapped,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-002".to_string()),
+            title: "inventory contract gate map gate reference contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.mapped_gates_exist".to_string()),
+                title: "every mapped gate id exists in gates registry",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_002_mapped_gates_exist,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-003".to_string()),
+            title: "inventory contract gate map command surface contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.mapped_commands_registered".to_string()),
+                title: "every mapped command is registered in ops command surface",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_003_mapped_commands_registered,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-004".to_string()),
+            title: "inventory contract gate map effects annotation contract",
+            tests: vec![TestCase {
+                id: TestId(
+                    "ops.inventory.contract_gate_map.effects_annotation_matches_mode".to_string(),
+                ),
+                title: "effects annotations match contract test kinds and execution mode",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_004_effects_annotation_matches_contract_mode,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-005".to_string()),
+            title: "inventory contract gate map orphan gate contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.no_orphan_gates".to_string()),
+                title: "every gate id is referenced by at least one contract mapping",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_005_no_orphan_gates,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-006".to_string()),
+            title: "inventory contract gate map orphan contract contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.no_orphan_contracts".to_string()),
+                title: "every contract maps to gate ids or is explicitly static-only",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_006_no_orphan_contracts,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-INV-MAP-007".to_string()),
+            title: "inventory contract gate map static purity contract",
+            tests: vec![TestCase {
+                id: TestId(
+                    "ops.inventory.contract_gate_map.static_only_contracts_are_pure".to_string(),
+                ),
+                title: "static-only mappings are restricted to pure test contracts",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_007_static_only_contracts_are_pure,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-INV-PILLARS-001".to_string()),
             title: "inventory pillars registry contract",
             tests: vec![TestCase {
@@ -1053,6 +1127,13 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-008" => "Ensures drills registry ids map to runnable observability drill definitions.",
         "OPS-INV-009" => "Ensures owners registry covers each canonical ops domain directory.",
         "OPS-INV-010" => "Ensures required inventory schema files exist under ops/schema/inventory.",
+        "OPS-INV-MAP-001" => "Ensures every contract id is present in contract-gate-map mappings.",
+        "OPS-INV-MAP-002" => "Ensures mapped gate ids resolve to declared entries in gates registry.",
+        "OPS-INV-MAP-003" => "Ensures mapped commands exist in the ops command surface router snapshot.",
+        "OPS-INV-MAP-004" => "Ensures effects annotations in map align with contract test kind modes.",
+        "OPS-INV-MAP-005" => "Ensures no gate id is orphaned outside contract-gate-map references.",
+        "OPS-INV-MAP-006" => "Ensures every contract maps to gates or is explicitly static-only.",
+        "OPS-INV-MAP-007" => "Ensures static-only map entries refer only to pure test contracts.",
         "OPS-INV-PILLARS-001" => "Validates pillars SSOT exists and parses as inventory metadata.",
         "OPS-INV-PILLARS-002" => "Validates each declared pillar has a concrete directory under ops/.",
         "OPS-INV-PILLARS-003" => "Validates there are no undeclared pillar directories in ops root.",
