@@ -58,6 +58,14 @@ jobs:
           printf "- lane: ops-validate\n- report: %s\n- cache target hit: %s\n" \
             "${report_root}/ops-validate.json" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Run ops doctor required gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ops-validate"
+          mkdir -p "${report_root}" "${logs_root}"
+          make ops-doctor > "${report_root}/ops-doctor.json" 2> "${logs_root}/ops-doctor.stderr.log"
       - name: Run ops smoke command gates
         shell: bash
         run: |
