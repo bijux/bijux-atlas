@@ -1095,19 +1095,46 @@ pub(crate) fn run_check_repo_doctor(
         "docs_indexes": docs_indexes,
         "config_groups": config_groups
     });
+    let snapshot_rel = Path::new("configs/repo/surface-snapshot.json");
+    let mut snapshot_drift_error = serde_json::Value::Null;
+    let snapshot_path = root.join(snapshot_rel);
+    if snapshot_path.exists() {
+        let expected: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&snapshot_path)
+                .map_err(|e| format!("read {} failed: {e}", snapshot_path.display()))?,
+        )
+        .map_err(|e| format!("parse {} failed: {e}", snapshot_path.display()))?;
+        if expected != snapshot {
+            snapshot_drift_error = serde_json::json!(format!(
+                "REPO_SURFACE_DRIFT_ERROR: `{}` does not match current repo surface snapshot",
+                snapshot_rel.display()
+            ));
+        }
+    } else {
+        snapshot_drift_error = serde_json::json!(format!(
+            "REPO_SURFACE_DRIFT_ERROR: missing `{}`",
+            snapshot_rel.display()
+        ));
+    }
 
     let payload = serde_json::json!({
         "schema_version": 1,
-        "text": if tree_code == 0 && docs_code == 0 && configs_code == 0 { "repo doctor passed" } else { "repo doctor failed" },
+        "text": if tree_code == 0 && docs_code == 0 && configs_code == 0 && snapshot_drift_error.is_null() { "repo doctor passed" } else { "repo doctor failed" },
         "checks": {
             "tree_budgets": tree_payload,
             "docs_validate": docs_payload,
             "configs_validate": configs_payload
         },
-        "surface_snapshot": snapshot
+        "surface_snapshot": snapshot,
+        "surface_snapshot_contract": snapshot_rel.display().to_string(),
+        "surface_snapshot_drift_error": snapshot_drift_error
     });
     let rendered = emit_payload(format, out, &payload)?;
-    let code = if tree_code == 0 && docs_code == 0 && configs_code == 0 {
+    let code = if tree_code == 0
+        && docs_code == 0
+        && configs_code == 0
+        && payload["surface_snapshot_drift_error"].is_null()
+    {
         0
     } else {
         1
