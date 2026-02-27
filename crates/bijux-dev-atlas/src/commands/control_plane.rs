@@ -311,13 +311,20 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ContractsModeArg::Static => contracts::Mode::Static,
             ContractsModeArg::Effect => contracts::Mode::Effect,
         };
+        let profile = match common.profile {
+            crate::cli::ContractsProfileArg::Local => "local",
+            crate::cli::ContractsProfileArg::Ci => "ci",
+        };
         let artifacts_root = common.artifacts_root.clone().unwrap_or_else(|| {
             repo_root.join("artifacts")
                 .join("contracts")
                 .join(descriptor.name)
+                .join(profile)
                 .join(mode.to_string())
                 .join(&run_id)
         });
+        let previous_profile = std::env::var_os("BIJUX_CONTRACTS_PROFILE");
+        std::env::set_var("BIJUX_CONTRACTS_PROFILE", profile);
         let options = contracts::RunOptions {
             mode,
             allow_subprocess: common.allow_subprocess,
@@ -337,7 +344,13 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             list_only: false,
             artifacts_root: Some(artifacts_root),
         };
-        contracts::run(descriptor.name, descriptor.contracts_fn, repo_root, &options)
+        let result = contracts::run(descriptor.name, descriptor.contracts_fn, repo_root, &options);
+        if let Some(value) = previous_profile {
+            std::env::set_var("BIJUX_CONTRACTS_PROFILE", value);
+        } else {
+            std::env::remove_var("BIJUX_CONTRACTS_PROFILE");
+        }
+        result
     }
 
     let run = (|| -> Result<(String, i32), String> {

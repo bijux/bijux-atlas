@@ -265,9 +265,9 @@ fn contracts_ops_effect_mode_requires_explicit_allow_flags() {
 
 #[test]
 fn contracts_ops_ci_uses_default_artifacts_root() {
-    let out = repo_root().join("artifacts/contracts/ops/static/local/ops.json");
-    let inventory = repo_root().join("artifacts/contracts/ops/static/local/ops.inventory.json");
-    let maturity = repo_root().join("artifacts/contracts/ops/static/local/ops.maturity.json");
+    let out = repo_root().join("artifacts/contracts/ops/local/static/local/ops.json");
+    let inventory = repo_root().join("artifacts/contracts/ops/local/static/local/ops.inventory.json");
+    let maturity = repo_root().join("artifacts/contracts/ops/local/static/local/ops.maturity.json");
     if out.exists() {
         fs::remove_file(&out).expect("remove prior report");
     }
@@ -296,6 +296,27 @@ fn contracts_ops_ci_uses_default_artifacts_root() {
             .expect("maturity json");
     assert_eq!(maturity_payload["domain"].as_str(), Some("ops"));
     assert!(maturity_payload["maturity"].is_object());
+}
+
+#[test]
+fn contracts_profile_changes_default_artifacts_root_segment() {
+    let out = repo_root().join("artifacts/contracts/docker/ci/static/local/docker.json");
+    if let Some(parent) = out.parent() {
+        fs::create_dir_all(parent).expect("mkdir");
+    }
+    if out.exists() {
+        fs::remove_file(&out).expect("remove prior report");
+    }
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "docker", "--profile", "ci", "--format", "json"])
+        .output()
+        .expect("contracts docker with profile");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(out).expect("read generated report"))
+            .expect("json report");
+    assert_eq!(payload["domain"].as_str(), Some("docker"));
 }
 
 #[test]

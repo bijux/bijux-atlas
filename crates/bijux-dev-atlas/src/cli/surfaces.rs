@@ -253,6 +253,12 @@ pub enum ContractsFormatArg {
     Github,
 }
 
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractsProfileArg {
+    Local,
+    Ci,
+}
+
 #[derive(Args, Debug, Clone)]
 pub struct ContractsCommonArgs {
     #[arg(long)]
@@ -265,6 +271,8 @@ pub struct ContractsCommonArgs {
     pub format: ContractsFormatArg,
     #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
     pub mode: ContractsModeArg,
+    #[arg(long, value_enum, default_value_t = ContractsProfileArg::Local)]
+    pub profile: ContractsProfileArg,
     #[arg(long, default_value_t = false)]
     pub fail_fast: bool,
     #[arg(long = "filter-contract", alias = "filter")]

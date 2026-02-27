@@ -356,7 +356,14 @@ fn test_effect_sbom_for_each_manifest_image(ctx: &RunContext) -> TestResult {
 }
 
 fn test_effect_scan_output_and_threshold(ctx: &RunContext) -> TestResult {
-    if std::env::var_os("CI").is_none() {
+    let profile = std::env::var("BIJUX_CONTRACTS_PROFILE").unwrap_or_else(|_| {
+        if std::env::var_os("CI").is_some() {
+            "ci".to_string()
+        } else {
+            "local".to_string()
+        }
+    });
+    if profile != "ci" {
         return TestResult::Skip(
             "docker scanner contracts default to the local profile and skip outside CI"
                 .to_string(),
@@ -381,7 +388,14 @@ fn test_effect_scan_output_and_threshold(ctx: &RunContext) -> TestResult {
 }
 
 fn test_effect_no_high_critical_without_allowlist(ctx: &RunContext) -> TestResult {
-    if std::env::var_os("CI").is_none() {
+    let profile = std::env::var("BIJUX_CONTRACTS_PROFILE").unwrap_or_else(|_| {
+        if std::env::var_os("CI").is_some() {
+            "ci".to_string()
+        } else {
+            "local".to_string()
+        }
+    });
+    if profile != "ci" {
         return TestResult::Skip(
             "docker scanner contracts default to the local profile and skip outside CI"
                 .to_string(),
