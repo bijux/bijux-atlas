@@ -731,6 +731,7 @@ pub(crate) fn run_check_tree_budgets(
     let repo_root = resolve_repo_root(repo_root)?;
     let mut errors = Vec::<String>::new();
     let mut deepest = Vec::<(String, usize)>::new();
+    let forbidden_dir_names = ["misc", "tmp", "old", "legacy"];
 
     let rules = [
         ("configs", 4usize, 10usize),
@@ -791,6 +792,168 @@ pub(crate) fn run_check_tree_budgets(
                     "TREE_BUDGET_ERROR: `{rel}` depth {depth} exceeds `{root_name}` budget {max_depth}"
                 ));
             }
+            if (root_name == "configs" || root_name == "docs")
+                && file
+                    .components()
+                    .any(|c| {
+                        c.as_os_str()
+                            .to_str()
+                            .map(|name| forbidden_dir_names.contains(&name))
+                            .unwrap_or(false)
+                    })
+            {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: `{rel}` uses forbidden directory name in configs/docs"
+                ));
+            }
+        }
+    }
+
+    for root_name in ["configs", "docs"] {
+        let root = repo_root.join(root_name);
+        if !root.exists() {
+            continue;
+        }
+        for dir in walk_files_local(&root)
+            .into_iter()
+            .filter_map(|p| p.parent().map(Path::to_path_buf))
+            .collect::<std::collections::BTreeSet<_>>()
+        {
+            let rel_dir = dir
+                .strip_prefix(&repo_root)
+                .unwrap_or(&dir)
+                .display()
+                .to_string();
+            if rel_dir.contains("/_generated") || rel_dir.contains("/_drafts") {
+                continue;
+            }
+            let index_path = dir.join("INDEX.md");
+            if !index_path.exists() {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: directory `{rel_dir}` is missing required `INDEX.md`"
+                ));
+            }
+        }
+    }
+
+    let mut basename_paths = std::collections::BTreeMap::<String, Vec<String>>::new();
+    for root_name in ["configs", "docs"] {
+        for file in walk_files_local(&repo_root.join(root_name)) {
+            let rel = file
+                .strip_prefix(&repo_root)
+                .unwrap_or(&file)
+                .display()
+                .to_string();
+            if let Some(name) = file.file_name().and_then(|v| v.to_str()) {
+                if matches!(name, "INDEX.md" | "README.md" | "OWNERS.md") {
+                    continue;
+                }
+                basename_paths.entry(name.to_string()).or_default().push(rel);
+            }
+        }
+    }
+    for (name, paths) in basename_paths {
+        if paths.len() > 1 {
+            errors.push(format!(
+                "TREE_BUDGET_ERROR: duplicate filename `{name}` across docs/configs: {}",
+                paths.join(", ")
+            ));
+        }
+    }
+
+    let check_owner_coverage = |owners_path: &Path, prefix: &str| -> Result<Vec<String>, String> {
+        let mut errs = Vec::<String>::new();
+        if !owners_path.exists() {
+            errs.push(format!(
+                "TREE_BUDGET_ERROR: missing owners file `{}`",
+                owners_path
+                    .strip_prefix(&repo_root)
+                    .unwrap_or(owners_path)
+                    .display()
+            ));
+            return Ok(errs);
+        }
+        let text = fs::read_to_string(owners_path)
+            .map_err(|e| format!("failed to read {}: {e}", owners_path.display()))?;
+        let mut covered = std::collections::BTreeSet::<String>::new();
+        for line in text.lines() {
+            if let Some(idx) = line.find(&format!("`{prefix}/")) {
+                let rest = &line[idx + 1..];
+                if let Some(end) = rest.find('`') {
+                    covered.insert(rest[..end].to_string());
+                }
+            }
+        }
+        let root = repo_root.join(prefix);
+        if root.exists() {
+            for entry in fs::read_dir(&root)
+                .map_err(|e| format!("failed to list {}: {e}", root.display()))?
+                .filter_map(Result::ok)
+                .filter(|e| e.path().is_dir())
+            {
+                if let Some(name) = entry.file_name().to_str() {
+                    let key = format!("{prefix}/{name}");
+                    if !covered.contains(&key) {
+                        errs.push(format!(
+                            "TREE_BUDGET_ERROR: missing owner mapping for `{key}` in `{}`",
+                            owners_path
+                                .strip_prefix(&repo_root)
+                                .unwrap_or(owners_path)
+                                .display()
+                        ));
+                    }
+                }
+            }
+        }
+        Ok(errs)
+    };
+    errors.extend(check_owner_coverage(&repo_root.join("configs/OWNERS.md"), "configs")?);
+    errors.extend(check_owner_coverage(&repo_root.join("docs/OWNERS.md"), "docs")?);
+
+    let make_help = repo_root.join("make/help.md");
+    let make_targets = repo_root.join("make/target-list.json");
+    if make_help.exists() && make_targets.exists() {
+        let help_text = fs::read_to_string(&make_help)
+            .map_err(|e| format!("failed to read {}: {e}", make_help.display()))?;
+        let targets_json: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&make_targets)
+                .map_err(|e| format!("failed to read {}: {e}", make_targets.display()))?,
+        )
+        .map_err(|e| format!("failed to parse {}: {e}", make_targets.display()))?;
+        for target in targets_json["public_targets"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+        {
+            if !help_text.contains(&format!("- {target}:")) {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: public make target `{target}` missing from make/help.md"
+                ));
+            }
+        }
+    }
+
+    for rel in [
+        "docs/reference/commands.md",
+        "docs/reference/schemas.md",
+        "docs/reference/configs.md",
+        "docs/reference/make-targets.md",
+    ] {
+        let path = repo_root.join(rel);
+        if !path.exists() {
+            errors.push(format!(
+                "TREE_BUDGET_ERROR: missing required generated reference page `{rel}`"
+            ));
+            continue;
+        }
+        let text = fs::read_to_string(&path)
+            .map_err(|e| format!("failed to read {}: {e}", path.display()))?;
+        if !text.contains("This page is generated by") {
+            errors.push(format!(
+                "TREE_BUDGET_ERROR: `{rel}` must declare generated artifact marker"
+            ));
         }
     }
 
