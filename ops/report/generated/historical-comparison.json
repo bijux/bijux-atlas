@@ -1,13 +1,13 @@
 {
-  "schema_version": 1,
-  "window": "30d",
-  "status": "stable",
-  "trend": "flat",
+  "failures": [],
+  "generated_by": "bijux dev atlas ops generate",
   "readiness_scores": [
     100,
     100,
     100
   ],
-  "failures": [],
-  "generated_by": "bijux dev atlas ops generate"
+  "schema_version": 1,
+  "status": "stable",
+  "trend": "flat",
+  "window": "30d"
 }

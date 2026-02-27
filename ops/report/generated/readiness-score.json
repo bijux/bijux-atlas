@@ -1,13 +1,13 @@
 {
+  "generated_by": "bijux dev atlas ops generate",
+  "generated_from": "ops/CONTRACT.md",
+  "inputs": {
+    "inventory_drift": "none",
+    "ops_doctor": "pass",
+    "ops_validate": "pass",
+    "schema_drift": "none"
+  },
   "schema_version": 1,
   "score": 100,
-  "status": "ready",
-  "inputs": {
-    "ops_validate": "pass",
-    "ops_doctor": "pass",
-    "schema_drift": "none",
-    "inventory_drift": "none"
-  },
-  "generated_by": "bijux dev atlas ops generate",
-  "generated_from": "ops/CONTRACT.md"
+  "status": "ready"
 }

@@ -1,26 +1,26 @@
 {
-  "schema_version": 1,
-  "report_version": 1,
-  "run_id": "ops_example_run",
-  "generated_at": "2026-02-25T00:00:00Z",
-  "lanes": {
-    "ops": {
-      "lane": "ops",
-      "run_id": "ops_example_run",
-      "status": "pass",
-      "duration_seconds": 12,
-      "log": "artifacts/ops_example_run/logs/ops.log"
-    }
-  },
-  "summary": {
-    "total": 1,
-    "passed": 1,
-    "failed": 0
-  },
   "budget_status": {
     "checked": 1,
     "failed": 0,
-    "near_failing": [],
-    "failed_lanes": []
+    "failed_lanes": [],
+    "near_failing": []
+  },
+  "generated_at": "2026-02-25T00:00:00Z",
+  "lanes": {
+    "ops": {
+      "duration_seconds": 12,
+      "lane": "ops",
+      "log": "artifacts/ops_example_run/logs/ops.log",
+      "run_id": "ops_example_run",
+      "status": "pass"
+    }
+  },
+  "report_version": 1,
+  "run_id": "ops_example_run",
+  "schema_version": 1,
+  "summary": {
+    "failed": 0,
+    "passed": 1,
+    "total": 1
   }
 }

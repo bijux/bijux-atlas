@@ -459,6 +459,36 @@ Tests:
 Tests:
 - `ops.report.diff_contract_exists` (static, Pure): generated report diff includes base target and change set
 
+#### OPS-RPT-005 report readiness score determinism contract
+
+Tests:
+- `ops.report.readiness_score_deterministic` (static, Pure): readiness score report is schema-versioned and uses canonical input keys
+
+#### OPS-RPT-006 report release evidence bundle contract
+
+Tests:
+- `ops.report.release_evidence_bundle_schema_valid` (static, Pure): release evidence bundle is parseable and references existing artifacts
+
+#### OPS-RPT-007 report historical comparison contract
+
+Tests:
+- `ops.report.historical_comparison_schema_valid` (static, Pure): historical comparison report includes schema and readiness trend fields
+
+#### OPS-RPT-008 report unified example contract
+
+Tests:
+- `ops.report.unified_report_example_schema_valid` (static, Pure): unified report example includes required schema and summary sections
+
+#### OPS-RPT-009 report canonical json output contract
+
+Tests:
+- `ops.report.outputs_canonical_json` (static, Pure): report outputs are canonical pretty json with deterministic key ordering
+
+#### OPS-RPT-010 report lane aggregation contract
+
+Tests:
+- `ops.report.lane_reports_aggregated_in_unified_report` (static, Pure): unified report summary totals are derived from lane report statuses
+
 ### Pillar: root-surface
 
 #### OPS-000 ops directory contract

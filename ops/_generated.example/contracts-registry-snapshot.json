@@ -1073,6 +1073,66 @@
       "title": "report diff structure contract"
     },
     {
+      "id": "OPS-RPT-005",
+      "tests": [
+        {
+          "test_id": "ops.report.readiness_score_deterministic",
+          "title": "readiness score report is schema-versioned and uses canonical input keys"
+        }
+      ],
+      "title": "report readiness score determinism contract"
+    },
+    {
+      "id": "OPS-RPT-006",
+      "tests": [
+        {
+          "test_id": "ops.report.release_evidence_bundle_schema_valid",
+          "title": "release evidence bundle is parseable and references existing artifacts"
+        }
+      ],
+      "title": "report release evidence bundle contract"
+    },
+    {
+      "id": "OPS-RPT-007",
+      "tests": [
+        {
+          "test_id": "ops.report.historical_comparison_schema_valid",
+          "title": "historical comparison report includes schema and readiness trend fields"
+        }
+      ],
+      "title": "report historical comparison contract"
+    },
+    {
+      "id": "OPS-RPT-008",
+      "tests": [
+        {
+          "test_id": "ops.report.unified_report_example_schema_valid",
+          "title": "unified report example includes required schema and summary sections"
+        }
+      ],
+      "title": "report unified example contract"
+    },
+    {
+      "id": "OPS-RPT-009",
+      "tests": [
+        {
+          "test_id": "ops.report.outputs_canonical_json",
+          "title": "report outputs are canonical pretty json with deterministic key ordering"
+        }
+      ],
+      "title": "report canonical json output contract"
+    },
+    {
+      "id": "OPS-RPT-010",
+      "tests": [
+        {
+          "test_id": "ops.report.lane_reports_aggregated_in_unified_report",
+          "title": "unified report summary totals are derived from lane report statuses"
+        }
+      ],
+      "title": "report lane aggregation contract"
+    },
+    {
       "id": "OPS-SCHEMA-001",
       "tests": [
         {

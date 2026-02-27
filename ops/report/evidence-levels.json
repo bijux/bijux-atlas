@@ -1,8 +1,17 @@
 {
-  "schema_version": 1,
   "levels": [
-    {"id": "minimal", "description": "summary and status only"},
-    {"id": "standard", "description": "summary, lane reports, and diagnostics"},
-    {"id": "forensic", "description": "full bundle with logs, diffs, and curated examples"}
-  ]
+    {
+      "description": "summary and status only",
+      "id": "minimal"
+    },
+    {
+      "description": "summary, lane reports, and diagnostics",
+      "id": "standard"
+    },
+    {
+      "description": "full bundle with logs, diffs, and curated examples",
+      "id": "forensic"
+    }
+  ],
+  "schema_version": 1
 }
