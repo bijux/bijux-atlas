@@ -63,7 +63,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
     let cases = [
         (
             vec!["contracts", "docker", "--mode", "static", "--format", "human"],
-            "7a89c622828ae906088c09f5a2c8487c2ae98261d6d461c943883674558c8d41",
+            "933771504c612a38144aac4860c24aef804c148fa5846b14e8b098609abd7904",
         ),
         (
             vec!["contracts", "ops", "--mode", "static", "--format", "human"],
@@ -75,7 +75,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "4948d8ded5160697a7ac4621b730af6f64aa3933c75647c6eb8be9823fdeb021",
+            "a566553529c084ecd5db7add8dd6b7313e9b4b287fac9646b03afbe367a32e92",
         ),
     ];
     for (args, expected) in cases {

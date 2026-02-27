@@ -39,6 +39,31 @@
             .to_string(),
         )
         .expect("write images manifest");
+        std::fs::write(
+            base.join("docker/build-matrix.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "images": [
+                    {
+                        "name": "runtime",
+                        "platforms": ["linux/amd64"],
+                        "tags": ["bijux-atlas:dev"],
+                        "outputs": ["docker"]
+                    }
+                ]
+            })
+            .to_string(),
+        )
+        .expect("write build matrix");
+        std::fs::write(
+            base.join("docker/exceptions.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "exceptions": []
+            })
+            .to_string(),
+        )
+        .expect("write exceptions");
         std::fs::write(base.join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("write dockerignore");
         std::fs::write(
             base.join("docker/policy.json"),
@@ -73,6 +98,12 @@
         );
         std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
         let report = crate::contracts::run(
             "docker",
             contracts,
@@ -111,6 +142,8 @@
         std::fs::write(tmp.path().join("Cargo.toml"), "[workspace]\n").expect("write cargo toml");
         std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
         let report = crate::contracts::run(
             "docker",
             contracts,
@@ -212,6 +245,8 @@
         );
         std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
         let report = crate::contracts::run(
             "docker",
             contracts,
@@ -254,6 +289,8 @@
         .expect("overwrite manifest");
         std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile")).expect("symlink");
         sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
         let report = crate::contracts::run(
             "docker",
             contracts,
@@ -350,6 +387,8 @@
         )
         .expect("write policy");
         sync_contract_markdown(tmp.path()).expect("sync contract");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
         let report = crate::contracts::run(
             "docker",
             contracts,
@@ -410,6 +449,8 @@
         )
         .expect("overwrite policy");
         sync_contract_markdown(tmp.path()).expect("sync contract");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
         let report = crate::contracts::run(
             "docker",
             contracts,

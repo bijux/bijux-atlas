@@ -39,6 +39,10 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
     .expect("symlink");
     bijux_dev_atlas::contracts::docker::sync_contract_markdown(tmp.path())
         .expect("sync contract doc");
+    bijux_dev_atlas::contracts::docker::sync_contract_registry_json(tmp.path())
+        .expect("sync contract registry");
+    bijux_dev_atlas::contracts::docker::sync_contract_gate_map_json(tmp.path())
+        .expect("sync contract gate map");
     fs::write(tmp.path().join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("dockerignore");
     fs::write(
         tmp.path().join("docker/bases.lock"),
@@ -57,6 +61,20 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
             "images": [{"name": "runtime", "dockerfile": "docker/images/runtime/Dockerfile", "context": ".", "smoke": ["/app/bijux-atlas", "version"]}]
         }).to_string(),
     ).expect("manifest");
+    fs::write(
+        tmp.path().join("docker/build-matrix.json"),
+        serde_json::json!({
+            "schema_version": 1,
+            "images": [{"name": "runtime", "platforms": ["linux/amd64"], "tags": ["bijux-atlas:dev"], "outputs": ["docker"]}]
+        }).to_string(),
+    ).expect("build matrix");
+    fs::write(
+        tmp.path().join("docker/exceptions.json"),
+        serde_json::json!({
+            "schema_version": 1,
+            "exceptions": []
+        }).to_string(),
+    ).expect("exceptions");
     tmp
 }
 

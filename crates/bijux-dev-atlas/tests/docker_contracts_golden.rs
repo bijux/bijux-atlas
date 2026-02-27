@@ -69,6 +69,10 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
         .expect("symlink root dockerfile");
     bijux_dev_atlas::contracts::docker::sync_contract_markdown(base)
         .expect("sync contract markdown");
+    bijux_dev_atlas::contracts::docker::sync_contract_registry_json(base)
+        .expect("sync contract registry");
+    bijux_dev_atlas::contracts::docker::sync_contract_gate_map_json(base)
+        .expect("sync contract gate map");
 }
 
 fn run_for_single_test(repo_root: &Path, contract_id: &str, test_id: &str) -> serde_json::Value {

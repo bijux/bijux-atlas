@@ -20,8 +20,8 @@ fn docker_contracts_lists_contract_ids() {
     let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("parse json");
     let rows = payload["rows"].as_array().expect("rows");
     assert!(
-        rows.iter().any(|row| row["contract_id"] == "DOCKER-001"),
-        "missing DOCKER-001 in docker contracts output"
+        rows.iter().any(|row| row["contract_id"] == "DOCKER-049"),
+        "missing DOCKER-049 in docker contracts output"
     );
 }
 
@@ -37,8 +37,8 @@ fn docker_gates_lists_gate_ids() {
     let rows = payload["rows"].as_array().expect("rows");
     assert!(
         rows.iter()
-            .any(|row| row["gate_id"] == "docker.contract.no_latest"),
-        "missing docker.contract.no_latest in docker gates output"
+            .any(|row| row["gate_id"] == "docker.contract.docker_049"),
+        "missing docker.contract.docker_049 in docker gates output"
     );
 }
 
