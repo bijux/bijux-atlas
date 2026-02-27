@@ -576,3 +576,5 @@ fn test_ops_dataset_002_fixture_inventory_matches_disk(ctx: &RunContext) -> Test
     }
 }
 
+
+include!("ops_domains_31_40.inc.rs");
