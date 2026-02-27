@@ -70,7 +70,7 @@ fn cli_source_files_stay_within_loc_budget() {
     let strict_paths = [
         "src/cli.rs",
         "src/commands/ops_support.rs",
-        "src/commands/docs_runtime/command_dispatch.rs",
+        "src/commands/docs/runtime/command_dispatch.rs",
         "src/ops_commands/runtime.rs",
         "src/commands/ops/execution_runtime.rs",
     ];

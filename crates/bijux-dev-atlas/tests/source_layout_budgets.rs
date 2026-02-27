@@ -27,8 +27,8 @@ fn commands_and_core_source_files_follow_loc_budgets() {
     let error_budget = 1000usize;
     let strict_error_budget = 1000usize;
     let strict_paths = [
-        "src/commands/docs_runtime/command_dispatch.rs",
-        "src/commands/docs_runtime/docs_command_router.rs",
+        "src/commands/docs/runtime/command_dispatch.rs",
+        "src/commands/docs/runtime/docs_command_router.rs",
         "src/core/checks/ops/governance_checks/inventory_contract_integrity_check/main_check.rs",
         "src/core/checks/ops/governance_checks/foundation_and_tooling_checks.rs",
     ];

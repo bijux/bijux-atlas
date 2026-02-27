@@ -43,8 +43,8 @@ fn staged_effect_exceptions() -> BTreeSet<&'static str> {
         "src/commands/ops_support/manifests.rs",
         "src/commands/ops_support/tools.rs",
         "src/commands/ops_support/domain_support.rs",
-        "src/commands/docs_runtime/command_dispatch.rs",
-        "src/commands/docs_runtime/reference_page_generators.rs",
+        "src/commands/docs/runtime/command_dispatch.rs",
+        "src/commands/docs/runtime/reference_page_generators.rs",
         "src/commands/ops/runtime_mod/core_handler.rs",
         "src/commands/ops/runtime_mod/execution_handler.rs",
         "src/commands/ops/execution_runtime_mod/install_status.rs",
@@ -67,7 +67,7 @@ fn staged_stdio_exceptions() -> BTreeSet<&'static str> {
         "src/commands/build.rs",
         "src/commands/configs.rs",
         "src/commands/control_plane.rs",
-        "src/commands/docs_runtime/docs_command_router.rs",
+        "src/commands/docs/runtime/docs_command_router.rs",
         "src/commands/ops/runtime.rs",
     ]
     .into_iter()
