@@ -11,10 +11,13 @@ use bijux_atlas_store::{
 #[cfg(feature = "backend-s3")]
 use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
 use std::fs;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use std::thread;
 use tempfile::tempdir;
+#[cfg(feature = "backend-s3")]
+use std::sync::atomic::{AtomicUsize, Ordering};
+#[cfg(feature = "backend-s3")]
+use std::thread;
+#[cfg(feature = "backend-s3")]
 use tiny_http::{Header, Method, Response, Server, StatusCode};
 
 fn mk_dataset() -> DatasetId {
@@ -332,6 +335,7 @@ fn deterministic_catalog_merge_scales_with_stable_output() {
     );
 }
 
+#[cfg(feature = "backend-s3")]
 fn spawn_store_http_server() -> (String, Arc<AtomicUsize>, thread::JoinHandle<()>) {
     let server = Server::http("127.0.0.1:0").expect("http server");
     let base = format!("http://{}", server.server_addr());
