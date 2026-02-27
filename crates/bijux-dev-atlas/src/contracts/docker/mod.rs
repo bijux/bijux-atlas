@@ -297,6 +297,18 @@ fn run_command_with_artifacts(
         let _ = std::fs::write(dir.join(stdout_name), &output.stdout);
         let _ = std::fs::write(dir.join(stderr_name), &output.stderr);
     }
+    if program == "docker" && !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if stderr.contains("Cannot connect to the Docker daemon")
+            || stderr.contains("is the docker daemon running")
+            || stderr.contains("docker daemon")
+        {
+            return Err(
+                "docker daemon is unavailable; start Docker Desktop or provide a reachable Docker-compatible daemon"
+                    .to_string(),
+            );
+        }
+    }
     Ok(output)
 }
 

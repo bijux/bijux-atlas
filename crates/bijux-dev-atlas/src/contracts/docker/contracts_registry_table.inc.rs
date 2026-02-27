@@ -632,5 +632,85 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_exceptions_minimal,
             }],
         },
+        Contract {
+            id: ContractId("DOCKER-053".to_string()),
+            title: "scan profile policy",
+            tests: vec![TestCase {
+                id: TestId("docker.scan.profile_policy".to_string()),
+                title: "docker policy defines local scan skip and ci scan enforcement",
+                kind: TestKind::Pure,
+                run: test_scan_profile_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-054".to_string()),
+            title: "runtime engine policy",
+            tests: vec![TestCase {
+                id: TestId("docker.runtime.engine_policy".to_string()),
+                title: "docker policy explicitly declares docker-only runtime engine",
+                kind: TestKind::Pure,
+                run: test_runtime_engine_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-055".to_string()),
+            title: "airgap build policy",
+            tests: vec![TestCase {
+                id: TestId("docker.build.airgap_policy_stub".to_string()),
+                title: "docker policy carries an explicit airgap build stub",
+                kind: TestKind::Pure,
+                run: test_airgap_build_policy_stub,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-056".to_string()),
+            title: "multi-registry push policy",
+            tests: vec![TestCase {
+                id: TestId("docker.push.multi_registry_policy_stub".to_string()),
+                title: "docker policy carries an explicit multi-registry push stub",
+                kind: TestKind::Pure,
+                run: test_multi_registry_push_policy_stub,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-057".to_string()),
+            title: "downloaded asset digest pinning",
+            tests: vec![TestCase {
+                id: TestId("docker.run.downloaded_assets_are_verified".to_string()),
+                title: "downloaded assets are paired with an in-instruction checksum verification",
+                kind: TestKind::Pure,
+                run: test_downloaded_assets_are_verified,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-058".to_string()),
+            title: "vendored binary declaration",
+            tests: vec![TestCase {
+                id: TestId("docker.vendored_binaries.allowlisted".to_string()),
+                title: "vendored binary artifacts are explicitly allowlisted",
+                kind: TestKind::Pure,
+                run: test_vendored_binaries_allowlisted,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-059".to_string()),
+            title: "curl pipe shell forbidden",
+            tests: vec![TestCase {
+                id: TestId("docker.run.no_curl_pipe_shell".to_string()),
+                title: "curl or wget pipelines must not feed shell interpreters",
+                kind: TestKind::Pure,
+                run: test_no_curl_pipe_shell,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-060".to_string()),
+            title: "dockerfile formatting",
+            tests: vec![TestCase {
+                id: TestId("docker.dockerfiles.canonical_whitespace".to_string()),
+                title: "dockerfiles avoid tabs and trailing whitespace",
+                kind: TestKind::Pure,
+                run: test_dockerfiles_canonical_whitespace,
+            }],
+        },
     ])
 }

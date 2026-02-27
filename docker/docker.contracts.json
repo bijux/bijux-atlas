@@ -839,6 +839,118 @@
         }
       ],
       "title": "exceptions minimal entries"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_053",
+      "id": "DOCKER-053",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.scan.profile_policy",
+          "title": "docker policy defines local scan skip and ci scan enforcement"
+        }
+      ],
+      "title": "scan profile policy"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_054",
+      "id": "DOCKER-054",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.runtime.engine_policy",
+          "title": "docker policy explicitly declares docker-only runtime engine"
+        }
+      ],
+      "title": "runtime engine policy"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_055",
+      "id": "DOCKER-055",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.build.airgap_policy_stub",
+          "title": "docker policy carries an explicit airgap build stub"
+        }
+      ],
+      "title": "airgap build policy"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_056",
+      "id": "DOCKER-056",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.push.multi_registry_policy_stub",
+          "title": "docker policy carries an explicit multi-registry push stub"
+        }
+      ],
+      "title": "multi-registry push policy"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_057",
+      "id": "DOCKER-057",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.run.downloaded_assets_are_verified",
+          "title": "downloaded assets are paired with an in-instruction checksum verification"
+        }
+      ],
+      "title": "downloaded asset digest pinning"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_058",
+      "id": "DOCKER-058",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.vendored_binaries.allowlisted",
+          "title": "vendored binary artifacts are explicitly allowlisted"
+        }
+      ],
+      "title": "vendored binary declaration"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_059",
+      "id": "DOCKER-059",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.run.no_curl_pipe_shell",
+          "title": "curl or wget pipelines must not feed shell interpreters"
+        }
+      ],
+      "title": "curl pipe shell forbidden"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_060",
+      "id": "DOCKER-060",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.dockerfiles.canonical_whitespace",
+          "title": "dockerfiles avoid tabs and trailing whitespace"
+        }
+      ],
+      "title": "dockerfile formatting"
     }
   ],
   "domain": "docker",

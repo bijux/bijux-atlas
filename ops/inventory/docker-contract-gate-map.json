@@ -269,6 +269,46 @@
       "command": "bijux dev atlas contracts docker --mode static",
       "contract_id": "DOCKER-052",
       "gate_id": "docker.contract.docker_052"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-053",
+      "gate_id": "docker.contract.docker_053"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-054",
+      "gate_id": "docker.contract.docker_054"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-055",
+      "gate_id": "docker.contract.docker_055"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-056",
+      "gate_id": "docker.contract.docker_056"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-057",
+      "gate_id": "docker.contract.docker_057"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-058",
+      "gate_id": "docker.contract.docker_058"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-059",
+      "gate_id": "docker.contract.docker_059"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-060",
+      "gate_id": "docker.contract.docker_060"
     }
   ],
   "schema_version": 1

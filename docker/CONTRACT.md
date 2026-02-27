@@ -287,6 +287,46 @@ Tests:
 Tests:
 - `docker.exceptions.minimal_entries` (static, Pure): each docker exception cites a contract id, expiry date, and justification
 
+### DOCKER-053 scan profile policy
+
+Tests:
+- `docker.scan.profile_policy` (static, Pure): docker policy defines local scan skip and ci scan enforcement
+
+### DOCKER-054 runtime engine policy
+
+Tests:
+- `docker.runtime.engine_policy` (static, Pure): docker policy explicitly declares docker-only runtime engine
+
+### DOCKER-055 airgap build policy
+
+Tests:
+- `docker.build.airgap_policy_stub` (static, Pure): docker policy carries an explicit airgap build stub
+
+### DOCKER-056 multi-registry push policy
+
+Tests:
+- `docker.push.multi_registry_policy_stub` (static, Pure): docker policy carries an explicit multi-registry push stub
+
+### DOCKER-057 downloaded asset digest pinning
+
+Tests:
+- `docker.run.downloaded_assets_are_verified` (static, Pure): downloaded assets are paired with an in-instruction checksum verification
+
+### DOCKER-058 vendored binary declaration
+
+Tests:
+- `docker.vendored_binaries.allowlisted` (static, Pure): vendored binary artifacts are explicitly allowlisted
+
+### DOCKER-059 curl pipe shell forbidden
+
+Tests:
+- `docker.run.no_curl_pipe_shell` (static, Pure): curl or wget pipelines must not feed shell interpreters
+
+### DOCKER-060 dockerfile formatting
+
+Tests:
+- `docker.dockerfiles.canonical_whitespace` (static, Pure): dockerfiles avoid tabs and trailing whitespace
+
 ## Mapping
 
 | Contract | Gate | Command |
@@ -345,6 +385,14 @@ Tests:
 | `DOCKER-050` | `docker.contract.docker_050` | `bijux dev atlas contracts docker --mode static` |
 | `DOCKER-051` | `docker.contract.docker_051` | `bijux dev atlas contracts docker --mode static` |
 | `DOCKER-052` | `docker.contract.docker_052` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-053` | `docker.contract.docker_053` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-054` | `docker.contract.docker_054` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-055` | `docker.contract.docker_055` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-056` | `docker.contract.docker_056` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-057` | `docker.contract.docker_057` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-058` | `docker.contract.docker_058` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-059` | `docker.contract.docker_059` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-060` | `docker.contract.docker_060` | `bijux dev atlas contracts docker --mode static` |
 
 ## Rule
 
