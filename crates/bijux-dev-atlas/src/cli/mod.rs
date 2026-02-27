@@ -10,6 +10,7 @@ use clap::{Args, Parser, Subcommand};
 
 mod checks;
 mod dispatch;
+mod dispatch_mutations;
 mod ops;
 mod surfaces;
 
