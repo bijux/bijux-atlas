@@ -9,6 +9,7 @@ use clap as _;
 use regex as _;
 
 pub mod adapters;
+pub mod contracts;
 pub(crate) mod commands;
 pub mod core;
 pub mod model;
