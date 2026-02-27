@@ -149,6 +149,7 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
     profiles.sort_by(|a, b| a.name.cmp(&b.name));
     let profile =
         resolve_profile(common.profile.clone(), &profiles).map_err(|e| e.to_stable_message())?;
+    let run_id = run_id_or_default(common.run_id.clone())?;
     let process = OpsProcess::new(true);
     ensure_k8s_safety(&process, &repo_root, &profile, common.force, "bijux-atlas")
         .map_err(|e| e.to_stable_message())?;
@@ -230,11 +231,42 @@ pub(crate) fn run_ops_k8s_conformance(common: &OpsCommonArgs) -> Result<(String,
         }
     }
     let error_count = errors.len();
+    let sections = serde_json::json!({
+        "workload_readiness": {
+            "status": if error_count == 0 { "pass" } else { "fail" },
+            "missing": [],
+            "failed": errors
+        }
+    });
+    let conformance_report = serde_json::json!({
+        "schema_version": 1,
+        "run_id": run_id.as_str(),
+        "suite_id": "k8s_conformance",
+        "status": if error_count == 0 { "pass" } else { "fail" },
+        "failed_sections": if error_count == 0 { Vec::<String>::new() } else { vec!["workload_readiness".to_string()] },
+        "sections": sections
+    });
+    let mut report_path: Option<String> = None;
+    if common.allow_write {
+        let target = repo_root.join("ops/k8s/generated/conformance-report.json");
+        if let Some(parent) = target.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|err| format!("failed creating {}: {err}", parent.display()))?;
+        }
+        fs::write(
+            &target,
+            serde_json::to_string_pretty(&conformance_report).map_err(|e| e.to_string())?,
+        )
+        .map_err(|err| format!("failed writing {}: {err}", target.display()))?;
+        report_path = Some(target.display().to_string());
+    }
     let payload = serde_json::json!({
         "schema_version":1,
         "text": if errors.is_empty() {"k8s conformance passed"} else {"k8s conformance failed"},
         "rows": rows,
         "errors": errors,
+        "conformance_report": conformance_report,
+        "conformance_report_path": report_path,
         "summary":{"total":1,"errors": error_count,"warnings":0}
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
