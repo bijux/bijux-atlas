@@ -47,6 +47,7 @@
     "ops/schema/inventory/observability-coverage-map.schema.json",
     "ops/schema/inventory/owner-docs.fragments.schema.json",
     "ops/schema/inventory/owners.schema.json",
+    "ops/schema/inventory/pillars.schema.json",
     "ops/schema/inventory/pin-freeze.schema.json",
     "ops/schema/inventory/pins.schema.json",
     "ops/schema/inventory/placeholder-dirs.schema.json",

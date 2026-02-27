@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/ops/inventory/pillars.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "pillars"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "pillars": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "owner",
+          "required_dir",
+          "contract_prefix"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_dir": {
+            "type": "string",
+            "pattern": "^ops/[a-z0-9-]+$"
+          },
+          "contract_prefix": {
+            "type": "string",
+            "pattern": "^OPS-[A-Z0-9-]+$"
+          }
+        }
+      }
+    }
+  }
+}

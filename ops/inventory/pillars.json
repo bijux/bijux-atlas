@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "pillars": [
+    {
+      "id": "inventory",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/inventory",
+      "contract_prefix": "OPS-INV"
+    },
+    {
+      "id": "schema",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/schema",
+      "contract_prefix": "OPS-SCHEMA"
+    },
+    {
+      "id": "datasets",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/datasets",
+      "contract_prefix": "OPS-DATASET"
+    },
+    {
+      "id": "e2e",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/e2e",
+      "contract_prefix": "OPS-E2E"
+    },
+    {
+      "id": "env",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/env",
+      "contract_prefix": "OPS-ENV"
+    },
+    {
+      "id": "stack",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/stack",
+      "contract_prefix": "OPS-STACK"
+    },
+    {
+      "id": "k8s",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/k8s",
+      "contract_prefix": "OPS-K8S"
+    },
+    {
+      "id": "load",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/load",
+      "contract_prefix": "OPS-LOAD"
+    },
+    {
+      "id": "observe",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/observe",
+      "contract_prefix": "OPS-OBS"
+    },
+    {
+      "id": "report",
+      "owner": "bijux-atlas-operations",
+      "required_dir": "ops/report",
+      "contract_prefix": "OPS-RPT"
+    }
+  ]
+}

@@ -29,6 +29,12 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/inventory/pillars.json",
+      "schema": "ops/schema/inventory/pillars.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/inventory/surfaces.json",
       "schema": "ops/schema/inventory/surfaces.schema.json",
       "generator": "bijux dev atlas ops gen run",

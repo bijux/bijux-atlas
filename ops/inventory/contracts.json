@@ -12,6 +12,10 @@
       "version": 1
     },
     {
+      "path": "ops/inventory/pillars.json",
+      "version": 1
+    },
+    {
       "path": "ops/inventory/surfaces.json",
       "version": 1
     },
