@@ -1,29 +1,80 @@
 {
   "type": "object",
-  "required": ["schema_version", "drills"],
+  "required": [
+    "schema_version",
+    "drills"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "drills": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["name", "script", "purpose", "expected_signals", "runbook", "timeout_seconds", "parallel_policy", "warmup", "cleanup", "outage_matrix"],
+        "required": [
+          "name",
+          "script",
+          "purpose",
+          "expected_signals",
+          "runbook",
+          "timeout_seconds",
+          "parallel_policy",
+          "warmup",
+          "cleanup",
+          "outage_matrix"
+        ],
         "properties": {
-          "name": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-          "script": {"type": "string", "pattern": "^ops/.+\\.sh$"},
-          "purpose": {"type": "string", "minLength": 8},
-          "expected_signals": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-          "runbook": {"type": "string", "pattern": "^docs/.+\\.md$"},
-          "timeout_seconds": {"type": "integer", "minimum": 1},
-          "parallel_policy": {"type": "string", "enum": ["serial", "parallel-safe"]},
-          "warmup": {"type": "boolean"},
-          "cleanup": {"type": "boolean"},
-          "outage_matrix": {"type": "boolean"}
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "script": {
+            "type": "string",
+            "pattern": "^ops/.+\\.sh$"
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 8
+          },
+          "expected_signals": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "runbook": {
+            "type": "string",
+            "pattern": "^docs/.+\\.md$"
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "parallel_policy": {
+            "type": "string",
+            "enum": [
+              "serial",
+              "parallel-safe"
+            ]
+          },
+          "warmup": {
+            "type": "boolean"
+          },
+          "cleanup": {
+            "type": "boolean"
+          },
+          "outage_matrix": {
+            "type": "boolean"
+          }
         },
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/observe/drill-manifest.schema.json"
 }

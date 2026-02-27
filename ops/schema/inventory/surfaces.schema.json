@@ -2,24 +2,68 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "entrypoints", "bijux-dev-atlas_commands", "actions"],
+  "required": [
+    "schema_version",
+    "entrypoints",
+    "bijux-dev-atlas_commands",
+    "actions"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
-    "entrypoints": {"type": "array", "items": {"type": "string", "minLength": 1}},
-    "bijux-dev-atlas_commands": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "entrypoints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "bijux-dev-atlas_commands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
     "actions": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": true,
-        "required": ["id", "domain", "command", "argv"],
+        "required": [
+          "id",
+          "domain",
+          "command",
+          "argv"
+        ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "domain": {"type": "string", "minLength": 1},
-          "command": {"type": "array", "items": {"type": "string", "minLength": 1}},
-          "argv": {"type": "array", "items": {"type": "string", "minLength": 1}}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "argv": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/inventory/surfaces.schema.json"
 }

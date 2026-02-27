@@ -2,11 +2,25 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Stack Ports Inventory",
   "type": "object",
-  "required": ["atlas", "grafana", "prometheus"],
+  "required": [
+    "atlas",
+    "grafana",
+    "prometheus"
+  ],
   "properties": {
-    "atlas": {"type": "string", "pattern": "^https?://"},
-    "grafana": {"type": "string", "pattern": "^https?://"},
-    "prometheus": {"type": "string", "pattern": "^https?://"}
+    "atlas": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "grafana": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "prometheus": {
+      "type": "string",
+      "pattern": "^https?://"
+    }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/report/stack-ports-inventory.schema.json"
 }

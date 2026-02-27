@@ -1,102 +1,114 @@
 {
+  "generated_by": "bijux dev atlas ops generate",
   "schema_version": 1,
   "targets": [
     {
-      "schema_path": "ops/schema/datasets/manifest.schema.json",
+      "example_path": "ops/datasets/manifest.json",
       "required_fields": [
         "schema_version",
         "datasets"
-      ]
+      ],
+      "schema_path": "ops/schema/datasets/manifest.schema.json"
     },
     {
-      "schema_path": "ops/schema/env/overlay.schema.json",
+      "example_path": "ops/env/dev/overlay.json",
       "required_fields": [
         "schema_version",
         "environment",
         "values"
-      ]
+      ],
+      "schema_path": "ops/schema/env/overlay.schema.json"
     },
     {
-      "schema_path": "ops/schema/inventory/pins.schema.json",
+      "example_path": "ops/inventory/pins.yaml",
       "required_fields": [
         "schema_version",
         "images",
         "dataset_ids",
         "versions"
-      ]
+      ],
+      "schema_path": "ops/schema/inventory/pins.schema.json"
     },
     {
-      "schema_path": "ops/schema/inventory/toolchain.schema.json",
+      "example_path": "ops/inventory/toolchain.json",
       "required_fields": [
         "schema_version",
         "images",
         "tools"
-      ]
+      ],
+      "schema_path": "ops/schema/inventory/toolchain.schema.json"
     },
     {
-      "schema_path": "ops/schema/k8s/inventory-index.schema.json",
+      "example_path": "ops/k8s/generated/inventory-index.json",
       "required_fields": [
         "schema_version",
         "source",
         "files"
-      ]
+      ],
+      "schema_path": "ops/schema/k8s/inventory-index.schema.json"
     },
     {
-      "schema_path": "ops/schema/k8s/release-snapshot.schema.json",
+      "example_path": "ops/k8s/generated/release-snapshot.json",
       "required_fields": [
         "schema_version",
         "release",
         "chart",
         "install_profiles",
         "generated_at"
-      ]
+      ],
+      "schema_path": "ops/schema/k8s/release-snapshot.schema.json"
     },
     {
-      "schema_path": "ops/schema/k8s/render-artifact-index.schema.json",
+      "example_path": "ops/k8s/generated/render-artifact-index.json",
       "required_fields": [
         "schema_version",
         "render_outputs",
         "determinism"
-      ]
+      ],
+      "schema_path": "ops/schema/k8s/render-artifact-index.schema.json"
     },
     {
-      "schema_path": "ops/schema/load/perf-baseline.schema.json",
+      "example_path": "ops/load/baselines/local.json",
       "required_fields": [
         "schema_version",
         "name",
         "metadata",
         "rows"
-      ]
+      ],
+      "schema_path": "ops/schema/load/perf-baseline.schema.json"
     },
     {
-      "schema_path": "ops/schema/meta/inventory-index.schema.json",
+      "example_path": "ops/_generated.example/inventory-index.json",
       "required_fields": [
         "schema_version",
         "generated_from",
         "generated_by",
         "items"
-      ]
+      ],
+      "schema_path": "ops/schema/meta/inventory-index.schema.json"
     },
     {
-      "schema_path": "ops/schema/meta/ops-index.schema.json",
+      "example_path": "ops/_generated.example/ops-index.json",
       "required_fields": [
         "schema_version",
         "generated_by",
         "domains",
         "reports"
-      ]
+      ],
+      "schema_path": "ops/schema/meta/ops-index.schema.json"
     },
     {
-      "schema_path": "ops/schema/meta/required-files-contract.schema.json",
+      "example_path": "ops/_generated.example/required-files-contract.example.json",
       "required_fields": [
         "required_files",
         "required_dirs",
         "forbidden_patterns",
         "notes"
-      ]
+      ],
+      "schema_path": "ops/schema/meta/required-files-contract.schema.json"
     },
     {
-      "schema_path": "ops/schema/meta/scorecard.schema.json",
+      "example_path": "ops/_generated.example/scorecard.json",
       "required_fields": [
         "schema_version",
         "generated_by",
@@ -106,10 +118,11 @@
         "score",
         "summary",
         "budgets"
-      ]
+      ],
+      "schema_path": "ops/schema/meta/scorecard.schema.json"
     },
     {
-      "schema_path": "ops/schema/report/unified.schema.json",
+      "example_path": "ops/report/examples/unified-report-example.json",
       "required_fields": [
         "schema_version",
         "report_version",
@@ -118,24 +131,26 @@
         "lanes",
         "summary",
         "budget_status"
-      ]
+      ],
+      "schema_path": "ops/schema/report/unified.schema.json"
     },
     {
-      "schema_path": "ops/schema/stack/artifact-metadata.schema.json",
+      "example_path": "ops/stack/generated/artifact-metadata.json",
       "required_fields": [
         "schema_version",
         "artifacts_root",
         "stack_artifacts",
         "retention"
-      ]
+      ],
+      "schema_path": "ops/schema/stack/artifact-metadata.schema.json"
     },
     {
-      "schema_path": "ops/schema/stack/dependency-graph.schema.json",
+      "example_path": "ops/stack/generated/dependency-graph.json",
       "required_fields": [
         "schema_version",
         "profiles"
-      ]
+      ],
+      "schema_path": "ops/schema/stack/dependency-graph.schema.json"
     }
-  ],
-  "generated_by": "bijux dev atlas ops generate"
+  ]
 }

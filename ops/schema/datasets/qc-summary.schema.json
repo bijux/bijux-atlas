@@ -14,45 +14,92 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "kind": {"type": "string", "const": "dataset-qc-summary"},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "dataset-qc-summary"
+    },
     "qc_schema_version": {},
     "counts": {
       "type": "object",
-      "required": ["genes", "transcripts", "exons", "cds"],
+      "required": [
+        "genes",
+        "transcripts",
+        "exons",
+        "cds"
+      ],
       "additionalProperties": false,
       "properties": {
-        "genes": {"type": "integer", "minimum": 0},
-        "transcripts": {"type": "integer", "minimum": 0},
-        "exons": {"type": "integer", "minimum": 0},
-        "cds": {"type": "integer", "minimum": 0}
+        "genes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transcripts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exons": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cds": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "orphan_counts": {
       "type": "object",
-      "required": ["transcripts"],
+      "required": [
+        "transcripts"
+      ],
       "additionalProperties": false,
       "properties": {
-        "transcripts": {"type": "integer", "minimum": 0}
+        "transcripts": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
-    "duplicate_gene_ids": {"type": "integer", "minimum": 0},
-    "unknown_contig_feature_ratio": {"type": "number", "minimum": 0},
+    "duplicate_gene_ids": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unknown_contig_feature_ratio": {
+      "type": "number",
+      "minimum": 0
+    },
     "rejections_by_reason": {
       "type": "object",
-      "additionalProperties": {"type": "integer", "minimum": 0}
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
     },
     "top_biotypes": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "count"],
+        "required": [
+          "name",
+          "count"
+        ],
         "additionalProperties": false,
         "properties": {
-          "name": {"type": "string", "minLength": 1},
-          "count": {"type": "integer", "minimum": 0}
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/datasets/qc-summary.schema.json"
 }

@@ -106,5 +106,6 @@
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/inventory/control-graph.schema.json"
 }

@@ -4,7 +4,11 @@
   "title": "Inventory Placeholder Directories",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "owner", "placeholder_entries"],
+  "required": [
+    "schema_version",
+    "owner",
+    "placeholder_entries"
+  ],
   "properties": {
     "$schema": {
       "type": "string",

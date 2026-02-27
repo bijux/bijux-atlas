@@ -1,21 +1,44 @@
 {
   "type": "object",
-  "required": ["schema_version", "entries"],
+  "required": [
+    "schema_version",
+    "entries"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "entries": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "id", "checksums"],
+        "required": [
+          "name",
+          "id",
+          "checksums"
+        ],
         "properties": {
-          "name": {"type": "string", "minLength": 1},
-          "id": {"type": "string", "pattern": "^[0-9]+/[a-z_]+/[A-Za-z0-9]+$"},
-          "checksums": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]+/[a-z_]+/[A-Za-z0-9]+$"
+          },
+          "checksums": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
         },
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/datasets/manifest-lock.schema.json"
 }

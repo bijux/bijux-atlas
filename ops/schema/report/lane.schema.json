@@ -15,20 +15,69 @@
   ],
   "additionalProperties": true,
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "report_version": {"type": "integer", "minimum": 1},
-    "lane": {"type": "string", "minLength": 1},
-    "run_id": {"type": "string", "minLength": 1},
-    "status": {"type": "string", "enum": ["pass", "fail"]},
-    "started_at": {"type": "string", "minLength": 1},
-    "ended_at": {"type": "string", "minLength": 1},
-    "duration_seconds": {"type": "number", "minimum": 0},
-    "log": {"type": "string", "minLength": 1},
-    "artifact_paths": {"type": "array", "items": {"type": "string"}},
-    "failure_summary": {"type": "string"},
-    "budget_status": {"type": ["object", "null"]},
-    "repro_command": {"type": "string"},
-    "timeout_state": {"type": "string"},
-    "exit_code": {"type": "integer"}
-  }
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "report_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "lane": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ended_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "duration_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "log": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "failure_summary": {
+      "type": "string"
+    },
+    "budget_status": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "repro_command": {
+      "type": "string"
+    },
+    "timeout_state": {
+      "type": "string"
+    },
+    "exit_code": {
+      "type": "integer"
+    }
+  },
+  "$id": "ops/schema/report/lane.schema.json"
 }

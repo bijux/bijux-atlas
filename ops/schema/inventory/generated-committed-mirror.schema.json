@@ -118,5 +118,6 @@
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/inventory/generated-committed-mirror.schema.json"
 }

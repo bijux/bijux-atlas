@@ -3,7 +3,12 @@
   "title": "Inventory Index Artifact",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "generated_from", "generated_by", "items"],
+  "required": [
+    "schema_version",
+    "generated_from",
+    "generated_by",
+    "items"
+  ],
   "properties": {
     "schema_version": {
       "type": "integer",
@@ -22,7 +27,10 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "sha256"],
+        "required": [
+          "path",
+          "sha256"
+        ],
         "properties": {
           "path": {
             "type": "string",
@@ -35,5 +43,6 @@
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/meta/inventory-index.schema.json"
 }

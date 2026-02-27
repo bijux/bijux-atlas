@@ -1,27 +1,81 @@
 {
   "type": "object",
-  "required": ["schema_version", "areas"],
+  "required": [
+    "schema_version",
+    "areas"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "areas": {
       "type": "object",
       "properties": {
-        "ops": {"type": "string", "minLength": 1},
-        "ops/_generated": {"type": "string", "minLength": 1},
-        "ops/_generated.example": {"type": "string", "minLength": 1},
-        "artifacts/evidence": {"type": "string", "minLength": 1},
-        "ops/inventory": {"type": "string", "minLength": 1},
-        "ops/env": {"type": "string", "minLength": 1},
-        "ops/schema": {"type": "string", "minLength": 1},
-        "ops/stack": {"type": "string", "minLength": 1},
-        "ops/k8s": {"type": "string", "minLength": 1},
-        "ops/observe": {"type": "string", "minLength": 1},
-        "ops/load": {"type": "string", "minLength": 1},
-        "ops/datasets": {"type": "string", "minLength": 1},
-        "ops/e2e": {"type": "string", "minLength": 1},
-        "ops/report": {"type": "string", "minLength": 1},
-        "ops/datasets/fixtures": {"type": "string", "minLength": 1},
-        "ops/run": {"type": "string", "minLength": 1}
+        "ops": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/_generated": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/_generated.example": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifacts/evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/inventory": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/env": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/stack": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/k8s": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/observe": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/load": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/datasets": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/e2e": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/report": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/datasets/fixtures": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ops/run": {
+          "type": "string",
+          "minLength": 1
+        }
       },
       "required": [
         "ops",
@@ -43,5 +97,6 @@
       "additionalProperties": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/meta/ownership.schema.json"
 }

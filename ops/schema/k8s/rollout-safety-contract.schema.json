@@ -2,9 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "profiles"],
+  "required": [
+    "schema_version",
+    "profiles"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "profiles": {
       "type": "array",
       "minItems": 1,
@@ -20,14 +26,38 @@
           "readiness_path_required"
         ],
         "properties": {
-          "name": {"type": "string", "minLength": 1},
-          "suite": {"type": "string", "enum": ["install-gate", "k8s-suite", "nightly"]},
-          "values_file": {"type": "string", "pattern": "^ops/k8s/values/.+\\.yaml$"},
-          "rollout_mode": {"type": "string", "enum": ["deployment", "rollout"]},
-          "warmup_required": {"type": "boolean"},
-          "readiness_path_required": {"type": "boolean"}
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "suite": {
+            "type": "string",
+            "enum": [
+              "install-gate",
+              "k8s-suite",
+              "nightly"
+            ]
+          },
+          "values_file": {
+            "type": "string",
+            "pattern": "^ops/k8s/values/.+\\.yaml$"
+          },
+          "rollout_mode": {
+            "type": "string",
+            "enum": [
+              "deployment",
+              "rollout"
+            ]
+          },
+          "warmup_required": {
+            "type": "boolean"
+          },
+          "readiness_path_required": {
+            "type": "boolean"
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/k8s/rollout-safety-contract.schema.json"
 }

@@ -2,13 +2,52 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "window", "status", "trend", "readiness_scores", "failures"],
+  "required": [
+    "schema_version",
+    "window",
+    "status",
+    "trend",
+    "readiness_scores",
+    "failures"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "window": {"type": "string", "minLength": 1},
-    "status": {"type": "string", "enum": ["stable", "regressed"]},
-    "trend": {"type": "string", "enum": ["up", "flat", "down"]},
-    "readiness_scores": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 100}},
-    "failures": {"type": "array", "items": {"type": "string"}}
-  }
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "window": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "stable",
+        "regressed"
+      ]
+    },
+    "trend": {
+      "type": "string",
+      "enum": [
+        "up",
+        "flat",
+        "down"
+      ]
+    },
+    "readiness_scores": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$id": "ops/schema/report/historical-comparison.schema.json"
 }

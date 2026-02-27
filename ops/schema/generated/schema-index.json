@@ -1,7 +1,4 @@
 {
-  "schema_version": 1,
-  "source": "ops/schema",
-  "generated_by": "bijux dev atlas ops generate",
   "files": [
     "ops/schema/configs/public-surface.schema.json",
     "ops/schema/datasets/consumer-list.schema.json",
@@ -117,5 +114,8 @@
     "ops/schema/stack/profile-manifest.schema.json",
     "ops/schema/stack/service-dependency-contract.schema.json",
     "ops/schema/stack/version-manifest.schema.json"
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops generate",
+  "schema_version": 1,
+  "source": "ops/schema"
 }

@@ -2,12 +2,39 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "base_report", "target_report", "changes"],
+  "required": [
+    "schema_version",
+    "status",
+    "base_report",
+    "target_report",
+    "changes"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "status": {"type": "string", "enum": ["stable", "changed"]},
-    "base_report": {"type": "string", "minLength": 1},
-    "target_report": {"type": "string", "minLength": 1},
-    "changes": {"type": "array", "items": {"type": "string"}}
-  }
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "stable",
+        "changed"
+      ]
+    },
+    "base_report": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_report": {
+      "type": "string",
+      "minLength": 1
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$id": "ops/schema/report/report-diff.schema.json"
 }

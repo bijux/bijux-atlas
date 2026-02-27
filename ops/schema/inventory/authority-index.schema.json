@@ -2,13 +2,23 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "authority_hierarchy", "authoritative_files"],
+  "required": [
+    "schema_version",
+    "authority_hierarchy",
+    "authoritative_files"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "authority_hierarchy": {
       "type": "array",
       "minItems": 3,
-      "items": {"type": "string", "minLength": 1}
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     },
     "authoritative_files": {
       "type": "array",
@@ -16,29 +26,60 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "role", "owner", "consumer"],
+        "required": [
+          "path",
+          "role",
+          "owner",
+          "consumer"
+        ],
         "properties": {
-          "path": {"type": "string", "pattern": "^ops/.+"},
+          "path": {
+            "type": "string",
+            "pattern": "^ops/.+"
+          },
           "role": {
             "type": "string",
-            "enum": ["authoritative", "generated", "presence_contract"]
+            "enum": [
+              "authoritative",
+              "generated",
+              "presence_contract"
+            ]
           },
-          "owner": {"type": "string", "minLength": 1},
-          "consumer": {"type": "string", "minLength": 1},
-          "producer": {"type": "string", "minLength": 1},
-          "derived_from": {"type": "string", "pattern": "^ops/.+"}
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consumer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "producer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "derived_from": {
+            "type": "string",
+            "pattern": "^ops/.+"
+          }
         }
       }
     },
     "ignored_paths": {
       "type": "array",
-      "items": {"type": "string", "pattern": "^ops/.+"},
+      "items": {
+        "type": "string",
+        "pattern": "^ops/.+"
+      },
       "uniqueItems": true
     },
     "ignored_prefixes": {
       "type": "array",
-      "items": {"type": "string", "pattern": "^ops/.+"},
+      "items": {
+        "type": "string",
+        "pattern": "^ops/.+"
+      },
       "uniqueItems": true
     }
-  }
+  },
+  "$id": "ops/schema/inventory/authority-index.schema.json"
 }

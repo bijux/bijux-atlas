@@ -1,23 +1,43 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["schema_version", "slos"],
+  "required": [
+    "schema_version",
+    "slos"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "slos": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "target", "window"],
+        "required": [
+          "id",
+          "target",
+          "window"
+        ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "target": {"type": "string", "minLength": 1},
-          "window": {"type": "string", "minLength": 1}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1
+          },
+          "window": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/observe/slo-definitions.schema.json"
 }

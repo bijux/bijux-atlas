@@ -1,17 +1,30 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["schema_version", "environment", "values"],
+  "required": [
+    "schema_version",
+    "environment",
+    "values"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "environment": {
       "type": "string",
-      "enum": ["base", "dev", "ci", "prod"]
+      "enum": [
+        "base",
+        "dev",
+        "ci",
+        "prod"
+      ]
     },
     "values": {
       "type": "object",
       "additionalProperties": true
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/env/overlay.schema.json"
 }

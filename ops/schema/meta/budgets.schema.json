@@ -12,64 +12,120 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "smoke": {
       "type": "object",
-      "required": ["max_duration_seconds"],
+      "required": [
+        "max_duration_seconds"
+      ],
       "additionalProperties": false,
       "properties": {
-        "max_duration_seconds": {"type": "number", "exclusiveMinimum": 0}
+        "max_duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
       }
     },
     "root_local": {
       "type": "object",
-      "required": ["lane_max_duration_seconds", "warning_band_ratio"],
+      "required": [
+        "lane_max_duration_seconds",
+        "warning_band_ratio"
+      ],
       "additionalProperties": false,
       "properties": {
-        "warning_band_ratio": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "warning_band_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
         "lane_max_duration_seconds": {
           "type": "object",
           "minProperties": 1,
-          "additionalProperties": {"type": "number", "exclusiveMinimum": 0}
+          "additionalProperties": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
         }
       }
     },
     "k6_latency": {
       "type": "object",
-      "required": ["default_p95_ms", "default_p99_ms"],
+      "required": [
+        "default_p95_ms",
+        "default_p99_ms"
+      ],
       "additionalProperties": false,
       "properties": {
-        "default_p95_ms": {"type": "number", "exclusiveMinimum": 0},
-        "default_p99_ms": {"type": "number", "exclusiveMinimum": 0},
-        "max_p95_regression_ratio": {"type": "number", "minimum": 0, "maximum": 1},
-        "baseline_freshness_days": {"type": "integer", "minimum": 1},
-        "baseline_freshness_warn_only": {"type": "boolean"}
+        "default_p95_ms": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "default_p99_ms": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_p95_regression_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "baseline_freshness_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "baseline_freshness_warn_only": {
+          "type": "boolean"
+        }
       }
     },
     "cold_start": {
       "type": "object",
-      "required": ["max_p99_ms"],
+      "required": [
+        "max_p99_ms"
+      ],
       "additionalProperties": false,
       "properties": {
-        "max_p99_ms": {"type": "number", "exclusiveMinimum": 0}
+        "max_p99_ms": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
       }
     },
     "cache": {
       "type": "object",
-      "required": ["max_download_bytes", "max_dataset_count"],
+      "required": [
+        "max_download_bytes",
+        "max_dataset_count"
+      ],
       "additionalProperties": false,
       "properties": {
-        "max_download_bytes": {"type": "number", "exclusiveMinimum": 0},
-        "max_dataset_count": {"type": "number", "exclusiveMinimum": 0}
+        "max_download_bytes": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_dataset_count": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
       }
     },
     "metric_cardinality": {
       "type": "object",
-      "required": ["max_series_per_metric"],
+      "required": [
+        "max_series_per_metric"
+      ],
       "additionalProperties": false,
       "properties": {
-        "max_series_per_metric": {"type": "number", "exclusiveMinimum": 0}
+        "max_series_per_metric": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
       }
     }
-  }
+  },
+  "$id": "ops/schema/meta/budgets.schema.json"
 }

@@ -1,14 +1,39 @@
 {
   "type": "object",
-  "required": ["schema_version", "contract_version", "tools", "images", "helm", "datasets", "policy"],
+  "required": [
+    "schema_version",
+    "contract_version",
+    "tools",
+    "images",
+    "helm",
+    "datasets",
+    "policy"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
-    "contract_version": {"type": "string", "minLength": 1},
-    "tools": {"type": "object"},
-    "images": {"type": "object"},
-    "helm": {"type": "object"},
-    "datasets": {"type": "object"},
-    "policy": {"type": "object"}
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "contract_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tools": {
+      "type": "object"
+    },
+    "images": {
+      "type": "object"
+    },
+    "helm": {
+      "type": "object"
+    },
+    "datasets": {
+      "type": "object"
+    },
+    "policy": {
+      "type": "object"
+    }
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "$id": "ops/schema/meta/pins.schema.json"
 }

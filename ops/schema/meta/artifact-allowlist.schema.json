@@ -1,11 +1,17 @@
 {
   "type": "object",
-  "required": ["entries"],
+  "required": [
+    "entries"
+  ],
   "properties": {
     "entries": {
       "type": "array",
-      "items": {"type": "string", "pattern": "^artifacts/[A-Za-z0-9_./-]+/?$"}
+      "items": {
+        "type": "string",
+        "pattern": "^artifacts/[A-Za-z0-9_./-]+/?$"
+      }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/meta/artifact-allowlist.schema.json"
 }

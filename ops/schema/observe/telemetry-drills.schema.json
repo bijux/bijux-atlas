@@ -1,22 +1,38 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["schema_version", "drills"],
+  "required": [
+    "schema_version",
+    "drills"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "drills": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "category"],
+        "required": [
+          "id",
+          "category"
+        ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "category": {"type": "string", "minLength": 1}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/observe/telemetry-drills.schema.json"
 }

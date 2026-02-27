@@ -1,4 +1,5 @@
 {
+  "schema_version": 1,
   "name": "local",
   "source": "approved-threshold-bootstrap",
   "notes": "bootstrap baseline aligned to smoke thresholds for deterministic local regression checks",

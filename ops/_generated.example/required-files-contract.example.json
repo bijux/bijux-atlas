@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "required_files": [
+    "ops/README.md",
+    "ops/CONTRACT.md"
+  ],
+  "required_dirs": [
+    "ops/schema",
+    "ops/inventory"
+  ],
+  "forbidden_patterns": [
+    "*.bak",
+    "scripts/*"
+  ],
+  "notes": [
+    "Example fixture for required-files-contract schema coverage."
+  ]
+}

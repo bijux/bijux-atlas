@@ -2,11 +2,32 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "stale_after_days", "required_metrics", "golden_summary"],
+  "required": [
+    "schema_version",
+    "stale_after_days",
+    "required_metrics",
+    "golden_summary"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "stale_after_days": {"type": "integer", "minimum": 1},
-    "required_metrics": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-    "golden_summary": {"type": "string", "minLength": 1}
-  }
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "stale_after_days": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "required_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "golden_summary": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$id": "ops/schema/datasets/qc-metadata.schema.json"
 }

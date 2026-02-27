@@ -35,7 +35,10 @@
       "minLength": 1
     },
     "score": {
-      "type": ["number", "integer"]
+      "type": [
+        "number",
+        "integer"
+      ]
     },
     "summary": {
       "type": "object"
@@ -43,5 +46,6 @@
     "budgets": {
       "type": "object"
     }
-  }
+  },
+  "$id": "ops/schema/meta/scorecard.schema.json"
 }

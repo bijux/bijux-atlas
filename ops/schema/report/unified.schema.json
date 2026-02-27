@@ -1,115 +1,295 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["schema_version", "report_version", "run_id", "generated_at", "lanes", "summary", "budget_status"],
+  "required": [
+    "schema_version",
+    "report_version",
+    "run_id",
+    "generated_at",
+    "lanes",
+    "summary",
+    "budget_status"
+  ],
   "additionalProperties": true,
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "report_version": {"type": "integer", "minimum": 1},
-    "run_id": {"type": "string", "minLength": 1},
-    "generated_at": {"type": "string", "minLength": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "report_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1
+    },
     "lanes": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["lane", "run_id", "status", "duration_seconds", "log"],
+        "required": [
+          "lane",
+          "run_id",
+          "status",
+          "duration_seconds",
+          "log"
+        ],
         "additionalProperties": true,
         "properties": {
-          "lane": {"type": "string", "minLength": 1},
-          "run_id": {"type": "string", "minLength": 1},
-          "status": {"type": "string", "enum": ["pass", "fail"]},
-          "duration_seconds": {"type": "number", "minimum": 0},
-          "log": {"type": "string", "minLength": 1}
+          "lane": {
+            "type": "string",
+            "minLength": 1
+          },
+          "run_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail"
+            ]
+          },
+          "duration_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "log": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
     "summary": {
       "type": "object",
-      "required": ["total", "passed", "failed"],
+      "required": [
+        "total",
+        "passed",
+        "failed"
+      ],
       "additionalProperties": false,
       "properties": {
-        "total": {"type": "integer", "minimum": 0},
-        "passed": {"type": "integer", "minimum": 0},
-        "failed": {"type": "integer", "minimum": 0}
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "budget_status": {
       "type": "object",
-      "required": ["checked", "failed", "near_failing", "failed_lanes"],
+      "required": [
+        "checked",
+        "failed",
+        "near_failing",
+        "failed_lanes"
+      ],
       "additionalProperties": false,
       "properties": {
-        "checked": {"type": "integer", "minimum": 0},
-        "failed": {"type": "integer", "minimum": 0},
-        "near_failing": {"type": "array", "items": {"type": "string"}},
-        "failed_lanes": {"type": "array", "items": {"type": "string"}}
+        "checked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "near_failing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failed_lanes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "perf_summary": {
       "type": "object",
-      "required": ["suite_count", "p95_max_ms", "p99_max_ms"],
+      "required": [
+        "suite_count",
+        "p95_max_ms",
+        "p99_max_ms"
+      ],
       "additionalProperties": true,
       "properties": {
-        "suite_count": {"type": "integer", "minimum": 0},
-        "p95_max_ms": {"type": "number", "minimum": 0},
-        "p99_max_ms": {"type": "number", "minimum": 0}
+        "suite_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "p95_max_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "p99_max_ms": {
+          "type": "number",
+          "minimum": 0
+        }
       }
     },
     "graceful_degradation": {
       "type": "object",
-      "required": ["status", "score_percent", "total_considered", "failed"],
+      "required": [
+        "status",
+        "score_percent",
+        "total_considered",
+        "failed"
+      ],
       "additionalProperties": true,
       "properties": {
-        "status": {"type": "string", "enum": ["pass", "fail"]},
-        "score_percent": {"type": "number", "minimum": 0, "maximum": 100},
-        "total_considered": {"type": "integer", "minimum": 0},
-        "failed": {"type": "integer", "minimum": 0}
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "score_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "total_considered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "k8s_conformance": {
       "type": "object",
-      "required": ["status"],
+      "required": [
+        "status"
+      ],
       "additionalProperties": true,
       "properties": {
-        "status": {"type": "string", "enum": ["pass", "fail"]},
-        "failed_sections": {"type": "array", "items": {"type": "string"}}
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "failed_sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "repo_cleanliness": {
       "type": "object",
-      "required": ["status", "git_dirty_path_count", "python_cache_hygiene"],
+      "required": [
+        "status",
+        "git_dirty_path_count",
+        "python_cache_hygiene"
+      ],
       "additionalProperties": true,
       "properties": {
-        "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
-        "git_dirty_path_count": {"type": "integer", "minimum": 0},
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warn",
+            "fail"
+          ]
+        },
+        "git_dirty_path_count": {
+          "type": "integer",
+          "minimum": 0
+        },
         "python_cache_hygiene": {
           "type": "object",
-          "required": ["status", "violations"],
+          "required": [
+            "status",
+            "violations"
+          ],
           "additionalProperties": true,
           "properties": {
-            "status": {"type": "string", "enum": ["pass", "fail"]},
-            "violations": {"type": "array", "items": {"type": "string"}}
+            "status": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "fail"
+              ]
+            },
+            "violations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
       }
     },
     "ops_workflows": {
       "type": "object",
-      "required": ["status", "root", "report_count", "reports"],
+      "required": [
+        "status",
+        "root",
+        "report_count",
+        "reports"
+      ],
       "additionalProperties": true,
       "properties": {
-        "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
-        "root": {"type": "string", "minLength": 1},
-        "report_count": {"type": "integer", "minimum": 0},
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warn",
+            "fail"
+          ]
+        },
+        "root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "report_count": {
+          "type": "integer",
+          "minimum": 0
+        },
         "reports": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["path"],
+            "required": [
+              "path"
+            ],
             "additionalProperties": true,
             "properties": {
-              "path": {"type": "string", "minLength": 1},
-              "kind": {"type": "string"},
-              "status": {"type": "string"}
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
             }
           }
         }
@@ -117,14 +297,38 @@
     },
     "config_compilation": {
       "type": "object",
-      "required": ["status", "generated_root", "inventory_root", "files_present"],
+      "required": [
+        "status",
+        "generated_root",
+        "inventory_root",
+        "files_present"
+      ],
       "additionalProperties": true,
       "properties": {
-        "status": {"type": "string", "enum": ["pass", "warn", "fail"]},
-        "generated_root": {"type": "string", "minLength": 1},
-        "inventory_root": {"type": "string", "minLength": 1},
-        "files_present": {"type": "array", "items": {"type": "string"}}
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warn",
+            "fail"
+          ]
+        },
+        "generated_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inventory_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "files_present": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     }
-  }
+  },
+  "$id": "ops/schema/report/unified.schema.json"
 }

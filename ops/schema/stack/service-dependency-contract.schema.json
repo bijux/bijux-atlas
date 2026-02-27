@@ -2,9 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "services"],
+  "required": [
+    "schema_version",
+    "services"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "services": {
       "type": "array",
       "minItems": 1,
@@ -19,17 +25,32 @@
           "health_surface"
         ],
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "component": {"type": "string", "minLength": 1},
-          "critical": {"type": "boolean"},
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "component": {
+            "type": "string",
+            "minLength": 1
+          },
+          "critical": {
+            "type": "boolean"
+          },
           "required_profiles": {
             "type": "array",
             "minItems": 1,
-            "items": {"type": "string", "minLength": 1}
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
           },
-          "health_surface": {"type": "string", "minLength": 1}
+          "health_surface": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/stack/service-dependency-contract.schema.json"
 }

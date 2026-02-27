@@ -2,24 +2,40 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "links"],
+  "required": [
+    "schema_version",
+    "links"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "links": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["drill_id", "contract_paths"],
+        "required": [
+          "drill_id",
+          "contract_paths"
+        ],
         "properties": {
-          "drill_id": {"type": "string", "pattern": "^ops\\.drill\\.[a-z0-9_]+$"},
+          "drill_id": {
+            "type": "string",
+            "pattern": "^ops\\.drill\\.[a-z0-9_]+$"
+          },
           "contract_paths": {
             "type": "array",
             "minItems": 1,
-            "items": {"type": "string", "pattern": "^ops/.+/CONTRACT\\.md$"}
+            "items": {
+              "type": "string",
+              "pattern": "^ops/.+/CONTRACT\\.md$"
+            }
           }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/inventory/drill-contract-links.schema.json"
 }

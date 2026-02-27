@@ -773,6 +773,56 @@
       "title": "schema evolution lock contract"
     },
     {
+      "id": "OPS-SCHEMA-006",
+      "tests": [
+        {
+          "test_id": "ops.schema.id_and_naming_consistency",
+          "title": "schema files define stable $id values aligned with file names"
+        }
+      ],
+      "title": "schema id consistency contract"
+    },
+    {
+      "id": "OPS-SCHEMA-007",
+      "tests": [
+        {
+          "test_id": "ops.schema.examples_validate_required_fields",
+          "title": "schema examples satisfy required field coverage from compatibility lock"
+        }
+      ],
+      "title": "schema example validation contract"
+    },
+    {
+      "id": "OPS-SCHEMA-008",
+      "tests": [
+        {
+          "test_id": "ops.schema.forbid_duplicate_intent",
+          "title": "schema ids and titles are unique to avoid duplicated intent"
+        }
+      ],
+      "title": "schema intent uniqueness contract"
+    },
+    {
+      "id": "OPS-SCHEMA-009",
+      "tests": [
+        {
+          "test_id": "ops.schema.canonical_json_formatting",
+          "title": "generated schema artifacts use canonical pretty json formatting"
+        }
+      ],
+      "title": "schema canonical formatting contract"
+    },
+    {
+      "id": "OPS-SCHEMA-010",
+      "tests": [
+        {
+          "test_id": "ops.schema.example_coverage",
+          "title": "schema compatibility targets declare existing example fixtures"
+        }
+      ],
+      "title": "schema example coverage contract"
+    },
+    {
       "id": "OPS-STACK-001",
       "tests": [
         {

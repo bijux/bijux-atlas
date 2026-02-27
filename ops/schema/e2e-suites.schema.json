@@ -1,50 +1,120 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["schema_version", "suites"],
+  "required": [
+    "schema_version",
+    "suites"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "suites": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "description", "required_capabilities", "scenarios"],
+        "required": [
+          "id",
+          "description",
+          "required_capabilities",
+          "scenarios"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-          "description": {"type": "string", "minLength": 8},
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 8
+          },
           "required_capabilities": {
             "type": "array",
-            "items": {"type": "string", "enum": ["k8s", "stack", "observe", "toxiproxy", "redis", "datasets", "deploy"]}
+            "items": {
+              "type": "string",
+              "enum": [
+                "k8s",
+                "stack",
+                "observe",
+                "toxiproxy",
+                "redis",
+                "datasets",
+                "deploy"
+              ]
+            }
           },
           "scenarios": {
             "type": "array",
             "minItems": 1,
             "items": {
               "type": "object",
-              "required": ["id", "description", "runner", "capabilities", "destructive", "budget"],
+              "required": [
+                "id",
+                "description",
+                "runner",
+                "capabilities",
+                "destructive",
+                "budget"
+              ],
               "additionalProperties": false,
               "properties": {
-                "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-                "description": {"type": "string", "minLength": 8},
-                "runner": {"type": "string", "minLength": 1},
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 8
+                },
+                "runner": {
+                  "type": "string",
+                  "minLength": 1
+                },
                 "capabilities": {
                   "type": "array",
-                  "items": {"type": "string", "enum": ["k8s", "stack", "observe", "toxiproxy", "redis", "datasets", "deploy"]}
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "k8s",
+                      "stack",
+                      "observe",
+                      "toxiproxy",
+                      "redis",
+                      "datasets",
+                      "deploy"
+                    ]
+                  }
                 },
-                "destructive": {"type": "boolean"},
+                "destructive": {
+                  "type": "boolean"
+                },
                 "budget": {
                   "type": "object",
-                  "required": ["expected_time_seconds", "expected_qps", "expected_artifacts"],
+                  "required": [
+                    "expected_time_seconds",
+                    "expected_qps",
+                    "expected_artifacts"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "expected_time_seconds": {"type": "integer", "minimum": 1},
-                    "expected_qps": {"type": "integer", "minimum": 0},
+                    "expected_time_seconds": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "expected_qps": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
                     "expected_artifacts": {
                       "type": "array",
-                      "items": {"type": "string", "minLength": 1}
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
                     }
                   }
                 }
@@ -54,5 +124,6 @@
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/e2e-suites.schema.json"
 }

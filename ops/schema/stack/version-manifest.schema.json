@@ -1,15 +1,49 @@
 {
   "type": "object",
-  "required": ["schema_version", "kind_node_image", "minio", "minio_mc", "prometheus", "otel_collector", "redis", "toxiproxy"],
+  "required": [
+    "schema_version",
+    "kind_node_image",
+    "minio",
+    "minio_mc",
+    "prometheus",
+    "otel_collector",
+    "redis",
+    "toxiproxy"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "kind_node_image": {"type": "string", "minLength": 1},
-    "minio": {"type": "string", "minLength": 1},
-    "minio_mc": {"type": "string", "minLength": 1},
-    "prometheus": {"type": "string", "minLength": 1},
-    "otel_collector": {"type": "string", "minLength": 1},
-    "redis": {"type": "string", "minLength": 1},
-    "toxiproxy": {"type": "string", "minLength": 1}
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind_node_image": {
+      "type": "string",
+      "minLength": 1
+    },
+    "minio": {
+      "type": "string",
+      "minLength": 1
+    },
+    "minio_mc": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prometheus": {
+      "type": "string",
+      "minLength": 1
+    },
+    "otel_collector": {
+      "type": "string",
+      "minLength": 1
+    },
+    "redis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "toxiproxy": {
+      "type": "string",
+      "minLength": 1
+    }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/stack/version-manifest.schema.json"
 }

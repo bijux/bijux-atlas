@@ -2,52 +2,157 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Bijux Atlas Load Suite Manifest",
   "type": "object",
-  "required": ["schema_version", "query_set", "scenarios_dir", "suites"],
+  "required": [
+    "schema_version",
+    "query_set",
+    "scenarios_dir",
+    "suites"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
-    "query_set": {"type": "string"},
-    "scenarios_dir": {"type": "string"},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "query_set": {
+      "type": "string"
+    },
+    "scenarios_dir": {
+      "type": "string"
+    },
     "suites": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "purpose", "kind", "expected_metrics", "thresholds", "must_pass"],
+        "required": [
+          "name",
+          "purpose",
+          "kind",
+          "expected_metrics",
+          "thresholds",
+          "must_pass"
+        ],
         "properties": {
-          "name": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
-          "purpose": {"type": "string", "minLength": 8},
-          "kind": {"type": "string", "enum": ["k6", "script"]},
-          "scenario": {"type": "string"},
-          "script": {"type": "string"},
-          "must_pass": {"type": "boolean"},
-          "run_in": {"type": "array", "items": {"type": "string", "enum": ["smoke", "full", "nightly", "pr", "load-ci", "load-nightly", "hpa-validation"]}},
-          "expected_metrics": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 8
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "k6",
+              "script"
+            ]
+          },
+          "scenario": {
+            "type": "string"
+          },
+          "script": {
+            "type": "string"
+          },
+          "must_pass": {
+            "type": "boolean"
+          },
+          "run_in": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "smoke",
+                "full",
+                "nightly",
+                "pr",
+                "load-ci",
+                "load-nightly",
+                "hpa-validation"
+              ]
+            }
+          },
+          "expected_metrics": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
           "thresholds": {
             "type": "object",
             "properties": {
-              "p95_ms_max": {"type": "number", "minimum": 0},
-              "p99_ms_max": {"type": "number", "minimum": 0},
-              "error_rate_max": {"type": "number", "minimum": 0, "maximum": 1},
-              "cold_start_p99_ms_max": {"type": "number", "minimum": 0},
-              "max_pod_cold_start_ms_max": {"type": "number", "minimum": 0},
-              "memory_growth_bytes_max": {"type": "number", "minimum": 0}
+              "p95_ms_max": {
+                "type": "number",
+                "minimum": 0
+              },
+              "p99_ms_max": {
+                "type": "number",
+                "minimum": 0
+              },
+              "error_rate_max": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "cold_start_p99_ms_max": {
+                "type": "number",
+                "minimum": 0
+              },
+              "max_pod_cold_start_ms_max": {
+                "type": "number",
+                "minimum": 0
+              },
+              "memory_growth_bytes_max": {
+                "type": "number",
+                "minimum": 0
+              }
             },
             "additionalProperties": false
           },
           "requires": {
             "type": "object",
             "properties": {
-              "redis_experiment": {"type": "boolean"}
+              "redis_experiment": {
+                "type": "boolean"
+              }
             },
             "additionalProperties": false
           }
         },
         "allOf": [
-          {"if": {"properties": {"kind": {"const": "k6"}}}, "then": {"required": ["scenario"]}},
-          {"if": {"properties": {"kind": {"const": "script"}}}, "then": {"required": ["script"]}}
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "k6"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "scenario"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "script"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "script"
+              ]
+            }
+          }
         ],
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/load/suite-manifest.schema.json"
 }

@@ -2,12 +2,37 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "deterministic_seed", "seed_source", "applies_to", "policy"],
+  "required": [
+    "schema_version",
+    "deterministic_seed",
+    "seed_source",
+    "applies_to",
+    "policy"
+  ],
   "properties": {
-    "schema_version": { "type": "integer", "const": 1 },
-    "deterministic_seed": { "type": "integer", "minimum": 1 },
-    "seed_source": { "type": "string", "minLength": 1 },
-    "applies_to": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
-    "policy": { "type": "string", "minLength": 1 }
-  }
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "deterministic_seed": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "seed_source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applies_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "policy": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$id": "ops/schema/load/deterministic-seed-policy.schema.json"
 }

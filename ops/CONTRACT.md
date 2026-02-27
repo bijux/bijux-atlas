@@ -406,6 +406,31 @@ Tests:
 Tests:
 - `ops.schema.evolution_lock` (static, Pure): compatibility lock tracks schema evolution targets
 
+#### OPS-SCHEMA-006 schema id consistency contract
+
+Tests:
+- `ops.schema.id_and_naming_consistency` (static, Pure): schema files define stable $id values aligned with file names
+
+#### OPS-SCHEMA-007 schema example validation contract
+
+Tests:
+- `ops.schema.examples_validate_required_fields` (static, Pure): schema examples satisfy required field coverage from compatibility lock
+
+#### OPS-SCHEMA-008 schema intent uniqueness contract
+
+Tests:
+- `ops.schema.forbid_duplicate_intent` (static, Pure): schema ids and titles are unique to avoid duplicated intent
+
+#### OPS-SCHEMA-009 schema canonical formatting contract
+
+Tests:
+- `ops.schema.canonical_json_formatting` (static, Pure): generated schema artifacts use canonical pretty json formatting
+
+#### OPS-SCHEMA-010 schema example coverage contract
+
+Tests:
+- `ops.schema.example_coverage` (static, Pure): schema compatibility targets declare existing example fixtures
+
 ### Pillar: stack
 
 #### OPS-STACK-001 stack toml profile contract

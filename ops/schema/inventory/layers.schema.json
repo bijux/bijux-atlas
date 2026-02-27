@@ -1,6 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "allOf": [
-    {"$ref": "../meta/layer-contract.schema.json"}
-  ]
+    {
+      "$ref": "../meta/layer-contract.schema.json"
+    }
+  ],
+  "$id": "ops/schema/inventory/layers.schema.json"
 }

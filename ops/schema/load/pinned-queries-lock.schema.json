@@ -1,14 +1,30 @@
 {
   "type": "object",
-  "required": ["file_sha256", "query_hashes"],
+  "required": [
+    "file_sha256",
+    "query_hashes"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
-    "source": {"type": "string", "minLength": 1},
-    "file_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "file_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
     "query_hashes": {
       "type": "object",
-      "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/load/pinned-queries-lock.schema.json"
 }

@@ -2,19 +2,39 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "ops namespaces ssot",
   "type": "object",
-  "required": ["schema_version", "namespaces"],
+  "required": [
+    "schema_version",
+    "namespaces"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "namespaces": {
       "type": "object",
-      "required": ["stack", "k8s", "e2e"],
+      "required": [
+        "stack",
+        "k8s",
+        "e2e"
+      ],
       "additionalProperties": false,
       "properties": {
-        "stack": {"type": "string", "minLength": 1},
-        "k8s": {"type": "string", "minLength": 1},
-        "e2e": {"type": "string", "minLength": 1}
+        "stack": {
+          "type": "string",
+          "minLength": 1
+        },
+        "k8s": {
+          "type": "string",
+          "minLength": 1
+        },
+        "e2e": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
-  }
+  },
+  "$id": "ops/schema/meta/namespaces.schema.json"
 }

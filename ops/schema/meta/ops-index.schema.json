@@ -3,7 +3,12 @@
   "title": "Ops Index Artifact",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "generated_by", "domains", "reports"],
+  "required": [
+    "schema_version",
+    "generated_by",
+    "domains",
+    "reports"
+  ],
   "properties": {
     "schema_version": {
       "type": "integer",
@@ -27,5 +32,6 @@
         "pattern": "^ops/.+"
       }
     }
-  }
+  },
+  "$id": "ops/schema/meta/ops-index.schema.json"
 }

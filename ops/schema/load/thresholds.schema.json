@@ -2,21 +2,40 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "suite", "thresholds"],
+  "required": [
+    "schema_version",
+    "suite",
+    "thresholds"
+  ],
   "properties": {
-    "schema_version": { "type": "integer", "minimum": 1 },
-    "suite": { "type": "string", "minLength": 1 },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "suite": {
+      "type": "string",
+      "minLength": 1
+    },
     "thresholds": {
       "type": "object",
       "minProperties": 1,
       "additionalProperties": {
         "oneOf": [
-          { "type": "number" },
-          { "type": "integer" },
-          { "type": "string" },
-          { "type": "boolean" }
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "type": "boolean"
+          }
         ]
       }
     }
-  }
+  },
+  "$id": "ops/schema/load/thresholds.schema.json"
 }

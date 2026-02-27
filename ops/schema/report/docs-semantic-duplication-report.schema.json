@@ -2,24 +2,60 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "generated_by", "status", "pairs"],
+  "required": [
+    "schema_version",
+    "generated_by",
+    "status",
+    "pairs"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "generated_by": {"type": "string", "minLength": 1},
-    "status": {"type": "string", "enum": ["pass", "fail"]},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
     "pairs": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["left", "right", "status"],
+        "required": [
+          "left",
+          "right",
+          "status"
+        ],
         "properties": {
-          "left": {"type": "string", "pattern": "^(ops|docs)/.+\\.md$"},
-          "right": {"type": "string", "pattern": "^(ops|docs)/.+\\.md$"},
-          "status": {"type": "string", "enum": ["ok", "duplicate_risk"]},
-          "notes": {"type": "string"}
+          "left": {
+            "type": "string",
+            "pattern": "^(ops|docs)/.+\\.md$"
+          },
+          "right": {
+            "type": "string",
+            "pattern": "^(ops|docs)/.+\\.md$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "duplicate_risk"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/report/docs-semantic-duplication-report.schema.json"
 }

@@ -26,5 +26,6 @@
     "results": {
       "type": "array"
     }
-  }
+  },
+  "$id": "ops/schema/k8s/suite-report.schema.json"
 }

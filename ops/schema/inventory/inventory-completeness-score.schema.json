@@ -2,24 +2,79 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "generated_by", "status", "score", "checks"],
+  "required": [
+    "schema_version",
+    "generated_by",
+    "status",
+    "score",
+    "checks"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "generated_by": {"type": "string", "minLength": 1},
-    "status": {"type": "string", "enum": ["pass", "fail"]},
-    "score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
     "checks": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["node_consumer_coverage", "node_lifecycle_coverage", "domain_coverage_edges", "path_surface_coverage", "edge_kind_coverage"],
+      "required": [
+        "node_consumer_coverage",
+        "node_lifecycle_coverage",
+        "domain_coverage_edges",
+        "path_surface_coverage",
+        "edge_kind_coverage"
+      ],
       "properties": {
-        "node_consumer_coverage": {"type": "integer", "minimum": 0, "maximum": 100},
-        "node_lifecycle_coverage": {"type": "integer", "minimum": 0, "maximum": 100},
-        "domain_coverage_edges": {"type": "integer", "minimum": 0, "maximum": 100},
-        "path_surface_coverage": {"type": "integer", "minimum": 0, "maximum": 100},
-        "edge_kind_coverage": {"type": "integer", "minimum": 0, "maximum": 100}
+        "node_consumer_coverage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "node_lifecycle_coverage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "domain_coverage_edges": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "path_surface_coverage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "edge_kind_coverage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
       }
     },
-    "notes": {"type": "array", "items": {"type": "string", "minLength": 1}}
-  }
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$id": "ops/schema/inventory/inventory-completeness-score.schema.json"
 }

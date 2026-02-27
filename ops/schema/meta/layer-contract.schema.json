@@ -15,88 +15,204 @@
     "release_metadata"
   ],
   "properties": {
-    "contract_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "contract_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
     "compatibility": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["policy", "current_major", "notes"],
+      "required": [
+        "policy",
+        "current_major",
+        "notes"
+      ],
       "properties": {
-        "policy": {"type": "string", "minLength": 1},
-        "current_major": {"type": "integer", "minimum": 1},
-        "notes": {"type": "array", "items": {"type": "string"}}
+        "policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_major": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "layer_dependencies": {
       "type": "object",
-      "required": ["stack", "k8s", "e2e", "observe", "load"],
+      "required": [
+        "stack",
+        "k8s",
+        "e2e",
+        "observe",
+        "load"
+      ],
       "additionalProperties": false,
       "properties": {
-        "stack": {"$ref": "#/definitions/deps"},
-        "k8s": {"$ref": "#/definitions/deps"},
-        "e2e": {"$ref": "#/definitions/deps"},
-        "observe": {"$ref": "#/definitions/deps"},
-        "load": {"$ref": "#/definitions/deps"}
+        "stack": {
+          "$ref": "#/definitions/deps"
+        },
+        "k8s": {
+          "$ref": "#/definitions/deps"
+        },
+        "e2e": {
+          "$ref": "#/definitions/deps"
+        },
+        "observe": {
+          "$ref": "#/definitions/deps"
+        },
+        "load": {
+          "$ref": "#/definitions/deps"
+        }
       }
     },
     "ssot": {
       "type": "object",
-      "required": ["namespaces", "ports", "profiles"],
+      "required": [
+        "namespaces",
+        "ports",
+        "profiles"
+      ],
       "additionalProperties": false,
       "properties": {
-        "namespaces": {"type": "string", "pattern": "^configs/ops/.+\\.json$"},
-        "ports": {"type": "string", "pattern": "^configs/ops/.+\\.json$"},
-        "profiles": {"type": "string", "pattern": "^ops/stack/.+\\.json$"}
+        "namespaces": {
+          "type": "string",
+          "pattern": "^configs/ops/.+\\.json$"
+        },
+        "ports": {
+          "type": "string",
+          "pattern": "^configs/ops/.+\\.json$"
+        },
+        "profiles": {
+          "type": "string",
+          "pattern": "^ops/stack/.+\\.json$"
+        }
       }
     },
     "namespaces": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["stack", "k8s", "e2e"],
+      "required": [
+        "stack",
+        "k8s",
+        "e2e"
+      ],
       "properties": {
-        "stack": {"type": "string", "minLength": 1},
-        "k8s": {"type": "string", "minLength": 1},
-        "e2e": {"type": "string", "minLength": 1}
+        "stack": {
+          "type": "string",
+          "minLength": 1
+        },
+        "k8s": {
+          "type": "string",
+          "minLength": 1
+        },
+        "e2e": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "services": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["atlas", "prometheus", "otel", "grafana", "minio", "redis"],
+      "required": [
+        "atlas",
+        "prometheus",
+        "otel",
+        "grafana",
+        "minio",
+        "redis"
+      ],
       "properties": {
-        "atlas": {"$ref": "#/definitions/service"},
-        "prometheus": {"$ref": "#/definitions/service"},
-        "otel": {"$ref": "#/definitions/service"},
-        "grafana": {"$ref": "#/definitions/service"},
-        "minio": {"$ref": "#/definitions/service"},
-        "redis": {"$ref": "#/definitions/service"}
+        "atlas": {
+          "$ref": "#/definitions/service"
+        },
+        "prometheus": {
+          "$ref": "#/definitions/service"
+        },
+        "otel": {
+          "$ref": "#/definitions/service"
+        },
+        "grafana": {
+          "$ref": "#/definitions/service"
+        },
+        "minio": {
+          "$ref": "#/definitions/service"
+        },
+        "redis": {
+          "$ref": "#/definitions/service"
+        }
       }
     },
-    "ports": {"type": "object"},
+    "ports": {
+      "type": "object"
+    },
     "labels": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["required", "required_annotations"],
+      "required": [
+        "required",
+        "required_annotations"
+      ],
       "properties": {
-        "required": {"type": "array", "items": {"type": "string"}},
-        "required_annotations": {"type": "array", "items": {"type": "string"}}
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_annotations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "release_metadata": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["required_fields", "defaults"],
+      "required": [
+        "required_fields",
+        "defaults"
+      ],
       "properties": {
-        "required_fields": {"type": "array", "items": {"type": "string"}},
-        "defaults": {"type": "object", "additionalProperties": {"type": "string"}}
+        "required_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "defaults": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
       }
     },
     "allowlisted_literals": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["layer", "stack"],
+      "required": [
+        "layer",
+        "stack"
+      ],
       "properties": {
-        "layer": {"type": "string", "pattern": "^ops/inventory/meta/layer-contract-literal-allowlist\\.json$"},
-        "stack": {"type": "string", "pattern": "^ops/inventory/meta/stack-layer-literal-allowlist\\.json$"}
+        "layer": {
+          "type": "string",
+          "pattern": "^ops/inventory/meta/layer-contract-literal-allowlist\\.json$"
+        },
+        "stack": {
+          "type": "string",
+          "pattern": "^ops/inventory/meta/stack-layer-literal-allowlist\\.json$"
+        }
       }
     }
   },
@@ -104,23 +220,50 @@
     "service": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["service_name", "selector"],
+      "required": [
+        "service_name",
+        "selector"
+      ],
       "properties": {
-        "service_name": {"type": "string", "minLength": 1},
-        "selector": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}}
+        "service_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selector": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
       }
     },
     "deps": {
       "type": "object",
-      "required": ["may_reference"],
+      "required": [
+        "may_reference"
+      ],
       "additionalProperties": false,
       "properties": {
         "may_reference": {
           "type": "array",
-          "items": {"type": "string", "enum": ["stack", "k8s", "e2e", "observe", "load", "run", "_lib", "configs"]},
+          "items": {
+            "type": "string",
+            "enum": [
+              "stack",
+              "k8s",
+              "e2e",
+              "observe",
+              "load",
+              "run",
+              "_lib",
+              "configs"
+            ]
+          },
           "minItems": 1
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/meta/layer-contract.schema.json"
 }

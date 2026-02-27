@@ -1,11 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["schema_version", "name", "metadata", "rows"],
+  "required": [
+    "schema_version",
+    "name",
+    "metadata",
+    "rows"
+  ],
   "additionalProperties": true,
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
-    "name": {"type": "string", "minLength": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
     "metadata": {
       "type": "object",
       "required": [
@@ -20,22 +31,64 @@
       ],
       "additionalProperties": true,
       "properties": {
-        "captured_at": {"type": "string", "minLength": 1},
-        "environment": {"type": "string", "minLength": 1},
-        "profile": {"type": "string", "minLength": 1},
-        "dataset_set": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
-        "dataset_lock_hash": {"type": "string", "minLength": 8},
-        "k8s_profile": {"type": "string", "minLength": 1},
-        "replicas": {"type": "integer", "minimum": 1},
+        "captured_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset_set": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dataset_lock_hash": {
+          "type": "string",
+          "minLength": 8
+        },
+        "k8s_profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "replicas": {
+          "type": "integer",
+          "minimum": 1
+        },
         "tool_versions": {
           "type": "object",
-          "required": ["k6", "kind", "kubectl", "helm"],
+          "required": [
+            "k6",
+            "kind",
+            "kubectl",
+            "helm"
+          ],
           "additionalProperties": true,
           "properties": {
-            "k6": {"type": "string", "minLength": 1},
-            "kind": {"type": "string", "minLength": 1},
-            "kubectl": {"type": "string", "minLength": 1},
-            "helm": {"type": "string", "minLength": 1}
+            "k6": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kind": {
+              "type": "string",
+              "minLength": 1
+            },
+            "kubectl": {
+              "type": "string",
+              "minLength": 1
+            },
+            "helm": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         }
       }
@@ -45,14 +98,32 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["suite", "p95_ms", "p99_ms", "fail_rate"],
+        "required": [
+          "suite",
+          "p95_ms",
+          "p99_ms",
+          "fail_rate"
+        ],
         "properties": {
-          "suite": {"type": "string", "minLength": 1},
-          "p95_ms": {"type": "number", "minimum": 0},
-          "p99_ms": {"type": "number", "minimum": 0},
-          "fail_rate": {"type": "number", "minimum": 0}
+          "suite": {
+            "type": "string",
+            "minLength": 1
+          },
+          "p95_ms": {
+            "type": "number",
+            "minimum": 0
+          },
+          "p99_ms": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fail_rate": {
+            "type": "number",
+            "minimum": 0
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/load/perf-baseline.schema.json"
 }

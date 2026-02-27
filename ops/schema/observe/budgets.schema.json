@@ -126,5 +126,6 @@
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/observe/budgets.schema.json"
 }

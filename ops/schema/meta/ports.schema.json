@@ -2,49 +2,104 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "ops ports ssot",
   "type": "object",
-  "required": ["schema_version", "ports"],
+  "required": [
+    "schema_version",
+    "ports"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "ports": {
       "type": "object",
-      "required": ["atlas", "prometheus", "otel", "grafana", "minio", "redis"],
+      "required": [
+        "atlas",
+        "prometheus",
+        "otel",
+        "grafana",
+        "minio",
+        "redis"
+      ],
       "additionalProperties": false,
       "properties": {
-        "atlas": {"$ref": "#/definitions/svc"},
-        "prometheus": {"$ref": "#/definitions/svc"},
+        "atlas": {
+          "$ref": "#/definitions/svc"
+        },
+        "prometheus": {
+          "$ref": "#/definitions/svc"
+        },
         "otel": {
           "type": "object",
-          "required": ["grpc", "http"],
+          "required": [
+            "grpc",
+            "http"
+          ],
           "additionalProperties": false,
           "properties": {
-            "grpc": {"type": "integer", "minimum": 1, "maximum": 65535},
-            "http": {"type": "integer", "minimum": 1, "maximum": 65535}
+            "grpc": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "http": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
           }
         },
-        "grafana": {"$ref": "#/definitions/svc"},
+        "grafana": {
+          "$ref": "#/definitions/svc"
+        },
         "minio": {
           "type": "object",
-          "required": ["api", "console"],
+          "required": [
+            "api",
+            "console"
+          ],
           "additionalProperties": false,
           "properties": {
-            "api": {"type": "integer", "minimum": 1, "maximum": 65535},
-            "console": {"type": "integer", "minimum": 1, "maximum": 65535}
+            "api": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "console": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
           }
         },
-        "redis": {"$ref": "#/definitions/svc"}
+        "redis": {
+          "$ref": "#/definitions/svc"
+        }
       }
     }
   },
   "definitions": {
     "svc": {
       "type": "object",
-      "required": ["service", "container"],
+      "required": [
+        "service",
+        "container"
+      ],
       "additionalProperties": false,
       "properties": {
-        "service": {"type": "integer", "minimum": 1, "maximum": 65535},
-        "container": {"type": "integer", "minimum": 1, "maximum": 65535}
+        "service": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "container": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        }
       }
     }
-  }
+  },
+  "$id": "ops/schema/meta/ports.schema.json"
 }

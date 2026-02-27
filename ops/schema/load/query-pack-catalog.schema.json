@@ -2,22 +2,49 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "packs"],
+  "required": [
+    "schema_version",
+    "packs"
+  ],
   "properties": {
-    "schema_version": { "type": "integer", "const": 1 },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
     "packs": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "query_file", "lock_file", "status"],
+        "required": [
+          "id",
+          "query_file",
+          "lock_file",
+          "status"
+        ],
         "properties": {
-          "id": { "type": "string", "minLength": 1 },
-          "query_file": { "type": "string", "minLength": 1 },
-          "lock_file": { "type": "string", "minLength": 1 },
-          "status": { "type": "string", "enum": ["active", "deprecated"] }
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "query_file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lock_file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "deprecated"
+            ]
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/load/query-pack-catalog.schema.json"
 }

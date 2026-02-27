@@ -11,11 +11,29 @@
     "artifacts"
   ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "stack_version_hash": {"type": "string", "minLength": 8},
-    "status": {"type": "string", "enum": ["passed", "failed"]},
-    "run_id": {"type": "string", "minLength": 1},
-    "generated_at_utc": {"type": "string", "minLength": 1},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "stack_version_hash": {
+      "type": "string",
+      "minLength": 8
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "failed"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at_utc": {
+      "type": "string",
+      "minLength": 1
+    },
     "artifacts": {
       "type": "object",
       "additionalProperties": false,
@@ -30,15 +48,40 @@
         "pass_fail_summary"
       ],
       "properties": {
-        "helm_values_used": {"type": "string", "minLength": 1},
-        "k6_summary": {"type": "string", "minLength": 1},
-        "metrics_snapshot": {"type": "string", "minLength": 1},
-        "trace_snapshot": {"type": "string", "minLength": 1},
-        "dashboard_screenshot": {"type": "string", "minLength": 1},
-        "logs_excerpt": {"type": "string", "minLength": 1},
-        "rendered_manifests": {"type": "string", "minLength": 1},
-        "pass_fail_summary": {"type": "string", "minLength": 1}
+        "helm_values_used": {
+          "type": "string",
+          "minLength": 1
+        },
+        "k6_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metrics_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trace_snapshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dashboard_screenshot": {
+          "type": "string",
+          "minLength": 1
+        },
+        "logs_excerpt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rendered_manifests": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pass_fail_summary": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
-  }
+  },
+  "$id": "ops/schema/report/stack-contract.schema.json"
 }

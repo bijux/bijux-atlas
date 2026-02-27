@@ -2,29 +2,58 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "tags", "checks"],
+  "required": [
+    "schema_version",
+    "tags",
+    "checks"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "tags": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["vocabulary"],
+      "required": [
+        "vocabulary"
+      ],
       "properties": {
-        "vocabulary": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        "vocabulary": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "checks": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "domain", "title"],
+        "required": [
+          "id",
+          "domain",
+          "title"
+        ],
         "additionalProperties": true,
         "properties": {
-          "id": {"type": "string", "minLength": 1},
-          "domain": {"type": "string", "minLength": 1},
-          "title": {"type": "string", "minLength": 1}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     }
-  }
+  },
+  "$id": "ops/schema/inventory/registry.schema.json"
 }

@@ -2,26 +2,74 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "K8s Conformance Report",
   "type": "object",
-  "required": ["schema_version", "run_id", "suite_id", "status", "failed_sections", "sections"],
+  "required": [
+    "schema_version",
+    "run_id",
+    "suite_id",
+    "status",
+    "failed_sections",
+    "sections"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "const": 1},
-    "run_id": {"type": "string", "minLength": 1},
-    "suite_id": {"type": "string", "minLength": 1},
-    "status": {"type": "string", "enum": ["pass", "fail"]},
-    "failed_sections": {"type": "array", "items": {"type": "string"}},
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suite_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "failed_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "sections": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["status", "missing", "failed"],
+        "required": [
+          "status",
+          "missing",
+          "failed"
+        ],
         "properties": {
-          "status": {"type": "string", "enum": ["pass", "fail"]},
-          "missing": {"type": "array", "items": {"type": "string"}},
-          "failed": {"type": "array", "items": {"type": "string"}}
+          "status": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail"
+            ]
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         },
         "additionalProperties": false
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/k8s/conformance-report.schema.json"
 }

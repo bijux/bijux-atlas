@@ -1,12 +1,38 @@
 {
   "type": "object",
-  "required": ["schema_version", "timestamp_utc", "status", "target_manifest", "quarantine_marker"],
+  "required": [
+    "schema_version",
+    "timestamp_utc",
+    "status",
+    "target_manifest",
+    "quarantine_marker"
+  ],
   "properties": {
-    "schema_version": {"type": "integer", "minimum": 1},
-    "timestamp_utc": {"type": "string", "minLength": 1},
-    "status": {"type": "string", "enum": ["quarantined", "skipped", "failed"]},
-    "target_manifest": {"type": "string", "minLength": 1},
-    "quarantine_marker": {"type": "string", "minLength": 1}
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "quarantined",
+        "skipped",
+        "failed"
+      ]
+    },
+    "target_manifest": {
+      "type": "string",
+      "minLength": 1
+    },
+    "quarantine_marker": {
+      "type": "string",
+      "minLength": 1
+    }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$id": "ops/schema/datasets/corruption-drill-report.schema.json"
 }

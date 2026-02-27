@@ -2,10 +2,30 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "status", "checks"],
+  "required": [
+    "schema_version",
+    "status",
+    "checks"
+  ],
   "properties": {
-    "schema_version": { "type": "integer", "const": 1 },
-    "status": { "type": "string", "enum": ["stable", "drift"] },
-    "checks": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
-  }
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "stable",
+        "drift"
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    }
+  },
+  "$id": "ops/schema/load/load-drift-report.schema.json"
 }
