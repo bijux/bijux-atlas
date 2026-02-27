@@ -1274,4 +1274,51 @@ mod tests {
             vec!["Cargo.toml".to_string(), "README.md".to_string()]
         );
     }
+
+    #[test]
+    fn parser_ignores_comments_and_blank_lines() {
+        let instructions = parse_dockerfile("\n# header\n\nARG A=1\n\n# next\nFROM rust:1@sha256:abc\n");
+        let keywords = instructions
+            .iter()
+            .map(|ins| ins.keyword.as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(keywords, vec!["ARG", "FROM"]);
+    }
+
+    #[test]
+    fn parser_supports_arg_before_from() {
+        let instructions = parse_dockerfile("ARG BASE=rust:1\nFROM ${BASE}@sha256:abc\n");
+        assert_eq!(instructions[0].keyword, "ARG");
+        assert_eq!(instructions[1].keyword, "FROM");
+    }
+
+    #[test]
+    fn labels_are_checked_case_insensitively() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLABEL ORG.OPENCONTAINERS.IMAGE.SOURCE=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.VERSION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REVISION=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.CREATED=\"x\"\nLABEL ORG.OPENCONTAINERS.IMAGE.REF.NAME=\"x\"\n",
+        );
+        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+            .expect("symlink");
+        sync_contract_markdown(tmp.path()).expect("sync contract doc");
+
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &crate::contracts::RunOptions {
+                mode: crate::contracts::Mode::Static,
+                allow_subprocess: false,
+                allow_network: false,
+                fail_fast: false,
+                contract_filter: Some("DOCKER-008".to_string()),
+                test_filter: None,
+                list_only: false,
+                artifacts_root: None,
+            },
+        )
+        .expect("run contracts");
+        assert_eq!(report.fail_count(), 0, "uppercase label keys should pass");
+    }
 }
