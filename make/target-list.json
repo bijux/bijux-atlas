@@ -10,6 +10,7 @@
     "k8s-render",
     "k8s-validate",
     "lint",
+    "make-target-list",
     "ops-fast",
     "ops-nightly",
     "ops-pr",

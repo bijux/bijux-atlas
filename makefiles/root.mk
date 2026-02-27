@@ -22,23 +22,23 @@ include makefiles/verification.mk
 CURATED_TARGETS := \
 	help doctor fmt lint test build docker \
 	k8s-render k8s-validate stack-up stack-down \
-	ops-fast ops-pr ops-nightly
+	ops-fast ops-pr ops-nightly make-target-list
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "Curated make targets (Rust control plane):"; \
 	for t in $(CURATED_TARGETS); do printf '  %s\n' "$$t"; done
 
-list: ## Print curated make target names
+_internal-list: ## Print curated make target names
 	@for t in $(CURATED_TARGETS); do printf '%s\n' "$$t"; done
 
-explain: ## Explain curated target ownership (TARGET=<name>)
+_internal-explain: ## Explain curated target ownership (TARGET=<name>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
 	@case " $(CURATED_TARGETS) " in \
 	  *" $${TARGET} "*) echo "$${TARGET}: delegated via makefiles/*.mk wrappers to bijux dev atlas or cargo" ;; \
 	  *) echo "$${TARGET}: not available (unsupported target removed during Rust control-plane cutover)"; exit 2 ;; \
 	esac
 
-surface: ## Print make surface and docs pointers for Rust control plane
+_internal-surface: ## Print make surface and docs pointers for Rust control plane
 	@$(MAKE) -s help
 	@printf '%s\n' "Docs: docs/development/tooling/dev-atlas-ops.md docs/development/tooling/dev-atlas-docs.md"
 
@@ -83,4 +83,4 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json | tee $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help list explain surface doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly
+.PHONY: help _internal-list _internal-explain _internal-surface doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly

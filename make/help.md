@@ -23,3 +23,4 @@ The public surface is defined by `CURATED_TARGETS` in `makefiles/root.mk` and pr
 - ops-fast: run fast CI suite checks.
 - ops-pr: run pull-request CI suite checks.
 - ops-nightly: run nightly CI suite checks.
+- make-target-list: regenerate `make/target-list.json` from curated targets.
