@@ -5,6 +5,10 @@ CARGO_TERM_PROGRESS_WHEN ?= always
 CARGO_TERM_PROGRESS_WIDTH ?= 120
 CARGO_TERM_VERBOSE ?= false
 
+cleanup_root_nextest = \
+	if [ -d "$(CURDIR)/target/nextest" ]; then rm -rf "$(CURDIR)/target/nextest"; fi; \
+	if [ -d "$(CURDIR)/target" ] && [ -z "$$(find "$(CURDIR)/target" -mindepth 1 -print -quit 2>/dev/null)" ]; then rmdir "$(CURDIR)/target"; fi
+
 audit: ## Run cargo dependency audit
 	@command -v cargo-audit >/dev/null 2>&1 || { \
 		echo "cargo-audit is required. Install with: cargo install cargo-audit"; \
@@ -22,7 +26,10 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 	}
 	@mkdir -p artifacts/coverage
 	@mkdir -p artifacts/coverage/profraw
-	@LLVM_PROFILE_FILE="$(CURDIR)/artifacts/coverage/profraw/default_%m_%p.profraw" CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo llvm-cov nextest --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/nextest/nextest.toml --user-config-file none --run-ignored all --cargo-quiet
+	@status=0; \
+	LLVM_PROFILE_FILE="$(CURDIR)/artifacts/coverage/profraw/default_%m_%p.profraw" CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo llvm-cov nextest --workspace --all-features --lcov --output-path artifacts/coverage/lcov.info --config-file configs/nextest/nextest.toml --user-config-file none --run-ignored all --cargo-quiet --target-dir "$(CARGO_TARGET_DIR)" || status=$$?; \
+	$(cleanup_root_nextest); \
+	test $$status -eq 0
 	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo llvm-cov report
 
 fmt: ## Run cargo fmt --check
@@ -76,13 +83,19 @@ test: ## Run workspace tests with cargo nextest
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default}"
 	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
-	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}"
+	@status=0; \
+	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" || status=$$?; \
+	$(cleanup_root_nextest); \
+	test $$status -eq 0
 
 test-slow: ## Run only slow_ tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)"
+	@status=0; \
+	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)" || status=$$?; \
+	$(cleanup_root_nextest); \
+	test $$status -eq 0
 
 .PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow
