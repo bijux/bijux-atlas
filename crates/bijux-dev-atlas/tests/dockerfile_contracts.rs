@@ -112,3 +112,18 @@ fn runtime_dockerfile_base_images_follow_digest_policy() {
         violations.join("\n")
     );
 }
+
+#[test]
+fn docker_build_network_policy_is_documented() {
+    let root = workspace_root();
+    let policy_path = root.join("docker/contracts/BUILD_NETWORK_POLICY.md");
+    let text = fs::read_to_string(&policy_path).expect("read docker build network policy");
+    assert!(
+        text.contains("docker/images/runtime/Dockerfile"),
+        "build network policy must scope runtime Dockerfile exceptions"
+    );
+    assert!(
+        text.contains("cargo build --locked"),
+        "build network policy must document cargo lockfile-constrained exception"
+    );
+}
