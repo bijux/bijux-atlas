@@ -72,6 +72,41 @@ fn contracts_ops_supports_junit_format() {
 }
 
 #[test]
+fn contracts_all_lists_all_domains() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "all", "--list", "--format", "json"])
+        .output()
+        .expect("contracts all list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let domains = payload["contracts"]
+        .as_array()
+        .expect("contracts array")
+        .iter()
+        .filter_map(|row| row["domain"].as_str())
+        .collect::<std::collections::BTreeSet<_>>();
+    assert!(domains.contains("docker"));
+    assert!(domains.contains("make"));
+    assert!(domains.contains("ops"));
+}
+
+#[test]
+fn contracts_make_runs_and_reports_summary() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "make", "--format", "json"])
+        .output()
+        .expect("contracts make");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["domain"].as_str(), Some("make"));
+    assert_eq!(payload["summary"]["fail"].as_u64(), Some(0));
+}
+
+#[test]
 fn contracts_snapshot_writes_ops_registry_file() {
     let out = repo_root().join("artifacts/tests/contracts-ops-snapshot.json");
     if let Some(parent) = out.parent() {
@@ -136,6 +171,64 @@ fn contracts_ops_explain_includes_mapped_gate() {
     let payload: serde_json::Value =
         serde_json::from_slice(&output.stdout).expect("valid json output");
     assert!(payload["mapped_gate"].as_str().is_some());
+}
+
+#[test]
+fn contracts_ops_explain_test_reports_effects_and_io() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "ops",
+            "--explain-test",
+            "ops.root_surface.required_commands_exist",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("contracts ops explain-test");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(
+        payload["test_id"].as_str(),
+        Some("ops.root_surface.required_commands_exist")
+    );
+    assert!(payload["inputs_read"].as_array().is_some());
+    assert!(payload["outputs_written"].as_array().is_some());
+    assert!(payload["effects_required"].as_array().is_some());
+}
+
+#[test]
+fn contracts_docker_supports_json_and_junit_sidecar_outputs() {
+    let json_out = repo_root().join("artifacts/tests/contracts-docker-report.json");
+    let junit_out = repo_root().join("artifacts/tests/contracts-docker-report.xml");
+    if let Some(parent) = json_out.parent() {
+        fs::create_dir_all(parent).expect("mkdir");
+    }
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "docker",
+            "--format",
+            "human",
+            "--json-out",
+            json_out.to_str().expect("json out"),
+            "--junit-out",
+            junit_out.to_str().expect("junit out"),
+        ])
+        .output()
+        .expect("contracts docker sidecar outputs");
+    assert!(output.status.success());
+    let human = String::from_utf8(output.stdout).expect("utf8 stdout");
+    assert!(human.contains("Contracts: docker"));
+    let json_payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(json_out).expect("json out"))
+            .expect("json report");
+    assert_eq!(json_payload["domain"].as_str(), Some("docker"));
+    let junit_text = fs::read_to_string(junit_out).expect("junit out");
+    assert!(junit_text.contains("<testsuite"));
 }
 
 #[test]
