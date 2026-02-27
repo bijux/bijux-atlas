@@ -957,6 +957,112 @@ pub(crate) fn run_check_tree_budgets(
         }
     }
 
+    let command_index_path = repo_root.join("docs/_generated/command-index.json");
+    let known_command_ids = if command_index_path.exists() {
+        let value: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&command_index_path)
+                .map_err(|e| format!("read {} failed: {e}", command_index_path.display()))?,
+        )
+        .map_err(|e| format!("parse {} failed: {e}", command_index_path.display()))?;
+        value["commands"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|row| row["id"].as_str().map(str::to_string))
+            .collect::<std::collections::BTreeSet<_>>()
+    } else {
+        std::collections::BTreeSet::new()
+    };
+
+    let make_public_targets = if make_targets.exists() {
+        let value: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&make_targets)
+                .map_err(|e| format!("read {} failed: {e}", make_targets.display()))?,
+        )
+        .map_err(|e| format!("parse {} failed: {e}", make_targets.display()))?;
+        value["public_targets"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect::<std::collections::BTreeSet<_>>()
+    } else {
+        std::collections::BTreeSet::new()
+    };
+
+    let schema_index_path = repo_root.join("docs/_generated/schema-index.json");
+    let known_schema_paths = if schema_index_path.exists() {
+        let value: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&schema_index_path)
+                .map_err(|e| format!("read {} failed: {e}", schema_index_path.display()))?,
+        )
+        .map_err(|e| format!("parse {} failed: {e}", schema_index_path.display()))?;
+        value["schemas"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|row| row["path"].as_str().map(str::to_string))
+            .collect::<std::collections::BTreeSet<_>>()
+    } else {
+        std::collections::BTreeSet::new()
+    };
+
+    let command_ref_re =
+        Regex::new(r"`bijux dev atlas ([a-z0-9_-]+(?: [a-z0-9_-]+)?)`").map_err(|e| e.to_string())?;
+    let make_ref_re = Regex::new(r"`make ([a-z0-9_-]+)`").map_err(|e| e.to_string())?;
+    let path_ref_re = Regex::new(r"`((?:configs|ops/schema)/[a-zA-Z0-9_./-]+)`")
+        .map_err(|e| e.to_string())?;
+    for doc in walk_files_local(&repo_root.join("docs"))
+        .into_iter()
+        .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("md"))
+    {
+        let rel = doc
+            .strip_prefix(&repo_root)
+            .unwrap_or(&doc)
+            .display()
+            .to_string();
+        let text = fs::read_to_string(&doc).unwrap_or_default();
+        for cap in command_ref_re.captures_iter(&text) {
+            let ref_cmd = cap
+                .get(1)
+                .map(|m| m.as_str().replace(' ', "."))
+                .unwrap_or_default();
+            if !known_command_ids.is_empty() && !known_command_ids.contains(&ref_cmd) {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: `{rel}` references unknown command `bijux dev atlas {}`",
+                    cap.get(1).map(|m| m.as_str()).unwrap_or_default()
+                ));
+            }
+        }
+        for cap in make_ref_re.captures_iter(&text) {
+            let ref_make = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
+            if !make_public_targets.is_empty() && !make_public_targets.contains(ref_make) {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: `{rel}` references unknown make target `make {ref_make}`"
+                ));
+            }
+        }
+        for cap in path_ref_re.captures_iter(&text) {
+            let path = cap.get(1).map(|m| m.as_str()).unwrap_or_default();
+            if path.starts_with("configs/") && !repo_root.join(path).exists() {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: `{rel}` references missing config path `{path}`"
+                ));
+            }
+            if path.starts_with("ops/schema/")
+                && !known_schema_paths.is_empty()
+                && !known_schema_paths.contains(path)
+            {
+                errors.push(format!(
+                    "TREE_BUDGET_ERROR: `{rel}` references schema path not present in schema index `{path}`"
+                ));
+            }
+        }
+    }
+
     deepest.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
     deepest.truncate(20);
 
