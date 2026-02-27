@@ -31,12 +31,16 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "required": [
           "id",
           "domain",
           "command",
-          "argv"
+          "argv",
+          "purpose",
+          "supports_json",
+          "dry_run",
+          "artifacts_policy"
         ],
         "properties": {
           "id": {
@@ -60,6 +64,28 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "supports_json": {
+            "type": "boolean"
+          },
+          "dry_run": {
+            "type": "string",
+            "enum": [
+              "required",
+              "optional",
+              "not_applicable"
+            ]
+          },
+          "artifacts_policy": {
+            "type": "string",
+            "enum": [
+              "artifacts_root_only",
+              "none"
+            ]
           }
         }
       }

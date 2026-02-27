@@ -53,6 +53,12 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/inventory/deleted-markdown-denylist.json",
+      "schema": "ops/schema/inventory/deleted-markdown-denylist.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/inventory/drill-contract-links.json",
       "schema": "ops/schema/inventory/drill-contract-links.schema.json",
       "generator": "manual",
@@ -86,6 +92,12 @@
       "path": "ops/inventory/layers.json",
       "schema": "ops/schema/inventory/layers.schema.json",
       "generator": "bijux dev atlas ops gen run",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/markdown-allowlist.json",
+      "schema": "ops/schema/inventory/markdown-allowlist.schema.json",
+      "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {

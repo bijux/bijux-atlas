@@ -1,0 +1,16 @@
+{
+  "$id": "ops/schema/inventory/markdown-allowlist.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "allowed_markdown"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 1},
+    "allowed_markdown": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "pattern": "^ops/.+\\.md$"},
+      "uniqueItems": true
+    }
+  }
+}

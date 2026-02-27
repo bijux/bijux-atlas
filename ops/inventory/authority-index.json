@@ -155,12 +155,26 @@
     "ops/inventory/meta/"
   ],
   "authoritative_paths": [
-    "ops/inventory/contract-gate-map.json"
+    "ops/inventory/contract-gate-map.json",
+    "ops/inventory/deleted-markdown-denylist.json",
+    "ops/inventory/markdown-allowlist.json"
   ],
   "items": [
     {
       "path": "ops/inventory/contract-gate-map.json",
       "schema": "ops/schema/inventory/contract-gate-map.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/deleted-markdown-denylist.json",
+      "schema": "ops/schema/inventory/deleted-markdown-denylist.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/inventory/markdown-allowlist.json",
+      "schema": "ops/schema/inventory/markdown-allowlist.schema.json",
       "generator": "manual",
       "consumer": "checks_ops_inventory_contract_integrity"
     }

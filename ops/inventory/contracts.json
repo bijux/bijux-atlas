@@ -28,7 +28,15 @@
       "version": 1
     },
     {
+      "path": "ops/inventory/deleted-markdown-denylist.json",
+      "version": 1
+    },
+    {
       "path": "ops/inventory/gates.json",
+      "version": 1
+    },
+    {
+      "path": "ops/inventory/markdown-allowlist.json",
       "version": 1
     },
     {

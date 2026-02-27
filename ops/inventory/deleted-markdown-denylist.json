@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "paths": [
+    "ops/ARTIFACTS.md",
+    "ops/DRIFT.md",
+    "ops/NAMING.md",
+    "ops/INDEX.md",
+    "ops/OWNER.md",
+    "ops/REQUIRED_FILES.md",
+    "ops/DIRECTORY_BUDGET_POLICY.md",
+    "ops/GENERATED_LIFECYCLE.md",
+    "ops/inventory/INDEX.md",
+    "ops/inventory/OWNER.md",
+    "ops/inventory/REQUIRED_FILES.md"
+  ]
+}

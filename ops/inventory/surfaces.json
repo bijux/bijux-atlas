@@ -208,7 +208,11 @@
       "argv": [
         "actions",
         "list"
-      ]
+      ],
+      "purpose": "ops actions list command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.actions.run",
@@ -222,7 +226,11 @@
       "argv": [
         "actions",
         "run"
-      ]
+      ],
+      "purpose": "ops actions run command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.cache.prune",
@@ -236,7 +244,11 @@
       "argv": [
         "cache",
         "prune"
-      ]
+      ],
+      "purpose": "ops cache prune command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.cache.status",
@@ -250,7 +262,11 @@
       "argv": [
         "cache",
         "status"
-      ]
+      ],
+      "purpose": "ops cache status command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.datasets.fetch",
@@ -264,7 +280,11 @@
       "argv": [
         "datasets",
         "fetch"
-      ]
+      ],
+      "purpose": "ops datasets fetch command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.datasets.lint-ids",
@@ -278,7 +298,11 @@
       "argv": [
         "datasets",
         "lint-ids"
-      ]
+      ],
+      "purpose": "ops datasets lint ids command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.datasets.lock",
@@ -292,7 +316,11 @@
       "argv": [
         "datasets",
         "lock"
-      ]
+      ],
+      "purpose": "ops datasets lock command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.datasets.pin",
@@ -306,7 +334,11 @@
       "argv": [
         "datasets",
         "pin"
-      ]
+      ],
+      "purpose": "ops datasets pin command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.datasets.qc.diff",
@@ -322,7 +354,11 @@
         "datasets",
         "qc",
         "diff"
-      ]
+      ],
+      "purpose": "ops datasets qc diff command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.datasets.qc.summary",
@@ -338,7 +374,11 @@
         "datasets",
         "qc",
         "summary"
-      ]
+      ],
+      "purpose": "ops datasets qc summary command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.datasets.validate",
@@ -352,7 +392,11 @@
       "argv": [
         "datasets",
         "validate"
-      ]
+      ],
+      "purpose": "ops datasets validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.datasets.verify",
@@ -366,7 +410,11 @@
       "argv": [
         "datasets",
         "verify"
-      ]
+      ],
+      "purpose": "ops datasets verify command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.deploy.apply",
@@ -380,7 +428,11 @@
       "argv": [
         "deploy",
         "apply"
-      ]
+      ],
+      "purpose": "ops deploy apply command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.deploy.plan",
@@ -394,7 +446,11 @@
       "argv": [
         "deploy",
         "plan"
-      ]
+      ],
+      "purpose": "ops deploy plan command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.deploy.rollback",
@@ -408,7 +464,11 @@
       "argv": [
         "deploy",
         "rollback"
-      ]
+      ],
+      "purpose": "ops deploy rollback command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.e2e.run",
@@ -422,7 +482,11 @@
       "argv": [
         "e2e",
         "run"
-      ]
+      ],
+      "purpose": "ops e2e run command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.e2e.validate",
@@ -436,7 +500,11 @@
       "argv": [
         "e2e",
         "validate"
-      ]
+      ],
+      "purpose": "ops e2e validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.e2e.validate-results",
@@ -450,7 +518,11 @@
       "argv": [
         "e2e",
         "validate-results"
-      ]
+      ],
+      "purpose": "ops e2e validate results command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.env.print",
@@ -464,7 +536,11 @@
       "argv": [
         "env",
         "print"
-      ]
+      ],
+      "purpose": "ops env print command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.env.validate",
@@ -478,7 +554,11 @@
       "argv": [
         "env",
         "validate"
-      ]
+      ],
+      "purpose": "ops env validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.gen.check",
@@ -492,7 +572,11 @@
       "argv": [
         "gen",
         "check"
-      ]
+      ],
+      "purpose": "ops gen check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.gen.run",
@@ -506,7 +590,11 @@
       "argv": [
         "gen",
         "run"
-      ]
+      ],
+      "purpose": "ops gen run command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.k8s.apply-config",
@@ -520,7 +608,11 @@
       "argv": [
         "k8s",
         "apply-config"
-      ]
+      ],
+      "purpose": "ops k8s apply config command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.k8s.check",
@@ -534,7 +626,11 @@
       "argv": [
         "k8s",
         "check"
-      ]
+      ],
+      "purpose": "ops k8s check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.k8s.contracts",
@@ -548,7 +644,11 @@
       "argv": [
         "k8s",
         "contracts"
-      ]
+      ],
+      "purpose": "ops k8s contracts command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.k8s.diff",
@@ -562,7 +662,11 @@
       "argv": [
         "k8s",
         "diff"
-      ]
+      ],
+      "purpose": "ops k8s diff command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.k8s.render",
@@ -576,7 +680,11 @@
       "argv": [
         "k8s",
         "render"
-      ]
+      ],
+      "purpose": "ops k8s render command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.k8s.validate",
@@ -590,7 +698,11 @@
       "argv": [
         "k8s",
         "validate"
-      ]
+      ],
+      "purpose": "ops k8s validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.k8s.validate-configmap-keys",
@@ -604,7 +716,11 @@
       "argv": [
         "k8s",
         "validate-configmap-keys"
-      ]
+      ],
+      "purpose": "ops k8s validate configmap keys command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.kind.down",
@@ -618,7 +734,11 @@
       "argv": [
         "kind",
         "down"
-      ]
+      ],
+      "purpose": "ops kind down command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.kind.fault",
@@ -632,7 +752,11 @@
       "argv": [
         "kind",
         "fault"
-      ]
+      ],
+      "purpose": "ops kind fault command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.kind.reset",
@@ -646,7 +770,11 @@
       "argv": [
         "kind",
         "reset"
-      ]
+      ],
+      "purpose": "ops kind reset command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.kind.up",
@@ -660,7 +788,11 @@
       "argv": [
         "kind",
         "up"
-      ]
+      ],
+      "purpose": "ops kind up command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.kind.validate",
@@ -674,7 +806,11 @@
       "argv": [
         "kind",
         "validate"
-      ]
+      ],
+      "purpose": "ops kind validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.load.check",
@@ -688,7 +824,11 @@
       "argv": [
         "load",
         "check"
-      ]
+      ],
+      "purpose": "ops load check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.load.compare",
@@ -702,7 +842,11 @@
       "argv": [
         "load",
         "compare"
-      ]
+      ],
+      "purpose": "ops load compare command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.load.run",
@@ -716,7 +860,11 @@
       "argv": [
         "load",
         "run"
-      ]
+      ],
+      "purpose": "ops load run command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.observe.check",
@@ -730,7 +878,11 @@
       "argv": [
         "observe",
         "check"
-      ]
+      ],
+      "purpose": "ops observe check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.observe.drill",
@@ -744,7 +896,11 @@
       "argv": [
         "observe",
         "drill"
-      ]
+      ],
+      "purpose": "ops observe drill command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.observe.lint",
@@ -758,7 +914,11 @@
       "argv": [
         "observe",
         "lint"
-      ]
+      ],
+      "purpose": "ops observe lint command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.observe.report",
@@ -772,7 +932,11 @@
       "argv": [
         "observe",
         "report"
-      ]
+      ],
+      "purpose": "ops observe report command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.observe.up",
@@ -786,7 +950,11 @@
       "argv": [
         "observe",
         "up"
-      ]
+      ],
+      "purpose": "ops observe up command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.observe.validate",
@@ -800,7 +968,11 @@
       "argv": [
         "observe",
         "validate"
-      ]
+      ],
+      "purpose": "ops observe validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.observe.verify",
@@ -814,7 +986,11 @@
       "argv": [
         "observe",
         "verify"
-      ]
+      ],
+      "purpose": "ops observe verify command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.pins.check",
@@ -828,7 +1004,11 @@
       "argv": [
         "pins",
         "check"
-      ]
+      ],
+      "purpose": "ops pins check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.pins.update",
@@ -842,7 +1022,11 @@
       "argv": [
         "pins",
         "update"
-      ]
+      ],
+      "purpose": "ops pins update command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.check",
@@ -854,7 +1038,11 @@
       ],
       "argv": [
         "check"
-      ]
+      ],
+      "purpose": "ops root check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.clean",
@@ -866,7 +1054,11 @@
       ],
       "argv": [
         "clean"
-      ]
+      ],
+      "purpose": "ops root clean command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.clean-generated",
@@ -878,7 +1070,11 @@
       ],
       "argv": [
         "clean-generated"
-      ]
+      ],
+      "purpose": "ops root clean generated command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.contracts-check",
@@ -890,7 +1086,11 @@
       ],
       "argv": [
         "contracts-check"
-      ]
+      ],
+      "purpose": "ops root contracts check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.contracts-index",
@@ -902,7 +1102,11 @@
       ],
       "argv": [
         "contracts-index"
-      ]
+      ],
+      "purpose": "ops root contracts index command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.directory-budgets-check",
@@ -914,7 +1118,11 @@
       ],
       "argv": [
         "directory-budgets-check"
-      ]
+      ],
+      "purpose": "ops root directory budgets check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.doctor",
@@ -926,7 +1134,11 @@
       ],
       "argv": [
         "doctor"
-      ]
+      ],
+      "purpose": "ops root doctor command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.down",
@@ -938,7 +1150,11 @@
       ],
       "argv": [
         "down"
-      ]
+      ],
+      "purpose": "ops root down command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.explain",
@@ -950,7 +1166,11 @@
       ],
       "argv": [
         "explain"
-      ]
+      ],
+      "purpose": "ops root explain command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.help",
@@ -962,7 +1182,11 @@
       ],
       "argv": [
         "help"
-      ]
+      ],
+      "purpose": "ops root help command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.k8s-checks-layout",
@@ -974,7 +1198,11 @@
       ],
       "argv": [
         "k8s-checks-layout"
-      ]
+      ],
+      "purpose": "ops root k8s checks layout command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.k8s-flakes-check",
@@ -986,7 +1214,11 @@
       ],
       "argv": [
         "k8s-flakes-check"
-      ]
+      ],
+      "purpose": "ops root k8s flakes check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.k8s-surface-generate",
@@ -998,7 +1230,11 @@
       ],
       "argv": [
         "k8s-surface-generate"
-      ]
+      ],
+      "purpose": "ops root k8s surface generate command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.k8s-test-contract",
@@ -1010,7 +1246,11 @@
       ],
       "argv": [
         "k8s-test-contract"
-      ]
+      ],
+      "purpose": "ops root k8s test contract command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.k8s-test-lib-contract",
@@ -1022,7 +1262,11 @@
       ],
       "argv": [
         "k8s-test-lib-contract"
-      ]
+      ],
+      "purpose": "ops root k8s test lib contract command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.layer-drift-check",
@@ -1034,7 +1278,11 @@
       ],
       "argv": [
         "layer-drift-check"
-      ]
+      ],
+      "purpose": "ops root layer drift check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.lint",
@@ -1046,7 +1294,11 @@
       ],
       "argv": [
         "lint"
-      ]
+      ],
+      "purpose": "ops root lint command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.list",
@@ -1058,7 +1310,11 @@
       ],
       "argv": [
         "list"
-      ]
+      ],
+      "purpose": "ops root list command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.naming-check",
@@ -1070,7 +1326,11 @@
       ],
       "argv": [
         "naming-check"
-      ]
+      ],
+      "purpose": "ops root naming check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.no-direct-script-usage-check",
@@ -1082,7 +1342,11 @@
       ],
       "argv": [
         "no-direct-script-usage-check"
-      ]
+      ],
+      "purpose": "ops root no direct script usage check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.policy-audit",
@@ -1094,7 +1358,11 @@
       ],
       "argv": [
         "policy-audit"
-      ]
+      ],
+      "purpose": "ops root policy audit command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.prereqs",
@@ -1106,7 +1374,11 @@
       ],
       "argv": [
         "prereqs"
-      ]
+      ],
+      "purpose": "ops root prereqs command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.restart",
@@ -1118,7 +1390,11 @@
       ],
       "argv": [
         "restart"
-      ]
+      ],
+      "purpose": "ops root restart command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.root-lanes",
@@ -1130,7 +1406,11 @@
       ],
       "argv": [
         "root-lanes"
-      ]
+      ],
+      "purpose": "ops root root lanes command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.root-local",
@@ -1142,7 +1422,11 @@
       ],
       "argv": [
         "root-local"
-      ]
+      ],
+      "purpose": "ops root root local command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.run",
@@ -1154,7 +1438,11 @@
       ],
       "argv": [
         "run"
-      ]
+      ],
+      "purpose": "ops root run command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.run-script",
@@ -1166,7 +1454,11 @@
       ],
       "argv": [
         "run-script"
-      ]
+      ],
+      "purpose": "ops root run script command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.schema-check",
@@ -1178,7 +1470,11 @@
       ],
       "argv": [
         "schema-check"
-      ]
+      ],
+      "purpose": "ops root schema check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.smoke",
@@ -1190,7 +1486,11 @@
       ],
       "argv": [
         "smoke"
-      ]
+      ],
+      "purpose": "ops root smoke command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.suites-check",
@@ -1202,7 +1502,11 @@
       ],
       "argv": [
         "suites-check"
-      ]
+      ],
+      "purpose": "ops root suites check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.surface",
@@ -1214,7 +1518,11 @@
       ],
       "argv": [
         "surface"
-      ]
+      ],
+      "purpose": "ops root surface command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.tool-versions-check",
@@ -1226,7 +1534,11 @@
       ],
       "argv": [
         "tool-versions-check"
-      ]
+      ],
+      "purpose": "ops root tool versions check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.root.up",
@@ -1238,7 +1550,11 @@
       ],
       "argv": [
         "up"
-      ]
+      ],
+      "purpose": "ops root up command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.warm",
@@ -1250,7 +1566,11 @@
       ],
       "argv": [
         "warm"
-      ]
+      ],
+      "purpose": "ops root warm command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.root.warm-dx",
@@ -1262,7 +1582,11 @@
       ],
       "argv": [
         "warm-dx"
-      ]
+      ],
+      "purpose": "ops root warm dx command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.stack.check",
@@ -1276,7 +1600,11 @@
       "argv": [
         "stack",
         "check"
-      ]
+      ],
+      "purpose": "ops stack check command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.down",
@@ -1290,7 +1618,11 @@
       "argv": [
         "stack",
         "down"
-      ]
+      ],
+      "purpose": "ops stack down command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.stack.report",
@@ -1304,7 +1636,11 @@
       "argv": [
         "stack",
         "report"
-      ]
+      ],
+      "purpose": "ops stack report command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.restart",
@@ -1318,7 +1654,11 @@
       "argv": [
         "stack",
         "restart"
-      ]
+      ],
+      "purpose": "ops stack restart command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.stack.status",
@@ -1332,7 +1672,11 @@
       "argv": [
         "stack",
         "status"
-      ]
+      ],
+      "purpose": "ops stack status command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.up",
@@ -1346,7 +1690,11 @@
       "argv": [
         "stack",
         "up"
-      ]
+      ],
+      "purpose": "ops stack up command",
+      "supports_json": true,
+      "dry_run": "required",
+      "artifacts_policy": "none"
     },
     {
       "id": "ops.stack.validate",
@@ -1360,7 +1708,11 @@
       "argv": [
         "stack",
         "validate"
-      ]
+      ],
+      "purpose": "ops stack validate command",
+      "supports_json": true,
+      "dry_run": "optional",
+      "artifacts_policy": "artifacts_root_only"
     },
     {
       "id": "ops.stack.versions-sync",
@@ -1374,7 +1726,11 @@
       "argv": [
         "stack",
         "versions-sync"
-      ]
+      ],
+      "purpose": "ops stack versions sync command",
+      "supports_json": true,
+      "dry_run": "not_applicable",
+      "artifacts_policy": "none"
     }
   ]
 }

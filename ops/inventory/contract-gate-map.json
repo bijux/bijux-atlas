@@ -1052,6 +1052,60 @@
     },
     {
       "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-011",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-012",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-013",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-014",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-015",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-016",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-ROOT-SURFACE-001",
       "effects_required": [],
       "gate_ids": [
@@ -1098,6 +1152,42 @@
     {
       "command": "bijux dev atlas ops check",
       "contract_id": "OPS-ROOT-SURFACE-006",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-SURFACE-007",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-SURFACE-008",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-SURFACE-009",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-ROOT-SURFACE-010",
       "effects_required": [],
       "gate_ids": [
         "ops.gate.structure"

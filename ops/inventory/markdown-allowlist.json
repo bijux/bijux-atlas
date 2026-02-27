@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "allowed_markdown": [
+    "ops/README.md",
+    "ops/CONTRACT.md",
+    "ops/datasets/README.md",
+    "ops/datasets/CONTRACT.md",
+    "ops/e2e/README.md",
+    "ops/e2e/CONTRACT.md",
+    "ops/env/README.md",
+    "ops/env/CONTRACT.md",
+    "ops/inventory/README.md",
+    "ops/inventory/CONTRACT.md",
+    "ops/k8s/README.md",
+    "ops/k8s/CONTRACT.md",
+    "ops/load/README.md",
+    "ops/load/CONTRACT.md",
+    "ops/observe/README.md",
+    "ops/observe/CONTRACT.md",
+    "ops/report/README.md",
+    "ops/report/CONTRACT.md",
+    "ops/schema/README.md",
+    "ops/schema/CONTRACT.md",
+    "ops/stack/README.md",
+    "ops/stack/CONTRACT.md"
+  ]
+}
