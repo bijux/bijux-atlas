@@ -25,7 +25,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
           toolchain: 1.84.1
-      - run: make ci-dependency-lock-refresh
+      - name: Refresh lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo update --workspace
       - name: Verify only Cargo.lock changed
         shell: bash
         run: |

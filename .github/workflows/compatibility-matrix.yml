@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ref: main
-      - run: make docs
+      - run: cargo run -q -p bijux-dev-atlas -- docs validate --format json
       - name: Create compatibility matrix PR
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:

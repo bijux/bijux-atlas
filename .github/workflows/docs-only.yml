@@ -87,7 +87,7 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           logs_root="artifacts/${RUN_ID}/logs/docs-only"
           mkdir -p "${report_root}" "${logs_root}"
-          make docs > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- docs validate --format json > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
       - name: Build docs diff summary
         shell: bash
         run: |
