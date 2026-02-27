@@ -26,8 +26,9 @@ pub(crate) use configs_commands::{
     run_configs_command,
 };
 pub(crate) use control_plane_commands::{
-    run_capabilities_command, run_docker_command, run_help_inventory_command, run_policies_command,
-    run_print_boundaries_command, run_print_policies, run_version_command,
+    run_capabilities_command, run_contracts_command, run_docker_command,
+    run_help_inventory_command, run_policies_command, run_print_boundaries_command,
+    run_print_policies, run_version_command,
 };
 #[cfg(test)]
 pub(crate) use docs_commands::mkdocs_nav_refs;

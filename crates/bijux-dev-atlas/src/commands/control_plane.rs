@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{DockerCommand, DockerCommonArgs, DockerPolicyCommand, PoliciesCommand};
+use crate::cli::{
+    ContractsCommand, ContractsModeArg, DockerCommand, DockerCommonArgs, DockerPolicyCommand,
+    PoliciesCommand,
+};
 use crate::*;
+use bijux_dev_atlas::contracts;
 use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::collections::VecDeque;
@@ -1025,6 +1029,60 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
     }
 }
 
+pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i32 {
+    let run = (|| -> Result<(String, i32), String> {
+        match command {
+            ContractsCommand::Docker(args) => {
+                let repo_root = resolve_repo_root(args.repo_root)?;
+                let mode = match args.mode {
+                    ContractsModeArg::Static => contracts::Mode::Static,
+                    ContractsModeArg::Effect => contracts::Mode::Effect,
+                };
+                let options = contracts::RunOptions {
+                    mode,
+                    allow_subprocess: args.allow_subprocess,
+                    allow_network: args.allow_network,
+                    fail_fast: args.fail_fast,
+                    contract_filter: args.filter,
+                    test_filter: args.filter_test,
+                    list_only: args.list,
+                    artifacts_root: args.artifacts_root,
+                };
+                let report = contracts::run(
+                    "docker",
+                    contracts::docker::contracts,
+                    &repo_root,
+                    &options,
+                )?;
+                let rendered = if args.json {
+                    serde_json::to_string_pretty(&contracts::to_json(&report))
+                        .map_err(|e| format!("encode contracts report failed: {e}"))?
+                } else {
+                    contracts::to_pretty(&report)
+                };
+                Ok((rendered, report.exit_code()))
+            }
+        }
+    })();
+
+    match run {
+        Ok((rendered, code)) => {
+            if !quiet && !rendered.is_empty() {
+                if code == 0 {
+                    let _ = writeln!(io::stdout(), "{rendered}");
+                } else {
+                    let _ = writeln!(io::stderr(), "{rendered}");
+                }
+            }
+            code
+        }
+        Err(err) => {
+            let _ = writeln!(io::stderr(), "bijux-dev-atlas contracts failed: {err}");
+            1
+        }
+    }
+}
+
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
     let payload = serde_json::json!({
         "schema_version": CONTRACT_SCHEMA_VERSION,
@@ -1171,6 +1229,7 @@ pub(crate) fn run_help_inventory_command(
             {"name": "check", "kind": "group", "subcommands": ["registry", "list", "explain", "doctor", "run"]},
             {"name": "ops", "kind": "group"},
             {"name": "docs", "kind": "group"},
+            {"name": "contracts", "kind": "group"},
             {"name": "configs", "kind": "group"},
             {"name": "build", "kind": "group"},
             {"name": "policies", "kind": "group"},

@@ -229,3 +229,37 @@ pub struct ConfigsCommonArgs {
     #[arg(long, default_value_t = false)]
     pub strict: bool,
 }
+#[derive(Subcommand, Debug)]
+pub enum ContractsCommand {
+    Docker(ContractsDockerArgs),
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ContractsModeArg {
+    Static,
+    Effect,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ContractsDockerArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long)]
+    pub artifacts_root: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub json: bool,
+    #[arg(long, value_enum, default_value_t = ContractsModeArg::Static)]
+    pub mode: ContractsModeArg,
+    #[arg(long, default_value_t = false)]
+    pub fail_fast: bool,
+    #[arg(long)]
+    pub filter: Option<String>,
+    #[arg(long)]
+    pub filter_test: Option<String>,
+    #[arg(long, default_value_t = false)]
+    pub list: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_subprocess: bool,
+    #[arg(long, default_value_t = false)]
+    pub allow_network: bool,
+}

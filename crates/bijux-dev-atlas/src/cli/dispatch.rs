@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Cli, Command, ConfigsCommand, DocsCommand, FormatArg,
-    OpsCommand, PoliciesCommand, ReleaseCommand,
+    CheckCommand, CheckRegistryCommand, Cli, Command, ConfigsCommand, ContractsCommand,
+    DocsCommand, FormatArg, OpsCommand, PoliciesCommand, ReleaseCommand,
 };
 use crate::{
     plugin_metadata_json, run_build_command, run_capabilities_command, run_check_doctor,
     run_check_explain, run_check_list, run_check_registry_doctor, run_check_run,
     run_check_repo_doctor, run_check_tree_budgets,
-    run_configs_command, run_demo_command, run_docker_command, run_docs_command, run_gates_command,
-    run_help_inventory_command, run_ops_command, run_policies_command,
+    run_configs_command, run_contracts_command, run_demo_command, run_docker_command,
+    run_docs_command, run_gates_command, run_help_inventory_command, run_ops_command,
+    run_policies_command,
     run_print_boundaries_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
@@ -23,6 +24,7 @@ fn force_json_output(command: &mut Command) {
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
         Command::Demo { command } => force_json_demo(command),
+        Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
@@ -235,6 +237,12 @@ fn force_json_configs(command: &mut ConfigsCommand) {
         | ConfigsCommand::Compile(common)
         | ConfigsCommand::Diff(common) => common.format = FormatArg::Json,
         ConfigsCommand::Fmt { common, .. } => common.format = FormatArg::Json,
+    }
+}
+
+fn force_json_contracts(command: &mut ContractsCommand) {
+    match command {
+        ContractsCommand::Docker(args) => args.json = true,
     }
 }
 
@@ -560,6 +568,9 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
         Command::Demo { command } => match command {
             crate::cli::DemoCommand::Quickstart(args) => args.repo_root = Some(root.clone()),
         },
+        Command::Contracts { command } => match command {
+            ContractsCommand::Docker(args) => args.repo_root = Some(root.clone()),
+        },
         Command::Ci { command } | Command::Workflows { command } => match command {
             crate::cli::WorkflowsCommand::Validate { repo_root, .. }
             | crate::cli::WorkflowsCommand::Doctor { repo_root, .. }
@@ -672,6 +683,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             }
         },
         Command::Docs { command } => run_docs_command(cli.quiet, command),
+        Command::Contracts { command } => run_contracts_command(cli.quiet, command),
         Command::Demo { command } => run_demo_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
         Command::Docker { command } => run_docker_command(cli.quiet, command),
