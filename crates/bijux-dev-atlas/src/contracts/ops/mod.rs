@@ -79,6 +79,12 @@ fn file_sha256(path: &Path) -> Option<String> {
     Some(format!("{:x}", hasher.finalize()))
 }
 
+fn sha256_text(content: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(content.as_bytes());
+    format!("{:x}", hasher.finalize())
+}
+
 fn ops_markdown_allowed(rel: &str) -> bool {
     if rel == "ops/README.md" || rel == "ops/CONTRACT.md" {
         return true;

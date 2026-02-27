@@ -320,6 +320,106 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_ops_k8s_001_chart_renders_static,
             }],
         },
+        Contract {
+            id: ContractId("OPS-K8S-002".to_string()),
+            title: "k8s values schema validation contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.values_files_validate_schema".to_string()),
+                title: "install-matrix values files exist and are parseable against chart schema surface",
+                kind: TestKind::Pure,
+                run: test_ops_k8s_002_values_files_validate_schema,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-003".to_string()),
+            title: "k8s install matrix completeness contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.install_matrix_complete".to_string()),
+                title: "install matrix covers canonical profile set and references existing files",
+                kind: TestKind::Pure,
+                run: test_ops_k8s_003_install_matrix_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-004".to_string()),
+            title: "k8s forbidden object policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.no_forbidden_k8s_objects".to_string()),
+                title: "helm templates must not introduce forbidden cluster-scope object kinds",
+                kind: TestKind::Pure,
+                run: test_ops_k8s_004_no_forbidden_k8s_objects,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-001".to_string()),
+            title: "load scenario schema contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.scenarios_schema_valid".to_string()),
+                title: "load scenarios are parseable and include required fields",
+                kind: TestKind::Pure,
+                run: test_ops_load_001_scenarios_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-002".to_string()),
+            title: "load thresholds coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.thresholds_exist_for_each_suite".to_string()),
+                title: "every load suite has a matching thresholds file",
+                kind: TestKind::Pure,
+                run: test_ops_load_002_thresholds_exist_for_each_suite,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-003".to_string()),
+            title: "load pinned query lock contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.pinned_queries_lock_consistent".to_string()),
+                title: "pinned query lock digests match source query payload",
+                kind: TestKind::Pure,
+                run: test_ops_load_003_pinned_queries_lock_consistent,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-004".to_string()),
+            title: "load baseline schema contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.baselines_schema_valid".to_string()),
+                title: "load baselines are parseable and contain required fields",
+                kind: TestKind::Pure,
+                run: test_ops_load_004_baselines_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-LOAD-005".to_string()),
+            title: "load scenario to slo mapping contract",
+            tests: vec![TestCase {
+                id: TestId("ops.load.no_scenario_without_slo_mapping".to_string()),
+                title: "smoke/pr load suites must be represented in inventory SLO mappings",
+                kind: TestKind::Pure,
+                run: test_ops_load_005_no_scenario_without_slo_mapping,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-OBS-001".to_string()),
+            title: "observability alert rules contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.alert_rules_exist_parseable".to_string()),
+                title: "required alert rule sources exist and are parseable",
+                kind: TestKind::Pure,
+                run: test_ops_obs_001_alert_rules_exist_parseable,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-OBS-002".to_string()),
+            title: "observability dashboard golden contract",
+            tests: vec![TestCase {
+                id: TestId("ops.observe.dashboard_json_parseable_golden_diff".to_string()),
+                title: "dashboard json parses and matches golden identity and panel structure",
+                kind: TestKind::Pure,
+                run: test_ops_obs_002_dashboard_json_parseable_golden_diff,
+            }],
+        },
     ])
 }
 
@@ -352,6 +452,16 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-ENV-002" => "Ensures base/ci/dev/prod overlay coverage and profile identity consistency.",
         "OPS-ENV-003" => "Enforces strict known-key policy for environment overlay payloads.",
         "OPS-K8S-001" => "Ensures helm chart sources expose static render prerequisites.",
+        "OPS-K8S-002" => "Ensures install-matrix values files exist and parse against chart schema surface.",
+        "OPS-K8S-003" => "Ensures install-matrix covers canonical k8s profile set and file references.",
+        "OPS-K8S-004" => "Forbids disallowed cluster-scope object kinds in helm templates.",
+        "OPS-LOAD-001" => "Ensures load scenarios are parseable and keep required fields.",
+        "OPS-LOAD-002" => "Ensures each load suite has a matching thresholds artifact.",
+        "OPS-LOAD-003" => "Ensures pinned query lock digests match source query payload.",
+        "OPS-LOAD-004" => "Ensures load baselines are parseable and include required structure.",
+        "OPS-LOAD-005" => "Ensures smoke/pr load suites are covered by inventory SLO mappings.",
+        "OPS-OBS-001" => "Ensures observability alert rules exist and are parseable.",
+        "OPS-OBS-002" => "Ensures observability dashboard json aligns with committed golden identity.",
         _ => "No explanation registered for this contract id.",
     }
 }
