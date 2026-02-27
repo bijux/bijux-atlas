@@ -9,10 +9,12 @@ ops: ## Canonical ops gate
 	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format text
 
 ops-contracts: ## Run static ops contracts via dev-atlas contracts runner
-	@$(DEV_ATLAS) contracts ops --mode static --format pretty --json-out artifacts/contracts/ops-static.json
+	@mkdir -p artifacts/contracts
+	@$(DEV_ATLAS) contracts ops --mode static --format json --artifacts-root artifacts/contracts > artifacts/contracts/ops-static.json
 
 ops-contracts-effect: ## Run effect ops contracts via dev-atlas contracts runner
-	@$(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --format pretty --json-out artifacts/contracts/ops-effect.json
+	@mkdir -p artifacts/contracts
+	@$(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --format json --artifacts-root artifacts/contracts > artifacts/contracts/ops-effect.json
 
 ops-help: ## Show ops control-plane command surface
 	@$(DEV_ATLAS) ops --help
