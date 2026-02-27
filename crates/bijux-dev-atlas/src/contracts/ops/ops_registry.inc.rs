@@ -111,6 +111,96 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-ROOT-001".to_string()),
+            title: "ops root allowed surface contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.allowed_surface".to_string()),
+                title: "ops root contains only canonical files and domain directories",
+                kind: TestKind::Pure,
+                run: test_ops_root_001_allowed_surface,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-002".to_string()),
+            title: "ops root markdown contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.forbid_extra_markdown".to_string()),
+                title: "ops root forbids markdown files other than README.md and CONTRACT.md",
+                kind: TestKind::Pure,
+                run: test_ops_root_002_forbid_extra_root_markdown,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-003".to_string()),
+            title: "ops no shell scripts contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.no_shell_script_files".to_string()),
+                title: "ops tree contains no shell script files or bash shebangs",
+                kind: TestKind::Pure,
+                run: test_ops_root_003_no_shell_script_files,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-004".to_string()),
+            title: "ops max directory depth contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.max_directory_depth".to_string()),
+                title: "ops file paths remain within configured depth budget",
+                kind: TestKind::Pure,
+                run: test_ops_root_004_max_directory_depth,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-005".to_string()),
+            title: "ops filename policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.filename_policy".to_string()),
+                title: "ops filenames follow stable lowercase policy with explicit allowlist exceptions",
+                kind: TestKind::Pure,
+                run: test_ops_root_005_filename_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-006".to_string()),
+            title: "ops generated gitignore policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.generated_gitignore_policy".to_string()),
+                title: "ops/_generated is gitignored with explicit .gitkeep exception",
+                kind: TestKind::Pure,
+                run: test_ops_root_006_generated_gitignore_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-007".to_string()),
+            title: "ops generated example secret guard contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.generated_example_secret_guard".to_string()),
+                title: "ops/_generated.example is secret-free and json payloads are parseable",
+                kind: TestKind::Pure,
+                run: test_ops_root_007_generated_example_secret_guard,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-008".to_string()),
+            title: "ops placeholder directory contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.placeholder_dirs_allowlist".to_string()),
+                title: "ops placeholder directories are explicitly allowlisted",
+                kind: TestKind::Pure,
+                run: test_ops_root_008_placeholder_dirs_allowlist,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-009".to_string()),
+            title: "ops policy inventory coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.policy_files_inventory_coverage".to_string()),
+                title: "ops policy/config files are covered by inventory sources",
+                kind: TestKind::Pure,
+                run: test_ops_root_009_inventory_coverage_for_policy_files,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-ROOT-010".to_string()),
             title: "ops deleted doc name guard contract",
             tests: vec![TestCase {
@@ -761,6 +851,15 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-003" => "Enforces markdown size budgets so contracts stay concise and reviewable.",
         "OPS-004" => "Enforces SSOT boundary: ops README is navigation-only and points to docs/operations.",
         "OPS-005" => "Ensures ops/CONTRACT.md is generated from and synchronized with registry metadata.",
+        "OPS-ROOT-001" => "Constrains ops root surface to canonical control-plane files and domain directories.",
+        "OPS-ROOT-002" => "Forbids extra markdown documents at ops root beyond README.md and CONTRACT.md.",
+        "OPS-ROOT-003" => "Forbids shell script artifacts and bash shebangs in ops policy/config trees.",
+        "OPS-ROOT-004" => "Enforces directory-depth budget for ops artifacts to avoid uncontrolled nesting.",
+        "OPS-ROOT-005" => "Enforces stable filename policy with explicit allowlisted exceptions.",
+        "OPS-ROOT-006" => "Requires gitignore policy for runtime-generated ops/_generated artifacts.",
+        "OPS-ROOT-007" => "Guards committed generated examples against secret-like payload leakage.",
+        "OPS-ROOT-008" => "Requires placeholder directories to be explicitly listed in inventory allowlist.",
+        "OPS-ROOT-009" => "Requires ops policy/config artifacts to be covered by inventory mappings.",
         "OPS-ROOT-010" => "Prevents reintroduction of deleted legacy ops markdown policy documents.",
         "OPS-DOCS-001" => "Ensures operations docs policy statements reference executable OPS contract IDs.",
         "OPS-INV-001" => "Ensures domain and policy registration completeness in inventory sources.",

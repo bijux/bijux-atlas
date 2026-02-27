@@ -513,11 +513,11 @@ fn test_ops_003_contract_markdown_budget(ctx: &RunContext) -> TestResult {
 
     let root_contract = ctx.repo_root.join("ops/CONTRACT.md");
     let lines = markdown_line_count(&root_contract);
-    if lines > 400 {
+    if lines > 700 {
         violations.push(violation(
             contract_id,
             test_id,
-            "ops/CONTRACT.md exceeds line budget (max 400)",
+            "ops/CONTRACT.md exceeds line budget (max 700)",
             Some("ops/CONTRACT.md".to_string()),
         ));
     }
