@@ -89,44 +89,104 @@
       "title": "ops contract document generation contract"
     },
     {
-      "id": "OPS-DATASET-001",
+      "id": "OPS-DATASETS-001",
       "tests": [
         {
-          "test_id": "ops.dataset.manifest_and_lock_consistent",
+          "test_id": "ops.datasets.manifest_and_lock_consistent",
           "title": "dataset manifest and lock ids are consistent"
         }
       ],
       "title": "datasets manifest lock contract"
     },
     {
-      "id": "OPS-DATASET-002",
+      "id": "OPS-DATASETS-002",
       "tests": [
         {
-          "test_id": "ops.dataset.fixture_inventory_matches_disk",
+          "test_id": "ops.datasets.fixture_inventory_matches_disk",
           "title": "fixture inventory matches fixture directories and references"
         }
       ],
       "title": "datasets fixture inventory contract"
     },
     {
-      "id": "OPS-DATASET-003",
+      "id": "OPS-DATASETS-003",
       "tests": [
         {
-          "test_id": "ops.dataset.no_fixture_drift_without_promotion_record",
+          "test_id": "ops.datasets.no_fixture_drift_without_promotion_record",
           "title": "fixture drift requires explicit promotion rule coverage"
         }
       ],
       "title": "datasets fixture drift promotion contract"
     },
     {
-      "id": "OPS-DATASET-004",
+      "id": "OPS-DATASETS-004",
       "tests": [
         {
-          "test_id": "ops.dataset.release_diff_fixtures_deterministic",
+          "test_id": "ops.datasets.release_diff_fixtures_deterministic",
           "title": "release-diff fixture lock and golden payloads are deterministic"
         }
       ],
       "title": "datasets release diff determinism contract"
+    },
+    {
+      "id": "OPS-DATASETS-005",
+      "tests": [
+        {
+          "test_id": "ops.datasets.qc_metadata_and_golden_valid",
+          "title": "qc metadata and summary golden are parseable and linked"
+        }
+      ],
+      "title": "datasets qc metadata summary contract"
+    },
+    {
+      "id": "OPS-DATASETS-006",
+      "tests": [
+        {
+          "test_id": "ops.datasets.rollback_policy_exists_valid",
+          "title": "rollback policy exists and includes required rollback structure"
+        }
+      ],
+      "title": "datasets rollback policy contract"
+    },
+    {
+      "id": "OPS-DATASETS-007",
+      "tests": [
+        {
+          "test_id": "ops.datasets.promotion_rules_exists_valid",
+          "title": "promotion rules exist with canonical environment coverage and pin references"
+        }
+      ],
+      "title": "datasets promotion rules contract"
+    },
+    {
+      "id": "OPS-DATASETS-008",
+      "tests": [
+        {
+          "test_id": "ops.datasets.consumer_list_consistent_with_runtime_queries",
+          "title": "consumer list interfaces resolve to runnable repository paths"
+        }
+      ],
+      "title": "datasets consumer interface contract"
+    },
+    {
+      "id": "OPS-DATASETS-009",
+      "tests": [
+        {
+          "test_id": "ops.datasets.freeze_policy_exists_enforced",
+          "title": "freeze policy enforces append-only fixture immutability"
+        }
+      ],
+      "title": "datasets freeze policy contract"
+    },
+    {
+      "id": "OPS-DATASETS-010",
+      "tests": [
+        {
+          "test_id": "ops.datasets.dataset_store_layout_contract_enforced",
+          "title": "dataset ids and fixture paths follow canonical store layout"
+        }
+      ],
+      "title": "datasets store layout contract"
     },
     {
       "id": "OPS-DOCS-001",
@@ -581,6 +641,16 @@
         }
       ],
       "title": "load cold start p99 suite gate contract"
+    },
+    {
+      "id": "OPS-LOAD-010",
+      "tests": [
+        {
+          "test_id": "ops.load.every_scenario_has_slo_impact_class",
+          "title": "every load suite maps to a scenario slo impact class entry"
+        }
+      ],
+      "title": "load scenario slo impact mapping contract"
     },
     {
       "id": "OPS-LOAD-E-001",

@@ -12,25 +12,55 @@
 
 ### Pillar: datasets
 
-#### OPS-DATASET-001 datasets manifest lock contract
+#### OPS-DATASETS-001 datasets manifest lock contract
 
 Tests:
-- `ops.dataset.manifest_and_lock_consistent` (static, Pure): dataset manifest and lock ids are consistent
+- `ops.datasets.manifest_and_lock_consistent` (static, Pure): dataset manifest and lock ids are consistent
 
-#### OPS-DATASET-002 datasets fixture inventory contract
-
-Tests:
-- `ops.dataset.fixture_inventory_matches_disk` (static, Pure): fixture inventory matches fixture directories and references
-
-#### OPS-DATASET-003 datasets fixture drift promotion contract
+#### OPS-DATASETS-002 datasets fixture inventory contract
 
 Tests:
-- `ops.dataset.no_fixture_drift_without_promotion_record` (static, Pure): fixture drift requires explicit promotion rule coverage
+- `ops.datasets.fixture_inventory_matches_disk` (static, Pure): fixture inventory matches fixture directories and references
 
-#### OPS-DATASET-004 datasets release diff determinism contract
+#### OPS-DATASETS-003 datasets fixture drift promotion contract
 
 Tests:
-- `ops.dataset.release_diff_fixtures_deterministic` (static, Pure): release-diff fixture lock and golden payloads are deterministic
+- `ops.datasets.no_fixture_drift_without_promotion_record` (static, Pure): fixture drift requires explicit promotion rule coverage
+
+#### OPS-DATASETS-004 datasets release diff determinism contract
+
+Tests:
+- `ops.datasets.release_diff_fixtures_deterministic` (static, Pure): release-diff fixture lock and golden payloads are deterministic
+
+#### OPS-DATASETS-005 datasets qc metadata summary contract
+
+Tests:
+- `ops.datasets.qc_metadata_and_golden_valid` (static, Pure): qc metadata and summary golden are parseable and linked
+
+#### OPS-DATASETS-006 datasets rollback policy contract
+
+Tests:
+- `ops.datasets.rollback_policy_exists_valid` (static, Pure): rollback policy exists and includes required rollback structure
+
+#### OPS-DATASETS-007 datasets promotion rules contract
+
+Tests:
+- `ops.datasets.promotion_rules_exists_valid` (static, Pure): promotion rules exist with canonical environment coverage and pin references
+
+#### OPS-DATASETS-008 datasets consumer interface contract
+
+Tests:
+- `ops.datasets.consumer_list_consistent_with_runtime_queries` (static, Pure): consumer list interfaces resolve to runnable repository paths
+
+#### OPS-DATASETS-009 datasets freeze policy contract
+
+Tests:
+- `ops.datasets.freeze_policy_exists_enforced` (static, Pure): freeze policy enforces append-only fixture immutability
+
+#### OPS-DATASETS-010 datasets store layout contract
+
+Tests:
+- `ops.datasets.dataset_store_layout_contract_enforced` (static, Pure): dataset ids and fixture paths follow canonical store layout
 
 ### Pillar: e2e
 
@@ -261,6 +291,11 @@ Tests:
 
 Tests:
 - `ops.load.cold_start_p99_in_minimal_gate_suite` (static, Pure): cold-start-p99 suite is present in required confidence lanes
+
+#### OPS-LOAD-010 load scenario slo impact mapping contract
+
+Tests:
+- `ops.load.every_scenario_has_slo_impact_class` (static, Pure): every load suite maps to a scenario slo impact class entry
 
 #### OPS-LOAD-E-001 load effect k6 execution contract
 
