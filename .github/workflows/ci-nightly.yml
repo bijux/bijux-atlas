@@ -67,6 +67,7 @@ jobs:
           make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
           cp make/target-list.json "${report_root}/make-target-list.json"
           ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make docker-contracts-effect > "${logs_root}/docker-contracts-effect.stdout.log" 2> "${logs_root}/docker-contracts-effect.stderr.log"
+          make ops-contracts-effect > "${logs_root}/ops-contracts-effect.stdout.log" 2> "${logs_root}/ops-contracts-effect.stderr.log"
           make ops-nightly > "${report_root}/ci-nightly.json" 2> "${logs_root}/ci-nightly.stderr.log"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-nightly.json"
           printf "- lane: ci-nightly\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
