@@ -47,6 +47,8 @@ fn run_for_single_test(repo_root: &Path, contract_id: &str, test_id: &str) -> se
             mode: bijux_dev_atlas::contracts::Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
             fail_fast: false,
             contract_filter: Some(contract_id.to_string()),
             test_filter: Some(test_id.to_string()),

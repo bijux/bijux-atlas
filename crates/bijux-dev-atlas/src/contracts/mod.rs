@@ -79,12 +79,16 @@ pub struct RunContext {
     pub mode: Mode,
     pub allow_subprocess: bool,
     pub allow_network: bool,
+    pub skip_missing_tools: bool,
+    pub timeout_seconds: u64,
 }
 
 pub struct RunOptions {
     pub mode: Mode,
     pub allow_subprocess: bool,
     pub allow_network: bool,
+    pub skip_missing_tools: bool,
+    pub timeout_seconds: u64,
     pub fail_fast: bool,
     pub contract_filter: Option<String>,
     pub test_filter: Option<String>,
@@ -253,6 +257,8 @@ pub fn run(
         mode: options.mode,
         allow_subprocess: options.allow_subprocess,
         allow_network: options.allow_network,
+        skip_missing_tools: options.skip_missing_tools,
+        timeout_seconds: options.timeout_seconds,
     };
 
     let mut contract_rows = Vec::new();
@@ -468,6 +474,8 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
@@ -486,6 +494,8 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
@@ -525,6 +535,8 @@ mod tests {
             mode: Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
             fail_fast: false,
             contract_filter: None,
             test_filter: None,
@@ -534,5 +546,71 @@ mod tests {
         let report = run("docker", registry, Path::new("."), &options).expect("run");
         assert_eq!(report.error_count(), 1);
         assert_eq!(report.exit_code(), 1);
+    }
+
+    #[test]
+    fn effect_subprocess_requires_allow_subprocess_flag() {
+        fn effect_case(_: &RunContext) -> TestResult {
+            TestResult::Pass
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![Contract {
+                id: ContractId("DOCKER-100".to_string()),
+                title: "effect case",
+                tests: vec![TestCase {
+                    id: TestId("docker.effect.subprocess".to_string()),
+                    title: "requires subprocess",
+                    kind: TestKind::Subprocess,
+                    run: effect_case,
+                }],
+            }])
+        }
+        let options = RunOptions {
+            mode: Mode::Effect,
+            allow_subprocess: false,
+            allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 30,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("docker", registry, Path::new("."), &options).expect("run");
+        assert_eq!(report.error_count(), 1);
+    }
+
+    #[test]
+    fn effect_network_requires_allow_network_flag() {
+        fn effect_case(_: &RunContext) -> TestResult {
+            TestResult::Pass
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![Contract {
+                id: ContractId("DOCKER-103".to_string()),
+                title: "effect network",
+                tests: vec![TestCase {
+                    id: TestId("docker.effect.network".to_string()),
+                    title: "requires network",
+                    kind: TestKind::Network,
+                    run: effect_case,
+                }],
+            }])
+        }
+        let options = RunOptions {
+            mode: Mode::Effect,
+            allow_subprocess: true,
+            allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 30,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("docker", registry, Path::new("."), &options).expect("run");
+        assert_eq!(report.error_count(), 1);
     }
 }

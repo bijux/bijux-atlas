@@ -3,6 +3,8 @@
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::thread;
+use std::time::{Duration, Instant};
 
 use serde_json::Value;
 
@@ -216,16 +218,57 @@ fn run_command_with_artifacts(
     stdout_name: &str,
     stderr_name: &str,
 ) -> Result<std::process::Output, String> {
-    let output = Command::new(program)
+    let mut command = Command::new(program);
+    command
         .args(args)
         .current_dir(&ctx.repo_root)
-        .output()
-        .map_err(|e| format!("spawn `{program}` failed: {e}"))?;
+        .env("TZ", "UTC")
+        .env("LC_ALL", "C")
+        .env("LANG", "C");
+    let mut child = match command.spawn() {
+        Ok(v) => v,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound && ctx.skip_missing_tools => {
+            return Err(format!("SKIP_MISSING_TOOL: `{program}` is not installed"));
+        }
+        Err(e) => return Err(format!("spawn `{program}` failed: {e}")),
+    };
+    let started = Instant::now();
+    let timeout = Duration::from_secs(ctx.timeout_seconds.max(1));
+    loop {
+        match child.try_wait() {
+            Ok(Some(_)) => break,
+            Ok(None) => {
+                if started.elapsed() > timeout {
+                    let _ = child.kill();
+                    let _ = child.wait();
+                    return Err(format!(
+                        "command `{program}` timed out after {}s",
+                        ctx.timeout_seconds.max(1)
+                    ));
+                }
+                thread::sleep(Duration::from_millis(100));
+            }
+            Err(e) => return Err(format!("wait for `{program}` failed: {e}")),
+        }
+    }
+    let output = child
+        .wait_with_output()
+        .map_err(|e| format!("collect `{program}` output failed: {e}"))?;
     if let Some(dir) = effect_artifact_dir(ctx) {
         let _ = std::fs::write(dir.join(stdout_name), &output.stdout);
         let _ = std::fs::write(dir.join(stderr_name), &output.stderr);
     }
     Ok(output)
+}
+
+fn truncate_for_evidence(raw: &[u8]) -> String {
+    const MAX_BYTES: usize = 4096;
+    let text = String::from_utf8_lossy(raw);
+    if text.len() <= MAX_BYTES {
+        text.to_string()
+    } else {
+        format!("{}...[truncated]", &text[..MAX_BYTES])
+    }
 }
 
 fn image_tag() -> String {
@@ -235,6 +278,9 @@ fn image_tag() -> String {
 fn test_dir_allowed_markdown(ctx: &RunContext) -> TestResult {
     let dctx = match load_ctx(&ctx.repo_root) {
         Ok(v) => v,
+        Err(e) if e.starts_with("SKIP_MISSING_TOOL:") => {
+            return TestResult::Skip(e.replacen("SKIP_MISSING_TOOL: ", "", 1));
+        }
         Err(e) => return TestResult::Error(e),
     };
     let mut violations = Vec::new();
@@ -956,7 +1002,7 @@ fn test_effect_build_runtime_image(ctx: &RunContext) -> TestResult {
             Some(dockerfile.to_string()),
             Some(1),
             "docker build failed for runtime image",
-            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+            Some(truncate_for_evidence(&output.stderr)),
         )])
     }
 }
@@ -978,6 +1024,9 @@ fn test_effect_smoke_version(ctx: &RunContext) -> TestResult {
         "docker-smoke-version.stderr.log",
     ) {
         Ok(v) => v,
+        Err(e) if e.starts_with("SKIP_MISSING_TOOL:") => {
+            return TestResult::Skip(e.replacen("SKIP_MISSING_TOOL: ", "", 1));
+        }
         Err(e) => return TestResult::Error(e),
     };
     if output.status.success() {
@@ -989,7 +1038,7 @@ fn test_effect_smoke_version(ctx: &RunContext) -> TestResult {
             Some("docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "docker smoke version command failed",
-            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+            Some(truncate_for_evidence(&output.stderr)),
         )])
     }
 }
@@ -1011,6 +1060,9 @@ fn test_effect_smoke_help(ctx: &RunContext) -> TestResult {
         "docker-smoke-help.stderr.log",
     ) {
         Ok(v) => v,
+        Err(e) if e.starts_with("SKIP_MISSING_TOOL:") => {
+            return TestResult::Skip(e.replacen("SKIP_MISSING_TOOL: ", "", 1));
+        }
         Err(e) => return TestResult::Error(e),
     };
     if output.status.success() {
@@ -1022,7 +1074,7 @@ fn test_effect_smoke_help(ctx: &RunContext) -> TestResult {
             Some("docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "docker smoke help command failed",
-            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+            Some(truncate_for_evidence(&output.stderr)),
         )])
     }
 }
@@ -1037,6 +1089,9 @@ fn test_effect_sbom_generated(ctx: &RunContext) -> TestResult {
         "docker-sbom.stderr.log",
     ) {
         Ok(v) => v,
+        Err(e) if e.starts_with("SKIP_MISSING_TOOL:") => {
+            return TestResult::Skip(e.replacen("SKIP_MISSING_TOOL: ", "", 1));
+        }
         Err(e) => return TestResult::Error(e),
     };
     if !output.status.success() {
@@ -1046,7 +1101,7 @@ fn test_effect_sbom_generated(ctx: &RunContext) -> TestResult {
             Some("docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "syft SBOM generation failed",
-            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+            Some(truncate_for_evidence(&output.stderr)),
         )]);
     }
     match serde_json::from_slice::<Value>(&output.stdout) {
@@ -1082,6 +1137,9 @@ fn test_effect_scan_passes_policy(ctx: &RunContext) -> TestResult {
         "docker-scan.stderr.log",
     ) {
         Ok(v) => v,
+        Err(e) if e.starts_with("SKIP_MISSING_TOOL:") => {
+            return TestResult::Skip(e.replacen("SKIP_MISSING_TOOL: ", "", 1));
+        }
         Err(e) => return TestResult::Error(e),
     };
     if output.status.success() {
@@ -1093,7 +1151,7 @@ fn test_effect_scan_passes_policy(ctx: &RunContext) -> TestResult {
             Some("docker/images/runtime/Dockerfile".to_string()),
             Some(1),
             "trivy scan failed severity threshold",
-            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+            Some(truncate_for_evidence(&output.stderr)),
         )])
     }
 }
@@ -1438,6 +1496,8 @@ mod tests {
                 mode: crate::contracts::Mode::Static,
                 allow_subprocess: false,
                 allow_network: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
                 fail_fast: false,
                 contract_filter: Some("DOCKER-006".to_string()),
                 test_filter: Some("docker.from.no_latest".to_string()),
@@ -1467,6 +1527,8 @@ mod tests {
                 mode: crate::contracts::Mode::Static,
                 allow_subprocess: false,
                 allow_network: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
                 fail_fast: false,
                 contract_filter: None,
                 test_filter: None,
@@ -1561,6 +1623,8 @@ mod tests {
                 mode: crate::contracts::Mode::Static,
                 allow_subprocess: false,
                 allow_network: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
                 fail_fast: false,
                 contract_filter: Some("DOCKER-008".to_string()),
                 test_filter: None,

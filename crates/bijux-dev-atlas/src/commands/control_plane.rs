@@ -1112,6 +1112,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     mode,
                     allow_subprocess: args.allow_subprocess,
                     allow_network: args.allow_network,
+                    skip_missing_tools: args.skip_missing_tools,
+                    timeout_seconds: args.timeout_seconds,
                     fail_fast: args.fail_fast,
                     contract_filter: args.filter,
                     test_filter: args.filter_test,

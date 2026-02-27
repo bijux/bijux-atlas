@@ -274,4 +274,8 @@ pub struct ContractsDockerArgs {
     pub allow_subprocess: bool,
     #[arg(long, default_value_t = false)]
     pub allow_network: bool,
+    #[arg(long, default_value_t = false)]
+    pub skip_missing_tools: bool,
+    #[arg(long, default_value_t = 300)]
+    pub timeout_seconds: u64,
 }

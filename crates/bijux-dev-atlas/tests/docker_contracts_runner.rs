@@ -45,6 +45,8 @@ fn run_contracts(repo: &Path, contract_filter: Option<&str>) -> bijux_dev_atlas:
             mode: bijux_dev_atlas::contracts::Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
             fail_fast: false,
             contract_filter: contract_filter.map(str::to_string),
             test_filter: None,

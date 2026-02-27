@@ -174,6 +174,8 @@ fn static_contract_runner_reports_runtime_dockerfile_path_on_failure() {
             mode: bijux_dev_atlas::contracts::Mode::Static,
             allow_subprocess: false,
             allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
             fail_fast: false,
             contract_filter: Some("DOCKER-006".to_string()),
             test_filter: Some("docker.from.no_latest".to_string()),
