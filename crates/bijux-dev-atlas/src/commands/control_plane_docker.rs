@@ -162,18 +162,20 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         };
         match command {
             DockerCommand::Contracts(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "status": "ok",
-                    "rows": docker_contract_rows(),
+                    "rows": docker_contract_rows(&repo_root)?,
                 });
                 emit(&common, payload, 0)
             }
             DockerCommand::Gates(common) => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "status": "ok",
-                    "rows": docker_gate_rows(),
+                    "rows": docker_gate_rows(&repo_root)?,
                 });
                 emit(&common, payload, 0)
             }
@@ -213,7 +215,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             }
             DockerCommand::Validate(common) => {
                 let repo_root = resolve_repo_root(common.repo_root.clone())?;
-                check_contract_gate_mapping()?;
+                check_contract_gate_mapping(&repo_root)?;
                 let rows = validate_dockerfiles(&repo_root)?;
                 let violations = rows.len();
                 let run_id = common

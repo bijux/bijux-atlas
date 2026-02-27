@@ -1,39 +1,38 @@
-fn docker_contract_rows() -> Vec<serde_json::Value> {
-    vec![
-        serde_json::json!({"contract_id":"DOCKER-001","name":"no-latest-tags","gate_id":"docker.contract.no_latest"}),
-        serde_json::json!({"contract_id":"DOCKER-002","name":"base-images-digest-pinned","gate_id":"docker.contract.digest_pins"}),
-        serde_json::json!({"contract_id":"DOCKER-003","name":"root-dockerfile-is-shim-symlink","gate_id":"docker.contract.root_symlink"}),
-        serde_json::json!({"contract_id":"DOCKER-004","name":"dockerfiles-only-under-docker-images","gate_id":"docker.contract.path_scope"}),
-        serde_json::json!({"contract_id":"DOCKER-005","name":"required-oci-labels-present","gate_id":"docker.contract.oci_labels"}),
-        serde_json::json!({"contract_id":"DOCKER-006","name":"build-args-defaulted","gate_id":"docker.contract.build_args"}),
-        serde_json::json!({"contract_id":"DOCKER-007","name":"runtime-smoke-surface","gate_id":"docker.contract.runtime_smoke"}),
-        serde_json::json!({"contract_id":"DOCKER-008","name":"sbom-generated","gate_id":"docker.contract.sbom_generated"}),
-        serde_json::json!({"contract_id":"DOCKER-009","name":"vuln-scan-policy","gate_id":"docker.contract.vuln_scan"}),
-        serde_json::json!({"contract_id":"DOCKER-010","name":"image-size-budget","gate_id":"docker.contract.image_size"}),
-    ]
+fn docker_contract_rows(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
+    bijux_dev_atlas::contracts::docker::contracts(repo_root).map(|contracts| {
+        contracts
+            .into_iter()
+            .map(|contract| {
+                serde_json::json!({
+                    "contract_id": contract.id.0,
+                    "name": contract.title,
+                    "gate_id": bijux_dev_atlas::contracts::docker::contract_gate_id(&contract.id.0),
+                })
+            })
+            .collect()
+    })
 }
 
-fn docker_gate_rows() -> Vec<serde_json::Value> {
-    vec![
-        serde_json::json!({"gate_id":"docker.contract.no_latest","command":"bijux dev atlas docker validate"}),
-        serde_json::json!({"gate_id":"docker.contract.digest_pins","command":"bijux dev atlas docker validate"}),
-        serde_json::json!({"gate_id":"docker.contract.root_symlink","command":"bijux dev atlas docker validate"}),
-        serde_json::json!({"gate_id":"docker.contract.path_scope","command":"bijux dev atlas docker validate"}),
-        serde_json::json!({"gate_id":"docker.contract.oci_labels","command":"bijux dev atlas docker validate"}),
-        serde_json::json!({"gate_id":"docker.contract.build_args","command":"bijux dev atlas docker validate"}),
-        serde_json::json!({"gate_id":"docker.contract.runtime_smoke","command":"bijux dev atlas docker smoke --allow-subprocess"}),
-        serde_json::json!({"gate_id":"docker.contract.sbom_generated","command":"bijux dev atlas docker sbom --allow-subprocess"}),
-        serde_json::json!({"gate_id":"docker.contract.vuln_scan","command":"bijux dev atlas docker scan --allow-subprocess --allow-network"}),
-        serde_json::json!({"gate_id":"docker.contract.image_size","command":"bijux dev atlas docker build --allow-subprocess"}),
-    ]
+fn docker_gate_rows(repo_root: &Path) -> Result<Vec<serde_json::Value>, String> {
+    bijux_dev_atlas::contracts::docker::contracts(repo_root).map(|contracts| {
+        contracts
+            .into_iter()
+            .map(|contract| {
+                serde_json::json!({
+                    "gate_id": bijux_dev_atlas::contracts::docker::contract_gate_id(&contract.id.0),
+                    "command": bijux_dev_atlas::contracts::docker::contract_gate_command(&contract),
+                })
+            })
+            .collect()
+    })
 }
 
-fn check_contract_gate_mapping() -> Result<(), String> {
-    let contract_gate_ids = docker_contract_rows()
+fn check_contract_gate_mapping(repo_root: &Path) -> Result<(), String> {
+    let contract_gate_ids = docker_contract_rows(repo_root)?
         .into_iter()
         .filter_map(|row| row["gate_id"].as_str().map(ToString::to_string))
         .collect::<std::collections::BTreeSet<_>>();
-    let gate_ids = docker_gate_rows()
+    let gate_ids = docker_gate_rows(repo_root)?
         .into_iter()
         .filter_map(|row| row["gate_id"].as_str().map(ToString::to_string))
         .collect::<std::collections::BTreeSet<_>>();
@@ -162,6 +161,11 @@ fn validate_dockerfiles(repo_root: &Path) -> Result<Vec<serde_json::Value>, Stri
         let allowed = rel == "docker/README.md"
             || rel == "docker/CONTRACT.md"
             || rel == "docker/policy.json"
+            || rel == "docker/bases.lock"
+            || rel == "docker/images.manifest.json"
+            || rel == "docker/build-matrix.json"
+            || rel == "docker/docker.contracts.json"
+            || rel == "docker/exceptions.json"
             || rel.starts_with("docker/images/")
             || rel.starts_with("docker/fixtures/");
         if !allowed {

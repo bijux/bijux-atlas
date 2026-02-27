@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "images": [
+    {
+      "name": "runtime",
+      "platforms": [
+        "linux/amd64"
+      ],
+      "tags": [
+        "bijux-atlas:dev"
+      ],
+      "outputs": [
+        "docker"
+      ]
+    }
+  ]
+}

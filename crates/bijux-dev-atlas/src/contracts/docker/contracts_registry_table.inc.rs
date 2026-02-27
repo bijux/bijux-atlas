@@ -22,12 +22,6 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                     kind: TestKind::Pure,
                     run: test_dir_dockerfiles_location,
                 },
-                TestCase {
-                    id: TestId("docker.contract_doc.generated_match".to_string()),
-                    title: "docker CONTRACT document matches generated registry",
-                    kind: TestKind::Pure,
-                    run: test_contract_doc_generated_match,
-                },
             ],
         },
         Contract {
@@ -401,6 +395,36 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("DOCKER-034".to_string()),
+            title: "image manifest schema",
+            tests: vec![TestCase {
+                id: TestId("docker.images.manifest_schema_valid".to_string()),
+                title: "docker/images.manifest.json is schema-valid and non-empty",
+                kind: TestKind::Pure,
+                run: test_images_manifest_schema_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-035".to_string()),
+            title: "image manifest completeness",
+            tests: vec![TestCase {
+                id: TestId("docker.images.manifest_matches_dockerfiles".to_string()),
+                title: "image manifest matches the actual Dockerfile set",
+                kind: TestKind::Pure,
+                run: test_images_manifest_matches_dockerfiles,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-036".to_string()),
+            title: "image build matrix",
+            tests: vec![TestCase {
+                id: TestId("docker.build_matrix.defined".to_string()),
+                title: "docker/build-matrix.json covers every manifest image",
+                kind: TestKind::Pure,
+                run: test_build_matrix_defined,
+            }],
+        },
+        Contract {
             id: ContractId("DOCKER-100".to_string()),
             title: "build succeeds",
             tests: vec![TestCase {
@@ -446,6 +470,166 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: "trivy scan passes configured severity threshold",
                 kind: TestKind::Network,
                 run: test_effect_scan_passes_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-037".to_string()),
+            title: "manifest image builds",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.build_each_manifest_image".to_string()),
+                title: "each image declared in the manifest builds successfully",
+                kind: TestKind::Subprocess,
+                run: test_effect_build_each_manifest_image,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-038".to_string()),
+            title: "manifest image smoke",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.smoke_each_manifest_image".to_string()),
+                title: "each image declared in the manifest passes its smoke command",
+                kind: TestKind::Subprocess,
+                run: test_effect_smoke_each_manifest_image,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-039".to_string()),
+            title: "ci build pull policy",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.ci_build_uses_pull_false".to_string()),
+                title: "CI image builds use --pull=false for deterministic base resolution",
+                kind: TestKind::Subprocess,
+                run: test_effect_ci_build_uses_pull_false,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-040".to_string()),
+            title: "build metadata artifact",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.build_metadata_written".to_string()),
+                title: "image build metadata is recorded as JSON in artifacts",
+                kind: TestKind::Subprocess,
+                run: test_effect_build_metadata_written,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-041".to_string()),
+            title: "manifest sbom coverage",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.sbom_for_each_manifest_image".to_string()),
+                title: "each image declared in the manifest produces an SBOM",
+                kind: TestKind::Subprocess,
+                run: test_effect_sbom_for_each_manifest_image,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-042".to_string()),
+            title: "scan artifact threshold",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.scan_output_and_threshold".to_string()),
+                title: "scanner output is stored and respects the configured severity threshold",
+                kind: TestKind::Network,
+                run: test_effect_scan_output_and_threshold,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-043".to_string()),
+            title: "vulnerability allowlist discipline",
+            tests: vec![TestCase {
+                id: TestId("docker.effect.no_high_critical_without_allowlist".to_string()),
+                title: "HIGH and CRITICAL vulnerabilities require an explicit allowlist with justification",
+                kind: TestKind::Network,
+                run: test_effect_no_high_critical_without_allowlist,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-044".to_string()),
+            title: "pip install hash pinning",
+            tests: vec![TestCase {
+                id: TestId("docker.run.no_pip_install_without_hashes".to_string()),
+                title: "pip install uses --require-hashes or a lock strategy",
+                kind: TestKind::Pure,
+                run: test_no_pip_install_without_hashes,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-045".to_string()),
+            title: "cargo install version pinning",
+            tests: vec![TestCase {
+                id: TestId("docker.run.no_cargo_install_without_version".to_string()),
+                title: "cargo install pins an explicit version",
+                kind: TestKind::Pure,
+                run: test_no_cargo_install_without_version,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-046".to_string()),
+            title: "go install latest forbidden",
+            tests: vec![TestCase {
+                id: TestId("docker.run.no_go_install_latest".to_string()),
+                title: "go install does not use @latest",
+                kind: TestKind::Pure,
+                run: test_no_go_install_latest,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-047".to_string()),
+            title: "docker markdown boundary",
+            tests: vec![TestCase {
+                id: TestId("docker.docs.markdown_surface_only_root_docs".to_string()),
+                title: "docker contains only README.md and CONTRACT.md as markdown",
+                kind: TestKind::Pure,
+                run: test_markdown_surface_only_root_docs,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-048".to_string()),
+            title: "contract document generation",
+            tests: vec![TestCase {
+                id: TestId("docker.contract_doc.generated_match".to_string()),
+                title: "docker CONTRACT document matches generated registry and mapping",
+                kind: TestKind::Pure,
+                run: test_contract_doc_generated_match,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-049".to_string()),
+            title: "contract registry export",
+            tests: vec![TestCase {
+                id: TestId("docker.registry.export_matches_generated".to_string()),
+                title: "docker/docker.contracts.json matches generated registry output",
+                kind: TestKind::Pure,
+                run: test_contract_registry_export_matches,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-050".to_string()),
+            title: "contract gate map export",
+            tests: vec![TestCase {
+                id: TestId("docker.gate_map.matches_generated".to_string()),
+                title: "docker contract gate map matches generated output",
+                kind: TestKind::Pure,
+                run: test_contract_gate_map_matches,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-051".to_string()),
+            title: "exceptions registry schema",
+            tests: vec![TestCase {
+                id: TestId("docker.exceptions.schema_valid".to_string()),
+                title: "docker/exceptions.json uses the expected strict schema",
+                kind: TestKind::Pure,
+                run: test_exceptions_registry_schema,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-052".to_string()),
+            title: "exceptions minimal entries",
+            tests: vec![TestCase {
+                id: TestId("docker.exceptions.minimal_entries".to_string()),
+                title: "each docker exception cites a contract id, expiry date, and justification",
+                kind: TestKind::Pure,
+                run: test_exceptions_minimal,
             }],
         },
     ])

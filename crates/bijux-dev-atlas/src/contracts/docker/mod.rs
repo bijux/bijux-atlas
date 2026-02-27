@@ -316,6 +316,79 @@ fn image_tag() -> String {
 
 include!("contracts_registry.inc.rs");
 
+pub fn contract_gate_id(contract_id: &str) -> String {
+    format!(
+        "docker.contract.{}",
+        contract_id.to_ascii_lowercase().replace('-', "_")
+    )
+}
+
+fn exported_contract_effects(contract: &Contract) -> Vec<&'static str> {
+    let mut effects = super::contract_effects(contract)
+        .into_iter()
+        .map(|effect| effect.as_str())
+        .collect::<std::collections::BTreeSet<_>>();
+    if super::contract_mode(contract) != super::ContractMode::Static {
+        effects.insert(super::EffectKind::DockerDaemon.as_str());
+    }
+    if effects.contains(super::EffectKind::Network.as_str()) {
+        effects.insert(super::EffectKind::Subprocess.as_str());
+    }
+    effects.into_iter().collect()
+}
+
+pub fn contract_gate_command(contract: &Contract) -> String {
+    let effects = exported_contract_effects(contract);
+    if effects.is_empty() {
+        return "bijux dev atlas contracts docker --mode static".to_string();
+    }
+    let mut flags = vec!["bijux dev atlas contracts docker --mode effect".to_string()];
+    if effects.contains(&super::EffectKind::Subprocess.as_str()) {
+        flags.push("--allow-subprocess".to_string());
+    }
+    if effects.contains(&super::EffectKind::Network.as_str()) {
+        flags.push("--allow-network".to_string());
+    }
+    if effects.contains(&super::EffectKind::DockerDaemon.as_str()) {
+        flags.push("--allow-docker-daemon".to_string());
+    }
+    flags.join(" ")
+}
+
+pub fn render_contract_registry_json(repo_root: &Path) -> Result<String, String> {
+    let rows = contracts(repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "domain": "docker",
+        "contracts": rows.iter().map(|contract| serde_json::json!({
+            "id": contract.id.0,
+            "title": contract.title,
+            "mode": super::contract_mode(contract).as_str(),
+            "effects": exported_contract_effects(contract),
+            "tests": contract.tests.iter().map(|test| serde_json::json!({
+                "id": test.id.0,
+                "title": test.title
+            })).collect::<Vec<_>>(),
+            "gate_id": contract_gate_id(&contract.id.0),
+            "command": contract_gate_command(contract)
+        })).collect::<Vec<_>>()
+    });
+    serde_json::to_string_pretty(&payload).map_err(|e| format!("encode docker contract registry failed: {e}"))
+}
+
+pub fn render_contract_gate_map_json(repo_root: &Path) -> Result<String, String> {
+    let rows = contracts(repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "mappings": rows.iter().map(|contract| serde_json::json!({
+            "contract_id": contract.id.0,
+            "gate_id": contract_gate_id(&contract.id.0),
+            "command": contract_gate_command(contract)
+        })).collect::<Vec<_>>()
+    });
+    serde_json::to_string_pretty(&payload).map_err(|e| format!("encode docker gate map failed: {e}"))
+}
+
 pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
     let rows = contracts(repo_root)?;
     let mut out = String::new();
@@ -338,6 +411,18 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
         }
         out.push('\n');
     }
+    out.push_str("## Mapping\n\n");
+    out.push_str("| Contract | Gate | Command |\n");
+    out.push_str("| --- | --- | --- |\n");
+    for contract in &rows {
+        out.push_str(&format!(
+            "| `{}` | `{}` | `{}` |\n",
+            contract.id.0,
+            contract_gate_id(&contract.id.0),
+            contract_gate_command(contract)
+        ));
+    }
+    out.push('\n');
     out.push_str("## Rule\n\n");
     out.push_str("- Contract ID or test ID missing from this document means it does not exist.\n");
     Ok(out)
@@ -347,6 +432,24 @@ pub fn sync_contract_markdown(repo_root: &Path) -> Result<(), String> {
     let rendered = render_contract_markdown(repo_root)?;
     let path = repo_root.join("docker/CONTRACT.md");
     std::fs::write(&path, rendered).map_err(|e| format!("write {} failed: {e}", path.display()))
+}
+
+pub fn sync_contract_registry_json(repo_root: &Path) -> Result<(), String> {
+    let rendered = render_contract_registry_json(repo_root)?;
+    let path = repo_root.join("docker/docker.contracts.json");
+    std::fs::write(&path, format!("{rendered}\n"))
+        .map_err(|e| format!("write {} failed: {e}", path.display()))
+}
+
+pub fn sync_contract_gate_map_json(repo_root: &Path) -> Result<(), String> {
+    let rendered = render_contract_gate_map_json(repo_root)?;
+    let path = repo_root.join("ops/inventory/docker-contract-gate-map.json");
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+    }
+    std::fs::write(&path, format!("{rendered}\n"))
+        .map_err(|e| format!("write {} failed: {e}", path.display()))
 }
 
 pub fn contract_explain(contract_id: &str) -> String {

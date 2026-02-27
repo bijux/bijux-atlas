@@ -11,7 +11,6 @@ Tests:
 - `docker.dir.allowed_markdown` (static, Pure): only README.md and CONTRACT.md are allowed markdown files
 - `docker.dir.no_contracts_subdir` (static, Pure): docker/contracts subdirectory is forbidden
 - `docker.dir.dockerfiles_location` (static, Pure): Dockerfiles must be under docker/images/**
-- `docker.contract_doc.generated_match` (static, Pure): docker CONTRACT document matches generated registry
 
 ### DOCKER-003 root Dockerfile policy
 
@@ -172,6 +171,21 @@ Tests:
 Tests:
 - `docker.images.smoke_manifest` (static, Pure): each Docker image is listed with a smoke command in docker/images.manifest.json
 
+### DOCKER-034 image manifest schema
+
+Tests:
+- `docker.images.manifest_schema_valid` (static, Pure): docker/images.manifest.json is schema-valid and non-empty
+
+### DOCKER-035 image manifest completeness
+
+Tests:
+- `docker.images.manifest_matches_dockerfiles` (static, Pure): image manifest matches the actual Dockerfile set
+
+### DOCKER-036 image build matrix
+
+Tests:
+- `docker.build_matrix.defined` (static, Pure): docker/build-matrix.json covers every manifest image
+
 ### DOCKER-100 build succeeds
 
 Tests:
@@ -192,6 +206,145 @@ Tests:
 
 Tests:
 - `docker.scan.severity_threshold` (effect, Network): trivy scan passes configured severity threshold
+
+### DOCKER-037 manifest image builds
+
+Tests:
+- `docker.effect.build_each_manifest_image` (effect, Subprocess): each image declared in the manifest builds successfully
+
+### DOCKER-038 manifest image smoke
+
+Tests:
+- `docker.effect.smoke_each_manifest_image` (effect, Subprocess): each image declared in the manifest passes its smoke command
+
+### DOCKER-039 ci build pull policy
+
+Tests:
+- `docker.effect.ci_build_uses_pull_false` (effect, Subprocess): CI image builds use --pull=false for deterministic base resolution
+
+### DOCKER-040 build metadata artifact
+
+Tests:
+- `docker.effect.build_metadata_written` (effect, Subprocess): image build metadata is recorded as JSON in artifacts
+
+### DOCKER-041 manifest sbom coverage
+
+Tests:
+- `docker.effect.sbom_for_each_manifest_image` (effect, Subprocess): each image declared in the manifest produces an SBOM
+
+### DOCKER-042 scan artifact threshold
+
+Tests:
+- `docker.effect.scan_output_and_threshold` (effect, Network): scanner output is stored and respects the configured severity threshold
+
+### DOCKER-043 vulnerability allowlist discipline
+
+Tests:
+- `docker.effect.no_high_critical_without_allowlist` (effect, Network): HIGH and CRITICAL vulnerabilities require an explicit allowlist with justification
+
+### DOCKER-044 pip install hash pinning
+
+Tests:
+- `docker.run.no_pip_install_without_hashes` (static, Pure): pip install uses --require-hashes or a lock strategy
+
+### DOCKER-045 cargo install version pinning
+
+Tests:
+- `docker.run.no_cargo_install_without_version` (static, Pure): cargo install pins an explicit version
+
+### DOCKER-046 go install latest forbidden
+
+Tests:
+- `docker.run.no_go_install_latest` (static, Pure): go install does not use @latest
+
+### DOCKER-047 docker markdown boundary
+
+Tests:
+- `docker.docs.markdown_surface_only_root_docs` (static, Pure): docker contains only README.md and CONTRACT.md as markdown
+
+### DOCKER-048 contract document generation
+
+Tests:
+- `docker.contract_doc.generated_match` (static, Pure): docker CONTRACT document matches generated registry and mapping
+
+### DOCKER-049 contract registry export
+
+Tests:
+- `docker.registry.export_matches_generated` (static, Pure): docker/docker.contracts.json matches generated registry output
+
+### DOCKER-050 contract gate map export
+
+Tests:
+- `docker.gate_map.matches_generated` (static, Pure): docker contract gate map matches generated output
+
+### DOCKER-051 exceptions registry schema
+
+Tests:
+- `docker.exceptions.schema_valid` (static, Pure): docker/exceptions.json uses the expected strict schema
+
+### DOCKER-052 exceptions minimal entries
+
+Tests:
+- `docker.exceptions.minimal_entries` (static, Pure): each docker exception cites a contract id, expiry date, and justification
+
+## Mapping
+
+| Contract | Gate | Command |
+| --- | --- | --- |
+| `DOCKER-000` | `docker.contract.docker_000` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-003` | `docker.contract.docker_003` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-004` | `docker.contract.docker_004` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-006` | `docker.contract.docker_006` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-007` | `docker.contract.docker_007` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-008` | `docker.contract.docker_008` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-009` | `docker.contract.docker_009` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-010` | `docker.contract.docker_010` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-011` | `docker.contract.docker_011` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-012` | `docker.contract.docker_012` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-013` | `docker.contract.docker_013` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-014` | `docker.contract.docker_014` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-015` | `docker.contract.docker_015` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-016` | `docker.contract.docker_016` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-017` | `docker.contract.docker_017` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-018` | `docker.contract.docker_018` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-019` | `docker.contract.docker_019` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-020` | `docker.contract.docker_020` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-021` | `docker.contract.docker_021` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-022` | `docker.contract.docker_022` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-023` | `docker.contract.docker_023` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-024` | `docker.contract.docker_024` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-025` | `docker.contract.docker_025` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-026` | `docker.contract.docker_026` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-027` | `docker.contract.docker_027` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-028` | `docker.contract.docker_028` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-029` | `docker.contract.docker_029` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-030` | `docker.contract.docker_030` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-031` | `docker.contract.docker_031` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-032` | `docker.contract.docker_032` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-033` | `docker.contract.docker_033` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-034` | `docker.contract.docker_034` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-035` | `docker.contract.docker_035` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-036` | `docker.contract.docker_036` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-100` | `docker.contract.docker_100` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-101` | `docker.contract.docker_101` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-102` | `docker.contract.docker_102` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-103` | `docker.contract.docker_103` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon` |
+| `DOCKER-037` | `docker.contract.docker_037` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-038` | `docker.contract.docker_038` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-039` | `docker.contract.docker_039` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-040` | `docker.contract.docker_040` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-041` | `docker.contract.docker_041` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-docker-daemon` |
+| `DOCKER-042` | `docker.contract.docker_042` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon` |
+| `DOCKER-043` | `docker.contract.docker_043` | `bijux dev atlas contracts docker --mode effect --allow-subprocess --allow-network --allow-docker-daemon` |
+| `DOCKER-044` | `docker.contract.docker_044` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-045` | `docker.contract.docker_045` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-046` | `docker.contract.docker_046` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-047` | `docker.contract.docker_047` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-048` | `docker.contract.docker_048` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-049` | `docker.contract.docker_049` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-050` | `docker.contract.docker_050` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-051` | `docker.contract.docker_051` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-052` | `docker.contract.docker_052` | `bijux dev atlas contracts docker --mode static` |
 
 ## Rule
 

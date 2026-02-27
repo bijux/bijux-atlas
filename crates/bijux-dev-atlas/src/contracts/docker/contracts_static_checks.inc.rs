@@ -1147,6 +1147,235 @@ fn test_images_have_smoke_manifest(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_images_manifest_schema_valid(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join("docker/images.manifest.json");
+    let manifest = match load_images_manifest(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Fail(vec![violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), &e, None)]),
+    };
+    let mut violations = Vec::new();
+    if manifest.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), "images manifest must set schema_version=1", None));
+    }
+    let images = manifest.get("images").and_then(|v| v.as_array()).cloned().unwrap_or_default();
+    if images.is_empty() {
+        violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), "images manifest must declare at least one image", None));
+    }
+    for image in images {
+        for field in ["name", "dockerfile", "context"] {
+            if image.get(field).and_then(|v| v.as_str()).is_none() {
+                violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some(path.display().to_string().replace('\\', "/").split("/docker/").last().map(|v| format!("docker/{v}")).unwrap_or_else(|| "docker/images.manifest.json".to_string())), Some(1), "manifest image entry is missing a required field", Some(field.to_string())));
+            }
+        }
+        if image.get("smoke").and_then(|v| v.as_array()).is_none() {
+            violations.push(violation("DOCKER-034", "docker.images.manifest_schema_valid", Some("docker/images.manifest.json".to_string()), Some(1), "manifest image entry must declare smoke as an array", None));
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_images_manifest_matches_dockerfiles(ctx: &RunContext) -> TestResult {
+    let manifest = match load_images_manifest(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let listed = manifest["images"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|image| image.get("dockerfile").and_then(|v| v.as_str()).map(ToString::to_string))
+        .collect::<BTreeSet<_>>();
+    let discovered = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v.into_iter().map(|(rel, _)| rel).collect::<BTreeSet<_>>(),
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for rel in &listed {
+        if !ctx.repo_root.join(rel).exists() {
+            violations.push(violation("DOCKER-035", "docker.images.manifest_matches_dockerfiles", Some("docker/images.manifest.json".to_string()), Some(1), "manifest references a missing Dockerfile", Some(rel.clone())));
+        }
+    }
+    for rel in &discovered {
+        if !listed.contains(rel) {
+            violations.push(violation("DOCKER-035", "docker.images.manifest_matches_dockerfiles", Some("docker/images.manifest.json".to_string()), Some(1), "manifest is missing a Dockerfile entry", Some(rel.clone())));
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_build_matrix_defined(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join("docker/build-matrix.json");
+    let payload = match load_json(&path) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Fail(vec![violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), &e, None)]),
+    };
+    let manifest = match load_images_manifest(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let manifest_names = manifest["images"].as_array().cloned().unwrap_or_default().into_iter().filter_map(|image| image.get("name").and_then(|v| v.as_str()).map(ToString::to_string)).collect::<BTreeSet<_>>();
+    let rows = payload["images"].as_array().cloned().unwrap_or_default();
+    let mut matrix_names = BTreeSet::new();
+    let mut violations = Vec::new();
+    if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix must set schema_version=1", None));
+    }
+    for row in rows {
+        let Some(name) = row.get("name").and_then(|v| v.as_str()) else {
+            violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix entry missing name", None));
+            continue;
+        };
+        matrix_names.insert(name.to_string());
+        for field in ["platforms", "tags", "outputs"] {
+            if row.get(field).and_then(|v| v.as_array()).is_none() {
+                violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix entry missing required array field", Some(format!("{name}:{field}"))));
+            }
+        }
+    }
+    for name in manifest_names {
+        if !matrix_names.contains(&name) {
+            violations.push(violation("DOCKER-036", "docker.build_matrix.defined", Some("docker/build-matrix.json".to_string()), Some(1), "build matrix must cover every manifest image", Some(name)));
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_no_pip_install_without_hashes(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) { Ok(v) => v, Err(e) => return TestResult::Error(e) };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword == "RUN" {
+                let args = ins.args.to_ascii_lowercase();
+                if args.contains("pip install") && !args.contains("--require-hashes") {
+                    violations.push(violation("DOCKER-044", "docker.run.no_pip_install_without_hashes", Some(rel.clone()), Some(ins.line), "pip install requires --require-hashes or a locked strategy", Some(ins.args)));
+                }
+            }
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_no_cargo_install_without_version(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) { Ok(v) => v, Err(e) => return TestResult::Error(e) };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword == "RUN" {
+                let args = ins.args.to_ascii_lowercase();
+                if args.contains("cargo install") && !args.contains("--version") {
+                    violations.push(violation("DOCKER-045", "docker.run.no_cargo_install_without_version", Some(rel.clone()), Some(ins.line), "cargo install must pin a version", Some(ins.args)));
+                }
+            }
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_no_go_install_latest(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) { Ok(v) => v, Err(e) => return TestResult::Error(e) };
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword == "RUN" {
+                let args = ins.args.to_ascii_lowercase();
+                if args.contains("go install") && args.contains("@latest") {
+                    violations.push(violation("DOCKER-046", "docker.run.no_go_install_latest", Some(rel.clone()), Some(ins.line), "go install must not use @latest", Some(ins.args)));
+                }
+            }
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_markdown_surface_only_root_docs(ctx: &RunContext) -> TestResult {
+    test_dir_allowed_markdown(ctx)
+}
+
+fn test_contract_registry_export_matches(ctx: &RunContext) -> TestResult {
+    let expected = match render_contract_registry_json(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let path = ctx.repo_root.join("docker/docker.contracts.json");
+    let actual = match std::fs::read_to_string(&path) {
+        Ok(v) => v.trim().to_string(),
+        Err(e) => return TestResult::Error(format!("read {} failed: {e}", path.display())),
+    };
+    if actual == expected {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation("DOCKER-049", "docker.registry.export_matches_generated", Some("docker/docker.contracts.json".to_string()), Some(1), "docker contract registry export drifted from generated output", None)])
+    }
+}
+
+fn test_contract_gate_map_matches(ctx: &RunContext) -> TestResult {
+    let expected = match render_contract_gate_map_json(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let path = ctx.repo_root.join("ops/inventory/docker-contract-gate-map.json");
+    let actual = match std::fs::read_to_string(&path) {
+        Ok(v) => v.trim().to_string(),
+        Err(e) => return TestResult::Error(format!("read {} failed: {e}", path.display())),
+    };
+    if actual == expected {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation("DOCKER-050", "docker.gate_map.matches_generated", Some("ops/inventory/docker-contract-gate-map.json".to_string()), Some(1), "docker contract gate map drifted from generated output", None)])
+    }
+}
+
+fn test_exceptions_registry_schema(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join("docker/exceptions.json");
+    let payload = match load_json(&path) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Fail(vec![violation("DOCKER-051", "docker.exceptions.schema_valid", Some("docker/exceptions.json".to_string()), Some(1), &e, None)]),
+    };
+    let mut violations = Vec::new();
+    if payload.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        violations.push(violation("DOCKER-051", "docker.exceptions.schema_valid", Some("docker/exceptions.json".to_string()), Some(1), "exceptions registry must set schema_version=1", None));
+    }
+    if payload.get("exceptions").and_then(|v| v.as_array()).is_none() {
+        violations.push(violation("DOCKER-051", "docker.exceptions.schema_valid", Some("docker/exceptions.json".to_string()), Some(1), "exceptions registry must define an exceptions array", None));
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_exceptions_minimal(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join("docker/exceptions.json");
+    let payload = match load_json(&path) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let known = match contracts(&ctx.repo_root) {
+        Ok(v) => v.into_iter().map(|contract| contract.id.0).collect::<BTreeSet<_>>(),
+        Err(e) => return TestResult::Error(e),
+    };
+    let mut violations = Vec::new();
+    for entry in payload["exceptions"].as_array().cloned().unwrap_or_default() {
+        let contract_id = entry.get("contract_id").and_then(|v| v.as_str()).unwrap_or("");
+        let expires_on = entry.get("expires_on").and_then(|v| v.as_str()).unwrap_or("");
+        let justification = entry.get("justification").and_then(|v| v.as_str()).unwrap_or("");
+        if !known.contains(contract_id) {
+            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("docker/exceptions.json".to_string()), Some(1), "exception must cite a valid contract id", Some(contract_id.to_string())));
+        }
+        let valid_date = expires_on.len() == 10
+            && expires_on.chars().enumerate().all(|(idx, ch)| match idx {
+                4 | 7 => ch == '-',
+                _ => ch.is_ascii_digit(),
+            });
+        if !valid_date {
+            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("docker/exceptions.json".to_string()), Some(1), "exception must set expires_on in YYYY-MM-DD format", Some(expires_on.to_string())));
+        }
+        if justification.trim().is_empty() {
+            violations.push(violation("DOCKER-052", "docker.exceptions.minimal_entries", Some("docker/exceptions.json".to_string()), Some(1), "exception must include a justification", Some(contract_id.to_string())));
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
 fn test_from_digest_required(ctx: &RunContext) -> TestResult {
     let dctx = match load_ctx(&ctx.repo_root) {
         Ok(v) => v,
