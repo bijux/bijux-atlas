@@ -382,10 +382,7 @@ pub fn to_pretty(report: &RunReport) -> String {
             .iter()
             .filter(|c| c.contract_id == contract.id)
         {
-            out.push_str(&format!(
-                "  {}\n",
-                dotted(&case.test_id, case.status.as_colored())
-            ));
+            out.push_str(&format!("{}\n", dotted(&case.test_id, case.status.as_colored())));
             for violation in &case.violations {
                 let location = match (&violation.file, violation.line) {
                     (Some(file), Some(line)) => format!("{file}:{line}"),
@@ -411,6 +408,9 @@ pub fn to_pretty(report: &RunReport) -> String {
         report.skip_count(),
         report.error_count()
     ));
+    if report.mode == Mode::Static && report.skip_count() > 0 {
+        out.push_str("Note: effect-only tests are skipped in static mode; use --mode effect with required allow flags.\n");
+    }
     out
 }
 
@@ -512,7 +512,7 @@ mod tests {
         };
         let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
         let pretty = to_pretty(&report);
-        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass ...................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
+        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\ndocker.sample.pass ...................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
         assert_eq!(pretty, expected);
     }
 
