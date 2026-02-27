@@ -77,7 +77,7 @@ fn contracts_ops_supports_filter_contract_alias() {
             "--format",
             "json",
             "--filter-contract",
-            "OPS-000",
+            "OPS-ROOT-017",
         ])
         .output()
         .expect("contracts ops filter-contract");
@@ -86,7 +86,7 @@ fn contracts_ops_supports_filter_contract_alias() {
         serde_json::from_slice(&output.stdout).expect("valid json output");
     let contracts = payload["contracts"].as_array().expect("contracts array");
     assert_eq!(contracts.len(), 1);
-    assert_eq!(contracts[0]["id"].as_str(), Some("OPS-000"));
+    assert_eq!(contracts[0]["id"].as_str(), Some("OPS-ROOT-017"));
 }
 
 #[test]
@@ -97,7 +97,7 @@ fn contracts_ops_explain_includes_mapped_gate() {
             "contracts",
             "ops",
             "--explain",
-            "OPS-000",
+            "OPS-ROOT-017",
             "--format",
             "json",
         ])
