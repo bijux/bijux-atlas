@@ -269,6 +269,7 @@ fn validate_render_output(rendered: &str, target: OpsRenderTarget) -> Vec<String
     errors.extend(scan_unpinned_images(rendered));
     errors.extend(scan_invalid_image_refs(rendered));
     errors.extend(scan_invalid_runbook_urls(rendered));
+    errors.extend(scan_alert_annotation_contract(rendered));
     errors.extend(scan_timestamps(rendered));
     errors.sort();
     errors.dedup();
@@ -433,6 +434,73 @@ fn scan_invalid_runbook_urls(rendered: &str) -> Vec<String> {
     errors
 }
 
+fn scan_alert_annotation_contract(rendered: &str) -> Vec<String> {
+    let mut errors = Vec::new();
+    let mut current_alert: Option<String> = None;
+    let mut has_severity = false;
+    let mut has_owner = false;
+    let mut has_runbook = false;
+    let flush = |errors: &mut Vec<String>,
+                 current_alert: &Option<String>,
+                 has_severity: bool,
+                 has_owner: bool,
+                 has_runbook: bool| {
+        if let Some(alert) = current_alert {
+            if !has_severity {
+                errors.push(format!(
+                    "rendered alert `{alert}` is missing required label `severity`"
+                ));
+            }
+            if !has_owner {
+                errors.push(format!(
+                    "rendered alert `{alert}` is missing required label `owner`"
+                ));
+            }
+            if !has_runbook {
+                errors.push(format!(
+                    "rendered alert `{alert}` is missing required annotation `runbook`"
+                ));
+            }
+        }
+    };
+
+    for line in rendered.lines() {
+        let trimmed = line.trim();
+        if let Some(name) = trimmed.strip_prefix("- alert:") {
+            flush(
+                &mut errors,
+                &current_alert,
+                has_severity,
+                has_owner,
+                has_runbook,
+            );
+            current_alert = Some(name.trim().to_string());
+            has_severity = false;
+            has_owner = false;
+            has_runbook = false;
+            continue;
+        }
+        if current_alert.is_none() {
+            continue;
+        }
+        if trimmed.starts_with("severity:") {
+            has_severity = true;
+        } else if trimmed.starts_with("owner:") {
+            has_owner = true;
+        } else if trimmed.starts_with("runbook:") {
+            has_runbook = true;
+        }
+    }
+    flush(
+        &mut errors,
+        &current_alert,
+        has_severity,
+        has_owner,
+        has_runbook,
+    );
+    errors
+}
+
 fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
     let mut errors = Vec::new();
     if rendered.contains("kind: ClusterRole") {
@@ -443,7 +511,7 @@ fn scan_forbidden_kinds(rendered: &str) -> Vec<String> {
 
 #[cfg(test)]
 mod render_tests {
-    use super::{scan_invalid_image_refs, scan_unpinned_images};
+    use super::{scan_alert_annotation_contract, scan_invalid_image_refs, scan_unpinned_images};
 
     #[test]
     fn rendered_image_reference_must_not_have_multiple_digest_separators() {
@@ -462,6 +530,22 @@ mod render_tests {
         let rendered = "image: ghcr.io/bijux/bijux-atlas@sha256:1111111111111111111111111111111111111111111111111111111111111111";
         let errors = scan_unpinned_images(rendered);
         assert!(errors.is_empty(), "expected digest pinned image, got {errors:?}");
+    }
+
+    #[test]
+    fn rendered_alert_requires_owner_and_severity_and_runbook() {
+        let rendered = r#"
+        - alert: BijuxAtlasHigh5xxRate
+          labels:
+            severity: page
+          annotations:
+            runbook: https://docs.example/runbook
+        "#;
+        let errors = scan_alert_annotation_contract(rendered);
+        assert!(
+            errors.iter().any(|e| e.contains("missing required label `owner`")),
+            "expected owner contract violation, got {errors:?}"
+        );
     }
 }
 
