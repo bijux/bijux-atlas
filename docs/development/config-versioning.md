@@ -42,5 +42,6 @@ Expected output: version policy checks and drift checks pass.
 ## See also
 
 - [Config Schema Versioning](../reference/registry/config-schema-versioning.md)
+- [Config Changelog](config-changelog.md)
 - `configs/README.md`
 - [Terms Glossary](../_style/terms-glossary.md)
