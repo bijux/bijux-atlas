@@ -1,0 +1,15 @@
+extends: existence
+message: "Avoid legacy temporal wording in docs: '%s'"
+level: error
+ignorecase: true
+tokens:
+  - '\\bphase\\s+[0-9ivx]+\\b'
+  - '\\bstep\\s+[0-9ivx]+\\b'
+  - '\\btask\\s+[0-9ivx]+\\b'
+  - '\\bvnext\\s+placeholder\\b'
+  - '\\bwip\\b'
+  - '\\btemporary\\b'
+exceptions:
+  - GFF3 phase
+  - CDS phase
+  - invalid CDS phase

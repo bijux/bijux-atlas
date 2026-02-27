@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "rust_toolchain_toml": "rust-toolchain.toml",
+  "channel": "1.84.1",
+  "consumers": [
+    ".github/workflows/ci-pr.yml",
+    ".github/workflows/ci-nightly.yml",
+    ".github/workflows/docs-only.yml",
+    ".github/workflows/docs-audit.yml",
+    ".github/workflows/ops-validate.yml",
+    ".github/workflows/ops-integration-kind.yml",
+    ".github/workflows/release-candidate.yml",
+    ".github/workflows/dependency-lock.yml"
+  ]
+}

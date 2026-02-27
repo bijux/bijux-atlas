@@ -1,0 +1,103 @@
+name: release-candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release candidate version"
+        required: true
+      run_release_doctor:
+        description: "Run release doctor gate"
+        required: true
+        default: "true"
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-candidate-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: rc-${{ github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  release-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      NETWORK_ACCESS: required
+      ISO_ROOT: artifacts/isolates/release-candidate
+      CARGO_TARGET_DIR: .cache/cargo/target/release-candidate
+      CARGO_HOME: .cache/cargo/home/release-candidate
+      TMPDIR: artifacts/isolates/release-candidate/tmp
+      TMP: artifacts/isolates/release-candidate/tmp
+      TEMP: artifacts/isolates/release-candidate/tmp
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        with:
+          toolchain: 1.84.1
+      - name: Verify clean tree and lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --quiet
+          git diff --cached --quiet
+          cargo metadata --format-version 1 > /dev/null
+          git diff --quiet Cargo.lock
+      - name: Validate tag/version alignment when tag-triggered
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF:-}" == refs/tags/* ]]; then
+            tag="${GITHUB_REF#refs/tags/}"
+            cargo_version="$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name=="bijux-dev-atlas") | .version')"
+            [ "${tag}" = "v${cargo_version}" ]
+          fi
+      - name: Prepare run artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
+          mkdir -p "artifacts/${RUN_ID}"
+      - name: Run release doctor gate
+        if: ${{ github.event.inputs.run_release_doctor == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run -q -p bijux-dev-atlas -- check doctor --format json > /dev/null
+      - name: Run docs completeness gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          mkdir -p "${report_root}"
+          cargo run -q -p bijux-dev-atlas -- docs registry validate --format json > "${report_root}/docs-completeness.json"
+      - name: Run release check gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          mkdir -p "${report_root}"
+          cargo run -q -p bijux-dev-atlas -- release check --format json > "${report_root}/release-check.json"
+      - name: Build dist artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/release-candidate"
+          mkdir -p "${report_root}" "${logs_root}"
+          cargo run -q -p bijux-dev-atlas -- build dist --allow-subprocess --allow-write --format json > "${report_root}/release-candidate.json" 2> "${logs_root}/release-candidate.stderr.log"
+          printf -- "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- release check: %s\n- input version: %s\n" \
+            "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${report_root}/release-check.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: release-candidate-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 14

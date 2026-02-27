@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "areas": {
+    "configs/coverage": "platform",
+    "configs/docs": "docs-governance",
+    "configs/layout": "platform",
+    "configs/meta": "platform",
+    "configs/make": "platform",
+    "configs/nextest": "platform",
+    "configs/openapi": "api-contracts",
+    "configs/ops": "bijux-atlas-operations",
+    "configs/perf": "bijux-atlas-performance",
+    "configs/policy": "platform",
+    "configs/repo": "platform",
+    "configs/rust": "rust-foundation",
+    "configs/security": "security",
+    "configs/shellcheck": "platform",
+    "configs/slo": "bijux-atlas-operations"
+  }
+}

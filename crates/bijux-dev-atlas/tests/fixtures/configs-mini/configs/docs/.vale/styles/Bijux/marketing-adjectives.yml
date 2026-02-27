@@ -1,0 +1,7 @@
+extends: existence
+message: "Avoid marketing adjective '%s'."
+level: error
+ignorecase: true
+tokens:
+  - world-class
+  - best-in-class

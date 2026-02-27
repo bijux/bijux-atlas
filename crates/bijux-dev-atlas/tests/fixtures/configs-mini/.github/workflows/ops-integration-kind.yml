@@ -1,0 +1,89 @@
+name: ops-integration-kind
+# Tooling orchestration is centralized via bijux dev atlas command surfaces.
+
+on:
+  workflow_dispatch:
+    inputs:
+      allow_network:
+        description: "Allow networked integration calls"
+        required: true
+        default: "true"
+      run_conformance:
+        description: "Run k8s conformance checks"
+        required: true
+        default: "true"
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ops-integration-kind-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: ops-kind-${{ github.run_id }}-${{ github.run_attempt }}
+
+jobs:
+  kind-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      NETWORK_ACCESS: required
+      ISO_ROOT: artifacts/isolates/ops-kind
+      CARGO_TARGET_DIR: .cache/cargo/target/ops-kind
+      CARGO_HOME: .cache/cargo/home/ops-kind
+      TMPDIR: artifacts/isolates/ops-kind/tmp
+      TMP: artifacts/isolates/ops-kind/tmp
+      TEMP: artifacts/isolates/ops-kind/tmp
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        with:
+          toolchain: 1.84.1
+      - uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc
+        with:
+          cluster_name: normal
+      - name: Prepare run artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
+          mkdir -p "artifacts/${RUN_ID}"
+      - name: Restore cargo cache
+        id: cache-target
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .cache/cargo/target/ops-kind
+          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Run cluster integration lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/ops-kind"
+          mkdir -p "${report_root}" "${logs_root}"
+          make doctor > "${report_root}/doctor.json" 2> "${logs_root}/doctor.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
+          make stack-up > "${report_root}/ops-kind-up.json" 2> "${logs_root}/ops-kind-up.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- ops k8s smoke --profile kind --allow-subprocess --format json > "${report_root}/ops-k8s-smoke.json" 2> "${logs_root}/ops-k8s-smoke.stderr.log"
+          if [ "${{ github.event.inputs.run_conformance || 'true' }}" = "true" ]; then
+            make k8s-validate > "${report_root}/ops-k8s.json" 2> "${logs_root}/ops-k8s.stderr.log"
+          fi
+          make stack-down > "${report_root}/ops-kind-down.json" 2> "${logs_root}/ops-kind-down.stderr.log"
+          printf "- lane: ops-kind\n- report root: %s\n- cache target hit: %s\n" \
+            "${report_root}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo cache
+        if: success()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .cache/cargo/target/ops-kind
+          key: cargo-target-nightly-ops-kind-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: ops-kind-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 14

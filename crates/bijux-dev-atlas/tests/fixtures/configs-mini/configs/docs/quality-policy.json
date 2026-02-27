@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "stale_days": 90,
+  "default_area_budget": 20,
+  "area_budgets": {
+    "docs-root": 800,
+    "bijux-atlas-core": 20,
+    "bijux-atlas-model": 20,
+    "bijux-atlas-policies": 20,
+    "bijux-atlas-query": 20,
+    "bijux-atlas-store": 20,
+    "bijux-atlas-ingest": 20,
+    "bijux-atlas-api": 20,
+    "bijux-atlas-server": 20,
+    "bijux-atlas-cli": 20,
+    "bijux-dev-atlas": 20,
+    "bijux-dev-atlas": 20
+  },
+  "naming": {
+    "forbidden_words": ["phase", "task", "legacy", "migration"],
+    "allow_uppercase": ["README.md", "INDEX.md"]
+  },
+  "terminology": {
+    "forbidden_terms": ["atlasctl", "xtask", "python era", "script migration"]
+  },
+  "markdown": {
+    "max_line_length": 180,
+    "require_h1": true,
+    "require_sections": ["Purpose", "Stability"]
+  },
+  "diagrams": {
+    "extensions": [".svg", ".png", ".jpg", ".jpeg", ".drawio"],
+    "roots": ["docs/_assets", "docs/assets"]
+  }
+}

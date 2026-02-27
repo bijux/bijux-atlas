@@ -1,0 +1,50 @@
+name: dependency-lock
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-lockfile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ISO_ROOT: artifacts/isolates/dependency-lock
+      CARGO_TARGET_DIR: artifacts/isolates/dependency-lock/target
+      CARGO_HOME: artifacts/isolates/dependency-lock/cargo-home
+      TMPDIR: artifacts/isolates/dependency-lock/tmp
+      TMP: artifacts/isolates/dependency-lock/tmp
+      TEMP: artifacts/isolates/dependency-lock/tmp
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        with:
+          toolchain: 1.84.1
+      - name: Refresh lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo update --workspace
+      - name: Verify only Cargo.lock changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only | grep -v '^Cargo.lock$' || true)"
+          if [ -n "$changed" ]; then
+            echo "unexpected changed paths:"
+            echo "$changed"
+            exit 1
+          fi
+      - name: Open lockfile PR
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
+        with:
+          commit-message: "chore(deps): refresh Cargo.lock via locked workflow"
+          title: "chore(deps): refresh Cargo.lock"
+          body: "Automated dependency lock refresh. This is the only allowed automated lockfile update path."
+          branch: automation/dependency-lock-refresh
+          delete-branch: true

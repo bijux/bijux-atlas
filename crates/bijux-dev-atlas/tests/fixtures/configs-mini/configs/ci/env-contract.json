@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "required_job_env_keys": [
+    "ISO_ROOT",
+    "CARGO_TARGET_DIR",
+    "CARGO_HOME",
+    "TMPDIR",
+    "TMP",
+    "TEMP"
+  ]
+}

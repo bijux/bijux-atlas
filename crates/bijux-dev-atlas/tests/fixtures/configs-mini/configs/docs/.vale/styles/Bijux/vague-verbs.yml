@@ -1,0 +1,10 @@
+extends: existence
+message: "Use precise contract verbs instead of '%s'."
+level: warning
+ignorecase: true
+tokens:
+  - should
+  - might
+  - could
+  - maybe
+  - perhaps

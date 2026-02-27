@@ -1,0 +1,127 @@
+name: docs-audit
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUN_ID: docs-audit-${{ github.run_id }}-${{ github.run_attempt }}
+  CARGO_TERM_COLOR: always
+
+jobs:
+  docs-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NETWORK_ACCESS: required
+      ISO_ROOT: artifacts/isolates/docs-audit
+      CARGO_TARGET_DIR: .cache/cargo/target/docs-audit
+      CARGO_HOME: .cache/cargo/home/docs-audit
+      NEXTEST_CACHE_DIR: .cache/cargo/nextest/docs-audit
+      TMPDIR: artifacts/isolates/docs-audit/tmp
+      TMP: artifacts/isolates/docs-audit/tmp
+      TEMP: artifacts/isolates/docs-audit/tmp
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
+        with:
+          toolchain: 1.84.1
+      - name: Prepare run artifact directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
+          mkdir -p "artifacts/${RUN_ID}"
+      - name: Restore cargo registry cache
+        id: cache-registry
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            .cache/cargo/home/docs-audit/registry
+            .cache/cargo/home/docs-audit/git
+          key: cargo-registry-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Restore cargo target cache
+        id: cache-target
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .cache/cargo/target/docs-audit
+          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Install docs toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r configs/docs/requirements.lock.txt
+          npm ci --prefix configs/docs
+      - name: Run docs markdown lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm --prefix configs/docs run -s markdownlint
+      - name: Run docs spelling checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm --prefix configs/docs run -s cspell
+      - name: Check generated docs references
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo run -q -p bijux-dev-atlas -- docs reference check --allow-subprocess --format json
+      - name: Run docs strict build
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/docs-audit"
+          mkdir -p "${report_root}" "${logs_root}"
+          mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cp -R site "artifacts/${RUN_ID}/site-preview"
+      - name: Run docs audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/docs-audit"
+          mkdir -p "${report_root}" "${logs_root}"
+          cargo run -q -p bijux-dev-atlas -- docs validate --format json > "${report_root}/docs.json" 2> "${logs_root}/docs.stderr.log"
+          printf '{"schema_version":1,"kind":"docs_audit_report_v1","status":"ok"}\n' > "${report_root}/docs-audit.json"
+          cp docs/_generated/docs-test-coverage.json "${report_root}/docs-test-coverage.json"
+          printf "- lane: docs-audit\n- report: %s\n- coverage: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/docs-audit.json" "${report_root}/docs-test-coverage.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Save cargo registry cache
+        if: success()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            .cache/cargo/home/docs-audit/registry
+            .cache/cargo/home/docs-audit/git
+          key: cargo-registry-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Save cargo target cache
+        if: success()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .cache/cargo/target/docs-audit
+          key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: docs-preview-site-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}/site-preview
+          retention-days: 5
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: docs-audit-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 14

@@ -1,0 +1,8 @@
+extends: existence
+message: "Use canonical terminology: %s"
+level: warning
+ignorecase: false
+tokens:
+  - SSOT
+  - release-indexed
+  - dataset
