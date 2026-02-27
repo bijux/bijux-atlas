@@ -22,6 +22,7 @@ include make/makefiles/verification.mk
 
 CURATED_TARGETS := \
 	help doctor fmt lint test build docker docker-contracts docker-contracts-effect docker-gate \
+	ops-contracts ops-contracts-effect \
 	k8s-render k8s-validate stack-up stack-down \
 	ops-fast ops-pr ops-nightly make-target-list
 

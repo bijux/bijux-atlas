@@ -1,5 +1,5 @@
 # Scope: ops area wrappers only.
-# Public targets: ops, ops-help, ops-doctor, ops-validate, ops-artifact-root-check, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-observability
+# Public targets: ops, ops-contracts, ops-contracts-effect, ops-help, ops-doctor, ops-validate, ops-artifact-root-check, ops-render, ops-install-plan, ops-up, ops-down, ops-clean, ops-reset, ops-status, ops-kind-up, ops-kind-down, ops-tools-verify, ops-pins-check, ops-pins-update, ops-stack, ops-k8s, ops-e2e, ops-load, ops-load-plan, ops-load-run, ops-observability
 # All external tools are invoked through bijux dev atlas command surfaces.
 SHELL := /bin/sh
 PROFILE ?= kind
@@ -7,6 +7,12 @@ OPS_RESET_RUN_ID ?= ops_reset
 
 ops: ## Canonical ops gate
 	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format text
+
+ops-contracts: ## Run static ops contracts via dev-atlas contracts runner
+	@$(DEV_ATLAS) contracts ops --mode static --format pretty --json-out artifacts/contracts/ops-static.json
+
+ops-contracts-effect: ## Run effect ops contracts via dev-atlas contracts runner
+	@$(DEV_ATLAS) contracts ops --mode effect --allow-subprocess --allow-network --format pretty --json-out artifacts/contracts/ops-effect.json
 
 ops-help: ## Show ops control-plane command surface
 	@$(DEV_ATLAS) ops --help
@@ -78,4 +84,4 @@ ops-pins-check: ## Validate unified reproducibility pins
 ops-pins-update: ## Refresh unified reproducibility pins
 	@$(DEV_ATLAS) ops pins update --i-know-what-im-doing --allow-subprocess --format text
 
-.PHONY: ops ops-help ops-doctor ops-validate ops-artifact-root-check ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-observability ops-tools-verify ops-pins-check ops-pins-update
+.PHONY: ops ops-contracts ops-contracts-effect ops-help ops-doctor ops-validate ops-artifact-root-check ops-render ops-install-plan ops-up ops-down ops-clean ops-reset ops-kind-up ops-kind-down ops-status ops-stack ops-k8s ops-e2e ops-load ops-load-plan ops-load-run ops-observability ops-tools-verify ops-pins-check ops-pins-update
