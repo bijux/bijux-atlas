@@ -342,6 +342,47 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             .collect::<Vec<_>>();
 
         let mut rows = Vec::new();
+        let docker_root = repo_root.join("docker");
+        for file in walk_files(&docker_root) {
+            let rel = file
+                .strip_prefix(repo_root)
+                .unwrap_or(&file)
+                .display()
+                .to_string();
+            let allowed = rel == "docker/README.md"
+                || rel == "docker/CONTRACT.md"
+                || rel == "docker/policy.json"
+                || rel.starts_with("docker/images/")
+                || rel.starts_with("docker/fixtures/");
+            if !allowed {
+                rows.push(serde_json::json!({
+                    "contract_id":"DOCKER-004",
+                    "gate_id":"docker.contract.path_scope",
+                    "kind":"docker_allowed_file_violation",
+                    "file": rel,
+                    "line": 1
+                }));
+            }
+            if rel.ends_with(".md") && rel != "docker/README.md" && rel != "docker/CONTRACT.md" {
+                rows.push(serde_json::json!({
+                    "contract_id":"DOCKER-004",
+                    "gate_id":"docker.contract.path_scope",
+                    "kind":"docker_markdown_forbidden",
+                    "file": rel,
+                    "line": 1
+                }));
+            }
+            if rel.ends_with("/README.md") && rel != "docker/README.md" {
+                rows.push(serde_json::json!({
+                    "contract_id":"DOCKER-004",
+                    "gate_id":"docker.contract.path_scope",
+                    "kind":"nested_readme_forbidden",
+                    "file": rel,
+                    "line": 1
+                }));
+            }
+        }
+
         let root_dockerfile = repo_root.join("Dockerfile");
         if !root_dockerfile.exists() {
             rows.push(serde_json::json!({
