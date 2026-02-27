@@ -110,6 +110,31 @@ fn contracts_ops_explain_includes_mapped_gate() {
 }
 
 #[test]
+fn contracts_ops_effect_mode_requires_explicit_allow_flags() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--mode", "effect", "--format", "json"])
+        .output()
+        .expect("contracts ops effect mode");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("effect mode requires both --allow-subprocess and --allow-network"));
+}
+
+#[test]
+fn contracts_ops_ci_requires_artifacts_root() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .env("CI", "true")
+        .args(["contracts", "ops", "--format", "json"])
+        .output()
+        .expect("contracts ops ci");
+    assert!(!output.status.success());
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("CI contracts runs require --artifacts-root"));
+}
+
+#[test]
 fn list_supports_json_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

@@ -61,15 +61,24 @@ use control_plane_docker::{run_policies_explain, run_policies_list, run_policies
 pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i32 {
     fn require_artifacts_root_in_ci(
         artifacts_root: &Option<PathBuf>,
-        mode: ContractsModeArg,
     ) -> Result<(), String> {
-        if std::env::var_os("CI").is_some()
-            && mode == ContractsModeArg::Effect
-            && artifacts_root.is_none()
-        {
+        if std::env::var_os("CI").is_some() && artifacts_root.is_none() {
             return Err(
-                "CI effect runs require --artifacts-root for deterministic evidence output"
+                "CI contracts runs require --artifacts-root for deterministic evidence output"
                     .to_string(),
+            );
+        }
+        Ok(())
+    }
+
+    fn require_effect_allowances(
+        mode: ContractsModeArg,
+        allow_subprocess: bool,
+        allow_network: bool,
+    ) -> Result<(), String> {
+        if mode == ContractsModeArg::Effect && (!allow_subprocess || !allow_network) {
+            return Err(
+                "effect mode requires both --allow-subprocess and --allow-network".to_string(),
             );
         }
         Ok(())
@@ -162,7 +171,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     };
                     return Ok((rendered, 0));
                 }
-                require_artifacts_root_in_ci(&args.artifacts_root, args.mode)?;
+                require_artifacts_root_in_ci(&args.artifacts_root)?;
+                require_effect_allowances(args.mode, args.allow_subprocess, args.allow_network)?;
                 if args.list {
                     let rendered = if args.json || args.format == ContractsFormatArg::Json {
                         serde_json::to_string_pretty(&serde_json::json!({
@@ -268,7 +278,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     };
                     return Ok((rendered, 0));
                 }
-                require_artifacts_root_in_ci(&args.artifacts_root, args.mode)?;
+                require_artifacts_root_in_ci(&args.artifacts_root)?;
+                require_effect_allowances(args.mode, args.allow_subprocess, args.allow_network)?;
                 if args.list {
                     let rendered = if args.json || args.format == ContractsFormatArg::Json {
                         serde_json::to_string_pretty(&serde_json::json!({
