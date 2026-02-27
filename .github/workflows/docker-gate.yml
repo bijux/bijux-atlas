@@ -1,0 +1,64 @@
+name: docker-gate
+
+on:
+  pull_request:
+    paths:
+      - "docker/**"
+      - "makefiles/docker.mk"
+      - "makefiles/root.mk"
+      - "crates/bijux-dev-atlas/src/commands/control_plane.rs"
+      - "crates/bijux-dev-atlas/tests/dockerfile_contracts.rs"
+
+jobs:
+  docker-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CARGO_HOME: ${{ github.workspace }}/.cache/cargo/home/docker-gate
+      CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/docker-gate
+      RUSTUP_HOME: ${{ github.workspace }}/.cache/rustup/docker-gate
+      RUN_ID: docker-gate-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@1.84.1
+      - name: Restore cargo registry cache
+        id: cache-registry
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            .cache/cargo/home/docker-gate/registry
+            .cache/cargo/home/docker-gate/git
+          key: cargo-registry-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Restore cargo target cache
+        id: cache-target
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .cache/cargo/target/docker-gate
+          key: cargo-target-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Run docker gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "artifacts/${RUN_ID}"
+          make docker-gate > "artifacts/${RUN_ID}/docker-gate.stdout.log" 2> "artifacts/${RUN_ID}/docker-gate.stderr.log"
+      - name: Save cargo registry cache
+        if: success()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            .cache/cargo/home/docker-gate/registry
+            .cache/cargo/home/docker-gate/git
+          key: cargo-registry-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - name: Save cargo target cache
+        if: success()
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .cache/cargo/target/docker-gate
+          key: cargo-target-docker-gate-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: docker-gate-${{ env.RUN_ID }}
+          path: artifacts/${{ env.RUN_ID }}
+          retention-days: 5
