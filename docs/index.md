@@ -9,6 +9,7 @@ Use this page as the only docs entrypoint.
 
 ## Start Here
 
+- Onboarding category: [docs/start/INDEX.md](start/INDEX.md)
 - Product framing: [docs/product/what-is-bijux-atlas.md](product/what-is-bijux-atlas.md)
 - Root reference map: [docs/root/INDEX.md](root/INDEX.md)
 - Compatibility promise: [docs/product/compatibility-promise.md](product/compatibility-promise.md)
@@ -66,5 +67,7 @@ Expected output: docs checks pass.
 ## See also
 
 - [Product Index](product/INDEX.md)
+- [Security Index](security/INDEX.md)
+- [Release Index](release/INDEX.md)
 - [Naming Standard](_style/naming-standard.md)
 - [Terms Glossary](_style/terms-glossary.md)
