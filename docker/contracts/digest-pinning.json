@@ -1,6 +1,0 @@
-{
-  "schema_version": 1,
-  "require_digest_pins": true,
-  "allow_tagged_images_exceptions": [],
-  "forbid_latest": true
-}
