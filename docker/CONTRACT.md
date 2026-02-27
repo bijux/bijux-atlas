@@ -1,40 +1,37 @@
 # Docker Contract
 
-Owner: `bijux-atlas-platform`
+- Owner: `bijux-atlas-platform`
+- Policy file: `docker/policy.json`
 
-## Purpose
+## Rule
 
-Define the canonical container build contract for `bijux-atlas`.
+Contract has no mapped gate means contract does not exist.
 
-## Base Image Policy
+## Contract To Gate Matrix
 
-- Runtime image base must be pin-safe and non-floating.
-- `FROM ...:latest` is forbidden.
-- Root `Dockerfile` is a symlink shim to `docker/images/runtime/Dockerfile` only.
-- Dockerfiles must remain namespaced under `docker/images/`.
+| Contract ID | Contract | Gate Command |
+| --- | --- | --- |
+| `DOCKER-001` | Forbid `:latest` and floating base tags | `bijux dev atlas docker validate` |
+| `DOCKER-002` | Enforce digest-pinned base images or explicit exceptions | `bijux dev atlas docker validate` |
+| `DOCKER-003` | Runtime Dockerfile copy sources must exist | `bijux dev atlas docker validate` |
+| `DOCKER-004` | Build network tokens constrained by policy allowlist | `bijux dev atlas docker validate` |
+| `DOCKER-005` | Docker policy source is single file `docker/policy.json` | `bijux dev atlas docker validate` |
+| `DOCKER-006` | Runtime smoke surface (`--help`, `--version`) | `bijux dev atlas docker smoke --allow-subprocess` |
+| `DOCKER-007` | SBOM artifact generation | `bijux dev atlas docker sbom --allow-subprocess` |
+| `DOCKER-008` | Vulnerability scan report generation | `bijux dev atlas docker scan --allow-subprocess --allow-network` |
 
-## Pinning Policy
+## Directory Contract
 
-- Build args that affect toolchain/runtime must have explicit defaults in Dockerfile.
-- `RUST_VERSION` must stay pinned and reviewed.
-- OCI labels must include build provenance fields.
-- Runtime image size must satisfy `docker/contracts/image-size-budget.json`.
-
-## Build Network Policy
-
-- Build is allowed network access only for base image/package retrieval in builder stage.
-- Runtime image must contain only compiled artifacts and required runtime metadata.
-
-## SBOM and Scan Policy
-
-- Container vulnerability scan is required in CI (`make docker-scan` / CI workflows).
-- Scanner precedence: `trivy` then `grype`.
-- Security policy source of truth remains `configs/security/*`.
-- SBOM expectations are defined by `docker/contracts/sbom-policy.json`.
+- Allowed docs in `docker/`: `README.md`, `CONTRACT.md`
+- Additional markdown files under `docker/` are forbidden.
+- Policy meaning is enforced by gates, not by prose-only documents.
 
 ## Verification
 
 ```bash
-make docker-check
+make docker-validate
+make docker-build
+make docker-smoke
+make docker-sbom
 make docker-scan
 ```

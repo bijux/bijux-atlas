@@ -1,43 +1,40 @@
-# Docker SSOT
+# Docker
 
-This is the single source of truth for container build/test/use in this repository.
+Container build, validation, and release behavior is defined by executable gates.
+
+## Intent
+
+- Keep docker policy minimal, machine-readable, and enforceable.
+- Keep docker docs limited to this file and `docker/CONTRACT.md`.
+- Route all operational behavior through `bijux dev atlas docker ...` and make wrappers.
+
+## Canonical Files
+
+- `docker/README.md`
+- `docker/CONTRACT.md`
+- `docker/policy.json`
+- `docker/images/runtime/Dockerfile`
+
+Root `Dockerfile` is a shim symlink to the canonical runtime Dockerfile.
 
 ## Canonical Commands
 
 ```bash
-make docker-check
+make docker-validate
+make docker-build
+make docker-smoke
+make docker-sbom
 make docker-scan
+make docker-lock
 make docker-release
 ```
 
-## Build
+## Artifacts
 
-- Canonical Dockerfile: `docker/images/runtime/Dockerfile`
-- Root `Dockerfile` is shim only and must symlink to `docker/images/runtime/Dockerfile`.
-- Build metadata labels are injected by `make docker-build`.
+Docker gate artifacts are written under:
 
-## Directory Layout
+`artifacts/<run_id>/...`
 
-- `docker/images/`: image definitions (`runtime/` is canonical).
-- `docker/contracts/`: policy contracts (allowlists, pinning, SBOM, size budget).
-- `docker/`: container build and runtime assets.
+## Enforcement
 
-## Runtime Smoke
-
-`make docker-smoke` validates container binary public surface:
-- `bijux-atlas --help`
-- `bijux-atlas --version`
-- `atlas-server --help`
-- `atlas-server --version`
-
-## Push
-
-`make docker-push` is CI-only and fails when run locally without CI marker.
-`make docker-release` is CI-only and runs `docker-check` + `docker-push`.
-
-## Policy Links
-
-- `docker/CONTRACT.md`
-- `docker/contracts/INDEX.md`
-- `docs/operations/container.md`
-- `configs/security/README.md`
+Policy meaning lives in gates, not prose. See `docker/CONTRACT.md` for the contract-to-gate mapping.
