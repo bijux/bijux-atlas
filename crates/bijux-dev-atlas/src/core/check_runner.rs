@@ -391,7 +391,7 @@ fn check_docs_index_links(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Chec
 }
 
 fn check_make_wrapper_commands(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, CheckError> {
-    let target = Path::new("makefiles/CONTRACT.md");
+    let target = Path::new("make/makefiles/CONTRACT.md");
     if ctx.adapters.fs.exists(ctx.repo_root, target) {
         Ok(Vec::new())
     } else {

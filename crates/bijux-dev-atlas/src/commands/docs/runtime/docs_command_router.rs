@@ -435,7 +435,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                                 ));
                             }
                             fs::write(
-                                ctx.repo_root.join("makefiles/GENERATED_TARGETS.md"),
+                                ctx.repo_root.join("make/makefiles/GENERATED_TARGETS.md"),
                                 generated_make,
                             )
                             .map_err(|e| format!("write generated make targets failed: {e}"))?;

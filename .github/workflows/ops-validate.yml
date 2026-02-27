@@ -5,7 +5,7 @@ on:
     paths:
       - 'ops/**'
       - 'crates/bijux-dev-atlas/**'
-      - 'makefiles/_ops.mk'
+      - 'make/makefiles/_ops.mk'
       - '.github/workflows/ops-validate.yml'
 
 permissions:

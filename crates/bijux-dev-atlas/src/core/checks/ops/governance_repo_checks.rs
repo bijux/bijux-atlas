@@ -79,7 +79,7 @@ pub(super) fn check_root_makefile_single_include_entrypoint(
 pub(super) fn check_makefiles_root_includes_sorted(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/root.mk");
+    let rel = Path::new("make/makefiles/root.mk");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let includes = text

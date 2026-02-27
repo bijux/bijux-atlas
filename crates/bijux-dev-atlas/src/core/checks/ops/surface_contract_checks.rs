@@ -5,7 +5,7 @@ use super::*;
 pub(super) fn checks_ops_makefile_routes_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/_ops.mk");
+    let rel = Path::new("make/makefiles/_ops.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected_targets = ["ops-doctor:", "ops-validate:", "ops-render:", "ops-status:"];
@@ -26,7 +26,7 @@ pub(super) fn checks_ops_makefile_routes_dev_atlas(
 pub(super) fn check_make_governance_wrappers_bijux_only(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/ci.mk");
+    let rel = Path::new("make/makefiles/ci.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
@@ -59,7 +59,7 @@ pub(super) fn check_make_governance_wrappers_bijux_only(
 pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/_ops.mk");
+    let rel = Path::new("make/makefiles/_ops.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
@@ -118,7 +118,7 @@ pub(super) fn check_workflows_ops_entrypoints_bijux_only(
 pub(super) fn check_make_governance_wrappers_no_direct_cargo(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/ci.mk");
+    let rel = Path::new("make/makefiles/ci.mk");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();

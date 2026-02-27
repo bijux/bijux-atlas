@@ -5,19 +5,19 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 
-include makefiles/_cargo.mk
-include makefiles/_configs.mk
-include makefiles/_docs.mk
-include makefiles/docker.mk
-include makefiles/_ops.mk
-include makefiles/_policies.mk
-include makefiles/build.mk
-include makefiles/ci.mk
-include makefiles/dev.mk
-include makefiles/env.mk
-include makefiles/gates.mk
-include makefiles/k8s.mk
-include makefiles/verification.mk
+include make/makefiles/_cargo.mk
+include make/makefiles/_configs.mk
+include make/makefiles/_docs.mk
+include make/makefiles/docker.mk
+include make/makefiles/_ops.mk
+include make/makefiles/_policies.mk
+include make/makefiles/build.mk
+include make/makefiles/ci.mk
+include make/makefiles/dev.mk
+include make/makefiles/env.mk
+include make/makefiles/gates.mk
+include make/makefiles/k8s.mk
+include make/makefiles/verification.mk
 
 CURATED_TARGETS := \
 	help doctor fmt lint test build docker docker-contracts docker-contracts-effect docker-gate \

@@ -43,7 +43,7 @@ pub(super) fn check_configs_schema_paths_present(
 pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/configs.mk");
+    let rel = Path::new("make/makefiles/configs.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();

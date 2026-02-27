@@ -678,7 +678,7 @@ pub(super) fn check_crate_docs_governance_contract(
 pub(super) fn check_make_docs_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("makefiles/docs.mk");
+    let rel = Path::new("make/makefiles/docs.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
