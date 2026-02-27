@@ -490,6 +490,17 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
         Ok(rows)
     }
 
+    fn runtime_image_budget_bytes(repo_root: &Path) -> Result<u64, String> {
+        let policy_path = repo_root.join("docker/policy.json");
+        let policy_text = fs::read_to_string(&policy_path)
+            .map_err(|e| format!("failed to read {}: {e}", policy_path.display()))?;
+        let policy: serde_json::Value = serde_json::from_str(&policy_text)
+            .map_err(|e| format!("failed to parse {}: {e}", policy_path.display()))?;
+        policy["runtime_image_max_bytes"]
+            .as_u64()
+            .ok_or_else(|| "docker policy missing runtime_image_max_bytes".to_string())
+    }
+
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
         let emit = |common: &DockerCommonArgs, payload: serde_json::Value, code: i32| {
@@ -546,8 +557,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 check_contract_gate_mapping()?;
                 let rows = validate_dockerfiles(&repo_root)?;
                 let violations = rows.len();
+                let run_id = common
+                    .run_id
+                    .as_ref()
+                    .map(|v| RunId::parse(v))
+                    .transpose()?
+                    .unwrap_or_else(|| RunId::from_seed("docker_validate"));
                 let payload = serde_json::json!({
                     "schema_version": 1,
+                    "run_id": run_id.as_str(),
                     "status": if violations == 0 { "ok" } else { "failed" },
                     "text": if violations == 0 { "docker validate passed" } else { "docker validate found violations" },
                     "rows": rows,
@@ -555,6 +573,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
+                let artifact_dir = docker_artifact_dir(&repo_root, &run_id);
+                fs::create_dir_all(&artifact_dir)
+                    .map_err(|e| format!("cannot create {}: {e}", artifact_dir.display()))?;
+                let validate_report_path = artifact_dir.join("validate.json");
+                fs::write(
+                    &validate_report_path,
+                    serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())? + "\n",
+                )
+                .map_err(|e| format!("cannot write {}: {e}", validate_report_path.display()))?;
                 emit(&common, payload, if violations == 0 { 0 } else { 1 })
             }
             DockerCommand::Build(common) => {
@@ -591,15 +618,28 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 let (inspect_code, inspect_stdout, _) =
                     run_subprocess(&repo_root, "docker", &["image", "inspect", &tag, "--format", "{{.Id}}"])
                         .unwrap_or((1, String::new(), String::new()));
+                let (size_code, size_stdout, size_stderr) = run_subprocess(
+                    &repo_root,
+                    "docker",
+                    &["image", "inspect", &tag, "--format", "{{.Size}}"],
+                )
+                .unwrap_or((1, String::new(), String::new()));
+                let actual_size = size_stdout.trim().parse::<u64>().unwrap_or_default();
+                let max_size = runtime_image_budget_bytes(&repo_root)?;
+                let size_ok = size_code == 0 && actual_size <= max_size;
                 let payload = serde_json::json!({
                     "schema_version": 1,
                     "run_id": run_id.as_str(),
                     "text": "docker build completed",
-                    "rows": [{"action":"build","repo_root": repo_root.display().to_string(), "image_tag": tag, "image_id": inspect_stdout.trim(), "inspect_status": inspect_code}],
+                    "rows": [
+                        {"action":"build","repo_root": repo_root.display().to_string(), "image_tag": tag, "image_id": inspect_stdout.trim(), "inspect_status": inspect_code},
+                        {"action":"image_size","gate_id":"docker.contract.image_size","contract_id":"DOCKER-010","status": if size_ok { "ok" } else { "failed" }, "actual_bytes": actual_size, "max_bytes": max_size, "stderr": size_stderr}
+                    ],
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, code)
+                let final_code = if code == 0 && size_ok { 0 } else { 1 };
+                emit(&common, payload, final_code)
             }
             DockerCommand::Check(common) => {
                 let validate = run_docker_command(true, DockerCommand::Validate(common.clone()));
