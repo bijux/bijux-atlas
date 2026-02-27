@@ -30,6 +30,18 @@ pub(crate) fn docs_validate_payload(
             ));
         }
     }
+    for rel in [
+        "reference/commands.md",
+        "reference/schemas.md",
+        "reference/configs.md",
+        "reference/make-targets.md",
+    ] {
+        if !ctx.docs_root.join(rel).exists() {
+            issues.errors.push(format!(
+                "DOCS_REFERENCE_ERROR: missing generated docs reference page `docs/{rel}`"
+            ));
+        }
+    }
     let mut body_hashes = BTreeMap::<String, Vec<String>>::new();
     for file in docs_markdown_files(&ctx.docs_root, common.include_drafts) {
         let rel = file

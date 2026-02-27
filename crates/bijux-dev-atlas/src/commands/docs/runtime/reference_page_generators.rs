@@ -36,6 +36,22 @@ fn docs_reference_target_contents(
             render_docs_reference_commands(repo_root)?,
         ),
         (
+            "docs/reference/commands.md",
+            render_docs_reference_commands_registry(repo_root)?,
+        ),
+        (
+            "docs/reference/schemas.md",
+            render_docs_reference_schemas(repo_root)?,
+        ),
+        (
+            "docs/reference/configs.md",
+            render_docs_reference_configs(repo_root)?,
+        ),
+        (
+            "docs/reference/make-targets.md",
+            render_docs_reference_make_targets(repo_root)?,
+        ),
+        (
             "docs/operations/reference/ops-surface.md",
             render_docs_reference_ops_surface(repo_root)?,
         ),
@@ -72,6 +88,145 @@ fn docs_reference_target_contents(
             render_docs_reference_what_breaks(repo_root)?,
         ),
     ])
+}
+
+fn render_docs_reference_commands_registry(repo_root: &std::path::Path) -> Result<String, String> {
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("docs/_generated/command-index.json"))
+            .map_err(|e| format!("read command-index.json failed: {e}"))?,
+    )
+    .map_err(|e| format!("parse command-index.json failed: {e}"))?;
+    let mut rows = value["commands"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| {
+            (
+                row["id"].as_str().unwrap_or_default().to_string(),
+                row["domain"].as_str().unwrap_or_default().to_string(),
+                row["summary"].as_str().unwrap_or_default().to_string(),
+            )
+        })
+        .collect::<Vec<_>>();
+    rows.sort();
+
+    let mut out = String::new();
+    out.push_str("# Commands Reference\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n");
+    out.push_str("- Tier: `generated`\n");
+    out.push_str("- Audience: `operators`\n");
+    out.push_str("- Source-of-truth: `docs/_generated/command-index.json`\n\n");
+    out.push_str("## Commands\n\n| Command ID | Domain | Summary |\n| --- | --- | --- |\n");
+    for (id, domain, summary) in rows {
+        out.push_str(&format!("| `{id}` | `{domain}` | {summary} |\n"));
+    }
+    Ok(out)
+}
+
+fn render_docs_reference_schemas(repo_root: &std::path::Path) -> Result<String, String> {
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("docs/_generated/schema-index.json"))
+            .map_err(|e| format!("read schema-index.json failed: {e}"))?,
+    )
+    .map_err(|e| format!("parse schema-index.json failed: {e}"))?;
+    let mut rows = value["schemas"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| {
+            (
+                row["path"].as_str().unwrap_or_default().to_string(),
+                row["title"].as_str().unwrap_or_default().to_string(),
+                row["kind"].as_str().unwrap_or_default().to_string(),
+            )
+        })
+        .collect::<Vec<_>>();
+    rows.sort();
+
+    let mut out = String::new();
+    out.push_str("# Schemas Reference\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n");
+    out.push_str("- Tier: `generated`\n");
+    out.push_str("- Audience: `operators`\n");
+    out.push_str("- Source-of-truth: `docs/_generated/schema-index.json`\n\n");
+    out.push_str("## Schemas\n\n| Path | Title | Kind |\n| --- | --- | --- |\n");
+    for (path, title, kind) in rows {
+        out.push_str(&format!("| `{path}` | {title} | `{kind}` |\n"));
+    }
+    Ok(out)
+}
+
+fn render_docs_reference_configs(repo_root: &std::path::Path) -> Result<String, String> {
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("configs/inventory/consumers.json"))
+            .map_err(|e| format!("read configs inventory failed: {e}"))?,
+    )
+    .map_err(|e| format!("parse configs inventory failed: {e}"))?;
+    let mut rows = value["groups"]
+        .as_object()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|(group, consumers)| {
+            let joined = consumers
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(|v| v.as_str())
+                .collect::<Vec<_>>()
+                .join(", ");
+            (group, joined)
+        })
+        .collect::<Vec<_>>();
+    rows.sort_by_key(|(group, _)| group.clone());
+
+    let mut out = String::new();
+    out.push_str("# Configs Reference\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n");
+    out.push_str("- Tier: `generated`\n");
+    out.push_str("- Audience: `operators`\n");
+    out.push_str("- Source-of-truth: `configs/inventory/consumers.json`\n\n");
+    out.push_str("## Config Groups\n\n| Group | Consumers |\n| --- | --- |\n");
+    for (group, consumers) in rows {
+        out.push_str(&format!("| `{group}` | `{consumers}` |\n"));
+    }
+    Ok(out)
+}
+
+fn render_docs_reference_make_targets(repo_root: &std::path::Path) -> Result<String, String> {
+    let value: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string(repo_root.join("configs/ops/make-target-registry.json"))
+            .map_err(|e| format!("read make target registry failed: {e}"))?,
+    )
+    .map_err(|e| format!("parse make target registry failed: {e}"))?;
+    let mut rows = value["targets"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|row| {
+            (
+                row["name"].as_str().unwrap_or_default().to_string(),
+                row["surface"].as_str().unwrap_or_default().to_string(),
+                row["description"].as_str().unwrap_or_default().to_string(),
+            )
+        })
+        .collect::<Vec<_>>();
+    rows.sort();
+
+    let mut out = String::new();
+    out.push_str("# Make Targets Reference\n\n");
+    out.push_str("- Owner: `bijux-atlas-operations`\n");
+    out.push_str("- Tier: `generated`\n");
+    out.push_str("- Audience: `operators`\n");
+    out.push_str("- Source-of-truth: `configs/ops/make-target-registry.json`\n\n");
+    out.push_str("## Targets\n\n| Target | Surface | Description |\n| --- | --- | --- |\n");
+    for (name, surface, description) in rows {
+        out.push_str(&format!("| `{name}` | `{surface}` | {description} |\n"));
+    }
+    Ok(out)
 }
 
 fn run_bijux_dev_atlas_help(repo_root: &std::path::Path, args: &[&str]) -> Result<String, String> {

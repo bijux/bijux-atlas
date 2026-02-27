@@ -21,6 +21,7 @@ No product positioning or tutorial content.
 ## Contracts
 
 - Each reference subsection must maintain its own `INDEX.md`.
+- Generated cross-surface references are published in this section and must be refreshed by `bijux dev atlas docs reference generate --allow-subprocess --allow-write`.
 
 ## Failure modes
 
@@ -29,7 +30,7 @@ Missing links create orphan technical references.
 ## How to verify
 
 ```bash
-$ make docs
+$ make docs-validate
 ```
 
 Expected output: docs checks pass with no orphan pages.
@@ -39,3 +40,7 @@ Expected output: docs checks pass with no orphan pages.
 - [Docs Home](../index.md)
 - [Architecture](../architecture/INDEX.md)
 - [Terms Glossary](../_style/terms-glossary.md)
+- [Commands Reference](commands.md)
+- [Schemas Reference](schemas.md)
+- [Configs Reference](configs.md)
+- [Make Targets Reference](make-targets.md)
