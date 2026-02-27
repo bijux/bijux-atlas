@@ -398,6 +398,104 @@ pub(super) fn dispatch_execution(
                     Ok((rendered, 0))
                 }
             }
+            OpsGenerateCommand::SurfaceList {
+                check,
+                write_example,
+                common,
+            } => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = run_id_or_default(common.run_id.clone())?;
+                let ops_registry = bijux_dev_atlas::core::ops_registry::builtin_ops_registry();
+                let domains = {
+                    let mut set = std::collections::BTreeSet::new();
+                    for entry in &ops_registry {
+                        set.insert(entry.domain);
+                    }
+                    set.into_iter().collect::<Vec<_>>()
+                };
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "generated_by": "bijux dev atlas ops generate surface-list --write-example",
+                    "status": "pass",
+                    "surfaces": ["check", "configs", "docs", "ops"],
+                    "crate_alignment": {
+                        "source": "cargo metadata",
+                        "status": "pass"
+                    },
+                    "ops_taxonomy": {
+                        "domains": domains,
+                        "entries": ops_registry.into_iter().map(|entry| {
+                            serde_json::json!({
+                                "domain": entry.domain,
+                                "verb": entry.verb,
+                                "subverb": entry.subverb,
+                                "tags": entry.tags.iter().map(|tag| format!("{tag:?}").to_ascii_lowercase()).collect::<Vec<_>>()
+                            })
+                        }).collect::<Vec<_>>()
+                    }
+                });
+
+                let expected = repo_root.join("ops/_generated.example/control-plane-surface-list.json");
+                if check {
+                    let existing = std::fs::read_to_string(&expected).map_err(|err| {
+                        format!(
+                            "surface-list check failed: missing {}: {err}",
+                            expected.display()
+                        )
+                    })?;
+                    let expected_json: serde_json::Value = serde_json::from_str(&existing)
+                        .map_err(|err| {
+                            format!(
+                                "surface-list check failed: invalid json {}: {err}",
+                                expected.display()
+                            )
+                        })?;
+                    let matches = expected_json == payload;
+                    let rendered = emit_payload(
+                        common.format,
+                        common.out.clone(),
+                        &serde_json::json!({
+                            "schema_version": 1,
+                            "text": if matches { "control-plane surface list matches expected example" } else { "control-plane surface list drift detected" },
+                            "rows": [{"path": expected.display().to_string(), "matches": matches}],
+                            "summary": {"total": 1, "errors": if matches { 0 } else { 1 }, "warnings": 0}
+                        }),
+                    )?;
+                    return Ok((rendered, if matches { 0 } else { 1 }));
+                }
+
+                if write_example {
+                    if !common.allow_write {
+                        return Err("surface-list generation requires --allow-write".to_string());
+                    }
+                    let encoded = serde_json::to_string_pretty(&payload)
+                        .map_err(|err| format!("surface-list encode failed: {err}"))?;
+                    if let Some(parent) = expected.parent() {
+                        std::fs::create_dir_all(parent).map_err(|err| {
+                            format!("failed to create {}: {err}", parent.display())
+                        })?;
+                    }
+                    std::fs::write(&expected, encoded)
+                        .map_err(|err| format!("failed to write {}: {err}", expected.display()))?;
+                }
+
+                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let rel = "generate/control-plane-surface-list.json";
+                let out = fs_adapter
+                    .write_artifact_json(&run_id, rel, &payload)
+                    .map_err(|e| e.to_stable_message())?;
+                let rendered = emit_payload(
+                    common.format,
+                    common.out.clone(),
+                    &serde_json::json!({
+                        "schema_version": 1,
+                        "text": format!("generated control-plane surface list at {}", out.display()),
+                        "rows": [{"artifact_path": out.display().to_string(), "example_path": expected.display().to_string(), "write_example": write_example}],
+                        "summary": {"total": 1, "errors": 0, "warnings": 0}
+                    }),
+                )?;
+                Ok((rendered, 0))
+            }
         },
         OpsCommand::Stack { .. }
         | OpsCommand::K8s { .. }

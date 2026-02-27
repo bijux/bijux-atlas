@@ -345,6 +345,14 @@ pub enum OpsGenerateCommand {
         #[command(flatten)]
         common: OpsCommonArgs,
     },
+    SurfaceList {
+        #[arg(long, default_value_t = false)]
+        check: bool,
+        #[arg(long, default_value_t = false)]
+        write_example: bool,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
 }
 
 #[derive(Args, Debug, Clone)]
