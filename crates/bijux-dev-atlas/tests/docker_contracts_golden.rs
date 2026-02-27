@@ -30,6 +30,15 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
             "allow_root_runtime_images": [],
             "allow_add_exceptions": [],
             "allow_secret_copy_patterns": [],
+            "profiles": {
+                "local": {"allow_scan_skip": true},
+                "ci": {"allow_scan_skip": false}
+            },
+            "runtime_engine": "docker",
+            "airgap_build": {"declared": false, "policy": "stub"},
+            "multi_registry_push": {"declared": false, "registries": []},
+            "downloaded_assets": {"require_digest_pins": true},
+            "vendored_binaries": {"allow": []},
             "required_oci_labels": [
                 "org.opencontainers.image.source",
                 "org.opencontainers.image.version",

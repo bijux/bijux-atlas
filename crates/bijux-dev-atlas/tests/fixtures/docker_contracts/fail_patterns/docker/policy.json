@@ -1,6 +1,29 @@
 {
   "schema_version": 1,
   "allow_tagged_images_exceptions": [],
+  "profiles": {
+    "local": {
+      "allow_scan_skip": true
+    },
+    "ci": {
+      "allow_scan_skip": false
+    }
+  },
+  "runtime_engine": "docker",
+  "airgap_build": {
+    "declared": false,
+    "policy": "stub"
+  },
+  "multi_registry_push": {
+    "declared": false,
+    "registries": []
+  },
+  "downloaded_assets": {
+    "require_digest_pins": true
+  },
+  "vendored_binaries": {
+    "allow": []
+  },
   "required_oci_labels": [
     "org.opencontainers.image.source",
     "org.opencontainers.image.version",
