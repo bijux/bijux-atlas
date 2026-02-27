@@ -49,8 +49,16 @@ doctor: ## Run Rust control-plane doctor suite as JSON
 	@$(MAKE) -s make-ci-surface-check
 	@$(MAKE) -s make-public-surface-sync-check
 	@$(MAKE) -s make-size-budget-check
+	@$(MAKE) -s make-include-cycle-check
 	@mkdir -p $(ARTIFACT_ROOT)/doctor/$(RUN_ID)
 	@$(DEV_ATLAS) ops doctor --profile $(PROFILE) --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
+
+_internal-lint-make: ## Run make domain checks via control-plane registry
+	@$(DEV_ATLAS) check run --domain make --format json
+
+_internal-make-drift-report: ## Generate make drift report artifact from make-domain checks
+	@mkdir -p $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)
+	@$(DEV_ATLAS) check run --domain make --format json | tee $(ARTIFACT_ROOT)/make-drift/$(RUN_ID)/report.json >/dev/null
 
 k8s-render: ## Render Kubernetes manifests through dev-atlas
 	@printf '%s\n' "run: $(DEV_ATLAS) ops k8s render --profile $(PROFILE) --format json"
@@ -87,4 +95,4 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json | tee $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help _internal-list _internal-explain _internal-surface doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly

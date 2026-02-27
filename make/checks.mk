@@ -56,4 +56,17 @@ make-size-budget-check: ## Enforce make directory size budget
 	actual_loc="$$(find make -type f \( -name '*.mk' -o -name '*.md' \) | xargs wc -l | tail -n 1 | awk '{print $$1}')"; \
 	test "$$actual_loc" -le "$$max_loc" || { echo "governance violation: make/ size budget exceeded ($$actual_loc > $$max_loc)" >&2; exit 1; }
 
-.PHONY: make-contract-check make-target-governance-check make-ci-surface-check make-public-surface-sync-check make-size-budget-check
+make-include-cycle-check: ## Fail on cyclic include graph under make/
+	@set -euo pipefail; \
+	edges="$$(for f in make/*.mk; do \
+	  src="$$(basename "$$f")"; \
+	  awk '/^include / {print $$2}' "$$f" | sed -E 's|^make/||' | while read -r dep; do \
+	    [ -n "$$dep" ] || continue; \
+	    printf '%s %s\n' "$$src" "$$(basename "$$dep")"; \
+	  done; \
+	done)"; \
+	if [ -n "$$edges" ]; then \
+	  printf '%s\n' "$$edges" | tsort >/dev/null 2>&1 || { echo "governance violation: include cycle detected under make/*.mk" >&2; exit 1; }; \
+	fi
+
+.PHONY: make-contract-check make-target-governance-check make-ci-surface-check make-public-surface-sync-check make-size-budget-check make-include-cycle-check
