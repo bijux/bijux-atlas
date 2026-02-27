@@ -2,9 +2,10 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsInventoryCommand, OpsK8sCommand,
-    OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsReportCommand,
-    OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsInventoryCommand,
+    OpsGenerateCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
+    OpsObsDrillCommand, OpsPinsCommand, OpsReportCommand, OpsSchemaCommand, OpsStackCommand,
+    OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -25,6 +26,72 @@ mod core_handler;
 mod execution_handler;
 #[path = "runtime_mod/profile_handler.rs"]
 mod profile_handler;
+
+fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
+    match command {
+        OpsCommand::List(common)
+        | OpsCommand::Doctor(common)
+        | OpsCommand::Validate(common)
+        | OpsCommand::Inventory(common)
+        | OpsCommand::Docs(common)
+        | OpsCommand::Conformance(common)
+        | OpsCommand::Report(common)
+        | OpsCommand::ListProfiles(common)
+        | OpsCommand::ListTools(common)
+        | OpsCommand::VerifyTools(common)
+        | OpsCommand::ListActions(common)
+        | OpsCommand::Plan(common)
+        | OpsCommand::Up(common)
+        | OpsCommand::Down(common)
+        | OpsCommand::Clean(common)
+        | OpsCommand::Cleanup(common)
+        | OpsCommand::K8sPlan(common)
+        | OpsCommand::K8sDryRun(common)
+        | OpsCommand::K8sConformance(common) => Some(common),
+        OpsCommand::Explain { common, .. } | OpsCommand::ExplainProfile { common, .. } => {
+            Some(common)
+        }
+        OpsCommand::LoadPlan { common, .. }
+        | OpsCommand::LoadRun { common, .. }
+        | OpsCommand::LoadReport { common, .. } => Some(common),
+        OpsCommand::Render(args) => Some(&args.common),
+        OpsCommand::Install(args) => Some(&args.common),
+        OpsCommand::Status(args) => Some(&args.common),
+        OpsCommand::Reset(args) => Some(&args.common),
+        OpsCommand::K8sApply(args) => Some(&args.common),
+        OpsCommand::K8sWait(args) => Some(&args.common),
+        OpsCommand::K8sLogs(args) => Some(&args.common),
+        OpsCommand::K8sPortForward(args) => Some(&args.common),
+        OpsCommand::Pins { command } => match command {
+            OpsPinsCommand::Check(common) | OpsPinsCommand::Update { common, .. } => Some(common),
+        },
+        OpsCommand::Generate { command } => match command {
+            OpsGenerateCommand::PinsIndex { common, .. }
+            | OpsGenerateCommand::SurfaceList { common, .. }
+            | OpsGenerateCommand::Runbook { common, .. } => Some(common),
+        },
+        OpsCommand::Evidence { command } => match command {
+            OpsEvidenceCommand::Collect(common) | OpsEvidenceCommand::Verify(common) => Some(common),
+        },
+        OpsCommand::Schema { .. }
+        | OpsCommand::InventoryDomain { .. }
+        | OpsCommand::ReportDomain { .. }
+        | OpsCommand::Tools { .. }
+        | OpsCommand::Suite { .. }
+        | OpsCommand::Stack { .. }
+        | OpsCommand::K8s { .. }
+        | OpsCommand::Load { .. }
+        | OpsCommand::Datasets { .. }
+        | OpsCommand::E2e { .. }
+        | OpsCommand::Obs { .. } => None,
+    }
+}
+
+fn command_run_id(command: &OpsCommand) -> String {
+    command_common(command)
+        .and_then(|common| common.run_id.clone())
+        .unwrap_or_else(|| "ops_run".to_string())
+}
 
 pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> i32 {
     let command = match command {
@@ -228,6 +295,18 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         other => other,
     };
 
+    let run_id = command_run_id(&command);
+    if debug {
+        let _ = writeln!(
+            io::stderr(),
+            "{}",
+            serde_json::json!({
+                "event": "ops.command.start",
+                "run_id": run_id,
+            })
+        );
+    }
+
     let run = core_handler::dispatch_core(command.clone(), debug)
         .or_else(|err| {
             if err == "__UNHANDLED__" {
@@ -250,6 +329,7 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             "{}",
             serde_json::json!({
                 "event": "ops.command.completed",
+                "run_id": run_id,
                 "ok": run.is_ok(),
             })
         );

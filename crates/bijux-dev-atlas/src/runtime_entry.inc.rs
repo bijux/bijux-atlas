@@ -7,8 +7,8 @@ use std::process::Command as ProcessCommand;
 pub(crate) use crate::cli::Cli;
 use crate::cli::{
     ConfigsCommand, ConfigsCommonArgs, DemoCommand, DocsCommand, DocsCommonArgs, DomainArg,
-    FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsGenerateCommand, OpsPinsCommand,
-    OpsRenderTarget, OpsStatusTarget, WorkflowsCommand,
+    FormatArg, GatesCommand, OpsCommand, OpsCommonArgs, OpsRenderTarget, OpsStatusTarget,
+    WorkflowsCommand,
 };
 use bijux_dev_atlas::adapters::{Capabilities, RealFs, RealProcessRunner, WorkspaceRoot};
 use bijux_dev_atlas::core::ops_inventory::{ops_inventory_summary, validate_ops_inventory};
