@@ -109,6 +109,11 @@ Tests:
 Tests:
 - `ops.e2e.no_stray_e2e_artifacts` (static, Pure): e2e root contains only declared artifact directories and files
 
+#### OPS-E2E-010 e2e summary schema contract
+
+Tests:
+- `ops.e2e.summary_schema_valid` (static, Pure): e2e summary is schema-valid and aligned with suite/scenario registries
+
 #### OPS-E2E-E-001 e2e effect smoke suite contract
 
 Tests:
@@ -135,6 +140,36 @@ Tests:
 
 Tests:
 - `ops.env.no_unknown_keys` (static, Pure): environment overlays reject unknown keys
+
+#### OPS-ENV-004 environment overlay merge determinism contract
+
+Tests:
+- `ops.env.overlay_merge_deterministic` (static, Pure): overlay merge with identical inputs is deterministic across profiles
+
+#### OPS-ENV-005 environment prod safety toggles contract
+
+Tests:
+- `ops.env.prod_forbids_dev_toggles` (static, Pure): prod overlay forbids dev-only effect toggles and unrestricted network
+
+#### OPS-ENV-006 environment ci effect restriction contract
+
+Tests:
+- `ops.env.ci_restricts_effects` (static, Pure): ci overlay disables subprocess effects and keeps restricted network mode
+
+#### OPS-ENV-007 environment base defaults contract
+
+Tests:
+- `ops.env.base_overlay_required_defaults` (static, Pure): base overlay defines required default keys for all profiles
+
+#### OPS-ENV-008 environment overlay key stability contract
+
+Tests:
+- `ops.env.overlay_keys_stable` (static, Pure): overlay key sets are stable and schema-versioned across base/dev/ci/prod
+
+#### OPS-ENV-009 environment overlays directory boundary contract
+
+Tests:
+- `ops.env.overlays_dir_no_stray_files` (static, Pure): overlays directory has no stray files and portability matrix is present
 
 ### Pillar: inventory
 

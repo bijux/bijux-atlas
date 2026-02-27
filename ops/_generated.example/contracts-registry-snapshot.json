@@ -293,6 +293,16 @@
       "title": "e2e surface artifact boundary contract"
     },
     {
+      "id": "OPS-E2E-010",
+      "tests": [
+        {
+          "test_id": "ops.e2e.summary_schema_valid",
+          "title": "e2e summary is schema-valid and aligned with suite/scenario registries"
+        }
+      ],
+      "title": "e2e summary schema contract"
+    },
+    {
       "id": "OPS-E2E-E-001",
       "tests": [
         {
@@ -341,6 +351,66 @@
         }
       ],
       "title": "environment key strictness contract"
+    },
+    {
+      "id": "OPS-ENV-004",
+      "tests": [
+        {
+          "test_id": "ops.env.overlay_merge_deterministic",
+          "title": "overlay merge with identical inputs is deterministic across profiles"
+        }
+      ],
+      "title": "environment overlay merge determinism contract"
+    },
+    {
+      "id": "OPS-ENV-005",
+      "tests": [
+        {
+          "test_id": "ops.env.prod_forbids_dev_toggles",
+          "title": "prod overlay forbids dev-only effect toggles and unrestricted network"
+        }
+      ],
+      "title": "environment prod safety toggles contract"
+    },
+    {
+      "id": "OPS-ENV-006",
+      "tests": [
+        {
+          "test_id": "ops.env.ci_restricts_effects",
+          "title": "ci overlay disables subprocess effects and keeps restricted network mode"
+        }
+      ],
+      "title": "environment ci effect restriction contract"
+    },
+    {
+      "id": "OPS-ENV-007",
+      "tests": [
+        {
+          "test_id": "ops.env.base_overlay_required_defaults",
+          "title": "base overlay defines required default keys for all profiles"
+        }
+      ],
+      "title": "environment base defaults contract"
+    },
+    {
+      "id": "OPS-ENV-008",
+      "tests": [
+        {
+          "test_id": "ops.env.overlay_keys_stable",
+          "title": "overlay key sets are stable and schema-versioned across base/dev/ci/prod"
+        }
+      ],
+      "title": "environment overlay key stability contract"
+    },
+    {
+      "id": "OPS-ENV-009",
+      "tests": [
+        {
+          "test_id": "ops.env.overlays_dir_no_stray_files",
+          "title": "overlays directory has no stray files and portability matrix is present"
+        }
+      ],
+      "title": "environment overlays directory boundary contract"
     },
     {
       "id": "OPS-INV-001",
