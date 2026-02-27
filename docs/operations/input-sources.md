@@ -61,3 +61,5 @@ Input verification writes `output_root/_ingest_inputs/inputs.lock.json` with:
 - Network sources are denied unless explicitly allowed.
 - Resume with mismatched lock entries fails.
 - Corrupt download verification fails and quarantines temp artifacts.
+
+Related contracts: OPS-DOCS-001, OPS-000.

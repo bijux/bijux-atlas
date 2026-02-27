@@ -31,3 +31,5 @@ make root-local
 ```
 
 Expected output: lane summary is printed with pass/fail status and artifact paths.
+
+Related contracts: OPS-DOCS-001, OPS-000.

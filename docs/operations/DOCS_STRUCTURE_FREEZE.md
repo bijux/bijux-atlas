@@ -23,3 +23,5 @@
 ## Enforcement
 
 - `checks_ops_docs_governance`
+
+Related contracts: OPS-DOCS-001, OPS-000.

@@ -41,3 +41,5 @@ Image must contain OCI labels:
 ```bash
 make docker-gate
 ```
+
+Related contracts: OPS-DOCS-001, OPS-000.

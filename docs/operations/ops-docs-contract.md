@@ -45,3 +45,5 @@ Temporary exceptions are declared only in `ops/inventory/authority-tier-exceptio
 ## Enforcement
 
 - `checks_ops_docs_governance`
+
+Related contracts: OPS-DOCS-001, OPS-000.

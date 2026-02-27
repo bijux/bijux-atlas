@@ -29,3 +29,5 @@ Policy rejections must be diagnosable from metrics and logs without code spelunk
 
 - If `atlas_policy_relaxation_active` is `1` unexpectedly, verify `ATLAS_POLICY_MODE`.
 - If violations spike under normal load, compare query budgets in `configs/policy/policy.json`.
+
+Related contracts: OPS-DOCS-001, OPS-000.

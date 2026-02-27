@@ -24,6 +24,11 @@ Kubernetes operations, observability posture, load validation, incident runbooks
 
 Does not define product semantics or internal crate APIs.
 
+## Contract Boundary
+
+Operational policies are enforced by contracts; docs are walkthroughs.
+Policy statements in this directory must link to executable contract IDs such as `OPS-000`, `OPS-005`, and `OPS-DOCS-001`.
+
 ## Contracts
 
 - [Kubernetes](k8s/INDEX.md)

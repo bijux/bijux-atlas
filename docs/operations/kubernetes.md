@@ -59,3 +59,5 @@ Canonical Kubernetes operations flow and contract-aligned make entrypoints.
 - Smoke and observability flows validate latency/error metrics contracts:
   - `make ops-smoke`
   - `make ops-observability-validate`
+
+Related contracts: OPS-DOCS-001, OPS-000.

@@ -47,3 +47,5 @@ Expected output: all checks pass with no errors.
 - [Full Stack Locally](./full-stack-local.md)
 - [K8s Test Contract](./k8s/k8s-test-contract.md)
 - [Observability Acceptance Gates](./observability/acceptance-gates.md)
+
+Related contracts: OPS-DOCS-001, OPS-000.
