@@ -32,3 +32,8 @@ Considered stable:
 - store error codes and retry policy abstraction
 
 Internal implementation details in backend modules may evolve.
+
+## References
+
+- Backend feature matrix: `docs/BACKEND_FEATURE_MATRIX.md`
+- Attack surface budget: `docs/ATTACK_SURFACE_BUDGET.md`

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "release_build_profile_v1",
+  "component": "bijux-atlas-store",
+  "default_compiled_backends": [
+    "local"
+  ],
+  "optional_compiled_backends": [
+    "http-readonly",
+    "s3-like"
+  ],
+  "feature_flags": {
+    "backend-local": "default",
+    "backend-s3": "opt-in"
+  }
+}
