@@ -162,3 +162,31 @@ fn runtime_dockerfile_has_no_unapproved_network_build_steps() {
         violations.join("\n")
     );
 }
+
+#[test]
+fn static_contract_runner_reports_runtime_dockerfile_path_on_failure() {
+    let root = workspace_root();
+    let report = bijux_dev_atlas::contracts::run(
+        "docker",
+        bijux_dev_atlas::contracts::docker::contracts,
+        &root,
+        &bijux_dev_atlas::contracts::RunOptions {
+            mode: bijux_dev_atlas::contracts::Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            fail_fast: false,
+            contract_filter: Some("DOCKER-006".to_string()),
+            test_filter: Some("docker.from.no_latest".to_string()),
+            list_only: false,
+            artifacts_root: None,
+        },
+    )
+    .expect("run docker contracts");
+    let payload = bijux_dev_atlas::contracts::to_json(&report);
+    let tests = payload["tests"].as_array().expect("tests array");
+    assert!(
+        tests
+            .iter()
+            .all(|row| row["contract_id"].as_str() == Some("DOCKER-006"))
+    );
+}

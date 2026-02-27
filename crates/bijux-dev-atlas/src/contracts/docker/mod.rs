@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 use serde_json::Value;
 
@@ -199,6 +200,36 @@ fn violation(
         message: message.to_string(),
         evidence,
     }
+}
+
+fn effect_artifact_dir(ctx: &RunContext) -> Option<PathBuf> {
+    let root = ctx.artifacts_root.as_ref()?;
+    let dir = root.join("contracts/docker/effect");
+    std::fs::create_dir_all(&dir).ok()?;
+    Some(dir)
+}
+
+fn run_command_with_artifacts(
+    ctx: &RunContext,
+    program: &str,
+    args: &[&str],
+    stdout_name: &str,
+    stderr_name: &str,
+) -> Result<std::process::Output, String> {
+    let output = Command::new(program)
+        .args(args)
+        .current_dir(&ctx.repo_root)
+        .output()
+        .map_err(|e| format!("spawn `{program}` failed: {e}"))?;
+    if let Some(dir) = effect_artifact_dir(ctx) {
+        let _ = std::fs::write(dir.join(stdout_name), &output.stdout);
+        let _ = std::fs::write(dir.join(stderr_name), &output.stderr);
+    }
+    Ok(output)
+}
+
+fn image_tag() -> String {
+    "bijux-atlas-contracts:dev".to_string()
 }
 
 fn test_dir_allowed_markdown(ctx: &RunContext) -> TestResult {
@@ -903,6 +934,170 @@ fn test_copy_no_parent_traversal(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_effect_build_runtime_image(ctx: &RunContext) -> TestResult {
+    let image = image_tag();
+    let dockerfile = "docker/images/runtime/Dockerfile";
+    let output = match run_command_with_artifacts(
+        ctx,
+        "docker",
+        &["build", "-f", dockerfile, "-t", &image, "."],
+        "docker-build-runtime.stdout.log",
+        "docker-build-runtime.stderr.log",
+    ) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    if output.status.success() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            "DOCKER-100",
+            "docker.build.runtime_image",
+            Some(dockerfile.to_string()),
+            Some(1),
+            "docker build failed for runtime image",
+            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+        )])
+    }
+}
+
+fn test_effect_smoke_version(ctx: &RunContext) -> TestResult {
+    let image = image_tag();
+    let output = match run_command_with_artifacts(
+        ctx,
+        "docker",
+        &[
+            "run",
+            "--rm",
+            "--entrypoint",
+            "/app/bijux-atlas",
+            &image,
+            "--version",
+        ],
+        "docker-smoke-version.stdout.log",
+        "docker-smoke-version.stderr.log",
+    ) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    if output.status.success() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            "DOCKER-101",
+            "docker.smoke.version",
+            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some(1),
+            "docker smoke version command failed",
+            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+        )])
+    }
+}
+
+fn test_effect_smoke_help(ctx: &RunContext) -> TestResult {
+    let image = image_tag();
+    let output = match run_command_with_artifacts(
+        ctx,
+        "docker",
+        &[
+            "run",
+            "--rm",
+            "--entrypoint",
+            "/app/bijux-atlas",
+            &image,
+            "--help",
+        ],
+        "docker-smoke-help.stdout.log",
+        "docker-smoke-help.stderr.log",
+    ) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    if output.status.success() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            "DOCKER-101",
+            "docker.smoke.help",
+            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some(1),
+            "docker smoke help command failed",
+            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+        )])
+    }
+}
+
+fn test_effect_sbom_generated(ctx: &RunContext) -> TestResult {
+    let image = image_tag();
+    let output = match run_command_with_artifacts(
+        ctx,
+        "syft",
+        &["-o", "json", &format!("docker:{image}")],
+        "docker-sbom.json",
+        "docker-sbom.stderr.log",
+    ) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    if !output.status.success() {
+        return TestResult::Fail(vec![violation(
+            "DOCKER-102",
+            "docker.sbom.generated",
+            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some(1),
+            "syft SBOM generation failed",
+            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+        )]);
+    }
+    match serde_json::from_slice::<Value>(&output.stdout) {
+        Ok(_) => TestResult::Pass,
+        Err(err) => TestResult::Fail(vec![violation(
+            "DOCKER-102",
+            "docker.sbom.generated",
+            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some(1),
+            "syft output is not valid JSON",
+            Some(err.to_string()),
+        )]),
+    }
+}
+
+fn test_effect_scan_passes_policy(ctx: &RunContext) -> TestResult {
+    let image = image_tag();
+    let output = match run_command_with_artifacts(
+        ctx,
+        "trivy",
+        &[
+            "image",
+            "--severity",
+            "HIGH,CRITICAL",
+            "--ignore-unfixed",
+            "--exit-code",
+            "1",
+            "--format",
+            "json",
+            &image,
+        ],
+        "docker-scan.json",
+        "docker-scan.stderr.log",
+    ) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    if output.status.success() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![violation(
+            "DOCKER-103",
+            "docker.scan.severity_threshold",
+            Some("docker/images/runtime/Dockerfile".to_string()),
+            Some(1),
+            "trivy scan failed severity threshold",
+            Some(String::from_utf8_lossy(&output.stderr).to_string()),
+        )])
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         Contract {
@@ -1085,6 +1280,54 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 },
             ],
         },
+        Contract {
+            id: ContractId("DOCKER-100".to_string()),
+            title: "build succeeds",
+            tests: vec![TestCase {
+                id: TestId("docker.build.runtime_image".to_string()),
+                title: "runtime image build succeeds",
+                kind: TestKind::Subprocess,
+                run: test_effect_build_runtime_image,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-101".to_string()),
+            title: "runtime smoke checks",
+            tests: vec![
+                TestCase {
+                    id: TestId("docker.smoke.version".to_string()),
+                    title: "runtime image prints version",
+                    kind: TestKind::Subprocess,
+                    run: test_effect_smoke_version,
+                },
+                TestCase {
+                    id: TestId("docker.smoke.help".to_string()),
+                    title: "runtime image prints help",
+                    kind: TestKind::Subprocess,
+                    run: test_effect_smoke_help,
+                },
+            ],
+        },
+        Contract {
+            id: ContractId("DOCKER-102".to_string()),
+            title: "sbom generated",
+            tests: vec![TestCase {
+                id: TestId("docker.sbom.generated".to_string()),
+                title: "syft generates a JSON SBOM",
+                kind: TestKind::Subprocess,
+                run: test_effect_sbom_generated,
+            }],
+        },
+        Contract {
+            id: ContractId("DOCKER-103".to_string()),
+            title: "scan passes policy",
+            tests: vec![TestCase {
+                id: TestId("docker.scan.severity_threshold".to_string()),
+                title: "trivy scan passes configured severity threshold",
+                kind: TestKind::Network,
+                run: test_effect_scan_passes_policy,
+            }],
+        },
     ])
 }
 
@@ -1099,7 +1342,14 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
         out.push_str(&format!("### {} {}\n\n", contract.id.0, contract.title));
         out.push_str("Tests:\n");
         for case in &contract.tests {
-            out.push_str(&format!("- `{}`: {}\n", case.id.0, case.title));
+            let mode = match case.kind {
+                TestKind::Pure => "static",
+                TestKind::Subprocess | TestKind::Network => "effect",
+            };
+            out.push_str(&format!(
+                "- `{}` ({mode}, {:?}): {}\n",
+                case.id.0, case.kind, case.title
+            ));
         }
         out.push('\n');
     }

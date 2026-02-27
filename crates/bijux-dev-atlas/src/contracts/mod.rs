@@ -75,6 +75,7 @@ pub struct Contract {
 
 pub struct RunContext {
     pub repo_root: PathBuf,
+    pub artifacts_root: Option<PathBuf>,
     pub mode: Mode,
     pub allow_subprocess: bool,
     pub allow_network: bool,
@@ -248,6 +249,7 @@ pub fn run(
 
     let ctx = RunContext {
         repo_root: repo_root.to_path_buf(),
+        artifacts_root: options.artifacts_root.clone(),
         mode: options.mode,
         allow_subprocess: options.allow_subprocess,
         allow_network: options.allow_network,
