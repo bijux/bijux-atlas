@@ -46,22 +46,6 @@
     {
       "committed": "ops/_generated.example/.gitkeep",
       "source": "ops/_generated/.gitkeep"
-    },
-    {
-      "committed": "ops/_generated.example/MIRROR_POLICY.md",
-      "source": "docs/operations/ops-system/evidence.md"
-    },
-    {
-      "committed": "ops/_generated.example/OWNER.md",
-      "source": "ops/_generated/OWNER.md"
-    },
-    {
-      "committed": "ops/_generated.example/README.md",
-      "source": "ops/_generated/README.md"
-    },
-    {
-      "committed": "ops/_generated.example/REQUIRED_FILES.md",
-      "source": "ops/_generated/REQUIRED_FILES.md"
     }
   ],
   "generated_directories": [

@@ -1,8 +1,6 @@
 fn validate_required_ops_inventory_inputs(repo_root: &Path, errors: &mut Vec<String>) {
     for rel in [
         "ops/CONTRACT.md",
-        "ops/ERRORS.md",
-        "ops/INDEX.md",
         OPS_STACK_PROFILES_PATH,
         OPS_STACK_VERSION_MANIFEST_PATH,
         OPS_TOOLCHAIN_PATH,

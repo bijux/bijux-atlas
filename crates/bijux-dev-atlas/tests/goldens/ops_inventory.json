@@ -4,7 +4,7 @@
       "charts": 1,
       "components": 8,
       "inventory_errors": [],
-      "mirror_entries": 5,
+      "mirror_entries": 1,
       "profiles": [
         {
           "cluster_config": "ops/stack/kind/cluster-small.yaml",
