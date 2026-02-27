@@ -26,17 +26,26 @@ fn copy_tree(src: &Path, dst: &Path) {
 }
 
 fn fixture_repo(name: &str) -> tempfile::TempDir {
-    let src = workspace_root().join("crates/bijux-dev-atlas/tests/fixtures/docker_contracts").join(name);
+    let src = workspace_root()
+        .join("crates/bijux-dev-atlas/tests/fixtures/docker_contracts")
+        .join(name);
     let tmp = tempfile::tempdir().expect("tempdir");
     copy_tree(&src, tmp.path());
     #[cfg(unix)]
-    std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
-        .expect("symlink");
-    bijux_dev_atlas::contracts::docker::sync_contract_markdown(tmp.path()).expect("sync contract doc");
+    std::os::unix::fs::symlink(
+        "docker/images/runtime/Dockerfile",
+        tmp.path().join("Dockerfile"),
+    )
+    .expect("symlink");
+    bijux_dev_atlas::contracts::docker::sync_contract_markdown(tmp.path())
+        .expect("sync contract doc");
     tmp
 }
 
-fn run_contracts(repo: &Path, contract_filter: Option<&str>) -> bijux_dev_atlas::contracts::RunReport {
+fn run_contracts(
+    repo: &Path,
+    contract_filter: Option<&str>,
+) -> bijux_dev_atlas::contracts::RunReport {
     bijux_dev_atlas::contracts::run(
         "docker",
         bijux_dev_atlas::contracts::docker::contracts,
@@ -61,7 +70,11 @@ fn run_contracts(repo: &Path, contract_filter: Option<&str>) -> bijux_dev_atlas:
 fn pass_fixture_satisfies_all_static_contracts() {
     let tmp = fixture_repo("pass");
     let report = run_contracts(tmp.path(), None);
-    assert_eq!(report.fail_count(), 0, "unexpected failures in pass fixture");
+    assert_eq!(
+        report.fail_count(),
+        0,
+        "unexpected failures in pass fixture"
+    );
 }
 
 #[test]

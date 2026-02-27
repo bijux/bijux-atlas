@@ -186,9 +186,7 @@ fn static_contract_runner_reports_runtime_dockerfile_path_on_failure() {
     .expect("run docker contracts");
     let payload = bijux_dev_atlas::contracts::to_json(&report);
     let tests = payload["tests"].as_array().expect("tests array");
-    assert!(
-        tests
-            .iter()
-            .all(|row| row["contract_id"].as_str() == Some("DOCKER-006"))
-    );
+    assert!(tests
+        .iter()
+        .all(|row| row["contract_id"].as_str() == Some("DOCKER-006")));
 }

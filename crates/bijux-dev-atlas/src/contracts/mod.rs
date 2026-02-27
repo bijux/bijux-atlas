@@ -381,11 +381,7 @@ pub fn to_pretty(report: &RunReport) -> String {
                 contract.status.as_colored()
             )
         ));
-        for case in report
-            .cases
-            .iter()
-            .filter(|c| c.contract_id == contract.id)
-        {
+        for case in report.cases.iter().filter(|c| c.contract_id == contract.id) {
             // Keep two-space indentation while preserving a shared status column with contract rows.
             out.push_str(&format!(
                 "  {}\n",
@@ -538,7 +534,8 @@ mod tests {
             list_only: false,
             artifacts_root: None,
         };
-        let report = run("docker", sample_contracts_failing, Path::new("."), &options).expect("run");
+        let report =
+            run("docker", sample_contracts_failing, Path::new("."), &options).expect("run");
         let payload = to_json(&report);
         assert_eq!(payload["schema_version"], 1);
         assert_eq!(payload["summary"]["contracts"], 1);

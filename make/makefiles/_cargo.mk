@@ -28,7 +28,13 @@ coverage: ## Run workspace coverage with cargo llvm-cov + nextest
 fmt: ## Run cargo fmt --check
 	@printf '%s\n' "run: cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml"
 	@mkdir -p $(ARTIFACT_ROOT)/fmt/$(RUN_ID)
-	@cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml | tee $(ARTIFACT_ROOT)/fmt/$(RUN_ID)/report.txt >/dev/null
+	@output="$$(cargo fmt --all -- --check --config-path configs/rust/rustfmt.toml 2>&1)"; \
+	status=$$?; \
+	printf '%s\n' "$$output" | tee $(ARTIFACT_ROOT)/fmt/$(RUN_ID)/report.txt; \
+	if [ $$status -eq 0 ]; then \
+		printf '%s\n' "fmt check complete"; \
+	fi; \
+	exit $$status
 
 lint: ## Run cargo clippy with warnings denied
 	@printf '%s\n' "run: cargo clippy --workspace --all-targets --all-features --locked -D warnings"

@@ -375,7 +375,10 @@ fn validate_prod_config_contract(
         return Err("ATLAS_ENV=prod requires ATLAS_REDIS_URL".to_string());
     }
     if api.require_api_key && api.allowed_api_keys.is_empty() {
-        return Err("ATLAS_ENV=prod requires non-empty ATLAS_ALLOWED_API_KEYS when api key auth is enabled".to_string());
+        return Err(
+            "ATLAS_ENV=prod requires non-empty ATLAS_ALLOWED_API_KEYS when api key auth is enabled"
+                .to_string(),
+        );
     }
     Ok(())
 }

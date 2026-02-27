@@ -12,9 +12,9 @@ mod paths;
 mod retry;
 
 #[cfg(feature = "backend-s3")]
-pub use backend::S3LikeStore;
-#[cfg(feature = "backend-s3")]
 pub use backend::HttpReadonlyStore;
+#[cfg(feature = "backend-s3")]
+pub use backend::S3LikeStore;
 pub use backend::{
     enforce_dataset_immutability, ArtifactStore, LocalFsStore, NoopInstrumentation,
     PublishLockGuard, StoreError, StoreErrorCode, StoreInstrumentation, StoreMetrics,

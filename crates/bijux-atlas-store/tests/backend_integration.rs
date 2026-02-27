@@ -2,9 +2,9 @@
 
 use bijux_atlas_core::sha256_hex;
 use bijux_atlas_model::{ArtifactChecksums, ArtifactManifest, DatasetId, ManifestStats};
-use bijux_atlas_store::{ArtifactStore, LocalFsStore};
 #[cfg(feature = "backend-s3")]
 use bijux_atlas_store::HttpReadonlyStore;
+use bijux_atlas_store::{ArtifactStore, LocalFsStore};
 use tempfile::tempdir;
 
 fn dataset() -> DatasetId {

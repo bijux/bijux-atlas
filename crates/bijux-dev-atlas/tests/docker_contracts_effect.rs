@@ -34,7 +34,10 @@ fn effect_mode_contracts_run_when_enabled() {
     )
     .expect("run effect contracts");
 
-    assert!(report.total_tests() > 0, "effect suite should execute tests");
+    assert!(
+        report.total_tests() > 0,
+        "effect suite should execute tests"
+    );
 }
 
 #[test]

@@ -13,7 +13,11 @@ fn workspace_root() -> PathBuf {
 
 fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     fs::create_dir_all(base.join("docker/images/runtime")).expect("mkdir docker runtime");
-    fs::write(base.join("docker/images/runtime/Dockerfile"), dockerfile_text).expect("write dockerfile");
+    fs::write(
+        base.join("docker/images/runtime/Dockerfile"),
+        dockerfile_text,
+    )
+    .expect("write dockerfile");
     fs::write(base.join("docker/README.md"), "# docker\n").expect("write docker readme");
     fs::write(base.join("Cargo.toml"), "[workspace]\n").expect("write cargo");
     fs::write(
@@ -35,7 +39,8 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     #[cfg(unix)]
     std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", base.join("Dockerfile"))
         .expect("symlink root dockerfile");
-    bijux_dev_atlas::contracts::docker::sync_contract_markdown(base).expect("sync contract markdown");
+    bijux_dev_atlas::contracts::docker::sync_contract_markdown(base)
+        .expect("sync contract markdown");
 }
 
 fn run_for_single_test(repo_root: &Path, contract_id: &str, test_id: &str) -> serde_json::Value {
@@ -80,13 +85,14 @@ fn latest_tag_violation_matches_golden() {
     write_repo_with_dockerfile(tmp.path(), dockerfile);
 
     let actual = run_for_single_test(tmp.path(), "DOCKER-006", "docker.from.no_latest");
-    let expected = serde_json::from_str::<serde_json::Value>(
-        &fs::read_to_string(
-            workspace_root().join("crates/bijux-dev-atlas/tests/goldens/docker_contracts_latest_violation.json"),
+    let expected =
+        serde_json::from_str::<serde_json::Value>(
+            &fs::read_to_string(workspace_root().join(
+                "crates/bijux-dev-atlas/tests/goldens/docker_contracts_latest_violation.json",
+            ))
+            .expect("read golden"),
         )
-        .expect("read golden"),
-    )
-    .expect("parse golden");
+        .expect("parse golden");
 
     assert_eq!(actual, expected);
 }
@@ -98,13 +104,14 @@ fn digest_violation_matches_golden() {
     write_repo_with_dockerfile(tmp.path(), dockerfile);
 
     let actual = run_for_single_test(tmp.path(), "DOCKER-007", "docker.from.digest_required");
-    let expected = serde_json::from_str::<serde_json::Value>(
-        &fs::read_to_string(
-            workspace_root().join("crates/bijux-dev-atlas/tests/goldens/docker_contracts_digest_violation.json"),
+    let expected =
+        serde_json::from_str::<serde_json::Value>(
+            &fs::read_to_string(workspace_root().join(
+                "crates/bijux-dev-atlas/tests/goldens/docker_contracts_digest_violation.json",
+            ))
+            .expect("read golden"),
         )
-        .expect("read golden"),
-    )
-    .expect("parse golden");
+        .expect("parse golden");
 
     assert_eq!(actual, expected);
 }

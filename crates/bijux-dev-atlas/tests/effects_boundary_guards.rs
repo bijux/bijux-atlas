@@ -16,8 +16,8 @@ fn rust_sources(root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(path) = stack.pop() {
-        for entry in
-            fs::read_dir(&path).unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
+        for entry in fs::read_dir(&path)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
         {
             let entry = entry.expect("dir entry");
             let entry_path = entry.path();
@@ -45,8 +45,8 @@ fn assert_only_allowlisted_paths(pattern: &str, allowed_rel_paths: &[&str]) {
     let allowed: BTreeSet<&str> = allowed_rel_paths.iter().copied().collect();
     let mut offenders = Vec::new();
     for file in rust_sources(&src_root()) {
-        let text =
-            fs::read_to_string(&file).unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
+        let text = fs::read_to_string(&file)
+            .unwrap_or_else(|err| panic!("failed to read {}: {err}", file.display()));
         if text.contains(pattern) {
             let rp = rel(&file);
             if !allowed.contains(rp.as_str()) {
@@ -123,12 +123,6 @@ fn env_var_calls_are_constrained_to_explicit_allowlist() {
 
 #[test]
 fn network_client_calls_are_constrained_to_explicit_allowlist() {
-    assert_only_allowlisted_paths(
-        "reqwest::",
-        &[],
-    );
-    assert_only_allowlisted_paths(
-        "ureq::",
-        &[],
-    );
+    assert_only_allowlisted_paths("reqwest::", &[]);
+    assert_only_allowlisted_paths("ureq::", &[]);
 }

@@ -2,8 +2,8 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsInventoryCommand,
-    OpsGenerateCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
+    OpsCommonArgs, OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsGenerateCommand,
+    OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand,
     OpsObsDrillCommand, OpsPinsCommand, OpsRenderArgs, OpsRenderTarget, OpsReportCommand,
     OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
@@ -75,7 +75,9 @@ fn command_common(command: &OpsCommand) -> Option<&OpsCommonArgs> {
             | OpsGenerateCommand::Runbook { common, .. } => Some(common),
         },
         OpsCommand::Evidence { command } => match command {
-            OpsEvidenceCommand::Collect(common) | OpsEvidenceCommand::Verify(common) => Some(common),
+            OpsEvidenceCommand::Collect(common) | OpsEvidenceCommand::Verify(common) => {
+                Some(common)
+            }
         },
         OpsCommand::Schema { .. }
         | OpsCommand::InventoryDomain { .. }

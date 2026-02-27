@@ -225,7 +225,10 @@ fn run_command_with_artifacts(
     let mut stdout_path = None;
     let mut stderr_path = None;
     let mut command = Command::new(program);
-    command.args(args).current_dir(&ctx.repo_root).stdin(Stdio::null());
+    command
+        .args(args)
+        .current_dir(&ctx.repo_root)
+        .stdin(Stdio::null());
     if let Some(dir) = &artifact_dir {
         let out_path = dir.join(stdout_name);
         let err_path = dir.join(stderr_name);
@@ -311,7 +314,6 @@ fn image_tag() -> String {
     "bijux-atlas-contracts:dev".to_string()
 }
 
-
 include!("contracts_registry.inc.rs");
 
 pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
@@ -377,7 +379,6 @@ impl ContractRegistry for DockerContractRegistry {
         contracts(repo_root)
     }
 }
-
 
 #[cfg(test)]
 mod tests {

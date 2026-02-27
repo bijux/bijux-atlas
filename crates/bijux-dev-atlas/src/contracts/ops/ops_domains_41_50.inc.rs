@@ -197,7 +197,11 @@ fn test_ops_load_001_scenarios_schema_valid(ctx: &RunContext) -> TestResult {
             continue;
         };
         for key in ["name", "suite"] {
-            if !obj.get(key).and_then(|v| v.as_str()).is_some_and(|v| !v.is_empty()) {
+            if obj
+                .get(key)
+                .and_then(|v| v.as_str())
+                .is_none_or(|v| v.is_empty())
+            {
                 violations.push(violation(
                     contract_id,
                     test_id,

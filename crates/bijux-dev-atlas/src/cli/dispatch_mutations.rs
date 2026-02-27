@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractsCommand,
-    DocsCommand, FormatArg, OpsCommand, PoliciesCommand, ReleaseCommand,
+    CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractsCommand, DocsCommand,
+    FormatArg, OpsCommand, PoliciesCommand, ReleaseCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -297,9 +297,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | ConfigsCommand::Inventory(common)
             | ConfigsCommand::Diff(common) => common.strict = true,
             ConfigsCommand::Fmt { check, .. } => *check = true,
-            ConfigsCommand::Print(_)
-            | ConfigsCommand::List(_)
-            | ConfigsCommand::Compile(_) => {}
+            ConfigsCommand::Print(_) | ConfigsCommand::List(_) | ConfigsCommand::Compile(_) => {}
         },
         _ => {}
     }

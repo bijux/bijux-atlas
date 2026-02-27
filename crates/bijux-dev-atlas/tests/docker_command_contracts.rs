@@ -12,9 +12,12 @@ fn run(args: &[&str]) -> std::process::Output {
 #[test]
 fn docker_contracts_lists_contract_ids() {
     let output = run(&["docker", "contracts", "--format", "json"]);
-    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
-    let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("parse json");
+    assert!(
+        output.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("parse json");
     let rows = payload["rows"].as_array().expect("rows");
     assert!(
         rows.iter().any(|row| row["contract_id"] == "DOCKER-001"),
@@ -25,12 +28,16 @@ fn docker_contracts_lists_contract_ids() {
 #[test]
 fn docker_gates_lists_gate_ids() {
     let output = run(&["docker", "gates", "--format", "json"]);
-    assert!(output.status.success(), "stderr={}", String::from_utf8_lossy(&output.stderr));
-    let payload: serde_json::Value =
-        serde_json::from_slice(&output.stdout).expect("parse json");
+    assert!(
+        output.status.success(),
+        "stderr={}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let payload: serde_json::Value = serde_json::from_slice(&output.stdout).expect("parse json");
     let rows = payload["rows"].as_array().expect("rows");
     assert!(
-        rows.iter().any(|row| row["gate_id"] == "docker.contract.no_latest"),
+        rows.iter()
+            .any(|row| row["gate_id"] == "docker.contract.no_latest"),
         "missing docker.contract.no_latest in docker gates output"
     );
 }

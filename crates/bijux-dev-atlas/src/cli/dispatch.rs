@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, ReleaseCommand,
-};
+use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, ReleaseCommand};
 use crate::{
     plugin_metadata_json, run_build_command, run_capabilities_command, run_check_doctor,
-    run_check_explain, run_check_list, run_check_registry_doctor, run_check_run,
-    run_check_repo_doctor, run_check_tree_budgets,
-    run_configs_command, run_contracts_command, run_demo_command, run_docker_command,
-    run_docs_command, run_gates_command, run_help_inventory_command, run_ops_command,
-    run_policies_command,
+    run_check_explain, run_check_list, run_check_registry_doctor, run_check_repo_doctor,
+    run_check_run, run_check_tree_budgets, run_configs_command, run_contracts_command,
+    run_demo_command, run_docker_command, run_docs_command, run_gates_command,
+    run_help_inventory_command, run_ops_command, run_policies_command,
     run_print_boundaries_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
@@ -217,7 +214,11 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
             if !cli.quiet && !rendered.is_empty() {
                 let _ = writeln!(io::stdout(), "{rendered}");
             }
-            if ok { 0 } else { 1 }
+            if ok {
+                0
+            } else {
+                1
+            }
         }
         Command::Release { command } => match command {
             ReleaseCommand::Check(args) => {
@@ -266,8 +267,7 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     readiness_args.push("--repo-root".to_string());
                     readiness_args.push(root.display().to_string());
                 }
-                let readiness_out = match ProcessCommand::new(&exe).args(&readiness_args).output()
-                {
+                let readiness_out = match ProcessCommand::new(&exe).args(&readiness_args).output() {
                     Ok(v) => v,
                     Err(err) => {
                         let _ =
@@ -289,14 +289,14 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                     "ops_validate": readiness_payload
                 });
                 let rendered = match args.format {
-                    FormatArg::Json => serde_json::to_string_pretty(&payload)
-                        .unwrap_or_else(|_| "{}".to_string()),
+                    FormatArg::Json => {
+                        serde_json::to_string_pretty(&payload).unwrap_or_else(|_| "{}".to_string())
+                    }
                     FormatArg::Text => {
                         if ok {
                             "release check passed: validate + ops validate".to_string()
                         } else {
-                            "release check failed: rerun with --format json for details"
-                                .to_string()
+                            "release check failed: rerun with --format json for details".to_string()
                         }
                     }
                     FormatArg::Jsonl => payload.to_string(),
@@ -311,7 +311,11 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 if !cli.quiet && !rendered.is_empty() {
                     let _ = writeln!(io::stdout(), "{rendered}");
                 }
-                if ok { 0 } else { 1 }
+                if ok {
+                    0
+                } else {
+                    1
+                }
             }
         },
         Command::Check { command } => {

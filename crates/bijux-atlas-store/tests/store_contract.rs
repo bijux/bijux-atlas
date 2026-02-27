@@ -11,12 +11,12 @@ use bijux_atlas_store::{
 #[cfg(feature = "backend-s3")]
 use bijux_atlas_store::{HttpReadonlyStore, S3LikeStore};
 use std::fs;
-use std::sync::Arc;
-use tempfile::tempdir;
 #[cfg(feature = "backend-s3")]
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 #[cfg(feature = "backend-s3")]
 use std::thread;
+use tempfile::tempdir;
 #[cfg(feature = "backend-s3")]
 use tiny_http::{Header, Method, Response, Server, StatusCode};
 
@@ -197,8 +197,7 @@ fn runtime_backend_validation_reports_feature_requirements() {
     assert!(s3.is_ok());
     #[cfg(not(feature = "backend-s3"))]
     assert!(
-        s3
-            .expect_err("s3 backend should be unavailable without backend-s3 feature")
+        s3.expect_err("s3 backend should be unavailable without backend-s3 feature")
             .contains("backend-s3"),
         "error must explain how to enable backend"
     );

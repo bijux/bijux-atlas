@@ -3,11 +3,11 @@
 mod configs_path_drift;
 
 use crate::*;
-use std::collections::BTreeMap;
-use std::io::{self, Write};
-use configs_path_drift::{configs_files, configs_verify_payload};
 pub(crate) use configs_path_drift::configs_context;
 pub(crate) use configs_path_drift::parse_config_file;
+use configs_path_drift::{configs_files, configs_verify_payload};
+use std::collections::BTreeMap;
+use std::io::{self, Write};
 
 fn configs_inventory_payload(
     ctx: &ConfigsContext,
@@ -161,7 +161,9 @@ pub(crate) fn configs_validate_payload(
             if let Some(start_idx) = line.find("configs/") {
                 let suffix = &line[start_idx..];
                 let mut token = suffix
-                    .split(|c: char| c.is_whitespace() || c == '"' || c == '\'' || c == ')' || c == ';')
+                    .split(|c: char| {
+                        c.is_whitespace() || c == '"' || c == '\'' || c == ')' || c == ';'
+                    })
                     .next()
                     .unwrap_or_default()
                     .to_string();
@@ -206,12 +208,10 @@ pub(crate) fn configs_validate_payload(
                 .to_string(),
         );
     } else {
-        let inventory_text = fs::read_to_string(&inventory_manifest_path).map_err(|e| {
-            format!("failed to read {}: {e}", inventory_manifest_path.display())
-        })?;
-        let inventory_json: serde_json::Value = serde_json::from_str(&inventory_text).map_err(
-            |e| format!("failed to parse {}: {e}", inventory_manifest_path.display()),
-        )?;
+        let inventory_text = fs::read_to_string(&inventory_manifest_path)
+            .map_err(|e| format!("failed to read {}: {e}", inventory_manifest_path.display()))?;
+        let inventory_json: serde_json::Value = serde_json::from_str(&inventory_text)
+            .map_err(|e| format!("failed to parse {}: {e}", inventory_manifest_path.display()))?;
         for key in ["groups_path", "consumers_path", "owners_path"] {
             let Some(path) = inventory_json[key].as_str() else {
                 errors.push(format!(

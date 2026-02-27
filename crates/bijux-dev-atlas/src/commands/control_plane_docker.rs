@@ -188,13 +188,19 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     &["version", "--format", "{{.Server.Version}}"],
                 )?;
                 rows.push(serde_json::json!({"check":"docker_version","status": if docker_code == 0 { "ok" } else { "failed" }, "stderr": docker_err}));
-                let (syft_code, _, _) =
-                    run_subprocess(&resolve_repo_root(common.repo_root.clone())?, "syft", &["version"])
-                        .unwrap_or((1, String::new(), String::new()));
+                let (syft_code, _, _) = run_subprocess(
+                    &resolve_repo_root(common.repo_root.clone())?,
+                    "syft",
+                    &["version"],
+                )
+                .unwrap_or((1, String::new(), String::new()));
                 rows.push(serde_json::json!({"check":"syft","status": if syft_code == 0 { "ok" } else { "failed" }}));
-                let (trivy_code, _, _) =
-                    run_subprocess(&resolve_repo_root(common.repo_root.clone())?, "trivy", &["--version"])
-                        .unwrap_or((1, String::new(), String::new()));
+                let (trivy_code, _, _) = run_subprocess(
+                    &resolve_repo_root(common.repo_root.clone())?,
+                    "trivy",
+                    &["--version"],
+                )
+                .unwrap_or((1, String::new(), String::new()));
                 rows.push(serde_json::json!({"check":"trivy","status": if trivy_code == 0 { "ok" } else { "failed" }}));
                 let failures = rows.iter().filter(|r| r["status"] == "failed").count();
                 let payload = serde_json::json!({
@@ -268,9 +274,12 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     .map_err(|e| format!("cannot write build stdout log: {e}"))?;
                 fs::write(artifact_dir.join("build.stderr.log"), &stderr)
                     .map_err(|e| format!("cannot write build stderr log: {e}"))?;
-                let (inspect_code, inspect_stdout, _) =
-                    run_subprocess(&repo_root, "docker", &["image", "inspect", &tag, "--format", "{{.Id}}"])
-                        .unwrap_or((1, String::new(), String::new()));
+                let (inspect_code, inspect_stdout, _) = run_subprocess(
+                    &repo_root,
+                    "docker",
+                    &["image", "inspect", &tag, "--format", "{{.Id}}"],
+                )
+                .unwrap_or((1, String::new(), String::new()));
                 let (size_code, size_stdout, size_stderr) = run_subprocess(
                     &repo_root,
                     "docker",
@@ -296,7 +305,11 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
             }
             DockerCommand::Check(common) => {
                 let validate = run_docker_command(true, DockerCommand::Validate(common.clone()));
-                emit(&common, serde_json::json!({"schema_version":1,"status": if validate == 0 { "ok" } else { "failed" }, "rows":[{"action":"check","validate_exit_code": validate}]}), validate)
+                emit(
+                    &common,
+                    serde_json::json!({"schema_version":1,"status": if validate == 0 { "ok" } else { "failed" }, "rows":[{"action":"check","validate_exit_code": validate}]}),
+                    validate,
+                )
             }
             DockerCommand::Smoke(common) => {
                 if !common.allow_subprocess {
@@ -313,12 +326,26 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 let (help_code, help_out, help_err) = run_subprocess(
                     &repo_root,
                     "docker",
-                    &["run", "--rm", "--entrypoint", "/app/bijux-atlas", &tag, "--help"],
+                    &[
+                        "run",
+                        "--rm",
+                        "--entrypoint",
+                        "/app/bijux-atlas",
+                        &tag,
+                        "--help",
+                    ],
                 )?;
                 let (version_code, version_out, version_err) = run_subprocess(
                     &repo_root,
                     "docker",
-                    &["run", "--rm", "--entrypoint", "/app/bijux-atlas", &tag, "--version"],
+                    &[
+                        "run",
+                        "--rm",
+                        "--entrypoint",
+                        "/app/bijux-atlas",
+                        &tag,
+                        "--version",
+                    ],
                 )?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
@@ -330,7 +357,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, if help_code == 0 && version_code == 0 { 0 } else { 1 })
+                emit(
+                    &common,
+                    payload,
+                    if help_code == 0 && version_code == 0 {
+                        0
+                    } else {
+                        1
+                    },
+                )
             }
             DockerCommand::Scan(common) => {
                 if !common.allow_subprocess {
@@ -397,7 +432,13 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 let (cyclonedx_code, _, cyclonedx_stderr) = run_subprocess(
                     &repo_root,
                     "syft",
-                    &[tag.as_str(), "-o", "cyclonedx-json", "--file", cyclonedx_out.as_str()],
+                    &[
+                        tag.as_str(),
+                        "-o",
+                        "cyclonedx-json",
+                        "--file",
+                        cyclonedx_out.as_str(),
+                    ],
                 )?;
                 let payload = serde_json::json!({
                     "schema_version": 1,
@@ -409,7 +450,15 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     "capabilities": {"subprocess": common.allow_subprocess, "fs_write": common.allow_write, "network": common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                emit(&common, payload, if spdx_code == 0 && cyclonedx_code == 0 { 0 } else { 1 })
+                emit(
+                    &common,
+                    payload,
+                    if spdx_code == 0 && cyclonedx_code == 0 {
+                        0
+                    } else {
+                        1
+                    },
+                )
             }
             DockerCommand::Lock(common) => {
                 if !common.allow_write {
@@ -419,7 +468,7 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 let lock_path = repo_root.join("ops/inventory/image-digests.lock.json");
                 if let Some(parent) = lock_path.parent() {
                     fs::create_dir_all(parent)
-                    .map_err(|e| format!("cannot create {}: {e}", parent.display()))?;
+                        .map_err(|e| format!("cannot create {}: {e}", parent.display()))?;
                 }
                 let run_id = common
                     .run_id
@@ -428,9 +477,12 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     .transpose()?
                     .unwrap_or_else(|| RunId::from_seed("docker_lock"));
                 let tag = image_tag_for_run(&run_id);
-                let (inspect_code, inspect_stdout, inspect_stderr) =
-                    run_subprocess(&repo_root, "docker", &["image", "inspect", &tag, "--format", "{{.Id}}"])
-                        .unwrap_or((1, String::new(), String::new()));
+                let (inspect_code, inspect_stdout, inspect_stderr) = run_subprocess(
+                    &repo_root,
+                    "docker",
+                    &["image", "inspect", &tag, "--format", "{{.Id}}"],
+                )
+                .unwrap_or((1, String::new(), String::new()));
                 let lock_payload = serde_json::json!({
                     "schema_version": 1,
                     "kind": "docker_image_lock",
@@ -514,9 +566,12 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                 if !args.common.allow_network {
                     return Err("docker release requires --allow-network".to_string());
                 }
-                let validate_code = run_docker_command(true, DockerCommand::Validate(args.common.clone()));
-                let build_code = run_docker_command(true, DockerCommand::Build(args.common.clone()));
-                let smoke_code = run_docker_command(true, DockerCommand::Smoke(args.common.clone()));
+                let validate_code =
+                    run_docker_command(true, DockerCommand::Validate(args.common.clone()));
+                let build_code =
+                    run_docker_command(true, DockerCommand::Build(args.common.clone()));
+                let smoke_code =
+                    run_docker_command(true, DockerCommand::Smoke(args.common.clone()));
                 let sbom_code = run_docker_command(true, DockerCommand::Sbom(args.common.clone()));
                 let scan_code = run_docker_command(true, DockerCommand::Scan(args.common.clone()));
                 let push_code = run_docker_command(
@@ -540,11 +595,18 @@ pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
                     "capabilities": {"subprocess": args.common.allow_subprocess, "fs_write": args.common.allow_write, "network": args.common.allow_network},
                     "duration_ms": started.elapsed().as_millis() as u64
                 });
-                let code = [validate_code, build_code, smoke_code, sbom_code, scan_code, push_code]
-                    .iter()
-                    .copied()
-                    .max()
-                    .unwrap_or(0);
+                let code = [
+                    validate_code,
+                    build_code,
+                    smoke_code,
+                    sbom_code,
+                    scan_code,
+                    push_code,
+                ]
+                .iter()
+                .copied()
+                .max()
+                .unwrap_or(0);
                 emit(&args.common, payload, code)
             }
         }

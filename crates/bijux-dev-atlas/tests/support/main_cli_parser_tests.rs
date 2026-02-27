@@ -255,8 +255,8 @@ mod tests {
 
     #[test]
     fn release_subcommands_parse() {
-        let cli = crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "release", "check"])
-            .expect("parse");
+        let cli =
+            crate::Cli::try_parse_from(vec!["bijux-dev-atlas", "release", "check"]).expect("parse");
         match cli.command {
             Some(crate::cli::Command::Release { .. }) => {}
             _ => panic!("expected release command"),

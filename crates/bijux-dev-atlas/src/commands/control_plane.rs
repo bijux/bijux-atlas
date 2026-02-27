@@ -52,7 +52,6 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
     }
 }
 
-
 mod control_plane_docker;
 pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
@@ -108,7 +107,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
                         }
                         out.push_str("\nHow to fix:\n");
-                        out.push_str(&explanation);
+                        out.push_str(explanation.as_str());
                         out.push('\n');
                         out
                     };
@@ -164,12 +163,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     list_only: args.list,
                     artifacts_root: args.artifacts_root,
                 };
-                let report = contracts::run(
-                    "docker",
-                    contracts::docker::contracts,
-                    &repo_root,
-                    &options,
-                )?;
+                let report =
+                    contracts::run("docker", contracts::docker::contracts, &repo_root, &options)?;
                 let format_json = args.json || args.format == ContractsFormatArg::Json;
                 let rendered = if format_json {
                     serde_json::to_string_pretty(&contracts::to_json(&report))
@@ -211,7 +206,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                             out.push_str(&format!("- {}: {}\n", case.id.0, case.title));
                         }
                         out.push_str("\nHow to fix:\n");
-                        out.push_str(&explanation);
+                        out.push_str(explanation);
                         out.push('\n');
                         out
                     };
@@ -272,7 +267,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     list_only: args.list,
                     artifacts_root: args.artifacts_root,
                 };
-                let report = contracts::run("ops", contracts::ops::contracts, &repo_root, &options)?;
+                let report =
+                    contracts::run("ops", contracts::ops::contracts, &repo_root, &options)?;
                 let format_json = args.json || args.format == ContractsFormatArg::Json;
                 let rendered = if format_json {
                     serde_json::to_string_pretty(&contracts::to_json(&report))

@@ -7,9 +7,7 @@ use serde::Deserialize;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 
-use super::{
-    Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation,
-};
+use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
 const DOMAIN_DIRS: &[&str] = &[
     "datasets",
@@ -105,10 +103,7 @@ fn inventory_paths(repo_root: &Path) -> (BTreeSet<String>, BTreeSet<String>) {
     let mut contracts_map_items = BTreeSet::new();
 
     if let Some(value) = read_json(&authoritative_file_list) {
-        if let Some(paths) = value
-            .get("authoritative_paths")
-            .and_then(|v| v.as_array())
-        {
+        if let Some(paths) = value.get("authoritative_paths").and_then(|v| v.as_array()) {
             for path in paths {
                 if let Some(path) = path.as_str() {
                     authoritative.insert(path.to_string());
@@ -632,7 +627,11 @@ fn test_ops_inv_001_inventory_completeness(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn is_inventory_referenced(rel: &str, authoritative: &BTreeSet<String>, contract_paths: &BTreeSet<String>) -> bool {
+fn is_inventory_referenced(
+    rel: &str,
+    authoritative: &BTreeSet<String>,
+    contract_paths: &BTreeSet<String>,
+) -> bool {
     if authoritative.contains(rel) || contract_paths.contains(rel) {
         return true;
     }
@@ -745,7 +744,6 @@ fn test_ops_inv_003_no_duplicate_ssot(ctx: &RunContext) -> TestResult {
 }
 
 include!("ops_extended.inc.rs");
-
 
 include!("ops_registry.inc.rs");
 
