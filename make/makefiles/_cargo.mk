@@ -29,7 +29,12 @@ fmt: ## Run cargo fmt --check
 lint: ## Run cargo clippy with warnings denied
 	@printf '%s\n' "run: cargo clippy --workspace --all-targets --all-features --locked -D warnings"
 	@mkdir -p $(ARTIFACT_ROOT)/lint/$(RUN_ID)
-	@CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked -- -D warnings | tee $(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt >/dev/null
+	@printf '%s\n' "building [1/1] lint"
+	@log="$(ARTIFACT_ROOT)/lint/$(RUN_ID)/report.txt"; \
+	if ! CLIPPY_CONF_DIR=configs/rust cargo clippy --workspace --all-targets --all-features --locked -- -D warnings >"$$log" 2>&1; then \
+		tail -n 200 "$$log" >&2; \
+		exit 1; \
+	fi
 
 lint-policy-report: ## Emit effective lint policy report artifact
 	@mkdir -p artifacts/lint
@@ -66,7 +71,12 @@ test: ## Run workspace tests with cargo nextest
 	}
 	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default}"
 	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
-	@cargo nextest run --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" | tee $(ARTIFACT_ROOT)/test/$(RUN_ID)/report.txt
+	@printf '%s\n' "building [1/1] test"
+	@log="$(ARTIFACT_ROOT)/test/$(RUN_ID)/report.txt"; \
+	if ! cargo nextest run --workspace --cargo-quiet --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" >"$$log" 2>&1; then \
+		tail -n 200 "$$log" >&2; \
+		exit 1; \
+	fi
 
 test-slow: ## Run only slow_ tests with cargo nextest
 	@command -v cargo-nextest >/dev/null 2>&1 || { \
