@@ -3,6 +3,7 @@
 Canonical configuration surface for repository behavior.
 
 ## Areas
+- `configs/ci` owner: `platform`
 - `configs/coverage` owner: `platform`
 - `configs/docs` owner: `docs-governance`
 - `configs/layout` owner: `platform`

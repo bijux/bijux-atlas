@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
-  "max_top_level_dirs": 20,
+  "max_top_level_dirs": 21,
   "allowed_groups": [
+    "ci",
     "contracts",
     "coverage",
     "docs",

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "lanes": [
+    {
+      "id": "ci-pr-fast",
+      "workflow": ".github/workflows/ci-pr.yml",
+      "summary_hint": "ci-fast"
+    },
+    {
+      "id": "ci-pr-full",
+      "workflow": ".github/workflows/ci-pr.yml",
+      "summary_hint": "ci-pr"
+    },
+    {
+      "id": "ci-nightly",
+      "workflow": ".github/workflows/ci-nightly.yml",
+      "summary_hint": "ci-nightly"
+    },
+    {
+      "id": "docs-only",
+      "workflow": ".github/workflows/docs-only.yml",
+      "summary_hint": "docs"
+    },
+    {
+      "id": "docs-audit",
+      "workflow": ".github/workflows/docs-audit.yml",
+      "summary_hint": "docs-audit"
+    },
+    {
+      "id": "ops-validate",
+      "workflow": ".github/workflows/ops-validate.yml",
+      "summary_hint": "ops-validate"
+    },
+    {
+      "id": "ops-kind-integration",
+      "workflow": ".github/workflows/ops-integration-kind.yml",
+      "summary_hint": "ops-kind"
+    },
+    {
+      "id": "release-candidate",
+      "workflow": ".github/workflows/release-candidate.yml",
+      "summary_hint": "release-candidate"
+    },
+    {
+      "id": "dependency-lock",
+      "workflow": ".github/workflows/dependency-lock.yml",
+      "summary_hint": "dependency-lock"
+    }
+  ]
+}

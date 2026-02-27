@@ -111,6 +111,14 @@ fn config_reference_path_errors(ctx: &ConfigsContext) -> Result<Vec<String>, Str
         }
     }
 
+    for root_path in ["clippy.toml", "rustfmt.toml", "deny.toml", "audit.toml"] {
+        if ctx.repo_root.join(root_path).exists() {
+            errors.push(format!(
+                "CONFIGS_DRIFT_ERROR: root shim `{root_path}` is forbidden; use configs/** SSOT only"
+            ));
+        }
+    }
+
     let mut check_text_ref = |path: &Path| -> Result<(), String> {
         let rel = path
             .strip_prefix(&ctx.repo_root)
@@ -288,8 +296,15 @@ pub(crate) fn configs_validate_payload(
     let mut errors = Vec::<String>::new();
     let mut warnings = Vec::<String>::new();
     for required in [
+        "configs/ci",
+        "configs/ci/INDEX.md",
+        "configs/ci/README.md",
+        "configs/ci/env-contract.json",
+        "configs/ci/lanes.json",
         "configs/INDEX.md",
         "configs/README.md",
+        "configs/rust/LINT_POLICY.md",
+        "configs/rust/toolchain.json",
         "configs/contracts",
         "configs/schema",
         "configs/NAMING.md",
@@ -301,6 +316,107 @@ pub(crate) fn configs_validate_payload(
             errors.push(format!(
                 "CONFIGS_SCHEMA_ERROR: missing required config path `{required}`"
             ));
+        }
+    }
+    let ci_env_contract_path = ctx.repo_root.join("configs/ci/env-contract.json");
+    let ci_lanes_path = ctx.repo_root.join("configs/ci/lanes.json");
+    let mut ci_required_env = Vec::<String>::new();
+    if ci_env_contract_path.exists() {
+        let env_text = fs::read_to_string(&ci_env_contract_path)
+            .map_err(|e| format!("failed to read {}: {e}", ci_env_contract_path.display()))?;
+        let env_json: serde_json::Value = serde_json::from_str(&env_text)
+            .map_err(|e| format!("failed to parse {}: {e}", ci_env_contract_path.display()))?;
+        ci_required_env = env_json["required_job_env_keys"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect::<Vec<_>>();
+    }
+    if ci_lanes_path.exists() {
+        let lanes_text = fs::read_to_string(&ci_lanes_path)
+            .map_err(|e| format!("failed to read {}: {e}", ci_lanes_path.display()))?;
+        let lanes_json: serde_json::Value = serde_json::from_str(&lanes_text)
+            .map_err(|e| format!("failed to parse {}: {e}", ci_lanes_path.display()))?;
+        let lanes = lanes_json["lanes"].as_array().cloned().unwrap_or_default();
+        for lane in lanes {
+            let id = lane["id"].as_str().unwrap_or("unknown-lane");
+            let workflow_rel = lane["workflow"].as_str().unwrap_or_default();
+            let workflow_path = ctx.repo_root.join(workflow_rel);
+            if workflow_rel.is_empty() || !workflow_path.exists() {
+                errors.push(format!(
+                    "CONFIGS_LAYOUT_ERROR: ci lane `{id}` references missing workflow `{workflow_rel}`"
+                ));
+                continue;
+            }
+            let workflow_text = fs::read_to_string(&workflow_path)
+                .map_err(|e| format!("failed to read {}: {e}", workflow_path.display()))?;
+            if !workflow_text.contains("cargo run -q -p bijux-dev-atlas")
+                && !workflow_text.contains("make ")
+            {
+                warnings.push(format!(
+                    "CONFIGS_LAYOUT_ERROR: ci lane `{id}` workflow `{workflow_rel}` has no control-plane invocation"
+                ));
+            }
+            for env_key in &ci_required_env {
+                if !workflow_text.contains(env_key) {
+                    errors.push(format!(
+                        "CONFIGS_LAYOUT_ERROR: workflow `{workflow_rel}` missing required CI env key `{env_key}`"
+                    ));
+                }
+            }
+        }
+    }
+    for workflow in walk_files_local(&ctx.repo_root.join(".github/workflows"))
+        .into_iter()
+        .filter(|p| p.extension().and_then(|v| v.to_str()) == Some("yml"))
+    {
+        let workflow_rel = workflow
+            .strip_prefix(&ctx.repo_root)
+            .unwrap_or(&workflow)
+            .display()
+            .to_string();
+        let content = fs::read_to_string(&workflow)
+            .map_err(|e| format!("failed to read {}: {e}", workflow.display()))?;
+        for (line_idx, line) in content.lines().enumerate() {
+            if let Some(start_idx) = line.find("configs/") {
+                let suffix = &line[start_idx..];
+                let mut token = suffix
+                    .split(|c: char| c.is_whitespace() || c == '"' || c == '\'' || c == ')' || c == ';')
+                    .next()
+                    .unwrap_or_default()
+                    .to_string();
+                token = token.trim_end_matches("\\n").to_string();
+                if !token.is_empty()
+                    && !token.contains('*')
+                    && !token.ends_with("/**")
+                    && !ctx.repo_root.join(&token).exists()
+                {
+                    errors.push(format!(
+                        "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} references missing config path `{token}`",
+                        line_idx + 1
+                    ));
+                }
+            }
+            if line.contains("cargo fmt")
+                && !line.contains("configs/rust/rustfmt.toml")
+                && !line.contains("cargo run -q -p bijux-dev-atlas")
+            {
+                errors.push(format!(
+                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo fmt must use configs/rust/rustfmt.toml",
+                    line_idx + 1
+                ));
+            }
+            if line.contains("cargo clippy")
+                && !line.contains("CLIPPY_CONF_DIR=configs/rust")
+                && !line.contains("cargo run -q -p bijux-dev-atlas")
+            {
+                errors.push(format!(
+                    "CONFIGS_LAYOUT_ERROR: {workflow_rel}:{} cargo clippy must set CLIPPY_CONF_DIR=configs/rust",
+                    line_idx + 1
+                ));
+            }
         }
     }
     let groups_path = ctx.repo_root.join("configs/inventory/groups.json");
@@ -341,6 +457,41 @@ pub(crate) fn configs_validate_payload(
                     ));
                 }
                 consumer_groups.insert(group.to_string());
+            }
+        }
+    }
+    let toolchain_contract_path = ctx.repo_root.join("configs/rust/toolchain.json");
+    if toolchain_contract_path.exists() {
+        let toolchain_text = fs::read_to_string(&toolchain_contract_path)
+            .map_err(|e| format!("failed to read {}: {e}", toolchain_contract_path.display()))?;
+        let toolchain_json: serde_json::Value = serde_json::from_str(&toolchain_text)
+            .map_err(|e| format!("failed to parse {}: {e}", toolchain_contract_path.display()))?;
+        let expected_channel = toolchain_json["channel"]
+            .as_str()
+            .unwrap_or_default()
+            .to_string();
+        for consumer in toolchain_json["consumers"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|v| v.as_str().map(str::to_string))
+        {
+            let consumer_path = ctx.repo_root.join(&consumer);
+            if !consumer_path.exists() {
+                errors.push(format!(
+                    "CONFIGS_LAYOUT_ERROR: toolchain consumer workflow missing `{consumer}`"
+                ));
+                continue;
+            }
+            if !expected_channel.is_empty() {
+                let content = fs::read_to_string(&consumer_path)
+                    .map_err(|e| format!("failed to read {}: {e}", consumer_path.display()))?;
+                if !content.contains(&format!("toolchain: {expected_channel}")) {
+                    errors.push(format!(
+                        "CONFIGS_LAYOUT_ERROR: workflow `{consumer}` is not pinned to rust toolchain `{expected_channel}`"
+                    ));
+                }
             }
         }
     }

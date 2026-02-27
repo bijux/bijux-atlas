@@ -13,10 +13,13 @@ Canonical security policy configs consumed by CI and local gates.
 
 - Root `deny.toml` and `audit-allowlist.toml` shims are not allowed.
 - Commands must use explicit config path `configs/security/deny.toml`.
+- Dependency policy is enforced through:
+  - `cargo deny --config configs/security/deny.toml check`
+  - `cargo audit`
 
 ## Verification
 
 ```bash
-make ci-deny
-make ci-audit
+cargo deny --config configs/security/deny.toml check
+cargo audit
 ```
