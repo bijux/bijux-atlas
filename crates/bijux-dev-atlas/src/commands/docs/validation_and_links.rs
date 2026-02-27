@@ -80,11 +80,40 @@ pub(crate) fn docs_validate_payload(
             .unwrap_or(&file)
             .display()
             .to_string();
+        let depth = rel.split('/').count();
+        if depth > 4 {
+            issues.errors.push(format!(
+                "DOCS_DEPTH_ERROR: `{rel}` depth {depth} exceeds limit 4"
+            ));
+        }
         let text = fs::read_to_string(&file).unwrap_or_default();
+        if text.contains("TODO") || text.contains("TBD") {
+            issues.errors.push(format!(
+                "DOCS_TODO_ERROR: `{rel}` contains TODO/TBD marker"
+            ));
+        }
         let line_count = text.lines().count();
-        if line_count > 500 {
-            issues.warnings.push(format!(
-                "DOCS_SIZE_WARN: `{rel}` has {line_count} lines (budget=500)"
+        if line_count > 300 {
+            issues.errors.push(format!(
+                "DOCS_SIZE_ERROR: `{rel}` has {line_count} lines (budget=300)"
+            ));
+        }
+        let mut max_list_run = 0usize;
+        let mut current_list_run = 0usize;
+        for line in text.lines() {
+            let trimmed = line.trim_start();
+            if trimmed.starts_with("- ") || trimmed.starts_with("* ") {
+                current_list_run += 1;
+                if current_list_run > max_list_run {
+                    max_list_run = current_list_run;
+                }
+            } else {
+                current_list_run = 0;
+            }
+        }
+        if max_list_run > 40 {
+            issues.errors.push(format!(
+                "DOCS_LIST_ERROR: `{rel}` has list run of {max_list_run} items (budget=40)"
             ));
         }
         let mut sentence_count = 0usize;
