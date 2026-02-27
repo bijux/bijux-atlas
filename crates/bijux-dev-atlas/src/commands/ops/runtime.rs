@@ -2,7 +2,8 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsE2eCommand, OpsK8sCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand,
+    OpsDatasetsCommand, OpsE2eCommand, OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand,
+    OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsReportCommand, OpsSchemaCommand,
     OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
@@ -31,6 +32,15 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsStackCommand::Plan(common) => OpsCommand::Plan(common),
             OpsStackCommand::Up(common) => OpsCommand::Up(common),
             OpsStackCommand::Down(common) => OpsCommand::Down(common),
+            OpsStackCommand::Logs(common) => OpsCommand::Explain {
+                action: "stack-logs".to_string(),
+                common,
+            },
+            OpsStackCommand::Ports(common) => OpsCommand::Explain {
+                action: "stack-ports".to_string(),
+                common,
+            },
+            OpsStackCommand::Doctor(common) => OpsCommand::Doctor(common),
             OpsStackCommand::Status(mut args) => {
                 args.target = OpsStatusTarget::K8s;
                 OpsCommand::Status(args)
@@ -39,6 +49,16 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
         },
         OpsCommand::K8s { command } => match command {
             OpsK8sCommand::Render(args) => OpsCommand::Render(args),
+            OpsK8sCommand::Install(args) => OpsCommand::Install(args),
+            OpsK8sCommand::Uninstall(common) => OpsCommand::Down(common),
+            OpsK8sCommand::Diff(common) => OpsCommand::Explain {
+                action: "k8s-diff".to_string(),
+                common,
+            },
+            OpsK8sCommand::Rollout(common) => OpsCommand::Explain {
+                action: "k8s-rollout".to_string(),
+                common,
+            },
             OpsK8sCommand::Plan(common) => OpsCommand::K8sPlan(common),
             OpsK8sCommand::Apply(args) => OpsCommand::K8sApply(args),
             OpsK8sCommand::DryRun(common) => OpsCommand::K8sDryRun(common),
@@ -53,14 +73,84 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             OpsLoadCommand::Plan { suite, common } => OpsCommand::LoadPlan { suite, common },
             OpsLoadCommand::Run { suite, common } => OpsCommand::LoadRun { suite, common },
             OpsLoadCommand::Report { suite, common } => OpsCommand::LoadReport { suite, common },
+            OpsLoadCommand::Baseline { command } => match command {
+                OpsLoadBaselineCommand::Update(common) => OpsCommand::Explain {
+                    action: "load-baseline-update".to_string(),
+                    common,
+                },
+            },
+            OpsLoadCommand::Evaluate(common) => OpsCommand::Explain {
+                action: "load-evaluate".to_string(),
+                common,
+            },
+            OpsLoadCommand::ListSuites(common) => OpsCommand::Suite {
+                command: OpsSuiteCommand::List(common),
+            },
+        },
+        OpsCommand::Datasets { command } => match command {
+            OpsDatasetsCommand::List(common) => OpsCommand::Explain {
+                action: "datasets-list".to_string(),
+                common,
+            },
+            OpsDatasetsCommand::Ingest(common) => OpsCommand::Explain {
+                action: "datasets-ingest".to_string(),
+                common,
+            },
+            OpsDatasetsCommand::Publish(common) => OpsCommand::Explain {
+                action: "datasets-publish".to_string(),
+                common,
+            },
+            OpsDatasetsCommand::Promote(common) => OpsCommand::Explain {
+                action: "datasets-promote".to_string(),
+                common,
+            },
+            OpsDatasetsCommand::Rollback(common) => OpsCommand::Explain {
+                action: "datasets-rollback".to_string(),
+                common,
+            },
+            OpsDatasetsCommand::Qc(common) => OpsCommand::Explain {
+                action: "datasets-qc".to_string(),
+                common,
+            },
         },
         OpsCommand::E2e { command } => match command {
             OpsE2eCommand::Run(common) => OpsCommand::Explain {
                 action: "e2e-run".to_string(),
                 common,
             },
+            OpsE2eCommand::Smoke(common) => OpsCommand::Explain {
+                action: "e2e-smoke".to_string(),
+                common,
+            },
+            OpsE2eCommand::Realdata(common) => OpsCommand::Explain {
+                action: "e2e-realdata".to_string(),
+                common,
+            },
+            OpsE2eCommand::ListSuites(common) => OpsCommand::Suite {
+                command: OpsSuiteCommand::List(common),
+            },
         },
         OpsCommand::Obs { command } => match command {
+            OpsObsCommand::Up(common) => OpsCommand::Explain {
+                action: "observe-up".to_string(),
+                common,
+            },
+            OpsObsCommand::Down(common) => OpsCommand::Explain {
+                action: "observe-down".to_string(),
+                common,
+            },
+            OpsObsCommand::Validate(common) => OpsCommand::Explain {
+                action: "observe-validate".to_string(),
+                common,
+            },
+            OpsObsCommand::Snapshot(common) => OpsCommand::Explain {
+                action: "observe-snapshot".to_string(),
+                common,
+            },
+            OpsObsCommand::Dashboards(common) => OpsCommand::Explain {
+                action: "observe-dashboards".to_string(),
+                common,
+            },
             OpsObsCommand::Drill { command } => match command {
                 OpsObsDrillCommand::Run(common) => OpsCommand::Explain {
                     action: "obs-drill-run".to_string(),
@@ -69,6 +159,55 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             },
             OpsObsCommand::Verify(common) => OpsCommand::Explain {
                 action: "obs-verify".to_string(),
+                common,
+            },
+        },
+        OpsCommand::Schema { command } => match command {
+            OpsSchemaCommand::Validate(common) => OpsCommand::Validate(common),
+            OpsSchemaCommand::Diff(common) => OpsCommand::Explain {
+                action: "schema-diff".to_string(),
+                common,
+            },
+            OpsSchemaCommand::Coverage(common) => OpsCommand::Explain {
+                action: "schema-coverage".to_string(),
+                common,
+            },
+            OpsSchemaCommand::RegenIndex(common) => OpsCommand::Explain {
+                action: "schema-regen-index".to_string(),
+                common,
+            },
+        },
+        OpsCommand::InventoryDomain { command } => match command {
+            OpsInventoryCommand::Validate(common) => OpsCommand::Validate(common),
+            OpsInventoryCommand::Graph(common) => OpsCommand::Explain {
+                action: "inventory-graph".to_string(),
+                common,
+            },
+            OpsInventoryCommand::Diff(common) => OpsCommand::Explain {
+                action: "inventory-diff".to_string(),
+                common,
+            },
+            OpsInventoryCommand::Coverage(common) => OpsCommand::Explain {
+                action: "inventory-coverage".to_string(),
+                common,
+            },
+            OpsInventoryCommand::OrphanCheck(common) => OpsCommand::Explain {
+                action: "inventory-orphan-check".to_string(),
+                common,
+            },
+        },
+        OpsCommand::ReportDomain { command } => match command {
+            OpsReportCommand::Generate(common) => OpsCommand::Report(common),
+            OpsReportCommand::Diff(common) => OpsCommand::Explain {
+                action: "report-diff".to_string(),
+                common,
+            },
+            OpsReportCommand::Readiness(common) => OpsCommand::Explain {
+                action: "report-readiness".to_string(),
+                common,
+            },
+            OpsReportCommand::Bundle(common) => OpsCommand::Explain {
+                action: "report-bundle".to_string(),
                 common,
             },
         },

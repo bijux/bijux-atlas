@@ -26,6 +26,10 @@ pub enum OpsCommand {
         #[command(subcommand)]
         command: OpsLoadCommand,
     },
+    Datasets {
+        #[command(subcommand)]
+        command: OpsDatasetsCommand,
+    },
     E2e {
         #[command(subcommand)]
         command: OpsE2eCommand,
@@ -33,6 +37,18 @@ pub enum OpsCommand {
     Obs {
         #[command(subcommand)]
         command: OpsObsCommand,
+    },
+    Schema {
+        #[command(subcommand)]
+        command: OpsSchemaCommand,
+    },
+    InventoryDomain {
+        #[command(name = "inventory", subcommand)]
+        command: OpsInventoryCommand,
+    },
+    ReportDomain {
+        #[command(name = "report", subcommand)]
+        command: OpsReportCommand,
     },
     Tools {
         #[command(subcommand)]
@@ -114,12 +130,19 @@ pub enum OpsStackCommand {
     Up(OpsCommonArgs),
     Down(OpsCommonArgs),
     Status(OpsStatusArgs),
+    Logs(OpsCommonArgs),
+    Ports(OpsCommonArgs),
+    Doctor(OpsCommonArgs),
     Reset(OpsResetArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsK8sCommand {
     Render(OpsRenderArgs),
+    Install(OpsInstallArgs),
+    Uninstall(OpsCommonArgs),
+    Diff(OpsCommonArgs),
+    Rollout(OpsCommonArgs),
     Plan(OpsCommonArgs),
     Apply(OpsK8sApplyArgs),
     DryRun(OpsCommonArgs),
@@ -186,15 +209,44 @@ pub enum OpsLoadCommand {
         #[command(flatten)]
         common: OpsCommonArgs,
     },
+    Baseline {
+        #[command(subcommand)]
+        command: OpsLoadBaselineCommand,
+    },
+    Evaluate(OpsCommonArgs),
+    ListSuites(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsLoadBaselineCommand {
+    Update(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsDatasetsCommand {
+    List(OpsCommonArgs),
+    Ingest(OpsCommonArgs),
+    Publish(OpsCommonArgs),
+    Promote(OpsCommonArgs),
+    Rollback(OpsCommonArgs),
+    Qc(OpsCommonArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsE2eCommand {
     Run(OpsCommonArgs),
+    Smoke(OpsCommonArgs),
+    Realdata(OpsCommonArgs),
+    ListSuites(OpsCommonArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsObsCommand {
+    Up(OpsCommonArgs),
+    Down(OpsCommonArgs),
+    Validate(OpsCommonArgs),
+    Snapshot(OpsCommonArgs),
+    Dashboards(OpsCommonArgs),
     Drill {
         #[command(subcommand)]
         command: OpsObsDrillCommand,
@@ -205,6 +257,31 @@ pub enum OpsObsCommand {
 #[derive(Subcommand, Debug, Clone)]
 pub enum OpsObsDrillCommand {
     Run(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsSchemaCommand {
+    Validate(OpsCommonArgs),
+    Diff(OpsCommonArgs),
+    Coverage(OpsCommonArgs),
+    RegenIndex(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsInventoryCommand {
+    Validate(OpsCommonArgs),
+    Graph(OpsCommonArgs),
+    Diff(OpsCommonArgs),
+    Coverage(OpsCommonArgs),
+    OrphanCheck(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
+pub enum OpsReportCommand {
+    Generate(OpsCommonArgs),
+    Diff(OpsCommonArgs),
+    Readiness(OpsCommonArgs),
+    Bundle(OpsCommonArgs),
 }
 
 #[derive(Subcommand, Debug, Clone)]

@@ -81,6 +81,35 @@ fn force_json_ops(command: &mut OpsCommand) {
                 common.format = FormatArg::Json
             }
         },
+        OpsCommand::Datasets { command } => match command {
+            crate::cli::OpsDatasetsCommand::List(common)
+            | crate::cli::OpsDatasetsCommand::Ingest(common)
+            | crate::cli::OpsDatasetsCommand::Publish(common)
+            | crate::cli::OpsDatasetsCommand::Promote(common)
+            | crate::cli::OpsDatasetsCommand::Rollback(common)
+            | crate::cli::OpsDatasetsCommand::Qc(common) => common.format = FormatArg::Json,
+        },
+        OpsCommand::Schema { command } => match command {
+            crate::cli::OpsSchemaCommand::Validate(common)
+            | crate::cli::OpsSchemaCommand::Diff(common)
+            | crate::cli::OpsSchemaCommand::Coverage(common)
+            | crate::cli::OpsSchemaCommand::RegenIndex(common) => common.format = FormatArg::Json,
+        },
+        OpsCommand::InventoryDomain { command } => match command {
+            crate::cli::OpsInventoryCommand::Validate(common)
+            | crate::cli::OpsInventoryCommand::Graph(common)
+            | crate::cli::OpsInventoryCommand::Diff(common)
+            | crate::cli::OpsInventoryCommand::Coverage(common)
+            | crate::cli::OpsInventoryCommand::OrphanCheck(common) => {
+                common.format = FormatArg::Json
+            }
+        },
+        OpsCommand::ReportDomain { command } => match command {
+            crate::cli::OpsReportCommand::Generate(common)
+            | crate::cli::OpsReportCommand::Diff(common)
+            | crate::cli::OpsReportCommand::Readiness(common)
+            | crate::cli::OpsReportCommand::Bundle(common) => common.format = FormatArg::Json,
+        },
         OpsCommand::Tools { command } => match command {
             crate::cli::OpsToolsCommand::List(common)
             | crate::cli::OpsToolsCommand::Verify(common)
@@ -93,16 +122,23 @@ fn force_json_ops(command: &mut OpsCommand) {
         OpsCommand::Stack { command } => match command {
             crate::cli::OpsStackCommand::Plan(common)
             | crate::cli::OpsStackCommand::Up(common)
-            | crate::cli::OpsStackCommand::Down(common) => common.format = FormatArg::Json,
+            | crate::cli::OpsStackCommand::Down(common)
+            | crate::cli::OpsStackCommand::Logs(common)
+            | crate::cli::OpsStackCommand::Ports(common)
+            | crate::cli::OpsStackCommand::Doctor(common) => common.format = FormatArg::Json,
             crate::cli::OpsStackCommand::Status(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsStackCommand::Reset(args) => args.common.format = FormatArg::Json,
         },
         OpsCommand::K8s { command } => match command {
             crate::cli::OpsK8sCommand::Render(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Plan(common)
+            | crate::cli::OpsK8sCommand::Uninstall(common)
+            | crate::cli::OpsK8sCommand::Diff(common)
+            | crate::cli::OpsK8sCommand::Rollout(common)
             | crate::cli::OpsK8sCommand::DryRun(common)
             | crate::cli::OpsK8sCommand::Conformance(common)
             | crate::cli::OpsK8sCommand::Test(common) => common.format = FormatArg::Json,
+            crate::cli::OpsK8sCommand::Install(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Apply(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Wait(args) => args.common.format = FormatArg::Json,
             crate::cli::OpsK8sCommand::Logs(args) => args.common.format = FormatArg::Json,
@@ -112,16 +148,31 @@ fn force_json_ops(command: &mut OpsCommand) {
         OpsCommand::Load { command } => match command {
             crate::cli::OpsLoadCommand::Plan { common, .. }
             | crate::cli::OpsLoadCommand::Run { common, .. }
-            | crate::cli::OpsLoadCommand::Report { common, .. } => common.format = FormatArg::Json,
+            | crate::cli::OpsLoadCommand::Report { common, .. }
+            | crate::cli::OpsLoadCommand::Evaluate(common)
+            | crate::cli::OpsLoadCommand::ListSuites(common) => common.format = FormatArg::Json,
+            crate::cli::OpsLoadCommand::Baseline { command } => match command {
+                crate::cli::OpsLoadBaselineCommand::Update(common) => {
+                    common.format = FormatArg::Json
+                }
+            },
         },
         OpsCommand::E2e { command } => match command {
-            crate::cli::OpsE2eCommand::Run(common) => common.format = FormatArg::Json,
+            crate::cli::OpsE2eCommand::Run(common)
+            | crate::cli::OpsE2eCommand::Smoke(common)
+            | crate::cli::OpsE2eCommand::Realdata(common)
+            | crate::cli::OpsE2eCommand::ListSuites(common) => common.format = FormatArg::Json,
         },
         OpsCommand::Obs { command } => match command {
+            crate::cli::OpsObsCommand::Up(common)
+            | crate::cli::OpsObsCommand::Down(common)
+            | crate::cli::OpsObsCommand::Validate(common)
+            | crate::cli::OpsObsCommand::Snapshot(common)
+            | crate::cli::OpsObsCommand::Dashboards(common)
+            | crate::cli::OpsObsCommand::Verify(common) => common.format = FormatArg::Json,
             crate::cli::OpsObsCommand::Drill { command } => match command {
                 crate::cli::OpsObsDrillCommand::Run(common) => common.format = FormatArg::Json,
             },
-            crate::cli::OpsObsCommand::Verify(common) => common.format = FormatArg::Json,
         },
     }
 }
@@ -277,6 +328,41 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                     common.repo_root = Some(root.clone())
                 }
             },
+            OpsCommand::Datasets { command } => match command {
+                crate::cli::OpsDatasetsCommand::List(common)
+                | crate::cli::OpsDatasetsCommand::Ingest(common)
+                | crate::cli::OpsDatasetsCommand::Publish(common)
+                | crate::cli::OpsDatasetsCommand::Promote(common)
+                | crate::cli::OpsDatasetsCommand::Rollback(common)
+                | crate::cli::OpsDatasetsCommand::Qc(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::Schema { command } => match command {
+                crate::cli::OpsSchemaCommand::Validate(common)
+                | crate::cli::OpsSchemaCommand::Diff(common)
+                | crate::cli::OpsSchemaCommand::Coverage(common)
+                | crate::cli::OpsSchemaCommand::RegenIndex(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::InventoryDomain { command } => match command {
+                crate::cli::OpsInventoryCommand::Validate(common)
+                | crate::cli::OpsInventoryCommand::Graph(common)
+                | crate::cli::OpsInventoryCommand::Diff(common)
+                | crate::cli::OpsInventoryCommand::Coverage(common)
+                | crate::cli::OpsInventoryCommand::OrphanCheck(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
+            OpsCommand::ReportDomain { command } => match command {
+                crate::cli::OpsReportCommand::Generate(common)
+                | crate::cli::OpsReportCommand::Diff(common)
+                | crate::cli::OpsReportCommand::Readiness(common)
+                | crate::cli::OpsReportCommand::Bundle(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+            },
             OpsCommand::Tools { command } => match command {
                 crate::cli::OpsToolsCommand::List(common)
                 | crate::cli::OpsToolsCommand::Verify(common)
@@ -293,7 +379,10 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             OpsCommand::Stack { command } => match command {
                 crate::cli::OpsStackCommand::Plan(common)
                 | crate::cli::OpsStackCommand::Up(common)
-                | crate::cli::OpsStackCommand::Down(common) => {
+                | crate::cli::OpsStackCommand::Down(common)
+                | crate::cli::OpsStackCommand::Logs(common)
+                | crate::cli::OpsStackCommand::Ports(common)
+                | crate::cli::OpsStackCommand::Doctor(common) => {
                     common.repo_root = Some(root.clone())
                 }
                 crate::cli::OpsStackCommand::Status(args) => {
@@ -308,9 +397,15 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
                     args.common.repo_root = Some(root.clone())
                 }
                 crate::cli::OpsK8sCommand::Plan(common)
+                | crate::cli::OpsK8sCommand::Uninstall(common)
+                | crate::cli::OpsK8sCommand::Diff(common)
+                | crate::cli::OpsK8sCommand::Rollout(common)
                 | crate::cli::OpsK8sCommand::DryRun(common)
                 | crate::cli::OpsK8sCommand::Conformance(common)
                 | crate::cli::OpsK8sCommand::Test(common) => common.repo_root = Some(root.clone()),
+                crate::cli::OpsK8sCommand::Install(args) => {
+                    args.common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsK8sCommand::Apply(args) => {
                     args.common.repo_root = Some(root.clone())
                 }
@@ -326,20 +421,39 @@ fn propagate_repo_root(command: &mut Command, repo_root: Option<std::path::PathB
             OpsCommand::Load { command } => match command {
                 crate::cli::OpsLoadCommand::Plan { common, .. }
                 | crate::cli::OpsLoadCommand::Run { common, .. }
-                | crate::cli::OpsLoadCommand::Report { common, .. } => {
+                | crate::cli::OpsLoadCommand::Report { common, .. }
+                | crate::cli::OpsLoadCommand::Evaluate(common)
+                | crate::cli::OpsLoadCommand::ListSuites(common) => {
+                    common.repo_root = Some(root.clone())
+                }
+                crate::cli::OpsLoadCommand::Baseline { command } => match command {
+                    crate::cli::OpsLoadBaselineCommand::Update(common) => {
+                        common.repo_root = Some(root.clone())
+                    }
+                },
+            },
+            OpsCommand::E2e { command } => match command {
+                crate::cli::OpsE2eCommand::Run(common)
+                | crate::cli::OpsE2eCommand::Smoke(common)
+                | crate::cli::OpsE2eCommand::Realdata(common)
+                | crate::cli::OpsE2eCommand::ListSuites(common) => {
                     common.repo_root = Some(root.clone())
                 }
             },
-            OpsCommand::E2e { command } => match command {
-                crate::cli::OpsE2eCommand::Run(common) => common.repo_root = Some(root.clone()),
-            },
             OpsCommand::Obs { command } => match command {
+                crate::cli::OpsObsCommand::Up(common)
+                | crate::cli::OpsObsCommand::Down(common)
+                | crate::cli::OpsObsCommand::Validate(common)
+                | crate::cli::OpsObsCommand::Snapshot(common)
+                | crate::cli::OpsObsCommand::Dashboards(common)
+                | crate::cli::OpsObsCommand::Verify(common) => {
+                    common.repo_root = Some(root.clone())
+                }
                 crate::cli::OpsObsCommand::Drill { command } => match command {
                     crate::cli::OpsObsDrillCommand::Run(common) => {
                         common.repo_root = Some(root.clone())
                     }
                 },
-                crate::cli::OpsObsCommand::Verify(common) => common.repo_root = Some(root.clone()),
             },
         },
         Command::Docs { command } => match command {

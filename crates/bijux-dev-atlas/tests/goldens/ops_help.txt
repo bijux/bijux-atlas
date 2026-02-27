@@ -1,37 +1,41 @@
 Usage: bijux-dev-atlas ops <COMMAND>
 
 Commands:
-  list             
-  explain          
-  stack            
-  k8s              
-  load             
-  e2e              
-  obs              
-  tools            
-  suite            
-  doctor           
-  validate         
-  inventory        
-  docs             
-  conformance      
-  report           
-  render           
-  install          
-  status           
-  list-profiles    
-  explain-profile  
-  list-tools       
-  verify-tools     
-  list-actions     
-  plan             
-  up               
-  down             
-  clean            
-  cleanup          
-  reset            
-  pins             
-  generate         
+  list              
+  explain           
+  stack             
+  k8s               
+  load              
+  datasets          
+  e2e               
+  obs               
+  schema            
+  inventory-domain  
+  report-domain     
+  tools             
+  suite             
+  doctor            
+  validate          
+  inventory         
+  docs              
+  conformance       
+  report            
+  render            
+  install           
+  status            
+  list-profiles     
+  explain-profile   
+  list-tools        
+  verify-tools      
+  list-actions      
+  plan              
+  up                
+  down              
+  clean             
+  cleanup           
+  reset             
+  pins              
+  generate          
 
 Options:
   -h, --help  Print help
