@@ -60,6 +60,70 @@ fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
     None
 }
 
+fn budget_pillar_label(classified_pillar: &str) -> &str {
+    if classified_pillar == "root-surface" {
+        "root"
+    } else {
+        classified_pillar
+    }
+}
+
+fn contract_sequence_group(contract_id: &str) -> Option<(String, usize)> {
+    let mut parts = contract_id.split('-').collect::<Vec<_>>();
+    let last = parts.pop()?;
+    let index = last.parse::<usize>().ok()?;
+    Some((parts.join("-"), index))
+}
+
+fn derived_contract_class(contract: &Contract) -> &'static str {
+    if contract.id.0.contains("-E-") {
+        return "effect";
+    }
+    let title = contract.title.to_ascii_lowercase();
+    let pillar = classify_contract_pillar(&contract.id.0).unwrap_or_default();
+    if pillar == "schema" || title.contains("schema") {
+        return "schema";
+    }
+    if title.contains("surface")
+        || title.contains("command")
+        || title.contains("router")
+        || title.contains("markdown")
+        || title.contains("docs")
+        || title.contains("help")
+    {
+        return "surface";
+    }
+    if title.contains("determin")
+        || title.contains("stable")
+        || title.contains("sorted")
+        || title.contains("canonical")
+        || title.contains("reproduc")
+        || title.contains("drift")
+        || title.contains("format")
+    {
+        return "determinism";
+    }
+    "safety"
+}
+
+fn load_contract_budget(repo_root: &Path) -> Result<Value, String> {
+    let path = repo_root.join("ops/inventory/contract-budget.json");
+    let text = fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    serde_json::from_str(&text).map_err(|e| format!("parse {} failed: {e}", path.display()))
+}
+
+fn load_ops_contract_debt(repo_root: &Path) -> Result<Value, String> {
+    let path = repo_root.join("ops/inventory/ops-contract-debt.json");
+    let text = fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    serde_json::from_str(&text).map_err(|e| format!("parse {} failed: {e}", path.display()))
+}
+
+fn load_contract_gate_map(repo_root: &Path) -> Result<Value, String> {
+    let path = repo_root.join("ops/inventory/contract-gate-map.json");
+    let text = fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    serde_json::from_str(&text).map_err(|e| format!("parse {} failed: {e}", path.display()))
+}
+
 pub fn contract_gate_command(contract_id: &str) -> &'static str {
     if contract_id.contains("-E-") {
         "bijux dev atlas contracts ops --mode effect --allow-subprocess --allow-network"
@@ -98,6 +162,9 @@ fn validate_registry(rows: &[Contract], repo_root: &Path) -> Result<(), String> 
     let mut contract_ids = BTreeSet::new();
     let mut test_ids = BTreeSet::new();
     let mut normalized_titles = BTreeSet::new();
+    let mut sequence_groups = BTreeMap::<String, Vec<usize>>::new();
+    let mut pillar_counts = BTreeMap::<String, usize>::new();
+    let mut pillar_classes = BTreeMap::<String, BTreeSet<String>>::new();
     for contract in rows {
         if !contract_ids.insert(contract.id.0.clone()) {
             return Err(format!("duplicate contract id in ops registry: {}", contract.id.0));
@@ -108,11 +175,23 @@ fn validate_registry(rows: &[Contract], repo_root: &Path) -> Result<(), String> 
                 contract.id.0
             ));
         }
-        if classify_contract_pillar(&contract.id.0).is_none() {
+        let Some(pillar) = classify_contract_pillar(&contract.id.0) else {
             return Err(format!(
                 "contract id is not classified into exactly one ops pillar: {}",
                 contract.id.0
             ));
+        };
+        let budget_pillar = budget_pillar_label(pillar).to_string();
+        pillar_counts
+            .entry(budget_pillar.clone())
+            .and_modify(|count| *count += 1)
+            .or_insert(1);
+        pillar_classes
+            .entry(budget_pillar)
+            .or_default()
+            .insert(derived_contract_class(contract).to_string());
+        if let Some((group, index)) = contract_sequence_group(&contract.id.0) {
+            sequence_groups.entry(group).or_default().push(index);
         }
         let normalized = normalize_title_for_compare(contract.title);
         if !normalized_titles.insert(normalized.clone()) {
@@ -140,6 +219,174 @@ fn validate_registry(rows: &[Contract], repo_root: &Path) -> Result<(), String> 
             }
             if !test_ids.insert(case.id.0.clone()) {
                 return Err(format!("duplicate test id in ops registry: {}", case.id.0));
+            }
+        }
+    }
+    for (group, mut indexes) in sequence_groups {
+        indexes.sort_unstable();
+        indexes.dedup();
+        for (offset, index) in indexes.iter().enumerate() {
+            let expected = offset + 1;
+            if *index != expected {
+                return Err(format!(
+                    "ops contract numbering must stay contiguous within `{group}`: expected {:03} but found {:03}",
+                    expected, index
+                ));
+            }
+        }
+    }
+    let budget = load_contract_budget(repo_root)?;
+    if budget.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        return Err("ops contract budget file must set schema_version=1".to_string());
+    }
+    let Some(pillars) = budget.get("pillars").and_then(|v| v.as_array()) else {
+        return Err("ops contract budget file must declare pillars array".to_string());
+    };
+    let mut budgeted = BTreeSet::new();
+    for row in pillars {
+        let Some(pillar) = row.get("pillar").and_then(|v| v.as_str()) else {
+            return Err("ops contract budget entry missing pillar".to_string());
+        };
+        let target = row.get("target").and_then(|v| v.as_u64()).ok_or_else(|| {
+            format!("ops contract budget entry missing target for pillar `{pillar}`")
+        })? as usize;
+        let max = row.get("max").and_then(|v| v.as_u64()).ok_or_else(|| {
+            format!("ops contract budget entry missing max for pillar `{pillar}`")
+        })? as usize;
+        let required_classes = row
+            .get("required_classes")
+            .and_then(|v| v.as_array())
+            .ok_or_else(|| format!("ops contract budget entry missing required_classes for pillar `{pillar}`"))?
+            .iter()
+            .filter_map(|v| v.as_str())
+            .collect::<Vec<_>>();
+        budgeted.insert(pillar.to_string());
+        let count = *pillar_counts.get(pillar).unwrap_or(&0);
+        if count > max {
+            return Err(format!(
+                "ops contract count exceeds budget for pillar `{pillar}`: {count} > {max}"
+            ));
+        }
+        if count < target {
+            return Err(format!(
+                "ops contract count fell below reviewed budget target for pillar `{pillar}`: {count} < {target}"
+            ));
+        }
+        let classes = pillar_classes.get(pillar).cloned().unwrap_or_default();
+        for class in required_classes {
+            if !classes.contains(class) {
+                return Err(format!(
+                    "ops pillar `{pillar}` is missing required contract class `{class}`"
+                ));
+            }
+        }
+    }
+    for pillar in pillar_counts.keys() {
+        if !budgeted.contains(pillar) {
+            return Err(format!(
+                "ops contract budget file is missing pillar `{pillar}`"
+            ));
+        }
+    }
+    let debt = load_ops_contract_debt(repo_root)?;
+    if debt.get("schema_version").and_then(|v| v.as_u64()) != Some(1) {
+        return Err("ops contract debt file must set schema_version=1".to_string());
+    }
+    let reviewed_max = debt
+        .get("reviewed_max_items")
+        .and_then(|v| v.as_u64())
+        .ok_or_else(|| "ops contract debt file must define reviewed_max_items".to_string())?
+        as usize;
+    let debt_items = debt
+        .get("items")
+        .and_then(|v| v.as_array())
+        .ok_or_else(|| "ops contract debt file must define items array".to_string())?;
+    if debt_items.len() > reviewed_max {
+        return Err(format!(
+            "ops contract debt file grew beyond reviewed_max_items: {} > {}",
+            debt_items.len(),
+            reviewed_max
+        ));
+    }
+    let gate_map = load_contract_gate_map(repo_root)?;
+    let mappings = gate_map
+        .get("mappings")
+        .and_then(|v| v.as_array())
+        .ok_or_else(|| "ops contract gate map must define mappings array".to_string())?;
+    let mut by_contract = BTreeMap::<String, &Value>::new();
+    for mapping in mappings {
+        let Some(contract_id) = mapping.get("contract_id").and_then(|v| v.as_str()) else {
+            return Err("ops contract gate map entry missing contract_id".to_string());
+        };
+        if by_contract.insert(contract_id.to_string(), mapping).is_some() {
+            return Err(format!(
+                "ops contract gate map must not duplicate contract mapping: {contract_id}"
+            ));
+        }
+    }
+    for contract in rows {
+        let Some(mapping) = by_contract.get(&contract.id.0) else {
+            return Err(format!(
+                "ops contract gate map is missing contract `{}`",
+                contract.id.0
+            ));
+        };
+        let gate_ids = mapping
+            .get("gate_ids")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        let command = mapping
+            .get("command")
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .trim();
+        let static_only = mapping
+            .get("static_only")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        if gate_ids.is_empty() && !static_only {
+            return Err(format!(
+                "ops contract must map to a gate or be explicitly static-only: {}",
+                contract.id.0
+            ));
+        }
+        if command.is_empty() && !static_only {
+            return Err(format!(
+                "ops contract must map to a runnable command or be explicitly static-only: {}",
+                contract.id.0
+            ));
+        }
+        if !command.is_empty() && !command.starts_with("bijux dev atlas ops ") {
+            return Err(format!(
+                "ops contract command mapping must use the ops control-plane surface: {} -> {}",
+                contract.id.0, command
+            ));
+        }
+        let is_effect = contract.id.0.contains("-E-");
+        if is_effect {
+            let effects = mapping
+                .get("effects_required")
+                .and_then(|v| v.as_array())
+                .cloned()
+                .unwrap_or_default();
+            if static_only {
+                return Err(format!(
+                    "effect contract cannot be mapped as static-only: {}",
+                    contract.id.0
+                ));
+            }
+            if command.is_empty() {
+                return Err(format!(
+                    "effect contract must map to a runnable command: {}",
+                    contract.id.0
+                ));
+            }
+            if effects.is_empty() {
+                return Err(format!(
+                    "effect contract must declare effects_required in contract-gate-map: {}",
+                    contract.id.0
+                ));
             }
         }
     }

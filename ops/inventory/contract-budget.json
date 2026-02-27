@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "pillars": [
+    {
+      "pillar": "root",
+      "target": 33,
+      "max": 33,
+      "required_classes": [
+        "surface"
+      ]
+    },
+    {
+      "pillar": "inventory",
+      "target": 24,
+      "max": 24,
+      "required_classes": [
+        "safety"
+      ]
+    },
+    {
+      "pillar": "schema",
+      "target": 10,
+      "max": 10,
+      "required_classes": [
+        "schema"
+      ]
+    },
+    {
+      "pillar": "datasets",
+      "target": 10,
+      "max": 10,
+      "required_classes": [
+        "safety"
+      ]
+    },
+    {
+      "pillar": "e2e",
+      "target": 12,
+      "max": 12,
+      "required_classes": [
+        "effect"
+      ]
+    },
+    {
+      "pillar": "env",
+      "target": 9,
+      "max": 9,
+      "required_classes": [
+        "safety"
+      ]
+    },
+    {
+      "pillar": "stack",
+      "target": 13,
+      "max": 13,
+      "required_classes": [
+        "effect"
+      ]
+    },
+    {
+      "pillar": "k8s",
+      "target": 13,
+      "max": 13,
+      "required_classes": [
+        "effect"
+      ]
+    },
+    {
+      "pillar": "load",
+      "target": 13,
+      "max": 13,
+      "required_classes": [
+        "effect"
+      ]
+    },
+    {
+      "pillar": "observe",
+      "target": 13,
+      "max": 13,
+      "required_classes": [
+        "effect"
+      ]
+    },
+    {
+      "pillar": "report",
+      "target": 10,
+      "max": 10,
+      "required_classes": [
+        "determinism"
+      ]
+    }
+  ]
+}
