@@ -1437,6 +1437,395 @@ fn test_ops_root_surface_006_forbid_adhoc_command_groups(ctx: &RunContext) -> Te
     }
 }
 
+fn test_ops_root_surface_007_command_purpose_defined(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-007";
+    let test_id = "ops.root_surface.command_purpose_defined";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for action in surface_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let action_id = action.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let purpose = action
+            .get("purpose")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default()
+            .trim();
+        if purpose.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "each command action must declare a stable purpose string",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_008_command_supports_json(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-008";
+    let test_id = "ops.root_surface.command_supports_json";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for action in surface_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let action_id = action.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let supports_json = action
+            .get("supports_json")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        if !supports_json {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "each command action must declare supports_json=true",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_009_command_dry_run_policy(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-009";
+    let test_id = "ops.root_surface.command_dry_run_policy";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for action in surface_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let action_id = action.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let policy = action
+            .get("dry_run")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if policy != "required" && policy != "optional" && policy != "not_applicable" {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "dry_run policy must be required|optional|not_applicable",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_surface_010_artifacts_root_policy(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-SURFACE-010";
+    let test_id = "ops.root_surface.artifacts_root_policy";
+    let Some(surface_json) = read_json(&ctx.repo_root.join("ops/inventory/surfaces.json")) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "surfaces inventory must exist and be valid json",
+            Some("ops/inventory/surfaces.json".to_string()),
+        )]);
+    };
+    let mut violations = Vec::new();
+    for action in surface_json
+        .get("actions")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let action_id = action.get("id").and_then(|v| v.as_str()).unwrap_or_default();
+        let policy = action
+            .get("artifacts_policy")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if policy != "artifacts_root_only" && policy != "none" {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "artifacts_policy must be artifacts_root_only or none",
+                Some(action_id.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn read_markdown_allowlist(root: &Path) -> Result<BTreeSet<String>, String> {
+    let Some(value) = read_json(&root.join("ops/inventory/markdown-allowlist.json")) else {
+        return Err("ops/inventory/markdown-allowlist.json is missing or invalid".to_string());
+    };
+    Ok(value
+        .get("allowed_markdown")
+        .and_then(|v| v.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                .collect()
+        })
+        .unwrap_or_default())
+}
+
+fn read_markdown_denylist(root: &Path) -> Result<BTreeSet<String>, String> {
+    let Some(value) = read_json(&root.join("ops/inventory/deleted-markdown-denylist.json")) else {
+        return Err("ops/inventory/deleted-markdown-denylist.json is missing or invalid".to_string());
+    };
+    Ok(value
+        .get("paths")
+        .and_then(|v| v.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|v| v.as_str().map(ToOwned::to_owned))
+                .collect()
+        })
+        .unwrap_or_default())
+}
+
+fn test_ops_root_011_markdown_allowlist_only(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-011";
+    let test_id = "ops.root.markdown_allowlist_only";
+    let allowlist = match read_markdown_allowlist(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let mut files = Vec::new();
+    walk_files(&ops_root(&ctx.repo_root), &mut files);
+    files.sort();
+    let mut violations = Vec::new();
+    for path in files {
+        if path.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        let rel = rel_to_root(&path, &ctx.repo_root);
+        if !allowlist.contains(&rel) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "ops markdown file is not in markdown allowlist",
+                Some(rel),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_012_single_readme_per_pillar(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-012";
+    let test_id = "ops.root.single_readme_per_pillar";
+    let pillars = match read_pillars_doc(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let mut violations = Vec::new();
+    for pillar in pillars.pillars {
+        if pillar.id == "root-surface" {
+            continue;
+        }
+        let dir = ctx.repo_root.join(format!("ops/{}", pillar.id));
+        let readme = dir.join("README.md");
+        if !readme.is_file() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "pillar directory must have exactly one README.md at root",
+                Some(format!("ops/{}/README.md", pillar.id)),
+            ));
+        }
+        let mut pillar_files = Vec::new();
+        walk_files(&dir, &mut pillar_files);
+        let readme_count = pillar_files
+            .iter()
+            .filter(|p| p.file_name().and_then(|v| v.to_str()) == Some("README.md"))
+            .count();
+        if readme_count != 1 {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "pillar must contain exactly one README.md file",
+                Some(format!("ops/{}", pillar.id)),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_013_markdown_allowlist_file_valid(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-013";
+    let test_id = "ops.root.markdown_allowlist_file_valid";
+    let allowlist = match read_markdown_allowlist(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "markdown allowlist file must exist and be valid json",
+                Some("ops/inventory/markdown-allowlist.json".to_string()),
+            )]);
+        }
+    };
+    if allowlist.is_empty() {
+        TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "markdown allowlist must not be empty",
+            Some("ops/inventory/markdown-allowlist.json".to_string()),
+        )])
+    } else {
+        TestResult::Pass
+    }
+}
+
+fn test_ops_root_014_no_procedure_docs_in_ops(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-014";
+    let test_id = "ops.root.no_procedure_docs_in_ops";
+    let mut files = Vec::new();
+    walk_files(&ops_root(&ctx.repo_root), &mut files);
+    files.sort();
+    let mut violations = Vec::new();
+    for path in files {
+        if path.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        let rel = rel_to_root(&path, &ctx.repo_root);
+        let lower = rel.to_ascii_lowercase();
+        if lower.contains("workflow")
+            || lower.contains("procedure")
+            || lower.contains("runbook")
+            || lower.contains("policy")
+        {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "workflow/procedure/policy markdown artifacts must not live under ops/",
+                Some(rel),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_015_no_extra_pillar_markdown(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-015";
+    let test_id = "ops.root.no_extra_pillar_markdown";
+    let allowlist = match read_markdown_allowlist(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(err) => return TestResult::Error(err),
+    };
+    let mut files = Vec::new();
+    walk_files(&ops_root(&ctx.repo_root), &mut files);
+    files.sort();
+    let mut violations = Vec::new();
+    for path in files {
+        if path.extension().and_then(|v| v.to_str()) != Some("md") {
+            continue;
+        }
+        let rel = rel_to_root(&path, &ctx.repo_root);
+        if !allowlist.contains(&rel) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "pillar markdown not allowed by ops markdown contract",
+                Some(rel),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_ops_root_016_deleted_markdown_denylist(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-ROOT-016";
+    let test_id = "ops.root.deleted_markdown_denylist";
+    let denylist = match read_markdown_denylist(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "deleted markdown denylist must exist and be valid json",
+                Some("ops/inventory/deleted-markdown-denylist.json".to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for rel in denylist {
+        let path = ctx.repo_root.join(&rel);
+        if path.exists() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "historically deleted markdown path must not be reintroduced",
+                Some(rel),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_ops_schema_001_parseable_documents(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-SCHEMA-001";
     let test_id = "ops.schema.parseable_documents";

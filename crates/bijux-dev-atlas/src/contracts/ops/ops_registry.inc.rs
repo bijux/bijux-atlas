@@ -496,6 +496,106 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("OPS-ROOT-SURFACE-007".to_string()),
+            title: "ops root command surface purpose contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.command_purpose_defined".to_string()),
+                title: "each command action defines a stable purpose string",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_007_command_purpose_defined,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-008".to_string()),
+            title: "ops root command surface json output contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.command_supports_json".to_string()),
+                title: "each command action declares json output support",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_008_command_supports_json,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-009".to_string()),
+            title: "ops root command surface dry-run policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.command_dry_run_policy".to_string()),
+                title: "each command action declares dry-run policy where applicable",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_009_command_dry_run_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-SURFACE-010".to_string()),
+            title: "ops root command surface artifacts policy contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root_surface.artifacts_root_policy".to_string()),
+                title: "each command action declares artifacts root write policy",
+                kind: TestKind::Pure,
+                run: test_ops_root_surface_010_artifacts_root_policy,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-011".to_string()),
+            title: "ops markdown allowlist contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.markdown_allowlist_only".to_string()),
+                title: "ops markdown files are restricted to explicit allowlist paths",
+                kind: TestKind::Pure,
+                run: test_ops_root_011_markdown_allowlist_only,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-012".to_string()),
+            title: "ops pillar readme cardinality contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.single_readme_per_pillar".to_string()),
+                title: "each non-root pillar has exactly one README.md at pillar root",
+                kind: TestKind::Pure,
+                run: test_ops_root_012_single_readme_per_pillar,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-013".to_string()),
+            title: "ops markdown allowlist inventory contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.markdown_allowlist_file_valid".to_string()),
+                title: "markdown allowlist inventory file exists and is non-empty",
+                kind: TestKind::Pure,
+                run: test_ops_root_013_markdown_allowlist_file_valid,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-014".to_string()),
+            title: "ops procedure text contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.no_procedure_docs_in_ops".to_string()),
+                title: "procedure-like language in ops markdown requires OPS contract references",
+                kind: TestKind::Pure,
+                run: test_ops_root_014_no_procedure_docs_in_ops,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-015".to_string()),
+            title: "ops pillar markdown minimalism contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.no_extra_pillar_markdown".to_string()),
+                title: "ops pillar markdown surface is restricted to allowlisted files",
+                kind: TestKind::Pure,
+                run: test_ops_root_015_no_extra_pillar_markdown,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-ROOT-016".to_string()),
+            title: "ops deleted markdown denylist contract",
+            tests: vec![TestCase {
+                id: TestId("ops.root.deleted_markdown_denylist".to_string()),
+                title: "historically deleted markdown paths must not be reintroduced",
+                kind: TestKind::Pure,
+                run: test_ops_root_016_deleted_markdown_denylist,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-INV-PILLARS-001".to_string()),
             title: "inventory pillars registry contract",
             tests: vec![TestCase {
@@ -1236,6 +1336,16 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-ROOT-SURFACE-004" => "Ensures mapped commands include explicit effects_required declarations.",
         "OPS-ROOT-SURFACE-005" => "Ensures command actions are grouped only under approved pillar-style domains.",
         "OPS-ROOT-SURFACE-006" => "Forbids ad-hoc command group domains such as misc/util.",
+        "OPS-ROOT-SURFACE-007" => "Ensures each command action declares a stable purpose string.",
+        "OPS-ROOT-SURFACE-008" => "Ensures each command action declares json output support.",
+        "OPS-ROOT-SURFACE-009" => "Ensures each command action declares dry-run policy metadata.",
+        "OPS-ROOT-SURFACE-010" => "Ensures each command action declares artifacts root write policy.",
+        "OPS-ROOT-011" => "Restricts ops markdown files to explicit allowlisted paths.",
+        "OPS-ROOT-012" => "Ensures each non-root pillar has exactly one README.md at pillar root.",
+        "OPS-ROOT-013" => "Ensures markdown allowlist inventory file exists and is non-empty.",
+        "OPS-ROOT-014" => "Ensures procedure/policy language in ops markdown is linked to OPS contract IDs.",
+        "OPS-ROOT-015" => "Enforces minimal pillar markdown surface via allowlist.",
+        "OPS-ROOT-016" => "Prevents reintroduction of historically deleted markdown paths via denylist.",
         "OPS-INV-PILLARS-001" => "Validates pillars SSOT exists and parses as inventory metadata.",
         "OPS-INV-PILLARS-002" => "Validates each declared pillar has a concrete directory under ops/.",
         "OPS-INV-PILLARS-003" => "Validates there are no undeclared pillar directories in ops root.",

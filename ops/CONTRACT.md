@@ -634,6 +634,36 @@ Tests:
 Tests:
 - `ops.root.forbid_deleted_doc_names` (static, Pure): forbidden legacy ops markdown names must not be reintroduced
 
+#### OPS-ROOT-011 ops markdown allowlist contract
+
+Tests:
+- `ops.root.markdown_allowlist_only` (static, Pure): ops markdown files are restricted to explicit allowlist paths
+
+#### OPS-ROOT-012 ops pillar readme cardinality contract
+
+Tests:
+- `ops.root.single_readme_per_pillar` (static, Pure): each non-root pillar has exactly one README.md at pillar root
+
+#### OPS-ROOT-013 ops markdown allowlist inventory contract
+
+Tests:
+- `ops.root.markdown_allowlist_file_valid` (static, Pure): markdown allowlist inventory file exists and is non-empty
+
+#### OPS-ROOT-014 ops procedure text contract
+
+Tests:
+- `ops.root.no_procedure_docs_in_ops` (static, Pure): procedure-like language in ops markdown requires OPS contract references
+
+#### OPS-ROOT-015 ops pillar markdown minimalism contract
+
+Tests:
+- `ops.root.no_extra_pillar_markdown` (static, Pure): ops pillar markdown surface is restricted to allowlisted files
+
+#### OPS-ROOT-016 ops deleted markdown denylist contract
+
+Tests:
+- `ops.root.deleted_markdown_denylist` (static, Pure): historically deleted markdown paths must not be reintroduced
+
 #### OPS-ROOT-SURFACE-001 ops root command surface required commands contract
 
 Tests:
@@ -663,6 +693,26 @@ Tests:
 
 Tests:
 - `ops.root_surface.forbid_adhoc_command_groups` (static, Pure): ops command actions must not use ad-hoc misc/util group names
+
+#### OPS-ROOT-SURFACE-007 ops root command surface purpose contract
+
+Tests:
+- `ops.root_surface.command_purpose_defined` (static, Pure): each command action defines a stable purpose string
+
+#### OPS-ROOT-SURFACE-008 ops root command surface json output contract
+
+Tests:
+- `ops.root_surface.command_supports_json` (static, Pure): each command action declares json output support
+
+#### OPS-ROOT-SURFACE-009 ops root command surface dry-run policy contract
+
+Tests:
+- `ops.root_surface.command_dry_run_policy` (static, Pure): each command action declares dry-run policy where applicable
+
+#### OPS-ROOT-SURFACE-010 ops root command surface artifacts policy contract
+
+Tests:
+- `ops.root_surface.artifacts_root_policy` (static, Pure): each command action declares artifacts root write policy
 
 ### Pillar: schema
 
