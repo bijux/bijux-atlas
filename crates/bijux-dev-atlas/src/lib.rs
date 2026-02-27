@@ -15,3 +15,4 @@ pub mod core;
 pub mod model;
 pub mod policies;
 pub(crate) mod ports;
+pub(crate) mod schema_support;

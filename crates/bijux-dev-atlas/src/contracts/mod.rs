@@ -774,4 +774,168 @@ mod tests {
         assert_eq!(report.total_tests(), 1);
         assert_eq!(report.fail_count(), 1);
     }
+
+    #[test]
+    fn wildcard_filters_contract_and_test_ids() {
+        fn pass_case(_: &RunContext) -> TestResult {
+            TestResult::Pass
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![
+                Contract {
+                    id: ContractId("OPS-ROOT-001".to_string()),
+                    title: "root",
+                    tests: vec![
+                        TestCase {
+                            id: TestId("ops.root.surface.allowed".to_string()),
+                            title: "allowed",
+                            kind: TestKind::Pure,
+                            run: pass_case,
+                        },
+                        TestCase {
+                            id: TestId("ops.root.surface.extra".to_string()),
+                            title: "extra",
+                            kind: TestKind::Pure,
+                            run: pass_case,
+                        },
+                    ],
+                },
+                Contract {
+                    id: ContractId("OPS-INV-001".to_string()),
+                    title: "inventory",
+                    tests: vec![TestCase {
+                        id: TestId("ops.inventory.registry.exists".to_string()),
+                        title: "exists",
+                        kind: TestKind::Pure,
+                        run: pass_case,
+                    }],
+                },
+            ])
+        }
+        let options = RunOptions {
+            mode: Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 30,
+            fail_fast: false,
+            contract_filter: Some("OPS-ROOT-*".to_string()),
+            test_filter: Some("ops.root.surface.allow*".to_string()),
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("ops", registry, Path::new("."), &options).expect("run");
+        assert_eq!(report.total_contracts(), 1);
+        assert_eq!(report.total_tests(), 1);
+        assert_eq!(report.contracts[0].id, "OPS-ROOT-001");
+        assert_eq!(report.cases[0].test_id, "ops.root.surface.allowed");
+    }
+
+    #[test]
+    fn run_sorts_contracts_and_tests_deterministically() {
+        fn pass_case(_: &RunContext) -> TestResult {
+            TestResult::Pass
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![
+                Contract {
+                    id: ContractId("OPS-ROOT-002".to_string()),
+                    title: "second",
+                    tests: vec![
+                        TestCase {
+                            id: TestId("ops.root.beta".to_string()),
+                            title: "beta",
+                            kind: TestKind::Pure,
+                            run: pass_case,
+                        },
+                        TestCase {
+                            id: TestId("ops.root.alpha".to_string()),
+                            title: "alpha",
+                            kind: TestKind::Pure,
+                            run: pass_case,
+                        },
+                    ],
+                },
+                Contract {
+                    id: ContractId("OPS-ROOT-001".to_string()),
+                    title: "first",
+                    tests: vec![TestCase {
+                        id: TestId("ops.root.first".to_string()),
+                        title: "first",
+                        kind: TestKind::Pure,
+                        run: pass_case,
+                    }],
+                },
+            ])
+        }
+        let options = RunOptions {
+            mode: Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            skip_missing_tools: false,
+            timeout_seconds: 30,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("ops", registry, Path::new("."), &options).expect("run");
+        assert_eq!(report.contracts[0].id, "OPS-ROOT-001");
+        assert_eq!(report.contracts[1].id, "OPS-ROOT-002");
+        let second_contract_tests = report
+            .cases
+            .iter()
+            .filter(|case| case.contract_id == "OPS-ROOT-002")
+            .map(|case| case.test_id.as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            second_contract_tests,
+            vec!["ops.root.alpha", "ops.root.beta"]
+        );
+    }
+
+    #[test]
+    fn fail_exit_code_is_two_and_error_exit_code_is_one() {
+        let fail_report = RunReport {
+            domain: "ops".to_string(),
+            mode: Mode::Static,
+            contracts: vec![ContractSummary {
+                id: "OPS-ROOT-001".to_string(),
+                title: "fail".to_string(),
+                status: CaseStatus::Fail,
+            }],
+            cases: vec![CaseReport {
+                contract_id: "OPS-ROOT-001".to_string(),
+                contract_title: "fail".to_string(),
+                test_id: "ops.root.fail".to_string(),
+                test_title: "fail".to_string(),
+                kind: TestKind::Pure,
+                status: CaseStatus::Fail,
+                violations: Vec::new(),
+                note: None,
+            }],
+        };
+        let error_report = RunReport {
+            domain: "ops".to_string(),
+            mode: Mode::Static,
+            contracts: vec![ContractSummary {
+                id: "OPS-ROOT-002".to_string(),
+                title: "error".to_string(),
+                status: CaseStatus::Error,
+            }],
+            cases: vec![CaseReport {
+                contract_id: "OPS-ROOT-002".to_string(),
+                contract_title: "error".to_string(),
+                test_id: "ops.root.error".to_string(),
+                test_title: "error".to_string(),
+                kind: TestKind::Pure,
+                status: CaseStatus::Error,
+                violations: Vec::new(),
+                note: Some("panic".to_string()),
+            }],
+        };
+        assert_eq!(fail_report.exit_code(), 2);
+        assert_eq!(error_report.exit_code(), 1);
+    }
 }

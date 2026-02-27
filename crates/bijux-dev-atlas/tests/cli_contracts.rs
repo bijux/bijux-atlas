@@ -30,6 +30,35 @@ fn contracts_ops_list_includes_tests_by_default() {
 }
 
 #[test]
+fn contracts_ops_list_contains_curated_contract_ids() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--list", "--format", "json"])
+        .output()
+        .expect("contracts ops list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let ids = payload["contracts"]
+        .as_array()
+        .expect("contracts array")
+        .iter()
+        .filter_map(|row| row["id"].as_str())
+        .collect::<std::collections::BTreeSet<_>>();
+    for expected in [
+        "OPS-ROOT-001",
+        "OPS-INV-001",
+        "OPS-SCHEMA-001",
+        "OPS-STACK-001",
+    ] {
+        assert!(
+            ids.contains(expected),
+            "missing curated contract id {expected}"
+        );
+    }
+}
+
+#[test]
 fn contracts_ops_supports_junit_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
@@ -132,6 +161,61 @@ fn contracts_ops_ci_requires_artifacts_root() {
     assert!(!output.status.success());
     let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
     assert!(stderr.contains("CI contracts runs require --artifacts-root"));
+}
+
+#[test]
+fn contracts_ops_json_report_matches_schema() {
+    let artifacts_root = repo_root().join("artifacts/tests/contracts-json-schema");
+    fs::create_dir_all(&artifacts_root).expect("mkdir artifacts");
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "contracts",
+            "ops",
+            "--mode",
+            "static",
+            "--filter-contract",
+            "OPS-ROOT-001",
+            "--format",
+            "json",
+            "--artifacts-root",
+            artifacts_root.to_str().expect("artifacts root"),
+        ])
+        .output()
+        .expect("contracts ops json report");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["schema_version"].as_u64(), Some(1));
+    assert_eq!(payload["domain"].as_str(), Some("ops"));
+    assert_eq!(payload["mode"].as_str(), Some("static"));
+    assert!(payload["summary"]["contracts"].as_u64().is_some());
+    assert!(payload["summary"]["tests"].as_u64().is_some());
+    let contracts = payload["contracts"].as_array().expect("contracts array");
+    assert_eq!(contracts.len(), 1);
+    assert_eq!(contracts[0]["id"].as_str(), Some("OPS-ROOT-001"));
+    assert!(matches!(
+        contracts[0]["status"].as_str(),
+        Some("PASS" | "FAIL" | "SKIP" | "ERROR")
+    ));
+    let tests = payload["tests"].as_array().expect("tests array");
+    assert!(!tests.is_empty());
+    for case in tests {
+        assert!(case["contract_id"].as_str().is_some());
+        assert!(case["contract_title"].as_str().is_some());
+        assert!(case["test_id"].as_str().is_some());
+        assert!(case["test_title"].as_str().is_some());
+        assert!(matches!(
+            case["kind"].as_str(),
+            Some("pure" | "subprocess" | "network")
+        ));
+        assert!(matches!(
+            case["status"].as_str(),
+            Some("PASS" | "FAIL" | "SKIP" | "ERROR")
+        ));
+        assert!(case["note"].is_string() || case["note"].is_null());
+        assert!(case["violations"].as_array().is_some());
+    }
 }
 
 #[test]

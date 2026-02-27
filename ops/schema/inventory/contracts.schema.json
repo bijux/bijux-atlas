@@ -6,7 +6,8 @@
     "schema_version",
     "role",
     "generated_from",
-    "contracts"
+    "contracts",
+    "contract_ids"
   ],
   "properties": {
     "schema_version": {
@@ -48,6 +49,14 @@
             ]
           }
         }
+      }
+    },
+    "contract_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^OPS-(?:[A-Z0-9]+(?:-[A-Z0-9]+)*-)?\\d{3}$"
       }
     }
   },

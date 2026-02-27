@@ -566,6 +566,24 @@ fn test_ops_inv_debt_001_debt_list_exists_and_complete(ctx: &RunContext) -> Test
             Some("ops/inventory/contract-debt.json".to_string()),
         )]);
     };
+    if let Err(errors) = crate::schema_support::require_object_keys(
+        &payload,
+        &["schema_version", "items"],
+    ) {
+        return TestResult::Fail(
+            errors
+                .into_iter()
+                .map(|message| {
+                    violation(
+                        contract_id,
+                        test_id,
+                        &format!("contract debt registry is structurally incomplete: {message}"),
+                        Some("ops/inventory/contract-debt.json".to_string()),
+                    )
+                })
+                .collect(),
+        );
+    }
     let mut violations = Vec::new();
     let mut ids = BTreeSet::new();
     for item in items {
