@@ -9,11 +9,13 @@
       "datasets",
       "docs",
       "e2e",
+      "evidence",
       "inventory",
       "k8s",
       "load",
       "observe",
       "report",
+      "runbook",
       "schema",
       "stack"
     ],
@@ -116,6 +118,24 @@
           "online"
         ],
         "verb": "smoke"
+      },
+      {
+        "domain": "evidence",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "collect"
+      },
+      {
+        "domain": "evidence",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "verify"
       },
       {
         "domain": "inventory",
@@ -363,6 +383,15 @@
           "offline"
         ],
         "verb": "readiness"
+      },
+      {
+        "domain": "runbook",
+        "subverb": null,
+        "tags": [
+          "fast",
+          "offline"
+        ],
+        "verb": "generate"
       },
       {
         "domain": "schema",

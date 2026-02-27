@@ -2,9 +2,9 @@
 
 use crate::cli::OpsInstallArgs;
 use crate::cli::{
-    OpsDatasetsCommand, OpsE2eCommand, OpsInventoryCommand, OpsK8sCommand, OpsLoadBaselineCommand,
-    OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsReportCommand, OpsSchemaCommand,
-    OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
+    OpsDatasetsCommand, OpsE2eCommand, OpsEvidenceCommand, OpsInventoryCommand, OpsK8sCommand,
+    OpsLoadBaselineCommand, OpsLoadCommand, OpsObsCommand, OpsObsDrillCommand, OpsReportCommand,
+    OpsSchemaCommand, OpsStackCommand, OpsSuiteCommand, OpsToolsCommand,
 };
 use crate::ops_support::{
     build_ops_run_report, load_load_manifest, load_stack_manifest, load_stack_pins,
@@ -212,6 +212,16 @@ pub(crate) fn run_ops_command(quiet: bool, debug: bool, command: OpsCommand) -> 
             },
             OpsReportCommand::Bundle(common) => OpsCommand::Explain {
                 action: "report-bundle".to_string(),
+                common,
+            },
+        },
+        OpsCommand::Evidence { command } => match command {
+            OpsEvidenceCommand::Collect(common) => OpsCommand::Explain {
+                action: "evidence-collect".to_string(),
+                common,
+            },
+            OpsEvidenceCommand::Verify(common) => OpsCommand::Explain {
+                action: "evidence-verify".to_string(),
                 common,
             },
         },

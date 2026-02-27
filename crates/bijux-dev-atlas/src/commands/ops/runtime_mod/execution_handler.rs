@@ -511,6 +511,50 @@ pub(super) fn dispatch_execution(
                 )?;
                 Ok((rendered, 0))
             }
+            OpsGenerateCommand::Runbook { check, common } => {
+                let repo_root = resolve_repo_root(common.repo_root.clone())?;
+                let run_id = run_id_or_default(common.run_id.clone())?;
+                let fs_adapter = OpsFs::new(repo_root.clone(), repo_root.join("ops"));
+                let source_rel = "ops/RUNBOOK_GENERATION_FROM_GRAPH.md";
+                let source_text = std::fs::read_to_string(repo_root.join(source_rel))
+                    .map_err(|err| format!("failed to read {source_rel}: {err}"))?;
+                let payload = serde_json::json!({
+                    "schema_version": 1,
+                    "run_id": run_id.as_str(),
+                    "generator": "ops generate runbook",
+                    "source": source_rel,
+                    "source_sha256": sha256_hex(&source_text),
+                    "status": "pass"
+                });
+                if check {
+                    let rendered = emit_payload(
+                        common.format,
+                        common.out.clone(),
+                        &serde_json::json!({
+                            "schema_version": 1,
+                            "text": "runbook generation contract is present",
+                            "rows": [payload],
+                            "summary": {"total": 1, "errors": 0, "warnings": 0}
+                        }),
+                    )?;
+                    Ok((rendered, 0))
+                } else {
+                    let out = fs_adapter
+                        .write_artifact_json(&run_id, "generate/runbook.index.json", &payload)
+                        .map_err(|e| e.to_stable_message())?;
+                    let rendered = emit_payload(
+                        common.format,
+                        common.out.clone(),
+                        &serde_json::json!({
+                            "schema_version": 1,
+                            "text": format!("generated runbook index artifact at {}", out.display()),
+                            "rows": [payload],
+                            "summary": {"total": 1, "errors": 0, "warnings": 0}
+                        }),
+                    )?;
+                    Ok((rendered, 0))
+                }
+            }
         },
         OpsCommand::Stack { .. }
         | OpsCommand::K8s { .. }

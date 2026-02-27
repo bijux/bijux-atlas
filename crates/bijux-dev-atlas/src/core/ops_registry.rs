@@ -185,6 +185,18 @@ pub fn builtin_ops_registry() -> Vec<OpsCommandSpec> {
             tags: &[OpsTag::Fast, OpsTag::Offline],
         },
         OpsCommandSpec {
+            domain: "evidence",
+            verb: "collect",
+            subverb: None,
+            tags: &[OpsTag::Fast, OpsTag::Offline],
+        },
+        OpsCommandSpec {
+            domain: "evidence",
+            verb: "verify",
+            subverb: None,
+            tags: &[OpsTag::Fast, OpsTag::Offline],
+        },
+        OpsCommandSpec {
             domain: "datasets",
             verb: "list",
             subverb: None,
@@ -319,6 +331,12 @@ pub fn builtin_ops_registry() -> Vec<OpsCommandSpec> {
         OpsCommandSpec {
             domain: "report",
             verb: "bundle",
+            subverb: None,
+            tags: &[OpsTag::Fast, OpsTag::Offline],
+        },
+        OpsCommandSpec {
+            domain: "runbook",
+            verb: "generate",
             subverb: None,
             tags: &[OpsTag::Fast, OpsTag::Offline],
         },

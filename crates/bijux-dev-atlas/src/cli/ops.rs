@@ -50,6 +50,10 @@ pub enum OpsCommand {
         #[command(name = "report", subcommand)]
         command: OpsReportCommand,
     },
+    Evidence {
+        #[command(subcommand)]
+        command: OpsEvidenceCommand,
+    },
     Tools {
         #[command(subcommand)]
         command: OpsToolsCommand,
@@ -286,6 +290,12 @@ pub enum OpsReportCommand {
 }
 
 #[derive(Subcommand, Debug, Clone)]
+pub enum OpsEvidenceCommand {
+    Collect(OpsCommonArgs),
+    Verify(OpsCommonArgs),
+}
+
+#[derive(Subcommand, Debug, Clone)]
 pub enum OpsToolsCommand {
     List(OpsCommonArgs),
     Verify(OpsCommonArgs),
@@ -351,6 +361,12 @@ pub enum OpsGenerateCommand {
         check: bool,
         #[arg(long, default_value_t = false)]
         write_example: bool,
+        #[command(flatten)]
+        common: OpsCommonArgs,
+    },
+    Runbook {
+        #[arg(long, default_value_t = false)]
+        check: bool,
         #[command(flatten)]
         common: OpsCommonArgs,
     },
