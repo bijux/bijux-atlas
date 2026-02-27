@@ -354,6 +354,11 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                     Ok(_) => Vec::new(),
                     Err(err) => vec![err],
                 };
+            let effective_config_snapshot = repo_root
+                .join("crates/bijux-atlas-server/docs/generated/effective-config.snapshot.json");
+            let effective_config_hash = std::fs::read(&effective_config_snapshot)
+                .ok()
+                .map(|bytes| sha256_hex(&String::from_utf8_lossy(&bytes)));
             let report = serde_json::json!({
                 "schema_version": 1,
                 "kind": "ops_report",
@@ -361,6 +366,8 @@ pub(super) fn dispatch_core(command: OpsCommand, debug: bool) -> Result<(String,
                 "repo_root": repo_root.display().to_string(),
                 "inventory_summary": summary,
                 "inventory_errors": inventory_errors,
+                "effective_config_snapshot": effective_config_snapshot.display().to_string(),
+                "effective_config_hash": effective_config_hash,
                 "capabilities": {
                     "fs_write": common.allow_write,
                     "subprocess": common.allow_subprocess
