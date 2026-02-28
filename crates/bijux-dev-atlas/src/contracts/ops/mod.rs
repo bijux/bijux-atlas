@@ -23,6 +23,8 @@ const DOMAIN_DIRS: &[&str] = &[
     "stack",
 ];
 
+mod common;
+
 fn violation(contract_id: &str, test_id: &str, message: &str, file: Option<String>) -> Violation {
     Violation {
         contract_id: contract_id.to_string(),
@@ -38,26 +40,8 @@ fn ops_root(repo_root: &Path) -> PathBuf {
     repo_root.join("ops")
 }
 
-fn sorted_dir_entries(root: &Path) -> Vec<PathBuf> {
-    let Ok(entries) = std::fs::read_dir(root) else {
-        return Vec::new();
-    };
-    let mut paths = entries
-        .flatten()
-        .map(|entry| entry.path())
-        .collect::<Vec<_>>();
-    paths.sort();
-    paths
-}
-
 fn walk_files(root: &Path, out: &mut Vec<PathBuf>) {
-    for path in sorted_dir_entries(root) {
-        if path.is_dir() {
-            walk_files(&path, out);
-        } else {
-            out.push(path);
-        }
-    }
+    common::walk_files(root, out)
 }
 
 fn rel_to_root(path: &Path, repo_root: &Path) -> String {
@@ -69,8 +53,7 @@ fn rel_to_root(path: &Path, repo_root: &Path) -> String {
 }
 
 fn read_json(path: &Path) -> Option<Value> {
-    let content = std::fs::read_to_string(path).ok()?;
-    serde_json::from_str(&content).ok()
+    common::read_json(path)
 }
 
 fn markdown_line_count(path: &Path) -> usize {
