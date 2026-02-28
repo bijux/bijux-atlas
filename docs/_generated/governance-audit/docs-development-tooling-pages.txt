@@ -1,4 +1,4 @@
-docs/development/tooling/INDEX.md
+docs/development/tooling/index.md
 docs/development/tooling/build-outputs.md
 docs/development/tooling/command-inventory.md
 docs/development/tooling/compat-matrix.md

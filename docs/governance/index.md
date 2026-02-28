@@ -1,6 +1,7 @@
 # Governance
 
 Governance defines documentation policy, review rules, ownership, and decision records.
+This section is contributor-facing and not part of the primary reader spine.
 
 ## Start here
 
@@ -11,4 +12,6 @@ Governance defines documentation policy, review rules, ownership, and decision r
 - [Naming Standard](naming.md)
 - [Style Guide](style-guide.md)
 - [Docs Review Checklist](docs-review-checklist.md)
+- [Docs Removal Policy](docs-removal-policy.md)
+- [Generated Content Policy](generated-content-policy.md)
 - [ADRs](adrs/index.md)

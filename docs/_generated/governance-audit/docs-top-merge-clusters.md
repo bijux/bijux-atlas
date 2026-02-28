@@ -3,15 +3,15 @@
 Owner: `docs-governance`  
 Reason to exist: define consolidation units that collapse duplicate narratives into canonical pages.
 
-1. Start surfaces: `docs/start-here.md` <= `docs/start/INDEX.md`, `docs/root/START_HERE.md`, `docs/quickstart/INDEX.md`
+1. Start surfaces: `docs/start-here.md` <= `docs/start-here.md`, `docs/root/start-here.md`, `docs/start-here.md`
 2. Product identity: `docs/product/index.md` <= `docs/PROJECT_IDENTITY.md`, `docs/PROJECT_DESCRIPTION_SNIPPET.md`
-3. Glossary: `docs/glossary.md` <= `docs/root/GLOSSARY.md`, `docs/operations/slo/GLOSSARY.md`, `docs/_style/terms-glossary.md`
+3. Glossary: `docs/glossary.md` <= `docs/root/glossary.md`, `docs/operations/slo/GLOSSARY.md`, `docs/_style/terms-glossary.md`
 4. Governance style: `docs/governance/style-guide.md` <= `docs/style.md`, `docs/_style/style-guide.md`
 5. Review checklist: `docs/governance/docs-review-checklist.md` <= `docs/_style/docs-review-checklist.md`
 6. Removal policy: `docs/governance/docs-removal-policy.md` <= `docs/_style/docs-removal-policy.md`
 7. Decision templates: `docs/governance/decision-template.md` <= `docs/architecture/decision-template.md`, `docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md`
 8. Architecture map: `docs/architecture/architecture-map.md` <= `docs/architecture/repo-overview.md`, `docs/architecture/system-graph.md`
-9. Boundaries: `docs/architecture/boundaries.md` <= `docs/architecture/boundary-maps.md`, `docs/architecture/layering/INDEX.md`
+9. Boundaries: `docs/architecture/boundaries.md` <= `docs/architecture/boundary-maps.md`, `docs/architecture/layering/index.md`
 10. Effects: `docs/architecture/effects.md` <= `docs/architecture/scripting.md`, `docs/architecture/no-layer-fixups.md`
 11. API errors: `docs/api/errors.md` narrative + `docs/reference/errors.md` table, absorb `docs/contracts/errors.md`
 12. API compatibility: `docs/api/compatibility.md` <= `docs/contracts/compatibility.md`

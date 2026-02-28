@@ -1,6 +1,6 @@
 source,link
 "docs/_style/CONCEPT_REGISTRY.md","../_generated/concepts.md"
-"docs/development/tooling/INDEX.md","control-plane-transition-rationale.md"
+"docs/development/tooling/index.md","control-plane-transition-rationale.md"
 "docs/contracts/contracts-index.md","../_generated/contracts/ERROR_CODES.md"
 "docs/contracts/contracts-index.md","../_generated/contracts/ERROR_SCHEMA.md"
 "docs/contracts/contracts-index.md","../_generated/contracts/ERROR_STATUS_MAP.md"
@@ -17,7 +17,7 @@ source,link
 "docs/contracts/contracts-index.md","../_generated/contracts/DIFF_SCHEMA.md"
 "docs/contracts/contracts-index.md","../_generated/contracts/SHARDING_SCHEMA.md"
 "docs/contracts/contracts-index.md","../_generated/contracts/CURSOR_SCHEMA.md"
-"docs/start/INDEX.md","../START_HERE.md"
+"docs/start-here.md","../start-here.md"
 "docs/operations/observability/trace-sampling-policy.md","../../_generated/contracts/POLICY_SCHEMA.md"
-"docs/operations/observability/INDEX.md","../../_generated/observability-surface.md"
+"docs/operations/observability/index.md","../../_generated/observability-surface.md"
 "docs/reference/evolution/sharding.md","../../_generated/contracts/SHARDING_SCHEMA.md"

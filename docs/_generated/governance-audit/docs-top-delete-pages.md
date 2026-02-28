@@ -3,16 +3,16 @@
 Owner: `docs-governance`  
 Reason to exist: identify high-confidence deletions that reduce duplication and navigation drift.
 
-1. `docs/start/INDEX.md`
-2. `docs/root/INDEX.md`
-3. `docs/root/START_HERE.md`
+1. `docs/start-here.md`
+2. `docs/root/index.md`
+3. `docs/root/start-here.md`
 4. `docs/root/ARCHITECTURE_OVERVIEW.md`
 5. `docs/root/COMMANDS_REFERENCE.md`
 6. `docs/root/COMMAND_INDEX.md`
 7. `docs/root/CONFIGS_OVERVIEW.md`
 8. `docs/root/CONTROL_PLANE_OVERVIEW.md`
 9. `docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md`
-10. `docs/root/GLOSSARY.md`
+10. `docs/root/glossary.md`
 11. `docs/root/GLOSSARY_CROSSLINKS.md`
 12. `docs/root/NAVIGATION_POLICY.md`
 13. `docs/root/OPS_OVERVIEW.md`
@@ -29,7 +29,7 @@ Reason to exist: identify high-confidence deletions that reduce duplication and 
 24. `docs/_style/docs-removal-policy.md`
 25. `docs/_style/style-guide.md`
 26. `docs/_style/terms-glossary.md`
-27. `docs/_style/INDEX.md`
-28. `docs/quickstart/INDEX.md`
+27. `docs/_style/index.md`
+28. `docs/start-here.md`
 29. `docs/quickstart/ops-local-full.md`
 30. `docs/quickstart/client-sdk-examples.md`

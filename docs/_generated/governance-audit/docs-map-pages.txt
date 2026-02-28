@@ -7,4 +7,4 @@ docs/operations/observability/runbook-dashboard-alert-map.md
 docs/operations/ops-map.md
 docs/reference/evolution/roadmap.md
 docs/reference/repo-map.md
-docs/taxonomy-map.md
+docs/governance/metadata/taxonomy-map.md

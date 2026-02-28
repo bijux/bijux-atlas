@@ -35,8 +35,8 @@ High-value duplicate clusters requiring consolidation:
 
 Index-heavy chain pages identified:
 
-- `docs/science/INDEX.md`
-- `docs/security/INDEX.md`
+- `docs/science/index.md`
+- `docs/security/index.md`
 
 These pages link only to other index pages and should be flattened into canonical section entrypoints.
 
@@ -44,7 +44,7 @@ These pages link only to other index pages and should be flattened into canonica
 
 - Broken internal links detected: `22`.
 - Source list: `docs/governance/docs-broken-links.csv`.
-- Notable stale references include missing generated contract files and old uppercase path links such as `../START_HERE.md`.
+- Notable stale references include missing generated contract files and old uppercase path links such as `../start-here.md`.
 
 ## Policy Placement Findings
 
@@ -91,7 +91,7 @@ Map-like pages detected: `10`.
 
 Concept registry surfaces:
 
-- `docs/_generated/concept-registry.json`
+- `docs/_generated/concept-governance/metadata/registry.json`
 - `docs/_generated/concept-registry.md`
 - `docs/_style/CONCEPT_REGISTRY.md`
 
