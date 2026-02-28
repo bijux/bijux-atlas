@@ -146,7 +146,7 @@ mod tests {
 
     #[test]
     fn error_contract_matches_frozen_registry() {
-        let freeze = include_str!("../../../docs/contracts/ERROR_CODES.json");
+        let freeze = include_str!("../docs/ssot/ERROR_CODES.json");
         let val: serde_json::Value = serde_json::from_str(freeze).expect("freeze json");
         let codes = val["codes"]
             .as_array()
@@ -225,7 +225,7 @@ mod tests {
             .expect("openapi paths object");
 
         let contract: serde_json::Value =
-            serde_json::from_str(include_str!("../../../docs/contracts/ENDPOINTS.json"))
+            serde_json::from_str(include_str!("../docs/ssot/API_SURFACE.json"))
                 .expect("parse endpoints contract");
         let expected = contract
             .get("endpoints")
