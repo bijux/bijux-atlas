@@ -67,10 +67,10 @@
       ]
     },
     {
-      "contract_type": "schema",
+      "contract_type": "drift",
       "enforced_by": {
         "command": "bijux dev atlas contracts configs",
-        "test_id": "configs.registry.schema_owner"
+        "test_id": "configs.registry.owner_complete"
       },
       "evidence_artifact": null,
       "id": "CFG-005",
