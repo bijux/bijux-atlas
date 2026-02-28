@@ -34,6 +34,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-021" => "Docs entrypoint pages may not contain raw tab characters.".to_string(),
         "DOC-022" => "Docs entrypoint pages may not contain trailing whitespace.".to_string(),
         "DOC-023" => "Docs entrypoint pages must contain exactly one H1 heading.".to_string(),
+        "DOC-024" => "Docs entrypoint pages may not use absolute local file links.".to_string(),
+        "DOC-025" => "Docs entrypoint pages may not use raw http links.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

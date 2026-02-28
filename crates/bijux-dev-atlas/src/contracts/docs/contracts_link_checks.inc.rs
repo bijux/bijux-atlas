@@ -131,3 +131,83 @@ fn test_docs_012_root_entrypoint_links_resolve(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_024_no_absolute_local_paths(ctx: &RunContext) -> TestResult {
+    let pages = match docs_entrypoint_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for (relative, _) in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-024",
+                    "docs.links.no_absolute_local_paths",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        for target in markdown_links(&contents) {
+            if target.starts_with("/Users/") || target.starts_with("file://") {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-024",
+                    "docs.links.no_absolute_local_paths",
+                    Some(relative.clone()),
+                    format!("absolute local file link is forbidden: {target}"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_025_no_raw_http_links(ctx: &RunContext) -> TestResult {
+    let pages = match docs_entrypoint_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for (relative, _) in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-025",
+                    "docs.links.no_raw_http",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        for target in markdown_links(&contents) {
+            if target.starts_with("http://") {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-025",
+                    "docs.links.no_raw_http",
+                    Some(relative.clone()),
+                    format!("raw http link is forbidden: {target}"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

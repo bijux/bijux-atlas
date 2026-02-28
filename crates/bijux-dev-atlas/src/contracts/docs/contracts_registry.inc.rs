@@ -281,5 +281,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_023_single_h1,
             }],
         },
+        Contract {
+            id: ContractId("DOC-024".to_string()),
+            title: "docs entrypoint pages avoid absolute local file links",
+            tests: vec![TestCase {
+                id: TestId("docs.links.no_absolute_local_paths".to_string()),
+                title: "docs entrypoint pages do not link to absolute local file paths",
+                kind: TestKind::Pure,
+                run: test_docs_024_no_absolute_local_paths,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-025".to_string()),
+            title: "docs entrypoint pages avoid raw http links",
+            tests: vec![TestCase {
+                id: TestId("docs.links.no_raw_http".to_string()),
+                title: "docs entrypoint pages do not use raw http links",
+                kind: TestKind::Pure,
+                run: test_docs_025_no_raw_http_links,
+            }],
+        },
     ])
 }
