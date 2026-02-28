@@ -9,3 +9,7 @@ Reason to exist: store governance metadata consumed by documentation validation 
 
 - `registry.json`
 - `concepts.yml`
+- `owners.json`
+- `taxonomy-map.md`
+- `front-matter.index.json`
+- `reference-canonicals.json`

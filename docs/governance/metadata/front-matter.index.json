@@ -205,7 +205,7 @@
       "area": "bijux-atlas-api",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-api/docs/INDEX.md",
+      "path": "crates/bijux-atlas-api/docs/index.md",
       "stability": "stable",
       "title": "Docs Index"
     },
@@ -413,7 +413,7 @@
       "area": "bijux-atlas-cli",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/INDEX.md",
+      "path": "crates/bijux-atlas-cli/docs/index.md",
       "stability": "stable",
       "title": "Docs Index"
     },
@@ -581,7 +581,7 @@
       "area": "bijux-atlas-core",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/INDEX.md",
+      "path": "crates/bijux-atlas-core/docs/index.md",
       "stability": "stable",
       "title": "Core Docs Index"
     },
@@ -749,7 +749,7 @@
       "area": "bijux-atlas-ingest",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/INDEX.md",
+      "path": "crates/bijux-atlas-ingest/docs/index.md",
       "stability": "stable",
       "title": "Ingest Docs Index"
     },
@@ -949,7 +949,7 @@
       "area": "bijux-atlas-model",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/INDEX.md",
+      "path": "crates/bijux-atlas-model/docs/index.md",
       "stability": "stable",
       "title": "Model Docs Index"
     },
@@ -1149,7 +1149,7 @@
       "area": "bijux-atlas-policies",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/INDEX.md",
+      "path": "crates/bijux-atlas-policies/docs/index.md",
       "stability": "stable",
       "title": "Policies Docs Index"
     },
@@ -1317,7 +1317,7 @@
       "area": "bijux-atlas-query",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/INDEX.md",
+      "path": "crates/bijux-atlas-query/docs/index.md",
       "stability": "stable",
       "title": "Query Docs Index"
     },
@@ -1501,7 +1501,7 @@
       "area": "bijux-atlas-server",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/INDEX.md",
+      "path": "crates/bijux-atlas-server/docs/index.md",
       "stability": "stable",
       "title": "Docs Index"
     },
@@ -1757,7 +1757,7 @@
       "area": "bijux-atlas-store",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/INDEX.md",
+      "path": "crates/bijux-atlas-store/docs/index.md",
       "stability": "stable",
       "title": "Store Docs Index"
     },
@@ -1989,7 +1989,7 @@
       "area": "bijux-dev-atlas",
       "audience": "contributors",
       "owner": "bijux-dev-atlas",
-      "path": "crates/bijux-dev-atlas/docs/INDEX.md",
+      "path": "crates/bijux-dev-atlas/docs/index.md",
       "stability": "stable",
       "title": "bijux-dev-atlas Docs Index"
     },
@@ -2013,7 +2013,7 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/index.md",
       "stability": "stable",
       "title": "Configs Index"
     },
@@ -2045,7 +2045,7 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/index.md",
       "stability": "stable",
       "title": "CI Config Index"
     },
@@ -2061,7 +2061,7 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/index.md",
       "stability": "stable",
       "title": "Configs Documentation Index"
     },
@@ -2149,7 +2149,7 @@
       "area": "crates",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md",
       "stability": "stable",
       "title": "Start Here"
     },
@@ -2234,10 +2234,10 @@
       "title": "Docs Contract"
     },
     {
-      "area": "START_HERE.md",
+      "area": "start-here.md",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/START_HERE.md",
+      "path": "docs/start-here.md",
       "stability": "stable",
       "title": "Start Here"
     },
@@ -2245,7 +2245,7 @@
       "area": "_assets",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/_assets/INDEX.md",
+      "path": "docs/_assets/index.md",
       "stability": "stable",
       "title": "Assets Index"
     },
@@ -2261,7 +2261,7 @@
       "area": "_assets",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/_assets/diagrams/INDEX.md",
+      "path": "docs/_assets/diagrams/index.md",
       "stability": "stable",
       "title": "Diagrams"
     },
@@ -2269,7 +2269,7 @@
       "area": "_lint",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/_lint/INDEX.md",
+      "path": "docs/_lint/index.md",
       "stability": "stable",
       "title": "_Lint Index"
     },
@@ -2301,7 +2301,7 @@
       "area": "_nav",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/_nav/INDEX.md",
+      "path": "docs/_nav/index.md",
       "stability": "stable",
       "title": "Navigation"
     },
@@ -2333,7 +2333,7 @@
       "area": "_style",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/_style/INDEX.md",
+      "path": "docs/_style/index.md",
       "stability": "stable",
       "title": "_Style Index"
     },
@@ -2429,7 +2429,7 @@
       "area": "adrs",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/adrs/INDEX.md",
+      "path": "docs/adrs/index.md",
       "stability": "stable",
       "title": "ADRs"
     },
@@ -2621,7 +2621,7 @@
       "area": "contracts",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/contracts/INDEX.md",
+      "path": "docs/contracts/index.md",
       "stability": "stable",
       "title": "Contracts SSOT"
     },
@@ -2637,7 +2637,7 @@
       "area": "contracts",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/contracts/artifacts/INDEX.md",
+      "path": "docs/contracts/artifacts/index.md",
       "stability": "stable",
       "title": "Contracts Artifacts Index"
     },
@@ -2749,7 +2749,7 @@
       "area": "contracts",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/contracts/examples/INDEX.md",
+      "path": "docs/contracts/examples/index.md",
       "stability": "stable",
       "title": "Contract JSON Examples"
     },
@@ -2789,7 +2789,7 @@
       "area": "contracts",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/contracts/plugin/INDEX.md",
+      "path": "docs/contracts/plugin/index.md",
       "stability": "stable",
       "title": "Contracts Plugin Index"
     },
@@ -2957,7 +2957,7 @@
       "area": "docs",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/docs/checks.md",
+      "path": "docs/governance/checks/docs-checks.md",
       "stability": "stable",
       "title": "Docs Checks Contract"
     },
@@ -2973,7 +2973,7 @@
       "area": "examples",
       "audience": "mixed",
       "owner": "bijux-atlas-docs",
-      "path": "docs/examples/INDEX.md",
+      "path": "docs/examples/index.md",
       "stability": "stable",
       "title": "Examples Index"
     },
@@ -3013,7 +3013,7 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/ADR-0001-workspace-boundaries-and-effects.md",
+      "path": "docs/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
       "stability": "stable",
       "title": "ADR-0001: Workspace Boundaries And Effects"
     },
@@ -3021,7 +3021,7 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/ADR-0002-sqlite-serving-store.md",
+      "path": "docs/governance/adrs/adr-0002-sqlite-serving-store.md",
       "stability": "stable",
       "title": "ADR-0002: SQLite As Canonical Serving Store"
     },
@@ -3029,7 +3029,7 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/ADR-0003-federated-registry-deterministic-merge.md",
+      "path": "docs/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
       "stability": "stable",
       "title": "ADR-0003: Federated Registry With Deterministic Merge"
     },
@@ -3037,7 +3037,7 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md",
+      "path": "docs/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
       "stability": "stable",
       "title": "ADR-0004: Plugin Contract And Umbrella Dispatch"
     },
@@ -3045,7 +3045,7 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/ADR-0005-security-defaults-and-enterprise-controls.md",
+      "path": "docs/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
       "stability": "stable",
       "title": "ADR-0005: Security Defaults And Optional Enterprise Controls"
     },
@@ -3053,7 +3053,7 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/governance/adrs/INDEX.md",
+      "path": "docs/governance/adrs/index.md",
       "stability": "stable",
       "title": "ADR Index"
     },
@@ -3269,7 +3269,7 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
-      "path": "docs/operations/e2e/INDEX.md",
+      "path": "docs/operations/e2e/index.md",
       "stability": "stable",
       "title": "E2E"
     },
@@ -3325,7 +3325,7 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
-      "path": "docs/operations/k8s/INDEX.md",
+      "path": "docs/operations/k8s/index.md",
       "stability": "stable",
       "title": "K8s"
     },
@@ -3341,7 +3341,7 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
-      "path": "docs/operations/load/INDEX.md",
+      "path": "docs/operations/load/index.md",
       "stability": "stable",
       "title": "Load"
     },
@@ -3381,7 +3381,7 @@
       "area": "operations",
       "audience": "operators",
       "owner": "docs-governance",
-      "path": "docs/operations/observability/INDEX.md",
+      "path": "docs/operations/observability/index.md",
       "stability": "stable",
       "title": "Observability"
     },
@@ -3613,7 +3613,7 @@
       "area": "policies",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/policies/checks.md",
+      "path": "docs/governance/policies/checks.md",
       "stability": "stable",
       "title": "Policies Checks Contract"
     },
@@ -3725,7 +3725,7 @@
       "area": "quickstart",
       "audience": "mixed",
       "owner": "docs-governance",
-      "path": "docs/quickstart/INDEX.md",
+      "path": "docs/start-here.md",
       "stability": "stable",
       "title": "Quickstart"
     },
@@ -3925,7 +3925,7 @@
       "area": "release",
       "audience": "reviewers",
       "owner": "docs-governance",
-      "path": "docs/release/INDEX.md",
+      "path": "docs/operations/release/index.md",
       "stability": "stable",
       "title": "Release Index"
     },
@@ -4037,7 +4037,7 @@
       "area": "root",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/root/FAQ.md",
+      "path": "docs/root/faq.md",
       "stability": "stable",
       "title": "FAQ"
     },
@@ -4045,7 +4045,7 @@
       "area": "root",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/root/GLOSSARY.md",
+      "path": "docs/root/glossary.md",
       "stability": "stable",
       "title": "Glossary"
     },
@@ -4061,7 +4061,7 @@
       "area": "root",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/root/INDEX.md",
+      "path": "docs/root/index.md",
       "stability": "stable",
       "title": "Root Documentation Map"
     },
@@ -4173,7 +4173,7 @@
       "area": "science",
       "audience": "mixed",
       "owner": "docs-governance",
-      "path": "docs/science/INDEX.md",
+      "path": "docs/science/index.md",
       "stability": "evolving",
       "title": "Science Index"
     },
@@ -4181,7 +4181,7 @@
       "area": "security",
       "audience": "mixed",
       "owner": "docs-governance",
-      "path": "docs/security/INDEX.md",
+      "path": "docs/security/index.md",
       "stability": "stable",
       "title": "Security Index"
     },
@@ -4189,15 +4189,15 @@
       "area": "start",
       "audience": "mixed",
       "owner": "docs-governance",
-      "path": "docs/start/INDEX.md",
+      "path": "docs/start-here.md",
       "stability": "stable",
       "title": "Start"
     },
     {
-      "area": "taxonomy-map.md",
+      "area": "governance/metadata/taxonomy-map.md",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/taxonomy-map.md",
+      "path": "docs/governance/metadata/taxonomy-map.md",
       "stability": "stable",
       "title": "Docs Taxonomy Map"
     },
@@ -4395,5 +4395,5 @@
     }
   ],
   "schema_version": "v1",
-  "source": "docs/registry.json"
+  "source": "docs/governance/metadata/registry.json"
 }
