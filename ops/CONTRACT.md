@@ -97,6 +97,7 @@
 | `OPS-LOAD-E-001` | load effect k6 execution contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-LOAD-E-002` | load effect thresholds report contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-LOAD-E-003` | load effect baseline comparison contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-META-001` | ops contracts map each contract id to a source file path | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-OBS-001` | observability alert rules contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-OBS-002` | observability dashboard golden contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-OBS-003` | observability telemetry golden profile contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
@@ -265,6 +266,7 @@
 | `OPS-LOAD-E-001` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-LOAD-E-002` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-LOAD-E-003` | `bijux dev atlas contracts ops --mode effect` |
+| `OPS-META-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-OBS-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-OBS-002` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-OBS-003` | `bijux dev atlas contracts ops --mode static` |

@@ -145,42 +145,51 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
     rows.sort_by_key(|c| c.id.0.clone());
     let mut out = String::new();
     out.push_str("# Ops Contract\n\n");
-    out.push_str("- Owner: `bijux-atlas-operations`\n");
-    out.push_str("- Enforced by: `bijux dev atlas contracts ops`\n\n");
-    out.push_str("## Naming\n\n");
-    out.push_str("- Contract ID: `OPS-<PILLAR>-NNN`\n");
-    out.push_str("- Test ID: `ops.<pillar>.<topic>[.<name>]`\n\n");
-    out.push_str("## Contract Registry\n\n");
-
-    let mut by_pillar: BTreeMap<String, Vec<&Contract>> = BTreeMap::new();
+    out.push_str("## Scope\n\n");
+    out.push_str("- Governed surface: `ops/` and `ops/CONTRACT.md`.\n");
+    out.push_str("- SSOT = bijux-dev-atlas contracts runner.\n");
+    out.push_str("- Effects boundary: effect contracts require explicit runtime opt-in flags.\n");
+    out.push_str("- Non-goals:\n");
+    out.push_str("- This document does not replace executable contract checks.\n");
+    out.push_str("- This document does not grant manual exception authority.\n\n");
+    out.push_str("## Contract IDs\n\n");
+    out.push_str("| ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |\n");
+    out.push_str("| --- | --- | --- | --- | --- | --- |\n");
     for contract in &rows {
-        let pillar = classify_contract_pillar(&contract.id.0).unwrap_or("unclassified");
-        by_pillar
-            .entry(pillar.to_string())
-            .or_default()
-            .push(contract);
+        let mode = if contract.id.0.contains("-E-") {
+            "effect"
+        } else {
+            "static"
+        };
+        out.push_str(&format!(
+            "| `{}` | {} | `high` | `{}` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |\n",
+            contract.id.0, contract.title, mode
+        ));
     }
-
-    for (pillar, contracts) in by_pillar {
-        out.push_str(&format!("### Pillar: {pillar}\n\n"));
-        for contract in contracts {
-            out.push_str(&format!("#### {} {}\n\n", contract.id.0, contract.title));
-            out.push_str("Tests:\n");
-            for case in &contract.tests {
-                let mode = match case.kind {
-                    TestKind::Pure => "static",
-                    TestKind::Subprocess | TestKind::Network => "effect",
-                };
-                out.push_str(&format!(
-                    "- `{}` ({mode}, {:?}): {}\n",
-                    case.id.0, case.kind, case.title
-                ));
-            }
-            out.push('\n');
-        }
+    out.push('\n');
+    out.push_str("## Enforcement mapping\n\n");
+    out.push_str("| Contract | Command(s) |\n");
+    out.push_str("| --- | --- |\n");
+    for contract in &rows {
+        let mode = if contract.id.0.contains("-E-") {
+            "--mode effect"
+        } else {
+            "--mode static"
+        };
+        out.push_str(&format!(
+            "| `{}` | `bijux dev atlas contracts ops {}` |\n",
+            contract.id.0, mode
+        ));
     }
-    out.push_str("## Rule\n\n");
-    out.push_str("- Contract ID or test ID missing from this document means it does not exist.\n");
+    out.push('\n');
+    out.push_str("## Output artifacts\n\n");
+    out.push_str("- `artifacts/contracts/ops/report.json`\n");
+    out.push_str("- `artifacts/contracts/ops/registry-snapshot.json`\n\n");
+    out.push_str("## Contract to Gate mapping\n\n");
+    out.push_str("- Gate: `contracts::ops`\n");
+    out.push_str("- Aggregate gate: `contracts::all`\n\n");
+    out.push_str("## Exceptions policy\n\n");
+    out.push_str("- No exceptions are allowed by this document.\n");
     Ok(out)
 }
 

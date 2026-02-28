@@ -2,6 +2,7 @@
 
 fn pillar_contracts() -> Vec<Contract> {
     let mut rows = Vec::new();
+    rows.extend(meta_contracts());
     rows.extend(datasets_contracts());
     rows.extend(e2e_contracts());
     rows.extend(env_contracts());

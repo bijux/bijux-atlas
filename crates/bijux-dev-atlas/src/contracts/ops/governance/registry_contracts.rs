@@ -24,6 +24,9 @@ fn normalize_title_for_compare(title: &str) -> String {
 }
 
 fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
+    if contract_id.starts_with("OPS-META-") {
+        return Some("inventory");
+    }
     if contract_id.starts_with("OPS-ROOT-") {
         return Some("root-surface");
     }
@@ -58,6 +61,105 @@ fn classify_contract_pillar(contract_id: &str) -> Option<&'static str> {
         return Some("report");
     }
     None
+}
+
+fn contract_source_path_for_id(contract_id: &str) -> Option<&'static str> {
+    if contract_id.starts_with("OPS-META-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/governance/registry_contracts.rs");
+    }
+    if contract_id.starts_with("OPS-ROOT-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/root/mod.rs");
+    }
+    if contract_id.starts_with("OPS-INV-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/inventory/mod.rs");
+    }
+    if contract_id.starts_with("OPS-SCHEMA-") || contract_id.starts_with("OPS-REPORT-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/reporting/mod.rs");
+    }
+    if contract_id.starts_with("OPS-DATASETS-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/datasets/mod.rs");
+    }
+    if contract_id.starts_with("OPS-E2E-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/e2e/mod.rs");
+    }
+    if contract_id.starts_with("OPS-ENV-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/environment/mod.rs");
+    }
+    if contract_id.starts_with("OPS-STACK-") || contract_id.starts_with("OPS-K8S-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/platform/mod.rs");
+    }
+    if contract_id.starts_with("OPS-LOAD-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/load/mod.rs");
+    }
+    if contract_id.starts_with("OPS-OBS-") {
+        return Some("crates/bijux-dev-atlas/src/contracts/ops/observe/mod.rs");
+    }
+    None
+}
+
+fn test_ops_meta_001_contract_source_path_mapping(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-META-001";
+    let test_id = "ops.meta.contract_source_path_mapping";
+    let rows = match contracts(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                &format!("load contracts failed: {err}"),
+                Some("ops".to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for row in rows {
+        let Some(source_path) = contract_source_path_for_id(&row.id.0) else {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "contract id must map to a source path under crates/bijux-dev-atlas/src/contracts/ops",
+                Some(row.id.0),
+            ));
+            continue;
+        };
+        let full = ctx.repo_root.join(source_path);
+        if !full.exists() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "mapped source file does not exist",
+                Some(format!("{} -> {}", row.id.0, source_path)),
+            ));
+            continue;
+        }
+        let normalized = source_path.replace('\\', "/");
+        if !normalized.starts_with("crates/bijux-dev-atlas/src/contracts/ops/") {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "mapped source path must stay within ops contracts source tree",
+                Some(format!("{} -> {}", row.id.0, source_path)),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn meta_contracts() -> Vec<Contract> {
+    vec![Contract {
+        id: ContractId("OPS-META-001".to_string()),
+        title: "ops contracts map each contract id to a source file path",
+        tests: vec![TestCase {
+            id: TestId("ops.meta.contract_source_path_mapping".to_string()),
+            title: "every ops contract id maps to an existing source file path under ops contracts",
+            kind: TestKind::Pure,
+            run: test_ops_meta_001_contract_source_path_mapping,
+        }],
+    }]
 }
 
 fn budget_pillar_label(classified_pillar: &str) -> &str {

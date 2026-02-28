@@ -812,6 +812,15 @@
     },
     {
       "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-META-001",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.inventory"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-OBS-001",
       "effects_required": [],
       "gate_ids": [
