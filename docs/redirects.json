@@ -42,5 +42,18 @@
   "docs/reference/contracts/artifacts/directory-contract.md": "docs/reference/contracts/artifacts/index.md",
   "docs/reference/contracts/artifacts/manifest-contract.md": "docs/reference/contracts/artifacts/index.md",
   "docs/reference/contracts/artifacts/sqlite-schema-contract.md": "docs/reference/contracts/artifacts/index.md",
-  "docs/reference/contracts/artifacts/sqlite-schema-evolution-strategy.md": "docs/reference/contracts/artifacts/index.md"
+  "docs/reference/contracts/artifacts/sqlite-schema-evolution-strategy.md": "docs/reference/contracts/artifacts/index.md",
+  "docs/examples/index.md": "docs/reference/examples/index.md",
+  "docs/examples/catalog-example.md": "docs/reference/examples/catalog-example.md",
+  "docs/security/index.md": "docs/operations/security/index.md",
+  "docs/science/index.md": "docs/product/index.md",
+  "docs/control-plane/index.md": "docs/development/control-plane.md",
+  "docs/control-plane/contracts.md": "docs/development/control-plane.md",
+  "docs/control-plane/ops-boundary.md": "docs/development/control-plane.md",
+  "docs/dev/index.md": "docs/development/index.md",
+  "docs/dev/check-failures.md": "docs/development/debugging-locally.md",
+  "docs/engineering/index.md": "docs/governance/docs-lint-rules.md",
+  "docs/engineering/lints.md": "docs/governance/docs-lint-rules.md",
+  "docs/metadata/front-matter.index.json": "docs/governance/metadata/front-matter.index.json",
+  "docs/metadata/reference-canonicals.json": "docs/governance/metadata/reference-canonicals.json"
 }

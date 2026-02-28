@@ -5,6 +5,6 @@
 - `docs/reference/contracts/`
 - `docs/operations/`
 - `docs/development/`
-- `docs/science/`
+- `docs/product/`
 
 See `docs/STYLE.md` for placement and writing rules.
