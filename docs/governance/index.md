@@ -1,9 +1,14 @@
 # Governance
 
+- Owner: `platform`
+- Type: `policy`
+- Audience: `contributor`
+- Reason to exist: define documentation governance rules and operational policies.
+
 Governance defines documentation policy, review rules, ownership, and decision records.
 This section is contributor-facing and not part of the primary reader spine.
 
-## Start here
+## Start Here
 
 - [Documentation Charter](docs-charter.md)
 - [Ownership](../ownership.md)

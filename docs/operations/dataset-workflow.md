@@ -17,5 +17,5 @@ Reason to exist: define canonical ingest and promotion flow for datasets.
 ## Verification
 
 ```bash
-make ops-pr
+make ops-release-update
 ```

@@ -14,15 +14,14 @@ Deterministic genomics data platform and Rust-native control plane.
 
 ## Quick Start
 
-Start with the canonical onboarding page: `docs/START_HERE.md`
+Start with the canonical onboarding page: `docs/start-here.md`
 
 ## Documentation Entrypoints
 
 - Product docs: `docs/index.md`
-- Getting started: `docs/START_HERE.md`
-- Root reference map: `docs/root/INDEX.md`
-- Operations docs: `docs/operations/INDEX.md`
-- Contracts docs: `docs/contracts/INDEX.md`
+- Getting started: `docs/start-here.md`
+- Operations docs: `docs/operations/index.md`
+- Reference docs: `docs/reference/index.md`
 
 ## Repository Surfaces
 

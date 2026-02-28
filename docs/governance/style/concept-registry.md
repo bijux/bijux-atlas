@@ -12,7 +12,7 @@ Prevents duplicated concept narratives and conflicting policy statements.
 
 ## Scope
 
-Applies to concept-bearing docs listed in `docs/_style/concepts.yml`.
+Applies to concept-bearing docs listed in `docs/governance/metadata/concepts.yml`.
 
 ## Non-goals
 
@@ -20,7 +20,7 @@ Does not replace endpoint, metric, or error SSOT registries.
 
 ## Contracts
 
-- Each concept ID must exist in `docs/_style/concepts.yml`.
+- Each concept ID must exist in `docs/governance/metadata/concepts.yml`.
 - Each concept has exactly one canonical page.
 - Non-canonical pages must use pointer format and link to canonical page.
 - Docs introducing new concepts must update the registry first.

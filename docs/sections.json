@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "sections": {
+    "_assets": {"requires_index": false, "root_entrypoint": false},
+    "_drafts": {"requires_index": false, "root_entrypoint": false},
+    "_generated": {"requires_index": false, "root_entrypoint": false},
+    "api": {"requires_index": true, "root_entrypoint": true},
+    "architecture": {"requires_index": true, "root_entrypoint": true},
+    "development": {"requires_index": true, "root_entrypoint": true},
+    "governance": {"requires_index": true, "root_entrypoint": false},
+    "operations": {"requires_index": true, "root_entrypoint": true},
+    "product": {"requires_index": true, "root_entrypoint": true},
+    "reference": {"requires_index": true, "root_entrypoint": true}
+  }
+}

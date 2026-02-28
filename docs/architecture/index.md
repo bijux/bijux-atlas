@@ -1,9 +1,9 @@
 # Architecture
 
-Owner: `architecture`  
-Type: `concept`  
-Audience: `contributor`  
-Reason to exist: define canonical system structure and enduring boundaries.
+- Owner: `architecture`
+- Type: `concept`
+- Audience: `contributor`
+- Reason to exist: define canonical system structure and enduring boundaries.
 
 ## System Shape
 

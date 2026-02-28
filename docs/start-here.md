@@ -1,9 +1,9 @@
 # Start Here
 
-Owner: `docs-governance`  
-Type: `guide`  
-Audience: `user`  
-Reason to exist: provide the single onboarding path for Atlas documentation.
+- Owner: `docs-governance`
+- Type: `guide`
+- Audience: `user`
+- Reason to exist: provide the single onboarding path for Atlas documentation.
 
 This is the only onboarding root in `docs/`.
 

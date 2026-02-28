@@ -1,9 +1,9 @@
 # Reference
 
-Owner: `docs-governance`  
-Type: `reference`  
-Audience: `user`  
-Reason to exist: provide factual source-of-truth pages for commands, configs, schemas, and errors.
+- Owner: `docs-governance`
+- Type: `reference`
+- Audience: `user`
+- Reason to exist: provide factual source-of-truth pages for commands, configs, schemas, and errors.
 
 ## What This Section Covers
 

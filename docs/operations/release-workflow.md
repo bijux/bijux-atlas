@@ -8,7 +8,7 @@ Reason to exist: define canonical release update and rollback operations.
 ## Update
 
 ```bash
-make ops-pr
+make ops-release-update
 ```
 
 ## Rollback

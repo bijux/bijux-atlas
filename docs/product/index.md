@@ -1,9 +1,9 @@
 # Product
 
-Owner: `product`  
-Type: `concept`  
-Audience: `user`  
-Reason to exist: define product promises, scope, and user-facing expectations.
+- Owner: `product`
+- Type: `concept`
+- Audience: `user`
+- Reason to exist: define product promises, scope, and user-facing expectations.
 
 ## What This Section Covers
 

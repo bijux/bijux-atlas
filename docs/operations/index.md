@@ -1,9 +1,9 @@
 # Operations
 
-Owner: `bijux-atlas-operations`  
-Type: `guide`  
-Audience: `operator`  
-Reason to exist: provide one operational entrypoint for lifecycle and incident work.
+- Owner: `bijux-atlas-operations`
+- Type: `guide`
+- Audience: `operator`
+- Reason to exist: provide one operational entrypoint for lifecycle and incident work.
 
 ## Scope
 

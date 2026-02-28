@@ -1,9 +1,9 @@
 # Development
 
-Owner: `platform`  
-Type: `guide`  
-Audience: `contributor`  
-Reason to exist: provide the canonical contributor entrypoint.
+- Owner: `platform`
+- Type: `guide`
+- Audience: `contributor`
+- Reason to exist: provide the canonical contributor entrypoint.
 
 ## Start Here
 

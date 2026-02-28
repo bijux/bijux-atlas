@@ -1,9 +1,9 @@
 # API
 
-Owner: `api-contracts`  
-Type: `guide`  
-Audience: `user`  
-Reason to exist: describe how clients use stable Atlas API behavior.
+- Owner: `api-contracts`
+- Type: `guide`
+- Audience: `user`
+- Reason to exist: describe how clients use stable Atlas API behavior.
 
 ## What This Section Covers
 

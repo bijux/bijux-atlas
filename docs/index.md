@@ -1,10 +1,19 @@
 # Atlas Docs
 
-Atlas documentation is organized by reader intent. Start at `start-here.md` for onboarding, then use one section index.
+- Owner: `docs-governance`
+- Type: `guide`
+- Audience: `user`
+- Reason to exist: provide one navigation spine across product, operations, development, API, and reference.
 
-## Start
+## Docs Spine
 
-- [Start Here](start-here.md)
+- Start: [Start Here](start-here.md)
+- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
+- Architecture: [Architecture Index](architecture/index.md)
+- API: [API Surface Index](api/index.md)
+- Ops: [Operations Index](operations/index.md)
+- Dev: [Development Index](development/index.md)
+- Reference: [Reference Index](reference/index.md)
 
 ## Sections
 
@@ -14,7 +23,4 @@ Atlas documentation is organized by reader intent. Start at `start-here.md` for 
 - [Operations](operations/index.md)
 - [Development](development/index.md)
 - [Reference](reference/index.md)
-
-## Next Step
-
-Start with [Start Here](start-here.md), then choose one section that matches your role.
+- [Governance](governance/index.md)
