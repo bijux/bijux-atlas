@@ -7,7 +7,7 @@
 - Last verified against: `main@6856280c`
 - Reason to exist: provide the single onboarding path for Atlas documentation.
 
-This is the only start page under `docs/`.
+This is the only onboarding root in `docs/`.
 
 ## 5-Minute Mental Model
 

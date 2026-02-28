@@ -8,16 +8,16 @@ Atlas docs are organized by audience with one canonical start path.
 - Operator: [Start Here](start-here.md) -> [Operations](operations/index.md) -> [Reference](reference/index.md)
 - Contributor: [Start Here](start-here.md) -> [Development](development/index.md) -> [Governance Readers Guide](governance/readers-guide.md)
 
-## Reader Spine
+## Docs Spine
 
-- [Start Here](start-here.md)
-- [Product](product/index.md)
-- [Architecture](architecture/index.md)
-- [API](api/index.md)
-- [Operations](operations/index.md)
-- [Development](development/index.md)
-- [Reference](reference/index.md)
-- [Glossary](glossary.md)
+- Start: [Start Here](start-here.md)
+- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
+- Architecture: [Architecture Index](architecture/index.md)
+- API: [API Surface Index](api/index.md)
+- Ops: [Operations Index](operations/index.md)
+- Dev: [Development Index](development/index.md)
+- Reference: [Reference Index](reference/index.md)
+- Glossary: [Glossary](glossary.md)
 
 ## Top 10 Pages
 
