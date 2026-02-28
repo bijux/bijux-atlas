@@ -14,9 +14,14 @@ Reason to exist: provide one canonical response flow for production incidents.
 5. Escalate when the runbook ceiling is reached.
 6. Record timeline and follow-up actions.
 
+## Policy Violation Triage
+
+- Confirm violation source and blast radius.
+- Contain impact before broad policy changes.
+- Apply minimal safe mitigation and record evidence.
+- Escalate if mitigation requires contract bypass.
+
 ## Canonical Details
 
-- [Runbook Template](../operations/runbook-template.md)
-- [Runbooks Index](runbooks/index.md)
+- [Incident Playbook](runbooks/incident-playbook.md)
 - [Observability Overview](observability/overview.md)
-- [Policy Violation Triage](policy-violation-triage.md)
