@@ -122,6 +122,7 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/contracts/root/root_static_workspace_checks.inc.rs",
             "src/core/checks/ops/ops/inventory_and_artifact_checks.rs",
             "src/core/ops_inventory/summary_and_fs_scan.rs",
+            "src/commands/control_plane_contracts_support.rs",
             "src/runtime_entry.rs",
             "src/runtime_entry_checks_surface.rs",
         ],
@@ -141,6 +142,7 @@ fn process_calls_are_constrained_to_explicit_allowlist() {
             "src/contracts/engine_model.rs",
             "src/contracts/docker/mod.rs",
             "src/commands/control_plane_contracts.rs",
+            "src/commands/control_plane_contracts_support.rs",
             "src/runtime_entry.rs",
         ],
     );
@@ -152,6 +154,7 @@ fn env_var_calls_are_constrained_to_explicit_allowlist() {
         "std::env::var(",
         &[
             "src/commands/control_plane_contracts.rs",
+            "src/commands/control_plane_contracts_support.rs",
             "src/commands/ops/support/domain_support.rs",
             "src/contracts/docker/contracts_effect_checks.rs",
             "src/contracts/engine_model.rs",
