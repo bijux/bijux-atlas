@@ -13,6 +13,13 @@
 - Tags allow focused execution without bypassing required checks.
 - Lane policy determines which suites are mandatory.
 
+## Real selection surfaces
+
+- `cargo run -q -p bijux-dev-atlas -- check list` shows registered checks with `tags=` and `suites=`.
+- `cargo run -q -p bijux-dev-atlas -- check run --suite ci_pr` runs the PR lane suite directly.
+- `cargo run -q -p bijux-dev-atlas -- check run --tag lint` narrows execution by tag for local diagnosis.
+- `make ci-fast`, `make ci-pr`, and `make ci-nightly` are stable wrappers for common suites.
+
 ## Selection rules
 
 - Local: fast suites for iterative feedback.
@@ -25,9 +32,11 @@ List available check command surfaces.
 
 ```bash
 cargo run -q -p bijux-dev-atlas -- check --help
+cargo run -q -p bijux-dev-atlas -- check list
 ```
 
 ## Next steps
 
 - [Static and effect mode](static-and-effect-mode.md)
 - [CI report consumption](ci-report-consumption.md)
+- [Performance budget](performance-budget.md)

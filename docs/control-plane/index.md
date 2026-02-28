@@ -31,6 +31,14 @@ The control-plane replaces ad-hoc scripts with explicit, contract-governed comma
 - [Tooling dependencies](tooling-dependencies.md)
 - [Known limitations](known-limitations.md)
 
+## Stable entrypoints
+
+- `cargo run -q -p bijux-dev-atlas -- --help`
+- `cargo run -q -p bijux-dev-atlas -- check --help`
+- `cargo run -q -p bijux-dev-atlas -- docs --help`
+- `make ci-pr`
+- `make docs-build`
+
 ## Verify success
 
 A contributor can discover command surfaces, reproduce CI checks locally, and understand output contracts without reading governance internals.

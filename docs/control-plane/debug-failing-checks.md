@@ -14,6 +14,13 @@
 3. Apply smallest fix that restores contract behavior.
 4. Re-run focused check and then lane baseline.
 
+## Practical commands
+
+- `make ci-pr` when a pull-request lane fails
+- `cargo run -q -p bijux-dev-atlas -- check run --tag lint --format json` for focused tag reproduction
+- `make docs-build` when the failure came from docs build or preview
+- `make docs-registry` when the failure came from registry or metadata drift
+
 ## Verify success
 
 ```bash
@@ -24,3 +31,4 @@ cargo run -q -p bijux-dev-atlas -- docs inventory --allow-write --allow-subproce
 
 - [Evidence writing style](evidence-writing-style.md)
 - [Known limitations](known-limitations.md)
+- [Reports contract](reports-contract.md)

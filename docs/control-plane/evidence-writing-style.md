@@ -14,6 +14,13 @@
 - Include reproducible command.
 - Include artifact path when output exists.
 
+## Good evidence looks like this
+
+- what failed: exact contract or check name
+- why it failed: concrete missing field, path, or invariant
+- how to rerun: one copy-paste command
+- where to inspect: one artifact or file path
+
 ## Verify success
 
 Generated failure messages should let another contributor reproduce and validate a fix in one iteration.
@@ -22,3 +29,4 @@ Generated failure messages should let another contributor reproduce and validate
 
 - [Reports contract](reports-contract.md)
 - [Debug failing checks](debug-failing-checks.md)
+- [Add a gate policy](add-a-gate-policy.md)

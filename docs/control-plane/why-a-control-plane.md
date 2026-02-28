@@ -13,6 +13,13 @@
 - Makes validation behavior deterministic across local, PR, merge, and release lanes.
 - Produces machine-readable evidence for every gate decision.
 
+## Canonical entrypoints
+
+- `bijux-dev-atlas check ...` for repo and lane checks
+- `bijux-dev-atlas docs ...` for docs validation, registry, and build flows
+- `bijux-dev-atlas ci ...` for CI-facing orchestration
+- `make ci-pr` and `make docs-build` as thin wrappers over the same surfaces
+
 ## What it does not do
 
 - It does not own runtime business logic.
@@ -30,3 +37,4 @@ cargo run -q -p bijux-dev-atlas -- check --help
 
 - [How suites work](how-suites-work.md)
 - [Capabilities model](capabilities-model.md)
+- [CI report consumption](ci-report-consumption.md)
