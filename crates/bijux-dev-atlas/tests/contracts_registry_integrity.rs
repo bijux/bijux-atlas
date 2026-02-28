@@ -21,9 +21,11 @@ fn contract_rows_for_domain(domain: &str) -> Vec<bijux_dev_atlas::contracts::Reg
         "configs" => {
             bijux_dev_atlas::contracts::configs::contracts(&root).expect("configs contracts")
         }
+        "docs" => bijux_dev_atlas::contracts::docs::contracts(&root).expect("docs contracts"),
         "docker" => bijux_dev_atlas::contracts::docker::contracts(&root).expect("docker contracts"),
         "make" => bijux_dev_atlas::contracts::make::contracts(&root).expect("make contracts"),
         "ops" => bijux_dev_atlas::contracts::ops::contracts(&root).expect("ops contracts"),
+        "root" => bijux_dev_atlas::contracts::root::contracts(&root).expect("root contracts"),
         _ => panic!("unsupported domain"),
     };
     bijux_dev_atlas::contracts::registry_snapshot(domain, &contracts)
@@ -106,7 +108,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "c417bf614fb3b5d79ebb55c6ac73875ffa7723550e033538732829394fda78c5",
+            "9c36152a9d34f76af561513e77eb201b1dcfd6be1666cf8efeeb22c55dfd3410",
         ),
     ];
     for (args, expected) in cases {
@@ -121,7 +123,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
 
 #[test]
 fn registry_list_matches_registry_snapshot_and_explain_output() {
-    for domain in ["configs", "docker", "make", "ops"] {
+    for domain in ["configs", "docs", "docker", "make", "ops", "root"] {
         let rows = contract_rows_for_domain(domain);
         let listed = contracts_list_json(domain);
         let list_rows = listed["contracts"].as_array().expect("list rows");
@@ -141,6 +143,7 @@ fn registry_list_matches_registry_snapshot_and_explain_output() {
                     .iter()
                     .map(|test| test["test_id"].as_str().expect("test_id").to_string())
                     .collect::<Vec<_>>();
+                assert_eq!(row["severity"].as_str(), Some("must"));
                 (id, tests)
             })
             .collect::<BTreeMap<_, _>>();

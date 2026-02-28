@@ -88,9 +88,29 @@ fn contracts_all_lists_all_domains() {
         .filter_map(|row| row["domain"].as_str())
         .collect::<std::collections::BTreeSet<_>>();
     assert!(domains.contains("configs"));
+    assert!(domains.contains("docs"));
     assert!(domains.contains("docker"));
     assert!(domains.contains("make"));
     assert!(domains.contains("ops"));
+    assert!(domains.contains("root"));
+}
+
+#[test]
+fn contracts_all_list_includes_severity_column() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "all", "--list", "--format", "json"])
+        .output()
+        .expect("contracts all list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let row = payload["contracts"]
+        .as_array()
+        .expect("contracts array")
+        .first()
+        .expect("first row");
+    assert_eq!(row["severity"].as_str(), Some("must"));
 }
 
 #[test]
