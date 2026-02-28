@@ -296,3 +296,70 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_029_root_entrypoints_unique_local_pages(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for relative in ["docs/index.md", "docs/START_HERE.md"] {
+        let path = ctx.repo_root.join(relative);
+        let contents = match std::fs::read_to_string(&path) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-029",
+                    "docs.index.root_entrypoints_unique_local_pages",
+                    Some(relative.to_string()),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let mut counts = std::collections::BTreeMap::<String, usize>::new();
+        for target in markdown_links(&contents) {
+            if target.starts_with("http://")
+                || target.starts_with("https://")
+                || target.starts_with('#')
+                || target.starts_with("mailto:")
+            {
+                continue;
+            }
+            let clean = target.split('#').next().unwrap_or(&target);
+            if clean.is_empty() {
+                continue;
+            }
+            let resolved = if clean.starts_with('/') {
+                ctx.repo_root.join(clean.trim_start_matches('/'))
+            } else {
+                path.parent().unwrap_or(&path).join(clean)
+            };
+            let normalized = match std::fs::canonicalize(&resolved) {
+                Ok(path) => path,
+                Err(_) => resolved,
+            };
+            let rel = match normalized.strip_prefix(&ctx.repo_root) {
+                Ok(path) => path.display().to_string(),
+                Err(_) => continue,
+            };
+            if rel.ends_with(".md") {
+                *counts.entry(rel).or_insert(0) += 1;
+            }
+        }
+        for (target, count) in counts {
+            if count > 1 {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-029",
+                    "docs.index.root_entrypoints_unique_local_pages",
+                    Some(relative.to_string()),
+                    format!("root entrypoint links `{target}` {count} times"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

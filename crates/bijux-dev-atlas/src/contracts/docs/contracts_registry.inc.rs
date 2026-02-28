@@ -331,5 +331,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_028_section_indexes_unique_local_pages,
             }],
         },
+        Contract {
+            id: ContractId("DOC-029".to_string()),
+            title: "docs root entrypoint pages avoid duplicate local page links",
+            tests: vec![TestCase {
+                id: TestId("docs.index.root_entrypoints_unique_local_pages".to_string()),
+                title: "docs root entrypoint pages link each local markdown page at most once",
+                kind: TestKind::Pure,
+                run: test_docs_029_root_entrypoints_unique_local_pages,
+            }],
+        },
     ])
 }
