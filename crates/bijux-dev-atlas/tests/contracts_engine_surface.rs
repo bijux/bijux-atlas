@@ -28,7 +28,9 @@ fn registry_lints_detect_duplicate_contract_and_test_ids() {
         },
     ];
     let lints = lint_registry_rows(&rows);
-    assert!(lints.iter().any(|lint| lint.code == "duplicate-contract-id"));
+    assert!(lints
+        .iter()
+        .any(|lint| lint.code == "duplicate-contract-id"));
     assert!(lints.iter().any(|lint| lint.code == "duplicate-test-id"));
 }
 

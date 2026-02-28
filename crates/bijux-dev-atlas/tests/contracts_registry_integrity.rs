@@ -39,10 +39,20 @@ fn contracts_list_json(domain: &str) -> serde_json::Value {
 fn explain_json(domain: &str, contract_id: &str) -> serde_json::Value {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
-        .args(["contracts", domain, "--explain", contract_id, "--format", "json"])
+        .args([
+            "contracts",
+            domain,
+            "--explain",
+            contract_id,
+            "--format",
+            "json",
+        ])
         .output()
         .expect("contracts explain");
-    assert!(output.status.success(), "explain failed for {domain}:{contract_id}");
+    assert!(
+        output.status.success(),
+        "explain failed for {domain}:{contract_id}"
+    );
     serde_json::from_slice(&output.stdout).expect("json explain")
 }
 
@@ -62,7 +72,14 @@ fn output_sha256(args: &[&str]) -> String {
 fn human_output_hashes_are_stable_for_static_contract_runs() {
     let cases = [
         (
-            vec!["contracts", "docker", "--mode", "static", "--format", "human"],
+            vec![
+                "contracts",
+                "docker",
+                "--mode",
+                "static",
+                "--format",
+                "human",
+            ],
             "284239285c8729919449e19184102e9d03a9c3f65dd44058c7d94c695d1f209d",
         ),
         (
@@ -79,7 +96,12 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
     ];
     for (args, expected) in cases {
-        assert_eq!(output_sha256(&args), expected, "snapshot drift for {:?}", args);
+        assert_eq!(
+            output_sha256(&args),
+            expected,
+            "snapshot drift for {:?}",
+            args
+        );
     }
 }
 
@@ -89,7 +111,11 @@ fn registry_list_matches_registry_snapshot_and_explain_output() {
         let rows = contract_rows_for_domain(domain);
         let listed = contracts_list_json(domain);
         let list_rows = listed["contracts"].as_array().expect("list rows");
-        assert_eq!(rows.len(), list_rows.len(), "hidden contract detected in {domain}");
+        assert_eq!(
+            rows.len(),
+            list_rows.len(),
+            "hidden contract detected in {domain}"
+        );
 
         let listed_map = list_rows
             .iter()
@@ -107,7 +133,11 @@ fn registry_list_matches_registry_snapshot_and_explain_output() {
 
         for row in rows {
             let listed_tests = listed_map.get(&row.id).expect("row in list");
-            assert_eq!(listed_tests, &row.test_ids, "list drift for {domain}:{}", row.id);
+            assert_eq!(
+                listed_tests, &row.test_ids,
+                "list drift for {domain}:{}",
+                row.id
+            );
 
             let explain = explain_json(domain, &row.id);
             let mut explain_tests = explain["tests"]
@@ -117,7 +147,11 @@ fn registry_list_matches_registry_snapshot_and_explain_output() {
                 .map(|test| test["test_id"].as_str().expect("test_id").to_string())
                 .collect::<Vec<_>>();
             explain_tests.sort();
-            assert_eq!(explain_tests, row.test_ids, "explain drift for {domain}:{}", row.id);
+            assert_eq!(
+                explain_tests, row.test_ids,
+                "explain drift for {domain}:{}",
+                row.id
+            );
         }
     }
 }
@@ -136,7 +170,11 @@ fn every_contract_test_belongs_to_exactly_one_contract() {
         }
     }
     for (test_id, rows) in owners {
-        assert_eq!(rows.len(), 1, "orphan or duplicate test ownership for {test_id}: {rows:?}");
+        assert_eq!(
+            rows.len(),
+            1,
+            "orphan or duplicate test ownership for {test_id}: {rows:?}"
+        );
     }
 }
 

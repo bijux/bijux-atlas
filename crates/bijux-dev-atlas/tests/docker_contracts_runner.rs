@@ -43,7 +43,11 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
         .expect("sync contract registry");
     bijux_dev_atlas::contracts::docker::sync_contract_gate_map_json(tmp.path())
         .expect("sync contract gate map");
-    fs::write(tmp.path().join(".dockerignore"), ".git\nartifacts\ntarget\n").expect("dockerignore");
+    fs::write(
+        tmp.path().join(".dockerignore"),
+        ".git\nartifacts\ntarget\n",
+    )
+    .expect("dockerignore");
     fs::write(
         tmp.path().join("docker/bases.lock"),
         serde_json::json!({
@@ -73,8 +77,10 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
         serde_json::json!({
             "schema_version": 1,
             "exceptions": []
-        }).to_string(),
-    ).expect("exceptions");
+        })
+        .to_string(),
+    )
+    .expect("exceptions");
     tmp
 }
 

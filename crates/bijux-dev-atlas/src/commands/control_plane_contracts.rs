@@ -113,10 +113,22 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
     fn all_domains(repo_root: &Path) -> Result<Vec<(DomainDescriptor, Vec<contracts::Contract>)>, String> {
         let mut out = Vec::new();
         for name in ["docker", "make", "ops"] {
-            let descriptor = domain_descriptor(name).expect("known domain");
+            let descriptor = domain_descriptor(name)
+                .ok_or_else(|| format!("internal contracts domain registry is missing `{name}`"))?;
             out.push((descriptor, (descriptor.contracts_fn)(repo_root)?));
         }
         Ok(out)
+    }
+
+    fn domain_registry<'a>(
+        domains: &'a [(DomainDescriptor, Vec<contracts::Contract>)],
+        name: &str,
+    ) -> Result<&'a Vec<contracts::Contract>, String> {
+        domains
+            .iter()
+            .find(|(descriptor, _)| descriptor.name == name)
+            .map(|(_, registry)| registry)
+            .ok_or_else(|| format!("internal contracts domain registry is missing `{name}`"))
     }
 
     fn registry_lints(repo_root: &Path) -> Result<Vec<contracts::RegistryLint>, String> {
@@ -309,38 +321,17 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 ),
                 ContractsSnapshotDomainArg::Docker => (
                     "docker",
-                    contracts::registry_snapshot(
-                        "docker",
-                        &domains
-                            .iter()
-                            .find(|(descriptor, _)| descriptor.name == "docker")
-                            .expect("docker domain")
-                            .1,
-                    ),
+                    contracts::registry_snapshot("docker", domain_registry(&domains, "docker")?),
                     PathBuf::from("artifacts/contracts/docker/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Make => (
                     "make",
-                    contracts::registry_snapshot(
-                        "make",
-                        &domains
-                            .iter()
-                            .find(|(descriptor, _)| descriptor.name == "make")
-                            .expect("make domain")
-                            .1,
-                    ),
+                    contracts::registry_snapshot("make", domain_registry(&domains, "make")?),
                     PathBuf::from("artifacts/contracts/make/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Ops => (
                     "ops",
-                    contracts::registry_snapshot(
-                        "ops",
-                        &domains
-                            .iter()
-                            .find(|(descriptor, _)| descriptor.name == "ops")
-                            .expect("ops domain")
-                            .1,
-                    ),
+                    contracts::registry_snapshot("ops", domain_registry(&domains, "ops")?),
                     PathBuf::from("artifacts/contracts/ops/registry-snapshot.json"),
                 ),
             };
@@ -501,12 +492,14 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 let required = contracts::required_effects_for_selection(
                     registry,
                     contracts::Mode::Effect,
-                    contract_filter.as_deref(),
-                    common.filter_test.as_deref(),
-                    &common.only_contracts,
-                    &common.only_tests,
-                    &common.skip_contracts,
-                    &common.tags,
+                    contracts::SelectionFilters {
+                        contract_filter: contract_filter.as_deref(),
+                        test_filter: common.filter_test.as_deref(),
+                        only_contracts: &common.only_contracts,
+                        only_tests: &common.only_tests,
+                        skip_contracts: &common.skip_contracts,
+                        tags: &common.tags,
+                    },
                 );
                 requires_subprocess |= required.allow_subprocess;
                 requires_network |= required.allow_network;
@@ -618,4 +611,3 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
     }
 }
-

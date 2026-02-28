@@ -1,5 +1,14 @@
 use std::cmp::Ordering;
 
+pub struct SelectionFilters<'a> {
+    pub contract_filter: Option<&'a str>,
+    pub test_filter: Option<&'a str>,
+    pub only_contracts: &'a [String],
+    pub only_tests: &'a [String],
+    pub skip_contracts: &'a [String],
+    pub tags: &'a [String],
+}
+
 fn matches_any_filter(filters: &[String], value: &str) -> bool {
     filters.is_empty() || filters.iter().any(|filter| wildcard_match(filter, value))
 }
@@ -72,13 +81,16 @@ fn matches_tags(filters: &[String], contract: &Contract) -> bool {
 pub fn required_effects_for_selection(
     contracts: &[Contract],
     mode: Mode,
-    contract_filter: Option<&str>,
-    test_filter: Option<&str>,
-    only_contracts: &[String],
-    only_tests: &[String],
-    skip_contracts: &[String],
-    tags: &[String],
+    filters: SelectionFilters<'_>,
 ) -> EffectRequirement {
+    let SelectionFilters {
+        contract_filter,
+        test_filter,
+        only_contracts,
+        only_tests,
+        skip_contracts,
+        tags,
+    } = filters;
     let mut required = EffectRequirement {
         allow_subprocess: false,
         allow_network: false,

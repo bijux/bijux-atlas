@@ -60,5 +60,8 @@ fn ops_inventory_contract_ids_match_contract_index() {
         .filter_map(|row| row.as_str())
         .collect::<Vec<_>>();
 
-    assert_eq!(actual_ids, expected_ids, "ops inventory contract_ids drift detected");
+    assert_eq!(
+        actual_ids, expected_ids,
+        "ops inventory contract_ids drift detected"
+    );
 }

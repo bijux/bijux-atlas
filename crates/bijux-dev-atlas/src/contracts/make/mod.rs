@@ -15,7 +15,13 @@ fn rel(path: &Path, repo_root: &Path) -> String {
         .replace('\\', "/")
 }
 
-fn violation(contract_id: &str, test_id: &str, path: &Path, repo_root: &Path, message: &str) -> Violation {
+fn violation(
+    contract_id: &str,
+    test_id: &str,
+    path: &Path,
+    repo_root: &Path,
+    message: &str,
+) -> Violation {
     Violation {
         contract_id: contract_id.to_string(),
         test_id: test_id.to_string(),
@@ -28,8 +34,8 @@ fn violation(contract_id: &str, test_id: &str, path: &Path, repo_root: &Path, me
 
 fn read_target_registry(repo_root: &Path) -> Result<Value, String> {
     let path = repo_root.join("make/target-list.json");
-    let text =
-        std::fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    let text = std::fs::read_to_string(&path)
+        .map_err(|e| format!("read {} failed: {e}", path.display()))?;
     serde_json::from_str(&text).map_err(|e| format!("parse {} failed: {e}", path.display()))
 }
 
@@ -48,7 +54,10 @@ fn sorted_makefiles(repo_root: &Path) -> Vec<std::path::PathBuf> {
         let Ok(entries) = std::fs::read_dir(&root) else {
             continue;
         };
-        let mut paths = entries.flatten().map(|entry| entry.path()).collect::<Vec<_>>();
+        let mut paths = entries
+            .flatten()
+            .map(|entry| entry.path())
+            .collect::<Vec<_>>();
         paths.sort();
         for path in paths {
             if path.extension().and_then(|value| value.to_str()) == Some("mk")
@@ -99,7 +108,13 @@ fn test_make_000_allowed_surface(ctx: &RunContext) -> TestResult {
                 continue;
             };
             if !allowed.contains(name) {
-                violations.push(violation(contract_id, test_id, &path, &ctx.repo_root, "unexpected root file under make/"));
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    &path,
+                    &ctx.repo_root,
+                    "unexpected root file under make/",
+                ));
             }
         }
     }
@@ -362,10 +377,7 @@ fn test_make_005_internal_targets_prefixed(ctx: &RunContext) -> TestResult {
         }
         if let Some((name, _)) = trimmed.split_once(':') {
             let target = name.trim();
-            if target.is_empty()
-                || target.starts_with('.')
-                || target.contains(' ')
-            {
+            if target.is_empty() || target.starts_with('.') || target.contains(' ') {
                 continue;
             }
             if target.starts_with("_internal-") {
@@ -396,7 +408,8 @@ fn test_make_005_internal_targets_prefixed(ctx: &RunContext) -> TestResult {
         if token == ".PHONY:" || token.is_empty() {
             continue;
         }
-        if token != "help-contract" && token != "make-target-list" && token != "make-contract-check" {
+        if token != "help-contract" && token != "make-target-list" && token != "make-contract-check"
+        {
             violations.push(violation(
                 contract_id,
                 test_id,

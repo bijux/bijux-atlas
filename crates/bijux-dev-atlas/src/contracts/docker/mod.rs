@@ -223,9 +223,7 @@ fn run_command_with_artifacts(
     stderr_name: &str,
 ) -> Result<std::process::Output, String> {
     let artifact_dir = effect_artifact_dir(ctx);
-    let capture_root = artifact_dir
-        .clone()
-        .unwrap_or_else(std::env::temp_dir);
+    let capture_root = artifact_dir.clone().unwrap_or_else(std::env::temp_dir);
     let nonce = SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|value| value.as_nanos())
@@ -388,7 +386,8 @@ pub fn render_contract_registry_json(repo_root: &Path) -> Result<String, String>
             "command": contract_gate_command(contract)
         })).collect::<Vec<_>>()
     });
-    serde_json::to_string_pretty(&payload).map_err(|e| format!("encode docker contract registry failed: {e}"))
+    serde_json::to_string_pretty(&payload)
+        .map_err(|e| format!("encode docker contract registry failed: {e}"))
 }
 
 pub fn render_contract_gate_map_json(repo_root: &Path) -> Result<String, String> {
@@ -401,7 +400,8 @@ pub fn render_contract_gate_map_json(repo_root: &Path) -> Result<String, String>
             "command": contract_gate_command(contract)
         })).collect::<Vec<_>>()
     });
-    serde_json::to_string_pretty(&payload).map_err(|e| format!("encode docker gate map failed: {e}"))
+    serde_json::to_string_pretty(&payload)
+        .map_err(|e| format!("encode docker gate map failed: {e}"))
 }
 
 pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {

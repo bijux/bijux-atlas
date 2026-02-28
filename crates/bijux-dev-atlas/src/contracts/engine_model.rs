@@ -337,9 +337,27 @@ pub fn registry_snapshot(domain: &str, contracts: &[Contract]) -> Vec<RegistrySn
 }
 
 pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
-    let id_re = regex::Regex::new(r"^[A-Z]+(?:-[A-Z0-9]+)*-[0-9]{3,}$").expect("valid regex");
-    let test_id_re = regex::Regex::new(r"^[a-z0-9]+(?:\.[a-z0-9_]+)+$").expect("valid regex");
     let mut lints = Vec::new();
+    let id_re = match regex::Regex::new(r"^[A-Z]+(?:-[A-Z0-9]+)*-[0-9]{3,}$") {
+        Ok(value) => value,
+        Err(err) => {
+            lints.push(RegistryLint {
+                code: "internal-regex",
+                message: format!("contract id regex failed to compile: {err}"),
+            });
+            return lints;
+        }
+    };
+    let test_id_re = match regex::Regex::new(r"^[a-z0-9]+(?:\.[a-z0-9_]+)+$") {
+        Ok(value) => value,
+        Err(err) => {
+            lints.push(RegistryLint {
+                code: "internal-regex",
+                message: format!("test id regex failed to compile: {err}"),
+            });
+            return lints;
+        }
+    };
     let mut contract_ids = BTreeMap::<String, Vec<String>>::new();
     let mut test_ids = BTreeMap::<String, Vec<String>>::new();
     let mut normalized_titles = BTreeMap::<String, Vec<String>>::new();
