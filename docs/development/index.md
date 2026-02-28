@@ -19,6 +19,10 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Contributing](contributing.md)
 - [Toolchain](toolchain.md)
 - [Doc Conventions](doc-conventions.md)
+- [Debugging Locally](debugging-locally.md)
+- [How to Add Check](how-to-add-check.md)
+- [How to Add Contract Registry](how-to-add-contract-registry.md)
+- [Reports and CI Consumption](reports-and-ci-consumption.md)
 
 ## Next Steps
 
