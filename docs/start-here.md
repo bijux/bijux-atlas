@@ -67,6 +67,10 @@ You executed the canonical onboarding flow and confirmed a runnable environment.
 2. Read [Architecture](architecture/index.md) and [Boundaries](architecture/boundaries.md).
 3. Follow [Contributing](development/contributing.md) before opening changes.
 
+## Spine Validation
+
+If you read only the spine pages listed in [Docs Home](index.md), you should understand product scope, runtime flow, operational entrypoints, contributor workflow, and factual reference locations without exploring non-spine pages.
+
 ## Document Taxonomy
 
 - Audience: `user`
