@@ -3,14 +3,22 @@
 - Owner: `api-contracts`
 - Type: `guide`
 - Audience: `user`
-- Reason to exist: describe how clients use stable Atlas API behavior.
+- Stability: `stable`
+- Last verified against: `main@6856280c`
+- Reason to exist: describe client-facing behavior on stable Atlas API surfaces.
 
-## What This Section Covers
+## Purpose
 
-Client-facing API behavior and usage guidance.
+Explain how clients call Atlas APIs, handle responses, and reason about compatibility.
 
-## Start Here
+## What You Will Find Here
 
+- [Quick Reference](quick-reference.md)
 - [Versioning](versioning.md)
 - [Pagination](pagination.md)
 - [Errors](errors.md)
+- [Compatibility](compatibility.md)
+
+## Next Steps
+
+Use [Reference](../reference/index.md) for schema-level facts and [Operations](../operations/index.md) for service-side troubleshooting.

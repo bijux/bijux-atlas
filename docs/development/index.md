@@ -3,15 +3,22 @@
 - Owner: `platform`
 - Type: `guide`
 - Audience: `contributor`
-- Reason to exist: provide the canonical contributor entrypoint.
+- Stability: `stable`
+- Last verified against: `main@6856280c`
+- Reason to exist: provide the canonical contributor path for making safe changes.
 
-## Start Here
+## Purpose
 
+Guide contributors through repository structure, CI behavior, control-plane operations, and contribution standards.
+
+## What You Will Find Here
+
+- [Control Plane](control-plane.md)
 - [Repository Layout](repo-layout.md)
 - [CI Overview](ci-overview.md)
-- [Control Plane](control-plane.md)
-- [Governance Policies](../governance/index.md)
+- [Contributing](contributing.md)
+- [Toolchain](toolchain.md)
 
-## Next Step
+## Next Steps
 
-Use [Contributing](contributing.md) to follow contributor workflow and merge requirements.
+Use [Governance Readers Guide](../governance/readers-guide.md) for docs policy and [Architecture](../architecture/index.md) for runtime boundaries.

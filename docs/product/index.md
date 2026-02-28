@@ -3,17 +3,21 @@
 - Owner: `product`
 - Type: `concept`
 - Audience: `user`
-- Reason to exist: define product promises, scope, and user-facing expectations.
+- Stability: `stable`
+- Last verified against: `main@6856280c`
+- Reason to exist: define what Atlas is, what it promises, and what it does not do.
 
-## What This Section Covers
+## Purpose
 
-Product narrative and compatibility commitments for Atlas.
+Provide the canonical product narrative and compatibility commitments.
 
-## Start Here
+## What You Will Find Here
 
 - [What Is Bijux Atlas](what-is-bijux-atlas.md)
 - [Compatibility Promise](compatibility-promise.md)
+- [Non-Goals](non-goals.md)
+- [Release Model](release-model.md)
 
-## Next Step
+## Next Steps
 
 Continue with [Operations](../operations/index.md) for runtime workflows or [API](../api/index.md) for client behavior.

@@ -3,15 +3,22 @@
 - Owner: `bijux-atlas-operations`
 - Type: `guide`
 - Audience: `operator`
-- Reason to exist: provide one operational entrypoint for lifecycle and incident work.
+- Stability: `stable`
+- Last verified against: `main@6856280c`
+- Reason to exist: provide the canonical operator path for lifecycle and incident handling.
 
-## Scope
+## Purpose
 
-Operations documentation covers local lifecycle, deployment, observability, and incident response.
+Give operators one stable entrypoint for running, deploying, observing, and recovering Atlas.
 
-## Start Here
+## What You Will Find Here
 
 - [Run Locally](run-locally.md)
 - [Deploy](deploy.md)
-- [Incident Response](incident-response.md)
 - [Observability](observability/index.md)
+- [Incident Response](incident-response.md)
+- [Release](release/index.md)
+
+## Next Steps
+
+Use [Reference](../reference/index.md) for exact flags and schemas, and [Runbooks](runbooks/index.md) during incidents.

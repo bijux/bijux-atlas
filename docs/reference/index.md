@@ -3,21 +3,23 @@
 - Owner: `docs-governance`
 - Type: `reference`
 - Audience: `user`
-- Reason to exist: provide factual source-of-truth pages for commands, configs, schemas, and errors.
+- Stability: `stable`
+- Last verified against: `main@6856280c`
+- Reason to exist: provide factual source-of-truth surfaces for commands, configs, schemas, and errors.
 
-## What This Section Covers
+## Purpose
 
-Stable factual surfaces used by users, operators, and contributors.
+Centralize stable facts so guides and runbooks stay concise and non-duplicative.
 
-## Start Here
+## What You Will Find Here
 
 - [Commands](commands.md)
+- [Make Targets](make.md)
 - [Configs](configs.md)
 - [Schemas](schemas.md)
 - [Errors](errors.md)
 - [Contracts](contracts/index.md)
-- [Examples](examples/index.md)
 
-## Next Step
+## Next Steps
 
-If you need usage guidance rather than tables, switch to [API](../api/index.md) or [Operations](../operations/index.md).
+Use [API](../api/index.md) for usage guidance or [Operations](../operations/index.md) for procedures.
