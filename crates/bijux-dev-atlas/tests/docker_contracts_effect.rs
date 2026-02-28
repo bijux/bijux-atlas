@@ -10,6 +10,33 @@ fn workspace_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn run_options() -> bijux_dev_atlas::contracts::RunOptions {
+    bijux_dev_atlas::contracts::RunOptions {
+        lane: bijux_dev_atlas::contracts::ContractLane::Local,
+        mode: bijux_dev_atlas::contracts::Mode::Effect,
+        required_only: false,
+        ci: false,
+        color_enabled: true,
+        allow_subprocess: false,
+        allow_network: false,
+        allow_k8s: false,
+        allow_fs_write: false,
+        allow_docker_daemon: false,
+        deny_skip_required: true,
+        skip_missing_tools: false,
+        timeout_seconds: 300,
+        fail_fast: true,
+        contract_filter: None,
+        test_filter: None,
+        only_contracts: Vec::new(),
+        only_tests: Vec::new(),
+        skip_contracts: Vec::new(),
+        tags: Vec::new(),
+        list_only: false,
+        artifacts_root: Some(workspace_root().join("artifacts/effect-contract-tests")),
+    }
+}
+
 #[test]
 fn effect_mode_contracts_run_when_enabled() {
     if std::env::var("RUN_EFFECT_CONTRACTS").ok().as_deref() != Some("1") {
@@ -20,23 +47,10 @@ fn effect_mode_contracts_run_when_enabled() {
         bijux_dev_atlas::contracts::docker::contracts,
         &workspace_root(),
         &bijux_dev_atlas::contracts::RunOptions {
-            mode: bijux_dev_atlas::contracts::Mode::Effect,
             allow_subprocess: true,
             allow_network: true,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
-            skip_missing_tools: false,
-            timeout_seconds: 300,
-            fail_fast: true,
             contract_filter: Some("DOCKER-10*".to_string()),
-            test_filter: None,
-            only_contracts: Vec::new(),
-            only_tests: Vec::new(),
-            skip_contracts: Vec::new(),
-            tags: Vec::new(),
-            list_only: false,
-            artifacts_root: Some(workspace_root().join("artifacts/effect-contract-tests")),
+            ..run_options()
         },
     )
     .expect("run effect contracts");
@@ -60,23 +74,12 @@ fn effect_mode_reports_docker_daemon_error_with_unreachable_host() {
         bijux_dev_atlas::contracts::docker::contracts,
         &workspace_root(),
         &bijux_dev_atlas::contracts::RunOptions {
-            mode: bijux_dev_atlas::contracts::Mode::Effect,
             allow_subprocess: true,
-            allow_network: false,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
             skip_missing_tools: true,
             timeout_seconds: 60,
-            fail_fast: true,
             contract_filter: Some("DOCKER-100".to_string()),
             test_filter: Some("docker.build.runtime_image".to_string()),
-            only_contracts: Vec::new(),
-            only_tests: Vec::new(),
-            skip_contracts: Vec::new(),
-            tags: Vec::new(),
-            list_only: false,
-            artifacts_root: Some(workspace_root().join("artifacts/effect-contract-tests")),
+            ..run_options()
         },
     )
     .expect("run effect contracts with unreachable docker host");

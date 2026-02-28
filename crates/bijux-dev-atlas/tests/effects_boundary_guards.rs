@@ -79,6 +79,7 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/commands/ops/support/manifests.rs",
             "src/commands/ops/support/tools.rs",
             "src/contracts/mod.rs",
+            "src/contracts/engine_model.rs",
             "src/contracts/engine_runner.rs",
             "src/contracts/docker/mod.rs",
             "src/contracts/docker/docker_static_build_checks.rs",

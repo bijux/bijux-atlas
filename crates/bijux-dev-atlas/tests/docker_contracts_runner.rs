@@ -31,6 +31,7 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
         .join(name);
     let tmp = tempfile::tempdir().expect("tempdir");
     copy_tree(&src, tmp.path());
+    fs::create_dir_all(tmp.path().join("ops/policy")).expect("mkdir ops policy");
     #[cfg(unix)]
     std::os::unix::fs::symlink(
         "docker/images/runtime/Dockerfile",
@@ -81,6 +82,23 @@ fn fixture_repo(name: &str) -> tempfile::TempDir {
         .to_string(),
     )
     .expect("exceptions");
+    fs::write(
+        tmp.path().join("ops/policy/required-contracts.json"),
+        serde_json::json!({
+            "schema_version": 1,
+            "contracts": [
+                {
+                    "domain": "docker",
+                    "contract_id": "DOCKER-000",
+                    "lanes": ["pr", "merge", "release"],
+                    "owner": "atlas-maintainers",
+                    "rationale": "fixture policy entry"
+                }
+            ]
+        })
+        .to_string(),
+    )
+    .expect("required contracts policy");
     tmp
 }
 
@@ -93,12 +111,17 @@ fn run_contracts(
         bijux_dev_atlas::contracts::docker::contracts,
         repo,
         &bijux_dev_atlas::contracts::RunOptions {
+            lane: bijux_dev_atlas::contracts::ContractLane::Local,
             mode: bijux_dev_atlas::contracts::Mode::Static,
+            required_only: false,
+            ci: false,
+            color_enabled: false,
             allow_subprocess: false,
             allow_network: false,
             allow_k8s: false,
             allow_fs_write: false,
             allow_docker_daemon: false,
+            deny_skip_required: true,
             skip_missing_tools: false,
             timeout_seconds: 300,
             fail_fast: false,

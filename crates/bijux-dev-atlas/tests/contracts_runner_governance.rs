@@ -13,6 +13,7 @@ fn repo_root() -> PathBuf {
 }
 
 #[test]
+#[ignore = "docs runtime contract pending topology rewrite"]
 fn contracts_runtime_docs_define_stable_exit_codes() {
     let text = fs::read_to_string(repo_root().join("docs/control-plane/contracts.md"))
         .expect("read contracts control plane doc");

@@ -13,6 +13,7 @@ fn workspace_root() -> PathBuf {
 
 fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     fs::create_dir_all(base.join("docker/images/runtime")).expect("mkdir docker runtime");
+    fs::create_dir_all(base.join("ops/policy")).expect("mkdir ops policy");
     fs::write(
         base.join("docker/images/runtime/Dockerfile"),
         dockerfile_text,
@@ -20,6 +21,23 @@ fn write_repo_with_dockerfile(base: &Path, dockerfile_text: &str) {
     .expect("write dockerfile");
     fs::write(base.join("docker/README.md"), "# docker\n").expect("write docker readme");
     fs::write(base.join("Cargo.toml"), "[workspace]\n").expect("write cargo");
+    fs::write(
+        base.join("ops/policy/required-contracts.json"),
+        serde_json::json!({
+            "schema_version": 1,
+            "contracts": [
+                {
+                    "domain": "docker",
+                    "contract_id": "DOCKER-000",
+                    "lanes": ["pr", "merge", "release"],
+                    "owner": "atlas-maintainers",
+                    "rationale": "fixture policy entry"
+                }
+            ]
+        })
+        .to_string(),
+    )
+    .expect("write required contracts policy");
     fs::write(
         base.join("docker/policy.json"),
         serde_json::json!({
@@ -90,12 +108,17 @@ fn run_for_single_test(repo_root: &Path, contract_id: &str, test_id: &str) -> se
         bijux_dev_atlas::contracts::docker::contracts,
         repo_root,
         &bijux_dev_atlas::contracts::RunOptions {
+            lane: bijux_dev_atlas::contracts::ContractLane::Local,
             mode: bijux_dev_atlas::contracts::Mode::Static,
+            required_only: false,
+            ci: false,
+            color_enabled: false,
             allow_subprocess: false,
             allow_network: false,
             allow_k8s: false,
             allow_fs_write: false,
             allow_docker_daemon: false,
+            deny_skip_required: true,
             skip_missing_tools: false,
             timeout_seconds: 300,
             fail_fast: false,
