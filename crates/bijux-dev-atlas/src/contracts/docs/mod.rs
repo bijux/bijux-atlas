@@ -4,37 +4,19 @@ use std::path::Path;
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
-fn test_docs_001_index_exists(ctx: &RunContext) -> TestResult {
-    if ctx.repo_root.join("docs/INDEX.md").is_file() {
-        TestResult::Pass
-    } else {
-        TestResult::Fail(vec![Violation {
-            contract_id: "DOC-001".to_string(),
-            test_id: "docs.index.exists".to_string(),
-            file: Some("docs/INDEX.md".to_string()),
-            line: None,
-            message: "docs/INDEX.md is required as the docs entrypoint".to_string(),
-            evidence: None,
-        }])
-    }
-}
-
-pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
-    Ok(vec![Contract {
-        id: ContractId("DOC-001".to_string()),
-        title: "docs entrypoint exists",
-        tests: vec![TestCase {
-            id: TestId("docs.index.exists".to_string()),
-            title: "docs index exists",
-            kind: TestKind::Pure,
-            run: test_docs_001_index_exists,
-        }],
-    }])
-}
+include!("contracts_registry.inc.rs");
+include!("contracts_static_checks.inc.rs");
+include!("contracts_link_checks.inc.rs");
+include!("contracts_structure_checks.inc.rs");
 
 pub fn contract_explain(contract_id: &str) -> String {
     match contract_id {
-        "DOC-001" => "The docs surface needs a single canonical entrypoint at docs/INDEX.md.".to_string(),
+        "DOC-001" => "The docs root may only expose the declared top-level section directories.".to_string(),
+        "DOC-002" => "The docs root markdown surface is explicit and must stay within the allowlist.".to_string(),
+        "DOC-003" => "Docs path depth stays bounded so the navigation tree remains navigable.".to_string(),
+        "DOC-004" => "Docs directories must stay within the sibling-count budget.".to_string(),
+        "DOC-005" => "Docs filenames must avoid whitespace and control characters.".to_string(),
+        "DOC-006" => "Docs needs a single canonical entrypoint at docs/index.md.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
