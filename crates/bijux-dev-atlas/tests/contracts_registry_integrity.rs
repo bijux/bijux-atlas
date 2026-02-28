@@ -18,6 +18,7 @@ fn repo_root() -> PathBuf {
 fn contract_rows_for_domain(domain: &str) -> Vec<bijux_dev_atlas::contracts::RegistrySnapshotRow> {
     let root = repo_root();
     let contracts = match domain {
+        "configs" => bijux_dev_atlas::contracts::configs::contracts(&root).expect("configs contracts"),
         "docker" => bijux_dev_atlas::contracts::docker::contracts(&root).expect("docker contracts"),
         "make" => bijux_dev_atlas::contracts::make::contracts(&root).expect("make contracts"),
         "ops" => bijux_dev_atlas::contracts::ops::contracts(&root).expect("ops contracts"),
@@ -74,6 +75,17 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         (
             vec![
                 "contracts",
+                "configs",
+                "--mode",
+                "static",
+                "--format",
+                "human",
+            ],
+            "812293d2d92ea34250cc10b8b3807d31968f4e555988ad794fac372b2b345b8b",
+        ),
+        (
+            vec![
+                "contracts",
                 "docker",
                 "--mode",
                 "static",
@@ -92,7 +104,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "b310d5ccdbf70edf2068e086b7e1fd50fc07c8b9d3dfcc95941f454ceeebf25c",
+            "ff5b16f75e31fc3de83492a87481d51e7f01585c9dd01f3df5629a42cb873af8",
         ),
     ];
     for (args, expected) in cases {
@@ -107,7 +119,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
 
 #[test]
 fn registry_list_matches_registry_snapshot_and_explain_output() {
-    for domain in ["docker", "make", "ops"] {
+    for domain in ["configs", "docker", "make", "ops"] {
         let rows = contract_rows_for_domain(domain);
         let listed = contracts_list_json(domain);
         let list_rows = listed["contracts"].as_array().expect("list rows");
@@ -159,7 +171,7 @@ fn registry_list_matches_registry_snapshot_and_explain_output() {
 #[test]
 fn every_contract_test_belongs_to_exactly_one_contract() {
     let mut owners = BTreeMap::<String, Vec<String>>::new();
-    for domain in ["docker", "make", "ops"] {
+    for domain in ["configs", "docker", "make", "ops"] {
         for row in contract_rows_for_domain(domain) {
             for test_id in row.test_ids {
                 owners
