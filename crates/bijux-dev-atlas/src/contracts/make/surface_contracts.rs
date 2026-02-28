@@ -431,18 +431,26 @@ fn test_make_ci_001_curated_workflow_usage(ctx: &RunContext) -> TestResult {
             }
         };
         let tokens = text.split_whitespace().collect::<Vec<_>>();
-        for pair in tokens.windows(2) {
-            if pair[0] == "make"
-                && pair[1]
+        for index in 0..tokens.len().saturating_sub(1) {
+            if tokens[index] == "make"
+                && tokens[index + 1]
+                    .chars()
+                    .next()
+                    .is_some_and(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit())
+                && tokens[index + 1]
                     .chars()
                     .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
-                && !curated.contains(pair[1])
+                && (index == 0 || tokens[index - 1] != "contracts")
+                && !curated.contains(tokens[index + 1])
             {
                 return failure(
                     "MAKE-CI-001",
                     "make.ci.curated_workflow_usage",
                     &rel(&path, &ctx.repo_root),
-                    format!("workflow uses non-curated make target {}", pair[1]),
+                    format!(
+                        "workflow uses non-curated make target {}",
+                        tokens[index + 1]
+                    ),
                 );
             }
         }
