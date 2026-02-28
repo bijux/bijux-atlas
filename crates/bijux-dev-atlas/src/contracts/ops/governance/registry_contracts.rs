@@ -493,28 +493,12 @@ fn validate_no_orphan_test_functions(repo_root: &Path) -> Result<(), String> {
         fs::read_to_string(repo_root.join("crates/bijux-dev-atlas/src/contracts/ops/mod.rs"))
             .map_err(|e| format!("read contracts ops module failed: {e}"))?,
     );
-    let mut assembly_files = sorted_dir_entries(&ops_dir);
+    let mut assembly_files = Vec::new();
+    walk_files(&ops_dir, &mut assembly_files);
     assembly_files.retain(|path| {
         path.file_name()
             .and_then(|name| name.to_str())
-            .is_some_and(|name| {
-                matches!(
-                    name,
-                    "ops_registry.inc.rs"
-                        | "root_surface.inc.rs"
-                        | "inventory.inc.rs"
-                        | "schema.inc.rs"
-                        | "datasets.inc.rs"
-                        | "e2e.inc.rs"
-                        | "env.inc.rs"
-                        | "stack.inc.rs"
-                        | "k8s.inc.rs"
-                        | "observe.inc.rs"
-                        | "load.inc.rs"
-                        | "report.inc.rs"
-                        | "pillars.inc.rs"
-                )
-            })
+            .is_some_and(|name| name == "mod.rs" || name == "registry_catalog.rs")
     });
     for path in assembly_files {
         reference_sources.push(
@@ -531,7 +515,7 @@ fn validate_no_orphan_test_functions(repo_root: &Path) -> Result<(), String> {
         let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
-        if !name.ends_with(".inc.rs") || name == "ops_registry.inc.rs" {
+        if !name.ends_with(".rs") || name == "mod.rs" || name == "registry_catalog.rs" {
             continue;
         }
         let content = fs::read_to_string(&path)

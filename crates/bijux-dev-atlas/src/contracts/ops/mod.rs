@@ -92,22 +92,13 @@ fn sha256_text(content: &str) -> String {
     format!("{:x}", hasher.finalize())
 }
 
-include!("registry_validation.inc.rs");
-include!("root_surface.inc.rs");
-include!("inventory.inc.rs");
-include!("schema.inc.rs");
-include!("datasets.inc.rs");
-include!("e2e.inc.rs");
-include!("env.inc.rs");
-include!("stack.inc.rs");
-include!("k8s.inc.rs");
-include!("observe.inc.rs");
-include!("load.inc.rs");
-include!("report.inc.rs");
-include!("pillars.inc.rs");
-
-include!("ops_root_and_inventory_contracts.inc.rs");
-include!("ops_extended.inc.rs");
-
-include!("ops_registry.inc.rs");
-include!("ops_contract_docs.inc.rs");
+include!("root/mod.rs");
+include!("governance/mod.rs");
+include!("inventory/mod.rs");
+include!("datasets/mod.rs");
+include!("e2e/mod.rs");
+include!("environment/mod.rs");
+include!("platform/mod.rs");
+include!("load/mod.rs");
+include!("observe/mod.rs");
+include!("reporting/mod.rs");

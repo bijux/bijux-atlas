@@ -8,8 +8,8 @@ pub mod docker;
 pub mod make;
 pub mod ops;
 
-include!("engine_model.inc.rs");
-include!("engine_selection.inc.rs");
-include!("engine_runner.inc.rs");
-include!("engine_rendering.inc.rs");
-include!("engine_tests.inc.rs");
+include!("engine_model.rs");
+include!("engine_selection.rs");
+include!("engine_runner.rs");
+include!("engine_rendering.rs");
+include!("engine_tests.rs");

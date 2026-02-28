@@ -151,7 +151,7 @@ pub(crate) fn run_policies_report(
     Ok((rendered, 0))
 }
 
-include!("control_plane_docker_runtime_helpers.inc.rs");
+include!("control_plane_docker_runtime_helpers.rs");
 
 pub(crate) fn run_docker_command(quiet: bool, command: DockerCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {

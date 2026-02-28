@@ -59,7 +59,7 @@ mod control_plane_docker;
 pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
-include!("control_plane_contracts.inc.rs");
+include!("control_plane_contracts.rs");
 pub(crate) fn run_print_boundaries_command() -> Result<(String, i32), String> {
     let payload = serde_json::json!({
         "schema_version": CONTRACT_SCHEMA_VERSION,

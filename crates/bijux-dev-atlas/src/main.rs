@@ -24,7 +24,7 @@ mod ops_execution_runtime;
 #[path = "commands/ops/support.rs"]
 mod ops_support;
 
-include!("runtime_entry.inc.rs");
+include!("runtime_entry.rs");
 
 #[allow(dead_code)]
 fn workspace_root_resolver_anchor(arg: Option<std::path::PathBuf>) {

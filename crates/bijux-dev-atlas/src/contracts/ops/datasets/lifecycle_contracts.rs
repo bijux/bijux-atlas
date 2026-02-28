@@ -219,8 +219,3 @@ fn test_ops_datasets_013_allowed_file_types_only(ctx: &RunContext) -> TestResult
     }
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
-include!("ops_domains_31_40.inc.rs");
-include!("ops_domains_41_50.inc.rs");
-include!("ops_domains_51_60.inc.rs");
-include!("ops_domains_61_70.inc.rs");
-include!("ops_domains_71_75.inc.rs");

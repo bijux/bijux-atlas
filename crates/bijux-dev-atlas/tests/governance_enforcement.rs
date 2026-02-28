@@ -148,10 +148,10 @@ fn src_root_contains_only_canonical_module_dirs_and_entry_files() {
         "model".to_string(),
         "policies".to_string(),
         "ports".to_string(),
-        "runtime_entry.inc.rs".to_string(),
-        "runtime_entry_checks.inc.rs".to_string(),
-        "runtime_entry_checks_governance.inc.rs".to_string(),
-        "runtime_entry_checks_surface.inc.rs".to_string(),
+        "runtime_entry.rs".to_string(),
+        "runtime_entry_checks.rs".to_string(),
+        "runtime_entry_checks_governance.rs".to_string(),
+        "runtime_entry_checks_surface.rs".to_string(),
     ];
     assert_eq!(
         names, expected,

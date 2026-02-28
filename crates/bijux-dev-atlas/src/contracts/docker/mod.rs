@@ -326,7 +326,7 @@ fn image_tag() -> String {
     "bijux-atlas-contracts:dev".to_string()
 }
 
-include!("contracts_registry.inc.rs");
+include!("contracts_registry.rs");
 
 pub fn contract_gate_id(contract_id: &str) -> String {
     format!(
@@ -498,5 +498,5 @@ impl ContractRegistry for DockerContractRegistry {
 #[cfg(test)]
 mod tests {
     use super::*;
-    include!("contracts_tests.inc.rs");
+    include!("contracts_tests.rs");
 }
