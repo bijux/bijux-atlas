@@ -32,4 +32,4 @@ Expected output: example extraction, snippet execution, and schema checks pass.
 ## See also
 - [API Quick Reference](../api/quick-reference.md)
 - [Run Locally](../operations/run-locally.md)
-- [Repo Surface](../development/repo-surface.md)
+- [Repository Layout](../development/repo-layout.md)

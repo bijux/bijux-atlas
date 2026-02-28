@@ -15,6 +15,6 @@ Reason to exist: define canonical deployment flow for production and staging clu
 
 ## Deep Dives
 
-- [Kubernetes Overview](k8s/overview.md)
-- [Chart Values](k8s/values.md)
-- [Autoscaling](k8s/autoscaling.md)
+- [Release Workflow](release-workflow.md)
+- [Incident Response](incident-response.md)
+- [Runbooks](runbooks/incident-playbook.md)

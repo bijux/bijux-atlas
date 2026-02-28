@@ -9,9 +9,7 @@ Canonical top-level reference pages for repository orientation, governance inten
 
 ## Pages
 
-- [Start Here](START_HERE.md)
-- [Developer Entrypoint](PERSONA_DEVELOPER.md)
-- [Operator Entrypoint](PERSONA_OPERATOR.md)
+- [Start Here](../start-here.md)
 - [Architecture Overview](ARCHITECTURE_OVERVIEW.md)
 - [Control Plane Overview](CONTROL_PLANE_OVERVIEW.md)
 - [Repository Structure](REPOSITORY_STRUCTURE.md)
@@ -24,7 +22,7 @@ Canonical top-level reference pages for repository orientation, governance inten
 - [Configs Overview](CONFIGS_OVERVIEW.md)
 - [Docker Overview](DOCKER_OVERVIEW.md)
 - [Makefiles Overview](MAKEFILES_OVERVIEW.md)
-- [Documentation Philosophy](DOCS_PHILOSOPHY.md)
+- [Documentation Philosophy](../governance/docs-philosophy.md)
 - [Glossary](GLOSSARY.md)
 - [Glossary Crosslinks](GLOSSARY_CROSSLINKS.md)
 - [Terminology Consistency Rules](TERMINOLOGY_RULES.md)

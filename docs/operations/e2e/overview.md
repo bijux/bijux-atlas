@@ -6,7 +6,5 @@ Reason to exist: provide one canonical end-to-end testing entrypoint.
 
 ## Core E2E Guides
 
-- [Stack](stack.md)
 - [Fixtures](fixtures.md)
 - [Kubernetes Tests](k8s-tests.md)
-- [Realdata Drills](realdata-drills.md)

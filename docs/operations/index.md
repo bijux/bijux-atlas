@@ -17,11 +17,11 @@ Reason to exist: provide one operator-first entrypoint for run, deploy, observe,
 
 ## Core Procedures
 
-- [Runtime Platform](runtime-platform.md)
 - [Dataset Workflow](dataset-workflow.md)
 - [Release Workflow](release-workflow.md)
 - [Retention And GC](retention-and-gc.md)
 - [Drills Program](drills-program.md)
+- [Operator FAQ](operator-faq.md)
 
 ## What To Read Next
 

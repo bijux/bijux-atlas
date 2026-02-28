@@ -42,4 +42,4 @@ Expected output: all linked references render with no broken links.
 
 - [Store Reference](../store/INDEX.md)
 - [Registry Reference](../registry/INDEX.md)
-- [Operations Runbooks](../../operations/runbooks/INDEX.md)
+- [Incident Playbook](../../operations/runbooks/incident-playbook.md)

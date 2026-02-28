@@ -26,8 +26,8 @@ Atlas is the stable platform surface for operating, evolving, and consuming the 
 ## Canonical Workflow Details
 
 - [Run Locally](operations/run-locally.md)
-- [Local Cluster Setup](operations/local-cluster-setup.md)
-- [Client SDK Examples](operations/client-sdk-examples.md)
+- [Deploy](operations/deploy.md)
+- [API Quick Reference](api/quick-reference.md)
 
 ## What To Read Next
 

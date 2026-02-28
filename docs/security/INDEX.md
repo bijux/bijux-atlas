@@ -4,5 +4,5 @@
 
 Security policies, controls, and operations references.
 
-- Operations security runbooks: [Operations Security](../operations/security/INDEX.md)
+- Operations security runbooks: [Incident Response](../operations/incident-response.md)
 - Security reference: [Reference Security](../reference/security/INDEX.md)

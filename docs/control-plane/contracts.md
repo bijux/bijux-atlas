@@ -42,4 +42,4 @@
 
 - [Root Contract](../../CONTRACT.md)
 - [Docs Contract](../CONTRACT.md)
-- [Lane Guarantees](../operations/release/lane-guarantees.md)
+- [Release Workflow](../operations/release-workflow.md)

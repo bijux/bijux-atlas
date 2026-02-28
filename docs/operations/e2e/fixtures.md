@@ -42,7 +42,6 @@ Expected output: fixture downloads pass checksum validation.
 
 ## See also
 
-- [E2E Index](INDEX.md)
+- [E2E Overview](overview.md)
 - [Fixtures Reference](../../reference/fixtures/INDEX.md)
-- [Artifact Contracts](../../contracts/artifacts/INDEX.md)
-- `ops-ci`
+- [Contracts Artifacts](../../contracts/artifacts/INDEX.md)

@@ -4,7 +4,7 @@ Concept IDs: concept.security-coordination
 
 - Owner: `bijux-atlas-security`
 
-Canonical page: [`docs/operations/security/advisory-process.md`](../../operations/security/advisory-process.md)
+Canonical page: [`docs/operations/incident-response.md`](../../operations/incident-response.md)
 
 ## What
 
@@ -40,6 +40,6 @@ Expected output: docs checks pass.
 
 ## See also
 
-- [Advisory Process](../../operations/security/advisory-process.md)
-- [Security Posture](../../operations/security/security-posture.md)
+- [Incident Response](../../operations/incident-response.md)
+- [Security Reference](../security/INDEX.md)
 - [Registry Index](INDEX.md)

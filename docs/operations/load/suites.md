@@ -78,7 +78,6 @@ Expected output: all configured suites produce results and pass policy threshold
 
 ## See also
 
-- [Load Index](INDEX.md)
-- [Load CI Policy](ci-policy.md)
-- [SLO Targets](../../product/slo-targets.md)
-- `ops-ci`
+- [Load Overview](overview.md)
+- [k6 Workloads](k6.md)
+- [SLO Policy](../observability/slo-policy.md)

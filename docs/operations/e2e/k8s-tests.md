@@ -45,7 +45,6 @@ Expected output: smoke or full K8s suite passes with evidence under `artifacts/e
 
 ## See also
 
-- [E2E Index](INDEX.md)
-- [K8s Operations](../k8s/INDEX.md)
-- [Load CI Policy](../load/ci-policy.md)
-- `ops-ci`
+- [E2E Overview](overview.md)
+- [Load Overview](../load/overview.md)
+- [Deploy](../deploy.md)

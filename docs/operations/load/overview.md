@@ -8,5 +8,3 @@ Reason to exist: provide one canonical load testing entrypoint.
 
 - [k6 Workloads](k6.md)
 - [Suites](suites.md)
-- [Result Contract](result-contract.md)
-- [Reproducibility](reproducibility.md)

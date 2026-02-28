@@ -46,4 +46,4 @@ Expected output: formatting, lint, audit, test, coverage, OpenAPI drift, docs, a
 
 - [Contracts SSOT](../contracts/INDEX.md)
 - [SLO Targets](slo-targets.md)
-- [Production Readiness](../operations/production-readiness-checklist.md)
+- [Deploy Workflow](../operations/deploy.md)
