@@ -301,5 +301,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_025_no_raw_http_links,
             }],
         },
+        Contract {
+            id: ContractId("DOC-026".to_string()),
+            title: "docs root entrypoint avoids duplicate section index links",
+            tests: vec![TestCase {
+                id: TestId("docs.index.unique_section_links".to_string()),
+                title: "docs/index.md links each section index at most once",
+                kind: TestKind::Pure,
+                run: test_docs_026_unique_section_links,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-027".to_string()),
+            title: "docs section indexes link at least one local page",
+            tests: vec![TestCase {
+                id: TestId("docs.index.section_indexes_list_local_pages".to_string()),
+                title: "required section INDEX.md pages link at least one local markdown page",
+                kind: TestKind::Pure,
+                run: test_docs_027_section_indexes_list_local_pages,
+            }],
+        },
     ])
 }
