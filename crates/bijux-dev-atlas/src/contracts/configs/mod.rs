@@ -361,6 +361,54 @@ pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
     Ok(path.display().to_string())
 }
 
+fn parse_checked_files(index: &RegistryIndex, exts: &[&str]) -> Vec<String> {
+    config_files_without_exclusions(index)
+        .into_iter()
+        .filter(|file| {
+            let path = Path::new(file);
+            let ext = path
+                .extension()
+                .and_then(|value| value.to_str())
+                .unwrap_or_default();
+            exts.contains(&ext)
+        })
+        .collect()
+}
+
+fn parse_supported_config_file(path: &Path) -> Result<(), String> {
+    let ext = path
+        .extension()
+        .and_then(|value| value.to_str())
+        .unwrap_or_default();
+    let text =
+        read_text(path).map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+    match ext {
+        "json" => {
+            serde_json::from_str::<serde_json::Value>(&text)
+                .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+        }
+        "jsonc" => {
+            let sanitized = text
+                .lines()
+                .filter(|line| !line.trim_start().starts_with("//"))
+                .collect::<Vec<_>>()
+                .join("\n");
+            serde_json::from_str::<serde_json::Value>(&sanitized)
+                .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+        }
+        "toml" => {
+            toml::from_str::<toml::Value>(&text)
+                .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+        }
+        "yaml" | "yml" => {
+            serde_yaml::from_str::<serde_yaml::Value>(&text)
+                .map_err(|err| format!("failed to parse {}: {err}", path.display()))?;
+        }
+        _ => {}
+    }
+    Ok(())
+}
+
 fn root_config_files(index: &RegistryIndex) -> BTreeSet<String> {
     index
         .files
@@ -747,7 +795,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=19)
+    let expected = (1..=25)
         .map(|n| format!("CONFIGS-{n:03}"))
         .collect::<BTreeSet<_>>();
     if index.contract_ids == expected {
@@ -1177,6 +1225,191 @@ fn test_configs_019_lifecycle(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_020_generated_index_deterministic(ctx: &RunContext) -> TestResult {
+    let first = match generated_index_json(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-020",
+                "configs.generated_index.deterministic",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let second = match generated_index_json(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-020",
+                "configs.generated_index.deterministic",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    if first == second {
+        TestResult::Pass
+    } else {
+        fail(
+            "CONFIGS-020",
+            "configs.generated_index.deterministic",
+            "configs/_generated/configs-index.json",
+            "generated configs index is not deterministic across consecutive renders",
+        )
+    }
+}
+
+fn test_configs_021_generated_index_matches_committed(ctx: &RunContext) -> TestResult {
+    let expected = match generated_index_json(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-021",
+                "configs.generated_index.committed_match",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let path = ctx.repo_root.join("configs/_generated/configs-index.json");
+    let text = match read_text(&path) {
+        Ok(text) => text,
+        Err(err) => {
+            return fail(
+                "CONFIGS-021",
+                "configs.generated_index.committed_match",
+                "configs/_generated/configs-index.json",
+                err,
+            )
+        }
+    };
+    let actual = match serde_json::from_str::<serde_json::Value>(&text) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-021",
+                "configs.generated_index.committed_match",
+                "configs/_generated/configs-index.json",
+                format!("parse configs/_generated/configs-index.json failed: {err}"),
+            )
+        }
+    };
+    if actual == expected {
+        TestResult::Pass
+    } else {
+        fail(
+            "CONFIGS-021",
+            "configs.generated_index.committed_match",
+            "configs/_generated/configs-index.json",
+            "committed generated configs index does not match registry render",
+        )
+    }
+}
+
+fn test_configs_022_json_configs_parse(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => return fail("CONFIGS-022", "configs.parse.json", REGISTRY_PATH, err),
+    };
+    let violations = parse_checked_files(&index, &["json", "jsonc"])
+        .into_iter()
+        .filter_map(|file| {
+            parse_supported_config_file(&ctx.repo_root.join(&file))
+                .err()
+                .map(|err| violation("CONFIGS-022", "configs.parse.json", &file, err))
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_023_yaml_configs_parse(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => return fail("CONFIGS-023", "configs.parse.yaml", REGISTRY_PATH, err),
+    };
+    let violations = parse_checked_files(&index, &["yaml", "yml"])
+        .into_iter()
+        .filter_map(|file| {
+            parse_supported_config_file(&ctx.repo_root.join(&file))
+                .err()
+                .map(|err| violation("CONFIGS-023", "configs.parse.yaml", &file, err))
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_024_toml_configs_parse(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => return fail("CONFIGS-024", "configs.parse.toml", REGISTRY_PATH, err),
+    };
+    let violations = parse_checked_files(&index, &["toml"])
+        .into_iter()
+        .filter_map(|file| {
+            parse_supported_config_file(&ctx.repo_root.join(&file))
+                .err()
+                .map(|err| violation("CONFIGS-024", "configs.parse.toml", &file, err))
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_025_text_hygiene(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => return fail("CONFIGS-025", "configs.text.hygiene", REGISTRY_PATH, err),
+    };
+    let text_exts = ["md", "txt", "toml", "json", "jsonc", "yml", "yaml", "ini"];
+    let mut violations = Vec::new();
+    for file in config_files_without_exclusions(&index) {
+        let ext = Path::new(&file)
+            .extension()
+            .and_then(|value| value.to_str())
+            .unwrap_or_default();
+        if !text_exts.contains(&ext) {
+            continue;
+        }
+        let text = match read_text(&ctx.repo_root.join(&file)) {
+            Ok(text) => text,
+            Err(err) => {
+                violations.push(violation("CONFIGS-025", "configs.text.hygiene", &file, err));
+                continue;
+            }
+        };
+        for (line_no, line) in text.lines().enumerate() {
+            if line.ends_with(' ') || line.ends_with('\t') {
+                violations.push(Violation {
+                    contract_id: "CONFIGS-025".to_string(),
+                    test_id: "configs.text.hygiene".to_string(),
+                    file: Some(file.clone()),
+                    line: Some(line_no + 1),
+                    message: "trailing whitespace is forbidden in config text files".to_string(),
+                    evidence: None,
+                });
+                break;
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -1312,6 +1545,48 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "each configs group declares stability-tier lifecycle metadata",
             test_configs_019_lifecycle,
         ),
+        contract(
+            "CONFIGS-020",
+            "configs generated index stays deterministic",
+            "configs.generated_index.deterministic",
+            "generated configs index renders deterministically",
+            test_configs_020_generated_index_deterministic,
+        ),
+        contract(
+            "CONFIGS-021",
+            "configs generated index matches committed output",
+            "configs.generated_index.committed_match",
+            "committed generated configs index matches the registry render",
+            test_configs_021_generated_index_matches_committed,
+        ),
+        contract(
+            "CONFIGS-022",
+            "configs json surfaces parse cleanly",
+            "configs.parse.json",
+            "json and jsonc config files parse successfully",
+            test_configs_022_json_configs_parse,
+        ),
+        contract(
+            "CONFIGS-023",
+            "configs yaml surfaces parse cleanly",
+            "configs.parse.yaml",
+            "yaml config files parse successfully",
+            test_configs_023_yaml_configs_parse,
+        ),
+        contract(
+            "CONFIGS-024",
+            "configs toml surfaces parse cleanly",
+            "configs.parse.toml",
+            "toml config files parse successfully",
+            test_configs_024_toml_configs_parse,
+        ),
+        contract(
+            "CONFIGS-025",
+            "configs text surfaces avoid whitespace drift",
+            "configs.text.hygiene",
+            "text config files avoid trailing whitespace drift",
+            test_configs_025_text_hygiene,
+        ),
     ])
 }
 
@@ -1355,6 +1630,12 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-017" => "Every configs group must declare the commands that consume that configuration surface.".to_string(),
         "CONFIGS-018" => "Schema-bearing groups must declare an explicit schema owner and real schema files.".to_string(),
         "CONFIGS-019" => "Each configs group declares stable lifecycle metadata through owner, schema owner, and stability.".to_string(),
+        "CONFIGS-020" => "The generated configs index must be deterministic from the registry.".to_string(),
+        "CONFIGS-021" => "The committed generated configs index must match the canonical registry render.".to_string(),
+        "CONFIGS-022" => "JSON and JSONC config files must parse successfully.".to_string(),
+        "CONFIGS-023" => "YAML config files must parse successfully.".to_string(),
+        "CONFIGS-024" => "TOML config files must parse successfully.".to_string(),
+        "CONFIGS-025" => "Config text files must not accumulate trailing whitespace drift.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }

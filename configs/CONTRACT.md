@@ -19,3 +19,9 @@
 - `CONFIGS-017`: Every configs group must declare the command entrypoints that consume it. Enforced by: `configs.registry.tool_entrypoints`.
 - `CONFIGS-018`: Every schema-bearing configs group must declare a schema owner and real schema paths. Enforced by: `configs.registry.schema_owner`.
 - `CONFIGS-019`: Every configs group must declare lifecycle metadata through owner, schema owner, and stability. Enforced by: `configs.registry.lifecycle`.
+- `CONFIGS-020`: The generated configs index must render deterministically from the registry. Enforced by: `configs.generated_index.deterministic`.
+- `CONFIGS-021`: The committed generated configs index must match the canonical registry render. Enforced by: `configs.generated_index.committed_match`.
+- `CONFIGS-022`: JSON and JSONC config files must parse successfully. Enforced by: `configs.parse.json`.
+- `CONFIGS-023`: YAML config files must parse successfully. Enforced by: `configs.parse.yaml`.
+- `CONFIGS-024`: TOML config files must parse successfully. Enforced by: `configs.parse.toml`.
+- `CONFIGS-025`: Config text files must not accumulate trailing whitespace drift. Enforced by: `configs.text.hygiene`.
