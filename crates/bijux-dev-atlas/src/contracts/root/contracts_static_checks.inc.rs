@@ -4,6 +4,7 @@ const ROOT_FORBIDDEN_BINARY_EXTENSIONS: [&str; 12] = [
     "bin", "dmg", "exe", "gz", "iso", "jar", "o", "so", "tar", "tgz", "war", "zip",
 ];
 const ROOT_DIRECTORY_BUDGET: usize = 8;
+const ROOT_FILE_SIZE_BUDGET_BYTES: u64 = 512 * 1024;
 
 fn test_root_001_surface_allowlist(ctx: &RunContext) -> TestResult {
     let mut allowed = ROOT_ALLOWED_VISIBLE
@@ -483,6 +484,26 @@ fn test_root_014_gitignore_tracked_contract_outputs(ctx: &RunContext) -> TestRes
     }
 }
 
+fn test_root_015_no_duplicate_toolchain_authority(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for duplicate in ["rust-toolchain", "rust-toolchain.yaml", "rust-toolchain.json"] {
+        if ctx.repo_root.join(duplicate).exists() {
+            push_root_violation(
+                &mut violations,
+                "ROOT-015",
+                "root.surface.no_duplicate_toolchain_authority",
+                Some(duplicate.to_string()),
+                "only rust-toolchain.toml may define root toolchain authority",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn root_surface_manifest(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<serde_json::Value, TestResult> {
     let contents = match read_root_text(ctx, "root-surface.json", contract_id, test_id) {
         Ok(contents) => contents,
@@ -817,6 +838,173 @@ fn test_root_028_manifest_docs_governed(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_root_029_no_nested_git(ctx: &RunContext) -> TestResult {
+    fn collect(dir: &std::path::Path, root: &std::path::Path, violations: &mut Vec<Violation>) {
+        let entries = match std::fs::read_dir(dir) {
+            Ok(entries) => entries,
+            Err(_) => return,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path.is_dir() {
+                continue;
+            }
+            let name = entry.file_name().to_string_lossy().to_string();
+            if path == root.join(".git") || name == ".idea" || name == "artifacts" || name == "target" {
+                continue;
+            }
+            if name == ".git" {
+                let rel = path
+                    .strip_prefix(root)
+                    .map(|value| value.display().to_string())
+                    .unwrap_or_else(|_| path.display().to_string());
+                violations.push(Violation {
+                    contract_id: "ROOT-029".to_string(),
+                    test_id: "root.surface.no_nested_git".to_string(),
+                    file: Some(rel),
+                    line: None,
+                    message: "nested git repository is forbidden".to_string(),
+                    evidence: None,
+                });
+                continue;
+            }
+            collect(&path, root, violations);
+        }
+    }
+
+    let mut violations = Vec::new();
+    collect(&ctx.repo_root, &ctx.repo_root, &mut violations);
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_030_no_vendor_blobs(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let entries = match std::fs::read_dir(&ctx.repo_root) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-030".to_string(),
+                test_id: "root.surface.no_vendor_blobs".to_string(),
+                file: None,
+                line: None,
+                message: format!("read repo root failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().to_string();
+        let lower = name.to_ascii_lowercase();
+        if lower == "vendor" || lower.starts_with("vendor-") || lower.ends_with("-vendor") {
+            push_root_violation(
+                &mut violations,
+                "ROOT-030",
+                "root.surface.no_vendor_blobs",
+                Some(name),
+                "vendor directories and blobs are forbidden at the repo root",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_031_root_file_size_budget(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let entries = match std::fs::read_dir(&ctx.repo_root) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-031".to_string(),
+                test_id: "root.surface.root_file_size_budget".to_string(),
+                file: None,
+                line: None,
+                message: format!("read repo root failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_file() || path.is_symlink() {
+            continue;
+        }
+        let name = entry.file_name().to_string_lossy().to_string();
+        let metadata = match entry.metadata() {
+            Ok(metadata) => metadata,
+            Err(err) => {
+                push_root_violation(
+                    &mut violations,
+                    "ROOT-031",
+                    "root.surface.root_file_size_budget",
+                    Some(name),
+                    format!("read metadata failed: {err}"),
+                );
+                continue;
+            }
+        };
+        if metadata.len() > ROOT_FILE_SIZE_BUDGET_BYTES {
+            push_root_violation(
+                &mut violations,
+                "ROOT-031",
+                "root.surface.root_file_size_budget",
+                Some(name),
+                format!(
+                    "root file exceeds size budget: {} > {} bytes",
+                    metadata.len(),
+                    ROOT_FILE_SIZE_BUDGET_BYTES
+                ),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_032_no_nested_toolchain_pins(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for root in ["configs", "ops"] {
+        let path = ctx.repo_root.join(root);
+        if !path.is_dir() {
+            continue;
+        }
+        let mut found = Vec::new();
+        collect_named_files(&path, "rust-toolchain.toml", &mut found);
+        collect_named_files(&path, "rust-toolchain", &mut found);
+        for item in found {
+            let rel = item
+                .strip_prefix(&ctx.repo_root)
+                .map(|value| value.display().to_string())
+                .unwrap_or_else(|_| item.display().to_string());
+            push_root_violation(
+                &mut violations,
+                "ROOT-032",
+                "root.surface.no_nested_toolchain_pins",
+                Some(rel),
+                "nested toolchain authority is forbidden under configs/ or ops/",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_root_021_editorconfig_exists(ctx: &RunContext) -> TestResult {
     if ctx.repo_root.join(".editorconfig").is_file() {
         TestResult::Pass
@@ -829,6 +1017,41 @@ fn test_root_021_editorconfig_exists(ctx: &RunContext) -> TestResult {
             message: ".editorconfig must exist at the repo root".to_string(),
             evidence: None,
         }])
+    }
+}
+
+fn test_root_022_license_single_authority(ctx: &RunContext) -> TestResult {
+    let cargo = match read_root_text(ctx, "Cargo.toml", "ROOT-022", "root.license.single_authority") {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let readme = match read_root_text(ctx, "README.md", "ROOT-022", "root.license.single_authority") {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    if cargo.contains("MIT") || cargo.contains("GPL") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-022",
+            "root.license.single_authority",
+            Some("Cargo.toml".to_string()),
+            "workspace metadata must not declare a conflicting license family",
+        );
+    }
+    if readme.contains("MIT") || readme.contains("GPL") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-022",
+            "root.license.single_authority",
+            Some("README.md".to_string()),
+            "root README must not describe conflicting license families",
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
     }
 }
 
@@ -886,6 +1109,59 @@ fn test_root_024_docs_no_legacy_links(ctx: &RunContext) -> TestResult {
         TestResult::Pass
     } else {
         violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_025_support_routing(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for forbidden in ["SUPPORT.md", "SUPPORT_MATRIX.md", "SUPPORT-MATRIX.md"] {
+        if ctx.repo_root.join(forbidden).exists() {
+            push_root_violation(
+                &mut violations,
+                "ROOT-025",
+                "root.docs.support_routing",
+                Some(forbidden.to_string()),
+                "support routing must live under docs/ or ops/, not as a new root authority file",
+            );
+        }
+    }
+    let readme = match read_root_text(ctx, "README.md", "ROOT-025", "root.docs.support_routing") {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    if readme.to_ascii_lowercase().contains("support matrix") && !readme.contains("docs/") && !readme.contains("ops/") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-025",
+            "root.docs.support_routing",
+            Some("README.md".to_string()),
+            "support matrix references in README.md must route into docs/ or ops/",
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_026_no_duplicate_policy_dirs(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for forbidden in ["policy", "policies"] {
+        if ctx.repo_root.join(forbidden).is_dir() {
+            push_root_violation(
+                &mut violations,
+                "ROOT-026",
+                "root.surface.no_duplicate_policy_dirs",
+                Some(forbidden.to_string()),
+                "policy directories must stay under the canonical configs/ surface",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
         TestResult::Fail(violations)
     }
 }

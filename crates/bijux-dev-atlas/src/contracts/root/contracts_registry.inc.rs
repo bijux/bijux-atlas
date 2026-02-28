@@ -166,6 +166,16 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("ROOT-015".to_string()),
+            title: "repo root forbids duplicate toolchain authority files",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_duplicate_toolchain_authority".to_string()),
+                title: "root toolchain authority stays singular and canonical",
+                kind: TestKind::Pure,
+                run: test_root_015_no_duplicate_toolchain_authority,
+            }],
+        },
+        Contract {
             id: ContractId("ROOT-016".to_string()),
             title: "repo root keeps a machine-readable surface manifest",
             tests: vec![TestCase {
@@ -236,6 +246,46 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("ROOT-029".to_string()),
+            title: "repo tree forbids nested git repositories",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_nested_git".to_string()),
+                title: "no nested .git directories exist under the repo tree",
+                kind: TestKind::Pure,
+                run: test_root_029_no_nested_git,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-030".to_string()),
+            title: "repo root forbids vendor directories and blobs",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_vendor_blobs".to_string()),
+                title: "vendor directories do not appear at the repo root",
+                kind: TestKind::Pure,
+                run: test_root_030_no_vendor_blobs,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-031".to_string()),
+            title: "repo root forbids oversized root files",
+            tests: vec![TestCase {
+                id: TestId("root.surface.root_file_size_budget".to_string()),
+                title: "root files stay under the approved size budget",
+                kind: TestKind::Pure,
+                run: test_root_031_root_file_size_budget,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-032".to_string()),
+            title: "configs and ops do not duplicate rust toolchain pins",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_nested_toolchain_pins".to_string()),
+                title: "toolchain authority does not reappear under configs or ops",
+                kind: TestKind::Pure,
+                run: test_root_032_no_nested_toolchain_pins,
+            }],
+        },
+        Contract {
             id: ContractId("ROOT-021".to_string()),
             title: "editorconfig exists for shared formatting contracts",
             tests: vec![TestCase {
@@ -243,6 +293,16 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: ".editorconfig stays present at the repo root",
                 kind: TestKind::Pure,
                 run: test_root_021_editorconfig_exists,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-022".to_string()),
+            title: "repo root keeps a single unambiguous license authority",
+            tests: vec![TestCase {
+                id: TestId("root.license.single_authority".to_string()),
+                title: "license metadata does not declare conflicting license families",
+                kind: TestKind::Pure,
+                run: test_root_022_license_single_authority,
             }],
         },
         Contract {
@@ -263,6 +323,26 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: "root docs do not reference deleted legacy control-plane surfaces",
                 kind: TestKind::Pure,
                 run: test_root_024_docs_no_legacy_links,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-025".to_string()),
+            title: "repo root keeps support routing out of the root surface",
+            tests: vec![TestCase {
+                id: TestId("root.docs.support_routing".to_string()),
+                title: "support references point into docs or ops instead of new root authority files",
+                kind: TestKind::Pure,
+                run: test_root_025_support_routing,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-026".to_string()),
+            title: "repo root forbids duplicate policy directories",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_duplicate_policy_dirs".to_string()),
+                title: "policy directories stay out of the repo root surface",
+                kind: TestKind::Pure,
+                run: test_root_026_no_duplicate_policy_dirs,
             }],
         },
     ])
