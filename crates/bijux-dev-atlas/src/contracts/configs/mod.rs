@@ -13,6 +13,14 @@ const CONTRACT_SURFACE_PATH: &str = "configs/configs.contracts.json";
 const OWNERS_PATH: &str = "configs/OWNERS.json";
 const CONSUMERS_PATH: &str = "configs/CONSUMERS.json";
 const SCHEMAS_PATH: &str = "configs/SCHEMAS.json";
+const ROOT_CANONICAL_JSON_FILES: [&str; 6] = [
+    "configs/OWNERS.json",
+    "configs/CONSUMERS.json",
+    "configs/SCHEMAS.json",
+    "configs/configs.contracts.json",
+    "configs/inventory.json",
+    "configs/_generated/configs-index.json",
+];
 const ROOT_MARKDOWN_FILES: [&str; 2] = ["configs/README.md", "configs/CONTRACT.md"];
 const DOCS_TOOLING_PATTERNS: [&str; 6] = [
     "configs/docs/.markdownlint-cli2.jsonc",
@@ -617,6 +625,35 @@ fn schema_like(path: &str) -> bool {
     path.ends_with(".schema.json")
 }
 
+fn canonicalize_json_value(value: &serde_json::Value) -> serde_json::Value {
+    match value {
+        serde_json::Value::Object(map) => {
+            let sorted = map
+                .iter()
+                .map(|(key, child)| (key.clone(), canonicalize_json_value(child)))
+                .collect::<BTreeMap<_, _>>();
+            let mut normalized = serde_json::Map::new();
+            for (key, child) in sorted {
+                normalized.insert(key, child);
+            }
+            serde_json::Value::Object(normalized)
+        }
+        serde_json::Value::Array(items) => serde_json::Value::Array(
+            items
+                .iter()
+                .map(canonicalize_json_value)
+                .collect::<Vec<_>>(),
+        ),
+        _ => value.clone(),
+    }
+}
+
+fn canonical_json_string(value: &serde_json::Value) -> Result<String, String> {
+    serde_json::to_string_pretty(&canonicalize_json_value(value))
+        .map(|text| format!("{text}\n"))
+        .map_err(|err| format!("render canonical json failed: {err}"))
+}
+
 fn test_configs_001_root_surface(ctx: &RunContext) -> TestResult {
     let index = match registry_index(&ctx.repo_root) {
         Ok(index) => index,
@@ -1010,7 +1047,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=35)
+    let expected = (1..=36)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
@@ -2194,6 +2231,62 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_032_root_json_canonical(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for file in ROOT_CANONICAL_JSON_FILES {
+        let path = ctx.repo_root.join(file);
+        let text = match read_text(&path) {
+            Ok(text) => text,
+            Err(err) => {
+                violations.push(violation(
+                    "CONFIGS-032",
+                    "configs.json.canonical_root_surface",
+                    file,
+                    err,
+                ));
+                continue;
+            }
+        };
+        let value = match serde_json::from_str::<serde_json::Value>(&text) {
+            Ok(value) => value,
+            Err(err) => {
+                violations.push(violation(
+                    "CONFIGS-032",
+                    "configs.json.canonical_root_surface",
+                    file,
+                    format!("parse failed: {err}"),
+                ));
+                continue;
+            }
+        };
+        let canonical = match canonical_json_string(&value) {
+            Ok(text) => text,
+            Err(err) => {
+                violations.push(violation(
+                    "CONFIGS-032",
+                    "configs.json.canonical_root_surface",
+                    file,
+                    err,
+                ));
+                continue;
+            }
+        };
+        if text != canonical {
+            violations.push(violation(
+                "CONFIGS-032",
+                "configs.json.canonical_root_surface",
+                file,
+                "json must use stable two-space pretty formatting with lexicographically sorted object keys",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -2413,6 +2506,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "root, public, and generated json configs map to declared schemas",
             test_configs_031_schema_map_coverage,
         ),
+        contract(
+            "CONFIGS-032",
+            "configs root json surfaces stay canonical",
+            "configs.json.canonical_root_surface",
+            "root authority json files use canonical stable formatting",
+            test_configs_032_root_json_canonical,
+        ),
     ])
 }
 
@@ -2468,6 +2568,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-029" => "The canonical configs consumer map must cover the registry groups.".to_string(),
         "CONFIGS-030" => "Every public or generated config file must have explicit file-level consumer coverage in configs/CONSUMERS.json.".to_string(),
         "CONFIGS-031" => "Root, public, and generated JSON or JSONC configs must map to explicit schema coverage in configs/SCHEMAS.json.".to_string(),
+        "CONFIGS-032" => "The root configs authority JSON files and generated configs index must stay in canonical sorted pretty JSON form.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
@@ -2645,7 +2746,7 @@ mod tests {
         let surface = read_contract_surface(&repo_root()).expect("contract surface");
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 35);
+        assert_eq!(surface.contracts.len(), 36);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -2656,7 +2757,7 @@ mod tests {
     #[test]
     fn cfg_contract_coverage_payload_is_stable() {
         let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
-        assert_eq!(payload["contract_count"].as_u64(), Some(35));
+        assert_eq!(payload["contract_count"].as_u64(), Some(36));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());
