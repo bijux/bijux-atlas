@@ -603,10 +603,10 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
             .unwrap_or_default();
         if !matches!(
             name,
-            "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md"
+            "README.md" | "CONTRIBUTING.md" | "SECURITY.md" | "CHANGELOG.md" | "CONTRACT.md"
         ) {
             errors.push(format!(
-                "DOCS_REGISTRY_ROOT_DOC_FORBIDDEN: allowed root docs are README/CONTRIBUTING/SECURITY/CHANGELOG, found `{}`",
+                "DOCS_REGISTRY_ROOT_DOC_FORBIDDEN: allowed root docs are README/CONTRIBUTING/SECURITY/CHANGELOG/CONTRACT, found `{}`",
                 name
             ));
         }

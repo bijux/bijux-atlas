@@ -61,6 +61,12 @@
     },
     {
       "breadcrumbs": [
+        "CONTRACT.md"
+      ],
+      "path": "CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
         "CONTRIBUTING.md"
       ],
       "path": "CONTRIBUTING.md"
@@ -6268,6 +6274,20 @@
         "docs/taxonomy-map.md"
       ],
       "path": "docs/taxonomy-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "make",
+        "make/CONTRACT.md"
+      ],
+      "path": "make/CONTRACT.md"
+    },
+    {
+      "breadcrumbs": [
+        "make",
+        "make/README.md"
+      ],
+      "path": "make/README.md"
     },
     {
       "breadcrumbs": [

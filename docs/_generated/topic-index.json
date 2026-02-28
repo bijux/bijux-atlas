@@ -145,6 +145,7 @@
       "crates/bijux-atlas-policies/docs/CONFIG_SCHEMA.md"
     ],
     "CONTRACT": [
+      "CONTRACT.md",
       "configs/CONTRACT.md",
       "crates/bijux-atlas-api/CONTRACT.md",
       "crates/bijux-atlas-cli/CONTRACT.md",
@@ -159,6 +160,7 @@
       "crates/bijux-dev-atlas/docs/CONTRACT.md",
       "docker/CONTRACT.md",
       "docs/CONTRACT.md",
+      "make/CONTRACT.md",
       "ops/CONTRACT.md",
       "ops/datasets/CONTRACT.md",
       "ops/e2e/CONTRACT.md",
@@ -503,6 +505,7 @@
       "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md",
       "docker/README.md",
       "docs/contracts/README.md",
+      "make/README.md",
       "ops/README.md",
       "ops/datasets/README.md",
       "ops/e2e/README.md",

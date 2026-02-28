@@ -104,6 +104,16 @@
     },
     {
       "keywords": [
+        "contract"
+      ],
+      "path": "CONTRACT.md",
+      "tags": [
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
         "contributing"
       ],
       "path": "CONTRIBUTING.md",
@@ -9339,6 +9349,30 @@
         "taxonomy-map"
       ],
       "topic": "taxonomy-map"
+    },
+    {
+      "keywords": [
+        "contract",
+        "make"
+      ],
+      "path": "make/CONTRACT.md",
+      "tags": [
+        "contract",
+        "make"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "keywords": [
+        "make",
+        "readme"
+      ],
+      "path": "make/README.md",
+      "tags": [
+        "make",
+        "readme"
+      ],
+      "topic": "README"
     },
     {
       "keywords": [

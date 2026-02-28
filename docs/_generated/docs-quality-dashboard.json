@@ -16,7 +16,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CHANGELOG` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `CLI_COMMAND_LIST` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `COMMAND_SURFACE` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 25 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `CONTRACT` appears 27 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `ERRORS` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `ERROR_TAXONOMY` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `EXAMPLES` appears 10 times",
@@ -27,7 +27,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `OWNERS` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `PATTERNS` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `PURITY` appears 2 times",
-    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 44 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `README` appears 45 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `START_HERE` appears 3 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `TESTING` appears 10 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `VERSIONING` appears 11 times",
@@ -63,6 +63,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `.github/required-status-checks.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `.github/templates/scripts-migration-release-note.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `CHANGELOG.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `CONTRIBUTING.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `SECURITY.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `configs/CONTRACT.md` has no inbound doc links",
@@ -330,6 +331,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/store/metrics-conventions.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/store/no-implicit-default-dataset.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/taxonomy-map.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `make/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/e2e/CONTRACT.md` has no inbound doc links",
@@ -344,8 +346,8 @@
   ],
   "schema_version": 1,
   "summary": {
-    "errors": 4,
-    "registered": 745,
-    "warnings": 384
+    "errors": 0,
+    "registered": 748,
+    "warnings": 386
   }
 }

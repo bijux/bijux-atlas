@@ -171,6 +171,24 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "contract"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "contributing"
       ],
       "last_reviewed": "2026-02-25",
@@ -15123,6 +15141,46 @@
         "taxonomy-map"
       ],
       "topic": "taxonomy-map"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contract",
+        "make"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "make/CONTRACT.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract",
+        "make"
+      ],
+      "topic": "CONTRACT"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "make",
+        "readme"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "make/README.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "make",
+        "readme"
+      ],
+      "topic": "README"
     },
     {
       "crate": null,

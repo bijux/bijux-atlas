@@ -43,6 +43,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "CONTRIBUTING.md"
     },
     {
@@ -3614,6 +3619,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/taxonomy-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "make/CONTRACT.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "make/README.md"
     },
     {
       "crate": null,

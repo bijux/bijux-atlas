@@ -12,6 +12,7 @@ License: Apache-2.0
 | `.github/required-status-checks.md` | `concept` | `build-and-release` | `stable` |
 | `.github/templates/scripts-migration-release-note.md` | `concept` | `` | `stable` |
 | `CHANGELOG.md` | `concept` | `docs-governance` | `stable` |
+| `CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `CONTRIBUTING.md` | `concept` | `docs-governance` | `stable` |
 | `README.md` | `concept` | `docs-governance` | `stable` |
 | `SECURITY.md` | `concept` | `docs-governance` | `stable` |
@@ -727,6 +728,8 @@ License: Apache-2.0
 | `docs/security/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/start/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/taxonomy-map.md` | `concept` | `docs-governance` | `stable` |
+| `make/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
+| `make/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `ops/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/datasets/CONTRACT.md` | `concept` | `bijux-atlas-data` | `stable` |
