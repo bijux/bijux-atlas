@@ -1,11 +1,11 @@
-# Contributor onboarding checklist (30 minutes)
+# Contributor onboarding rubric (30 minutes)
 
 - Owner: `platform`
 - Type: `guide`
 - Audience: `contributor`
 - Stability: `stable`
 - Last verified against: `main@bdd91bc0`
-- Reason to exist: provide a bounded onboarding checklist that proves a contributor can read, run, and extend Atlas workflows.
+- Reason to exist: provide a bounded onboarding rubric that proves a contributor can read, run, and extend Atlas workflows.
 
 ## Checklist
 

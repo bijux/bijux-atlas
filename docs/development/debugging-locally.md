@@ -44,7 +44,7 @@ Policy sources commonly used during triage:
 
 ## What to Read Next
 
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [CI Overview](ci-overview.md)
 - [Contributing](contributing.md)
 

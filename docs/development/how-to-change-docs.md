@@ -21,4 +21,5 @@ Docs checks pass and reader navigation remains coherent.
 ## What to Read Next
 
 - [Doc Conventions](doc-conventions.md)
+- [Docs change process](../_meta/docs-change-process.md)
 - [Governance Readers Guide](../governance/readers-guide.md)

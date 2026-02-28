@@ -30,7 +30,7 @@
 
 ## Reports in CI
 
-See [Reports and CI Consumption](reports-and-ci-consumption.md) for artifact flow and ownership.
+See [CI report consumption](../control-plane/ci-report-consumption.md) for artifact flow and ownership.
 
 ## Verify Success
 
@@ -38,7 +38,7 @@ A CI run is healthy when required lanes pass and evidence artifacts are present 
 
 ## What to Read Next
 
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [Release Workflow](../operations/release-workflow.md)
 - [Contributing](contributing.md)
 

@@ -27,7 +27,7 @@ make test
 
 ## What to Read Next
 
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [Debugging Locally](debugging-locally.md)
 
 ## Document Taxonomy

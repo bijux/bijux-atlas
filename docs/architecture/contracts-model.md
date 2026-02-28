@@ -29,4 +29,4 @@
 
 - [Reference contracts](../reference/contracts/index.md)
 - [Dataflow](dataflow.md)
-- [Development control plane](../development/control-plane.md)
+- [Control-plane](../control-plane/index.md)

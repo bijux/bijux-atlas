@@ -28,4 +28,4 @@
 
 - [Effects](effects.md)
 - [Boundaries](boundaries.md)
-- [Development control plane](../development/control-plane.md)
+- [Control-plane](../control-plane/index.md)

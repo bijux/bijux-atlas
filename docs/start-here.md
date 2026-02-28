@@ -44,5 +44,5 @@ bijux dev atlas demo quickstart --format json
 - Operator workflows: [Operations](operations/index.md)
 - Contributor workflows: [Development](development/index.md)
 - Guided tracks: [What to read next](what-to-read-next.md)
-- Onboarding checklist: [Contributor onboarding checklist (30 minutes)](development/contributor-onboarding-checklist.md)
+- Onboarding rubric: [Contributor onboarding rubric (30 minutes)](development/contributor-onboarding-rubric.md)
 - Terms: [Glossary](glossary.md)

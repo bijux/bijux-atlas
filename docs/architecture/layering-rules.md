@@ -13,7 +13,7 @@ This page is retained as a stable URL. Canonical layering rules are now in [Boun
 
 - [Boundaries](boundaries.md)
 - [Crates Map](crates-map.md)
-- [Development Control Plane](../development/control-plane.md)
+- [Control-plane](../control-plane/index.md)
 
 ## Document Taxonomy
 

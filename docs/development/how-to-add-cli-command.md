@@ -24,6 +24,6 @@ make test
 
 ## What to Read Next
 
-- [Control Plane](control-plane.md)
-- [How to Add Check](how-to-add-check.md)
+- [Control-plane](../control-plane/index.md)
+- [Add a check in 30 minutes](../control-plane/add-a-check-in-30-minutes.md)
 - [Reference Commands](../reference/commands.md)

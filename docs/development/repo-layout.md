@@ -35,7 +35,7 @@ Contributor changes should not introduce new top-level alias directories or dupl
 ## What to Read Next
 
 - [Contributing](contributing.md)
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 
 ## Document Taxonomy
 

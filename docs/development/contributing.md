@@ -35,10 +35,10 @@ All required checks pass and documentation reflects behavior truthfully.
 
 ## What to Read Next
 
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [Doc Conventions](doc-conventions.md)
 - [How to Change Docs](how-to-change-docs.md)
-- [Contributor onboarding checklist (30 minutes)](contributor-onboarding-checklist.md)
+- [Contributor onboarding rubric (30 minutes)](contributor-onboarding-rubric.md)
 
 ## Document Taxonomy
 

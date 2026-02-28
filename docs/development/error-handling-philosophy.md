@@ -19,5 +19,5 @@ Failure output maps to stable exit code behavior and includes reproducible comma
 
 ## What to Read Next
 
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [Debugging Locally](debugging-locally.md)

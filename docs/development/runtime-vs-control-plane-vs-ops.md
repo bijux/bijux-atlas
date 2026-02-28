@@ -1,4 +1,4 @@
-# Runtime vs Control Plane vs Ops
+# Runtime vs control-plane vs ops
 
 - Owner: `platform`
 - Type: `concept`
@@ -11,7 +11,7 @@
 
 Owns ingest, query, API, server behavior and immutable release serving semantics.
 
-## Control Plane
+## Control-plane
 
 Owns contributor/CI validation orchestration, policy enforcement, and evidence outputs.
 
@@ -26,5 +26,5 @@ Each layer owns its change domain; cross-layer shortcuts are treated as defects.
 ## What to Read Next
 
 - [Architecture](../architecture/index.md)
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [Operations](../operations/index.md)
