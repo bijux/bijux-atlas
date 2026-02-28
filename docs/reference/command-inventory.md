@@ -4,19 +4,21 @@
 - Type: `reference`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@50be979f`
-- Reason to exist: provide the generated-like command inventory location for stable command surfaces.
+- Last updated for release: `v1`
+- Reason to exist: provide the canonical inventory entrypoint for command surfaces.
 
-## Source
-
-- `docs/_generated/command-index.json`
-
-## Canonical Surfaces
+## Command surfaces
 
 - `bijux atlas ...`
 - `bijux dev atlas ...`
-- `make <entrypoint>` wrappers
+- `make <target>` wrappers
 
-## Usage
+## Where to read commands
 
-Use this page as the index pointer and use [Commands](commands.md) for human-readable command guidance.
+- Human-oriented command guidance: [Commands Reference](commands.md)
+- Ops-focused commands: [Operations Surface Reference](ops-surface.md)
+
+## Next
+
+- [Commands Reference](commands.md)
+- [Make Reference](make.md)

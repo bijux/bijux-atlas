@@ -1,21 +1,30 @@
 # Errors Reference
 
-Owner: `bijux-atlas-operations`  
-Type: `reference`  
-Reason to exist: canonical stable error code registry.
+- Owner: `bijux-atlas-operations`
+- Type: `reference`
+- Audience: `user`
+- Stability: `stable`
+- Last updated for release: `v1`
+- Reason to exist: provide canonical error taxonomy and HTTP mapping references.
 
-## Source Of Truth
+## Error taxonomy
 
-- `docs/reference/contracts/errors.md`
-- runtime error contract outputs
+- Validation errors: request shape or parameter violations.
+- Compatibility errors: unsupported version/contract expectations.
+- Runtime availability errors: downstream or service state failures.
 
-## Semantics
+## Canonical sources
 
-- Error codes are stable machine identifiers for client handling.
-- Error `message` is human-readable and not a stable parsing surface.
-- `details` contains optional structured fields for diagnostics.
-- HTTP status mappings are stable for existing error codes in v1.
+- Error codes: [Contracts Errors](contracts/errors.md)
+- Envelope schema: `docs/reference/contracts/schemas/ERROR_SCHEMA.json`
+- Status mapping: `docs/reference/contracts/schemas/ERROR_STATUS_MAP.json`
 
-## Table Scope
+## Troubleshooting links
 
-Error code mappings are maintained only in this section.
+- API usage and handling: [API Errors](../api/errors.md)
+- Service incidents: [Operations Incident Response](../operations/incident-response.md)
+
+## Next
+
+- [API Errors](../api/errors.md)
+- [Schemas Reference](schemas.md)

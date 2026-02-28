@@ -1,15 +1,30 @@
 # Configs Reference
 
-Owner: `bijux-atlas-operations`  
-Type: `reference`  
-Reason to exist: canonical configuration inventory and ownership mapping.
+- Owner: `bijux-atlas-operations`
+- Type: `reference`
+- Audience: `user`
+- Stability: `stable`
+- Last updated for release: `v1`
+- Reason to exist: define canonical runtime configuration keys, defaults, and setting surfaces.
 
-## Source Of Truth
+## Configuration sources
 
-- `configs/inventory/configs.json`
-- `configs/README.md`
-- `configs/CONTRACT.md`
+- Runtime config inventory: `configs/inventory/configs.json`
+- Runtime config guide: `configs/README.md`
+- Config governance contract: `configs/CONTRACT.md`
 
-## Table Scope
+## How to set config
 
-Configuration keys and ownership tables are maintained only in this section.
+- Local/dev workflows: use documented control-plane commands.
+- Kubernetes deploys: set chart values mapped to runtime keys.
+
+## Canonical mappings
+
+- Runtime keys and semantics: [Config Keys Contract](contracts/config-keys.md)
+- Helm values mapping: [Chart Values Contract](contracts/chart-values.md)
+- Operator procedures: [Deploy](../operations/deploy.md)
+
+## Next
+
+- [Schemas Reference](schemas.md)
+- [Operations Config](../operations/config.md)
