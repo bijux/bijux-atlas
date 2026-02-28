@@ -41,6 +41,32 @@ You executed the canonical onboarding flow and confirmed a runnable environment.
 - Runtime model: [Architecture Dataflow](architecture/dataflow.md)
 - Core terms: [Glossary](glossary.md)
 
+## If You Read One Page Per Section
+
+- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
+- Architecture: [Dataflow](architecture/dataflow.md)
+- Operations: [Run Locally](operations/run-locally.md)
+- Development: [Control Plane](development/control-plane.md)
+- Reference: [Commands](reference/commands.md)
+
+## New User Onboarding (15 Minutes)
+
+1. Run the quickstart command.
+2. Read [Product](product/index.md) and [API](api/index.md).
+3. Confirm key terms in [Glossary](glossary.md).
+
+## New Operator Onboarding (30 Minutes)
+
+1. Run [Run Locally](operations/run-locally.md).
+2. Review [Deploy](operations/deploy.md) and [Incident Response](operations/incident-response.md).
+3. Verify command and schema facts in [Reference](reference/index.md).
+
+## New Engineer Onboarding (30 Minutes)
+
+1. Read [Development](development/index.md) and [Control Plane](development/control-plane.md).
+2. Read [Architecture](architecture/index.md) and [Boundaries](architecture/boundaries.md).
+3. Follow [Contributing](development/contributing.md) before opening changes.
+
 ## Document Taxonomy
 
 - Audience: `user`

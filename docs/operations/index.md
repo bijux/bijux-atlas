@@ -19,6 +19,17 @@ Give operators one stable entrypoint for running, deploying, observing, and reco
 - [Incident Response](incident-response.md)
 - [Release](release/index.md)
 
+## What This Page Is Not
+
+This page is not a command reference and not an architecture deep dive.
+
+## Example
+
+```bash
+make ops-doctor
+make ops-load-smoke
+```
+
 ## Next Steps
 
 Use [Reference](../reference/index.md) for exact flags and schemas, and [Runbooks](runbooks/index.md) during incidents.

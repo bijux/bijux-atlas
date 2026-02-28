@@ -9,7 +9,7 @@
 
 ## Purpose
 
-Centralize stable facts so guides and runbooks stay concise and non-duplicative.
+Facts live here. This section centralizes stable factual surfaces so guides and runbooks stay concise and non-duplicative.
 
 ## What You Will Find Here
 
@@ -19,6 +19,18 @@ Centralize stable facts so guides and runbooks stay concise and non-duplicative.
 - [Schemas](schemas.md)
 - [Errors](errors.md)
 - [Contracts](contracts/index.md)
+
+## What This Page Is Not
+
+This page is not a tutorial and not an operations playbook.
+
+## Example
+
+```text
+Need CLI flags -> Commands.
+Need runtime key semantics -> Configs.
+Need response code details -> Errors.
+```
 
 ## Next Steps
 

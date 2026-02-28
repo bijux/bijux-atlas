@@ -9,7 +9,13 @@
 
 ## Purpose
 
-Provide the canonical product narrative and compatibility commitments.
+Provide the canonical product story: what Atlas is, who it serves, and the promises it keeps.
+
+## Who It Is For
+
+- Users integrating genomic data query workflows.
+- Operators running release and incident procedures.
+- Contributors extending runtime and control-plane behavior.
 
 ## What You Will Find Here
 
@@ -17,6 +23,18 @@ Provide the canonical product narrative and compatibility commitments.
 - [Compatibility Promise](compatibility-promise.md)
 - [Non-Goals](non-goals.md)
 - [Release Model](release-model.md)
+
+## What This Page Is Not
+
+This page is not an operations runbook and not an API reference table.
+
+## Example
+
+```text
+Use Product docs to decide if Atlas fits your constraints.
+Use API docs to integrate clients.
+Use Operations docs to run the system.
+```
 
 ## Next Steps
 

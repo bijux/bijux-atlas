@@ -22,12 +22,12 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 
 ## Next Steps
 
-Use [Governance Readers Guide](../governance/readers-guide.md) for docs policy and [Architecture](../architecture/index.md) for runtime boundaries.
+Use [Architecture](../architecture/index.md) for runtime boundaries and [Doc Conventions](doc-conventions.md) for writing standards.
 
 ## What to Read Next
 
-- Governance policy: [Governance Readers Guide](../governance/readers-guide.md)
 - Runtime boundaries: [Architecture](../architecture/index.md)
+- Contributor writing standards: [Doc Conventions](doc-conventions.md)
 - Core terms: [Glossary](../glossary.md)
 
 ## Document Taxonomy
