@@ -45,4 +45,4 @@ Expected output: crate docs contract check passes.
 
 - [Structure Templates](structure-templates.md)
 - [Naming Standard](naming-standard.md)
-- [Crates Map](../development/crates-map.md)
+- [Repository Layout](../development/repo-layout.md)

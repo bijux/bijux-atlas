@@ -23,40 +23,34 @@ Does not replace registry-specific detail pages.
 | Registry | SSOT file | Generated docs/code | Stability |
 | --- | --- | --- | --- |
 | Error codes | `ERROR_CODES.json` | `errors.md`, API/core generated Rust | Frozen |
-| Error envelope schema | `ERROR_SCHEMA.json` | `_generated/contracts/ERROR_SCHEMA.md` | Stable |
-| Error status map | `ERROR_STATUS_MAP.json` | `_generated/contracts/ERROR_STATUS_MAP.md` | Stable |
+| Error envelope schema | `ERROR_SCHEMA.json` | `errors.md`, envelope validation checks | Stable |
+| Error status map | `ERROR_STATUS_MAP.json` | `errors.md`, status-code validation checks | Stable |
 | Metrics | `METRICS.json` | `metrics.md`, server telemetry constants | Additive |
 | Trace spans | `TRACE_SPANS.json` | `tracing.md`, server span constants | Additive |
 | Endpoints | `ENDPOINTS.json` | `endpoints.md`, OpenAPI drift checks | Additive |
 | Config keys | `CONFIG_KEYS.json` | `config-keys.md`, config-key checks | Additive |
 | Chart values | `CHART_VALUES.json` | `chart-values.md`, chart values checks | Additive |
-| Artifact schema | `artifacts/ARTIFACT_SCHEMA.json` | `_generated/contracts/ARTIFACT_SCHEMA.md` | Experimental |
-| Policy schema | `POLICY_SCHEMA.json` | `_generated/contracts/POLICY_SCHEMA.md` | Experimental |
-| QC schema | `QC_SCHEMA.json` | `_generated/contracts/QC_SCHEMA.md` | Stable |
-| Normalized format schema | `NORMALIZED_FORMAT_SCHEMA.json` | `_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md` | Evolving |
-| Release diff schema | `DIFF_SCHEMA.json` | `_generated/contracts/DIFF_SCHEMA.md` | Additive |
-| Sharding schema | `SHARDING_SCHEMA.json` | `_generated/contracts/SHARDING_SCHEMA.md` | Additive |
-| Cursor schema | `CURSOR_SCHEMA.json` | `_generated/contracts/CURSOR_SCHEMA.md` | Additive |
+| Artifact schema | `artifacts/ARTIFACT_SCHEMA.json` | `artifacts/manifest-contract.md` | Experimental |
+| Policy schema | `POLICY_SCHEMA.json` | `../governance/index.md`, policy checks | Experimental |
+| QC schema | `QC_SCHEMA.json` | `qc.md` | Stable |
+| Normalized format schema | `NORMALIZED_FORMAT_SCHEMA.json` | `normalized-format.md` | Evolving |
+| Release diff schema | `DIFF_SCHEMA.json` | `contract-diff.md` | Additive |
+| Sharding schema | `SHARDING_SCHEMA.json` | `../reference/configs.md` | Additive |
+| Cursor schema | `CURSOR_SCHEMA.json` | `../reference/schemas.md` | Additive |
 | GC policy schema | `GC_POLICY.json` | `operations/retention-and-gc.md` | Additive |
 
-## Generated docs
+## Canonical references
 
-- [_generated/contracts/ERROR_CODES.md](../_generated/contracts/ERROR_CODES.md)
-- [_generated/contracts/ERROR_SCHEMA.md](../_generated/contracts/ERROR_SCHEMA.md)
-- [_generated/contracts/ERROR_STATUS_MAP.md](../_generated/contracts/ERROR_STATUS_MAP.md)
-- [_generated/contracts/ENDPOINTS.md](../_generated/contracts/ENDPOINTS.md)
-- [_generated/contracts/METRICS.md](../_generated/contracts/METRICS.md)
-- [_generated/contracts/TRACE_SPANS.md](../_generated/contracts/TRACE_SPANS.md)
-- [_generated/contracts/CONFIG_KEYS.md](../_generated/contracts/CONFIG_KEYS.md)
-- [_generated/contracts/CHART_VALUES.md](../_generated/contracts/CHART_VALUES.md)
-- [_generated/contracts/chart-contract-index.md](../_generated/contracts/chart-contract-index.md)
-- [_generated/contracts/ARTIFACT_SCHEMA.md](../_generated/contracts/ARTIFACT_SCHEMA.md)
-- [_generated/contracts/POLICY_SCHEMA.md](../_generated/contracts/POLICY_SCHEMA.md)
-- [_generated/contracts/QC_SCHEMA.md](../_generated/contracts/QC_SCHEMA.md)
-- [_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md](../_generated/contracts/NORMALIZED_FORMAT_SCHEMA.md)
-- [_generated/contracts/DIFF_SCHEMA.md](../_generated/contracts/DIFF_SCHEMA.md)
-- [_generated/contracts/SHARDING_SCHEMA.md](../_generated/contracts/SHARDING_SCHEMA.md)
-- [_generated/contracts/CURSOR_SCHEMA.md](../_generated/contracts/CURSOR_SCHEMA.md)
+- [Error Codes](errors.md)
+- [Endpoints](endpoints.md)
+- [Metrics](metrics.md)
+- [Trace Spans](tracing.md)
+- [Config Keys](config-keys.md)
+- [Chart Values](chart-values.md)
+- [Artifact Contracts](artifacts/INDEX.md)
+- [Schema Index](../reference/schemas.md)
+
+Note: generated contract artifacts are validated in CI and may not be committed as markdown pages.
 
 ## Failure modes
 
