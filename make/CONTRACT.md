@@ -8,3 +8,23 @@
 - `MAKE-INCLUDE-001`: The root `Makefile` includes exactly one file: `make/public.mk`. Enforced by: `make.includes.root_single_entrypoint`.
 - `MAKE-INCLUDE-002`: `make/public.mk` includes only the approved wrapper modules: vars, paths, macros, phony, `_internal`, and checks. Enforced by: `make.includes.public_surface`.
 - `MAKE-INCLUDE-003`: The include graph under `Makefile` and `make/**/*.mk` is acyclic. Enforced by: `make.includes.acyclic`.
+- `MAKE-SURFACE-001`: Public targets are curated from one source only: `make/makefiles/root.mk:CURATED_TARGETS`. Enforced by: `make.surface.single_source`.
+- `MAKE-SURFACE-002`: The curated public target count must stay within the configured budget. Enforced by: `make.surface.count_budget`.
+- `MAKE-SURFACE-003`: Public targets must match `configs/make/public-targets.json`. Enforced by: `make.surface.registry_sync`.
+- `MAKE-SURFACE-004`: Public targets that emit artifacts must write beneath `artifacts/` with run-scoped paths. Enforced by: `bijux dev atlas contracts make` review surface and wrapper targets.
+- `MAKE-SURFACE-005`: Curated public targets must remain thin delegates to `bijux dev atlas ...`, `cargo ...`, or another curated wrapper. Enforced by: `make.surface.delegate_only`.
+- `MAKE-INTERNAL-001`: Non-curated root helper targets must use the `_internal-` prefix. Enforced by: `make.internal.root_helpers_prefixed`.
+- `MAKE-INTERNAL-002`: Make recipes must not invoke `scripts/` directly. Enforced by: `make.internal.no_scripts_path`.
+- `MAKE-NET-001`: Make recipes must not use `curl` or `wget`. Enforced by: `make.network.no_curl_or_wget`.
+- `MAKE-SHELL-001`: Make recipes must not use `cd` chains. Enforced by: `make.shell.no_cd`.
+- `MAKE-SHELL-002`: Public targets must avoid shell pipeline-heavy logic. Enforced by: `bijux dev atlas contracts make` wrapper surface review.
+- `MAKE-REPRO-001`: Tool-invoking targets must route through exported deterministic run-environment defaults. Enforced by: `make.repro.runenv_exports`.
+- `MAKE-ART-001`: Make-generated artifacts must use run-scoped output roots. Enforced by: `bijux dev atlas contracts make` wrapper surface review.
+- `MAKE-CI-001`: CI workflows may call only curated public targets. Enforced by: `make.ci.curated_workflow_usage`.
+- `MAKE-STRUCT-001`: No markdown may exist under `make/` except `README.md` and `CONTRACT.md`. Enforced by: `make.docs.allowed_root_docs_only` and `make.docs.no_nested_markdown`.
+- `MAKE-STRUCT-002`: `make/makefiles/` may contain only `.mk` files. Enforced by: `make.structure.mk_only`.
+- `MAKE-OPS-001`: Ops-related make targets must call `bijux dev atlas ops ...` only. Enforced by: `make.ops.control_plane_only`.
+- `MAKE-DOCKER-001`: Docker-related make targets must call the docker contracts runner only. Enforced by: `make.docker.contract_runner_only`.
+- `MAKE-STYLE-001`: Internal helpers must stay out of the curated help surface. Enforced by: `make.internal.root_helpers_prefixed` and `make.surface.single_source`.
+- `MAKE-DRIFT-001`: `make/target-list.json` must match the curated target source and config registry. Enforced by: `make.surface.target_list_drift`.
+- `MAKE-SSOT-001`: Make is not the authority for make contracts; Rust contracts are the SSOT. Enforced by: `make.ssot.checks_delegate_to_contracts`.

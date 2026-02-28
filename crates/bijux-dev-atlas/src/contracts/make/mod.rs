@@ -5,7 +5,9 @@ use std::path::{Path, PathBuf};
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
-fn rel(path: &Path, repo_root: &Path) -> String {
+mod surface_contracts;
+
+pub(super) fn rel(path: &Path, repo_root: &Path) -> String {
     path.strip_prefix(repo_root)
         .unwrap_or(path)
         .display()
@@ -13,7 +15,7 @@ fn rel(path: &Path, repo_root: &Path) -> String {
         .replace('\\', "/")
 }
 
-fn violation(
+pub(super) fn violation(
     contract_id: &str,
     test_id: &str,
     path: &Path,
@@ -46,7 +48,7 @@ fn top_level_make_files(repo_root: &Path) -> Vec<PathBuf> {
     files
 }
 
-fn sorted_make_sources(repo_root: &Path) -> Vec<PathBuf> {
+pub(super) fn sorted_make_sources(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
     let roots = [
         repo_root.join("Makefile"),
@@ -504,7 +506,7 @@ fn test_make_include_003_acyclic(ctx: &RunContext) -> TestResult {
 }
 
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
-    Ok(vec![
+    let mut contracts = vec![
         Contract {
             id: ContractId("MAKE-DIR-001".to_string()),
             title: "make root docs boundary",
@@ -585,7 +587,9 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_make_include_003_acyclic,
             }],
         },
-    ])
+    ];
+    contracts.extend(surface_contracts::contracts());
+    Ok(contracts)
 }
 
 pub fn contract_explain(contract_id: &str) -> String {
@@ -616,7 +620,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "MAKE-INCLUDE-003" => {
             "Keep the make include graph acyclic so wrapper composition stays reviewable.".to_string()
         }
-        _ => "Unknown make contract id.".to_string(),
+        _ => surface_contracts::contract_explain(contract_id)
+            .unwrap_or("Unknown make contract id.")
+            .to_string(),
     }
 }
 

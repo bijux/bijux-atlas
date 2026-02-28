@@ -14,6 +14,8 @@
     "k8s-validate",
     "lint",
     "make-target-list",
+    "ops-contracts",
+    "ops-contracts-effect",
     "ops-fast",
     "ops-nightly",
     "ops-pr",

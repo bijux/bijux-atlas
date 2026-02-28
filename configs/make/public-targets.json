@@ -1,6 +1,6 @@
 {
   "max_public_targets": 25,
-  "target_public_targets": 15,
+  "target_public_targets": 20,
   "public_targets": [
     {
       "name": "help",
@@ -63,6 +63,51 @@
         "ci"
       ],
       "area": "make"
+    },
+    {
+      "name": "docker-contracts",
+      "description": "Run static docker contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "docker"
+    },
+    {
+      "name": "docker-contracts-effect",
+      "description": "Run effect docker contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "docker"
+    },
+    {
+      "name": "docker-gate",
+      "description": "Compatibility alias for docker contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "docker"
+    },
+    {
+      "name": "ops-contracts",
+      "description": "Run static ops contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
+      "name": "ops-contracts-effect",
+      "description": "Run effect ops contracts",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "ops"
     },
     {
       "name": "k8s-render",
