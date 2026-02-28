@@ -22,7 +22,7 @@
   "docs/root/navigation-policy.md": "docs/governance/docs-navigation-policy.md",
   "docs/root/index.md": "docs/index.md",
   "docs/contracts/index.md": "docs/reference/contracts/index.md",
-  "docs/contracts/contracts-index.md": "docs/reference/contracts/contracts-index.md",
+  "docs/contracts/index.md": "docs/reference/contracts/index.md",
   "docs/contracts/errors.md": "docs/reference/contracts/errors.md",
   "docs/contracts/endpoints.md": "docs/reference/contracts/endpoints.md",
   "docs/contracts/compatibility.md": "docs/reference/contracts/compatibility.md",

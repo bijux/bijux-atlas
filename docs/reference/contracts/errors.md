@@ -430,6 +430,6 @@ Expected output: both commands exit status 0 and print contract generation/check
 
 ## See also
 
-- [Contracts Index](contracts-index.md)
+- [Contracts Index](index.md)
 - [SSOT Workflow](../../governance/contract-ssot-workflow.md)
 - [Terms Glossary](../../glossary.md)

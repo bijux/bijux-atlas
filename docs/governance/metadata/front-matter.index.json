@@ -2725,7 +2725,7 @@
       "area": "contracts",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "docs/contracts/contracts-index.md",
+      "path": "docs/contracts/index.md",
       "stability": "stable",
       "title": "Contracts Index"
     },

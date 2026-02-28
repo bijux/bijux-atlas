@@ -1,57 +1,27 @@
 # Compatibility Contract
 
-Concept IDs: concept.compatibility-matrix
-
 - Owner: `bijux-atlas-api`
+- Type: `reference`
+- Audience: `user`
+- Stability: `stable`
+- Last updated for release: `v1`
+- Reason to exist: define compatibility-related contract surfaces and links.
 
-This page is the single compatibility entrypoint.
+## Contract surfaces
 
-## Scope
+- Product compatibility narrative: [Product Compatibility Promise](../../product/compatibility-promise.md)
+- Plugin compatibility contract: [Umbrella Plugin Contract](plugins/umbrella-plugin-contract-v1.md)
+- Core contract registry map: [Contracts](index.md)
 
-- API compatibility guarantees: [`docs/product/compatibility-promise.md`](../../product/compatibility-promise.md)
-- Plugin compatibility contract: [`docs/reference/contracts/plugins/umbrella-plugin-contract-v1.md`](plugins/umbrella-plugin-contract-v1.md)
-- Artifact compatibility and producer alignment: generated matrix and registry references.
-
-## Generated Matrix
-
-- Compatibility matrix references are consolidated under [`docs/reference/index.md`](../index.md).
-
-Compatibility source-of-truth inputs are contract files under `docs/reference/contracts/schemas/*.json` and generated outputs under `docs/_generated/contracts/`.
-
-## What
-
-Defines a stable contract surface for this topic.
-
-## Why
-
-Prevents ambiguity and drift across CLI, API, and operations.
-
-## Non-goals
-
-Does not define internal implementation details beyond the contract surface.
-
-## Contracts
-
-Use the rules in this page as the normative contract.
-
-## Failure modes
-
-Invalid contract input is rejected with stable machine-readable errors.
-
-## Examples
+## Verification
 
 ```bash
-$ make contracts
+make contracts
 ```
 
-Expected output: a zero exit code and "contract artifacts generated" for successful checks.
+Expected result: compatibility-related contract checks pass.
 
-## How to verify
+## Next
 
-Run `make docs docs-freeze ssot-check` and confirm all commands exit with status 0.
-
-## See also
-
-- [Contracts Overview](index.md)
-- [SSOT Workflow](../../governance/contract-ssot-workflow.md)
-- [Terms Glossary](../../glossary.md)
+- [Contracts](index.md)
+- [API Compatibility](../../api/compatibility.md)
