@@ -10,6 +10,7 @@ Reason to exist: define stable compatibility guarantees for public Atlas surface
 - Published artifact layouts remain backward-readable within v1.
 - Cursor formats remain backward-decodable within v1.
 - Existing error code identifiers remain valid within v1.
+- Compatibility changes are additive by default.
 
 ## Limits
 
@@ -20,6 +21,12 @@ Reason to exist: define stable compatibility guarantees for public Atlas surface
 
 - `bijux dev atlas contracts check --checks breakage`
 - `make openapi-drift`
+
+## Reproducibility And Stability Guarantees
+
+- Deterministic serialization and stable ordering are required for generated artifacts.
+- Tool and configuration inputs must remain pinned in automation.
+- Stability commitments apply to documented API, model, and operations contract surfaces.
 
 ## Related Pages
 
