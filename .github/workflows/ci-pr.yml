@@ -82,6 +82,7 @@ jobs:
           mkdir -p "${report_root}" "${logs_root}"
           contracts_root="${report_root}/contracts"
           mkdir -p "${contracts_root}"
+          cargo run -q -p bijux-dev-atlas -- contracts self-check --format json > "${contracts_root}/self-check.json" 2> "${logs_root}/contracts-self-check.stderr.log"
           make doctor > "${report_root}/doctor.json" 2> "${logs_root}/doctor.stderr.log"
           cargo run -q -p bijux-dev-atlas -- check tree-budgets --format json > "${report_root}/tree-budgets.json" 2> "${logs_root}/tree-budgets.stderr.log"
           make help > "${logs_root}/make-help.stdout.log" 2> "${logs_root}/make-help.stderr.log"
