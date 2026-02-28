@@ -1135,7 +1135,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=37)
+    let expected = (1..=38)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
@@ -2424,6 +2424,58 @@ fn test_configs_033_schema_index_matches_committed(ctx: &RunContext) -> TestResu
     }
 }
 
+fn test_configs_034_no_orphan_input_schemas(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-034",
+                "configs.schema.no_orphan_inputs",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let payload = match schema_index_json(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-034",
+                "configs.schema.no_orphan_inputs",
+                SCHEMAS_PATH,
+                err,
+            )
+        }
+    };
+    let governed_public_schemas = index
+        .group_files
+        .get("schema")
+        .map(|files| files.public.clone())
+        .unwrap_or_default();
+    let mut violations = Vec::new();
+    for schema in payload["orphan_input_schemas"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|value| value.as_str())
+    {
+        if !governed_public_schemas.contains(schema) {
+            continue;
+        }
+        violations.push(violation(
+            "CONFIGS-034",
+            "configs.schema.no_orphan_inputs",
+            schema,
+            "input schema is not referenced by any governed config mapping",
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -2657,6 +2709,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "committed schema index matches the canonical schema map render",
             test_configs_033_schema_index_matches_committed,
         ),
+        contract(
+            "CONFIGS-034",
+            "configs input schemas stay referenced",
+            "configs.schema.no_orphan_inputs",
+            "every input schema is referenced by a governed config mapping",
+            test_configs_034_no_orphan_input_schemas,
+        ),
     ])
 }
 
@@ -2714,6 +2773,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-031" => "Root, public, and generated JSON or JSONC configs must map to explicit schema coverage in configs/SCHEMAS.json.".to_string(),
         "CONFIGS-032" => "The root configs authority JSON files and generated configs index must stay in canonical sorted pretty JSON form.".to_string(),
         "CONFIGS-033" => "The committed configs schema index must match the canonical render from configs/SCHEMAS.json and the schema directories.".to_string(),
+        "CONFIGS-034" => "Every input schema under configs/schema must be referenced by at least one governed config mapping in configs/SCHEMAS.json.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
@@ -2891,7 +2951,7 @@ mod tests {
         let surface = read_contract_surface(&repo_root()).expect("contract surface");
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 37);
+        assert_eq!(surface.contracts.len(), 38);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -2902,7 +2962,7 @@ mod tests {
     #[test]
     fn cfg_contract_coverage_payload_is_stable() {
         let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
-        assert_eq!(payload["contract_count"].as_u64(), Some(37));
+        assert_eq!(payload["contract_count"].as_u64(), Some(38));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());

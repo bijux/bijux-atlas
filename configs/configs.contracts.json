@@ -600,6 +600,22 @@
         "configs/schema/generated/schema-index.json",
         "configs/contracts/*.json"
       ]
+    },
+    {
+      "contract_type": "schema",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schema.no_orphan_inputs"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-038",
+      "rationale": "input schemas are only useful when governed config mappings actually reference them.",
+      "severity": "must",
+      "title": "input schemas stay referenced by governed config mappings",
+      "touched_paths": [
+        "configs/SCHEMAS.json",
+        "configs/schema/*.json"
+      ]
     }
   ],
   "domain": "configs",

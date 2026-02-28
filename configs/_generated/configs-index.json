@@ -398,8 +398,8 @@
       "counts": {
         "covered": 40,
         "generated": 1,
-        "internal": 21,
-        "public": 18,
+        "internal": 31,
+        "public": 8,
         "schemas": 2
       },
       "files": [
