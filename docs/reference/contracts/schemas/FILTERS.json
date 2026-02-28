@@ -69,6 +69,6 @@
   "max_filter_count": 6,
   "range_format": "range=chr:start-end",
   "schema_version": 1,
-  "sort_contract_ref": "docs/reference/contracts/SORTS.json",
+  "sort_contract_ref": "docs/reference/contracts/schemas/SORTS.json",
   "type": "filters_registry"
 }

@@ -12,7 +12,7 @@ Prevents drift between machine contracts, generated references, and runtime beha
 
 ## Scope
 
-Applies to contract registries under `docs/reference/contracts/*.json` and generated docs under `docs/_generated/`.
+Applies to contract registries under `docs/reference/contracts/schemas/*.json` and generated docs under `docs/_generated/`.
 
 ## Non-Goals
 
@@ -20,7 +20,7 @@ Does not document runtime implementation internals outside contract surfaces.
 
 ## Contracts
 
-- SSOT registries live in `docs/reference/contracts/*.json`.
+- SSOT registries live in `docs/reference/contracts/schemas/*.json`.
 - Generated contract docs live in `docs/_generated/contracts/`.
 - OpenAPI generated docs live in `docs/_generated/openapi/`.
 

@@ -135,7 +135,7 @@ Does not define implementation internals outside this contract surface.
 - `XDG_CACHE_HOME`
 - `XDG_CONFIG_HOME`
 
-Policy schema reference: `docs/reference/contracts/POLICY_SCHEMA.json`
+Policy schema reference: `docs/reference/contracts/schemas/POLICY_SCHEMA.json`
 
 ## Failure modes
 

@@ -9,7 +9,7 @@ Defines debug-only normalized ingest intermediate artifact format.
 
 ## Contracts
 
-- SSOT schema: `docs/reference/contracts/NORMALIZED_FORMAT_SCHEMA.json`
+- SSOT schema: `docs/reference/contracts/schemas/NORMALIZED_FORMAT_SCHEMA.json`
 - Encoded as `jsonl.zst`.
 - Each record includes stable `record_id` and ordering fields.
 - Schema versioned with additive-only evolution by default.

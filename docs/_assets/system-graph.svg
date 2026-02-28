@@ -12,7 +12,7 @@
   </defs>
 
   <rect class="box" x="30" y="40" width="220" height="70"/>
-  <text class="txt" x="46" y="70">docs/contracts/*.json</text>
+  <text class="txt" x="46" y="70">docs/reference/contracts/schemas/*.json</text>
   <text class="txt" x="46" y="92">SSOT registries</text>
 
   <rect class="box" x="300" y="40" width="260" height="70"/>

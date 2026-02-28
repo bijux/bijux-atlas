@@ -16,7 +16,7 @@ This page is the single compatibility entrypoint.
 
 - Compatibility matrix references are consolidated under [`docs/reference/index.md`](../index.md).
 
-Compatibility source-of-truth inputs are contract files under `docs/reference/contracts/*.json` and generated outputs under `docs/_generated/contracts/`.
+Compatibility source-of-truth inputs are contract files under `docs/reference/contracts/schemas/*.json` and generated outputs under `docs/_generated/contracts/`.
 
 ## What
 

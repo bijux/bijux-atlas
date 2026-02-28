@@ -17,7 +17,7 @@ Applies to `qc.json` and compatibility copy `qc_report.json`.
 
 ## Contracts
 
-- Schema SSOT: `docs/reference/contracts/QC_SCHEMA.json`
+- Schema SSOT: `docs/reference/contracts/schemas/QC_SCHEMA.json`
 - Required counters include genes/trantooling/exons/CDS.
 - Rejection counts are keyed by stable reason code.
 - Top-biotype summary is limited and deterministic.

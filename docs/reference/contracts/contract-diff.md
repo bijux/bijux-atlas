@@ -12,7 +12,7 @@ Contract diffs are API surface changes and require deterministic review.
 
 ## Scope
 
-Applies to every change under `docs/reference/contracts/*.json`.
+Applies to every change under `docs/reference/contracts/schemas/*.json`.
 
 ## Non-goals
 
