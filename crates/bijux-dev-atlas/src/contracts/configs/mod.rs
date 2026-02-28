@@ -8,6 +8,7 @@ use serde::Deserialize;
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
 const REGISTRY_PATH: &str = "configs/inventory/configs.json";
+const CONTRACT_SURFACE_PATH: &str = "configs/configs.contracts.json";
 const OWNERS_PATH: &str = "configs/OWNERS.json";
 const CONSUMERS_PATH: &str = "configs/CONSUMERS.json";
 const SCHEMAS_PATH: &str = "configs/SCHEMAS.json";
@@ -72,6 +73,31 @@ struct ConfigsSchemas {
     files: BTreeMap<String, String>,
 }
 
+#[derive(Clone, Deserialize)]
+struct ConfigsContractSurface {
+    schema_version: u64,
+    domain: String,
+    contracts: Vec<ConfigsContractRow>,
+}
+
+#[derive(Clone, Deserialize)]
+struct ConfigsContractRow {
+    id: String,
+    title: String,
+    severity: String,
+    contract_type: String,
+    rationale: String,
+    enforced_by: ConfigsContractEnforcement,
+    touched_paths: Vec<String>,
+    evidence_artifact: Option<String>,
+}
+
+#[derive(Clone, Deserialize)]
+struct ConfigsContractEnforcement {
+    command: String,
+    test_id: String,
+}
+
 #[derive(Clone)]
 struct RegistryIndex {
     registry: ConfigsRegistry,
@@ -79,7 +105,7 @@ struct RegistryIndex {
     excluded_files: BTreeSet<String>,
     root_files: BTreeSet<String>,
     group_files: BTreeMap<String, GroupFiles>,
-    contract_ids: BTreeSet<String>,
+    contract_surface_ids: BTreeSet<String>,
 }
 
 #[derive(Clone, Default)]
@@ -146,6 +172,12 @@ fn read_schemas(repo_root: &Path) -> Result<ConfigsSchemas, String> {
     let text = read_text(&repo_root.join(SCHEMAS_PATH))?;
     serde_json::from_str::<ConfigsSchemas>(&text)
         .map_err(|err| format!("parse {SCHEMAS_PATH} failed: {err}"))
+}
+
+fn read_contract_surface(repo_root: &Path) -> Result<ConfigsContractSurface, String> {
+    let text = read_text(&repo_root.join(CONTRACT_SURFACE_PATH))?;
+    serde_json::from_str::<ConfigsContractSurface>(&text)
+        .map_err(|err| format!("parse {CONTRACT_SURFACE_PATH} failed: {err}"))
 }
 
 fn all_config_files(root: &Path) -> Result<Vec<String>, String> {
@@ -309,18 +341,22 @@ fn registry_index(repo_root: &Path) -> Result<RegistryIndex, String> {
         group_files.insert(group.name.clone(), bucket);
     }
     let contract_doc = read_text(&repo_root.join("configs/CONTRACT.md"))?;
-    let contract_ids = contract_doc
+    let contract_surface_ids = contract_doc
         .lines()
         .filter_map(|line| {
-            let trimmed = line.trim();
-            let id = trimmed
-                .strip_prefix("- `")
-                .and_then(|value| value.split('`').next())?;
-            if id.starts_with("CONFIGS-") {
-                Some(id.to_string())
-            } else {
-                None
+            let mut rest = line;
+            while let Some(start) = rest.find('`') {
+                let after = &rest[start + 1..];
+                let Some(end) = after.find('`') else {
+                    break;
+                };
+                let token = &after[..end];
+                if token.starts_with("CFG-") {
+                    return Some(token.to_string());
+                }
+                rest = &after[end + 1..];
             }
+            None
         })
         .collect::<BTreeSet<_>>();
     Ok(RegistryIndex {
@@ -329,7 +365,7 @@ fn registry_index(repo_root: &Path) -> Result<RegistryIndex, String> {
         excluded_files,
         root_files,
         group_files,
-        contract_ids,
+        contract_surface_ids,
     })
 }
 
@@ -865,21 +901,177 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=31)
-        .map(|n| format!("CONFIGS-{n:03}"))
+    let surface = match read_contract_surface(&ctx.repo_root) {
+        Ok(surface) => surface,
+        Err(err) => {
+            return fail(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                err,
+            )
+        }
+    };
+    if surface.schema_version != 1 {
+        return fail(
+            "CONFIGS-010",
+            "configs.contracts.no_policy_theater",
+            CONTRACT_SURFACE_PATH,
+            format!(
+                "unsupported configs contract registry schema_version {}",
+                surface.schema_version
+            ),
+        );
+    }
+    if surface.domain != "configs" {
+        return fail(
+            "CONFIGS-010",
+            "configs.contracts.no_policy_theater",
+            CONTRACT_SURFACE_PATH,
+            format!(
+                "configs contract registry must declare domain `configs`, found `{}`",
+                surface.domain
+            ),
+        );
+    }
+    let expected = (1..=18)
+        .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
-    if index.contract_ids == expected {
-        TestResult::Pass
-    } else {
-        TestResult::Fail(vec![violation(
+    let actual = surface
+        .contracts
+        .iter()
+        .map(|row| row.id.clone())
+        .collect::<BTreeSet<_>>();
+    let executable_tests = contracts(&ctx.repo_root)
+        .unwrap_or_default()
+        .into_iter()
+        .flat_map(|contract| contract.tests.into_iter().map(|test| test.id.0))
+        .collect::<BTreeSet<_>>();
+    let allowed_severities = ["blocker", "must", "should"];
+    let allowed_types = ["static", "filelayout", "schema", "drift", "supplychain"];
+    let mut violations = Vec::new();
+    if actual != expected {
+        violations.push(violation(
+            "CONFIGS-010",
+            "configs.contracts.no_policy_theater",
+            CONTRACT_SURFACE_PATH,
+            format!(
+                "expected configs contract ids {:?}, found {:?}",
+                expected, actual
+            ),
+        ));
+    }
+    if index.contract_surface_ids != actual {
+        violations.push(violation(
             "CONFIGS-010",
             "configs.contracts.no_policy_theater",
             "configs/CONTRACT.md",
             format!(
-                "expected contract doc ids {:?}, found {:?}",
-                expected, index.contract_ids
+                "contract markdown ids {:?} do not match configs contract registry ids {:?}",
+                index.contract_surface_ids, actual
             ),
-        )])
+        ));
+    }
+    for row in &surface.contracts {
+        if row.title.trim().is_empty() {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!("contract `{}` is missing a title", row.id),
+            ));
+        }
+        if !allowed_severities.contains(&row.severity.as_str()) {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!(
+                    "contract `{}` uses unsupported severity `{}`",
+                    row.id, row.severity
+                ),
+            ));
+        }
+        if !allowed_types.contains(&row.contract_type.as_str()) {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!(
+                    "contract `{}` uses unsupported contract_type `{}`",
+                    row.id, row.contract_type
+                ),
+            ));
+        }
+        if row.rationale.trim().is_empty() {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!("contract `{}` is missing a rationale", row.id),
+            ));
+        }
+        if row.enforced_by.command != "bijux dev atlas contracts configs" {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!(
+                    "contract `{}` must use `bijux dev atlas contracts configs` as its enforcement command",
+                    row.id
+                ),
+            ));
+        }
+        if !executable_tests.contains(&row.enforced_by.test_id) {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!(
+                    "contract `{}` references unknown enforcement test `{}`",
+                    row.id, row.enforced_by.test_id
+                ),
+            ));
+        }
+        if row.touched_paths.is_empty() {
+            violations.push(violation(
+                "CONFIGS-010",
+                "configs.contracts.no_policy_theater",
+                CONTRACT_SURFACE_PATH,
+                format!("contract `{}` must declare touched_paths", row.id),
+            ));
+        }
+        for path in &row.touched_paths {
+            if !path.starts_with("configs/") && !path.starts_with("artifacts/") {
+                violations.push(violation(
+                    "CONFIGS-010",
+                    "configs.contracts.no_policy_theater",
+                    CONTRACT_SURFACE_PATH,
+                    format!(
+                        "contract `{}` has touched path `{path}` outside configs or artifacts",
+                        row.id
+                    ),
+                ));
+            }
+        }
+        if let Some(artifact) = &row.evidence_artifact {
+            if !artifact.starts_with("artifacts/") {
+                violations.push(violation(
+                    "CONFIGS-010",
+                    "configs.contracts.no_policy_theater",
+                    CONTRACT_SURFACE_PATH,
+                    format!(
+                        "contract `{}` has evidence_artifact `{artifact}` outside artifacts/",
+                        row.id
+                    ),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
     }
 }
 
@@ -2351,5 +2543,18 @@ mod tests {
             payload["schema"].as_str(),
             Some("configs/contracts/inventory-configs.schema.json")
         );
+    }
+
+    #[test]
+    fn contract_surface_registry_parses_and_covers_cfg_ids() {
+        let surface = read_contract_surface(&repo_root()).expect("contract surface");
+        assert_eq!(surface.schema_version, 1);
+        assert_eq!(surface.domain, "configs");
+        assert_eq!(surface.contracts.len(), 18);
+        assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
+        assert!(surface
+            .contracts
+            .iter()
+            .any(|row| row.enforced_by.test_id == "configs.schemas.file_coverage"));
     }
 }
