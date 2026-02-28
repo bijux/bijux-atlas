@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "ci": "platform",
+    "docs": "docs-governance",
+    "inventory": "platform",
+    "layout": "platform",
+    "make": "platform",
+    "meta": "platform",
+    "nextest": "platform",
+    "openapi": "api-contracts",
+    "ops": "bijux-atlas-operations",
+    "perf": "bijux-atlas-performance",
+    "policy": "platform",
+    "rust": "rust-foundation",
+    "schema": "platform",
+    "security": "security",
+    "slo": "bijux-atlas-operations"
+  }
+}

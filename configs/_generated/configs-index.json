@@ -42,7 +42,7 @@
         "generated": 0,
         "internal": 0,
         "public": 10,
-        "schemas": 1
+        "schemas": 2
       },
       "files": [
         "configs/docs/.markdownlint-cli2.jsonc",
@@ -60,6 +60,7 @@
       "owner": "docs-governance",
       "schema_owner": "docs-governance",
       "schemas": [
+        "configs/schema/configs-owner-map.schema.json",
         "configs/contracts/inventory-configs.schema.json"
       ],
       "stability": "stable",
@@ -413,10 +414,10 @@
     },
     {
       "counts": {
-        "covered": 34,
+        "covered": 35,
         "generated": 0,
         "internal": 21,
-        "public": 13,
+        "public": 14,
         "schemas": 2
       },
       "files": [
@@ -443,6 +444,7 @@
         "configs/contracts/tooling-tool-output.schema.json",
         "configs/schema/config-compiler-report.schema.json",
         "configs/schema/configs-index.schema.json",
+        "configs/schema/configs-owner-map.schema.json",
         "configs/schema/configs-ownership.schema.json",
         "configs/schema/forbidden-adjectives-approvals.schema.json",
         "configs/schema/hpa-safety-caps.schema.json",
@@ -523,6 +525,7 @@
   "root_files": [
     "configs/README.md",
     "configs/CONTRACT.md",
+    "configs/OWNERS.json",
     "configs/inventory.json"
   ],
   "schema_version": 1
