@@ -147,6 +147,36 @@ pub fn run(
             .map_err(|e| format!("encode contracts maturity failed: {e}"))?,
         )
         .map_err(|e| format!("write {} failed: {e}", maturity_path.display()))?;
+        let table_path = out_dir.join("table.txt");
+        let mut table = String::new();
+        table.push_str(&format!("Contracts: {} (mode={})\n", report.domain, report.mode));
+        for contract in &report.contracts {
+            table.push_str(&format!(
+                "{}\t{}\t{}\n",
+                contract.id,
+                contract.status.as_str(),
+                contract.title
+            ));
+        }
+        std::fs::write(&table_path, table)
+            .map_err(|e| format!("write {} failed: {e}", table_path.display()))?;
+        let status_path = out_dir.join("status.json");
+        std::fs::write(
+            &status_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "domain": domain,
+                "mode": report.mode.to_string(),
+                "run_id": report.metadata.run_id,
+                "contracts": report.contracts.iter().map(|contract| serde_json::json!({
+                    "id": contract.id,
+                    "status": contract.status.as_str(),
+                    "title": contract.title,
+                })).collect::<Vec<_>>()
+            }))
+            .map_err(|e| format!("encode contracts status failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", status_path.display()))?;
     }
 
     Ok(report)
