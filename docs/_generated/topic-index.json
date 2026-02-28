@@ -852,6 +852,7 @@
       "crates/bijux-atlas-policies/docs/contracts.md",
       "crates/bijux-atlas-server/docs/contracts.md",
       "crates/bijux-atlas-store/docs/contracts.md",
+      "docs/control-plane/contracts.md",
       "docs/operations/ops-system/contracts.md"
     ],
     "contracts-index": [
@@ -1113,6 +1114,9 @@
     ],
     "kustomize-policy": [
       "docs/operations/k8s/kustomize-policy.md"
+    ],
+    "lane-guarantees": [
+      "docs/operations/release/lane-guarantees.md"
     ],
     "latest-release-alias-policy": [
       "docs/reference/registry/latest-release-alias-policy.md"

@@ -293,6 +293,25 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("docs test coverage encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write docs test coverage failed: {e}"))?;
+                        let front_matter_index = serde_json::json!({
+                            "schema_version": "v1",
+                            "description": "Canonical ownership, stability, title, and audience metadata registry for documentation pages",
+                            "source": "docs/registry.json",
+                            "documents": docs_rows.iter().map(|row| serde_json::json!({
+                                "path": row["path"],
+                                "title": row["title"],
+                                "owner": row["owner"],
+                                "area": row["area"],
+                                "stability": row["stability"],
+                                "audience": row["audience"],
+                            })).collect::<Vec<_>>()
+                        });
+                        fs::write(
+                            ctx.repo_root.join("docs/metadata/front-matter.index.json"),
+                            serde_json::to_string_pretty(&front_matter_index)
+                                .map_err(|e| format!("front matter index encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write front matter index failed: {e}"))?;
                         fs::write(
                             generated_dir.join("crate-doc-coverage.json"),
                             serde_json::to_string_pretty(&serde_json::json!({
@@ -514,6 +533,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
                             "crate_doc_api_table": "docs/_generated/crate-doc-api-table.md",
                             "crate_doc_pruning": "docs/_generated/crate-doc-pruning.json",
+                            "front_matter_index": "docs/metadata/front-matter.index.json",
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",

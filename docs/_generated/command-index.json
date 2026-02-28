@@ -1,6 +1,8 @@
 {
   "rows": [
     {
+      "area": "crates",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -18,9 +20,12 @@
         "bijux-atlas-cli",
         "command-surface"
       ],
+      "title": "COMMAND_SURFACE (bijux-atlas-cli)",
       "topic": "COMMAND_SURFACE"
     },
     {
+      "area": "bijux-atlas-cli",
+      "audience": "contributors",
       "crate": "bijux-atlas-cli",
       "doc_type": "concept",
       "doc_version": "v1",
@@ -38,9 +43,12 @@
         "bijux-atlas-cli",
         "cli-command-list"
       ],
+      "title": "CLI_COMMAND_LIST",
       "topic": "CLI_COMMAND_LIST"
     },
     {
+      "area": "crates",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -58,9 +66,12 @@
         "bijux-dev-atlas",
         "command-surface"
       ],
+      "title": "COMMAND_SURFACE (bijux-dev-atlas)",
       "topic": "COMMAND_SURFACE"
     },
     {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
       "doc_version": "v1",
@@ -78,9 +89,12 @@
         "bijux-dev-atlas",
         "cli-command-list"
       ],
+      "title": "CLI_COMMAND_LIST",
       "topic": "CLI_COMMAND_LIST"
     },
     {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
       "doc_version": "v1",
@@ -98,9 +112,12 @@
         "bijux-dev-atlas",
         "commands"
       ],
+      "title": "Commands",
       "topic": "COMMANDS"
     },
     {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
       "doc_version": "v1",
@@ -118,9 +135,12 @@
         "bijux-dev-atlas",
         "configs-command-list"
       ],
+      "title": "CONFIGS_COMMAND_LIST",
       "topic": "CONFIGS_COMMAND_LIST"
     },
     {
+      "area": "bijux-dev-atlas",
+      "audience": "contributors",
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
       "doc_version": "v1",
@@ -138,9 +158,12 @@
         "bijux-dev-atlas",
         "ops-command-list"
       ],
+      "title": "OPS_COMMAND_LIST",
       "topic": "OPS_COMMAND_LIST"
     },
     {
+      "area": "root",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -158,9 +181,12 @@
         "commands-reference",
         "root"
       ],
+      "title": "Commands Reference",
       "topic": "COMMANDS_REFERENCE"
     },
     {
+      "area": "root",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -178,6 +204,7 @@
         "command-index",
         "root"
       ],
+      "title": "Command Index",
       "topic": "COMMAND_INDEX"
     }
   ],

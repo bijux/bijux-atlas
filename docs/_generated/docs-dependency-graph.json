@@ -1888,6 +1888,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/control-plane/contracts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/control-plane/ops-boundary.md"
     },
     {
@@ -2764,6 +2769,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/release-workflows.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/lane-guarantees.md"
     },
     {
       "crate": null,

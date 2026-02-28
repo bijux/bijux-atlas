@@ -10,7 +10,7 @@ License: Apache-2.0
 | `.github/pull_request_template.md` | `concept` | `docs-governance` | `stable` |
 | `.github/release-notes-template.md` | `concept` | `docs-governance` | `stable` |
 | `.github/required-status-checks.md` | `concept` | `build-and-release` | `stable` |
-| `.github/templates/scripts-migration-release-note.md` | `concept` | `` | `stable` |
+| `.github/templates/scripts-migration-release-note.md` | `concept` | `docs-governance` | `stable` |
 | `CHANGELOG.md` | `concept` | `docs-governance` | `stable` |
 | `CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `CONTRIBUTING.md` | `concept` | `docs-governance` | `stable` |
@@ -381,6 +381,7 @@ License: Apache-2.0
 | `docs/contracts/qc.md` | `spec` | `bijux-atlas-ingest` | `stable` |
 | `docs/contracts/ssot-workflow.md` | `spec` | `docs-governance` | `stable` |
 | `docs/contracts/tracing.md` | `spec` | `docs-governance` | `stable` |
+| `docs/control-plane/contracts.md` | `concept` | `atlas-maintainers` | `stable` |
 | `docs/control-plane/ops-boundary.md` | `concept` | `ops-platform` | `stable` |
 | `docs/dev/check-failures.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/INDEX.md` | `concept` | `docs-governance` | `stable` |
@@ -557,6 +558,7 @@ License: Apache-2.0
 | `docs/operations/reference/tools.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/reference/what-breaks-if-removed.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-workflows.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/release/lane-guarantees.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/retention-and-gc.md` | `concept` | `bijux-atlas-operations` | `evolving` |
 | `docs/operations/runbooks/INDEX.md` | `runbook` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/runbooks/dataset-corruption.md` | `runbook` | `bijux-atlas-operations` | `stable` |

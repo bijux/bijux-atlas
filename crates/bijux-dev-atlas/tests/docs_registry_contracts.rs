@@ -298,3 +298,46 @@ fn concept_registry_exists_and_points_to_a_canonical_map() {
         );
     }
 }
+
+#[test]
+fn docs_front_matter_index_matches_registry_metadata_contract() {
+    let root = repo_root();
+    let index = load_json(&root.join("docs/metadata/front-matter.index.json"));
+    let documents = index["documents"].as_array().expect("documents array");
+    assert!(!documents.is_empty(), "front matter index must not be empty");
+    for row in documents {
+        let path = row["path"].as_str().expect("path");
+        assert!(root.join(path).exists(), "front matter path must exist: {path}");
+        for field in ["title", "owner", "area", "stability", "audience"] {
+            assert!(
+                row[field].as_str().is_some_and(|value| !value.trim().is_empty()),
+                "front matter index field `{field}` must be non-empty for {path}"
+            );
+        }
+    }
+}
+
+#[test]
+fn docs_audience_policy_is_curated_and_front_matter_uses_allowed_values() {
+    let root = repo_root();
+    let policy = load_json(&root.join("docs/metadata/audiences.json"));
+    let allowed = policy["allowed"]
+        .as_array()
+        .expect("allowed array")
+        .iter()
+        .filter_map(|value| value.as_str())
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        allowed,
+        BTreeSet::from(["contributors", "developers", "mixed", "operators", "reviewers"])
+    );
+    let index = load_json(&root.join("docs/metadata/front-matter.index.json"));
+    for row in index["documents"].as_array().expect("documents array") {
+        let path = row["path"].as_str().expect("path");
+        let audience = row["audience"].as_str().expect("audience");
+        assert!(
+            allowed.contains(audience),
+            "front matter audience must use allowed values: {path} -> {audience}"
+        );
+    }
+}

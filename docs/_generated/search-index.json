@@ -4788,6 +4788,18 @@
     },
     {
       "keywords": [
+        "contracts",
+        "control-plane"
+      ],
+      "path": "docs/control-plane/contracts.md",
+      "tags": [
+        "contracts",
+        "control-plane"
+      ],
+      "topic": "contracts"
+    },
+    {
+      "keywords": [
         "control-plane",
         "ops-boundary"
       ],
@@ -7083,6 +7095,20 @@
         "release-workflows"
       ],
       "topic": "release-workflows"
+    },
+    {
+      "keywords": [
+        "lane-guarantees",
+        "operations",
+        "release"
+      ],
+      "path": "docs/operations/release/lane-guarantees.md",
+      "tags": [
+        "lane-guarantees",
+        "operations",
+        "release"
+      ],
+      "topic": "lane-guarantees"
     },
     {
       "keywords": [

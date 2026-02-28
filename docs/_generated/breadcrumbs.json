@@ -3292,6 +3292,14 @@
       "breadcrumbs": [
         "docs",
         "docs/control-plane",
+        "docs/control-plane/contracts.md"
+      ],
+      "path": "docs/control-plane/contracts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/control-plane",
         "docs/control-plane/ops-boundary.md"
       ],
       "path": "docs/control-plane/ops-boundary.md"
@@ -4799,6 +4807,15 @@
         "docs/operations/release-workflows.md"
       ],
       "path": "docs/operations/release-workflows.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/lane-guarantees.md"
+      ],
+      "path": "docs/operations/release/lane-guarantees.md"
     },
     {
       "breadcrumbs": [

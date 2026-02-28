@@ -2,6 +2,8 @@
   "crates": {
     "bijux-atlas-api": [
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -19,9 +21,12 @@
           "api-contract",
           "bijux-atlas-api"
         ],
+        "title": "API Contract (v1)",
         "topic": "API_CONTRACT"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -39,9 +44,12 @@
           "api-stability",
           "bijux-atlas-api"
         ],
+        "title": "API Stability and Versioning",
         "topic": "API_STABILITY"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -59,9 +67,12 @@
           "bijux-atlas-api",
           "errors"
         ],
+        "title": "API Errors",
         "topic": "ERRORS"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -79,9 +90,12 @@
           "bijux-atlas-api",
           "index"
         ],
+        "title": "Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "spec",
         "doc_version": "v1",
@@ -99,9 +113,12 @@
           "bijux-atlas-api",
           "openapi"
         ],
+        "title": "OpenAPI",
         "topic": "OPENAPI"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -119,9 +136,12 @@
           "bijux-atlas-api",
           "patterns"
         ],
+        "title": "Patterns",
         "topic": "PATTERNS"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -139,9 +159,12 @@
           "bijux-atlas-api",
           "versioning"
         ],
+        "title": "Versioning",
         "topic": "VERSIONING"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -159,9 +182,12 @@
           "architecture",
           "bijux-atlas-api"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -179,9 +205,12 @@
           "bijux-atlas-api",
           "contracts"
         ],
+        "title": "Contracts",
         "topic": "contracts"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -199,9 +228,12 @@
           "bijux-atlas-api",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -219,9 +251,12 @@
           "bijux-atlas-api",
           "effects"
         ],
+        "title": "Effects",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -239,9 +274,12 @@
           "bijux-atlas-api",
           "public-api-checklist"
         ],
+        "title": "Public Surface Checklist",
         "topic": "public-api-checklist"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -259,9 +297,12 @@
           "bijux-atlas-api",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-api",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -279,9 +320,12 @@
           "bijux-atlas-api",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       },
       {
+        "area": "bijux-atlas-api",
+        "audience": "contributors",
         "crate": "bijux-atlas-api",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -299,11 +343,14 @@
           "bijux-atlas-api",
           "wire-compatibility"
         ],
+        "title": "Human vs Machine Contracts",
         "topic": "wire-compatibility"
       }
     ],
     "bijux-atlas-cli": [
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -321,9 +368,12 @@
           "bijux-atlas-cli",
           "cli-command-list"
         ],
+        "title": "CLI_COMMAND_LIST",
         "topic": "CLI_COMMAND_LIST"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -341,9 +391,12 @@
           "bijux-atlas-cli",
           "cli-ux-contract"
         ],
+        "title": "CLI UX Contract",
         "topic": "CLI_UX_CONTRACT"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -361,9 +414,12 @@
           "bijux-atlas-cli",
           "config-discovery"
         ],
+        "title": "Config Discovery",
         "topic": "CONFIG_DISCOVERY"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -381,9 +437,12 @@
           "bijux-atlas-cli",
           "exit-codes"
         ],
+        "title": "Exit Codes",
         "topic": "EXIT_CODES"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -401,9 +460,12 @@
           "bijux-atlas-cli",
           "index"
         ],
+        "title": "Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -421,9 +483,12 @@
           "bijux-atlas-cli",
           "plugin-contract"
         ],
+        "title": "Plugin Contract",
         "topic": "PLUGIN_CONTRACT"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -441,9 +506,12 @@
           "architecture",
           "bijux-atlas-cli"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -461,9 +529,12 @@
           "bijux-atlas-cli",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -481,9 +552,12 @@
           "bijux-atlas-cli",
           "effects"
         ],
+        "title": "Effects",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -501,9 +575,12 @@
           "bijux-atlas-cli",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-cli",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-cli",
+        "audience": "contributors",
         "crate": "bijux-atlas-cli",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -521,11 +598,14 @@
           "bijux-atlas-cli",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-core": [
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -543,9 +623,12 @@
           "bijux-atlas-core",
           "canonicalization"
         ],
+        "title": "Canonicalization Rules",
         "topic": "CANONICALIZATION"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -563,9 +646,12 @@
           "bijux-atlas-core",
           "cargo-deny-notes"
         ],
+        "title": "Cargo Deny Notes (Core)",
         "topic": "CARGO_DENY_NOTES"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -583,9 +669,12 @@
           "bijux-atlas-core",
           "errors"
         ],
+        "title": "Error Contract",
         "topic": "ERRORS"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -603,9 +692,12 @@
           "bijux-atlas-core",
           "features"
         ],
+        "title": "Feature Flags Policy",
         "topic": "FEATURES"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -623,9 +715,12 @@
           "bijux-atlas-core",
           "formatting"
         ],
+        "title": "Debug and Display Policy",
         "topic": "FORMATTING"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -643,9 +738,12 @@
           "bijux-atlas-core",
           "index"
         ],
+        "title": "Core Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -663,9 +761,12 @@
           "bijux-atlas-core",
           "patterns"
         ],
+        "title": "Design Patterns Used",
         "topic": "PATTERNS"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -683,9 +784,12 @@
           "bijux-atlas-core",
           "purity"
         ],
+        "title": "Purity Contract",
         "topic": "PURITY"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -703,9 +807,12 @@
           "bijux-atlas-core",
           "serde-policy"
         ],
+        "title": "Serialization Policy",
         "topic": "SERDE_POLICY"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -723,9 +830,12 @@
           "architecture",
           "bijux-atlas-core"
         ],
+        "title": "bijux-atlas-core Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -743,9 +853,12 @@
           "bijux-atlas-core",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -763,9 +876,12 @@
           "bijux-atlas-core",
           "effects"
         ],
+        "title": "Effects Policy",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -783,9 +899,12 @@
           "bijux-atlas-core",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-core",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-core",
+        "audience": "contributors",
         "crate": "bijux-atlas-core",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -803,11 +922,14 @@
           "bijux-atlas-core",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-ingest": [
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -825,9 +947,12 @@
           "artifact-output-contract",
           "bijux-atlas-ingest"
         ],
+        "title": "Artifact Output Contract",
         "topic": "ARTIFACT_OUTPUT_CONTRACT"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -845,9 +970,12 @@
           "bijux-atlas-ingest",
           "determinism"
         ],
+        "title": "Determinism Policy",
         "topic": "DETERMINISM"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -865,9 +993,12 @@
           "bijux-atlas-ingest",
           "ensembl-layout"
         ],
+        "title": "Ensembl Layout Ingest Workflow",
         "topic": "ENSEMBL_LAYOUT"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -885,9 +1016,12 @@
           "bijux-atlas-ingest",
           "index"
         ],
+        "title": "Ingest Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -905,9 +1039,12 @@
           "bijux-atlas-ingest",
           "ingest-contract"
         ],
+        "title": "Ingest Contract",
         "topic": "INGEST_CONTRACT"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -923,9 +1060,12 @@
         "tags": [
           "bijux-atlas-ingest"
         ],
+        "title": "QC Policy",
         "topic": "QC"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -943,9 +1083,12 @@
           "architecture",
           "bijux-atlas-ingest"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -963,9 +1106,12 @@
           "bijux-atlas-ingest",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -983,9 +1129,12 @@
           "bijux-atlas-ingest",
           "effects"
         ],
+        "title": "Effects Policy",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1003,9 +1152,12 @@
           "bijux-atlas-ingest",
           "failure-modes"
         ],
+        "title": "Failure Modes",
         "topic": "failure-modes"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1023,9 +1175,12 @@
           "bijux-atlas-ingest",
           "public-api"
         ],
+        "title": "Public API",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-ingest",
+        "audience": "contributors",
         "crate": "bijux-atlas-ingest",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1043,11 +1198,14 @@
           "bijux-atlas-ingest",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-model": [
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1065,9 +1223,12 @@
           "bijux-atlas-model",
           "compat-bijux-dna"
         ],
+        "title": "Compatibility With bijux-dna",
         "topic": "COMPAT_BIJUX_DNA"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1085,9 +1246,12 @@
           "bijux-atlas-model",
           "contract-compatibility"
         ],
+        "title": "Contract Compatibility",
         "topic": "CONTRACT_COMPATIBILITY"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1105,9 +1269,12 @@
           "bijux-atlas-model",
           "index"
         ],
+        "title": "Model Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1125,9 +1292,12 @@
           "bijux-atlas-model",
           "not-in-model"
         ],
+        "title": "What Is Not In Model",
         "topic": "NOT_IN_MODEL"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1145,9 +1315,12 @@
           "bijux-atlas-model",
           "optional-fields"
         ],
+        "title": "Optional Fields Rules",
         "topic": "OPTIONAL_FIELDS"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1165,9 +1338,12 @@
           "bijux-atlas-model",
           "ordering-rules"
         ],
+        "title": "Strict Ordering Rules",
         "topic": "ORDERING_RULES"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1185,9 +1361,12 @@
           "bijux-atlas-model",
           "purity"
         ],
+        "title": "Purity Policy",
         "topic": "PURITY"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "spec",
         "doc_version": "v1",
@@ -1205,9 +1384,12 @@
           "bijux-atlas-model",
           "schema-evolution-notes"
         ],
+        "title": "Schema Evolution Notes",
         "topic": "SCHEMA_EVOLUTION_NOTES"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "spec",
         "doc_version": "v1",
@@ -1225,9 +1407,12 @@
           "bijux-atlas-model",
           "schema-stability"
         ],
+        "title": "Schema Stability (v1)",
         "topic": "SCHEMA_STABILITY"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1245,9 +1430,12 @@
           "architecture",
           "bijux-atlas-model"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1265,9 +1453,12 @@
           "bijux-atlas-model",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1285,9 +1476,12 @@
           "bijux-atlas-model",
           "effects"
         ],
+        "title": "Effects Policy",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1305,9 +1499,12 @@
           "bijux-atlas-model",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-model",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-model",
+        "audience": "contributors",
         "crate": "bijux-atlas-model",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1325,11 +1522,14 @@
           "bijux-atlas-model",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-policies": [
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1347,9 +1547,12 @@
           "bijux-atlas-policies",
           "change-checklist"
         ],
+        "title": "Policy Change Checklist",
         "topic": "CHANGE_CHECKLIST"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "spec",
         "doc_version": "v1",
@@ -1367,9 +1570,12 @@
           "bijux-atlas-policies",
           "config-schema"
         ],
+        "title": "Config Schema Contract",
         "topic": "CONFIG_SCHEMA"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1387,9 +1593,12 @@
           "bijux-atlas-policies",
           "evolution"
         ],
+        "title": "Policy Evolution",
         "topic": "EVOLUTION"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1407,9 +1616,12 @@
           "bijux-atlas-policies",
           "index"
         ],
+        "title": "Policies Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1427,9 +1639,12 @@
           "bijux-atlas-policies",
           "policy-authoring-guide"
         ],
+        "title": "Policy Authoring Guide",
         "topic": "POLICY_AUTHORING_GUIDE"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "spec",
         "doc_version": "v1",
@@ -1447,9 +1662,12 @@
           "bijux-atlas-policies",
           "schema"
         ],
+        "title": "Policy Schema",
         "topic": "SCHEMA"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "spec",
         "doc_version": "v1",
@@ -1467,9 +1685,12 @@
           "bijux-atlas-policies",
           "schema-evolution"
         ],
+        "title": "Evolving Policy Schema Safely",
         "topic": "SCHEMA_EVOLUTION"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1487,9 +1708,12 @@
           "architecture",
           "bijux-atlas-policies"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1507,9 +1731,12 @@
           "bijux-atlas-policies",
           "contracts"
         ],
+        "title": "Contracts",
         "topic": "contracts"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1527,9 +1754,12 @@
           "bijux-atlas-policies",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1547,9 +1777,12 @@
           "bijux-atlas-policies",
           "effects"
         ],
+        "title": "Effects Policy",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1567,9 +1800,12 @@
           "bijux-atlas-policies",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-policies",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-policies",
+        "audience": "contributors",
         "crate": "bijux-atlas-policies",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1587,11 +1823,14 @@
           "bijux-atlas-policies",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-query": [
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1609,9 +1848,12 @@
           "adding-filters",
           "bijux-atlas-query"
         ],
+        "title": "Adding New Filters Safely",
         "topic": "ADDING_FILTERS"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1629,9 +1871,12 @@
           "bijux-atlas-query",
           "cost-estimator"
         ],
+        "title": "Cost Estimator Calibration",
         "topic": "COST_ESTIMATOR"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1649,9 +1894,12 @@
           "bijux-atlas-query",
           "index"
         ],
+        "title": "Query Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1669,9 +1917,12 @@
           "bijux-atlas-query",
           "ordering"
         ],
+        "title": "Ordering Rules",
         "topic": "ORDERING"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1689,9 +1940,12 @@
           "bijux-atlas-query",
           "pagination"
         ],
+        "title": "Pagination Contract",
         "topic": "PAGINATION"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1709,9 +1963,12 @@
           "bijux-atlas-query",
           "perf"
         ],
+        "title": "Performance Contract",
         "topic": "PERF"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1729,9 +1986,12 @@
           "bijux-atlas-query",
           "query-language-spec"
         ],
+        "title": "Query Language Spec",
         "topic": "QUERY_LANGUAGE_SPEC"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1749,9 +2009,12 @@
           "bijux-atlas-query",
           "transcript-ordering"
         ],
+        "title": "Transcript Ordering Rules",
         "topic": "TRANSCRIPT_ORDERING"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1769,9 +2032,12 @@
           "architecture",
           "bijux-atlas-query"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1789,9 +2055,12 @@
           "bijux-atlas-query",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1809,9 +2078,12 @@
           "bijux-atlas-query",
           "effects"
         ],
+        "title": "Effects Policy",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1829,9 +2101,12 @@
           "bijux-atlas-query",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-query",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-query",
+        "audience": "contributors",
         "crate": "bijux-atlas-query",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1849,11 +2124,14 @@
           "bijux-atlas-query",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-server": [
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1871,9 +2149,12 @@
           "bijux-atlas-server",
           "caching"
         ],
+        "title": "Caching",
         "topic": "CACHING"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1891,9 +2172,12 @@
           "bijux-atlas-server",
           "failure-modes"
         ],
+        "title": "Failure Modes",
         "topic": "FAILURE_MODES"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1911,9 +2195,12 @@
           "bijux-atlas-server",
           "hot-path-checklist"
         ],
+        "title": "Hot Path Checklist",
         "topic": "HOT_PATH_CHECKLIST"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1931,9 +2218,12 @@
           "bijux-atlas-server",
           "index"
         ],
+        "title": "Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1951,9 +2241,12 @@
           "bijux-atlas-server",
           "kubernetes"
         ],
+        "title": "Kubernetes Ops",
         "topic": "KUBERNETES"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1971,9 +2264,12 @@
           "bijux-atlas-server",
           "operations-runbook"
         ],
+        "title": "Operations Runbook",
         "topic": "OPERATIONS_RUNBOOK"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -1991,9 +2287,12 @@
           "bijux-atlas-server",
           "perf-baseline"
         ],
+        "title": "Perf Baseline",
         "topic": "PERF_BASELINE"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2011,9 +2310,12 @@
           "bijux-atlas-server",
           "perf-profiling"
         ],
+        "title": "Perf Profiling",
         "topic": "PERF_PROFILING"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2031,9 +2333,12 @@
           "bijux-atlas-server",
           "runtime"
         ],
+        "title": "Runtime",
         "topic": "RUNTIME"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2051,9 +2356,12 @@
           "bijux-atlas-server",
           "telemetry"
         ],
+        "title": "Telemetry",
         "topic": "TELEMETRY"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2071,9 +2379,12 @@
           "architecture",
           "bijux-atlas-server"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2091,9 +2402,12 @@
           "bijux-atlas-server",
           "contracts"
         ],
+        "title": "Contracts",
         "topic": "contracts"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2111,9 +2425,12 @@
           "bijux-atlas-server",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2131,9 +2448,12 @@
           "bijux-atlas-server",
           "effects"
         ],
+        "title": "Effects",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2151,9 +2471,12 @@
           "bijux-atlas-server",
           "failure-modes"
         ],
+        "title": "Failure Modes",
         "topic": "failure-modes"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2173,9 +2496,12 @@
           "generated",
           "runtime-startup-config"
         ],
+        "title": "Runtime Startup Config",
         "topic": "runtime-startup-config"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2193,9 +2519,12 @@
           "bijux-atlas-server",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-server",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2213,9 +2542,12 @@
           "bijux-atlas-server",
           "runtime-model"
         ],
+        "title": "Runtime Model",
         "topic": "runtime-model"
       },
       {
+        "area": "bijux-atlas-server",
+        "audience": "contributors",
         "crate": "bijux-atlas-server",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2233,11 +2565,14 @@
           "bijux-atlas-server",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-atlas-store": [
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2255,9 +2590,12 @@
           "artifact-contract",
           "bijux-atlas-store"
         ],
+        "title": "Artifact Contract at Store Boundary",
         "topic": "ARTIFACT_CONTRACT"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2275,9 +2613,12 @@
           "attack-surface-budget",
           "bijux-atlas-store"
         ],
+        "title": "Attack Surface Budget",
         "topic": "ATTACK_SURFACE_BUDGET"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2295,9 +2636,12 @@
           "backends-and-guarantees",
           "bijux-atlas-store"
         ],
+        "title": "Backends And Guarantees",
         "topic": "BACKENDS_AND_GUARANTEES"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2315,9 +2659,12 @@
           "backend-feature-matrix",
           "bijux-atlas-store"
         ],
+        "title": "Backend Feature Matrix",
         "topic": "BACKEND_FEATURE_MATRIX"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2335,9 +2682,12 @@
           "bijux-atlas-store",
           "caching"
         ],
+        "title": "Caching Semantics",
         "topic": "CACHING"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2355,9 +2705,12 @@
           "bijux-atlas-store",
           "failure-modes"
         ],
+        "title": "Failure Modes",
         "topic": "FAILURE_MODES"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2375,9 +2728,12 @@
           "bijux-atlas-store",
           "index"
         ],
+        "title": "Store Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2395,9 +2751,12 @@
           "bijux-atlas-store",
           "rollback"
         ],
+        "title": "Rollback Workflow",
         "topic": "ROLLBACK"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2415,9 +2774,12 @@
           "bijux-atlas-store",
           "runbook-snippet"
         ],
+        "title": "Store Outage Behavior (Snippet)",
         "topic": "RUNBOOK_SNIPPET"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2435,9 +2797,12 @@
           "architecture",
           "bijux-atlas-store"
         ],
+        "title": "Architecture",
         "topic": "architecture"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2455,9 +2820,12 @@
           "bijux-atlas-store",
           "contracts"
         ],
+        "title": "Contracts",
         "topic": "contracts"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2475,9 +2843,12 @@
           "bijux-atlas-store",
           "effect-boundary-map"
         ],
+        "title": "Effect Boundary Map",
         "topic": "effect-boundary-map"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2495,9 +2866,12 @@
           "bijux-atlas-store",
           "effects"
         ],
+        "title": "Effects Policy",
         "topic": "effects"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2515,9 +2889,12 @@
           "bijux-atlas-store",
           "failure-modes"
         ],
+        "title": "Failure Modes",
         "topic": "failure-modes"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2535,9 +2912,12 @@
           "bijux-atlas-store",
           "public-api"
         ],
+        "title": "PUBLIC API: bijux-atlas-store",
         "topic": "public-api"
       },
       {
+        "area": "bijux-atlas-store",
+        "audience": "contributors",
         "crate": "bijux-atlas-store",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2555,11 +2935,14 @@
           "bijux-atlas-store",
           "testing"
         ],
+        "title": "Testing",
         "topic": "testing"
       }
     ],
     "bijux-dev-atlas": [
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2577,9 +2960,12 @@
           "artifacts",
           "bijux-dev-atlas"
         ],
+        "title": "Dev Control Plane Artifacts",
         "topic": "ARTIFACTS"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2597,9 +2983,12 @@
           "bijux-dev-atlas",
           "cli-command-list"
         ],
+        "title": "CLI_COMMAND_LIST",
         "topic": "CLI_COMMAND_LIST"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2617,9 +3006,12 @@
           "bijux-dev-atlas",
           "commands"
         ],
+        "title": "Commands",
         "topic": "COMMANDS"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2637,9 +3029,12 @@
           "bijux-dev-atlas",
           "configs-command-list"
         ],
+        "title": "CONFIGS_COMMAND_LIST",
         "topic": "CONFIGS_COMMAND_LIST"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2657,9 +3052,12 @@
           "bijux-dev-atlas",
           "contract"
         ],
+        "title": "Dev Control Plane Contract",
         "topic": "CONTRACT"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2677,9 +3075,12 @@
           "bijux-dev-atlas",
           "engine-contract"
         ],
+        "title": "Dev Control Plane Engine Contract",
         "topic": "ENGINE_CONTRACT"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2697,9 +3098,12 @@
           "bijux-dev-atlas",
           "exit-codes"
         ],
+        "title": "Dev Control Plane Exit Codes",
         "topic": "EXIT_CODES"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2717,9 +3121,12 @@
           "bijux-dev-atlas",
           "failure-modes"
         ],
+        "title": "Dev Control Plane Failure Modes",
         "topic": "FAILURE_MODES"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2737,9 +3144,12 @@
           "bijux-dev-atlas",
           "index"
         ],
+        "title": "bijux-dev-atlas Docs Index",
         "topic": "INDEX"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2757,9 +3167,12 @@
           "bijux-dev-atlas",
           "ops-command-list"
         ],
+        "title": "OPS_COMMAND_LIST",
         "topic": "OPS_COMMAND_LIST"
       },
       {
+        "area": "bijux-dev-atlas",
+        "audience": "contributors",
         "crate": "bijux-dev-atlas",
         "doc_type": "concept",
         "doc_version": "v1",
@@ -2777,6 +3190,7 @@
           "bijux-dev-atlas",
           "registry-contract"
         ],
+        "title": "Dev Control Plane Registry Contract",
         "topic": "REGISTRY_CONTRACT"
       }
     ]

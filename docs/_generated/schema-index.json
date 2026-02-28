@@ -1,6 +1,8 @@
 {
   "rows": [
     {
+      "area": "bijux-atlas-model",
+      "audience": "contributors",
       "crate": "bijux-atlas-model",
       "doc_type": "spec",
       "doc_version": "v1",
@@ -18,9 +20,12 @@
         "bijux-atlas-model",
         "schema-evolution-notes"
       ],
+      "title": "Schema Evolution Notes",
       "topic": "SCHEMA_EVOLUTION_NOTES"
     },
     {
+      "area": "bijux-atlas-model",
+      "audience": "contributors",
       "crate": "bijux-atlas-model",
       "doc_type": "spec",
       "doc_version": "v1",
@@ -38,9 +43,12 @@
         "bijux-atlas-model",
         "schema-stability"
       ],
+      "title": "Schema Stability (v1)",
       "topic": "SCHEMA_STABILITY"
     },
     {
+      "area": "bijux-atlas-policies",
+      "audience": "contributors",
       "crate": "bijux-atlas-policies",
       "doc_type": "spec",
       "doc_version": "v1",
@@ -58,9 +66,12 @@
         "bijux-atlas-policies",
         "config-schema"
       ],
+      "title": "Config Schema Contract",
       "topic": "CONFIG_SCHEMA"
     },
     {
+      "area": "bijux-atlas-policies",
+      "audience": "contributors",
       "crate": "bijux-atlas-policies",
       "doc_type": "spec",
       "doc_version": "v1",
@@ -78,9 +89,12 @@
         "bijux-atlas-policies",
         "schema"
       ],
+      "title": "Policy Schema",
       "topic": "SCHEMA"
     },
     {
+      "area": "bijux-atlas-policies",
+      "audience": "contributors",
       "crate": "bijux-atlas-policies",
       "doc_type": "spec",
       "doc_version": "v1",
@@ -98,9 +112,12 @@
         "bijux-atlas-policies",
         "schema-evolution"
       ],
+      "title": "Evolving Policy Schema Safely",
       "topic": "SCHEMA_EVOLUTION"
     },
     {
+      "area": "root",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "spec",
       "doc_version": "v1",
@@ -118,6 +135,7 @@
         "root",
         "schema-index"
       ],
+      "title": "Schema Index",
       "topic": "SCHEMA_INDEX"
     }
   ],

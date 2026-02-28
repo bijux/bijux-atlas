@@ -212,7 +212,7 @@
 | `container` | `docs/operations/container.md` |
 | `contract-change-checklist` | `docs/contracts/contract-change-checklist.md` |
 | `contract-diff` | `docs/contracts/contract-diff.md` |
-| `contracts` | `crates/bijux-atlas-api/docs/contracts.md, crates/bijux-atlas-policies/docs/contracts.md, crates/bijux-atlas-server/docs/contracts.md, crates/bijux-atlas-store/docs/contracts.md, docs/operations/ops-system/contracts.md` |
+| `contracts` | `crates/bijux-atlas-api/docs/contracts.md, crates/bijux-atlas-policies/docs/contracts.md, crates/bijux-atlas-server/docs/contracts.md, crates/bijux-atlas-store/docs/contracts.md, docs/control-plane/contracts.md, docs/operations/ops-system/contracts.md` |
 | `contracts-index` | `docs/contracts/contracts-index.md` |
 | `contributing` | `docs/development/contributing.md` |
 | `control-plane` | `docs/development/tooling/control-plane.md` |
@@ -292,6 +292,7 @@
 | `k8s-tests` | `docs/operations/e2e/k8s-tests.md` |
 | `kubernetes` | `docs/operations/kubernetes.md` |
 | `kustomize-policy` | `docs/operations/k8s/kustomize-policy.md` |
+| `lane-guarantees` | `docs/operations/release/lane-guarantees.md` |
 | `latest-release-alias-policy` | `docs/reference/registry/latest-release-alias-policy.md` |
 | `layout-shell-migration` | `docs/architecture/layout-shell-migration.md` |
 | `lifecycle` | `docs/reference/datasets/lifecycle.md` |

@@ -15,7 +15,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "title", "owner", "area", "stability"],
+        "required": ["path", "title", "owner", "area", "stability", "audience"],
         "properties": {
           "path": {
             "type": "string",
@@ -35,7 +35,11 @@
           },
           "stability": {
             "type": "string",
-            "enum": ["stable", "provisional", "incubating"]
+            "enum": ["stable", "evolving", "deprecated"]
+          },
+          "audience": {
+            "type": "string",
+            "enum": ["contributors", "developers", "operators", "reviewers", "mixed"]
           }
         }
       }

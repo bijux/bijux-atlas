@@ -387,8 +387,12 @@ fn parse_owner_and_stability(file: &Path) -> (String, String) {
         }
     }
     (
-        owner.unwrap_or_else(|| "docs-governance".to_string()),
-        stability.unwrap_or_else(|| "stable".to_string()),
+        owner
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or_else(|| "docs-governance".to_string()),
+        stability
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or_else(|| "stable".to_string()),
     )
 }
 

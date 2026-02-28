@@ -377,6 +377,7 @@ fn canonical_reference_checks(
 }
 
 pub(crate) fn docs_registry_payload(ctx: &DocsContext) -> serde_json::Value {
+    let audience_policy = load_audience_policy(&ctx.repo_root);
     let mut docs = Vec::new();
     for file in scan_registry_markdown_files(&ctx.repo_root) {
         let Ok(rel) = file.strip_prefix(&ctx.repo_root) else {
@@ -384,11 +385,28 @@ pub(crate) fn docs_registry_payload(ctx: &DocsContext) -> serde_json::Value {
         };
         let rel_path = rel.display().to_string();
         let (owner, stability) = parse_owner_and_stability(&file);
+        let title = parse_doc_title(&file).unwrap_or_else(|| {
+            rel.file_stem()
+                .and_then(|v| v.to_str())
+                .unwrap_or("unknown")
+                .replace('-', " ")
+        });
+        let area = infer_doc_area(&rel_path);
+        let audience = parse_doc_audience(&file).unwrap_or_else(|| {
+            audience_policy
+                .section_defaults
+                .get(&area)
+                .cloned()
+                .unwrap_or_else(|| "contributors".to_string())
+        });
         let crate_name = crate_association(&rel_path);
         docs.push(serde_json::json!({
             "path": rel_path,
+            "title": title,
+            "area": area,
             "doc_type": infer_doc_type(&rel.display().to_string()),
             "owner": owner,
+            "audience": audience,
             "crate": crate_name,
             "stability": stability,
             "last_reviewed": "2026-02-25",
@@ -461,10 +479,12 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         .cloned()
         .unwrap_or_default();
     let policy = load_quality_policy(&ctx.repo_root);
+    let audience_policy = load_audience_policy(&ctx.repo_root);
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
     let mut seen_paths = BTreeSet::new();
     let mut seen_topics = BTreeMap::<String, usize>::new();
+    let mut seen_titles = BTreeMap::<String, usize>::new();
     let scanned = scan_registry_markdown_files(&ctx.repo_root)
         .into_iter()
         .filter_map(|p| {
@@ -486,6 +506,23 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         }
         if let Some(topic) = entry["topic"].as_str() {
             *seen_topics.entry(topic.to_string()).or_default() += 1;
+        }
+        if let Some(title) = entry["title"].as_str() {
+            *seen_titles
+                .entry(title.trim().to_ascii_lowercase())
+                .or_default() += 1;
+        } else {
+            errors.push(format!("DOCS_REGISTRY_TITLE_REQUIRED: `{path}` requires title metadata"));
+        }
+        let audience = entry["audience"].as_str().unwrap_or_default();
+        if audience.is_empty() {
+            errors.push(format!(
+                "DOCS_REGISTRY_AUDIENCE_REQUIRED: `{path}` requires audience metadata"
+            ));
+        } else if !audience_policy.allowed.contains(&audience.to_string()) {
+            errors.push(format!(
+                "DOCS_REGISTRY_AUDIENCE_INVALID: `{path}` has unsupported audience `{audience}`"
+            ));
         }
         if let Some(last_reviewed) = entry["last_reviewed"].as_str() {
             if let Some(age_days) = date_diff_days(last_reviewed, "2026-02-25") {
@@ -514,6 +551,13 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
         if count > 1 {
             warnings.push(format!(
                 "DOCS_REGISTRY_DUPLICATE_TOPIC: `{topic}` appears {count} times"
+            ));
+        }
+    }
+    for (title, count) in seen_titles {
+        if count > 1 {
+            errors.push(format!(
+                "DOCS_REGISTRY_DUPLICATE_TITLE: `{title}` appears {count} times"
             ));
         }
     }
@@ -662,4 +706,86 @@ pub(crate) fn registry_validate_payload(ctx: &DocsContext) -> Result<serde_json:
             "warnings": warnings.len()
         }
     }))
+}
+
+struct AudiencePolicy {
+    allowed: Vec<String>,
+    section_defaults: BTreeMap<String, String>,
+}
+
+fn load_audience_policy(repo_root: &Path) -> AudiencePolicy {
+    let path = repo_root.join("docs/metadata/audiences.json");
+    let Ok(text) = fs::read_to_string(&path) else {
+        return AudiencePolicy {
+            allowed: vec![
+                "contributors".to_string(),
+                "developers".to_string(),
+                "operators".to_string(),
+                "reviewers".to_string(),
+                "mixed".to_string(),
+            ],
+            section_defaults: BTreeMap::new(),
+        };
+    };
+    let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) else {
+        return AudiencePolicy {
+            allowed: vec![
+                "contributors".to_string(),
+                "developers".to_string(),
+                "operators".to_string(),
+                "reviewers".to_string(),
+                "mixed".to_string(),
+            ],
+            section_defaults: BTreeMap::new(),
+        };
+    };
+    let allowed = json["allowed"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .filter_map(|v| v.as_str().map(ToString::to_string))
+        .collect::<Vec<_>>();
+    let section_defaults = json["section_defaults"]
+        .as_object()
+        .into_iter()
+        .flatten()
+        .filter_map(|(k, v)| v.as_str().map(|value| (k.clone(), value.to_string())))
+        .collect::<BTreeMap<_, _>>();
+    AudiencePolicy {
+        allowed,
+        section_defaults,
+    }
+}
+
+fn parse_doc_title(file: &Path) -> Option<String> {
+    let text = fs::read_to_string(file).ok()?;
+    text.lines()
+        .find_map(|line| line.trim().strip_prefix("# ").map(str::trim))
+        .filter(|title| !title.is_empty())
+        .map(ToString::to_string)
+}
+
+fn parse_doc_audience(file: &Path) -> Option<String> {
+    let text = fs::read_to_string(file).ok()?;
+    for line in text.lines().take(40) {
+        let trimmed = line.trim();
+        if let Some(value) = trimmed.strip_prefix("- Audience:") {
+            let audience = value.trim().trim_matches('`').trim();
+            if !audience.is_empty() {
+                return Some(audience.to_string());
+            }
+        }
+    }
+    None
+}
+
+fn infer_doc_area(path: &str) -> String {
+    let parts = path.split('/').collect::<Vec<_>>();
+    if parts.first() == Some(&"docs") {
+        parts.get(1).copied().unwrap_or("root").to_string()
+    } else if parts.first() == Some(&"crates") && parts.get(2) == Some(&"docs") {
+        parts.get(1).copied().unwrap_or("crates").to_string()
+    } else {
+        parts.first().copied().unwrap_or("root").to_string()
+    }
 }
