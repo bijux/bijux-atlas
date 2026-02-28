@@ -135,6 +135,10 @@ fn configs_explain_reports_registry_metadata() {
         payload.get("owner").and_then(|v| v.as_str()),
         Some("rust-foundation")
     );
+    assert!(payload
+        .get("consumers")
+        .and_then(|v| v.as_array())
+        .is_some_and(|items| !items.is_empty()));
 }
 
 #[test]

@@ -9,6 +9,7 @@ use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestRe
 
 const REGISTRY_PATH: &str = "configs/inventory/configs.json";
 const OWNERS_PATH: &str = "configs/OWNERS.json";
+const CONSUMERS_PATH: &str = "configs/CONSUMERS.json";
 const ROOT_MARKDOWN_FILES: [&str; 2] = ["configs/README.md", "configs/CONTRACT.md"];
 const DOCS_TOOLING_PATTERNS: [&str; 6] = [
     "configs/docs/.markdownlint-cli2.jsonc",
@@ -54,6 +55,12 @@ struct ConfigsExclusion {
 struct ConfigsOwners {
     schema_version: u64,
     groups: BTreeMap<String, String>,
+}
+
+#[derive(Clone, Deserialize)]
+struct ConfigsConsumers {
+    schema_version: u64,
+    groups: BTreeMap<String, Vec<String>>,
 }
 
 #[derive(Clone)]
@@ -118,6 +125,12 @@ fn read_owners(repo_root: &Path) -> Result<ConfigsOwners, String> {
     let text = read_text(&repo_root.join(OWNERS_PATH))?;
     serde_json::from_str::<ConfigsOwners>(&text)
         .map_err(|err| format!("parse {OWNERS_PATH} failed: {err}"))
+}
+
+fn read_consumers(repo_root: &Path) -> Result<ConfigsConsumers, String> {
+    let text = read_text(&repo_root.join(CONSUMERS_PATH))?;
+    serde_json::from_str::<ConfigsConsumers>(&text)
+        .map_err(|err| format!("parse {CONSUMERS_PATH} failed: {err}"))
 }
 
 fn all_config_files(root: &Path) -> Result<Vec<String>, String> {
@@ -817,7 +830,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=28)
+    let expected = (1..=29)
         .map(|n| format!("CONFIGS-{n:03}"))
         .collect::<BTreeSet<_>>();
     if index.contract_ids == expected {
@@ -1581,6 +1594,86 @@ fn test_configs_028_owner_map_alignment(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_029_consumer_map_alignment(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-029",
+                "configs.consumers.group_alignment",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let consumers = match read_consumers(&ctx.repo_root) {
+        Ok(consumers) => consumers,
+        Err(err) => {
+            return fail(
+                "CONFIGS-029",
+                "configs.consumers.group_alignment",
+                CONSUMERS_PATH,
+                err,
+            )
+        }
+    };
+    if consumers.schema_version != 1 {
+        return fail(
+            "CONFIGS-029",
+            "configs.consumers.group_alignment",
+            CONSUMERS_PATH,
+            format!(
+                "unsupported configs consumer map schema_version {}",
+                consumers.schema_version
+            ),
+        );
+    }
+    let mut violations = Vec::new();
+    let expected_groups = index
+        .registry
+        .groups
+        .iter()
+        .map(|group| group.name.clone())
+        .collect::<BTreeSet<_>>();
+    let actual_groups = consumers.groups.keys().cloned().collect::<BTreeSet<_>>();
+    for missing in expected_groups.difference(&actual_groups) {
+        violations.push(violation(
+            "CONFIGS-029",
+            "configs.consumers.group_alignment",
+            CONSUMERS_PATH,
+            format!("consumer map is missing group `{missing}`"),
+        ));
+    }
+    for extra in actual_groups.difference(&expected_groups) {
+        violations.push(violation(
+            "CONFIGS-029",
+            "configs.consumers.group_alignment",
+            CONSUMERS_PATH,
+            format!("consumer map declares unknown group `{extra}`"),
+        ));
+    }
+    for group in &index.registry.groups {
+        if let Some(entries) = consumers.groups.get(&group.name) {
+            if entries.is_empty() {
+                violations.push(violation(
+                    "CONFIGS-029",
+                    "configs.consumers.group_alignment",
+                    CONSUMERS_PATH,
+                    format!(
+                        "consumer map for `{}` must list at least one consumer",
+                        group.name
+                    ),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -1779,6 +1872,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "configs owner map matches the declared group owners",
             test_configs_028_owner_map_alignment,
         ),
+        contract(
+            "CONFIGS-029",
+            "configs consumer map stays aligned with the registry",
+            "configs.consumers.group_alignment",
+            "configs consumer map matches the declared groups",
+            test_configs_029_consumer_map_alignment,
+        ),
     ])
 }
 
@@ -1831,6 +1931,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-026" => "The configs/docs directory must not contain narrative markdown.".to_string(),
         "CONFIGS-027" => "The configs/docs directory must stay within its declared tooling file surface.".to_string(),
         "CONFIGS-028" => "The canonical configs owner map must match the registry group owners.".to_string(),
+        "CONFIGS-029" => "The canonical configs consumer map must cover the registry groups.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
@@ -1838,6 +1939,7 @@ pub fn contract_explain(contract_id: &str) -> String {
 pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value, String> {
     let index = registry_index(repo_root)?;
     let owners = read_owners(repo_root)?;
+    let consumers = read_consumers(repo_root)?;
     let normalized = file.replace('\\', "/");
     if index.root_files.contains(&normalized) {
         return Ok(serde_json::json!({
@@ -1847,6 +1949,7 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
             "group": serde_json::Value::Null,
             "visibility": "root",
             "owner": serde_json::Value::Null,
+            "consumers": [],
             "schema_owner": serde_json::Value::Null,
             "stability": "stable",
             "tool_entrypoints": [],
@@ -1862,6 +1965,7 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
                 "group": serde_json::Value::Null,
                 "visibility": "excluded",
                 "owner": serde_json::Value::Null,
+                "consumers": [],
                 "schema_owner": serde_json::Value::Null,
                 "stability": serde_json::Value::Null,
                 "tool_entrypoints": [],
@@ -1887,6 +1991,7 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
                 "group": group.name,
                 "visibility": visibility,
                 "owner": owners.groups.get(&group.name).cloned().unwrap_or_else(|| group.owner.clone()),
+                "consumers": consumers.groups.get(&group.name).cloned().unwrap_or_default(),
                 "schema_owner": group.schema_owner,
                 "stability": group.stability,
                 "tool_entrypoints": group.tool_entrypoints,
@@ -1969,5 +2074,8 @@ mod tests {
         assert_eq!(payload["group"].as_str(), Some("rust"));
         assert_eq!(payload["visibility"].as_str(), Some("public"));
         assert_eq!(payload["owner"].as_str(), Some("rust-foundation"));
+        assert!(payload["consumers"]
+            .as_array()
+            .is_some_and(|rows| !rows.is_empty()));
     }
 }
