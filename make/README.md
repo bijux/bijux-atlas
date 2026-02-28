@@ -6,3 +6,4 @@ Public targets are exposed through `make help` and route through the control pla
 Make does not own policy or operational logic.
 
 Contracts are defined in `make/CONTRACT.md` and enforced by `bijux dev atlas contracts make`.
+Contracts gate targets are defined only in `make/contracts.mk` and delegated through `make/public.mk`.
