@@ -48,6 +48,7 @@
 | `DOC-033` | docs orphan pages report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 | `DOC-034` | docs metadata coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 | `DOC-035` | docs duplication report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-036` | docs contract coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 
 ## Enforcement mapping
 
@@ -88,6 +89,7 @@
 | `DOC-033` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-034` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-035` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-036` | `bijux dev atlas contracts docs --mode static` |
 
 ## Output artifacts
 

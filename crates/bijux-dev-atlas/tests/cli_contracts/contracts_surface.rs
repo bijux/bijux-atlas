@@ -230,20 +230,30 @@ fn contracts_docs_runs_and_reports_summary() {
 }
 
 #[test]
-fn contracts_docs_writes_index_report_artifact() {
+fn contracts_docs_writes_report_artifacts() {
     let artifacts_root = repo_root().join("artifacts/tests/contracts-docs-report");
     fs::create_dir_all(&artifacts_root).expect("mkdir artifacts");
-    let report_path = artifacts_root.join("docs-index-correctness.json");
-    if report_path.exists() {
-        fs::remove_file(&report_path).expect("remove prior report");
+    let report_paths = [
+        "docs-index-correctness.json",
+        "broken-links.json",
+        "orphans.json",
+        "metadata-coverage.json",
+        "duplication-report.json",
+        "coverage-report.json",
+    ]
+    .iter()
+    .map(|name| artifacts_root.join(name))
+    .collect::<Vec<_>>();
+    for report_path in &report_paths {
+        if report_path.exists() {
+            fs::remove_file(report_path).expect("remove prior report");
+        }
     }
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args([
             "contracts",
             "docs",
-            "--filter-contract",
-            "DOC-030",
             "--format",
             "json",
             "--artifacts-root",
@@ -252,14 +262,21 @@ fn contracts_docs_writes_index_report_artifact() {
         .output()
         .expect("contracts docs report");
     assert!(output.status.success());
-    let payload: serde_json::Value =
-        serde_json::from_str(&fs::read_to_string(report_path).expect("read report"))
-            .expect("report json");
-    assert_eq!(
-        payload["kind"].as_str(),
-        Some("docs_index_correctness")
-    );
-    assert!(payload["sections"].as_array().is_some());
+    let kinds = [
+        ("docs-index-correctness.json", "docs_index_correctness"),
+        ("broken-links.json", "docs_broken_links"),
+        ("orphans.json", "docs_orphans"),
+        ("metadata-coverage.json", "docs_metadata_coverage"),
+        ("duplication-report.json", "docs_duplication"),
+        ("coverage-report.json", "docs_contract_coverage"),
+    ];
+    for (file_name, expected_kind) in kinds {
+        let path = artifacts_root.join(file_name);
+        let payload: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(path).expect("read report"))
+                .expect("report json");
+        assert_eq!(payload["kind"].as_str(), Some(expected_kind));
+    }
 }
 
 #[test]

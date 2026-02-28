@@ -46,6 +46,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-033" => "Docs contracts must generate a deterministic orphan-pages artifact report.".to_string(),
         "DOC-034" => "Docs contracts must generate a deterministic metadata-coverage artifact report.".to_string(),
         "DOC-035" => "Docs contracts must generate a deterministic duplication artifact report.".to_string(),
+        "DOC-036" => "Docs contracts must generate a deterministic contract coverage artifact report.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

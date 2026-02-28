@@ -287,3 +287,41 @@ fn test_docs_035_duplication_report_generated(ctx: &RunContext) -> TestResult {
         &payload,
     )
 }
+
+fn test_docs_036_coverage_report_generated(ctx: &RunContext) -> TestResult {
+    let rows = match contracts(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-036".to_string(),
+                test_id: "docs.reports.coverage_generated".to_string(),
+                file: Some("docs".to_string()),
+                line: None,
+                message: format!("load docs contracts failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let static_count = rows
+        .iter()
+        .filter(|row| row.tests.iter().all(|case| case.kind == TestKind::Pure))
+        .count();
+    let effect_count = rows.len().saturating_sub(static_count);
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "kind": "docs_contract_coverage",
+        "group": "docs",
+        "contracts_total": rows.len(),
+        "contracts_static": static_count,
+        "contracts_effect": effect_count,
+        "tests_total": rows.iter().map(|row| row.tests.len()).sum::<usize>(),
+        "generated_by": "bijux dev atlas contracts docs"
+    });
+    write_docs_report_artifact(
+        ctx,
+        "DOC-036",
+        "docs.reports.coverage_generated",
+        "coverage-report.json",
+        &payload,
+    )
+}

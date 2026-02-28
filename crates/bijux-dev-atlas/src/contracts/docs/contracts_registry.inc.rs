@@ -401,5 +401,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_035_duplication_report_generated,
             }],
         },
+        Contract {
+            id: ContractId("DOC-036".to_string()),
+            title: "docs contract coverage report is generated deterministically",
+            tests: vec![TestCase {
+                id: TestId("docs.reports.coverage_generated".to_string()),
+                title: "docs contracts write the coverage artifact report",
+                kind: TestKind::Pure,
+                run: test_docs_036_coverage_report_generated,
+            }],
+        },
     ])
 }
