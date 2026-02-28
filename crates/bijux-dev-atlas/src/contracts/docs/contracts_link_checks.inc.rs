@@ -211,3 +211,88 @@ fn test_docs_025_no_raw_http_links(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestResult {
+    let payload = match docs_sections_payload(ctx, "DOC-028", "docs.index.section_indexes_unique_local_pages") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let section_map = match payload["sections"].as_object() {
+        Some(map) => map,
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-028".to_string(),
+                test_id: "docs.index.section_indexes_unique_local_pages".to_string(),
+                file: Some("docs/sections.json".to_string()),
+                line: None,
+                message: "`sections` object is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let docs_root = docs_root_path(ctx);
+    let mut violations = Vec::new();
+    for (name, config) in section_map {
+        if name.starts_with('_') || !config["requires_index"].as_bool().unwrap_or(false) {
+            continue;
+        }
+        let index_path = docs_root.join(name).join("INDEX.md");
+        let contents = match std::fs::read_to_string(&index_path) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-028",
+                    "docs.index.section_indexes_unique_local_pages",
+                    Some(format!("docs/{name}/INDEX.md")),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let mut counts = std::collections::BTreeMap::<String, usize>::new();
+        for target in markdown_links(&contents) {
+            if target.starts_with("http://")
+                || target.starts_with("https://")
+                || target.starts_with('#')
+                || target.starts_with("mailto:")
+            {
+                continue;
+            }
+            let clean = target.split('#').next().unwrap_or(&target);
+            if clean.is_empty() {
+                continue;
+            }
+            let resolved = index_path.parent().unwrap_or(&index_path).join(clean);
+            let normalized = match std::fs::canonicalize(&resolved) {
+                Ok(path) => path,
+                Err(_) => resolved,
+            };
+            let rel = match normalized.strip_prefix(&ctx.repo_root) {
+                Ok(path) => path.display().to_string(),
+                Err(_) => continue,
+            };
+            let expected_prefix = format!("docs/{name}/");
+            if rel.starts_with(&expected_prefix) && rel.ends_with(".md") && rel != format!("docs/{name}/INDEX.md") {
+                *counts.entry(rel).or_insert(0) += 1;
+            }
+        }
+        for (rel, count) in counts {
+            if count > 1 {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-028",
+                    "docs.index.section_indexes_unique_local_pages",
+                    Some(format!("docs/{name}/INDEX.md")),
+                    format!("section index links `{rel}` {count} times"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

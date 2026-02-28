@@ -57,7 +57,6 @@ Policy statements in this directory must link to executable contract IDs such as
 - [Canonical Workflows](canonical-workflows.md)
 - [Runtime Config](config.md)
 - [Release Workflows](release-workflows.md)
-- [k6 Workflows](load/k6.md)
 - [K8s Tests](e2e/k8s-tests.md)
 - [Observability](observability/INDEX.md)
 - [Production Readiness Checklist](production-readiness-checklist.md)
