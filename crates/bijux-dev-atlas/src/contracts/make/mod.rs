@@ -165,6 +165,7 @@ fn test_make_dir_003_allowed_root_files(ctx: &RunContext) -> TestResult {
         "README.md",
         "_internal.mk",
         "checks.mk",
+        "contracts.mk",
         "macros.mk",
         "paths.mk",
         "public.mk",
@@ -184,6 +185,177 @@ fn test_make_dir_003_allowed_root_files(ctx: &RunContext) -> TestResult {
                 &ctx.repo_root,
                 "unexpected top-level file under make/",
             ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_contracts_001_single_entrypoint(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-001";
+    let test_id = "make.contracts.single_entrypoint";
+    let contracts_path = ctx.repo_root.join("make/contracts.mk");
+    let public_path = ctx.repo_root.join("make/public.mk");
+    let mut violations = Vec::new();
+    if !contracts_path.is_file() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            &contracts_path,
+            &ctx.repo_root,
+            "make/contracts.mk must exist",
+        ));
+    }
+    let public_text = match std::fs::read_to_string(&public_path) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some(rel(&public_path, &ctx.repo_root)),
+                line: Some(1),
+                message: format!("read make/public.mk failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    if !public_text.contains("include make/contracts.mk") {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            &public_path,
+            &ctx.repo_root,
+            "make/public.mk must include make/contracts.mk",
+        ));
+    }
+    if public_text.lines().any(|line| {
+        let trimmed = line.trim_start();
+        trimmed.starts_with("contracts:") || trimmed.starts_with("contracts-")
+    }) {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            &public_path,
+            &ctx.repo_root,
+            "contracts targets must be defined only in make/contracts.mk",
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_contracts_002_target_surface(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-002";
+    let test_id = "make.contracts.target_surface";
+    let path = ctx.repo_root.join("make/contracts.mk");
+    let text = match std::fs::read_to_string(&path) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some(rel(&path, &ctx.repo_root)),
+                line: Some(1),
+                message: format!("read make/contracts.mk failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let expected_public = BTreeSet::from([
+        "contracts",
+        "contracts-fast",
+        "contracts-changed",
+        "contracts-json",
+        "contracts-ci",
+        "contracts-root",
+        "contracts-configs",
+        "contracts-docs",
+        "contracts-docker",
+        "contracts-make",
+        "contracts-ops",
+        "contracts-help",
+    ]);
+    let mut found_public = BTreeSet::new();
+    let mut violations = Vec::new();
+    for (index, line) in text.lines().enumerate() {
+        let trimmed = line.trim_start();
+        if !trimmed.starts_with("contracts") && !trimmed.starts_with("_contracts") {
+            continue;
+        }
+        if let Some((target, _)) = trimmed.split_once(':') {
+            if target.starts_with("_contracts") {
+                continue;
+            }
+            found_public.insert(target.to_string());
+            if !expected_public.contains(target) {
+                violations.push(Violation {
+                    contract_id: contract_id.to_string(),
+                    test_id: test_id.to_string(),
+                    file: Some(rel(&path, &ctx.repo_root)),
+                    line: Some(index + 1),
+                    message: format!("unexpected contracts public target `{target}`"),
+                    evidence: None,
+                });
+            }
+        }
+    }
+    for expected in expected_public {
+        if !found_public.contains(expected) {
+            violations.push(Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some(rel(&path, &ctx.repo_root)),
+                line: Some(1),
+                message: format!("missing required contracts target `{expected}`"),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_make_contracts_003_delegate_only(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-003";
+    let test_id = "make.contracts.delegate_only";
+    let path = ctx.repo_root.join("make/contracts.mk");
+    let text = match std::fs::read_to_string(&path) {
+        Ok(text) => text,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some(rel(&path, &ctx.repo_root)),
+                line: Some(1),
+                message: format!("read make/contracts.mk failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let mut violations = Vec::new();
+    for (index, line) in text.lines().enumerate() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("@$(DEV_ATLAS)") && !trimmed.starts_with("@CI=1 $(DEV_ATLAS)") {
+            continue;
+        }
+        if !trimmed.contains(" contracts ") {
+            violations.push(Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some(rel(&path, &ctx.repo_root)),
+                line: Some(index + 1),
+                message: "contracts targets must delegate only to bijux-dev-atlas contracts commands".to_string(),
+                evidence: Some(trimmed.to_string()),
+            });
         }
     }
     if violations.is_empty() {
@@ -392,6 +564,7 @@ fn test_make_include_002_public_surface(ctx: &RunContext) -> TestResult {
     let expected = vec![
         "make/_internal.mk".to_string(),
         "make/checks.mk".to_string(),
+        "make/contracts.mk".to_string(),
         "make/macros.mk".to_string(),
         "make/paths.mk".to_string(),
         "make/vars.mk".to_string(),
@@ -586,6 +759,36 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_make_include_003_acyclic,
             }],
         },
+        Contract {
+            id: ContractId("MAKE-001".to_string()),
+            title: "contracts gate uses make/contracts.mk as single entrypoint",
+            tests: vec![TestCase {
+                id: TestId("make.contracts.single_entrypoint".to_string()),
+                title: "contracts targets are sourced from make/contracts.mk via make/public.mk",
+                kind: TestKind::Pure,
+                run: test_make_contracts_001_single_entrypoint,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-002".to_string()),
+            title: "contracts gate public targets are explicit and stable",
+            tests: vec![TestCase {
+                id: TestId("make.contracts.target_surface".to_string()),
+                title: "contracts.mk declares only the approved contracts targets",
+                kind: TestKind::Pure,
+                run: test_make_contracts_002_target_surface,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-003".to_string()),
+            title: "contracts gate targets are thin delegates to the contracts runner",
+            tests: vec![TestCase {
+                id: TestId("make.contracts.delegate_only".to_string()),
+                title: "contracts.mk delegates via bijux-dev-atlas contracts invocations only",
+                kind: TestKind::Pure,
+                run: test_make_contracts_003_delegate_only,
+            }],
+        },
     ];
     contracts.extend(surface_contracts::contracts());
     contracts.extend(wrapper_contracts::contracts());
@@ -620,6 +823,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "MAKE-INCLUDE-003" => {
             "Keep the make include graph acyclic so wrapper composition stays reviewable.".to_string()
         }
+        "MAKE-001" => "Define contracts gate targets in make/contracts.mk and include them through make/public.mk.".to_string(),
+        "MAKE-002" => "Keep contracts public target surface explicit and stable so gate usage is predictable.".to_string(),
+        "MAKE-003" => "Contracts make targets must remain thin delegates to bijux-dev-atlas contracts commands.".to_string(),
         _ => surface_contracts::contract_explain(contract_id)
             .or_else(|| wrapper_contracts::contract_explain(contract_id))
             .unwrap_or("Unknown make contract id.")

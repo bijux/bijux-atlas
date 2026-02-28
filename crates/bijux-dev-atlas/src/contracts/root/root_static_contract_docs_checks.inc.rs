@@ -211,3 +211,42 @@ fn test_root_041_contract_docs_canonical_template(ctx: &RunContext) -> TestResul
         TestResult::Fail(violations)
     }
 }
+
+fn test_root_042_meta_registry_integrity(ctx: &RunContext) -> TestResult {
+    let mut rows = Vec::new();
+    for domain in CONTRACT_DOC_DOMAINS {
+        let contracts = match contracts_for_domain(&ctx.repo_root, domain.name) {
+            Ok(value) => value,
+            Err(err) => {
+                return TestResult::Fail(vec![Violation {
+                    contract_id: "ROOT-042".to_string(),
+                    test_id: "root.contracts.meta_registry_integrity".to_string(),
+                    file: Some(domain.file.to_string()),
+                    line: None,
+                    message: format!("load contracts failed: {err}"),
+                    evidence: None,
+                }]);
+            }
+        };
+        rows.extend(super::registry_snapshot(domain.name, &contracts));
+    }
+    let lints = super::lint_registry_rows(&rows);
+    let mut violations = Vec::new();
+    for lint in lints {
+        if lint.code == "duplicate-contract-id" || lint.code == "empty-contract" {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: "root.contracts.meta_registry_integrity".to_string(),
+                file: None,
+                line: None,
+                message: lint.message,
+                evidence: Some(lint.code.to_string()),
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

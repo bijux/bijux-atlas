@@ -436,5 +436,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_root_041_contract_docs_canonical_template,
             }],
         },
+        Contract {
+            id: ContractId("ROOT-042".to_string()),
+            title: "contract registries keep unique contract ids and mapped checks",
+            tests: vec![TestCase {
+                id: TestId("root.contracts.meta_registry_integrity".to_string()),
+                title: "all contract ids are unique and every registry row maps at least one check",
+                kind: TestKind::Pure,
+                run: test_root_042_meta_registry_integrity,
+            }],
+        },
     ])
 }

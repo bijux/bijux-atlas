@@ -52,6 +52,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-039" => "Workspace member declarations in Cargo.toml must exactly match the crate directories that exist.".to_string(),
         "ROOT-040" => "Workspace crate directories and package names must stay on the canonical bijux-* naming track.".to_string(),
         "ROOT-041" => "Top-level CONTRACT.md files are generated from a canonical executable template with stable sections, schema, and gate mapping.".to_string(),
+        "ROOT-042" => "Contract registries are meta-validated: contract ids are globally unique and each row maps at least one executable check.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts root`.".to_string(),
     }
 }
