@@ -269,6 +269,7 @@ fn test_make_contracts_002_target_surface(ctx: &RunContext) -> TestResult {
     };
     let expected_public = BTreeSet::from([
         "contracts",
+        "contracts-all",
         "contracts-fast",
         "contracts-changed",
         "contracts-json",

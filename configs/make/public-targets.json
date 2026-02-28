@@ -1,6 +1,6 @@
 {
   "max_public_targets": 40,
-  "target_public_targets": 32,
+  "target_public_targets": 34,
   "public_targets": [
     {
       "name": "build",
@@ -13,6 +13,15 @@
     },
     {
       "name": "contracts",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-all",
       "description": "Run contracts gate target",
       "lanes": [
         "dev",
@@ -282,6 +291,15 @@
     {
       "name": "test",
       "description": "Run test suite",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "test-all",
+      "description": "Run full test suite including slow and ignored tests",
       "lanes": [
         "dev",
         "ci"

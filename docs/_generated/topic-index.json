@@ -92,7 +92,6 @@
     ],
     "CHANGELOG": [
       "CHANGELOG.md",
-      "configs/ops/perf/baselines/CHANGELOG.md",
       "docs/operations/slo/CHANGELOG.md"
     ],
     "CHANGE_CHECKLIST": [
@@ -100,9 +99,6 @@
     ],
     "CHANGE_POLICY": [
       "docs/operations/slo/CHANGE_POLICY.md"
-    ],
-    "CI_LANES": [
-      "make/makefiles/CI_LANES.md"
     ],
     "CI_WORKFLOW_EXPLANATION": [
       "docs/root/CI_WORKFLOW_EXPLANATION.md"
@@ -163,7 +159,6 @@
       "crates/bijux-dev-atlas/docs/CONTRACT.md",
       "docker/CONTRACT.md",
       "docs/CONTRACT.md",
-      "make/makefiles/CONTRACT.md",
       "ops/CONTRACT.md",
       "ops/datasets/CONTRACT.md",
       "ops/e2e/CONTRACT.md",
@@ -309,9 +304,6 @@
       "crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md"
     ],
     "INDEX": [
-      "configs/INDEX.md",
-      "configs/ci/INDEX.md",
-      "configs/docs/INDEX.md",
       "crates/bijux-atlas-api/docs/INDEX.md",
       "crates/bijux-atlas-cli/docs/INDEX.md",
       "crates/bijux-atlas-core/docs/INDEX.md",
@@ -373,8 +365,7 @@
       "docs/root/INDEX.md",
       "docs/science/INDEX.md",
       "docs/security/INDEX.md",
-      "docs/start/INDEX.md",
-      "make/makefiles/INDEX.md"
+      "docs/start/INDEX.md"
     ],
     "INGEST_CONTRACT": [
       "crates/bijux-atlas-ingest/docs/INGEST_CONTRACT.md"
@@ -386,14 +377,12 @@
       "docs/root/LICENSE_EXPLANATION.md"
     ],
     "LINT_POLICY": [
-      "configs/rust/LINT_POLICY.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md"
     ],
     "MAKEFILES_OVERVIEW": [
       "docs/root/MAKEFILES_OVERVIEW.md"
     ],
     "NAMING": [
-      "configs/NAMING.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md"
     ],
     "NAVIGATION_POLICY": [
@@ -430,7 +419,6 @@
       "crates/bijux-atlas-model/docs/ORDERING_RULES.md"
     ],
     "OWNERS": [
-      "configs/OWNERS.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md",
       "docs/OWNERS.md"
     ],
@@ -459,9 +447,6 @@
     "PERSONA_OPERATOR": [
       "docs/root/PERSONA_OPERATOR.md"
     ],
-    "PHILOSOPHY": [
-      "make/makefiles/PHILOSOPHY.md"
-    ],
     "PLUGIN_CONTRACT": [
       "crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md"
     ],
@@ -487,25 +472,6 @@
     "README": [
       "README.md",
       "configs/README.md",
-      "configs/ci/README.md",
-      "configs/coverage/README.md",
-      "configs/docs/README.md",
-      "configs/inventory/README.md",
-      "configs/layout/README.md",
-      "configs/make/README.md",
-      "configs/nextest/README.md",
-      "configs/openapi/README.md",
-      "configs/ops/README.md",
-      "configs/ops/policies/README.md",
-      "configs/ops/runtime/README.md",
-      "configs/ops/tools/README.md",
-      "configs/perf/README.md",
-      "configs/policy/README.md",
-      "configs/repo/README.md",
-      "configs/rust/README.md",
-      "configs/security/README.md",
-      "configs/shellcheck/README.md",
-      "configs/slo/README.md",
       "crates/bijux-atlas-api/README.md",
       "crates/bijux-atlas-api/tests/README.md",
       "crates/bijux-atlas-cli/README.md",
@@ -537,7 +503,6 @@
       "crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md",
       "docker/README.md",
       "docs/contracts/README.md",
-      "make/makefiles/README.md",
       "ops/README.md",
       "ops/datasets/README.md",
       "ops/e2e/README.md",
@@ -629,9 +594,6 @@
     ],
     "STYLE": [
       "docs/STYLE.md"
-    ],
-    "TARGETS_REGISTRY": [
-      "make/makefiles/TARGETS_REGISTRY.md"
     ],
     "TELEMETRY": [
       "crates/bijux-atlas-server/docs/TELEMETRY.md"
@@ -846,7 +808,6 @@
       "docs/development/config-changelog.md"
     ],
     "config-diff": [
-      "configs/docs/config-diff.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/config-diff.md"
     ],
     "config-keys": [
@@ -866,7 +827,6 @@
       "docs/development/configs-layout.md"
     ],
     "configs-lifecycle": [
-      "configs/docs/configs-lifecycle.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/configs-lifecycle.md"
     ],
     "conflict-resolution": [
@@ -1036,7 +996,6 @@
       "docs/operations/entrypoints.md"
     ],
     "environment-contract": [
-      "configs/docs/environment-contract.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/environment-contract.md"
     ],
     "error-budget-policy": [
@@ -1490,9 +1449,6 @@
     "root-inventory": [
       "docs/development/root-inventory.md"
     ],
-    "root-symlink-shims": [
-      "configs/repo/root-symlink-shims.md"
-    ],
     "runbook-dashboard-alert-map": [
       "docs/operations/observability/runbook-dashboard-alert-map.md"
     ],
@@ -1515,11 +1471,9 @@
       "docs/operations/reference/schema-index.md"
     ],
     "schema-overview": [
-      "configs/docs/schema-overview.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
     ],
     "schema-validation": [
-      "configs/docs/schema-validation.md",
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-validation.md"
     ],
     "schemas": [

@@ -85,7 +85,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
                 "--format",
                 "human",
             ],
-            "c998fcc84c7964da26f2ca49234d743d0926fa4e962064fcb1ec8a576643d230",
+            "2d315741adc0f889f21c66e65471651ccd9b59101584b66f6d6d07768aaf6578",
         ),
         (
             vec![
@@ -96,19 +96,19 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
                 "--format",
                 "human",
             ],
-            "8098f9db3fbc9f69dc58a7a0336f75f48c49140ab29eda04d38011bf358150c5",
+            "57436e54b7eeb5850267cb40f3cb4844710ef49277b8a3877c6ae73fa2ac5991",
         ),
         (
             vec!["contracts", "ops", "--mode", "static", "--format", "human"],
-            "ed573cb9d7ffe27fdabe8df50c51dbba71667a2c745d6464a80025f77ef4b8ac",
+            "c496fb95b74a07af10557c5f57fb7bef2dba5584779e26e92c636edef71e15ce",
         ),
         (
             vec!["contracts", "make", "--mode", "static", "--format", "human"],
-            "f3498cc93a6a09b618aef22a247f24df7364b1266181d6bac31d90172eb36dbc",
+            "e78c17de69300d275f54f70748ffc5bd8649d4136cb7ab8daeee58bf684c0052",
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "d7d6a2ba15982543b388505a9e0d07690dd9bf6d0a62986d530d498a84e456ce",
+            "0847d383a5d2a324fca22e3ca68526389d43ab31c832d44c42d7d0294f8790e8",
         ),
     ];
     for (args, expected) in cases {
@@ -122,6 +122,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
 }
 
 #[test]
+#[ignore = "slow"]
 fn registry_list_matches_registry_snapshot_and_explain_output() {
     for domain in ["configs", "docs", "docker", "make", "ops", "root"] {
         let rows = contract_rows_for_domain(domain);

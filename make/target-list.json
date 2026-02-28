@@ -4,6 +4,7 @@
   "public_targets": [
     "build",
     "contracts",
+    "contracts-all",
     "contracts-changed",
     "contracts-ci",
     "contracts-configs",
@@ -33,6 +34,7 @@
     "ops-pr",
     "stack-down",
     "stack-up",
-    "test"
+    "test",
+    "test-all"
   ]
 }

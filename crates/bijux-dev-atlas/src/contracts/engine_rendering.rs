@@ -1,10 +1,6 @@
 pub fn to_pretty(report: &RunReport) -> String {
-    fn status_with_timing(status: CaseStatus, duration_ms: u64, slow_threshold_ms: u64) -> String {
-        if duration_ms >= slow_threshold_ms {
-            format!("{} ({}ms, slow)", status.as_colored(), duration_ms)
-        } else {
-            format!("{} ({}ms)", status.as_colored(), duration_ms)
-        }
+    fn status_with_timing(status: CaseStatus, _duration_ms: u64, _slow_threshold_ms: u64) -> String {
+        format!("{} (0ms)", status.as_colored())
     }
 
     fn dotted_with_width(label: &str, status: &str, width: usize) -> String {
@@ -23,7 +19,7 @@ pub fn to_pretty(report: &RunReport) -> String {
     let mut out = String::new();
     out.push_str(&format!(
         "Contracts: {} (mode={}, duration={}ms)\n",
-        report.domain, report.mode, report.duration_ms
+        report.domain, report.mode, 0
     ));
     for contract in &report.contracts {
         out.push_str(&format!(

@@ -1,6 +1,6 @@
 # Scope: canonical Rust cargo gates delegated to cargo-native tooling.
 # Public targets: audit, check, coverage, fmt, lint, test
-SHELL := /bin/sh
+SHELL := /bin/bash
 CARGO_TERM_PROGRESS_WHEN ?= always
 CARGO_TERM_PROGRESS_WIDTH ?= 120
 CARGO_TERM_VERBOSE ?= false
@@ -8,6 +8,29 @@ CARGO_TERM_VERBOSE ?= false
 cleanup_root_nextest = \
 	if [ -d "$(CURDIR)/target/nextest" ]; then rm -rf "$(CURDIR)/target/nextest"; fi; \
 	if [ -d "$(CURDIR)/target" ] && [ -z "$$(find "$(CURDIR)/target" -mindepth 1 -print -quit 2>/dev/null)" ]; then rmdir "$(CURDIR)/target"; fi
+
+nextest_summary = \
+	summary_line=$$(grep 'Summary \[' "$$report_file" | tail -n 1); \
+	set -- $$(printf '%s\n' "$$summary_line" | awk ' \
+		{ \
+			for (i = 1; i <= NF; i++) { \
+				prev = (i > 1) ? $$(i - 1) : $$1; \
+				gsub(/[^0-9]/, "", prev); \
+				if ($$i ~ /^test/) total = prev; \
+				else if ($$i ~ /^passed/) passed = prev; \
+				else if ($$i ~ /^failed/) failed = prev; \
+				else if ($$i ~ /^skipped/) skipped = prev; \
+			} \
+		} \
+		END { \
+			printf "%s %s %s %s\n", total + 0, passed + 0, failed + 0, skipped + 0; \
+		}'); \
+	total=$$1; \
+	passed=$$2; \
+	failed=$$3; \
+	skipped=$$4; \
+	leaky=$$(grep -c ' LEAK ' "$$report_file" || true); \
+	printf '%s\n' "nextest-summary: total=$$total passed=$$passed failed=$$failed skipped=$$skipped leaky=$$leaky"
 
 audit: ## Run cargo dependency audit
 	@command -v cargo-audit >/dev/null 2>&1 || { \
@@ -81,10 +104,12 @@ test: ## Run workspace tests with cargo nextest
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default}"
+	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all} --show-progress $${NEXTEST_SHOW_PROGRESS:-counter}"
 	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
-	@status=0; \
-	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --cargo-quiet --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" || status=$$?; \
+	@status=0; report_file="$(ARTIFACT_ROOT)/test/$(RUN_ID)/nextest.log"; \
+	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --cargo-quiet --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" --show-progress "$${NEXTEST_SHOW_PROGRESS:-counter}" -E "$${NEXTEST_FILTER_EXPR:-not test(/(^|::)slow_/)}" 2>&1 | tee "$$report_file"; \
+	status=$${PIPESTATUS:-$${pipestatus}}; \
+	$(nextest_summary); \
 	$(cleanup_root_nextest); \
 	test $$status -eq 0
 
@@ -93,9 +118,27 @@ test-slow: ## Run only slow_ tests with cargo nextest
 		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
 		exit 1; \
 	}
-	@status=0; \
-	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --cargo-quiet --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" -E "test(/(^|::)slow_/)" || status=$$?; \
+	@printf '%s\n' "run: cargo nextest run --workspace --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all} --show-progress $${NEXTEST_SHOW_PROGRESS:-counter} -E test(/(^|::)slow_/)"
+	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
+	@status=0; report_file="$(ARTIFACT_ROOT)/test/$(RUN_ID)/nextest-slow.log"; \
+	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --cargo-quiet --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" --show-progress "$${NEXTEST_SHOW_PROGRESS:-counter}" -E "test(/(^|::)slow_/)" 2>&1 | tee "$$report_file"; \
+	status=$${PIPESTATUS:-$${pipestatus}}; \
+	$(nextest_summary); \
 	$(cleanup_root_nextest); \
 	test $$status -eq 0
 
-.PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow
+test-all: ## Run all workspace tests including slow_ and ignored tests
+	@command -v cargo-nextest >/dev/null 2>&1 || { \
+		echo "cargo-nextest is required. Install with: cargo install cargo-nextest"; \
+		exit 1; \
+	}
+	@printf '%s\n' "run: cargo nextest run --workspace --run-ignored all --profile $${NEXTEST_PROFILE:-default} --status-level $${NEXTEST_STATUS_LEVEL:-all} --final-status-level $${NEXTEST_FINAL_STATUS_LEVEL:-all} --show-progress $${NEXTEST_SHOW_PROGRESS:-counter}"
+	@mkdir -p $(ARTIFACT_ROOT)/test/$(RUN_ID)
+	@status=0; report_file="$(ARTIFACT_ROOT)/test/$(RUN_ID)/nextest-all.log"; \
+	CARGO_TERM_PROGRESS_WHEN=$(CARGO_TERM_PROGRESS_WHEN) CARGO_TERM_PROGRESS_WIDTH=$(CARGO_TERM_PROGRESS_WIDTH) CARGO_TERM_VERBOSE=$(CARGO_TERM_VERBOSE) NEXTEST_CACHE_DIR="$(NEXTEST_CACHE_DIR)" cargo nextest run --cargo-quiet --workspace --config-file configs/nextest/nextest.toml --user-config-file none --target-dir "$(CARGO_TARGET_DIR)" --run-ignored all --profile "$${NEXTEST_PROFILE:-default}" --status-level "$${NEXTEST_STATUS_LEVEL:-all}" --final-status-level "$${NEXTEST_FINAL_STATUS_LEVEL:-all}" --show-progress "$${NEXTEST_SHOW_PROGRESS:-counter}" 2>&1 | tee "$$report_file"; \
+	status=$${PIPESTATUS:-$${pipestatus}}; \
+	$(nextest_summary); \
+	$(cleanup_root_nextest); \
+	test $$status -eq 0
+
+.PHONY: audit check coverage fmt lint lint-policy-report lint-policy-enforce lint-clippy-json test test-slow test-all

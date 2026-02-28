@@ -1003,6 +1003,14 @@
       "used_in": []
     },
     {
+      "name": "test-all",
+      "defined_in": [
+        "makefiles/cargo.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "test-slow",
       "defined_in": [
         "makefiles/cargo.mk"
@@ -1028,6 +1036,14 @@
     },
     {
       "name": "contracts-fast",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-all",
       "defined_in": [
         "make/contracts.mk"
       ],
