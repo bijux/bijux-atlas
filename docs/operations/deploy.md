@@ -1,27 +1,59 @@
 # Deploy
 
-Owner: `bijux-atlas-operations`  
-Audience: `operator`  
-Type: `runbook`  
-Reason to exist: define canonical deployment flow for production and staging clusters.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@50be979f`
+- Reason to exist: define canonical deployment flow for staging and production clusters.
 
-## Deployment Flow
+## Prerequisites
 
-1. Validate release and config inputs.
-2. Apply chart values and manifests.
-3. Verify readiness and health gates.
-4. Run post-deploy smoke checks.
-5. Promote release and record evidence.
+- Release artifact is published and approved.
+- Cluster access and namespace policies are configured.
+- Required chart values are prepared.
 
-## Deep Dives
+## Install with Helm Defaults
+
+```bash
+make ops-deploy
+```
+
+Use defaults for baseline environments where no override policy is required.
+
+## Minimal Production Overrides
+
+Use only required production deltas:
+
+- image pin
+- replica count
+- resource requests/limits
+- persistence settings
+- observability endpoints
+
+## Values Mapping
+
+Chart values map to runtime config keys documented in [Reference Configs](../reference/configs.md).
+
+## Verify Success
+
+```bash
+make ops-readiness-scorecard
+make ops-observability-verify
+```
+
+Expected outcome: workloads ready, probes healthy, and observability checks pass.
+
+## Rollback
+
+```bash
+make stack-down
+```
+
+Rollback switches serving state back to last known good release and stops failed deployment surfaces.
+
+## Next
 
 - [Release Workflow](release-workflow.md)
 - [Incident Response](incident-response.md)
-- [Runbooks](runbooks/incident-playbook.md)
-
-## Container Governance
-
-Container images and Docker build policy are defined under:
-
-- `docker/README.md`
-- `docker/CONTRACT.md`
+- [K8s](k8s/index.md)
