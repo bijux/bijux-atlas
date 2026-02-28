@@ -1,26 +1,27 @@
-# API Pagination
+# Pagination
 
-- Owner: `bijux-atlas-api`
-- Stability: `stable`
+Owner: `api-contracts`  
+Type: `guide`  
+Reason to exist: define one canonical pagination contract for list endpoints.
 
-## Cursor Contract
+## Contract
 
-- Cursor tokens are opaque and HMAC integrity-checked.
-- Cursor payload v1 binds to dataset identity and sort key.
-- Invalid, version-mismatched, or dataset-mismatched cursors return `InvalidCursor` with one of:
-  - `CURSOR_INVALID`
-  - `CURSOR_VERSION_UNSUPPORTED`
-  - `CURSOR_DATASET_MISMATCH`
+- Cursor tokens are opaque.
+- Cursor payload binds to dataset identity and sort contract.
+- Invalid or mismatched cursors return `InvalidCursor`.
 
 ## Parameters
 
-- `limit` is the page-size control for v1.
-- Default `limit` is `100`; max `limit` is `500`.
-- `cursor` advances forward paging only.
+- `limit`: optional page size parameter.
+- `cursor`: optional continuation token.
 
-## Semantics
+## Response Behavior
 
-- `page.next_cursor` is present when `has_more=true`; otherwise `null`.
+- `page.next_cursor` is set only when additional results exist.
 - `links.next_cursor` mirrors `page.next_cursor`.
-- `prev_cursor` is a non-goal for v1.
-- Cursor compatibility policy: additive-only changes; v1 decoders remain backward compatible for v1 cursors.
+- Backward pagination is out of scope for v1.
+
+## Related Pages
+
+- [API](index.md)
+- [Versioning Policy](versioning.md)

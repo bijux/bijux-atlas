@@ -1,16 +1,21 @@
-# API Versioning
+# Versioning Policy
 
-- Owner: `api`
-- Stability: `stable`
+Owner: `api-contracts`  
+Type: `policy`  
+Reason to exist: define stable API versioning and change constraints.
 
-- API version is path-based and frozen to `/v1/...` for this line.
-- Dataset release (`release=...`) is dataset identity, not API versioning.
-- v1 compatibility rules:
-  - responses are additive-only
-  - new params must be optional
-  - new endpoints are additive
-- Deprecation policy uses OpenAPI `deprecated` plus `Deprecation`/`Sunset` headers when applicable.
-- Compatibility mapping:
-  - deprecated: `/v1/releases/{release}/species/{species}/assemblies/{assembly}`
-  - canonical: `/v1/datasets/{release}/{species}/{assembly}`
-- v2 is a non-goal right now; when introduced it will use `/v2/...` with a separate compatibility contract.
+## Rules
+
+- API versioning is path-based (`/v1/...`).
+- Dataset release is data identity, not API versioning.
+- v1 changes are additive-only for existing documented behavior.
+
+## Deprecation
+
+- Deprecated surfaces must be explicitly marked.
+- Grace windows are announced before removal in future major versions.
+
+## Related Pages
+
+- [Compatibility Policy](compatibility.md)
+- [V1 Surface](v1-surface.md)

@@ -1,21 +1,22 @@
-# API Compatibility
+# Compatibility Policy
 
-- Owner: `api`
-- Stability: `stable`
+Owner: `api-contracts`  
+Type: `policy`  
+Reason to exist: provide one canonical compatibility contract for API consumers.
 
-## v1 Rules
+## v1 Compatibility Guarantees
 
-- Contract source: `docs/contracts/endpoints.md`.
-- API paths are frozen to `/v1/...`.
-- v1 is additive-only:
-- New endpoints are allowed.
-- New optional params/fields are allowed.
-- Removing or renaming endpoints/params/fields is forbidden.
-- Tightening existing limits/defaults is forbidden unless version bump.
-- JSON object key ordering is not contractually guaranteed unless explicitly documented per endpoint.
-- Array ordering is only guaranteed where documented (for example paginated `items` ordering).
+- Existing documented endpoints and fields remain stable.
+- Additive changes are allowed when backward compatible.
+- Breaking behavior changes require a new major API version.
 
-## Gates
+## Compatibility Limits
 
-- `make api-contract-check`
-- `make openapi-drift`
+- Undocumented behavior is not guaranteed.
+- Experimental surfaces are excluded from long-term compatibility promises.
+
+## Related Pages
+
+- [Versioning Policy](versioning.md)
+- [Errors](errors.md)
+- [Schemas Reference](../reference/schemas.md)
