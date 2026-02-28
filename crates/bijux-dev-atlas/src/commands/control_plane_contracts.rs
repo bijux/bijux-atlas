@@ -768,6 +768,18 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         .map_err(|e| format!("encode contracts summary failed: {e}"))?,
                 )
                 .map_err(|e| format!("write {} failed: {e}", summary_path.display()))?;
+
+                let unified_json_path = root.join("unified.json");
+                fs::write(
+                    &unified_json_path,
+                    serde_json::to_string_pretty(&contracts::to_json_all(&reports))
+                        .map_err(|e| format!("encode contracts unified json failed: {e}"))?,
+                )
+                .map_err(|e| format!("write {} failed: {e}", unified_json_path.display()))?;
+
+                let unified_md_path = root.join("unified.md");
+                fs::write(&unified_md_path, contracts::to_pretty_all(&reports))
+                    .map_err(|e| format!("write {} failed: {e}", unified_md_path.display()))?;
             }
         }
 
