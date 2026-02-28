@@ -1,0 +1,10 @@
+docs/architecture/architecture-map.md
+docs/architecture/boundary-maps.md
+docs/architecture/policy-enforcement-map.md
+docs/development/crates-map.md
+docs/development/task-runner-removal-map.md
+docs/operations/observability/runbook-dashboard-alert-map.md
+docs/operations/ops-map.md
+docs/reference/evolution/roadmap.md
+docs/reference/repo-map.md
+docs/taxonomy-map.md
