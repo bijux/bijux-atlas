@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "max_groups": 15,
+  "max_depth": 4,
+  "max_group_depth": 2,
+  "root_files": [
+    "configs/README.md",
+    "configs/CONTRACT.md",
+    "configs/inventory.json"
+  ],
+  "groups": [
+    {
+      "name": "ci",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/ci/*.json"
+      ],
+      "internal_files": [
+        "configs/ci/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/ci-run-output.schema.json"
+      ]
+    },
+    {
+      "name": "docs",
+      "owner": "docs-governance",
+      "stability": "stable",
+      "public_files": [
+        "configs/docs/.vale.ini",
+        "configs/docs/*.json",
+        "configs/docs/*.jsonc",
+        "configs/docs/*.txt"
+      ],
+      "internal_files": [
+        "configs/docs/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ]
+    },
+    {
+      "name": "inventory",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/inventory/configs.json",
+        "configs/inventory/*.json"
+      ],
+      "internal_files": [
+        "configs/inventory/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/inventory-owners.schema.json"
+      ]
+    },
+    {
+      "name": "layout",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/layout/*",
+        "configs/repo/*.json",
+        "configs/gates/*.json",
+        "configs/coverage/*",
+        "configs/shellcheck/*",
+        "configs/product/*"
+      ],
+      "internal_files": [
+        "configs/repo/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-budgets.schema.json"
+      ]
+    },
+    {
+      "name": "make",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/make/*.json"
+      ],
+      "internal_files": [
+        "configs/make/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-make.schema.json"
+      ]
+    },
+    {
+      "name": "meta",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/meta/*.json"
+      ],
+      "internal_files": [],
+      "generated_files": [],
+      "schemas": [
+        "configs/schema/meta-ownership.schema.json"
+      ]
+    },
+    {
+      "name": "nextest",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/nextest/*.toml"
+      ],
+      "internal_files": [
+        "configs/nextest/*.md"
+      ],
+      "generated_files": [],
+      "schemas": []
+    },
+    {
+      "name": "openapi",
+      "owner": "api-contracts",
+      "stability": "stable",
+      "public_files": [
+        "configs/openapi/**/*.json"
+      ],
+      "internal_files": [
+        "configs/openapi/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/schema/public-surface.schema.json"
+      ]
+    },
+    {
+      "name": "ops",
+      "owner": "bijux-atlas-operations",
+      "stability": "stable",
+      "public_files": [
+        "configs/ops/*.json",
+        "configs/ops/*.txt",
+        "configs/ops/*.schema.json",
+        "configs/ops/*/*.json",
+        "configs/ops/*/*.txt",
+        "configs/ops/*/*.md"
+      ],
+      "internal_files": [
+        "configs/ops/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-ops.schema.json",
+        "configs/ops/env.schema.json",
+        "configs/ops/scenarios.schema.json"
+      ]
+    },
+    {
+      "name": "perf",
+      "owner": "bijux-atlas-performance",
+      "stability": "stable",
+      "public_files": [
+        "configs/perf/*.json"
+      ],
+      "internal_files": [
+        "configs/perf/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ]
+    },
+    {
+      "name": "policy",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/policy/*.json",
+        "configs/policy/*.yml",
+        "configs/policy/*.txt"
+      ],
+      "internal_files": [
+        "configs/policy/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/policy/policy.schema.json",
+        "configs/schema/policy-relaxations.schema.json"
+      ]
+    },
+    {
+      "name": "rust",
+      "owner": "rust-foundation",
+      "stability": "stable",
+      "public_files": [
+        "configs/rust/*.toml",
+        "configs/rust/*.json"
+      ],
+      "internal_files": [
+        "configs/rust/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ]
+    },
+    {
+      "name": "schema",
+      "owner": "platform",
+      "stability": "stable",
+      "public_files": [
+        "configs/schema/*.json"
+      ],
+      "internal_files": [
+        "configs/contracts/*.json"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/schema/*.json",
+        "configs/contracts/*.json"
+      ]
+    },
+    {
+      "name": "security",
+      "owner": "security",
+      "stability": "stable",
+      "public_files": [
+        "configs/security/*.toml"
+      ],
+      "internal_files": [
+        "configs/security/*.md"
+      ],
+      "generated_files": [],
+      "schemas": []
+    },
+    {
+      "name": "slo",
+      "owner": "bijux-atlas-operations",
+      "stability": "stable",
+      "public_files": [
+        "configs/slo/*.json"
+      ],
+      "internal_files": [
+        "configs/slo/*.md"
+      ],
+      "generated_files": [],
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ]
+    }
+  ],
+  "exclusions": [
+    {
+      "pattern": "configs/docs/.vale/styles/**",
+      "reason": "legacy deep style bundles stay explicit until docs config flattening"
+    },
+    {
+      "pattern": "configs/ops/perf/baselines/**",
+      "reason": "legacy deep perf baselines stay explicit until perf config flattening"
+    }
+  ]
+}

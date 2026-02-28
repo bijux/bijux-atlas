@@ -1,9 +1,77 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["kind", "files"],
+  "required": [
+    "schema_version",
+    "max_groups",
+    "max_depth",
+    "max_group_depth",
+    "root_files",
+    "groups"
+  ],
   "properties": {
-    "kind": {"const": "configs"},
-    "files": {"type": "array", "items": {"type": "string"}}
-  }
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "max_groups": { "type": "integer", "minimum": 1 },
+    "max_depth": { "type": "integer", "minimum": 1 },
+    "max_group_depth": { "type": "integer", "minimum": 0 },
+    "root_files": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "owner",
+          "stability",
+          "public_files",
+          "internal_files",
+          "generated_files",
+          "schemas"
+        ],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "stability": {
+            "type": "string",
+            "enum": ["stable", "experimental"]
+          },
+          "public_files": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "internal_files": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "generated_files": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "schemas": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern", "reason"],
+        "properties": {
+          "pattern": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
 }
