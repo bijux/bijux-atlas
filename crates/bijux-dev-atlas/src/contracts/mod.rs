@@ -4,12 +4,12 @@
 //! This module provides a domain-agnostic contracts runner with deterministic ordering,
 //! filterable execution, pretty and JSON output, and explicit effect gating.
 
-pub mod root;
+pub mod configs;
 pub mod docker;
+pub mod docs;
 pub mod make;
 pub mod ops;
-pub mod configs;
-pub mod docs;
+pub mod root;
 
 include!("engine_model.rs");
 include!("engine_selection.rs");
