@@ -15,6 +15,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 
 - [Alerts](alerts.md): alert-to-runbook routing and severity model
 - [Dashboards](dashboards.md): dashboard set for incident triage
+- [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
 - [SLO policy](slo-policy.md): target objectives and burn policy
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`

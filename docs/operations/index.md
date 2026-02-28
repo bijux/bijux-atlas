@@ -9,14 +9,15 @@
 
 ## Operator Entry
 
-1. [Run Locally](run-locally.md)
-2. [Deploy](deploy.md)
-3. [Deploy to kind (10 minutes)](deploy-kind.md)
-4. [Deploy to Kubernetes (prod minimal)](deploy-kubernetes-minimal.md)
-5. [Observability](observability/index.md)
-6. [Incident Response](incident-response.md)
-7. [Release](release/index.md)
-8. [Security Posture](security-posture.md)
+1. [Operations overview](overview.md)
+2. [Run locally](run-locally.md)
+3. [Deploy](deploy.md)
+4. [Minimal production overrides](minimal-production-overrides.md)
+5. [Install verification checklist](install-verification-checklist.md)
+6. [Observability setup](observability-setup.md)
+7. [Incident response](incident-response.md)
+8. [Release](release/index.md)
+9. [Security posture](security-posture.md)
 
 ## What This Page Is Not
 
@@ -35,6 +36,7 @@ Also review [Glossary](../glossary.md) for canonical terms.
 
 - Exact command and schema facts: [Reference](../reference/index.md)
 - Runtime model context: [Architecture](../architecture/index.md)
+- Golden path entry: [Operations overview](overview.md)
 - Core terms: [Glossary](../glossary.md)
 
 ## Document Taxonomy
