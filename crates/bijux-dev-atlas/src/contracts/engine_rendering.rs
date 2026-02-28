@@ -1,6 +1,16 @@
 pub fn to_pretty(report: &RunReport) -> String {
-    fn status_with_timing(status: CaseStatus, _duration_ms: u64, _slow_threshold_ms: u64) -> String {
-        format!("{} (0ms)", status.as_colored())
+    fn status_with_timing(
+        status: CaseStatus,
+        _duration_ms: u64,
+        _slow_threshold_ms: u64,
+        color_enabled: bool,
+    ) -> String {
+        let label = if color_enabled {
+            status.as_colored()
+        } else {
+            status.as_str()
+        };
+        format!("{label} (0ms)")
     }
 
     fn dotted_with_width(label: &str, status: &str, width: usize) -> String {
@@ -37,7 +47,12 @@ pub fn to_pretty(report: &RunReport) -> String {
             "{}\n",
             dotted(
                 &format!("{} {}{}", contract.id, contract.title, required_label),
-                &status_with_timing(contract.status, contract.duration_ms, 1_000)
+                &status_with_timing(
+                    contract.status,
+                    contract.duration_ms,
+                    1_000,
+                    report.metadata.color_enabled,
+                )
             )
         ));
         for case in report.cases.iter().filter(|c| c.contract_id == contract.id) {
@@ -45,7 +60,12 @@ pub fn to_pretty(report: &RunReport) -> String {
                 "  {}\n",
                 dotted_with_width(
                     &case.test_id,
-                    &status_with_timing(case.status, case.duration_ms, 1_000),
+                    &status_with_timing(
+                        case.status,
+                        case.duration_ms,
+                        1_000,
+                        report.metadata.color_enabled,
+                    ),
                     70,
                 )
             ));
@@ -128,6 +148,8 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
         "run_id": report.metadata.run_id,
         "commit_sha": report.metadata.commit_sha,
         "dirty_tree": report.metadata.dirty_tree,
+        "ci": report.metadata.ci,
+        "color_enabled": report.metadata.color_enabled,
         "summary": {
             "contracts": report.total_contracts(),
             "tests": report.total_tests(),
@@ -219,6 +241,8 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
         "run_id": reports.first().map(|report| report.metadata.run_id.clone()).unwrap_or_else(|| "local".to_string()),
         "commit_sha": reports.first().and_then(|report| report.metadata.commit_sha.clone()),
         "dirty_tree": reports.first().map(|report| report.metadata.dirty_tree).unwrap_or(false),
+        "ci": reports.first().map(|report| report.metadata.ci).unwrap_or(false),
+        "color_enabled": reports.first().map(|report| report.metadata.color_enabled).unwrap_or(true),
         "summary": {
             "contracts": contracts,
             "tests": tests,

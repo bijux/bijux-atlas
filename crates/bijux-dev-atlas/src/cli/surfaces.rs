@@ -298,6 +298,8 @@ pub struct ContractsCommonArgs {
     pub lane: ContractsLaneArg,
     #[arg(long, default_value_t = false)]
     pub required: bool,
+    #[arg(long, default_value_t = false)]
+    pub ci: bool,
     #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]
     pub deny_skip_required: bool,
     #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]

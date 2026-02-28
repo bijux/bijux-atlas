@@ -150,6 +150,8 @@ pub struct RunOptions {
     pub lane: ContractLane,
     pub mode: Mode,
     pub required_only: bool,
+    pub ci: bool,
+    pub color_enabled: bool,
     pub allow_subprocess: bool,
     pub allow_network: bool,
     pub allow_k8s: bool,
@@ -234,6 +236,8 @@ pub struct RunMetadata {
     pub run_id: String,
     pub commit_sha: Option<String>,
     pub dirty_tree: bool,
+    pub ci: bool,
+    pub color_enabled: bool,
 }
 
 pub struct RunReport {
@@ -343,7 +347,7 @@ impl RunReport {
     }
 }
 
-pub fn run_metadata(repo_root: &Path) -> RunMetadata {
+pub fn run_metadata(repo_root: &Path, ci: bool, color_enabled: bool) -> RunMetadata {
     let repo_display = repo_root.display().to_string();
     let run_id = std::env::var("RUN_ID")
         .ok()
@@ -367,6 +371,8 @@ pub fn run_metadata(repo_root: &Path) -> RunMetadata {
         run_id,
         commit_sha,
         dirty_tree,
+        ci,
+        color_enabled,
     }
 }
 

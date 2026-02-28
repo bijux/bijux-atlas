@@ -18,6 +18,8 @@ mod tests {
             lane: ContractLane::Local,
             mode: Mode::Static,
             required_only: false,
+            ci: false,
+            color_enabled: true,
             allow_subprocess: false,
             allow_network: false,
             allow_k8s: false,

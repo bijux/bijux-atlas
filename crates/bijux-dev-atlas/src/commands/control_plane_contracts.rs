@@ -70,6 +70,14 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         Ok(())
     }
 
+    fn apply_ci_policy(common: &mut ContractsCommonArgs) {
+        if !common.ci {
+            return;
+        }
+        common.profile = ContractsProfileArg::Ci;
+        common.deny_skip_required = true;
+    }
+
     fn validate_selection_patterns(common: &ContractsCommonArgs) -> Result<(), String> {
         for pattern in common.filter_contract.iter().chain(common.filter_test.iter()) {
             contracts::validate_wildcard_pattern(pattern)?;
@@ -502,10 +510,13 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         });
         let previous_profile = std::env::var_os("BIJUX_CONTRACTS_PROFILE");
         std::env::set_var("BIJUX_CONTRACTS_PROFILE", profile);
+        let ci_mode = common.ci || std::env::var_os("CI").is_some();
         let options = contracts::RunOptions {
             lane: cli_lane(common.lane),
             mode,
             required_only: common.required,
+            ci: ci_mode,
+            color_enabled: !ci_mode,
             allow_subprocess: common.allow_subprocess,
             allow_network: common.allow_network,
             allow_k8s: common.allow_k8s,
@@ -706,6 +717,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ContractsCommand::Snapshot(_) => unreachable!("handled above"),
         };
         apply_lane_policy(&mut common)?;
+        apply_ci_policy(&mut common);
         validate_selection_patterns(&common).map_err(|err| format!("usage: {err}"))?;
 
         let format = common_format(&common);
