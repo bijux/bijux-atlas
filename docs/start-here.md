@@ -3,11 +3,15 @@
 - Owner: `docs-governance`
 - Type: `guide`
 - Audience: `user`
+- Stability: `stable`
+- Last verified against: `main@6856280c`
 - Reason to exist: provide the single onboarding path for Atlas documentation.
 
-This is the only onboarding root in `docs/`.
+This is the only start page under `docs/`.
 
-Use [Docs Home](index.md) for section navigation.
+## 5-Minute Mental Model
+
+Atlas turns validated source inputs into immutable release artifacts, serves query reads through a stable API surface, and keeps operational control in `bijux dev atlas`.
 
 ## Quickstart
 
@@ -15,26 +19,18 @@ Use [Docs Home](index.md) for section navigation.
 bijux dev atlas demo quickstart --format json
 ```
 
-## FAQ
+## What You Just Did
 
-### Why use `bijux dev atlas` instead of scripts?
+You executed the canonical onboarding flow and confirmed a runnable environment. Continue with [Architecture Dataflow](architecture/dataflow.md) for ingest -> artifact -> store -> query -> serve.
 
-To enforce deterministic behavior, typed contracts, and testable governance surfaces.
+## Where the Truth Is
 
-### Where are generated outputs stored?
+- Behavior and workflows: section indexes under `docs/`
+- Factual contracts and schemas: [Reference Contracts](reference/contracts/index.md)
+- Runtime and policy settings: [Reference Configs](reference/configs.md)
 
-Under `artifacts/` with run-id scoped directories.
+## Next
 
-### Where is the docs source of truth?
-
-Canonical pages under `docs/` with policy controls in `docs/governance/`.
-
-### How do I find stable command surfaces?
-
-Use `make help` and `docs/reference/commands.md`.
-
-## Next Step
-
-- Operators: go to [Run Locally](operations/run-locally.md).
-- Contributors: go to [Development](development/index.md).
-- API users: go to [API](api/index.md).
+- Operator path: [Operations](operations/index.md)
+- Contributor path: [Development](development/index.md)
+- API client path: [API](api/index.md)
