@@ -77,13 +77,14 @@
     },
     {
       "counts": {
-        "covered": 5,
-        "generated": 0,
+        "covered": 6,
+        "generated": 1,
         "internal": 1,
         "public": 4,
-        "schemas": 2
+        "schemas": 3
       },
       "files": [
+        "configs/_generated/configs-index.json",
         "configs/inventory/README.md",
         "configs/inventory/configs.json",
         "configs/inventory/consumers.json",
@@ -95,7 +96,8 @@
       "schema_owner": "platform",
       "schemas": [
         "configs/contracts/inventory-configs.schema.json",
-        "configs/contracts/inventory-owners.schema.json"
+        "configs/contracts/inventory-owners.schema.json",
+        "configs/schema/configs-index.schema.json"
       ],
       "stability": "stable",
       "tool_entrypoints": [
