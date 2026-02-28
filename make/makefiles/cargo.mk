@@ -31,7 +31,24 @@ nextest_summary = \
 	failed=$$3; \
 	skipped=$$4; \
 	leaky=$$(grep -c ' LEAK ' "$$report_file" || true); \
-	printf '%s\n' "nextest-summary: total=$$total passed=$$passed failed=$$failed skipped=$$skipped leaky=$$leaky"
+	max_list_items=50; \
+	failed_tests=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | awk '/ FAIL / { test_name = $$0; sub(/^.* FAIL \[[^]]*\] \([^)]*\) /, "", test_name); seen[test_name] = 1 } END { for (test_name in seen) print test_name }' | LC_ALL=C sort); \
+	skipped_tests=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | awk '/ SKIP / { test_name = $$0; sub(/^.* SKIP \[[^]]*\] \([^)]*\) /, "", test_name); seen[test_name] = 1 } END { for (test_name in seen) print test_name }' | LC_ALL=C sort); \
+	leaky_tests=$$(perl -pe 's/\e\[[0-9;]*[[:alpha:]]//g' "$$report_file" | awk '/ LEAK / { test_name = $$0; sub(/^.* LEAK \[[^]]*\] \([^)]*\) /, "", test_name); seen[test_name] = 1 } END { for (test_name in seen) print test_name }' | LC_ALL=C sort); \
+	print_test_group() { \
+		label="$$1"; color="$$2"; tests="$$3"; \
+		[ -n "$$tests" ] || return 0; \
+		total_items=$$(printf '%s\n' "$$tests" | sed '/^$$/d' | wc -l | tr -d ' '); \
+		printf '\033[%sm%s\033[0m\n' "$$color" "$$label"; \
+		printf '%s\n' "$$tests" | sed '/^$$/d' | head -n "$$max_list_items" | sed 's/^/  /'; \
+		if [ "$$total_items" -gt "$$max_list_items" ]; then \
+			printf '  ... %s more\n' "$$((total_items - max_list_items))"; \
+		fi; \
+	}; \
+	printf '\033[1;36m%s\033[0m total=%s \033[1;32mpassed=%s\033[0m \033[1;31mfailed=%s\033[0m \033[1;33mskipped=%s\033[0m \033[1;35mleaky=%s\033[0m\n' "nextest-summary:" "$$total" "$$passed" "$$failed" "$$skipped" "$$leaky"; \
+	print_test_group "failed-tests:" "1;31" "$$failed_tests"; \
+	print_test_group "leaky-tests:" "1;35" "$$leaky_tests"; \
+	print_test_group "skipped-tests:" "1;33" "$$skipped_tests"
 
 audit: ## Run cargo dependency audit
 	@command -v cargo-audit >/dev/null 2>&1 || { \
