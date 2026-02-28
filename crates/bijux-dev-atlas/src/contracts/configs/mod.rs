@@ -10,6 +10,7 @@ use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestRe
 const REGISTRY_PATH: &str = "configs/inventory/configs.json";
 const OWNERS_PATH: &str = "configs/OWNERS.json";
 const CONSUMERS_PATH: &str = "configs/CONSUMERS.json";
+const SCHEMAS_PATH: &str = "configs/SCHEMAS.json";
 const ROOT_MARKDOWN_FILES: [&str; 2] = ["configs/README.md", "configs/CONTRACT.md"];
 const DOCS_TOOLING_PATTERNS: [&str; 6] = [
     "configs/docs/.markdownlint-cli2.jsonc",
@@ -60,7 +61,15 @@ struct ConfigsOwners {
 #[derive(Clone, Deserialize)]
 struct ConfigsConsumers {
     schema_version: u64,
+    #[serde(default)]
+    files: BTreeMap<String, Vec<String>>,
     groups: BTreeMap<String, Vec<String>>,
+}
+
+#[derive(Clone, Deserialize)]
+struct ConfigsSchemas {
+    schema_version: u64,
+    files: BTreeMap<String, String>,
 }
 
 #[derive(Clone)]
@@ -131,6 +140,12 @@ fn read_consumers(repo_root: &Path) -> Result<ConfigsConsumers, String> {
     let text = read_text(&repo_root.join(CONSUMERS_PATH))?;
     serde_json::from_str::<ConfigsConsumers>(&text)
         .map_err(|err| format!("parse {CONSUMERS_PATH} failed: {err}"))
+}
+
+fn read_schemas(repo_root: &Path) -> Result<ConfigsSchemas, String> {
+    let text = read_text(&repo_root.join(SCHEMAS_PATH))?;
+    serde_json::from_str::<ConfigsSchemas>(&text)
+        .map_err(|err| format!("parse {SCHEMAS_PATH} failed: {err}"))
 }
 
 fn all_config_files(root: &Path) -> Result<Vec<String>, String> {
@@ -241,6 +256,26 @@ fn matches_any<'a>(patterns: impl IntoIterator<Item = &'a String>, candidate: &s
     patterns
         .into_iter()
         .any(|pattern| wildcard_match(pattern, candidate))
+}
+
+fn matching_file_consumers(consumers: &ConfigsConsumers, candidate: &str) -> Vec<String> {
+    let mut out = BTreeSet::new();
+    for (pattern, entries) in &consumers.files {
+        if wildcard_match(pattern, candidate) {
+            out.extend(entries.iter().cloned());
+        }
+    }
+    out.into_iter().collect()
+}
+
+fn matched_schema_path(schemas: &ConfigsSchemas, candidate: &str) -> Option<String> {
+    schemas.files.iter().find_map(|(pattern, schema)| {
+        if wildcard_match(pattern, candidate) {
+            Some(schema.clone())
+        } else {
+            None
+        }
+    })
 }
 
 fn registry_index(repo_root: &Path) -> Result<RegistryIndex, String> {
@@ -830,7 +865,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=29)
+    let expected = (1..=31)
         .map(|n| format!("CONFIGS-{n:03}"))
         .collect::<BTreeSet<_>>();
     if index.contract_ids == expected {
@@ -1667,6 +1702,204 @@ fn test_configs_029_consumer_map_alignment(ctx: &RunContext) -> TestResult {
             }
         }
     }
+    for (pattern, entries) in &consumers.files {
+        let matches_public_file = index
+            .root_files
+            .iter()
+            .any(|file| wildcard_match(pattern, file))
+            || index.registry.groups.iter().any(|group| {
+                let files = index
+                    .group_files
+                    .get(&group.name)
+                    .cloned()
+                    .unwrap_or_default();
+                files
+                    .public
+                    .iter()
+                    .chain(files.generated.iter())
+                    .any(|file| wildcard_match(pattern, file))
+            });
+        if !matches_public_file {
+            violations.push(violation(
+                "CONFIGS-029",
+                "configs.consumers.group_alignment",
+                CONSUMERS_PATH,
+                format!(
+                    "consumer file pattern `{pattern}` does not match any public or generated config file"
+                ),
+            ));
+        }
+        if entries.is_empty() {
+            violations.push(violation(
+                "CONFIGS-029",
+                "configs.consumers.group_alignment",
+                CONSUMERS_PATH,
+                format!("consumer file pattern `{pattern}` must list at least one consumer"),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_030_file_consumer_coverage(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-030",
+                "configs.consumers.file_coverage",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let consumers = match read_consumers(&ctx.repo_root) {
+        Ok(consumers) => consumers,
+        Err(err) => {
+            return fail(
+                "CONFIGS-030",
+                "configs.consumers.file_coverage",
+                CONSUMERS_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for group in &index.registry.groups {
+        let files = index
+            .group_files
+            .get(&group.name)
+            .cloned()
+            .unwrap_or_default();
+        for file in files.public.iter().chain(files.generated.iter()) {
+            let matched = matching_file_consumers(&consumers, file);
+            if matched.is_empty() {
+                violations.push(violation(
+                    "CONFIGS-030",
+                    "configs.consumers.file_coverage",
+                    file,
+                    "public or generated config file is missing a per-file consumer declaration",
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let schemas = match read_schemas(&ctx.repo_root) {
+        Ok(schemas) => schemas,
+        Err(err) => {
+            return fail(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                SCHEMAS_PATH,
+                err,
+            )
+        }
+    };
+    if schemas.schema_version != 1 {
+        return fail(
+            "CONFIGS-031",
+            "configs.schemas.file_coverage",
+            SCHEMAS_PATH,
+            format!(
+                "unsupported configs schema map schema_version {}",
+                schemas.schema_version
+            ),
+        );
+    }
+    let mut violations = Vec::new();
+    for (pattern, schema) in &schemas.files {
+        let matches_file = index.registry.groups.iter().any(|group| {
+            let files = index
+                .group_files
+                .get(&group.name)
+                .cloned()
+                .unwrap_or_default();
+            files
+                .public
+                .iter()
+                .chain(files.generated.iter())
+                .filter(|file| json_like(file) && !schema_like(file))
+                .any(|file| wildcard_match(pattern, file))
+        }) || index
+            .root_files
+            .iter()
+            .filter(|file| json_like(file) && !schema_like(file))
+            .any(|file| wildcard_match(pattern, file));
+        if !matches_file {
+            violations.push(violation(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                SCHEMAS_PATH,
+                format!(
+                    "schema file pattern `{pattern}` does not match any governed json or jsonc config file"
+                ),
+            ));
+        }
+        if !ctx.repo_root.join(schema).is_file() {
+            violations.push(violation(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                schema,
+                format!("declared schema map target for `{pattern}` does not exist"),
+            ));
+        }
+    }
+    for file in index
+        .root_files
+        .iter()
+        .filter(|file| json_like(file) && !schema_like(file))
+    {
+        if matched_schema_path(&schemas, file).is_none() {
+            violations.push(violation(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                file,
+                "root json or jsonc config file is missing a per-file schema declaration",
+            ));
+        }
+    }
+    for group in &index.registry.groups {
+        let files = index
+            .group_files
+            .get(&group.name)
+            .cloned()
+            .unwrap_or_default();
+        for file in files.public.iter().chain(files.generated.iter()) {
+            if !json_like(file) || schema_like(file) {
+                continue;
+            }
+            if matched_schema_path(&schemas, file).is_none() {
+                violations.push(violation(
+                    "CONFIGS-031",
+                    "configs.schemas.file_coverage",
+                    file,
+                    "public or generated json or jsonc config file is missing a per-file schema declaration",
+                ));
+            }
+        }
+    }
     if violations.is_empty() {
         TestResult::Pass
     } else {
@@ -1879,6 +2112,20 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "configs consumer map matches the declared groups",
             test_configs_029_consumer_map_alignment,
         ),
+        contract(
+            "CONFIGS-030",
+            "configs public files declare file-level consumers",
+            "configs.consumers.file_coverage",
+            "public and generated config files have per-file consumer coverage",
+            test_configs_030_file_consumer_coverage,
+        ),
+        contract(
+            "CONFIGS-031",
+            "configs json files declare file-level schema coverage",
+            "configs.schemas.file_coverage",
+            "root, public, and generated json configs map to declared schemas",
+            test_configs_031_schema_map_coverage,
+        ),
     ])
 }
 
@@ -1932,6 +2179,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-027" => "The configs/docs directory must stay within its declared tooling file surface.".to_string(),
         "CONFIGS-028" => "The canonical configs owner map must match the registry group owners.".to_string(),
         "CONFIGS-029" => "The canonical configs consumer map must cover the registry groups.".to_string(),
+        "CONFIGS-030" => "Every public or generated config file must have explicit file-level consumer coverage in configs/CONSUMERS.json.".to_string(),
+        "CONFIGS-031" => "Root, public, and generated JSON or JSONC configs must map to explicit schema coverage in configs/SCHEMAS.json.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
@@ -1940,6 +2189,7 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
     let index = registry_index(repo_root)?;
     let owners = read_owners(repo_root)?;
     let consumers = read_consumers(repo_root)?;
+    let schemas = read_schemas(repo_root)?;
     let normalized = file.replace('\\', "/");
     if index.root_files.contains(&normalized) {
         return Ok(serde_json::json!({
@@ -1949,7 +2199,8 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
             "group": serde_json::Value::Null,
             "visibility": "root",
             "owner": serde_json::Value::Null,
-            "consumers": [],
+            "consumers": matching_file_consumers(&consumers, &normalized),
+            "schema": matched_schema_path(&schemas, &normalized),
             "schema_owner": serde_json::Value::Null,
             "stability": "stable",
             "tool_entrypoints": [],
@@ -1966,6 +2217,7 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
                 "visibility": "excluded",
                 "owner": serde_json::Value::Null,
                 "consumers": [],
+                "schema": serde_json::Value::Null,
                 "schema_owner": serde_json::Value::Null,
                 "stability": serde_json::Value::Null,
                 "tool_entrypoints": [],
@@ -1984,6 +2236,16 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
             None
         };
         if let Some(visibility) = visibility {
+            let file_consumers = matching_file_consumers(&consumers, &normalized);
+            let effective_consumers = if file_consumers.is_empty() {
+                consumers
+                    .groups
+                    .get(&group.name)
+                    .cloned()
+                    .unwrap_or_default()
+            } else {
+                file_consumers
+            };
             return Ok(serde_json::json!({
                 "schema_version": 1,
                 "kind": "configs_explain",
@@ -1991,7 +2253,8 @@ pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value
                 "group": group.name,
                 "visibility": visibility,
                 "owner": owners.groups.get(&group.name).cloned().unwrap_or_else(|| group.owner.clone()),
-                "consumers": consumers.groups.get(&group.name).cloned().unwrap_or_default(),
+                "consumers": effective_consumers,
+                "schema": matched_schema_path(&schemas, &normalized),
                 "schema_owner": group.schema_owner,
                 "stability": group.stability,
                 "tool_entrypoints": group.tool_entrypoints,
@@ -2077,5 +2340,16 @@ mod tests {
         assert!(payload["consumers"]
             .as_array()
             .is_some_and(|rows| !rows.is_empty()));
+        assert!(payload["schema"].is_null());
+    }
+
+    #[test]
+    fn explain_payload_returns_schema_for_json_file() {
+        let payload = explain_payload(&repo_root(), "configs/inventory/configs.json")
+            .expect("explain payload");
+        assert_eq!(
+            payload["schema"].as_str(),
+            Some("configs/contracts/inventory-configs.schema.json")
+        );
     }
 }

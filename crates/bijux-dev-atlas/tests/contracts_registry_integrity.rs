@@ -83,7 +83,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
                 "--format",
                 "human",
             ],
-            "f5c7d3d12278e279496539e9653f56c099b62695f0f9896f725c34e2192d61b9",
+            "62e5f4899d9c0be1b6842403751c66d0a766b6898f45a0e8ee4b83a87636bd5a",
         ),
         (
             vec![
@@ -106,7 +106,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "97ac21e91833f7ba5de00645ff5bce73194300e3d5f2881a215a21ac95d9781c",
+            "5652d21c22af7c84378935bdf663fbc725c0a6e535627b4a1575c62c8e29db66",
         ),
     ];
     for (args, expected) in cases {

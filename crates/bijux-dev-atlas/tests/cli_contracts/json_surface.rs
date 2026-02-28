@@ -139,6 +139,7 @@ fn configs_explain_reports_registry_metadata() {
         .get("consumers")
         .and_then(|v| v.as_array())
         .is_some_and(|items| !items.is_empty()));
+    assert!(payload.get("schema").is_some());
 }
 
 #[test]

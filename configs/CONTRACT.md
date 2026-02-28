@@ -29,3 +29,5 @@
 - `CONFIGS-027`: `configs/docs/` must stay within its declared tooling-only file surface. Enforced by: `configs.docs.tooling_surface`.
 - `CONFIGS-028`: `configs/OWNERS.json` must match the registry group owners. Enforced by: `configs.owners.group_alignment`.
 - `CONFIGS-029`: `configs/CONSUMERS.json` must cover the declared registry groups. Enforced by: `configs.consumers.group_alignment`.
+- `CONFIGS-030`: Every public or generated config file must match a file-level consumer declaration in `configs/CONSUMERS.json`. Enforced by: `configs.consumers.file_coverage`.
+- `CONFIGS-031`: Every root, public, or generated JSON or JSONC config file must match a file-level schema declaration in `configs/SCHEMAS.json`. Enforced by: `configs.schemas.file_coverage`.
