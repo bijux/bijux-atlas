@@ -2,7 +2,7 @@
 
 - Owner: `docs-governance`
 - Type: `policy`
-- Audience: `contributor`
+- Audience: `contributors`
 - Stability: `stable`
 - Reason to exist: define internal usage rules for images and diagrams.
 

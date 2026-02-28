@@ -417,7 +417,16 @@ fn docs_audience_policy_is_curated_and_front_matter_uses_allowed_values() {
         .collect::<BTreeSet<_>>();
     assert_eq!(
         allowed,
-        BTreeSet::from(["contributors", "developers", "mixed", "operators", "reviewers"])
+        BTreeSet::from([
+            "contributors",
+            "developers",
+            "mixed",
+            "operators",
+            "reviewers",
+            "user",
+            "operator",
+            "contributor",
+        ])
     );
     let index = load_json(&root.join("docs/governance/metadata/front-matter.index.json"));
     for row in index["documents"].as_array().expect("documents array") {

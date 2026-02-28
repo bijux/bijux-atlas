@@ -501,7 +501,7 @@ pub(super) fn check_docs_command_surface_docs_exist(
 pub(super) fn check_crate_docs_governance_contract(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let policy_path = Path::new("docs/metadata/crate-doc-governance.json");
+    let policy_path = Path::new("docs/governance/metadata/crate-doc-governance.json");
     let policy_text = fs::read_to_string(ctx.repo_root.join(policy_path)).map_err(|err| {
         CheckError::Failed(format!("failed to read {}: {err}", policy_path.display()))
     })?;

@@ -5,7 +5,10 @@
     "developers",
     "operators",
     "reviewers",
-    "mixed"
+    "mixed",
+    "user",
+    "operator",
+    "contributor"
   ],
   "section_defaults": {
     ".github": "reviewers",

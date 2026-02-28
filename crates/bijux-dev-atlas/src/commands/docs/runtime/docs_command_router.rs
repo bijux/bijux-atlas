@@ -351,7 +351,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             })).collect::<Vec<_>>()
                         });
                         fs::write(
-                            ctx.repo_root.join("docs/metadata/front-matter.index.json"),
+                            ctx.repo_root
+                                .join("docs/governance/metadata/front-matter.index.json"),
                             serde_json::to_string_pretty(&front_matter_index)
                                 .map_err(|e| format!("front matter index encode failed: {e}"))?,
                         )
@@ -566,11 +567,11 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                                 "docs/_generated/docs-contract-coverage.json",
                                 "docs/_generated/concept-registry.json",
                                 "docs/_generated/concept-registry.md",
-                                "docs/metadata/front-matter.index.json"
+                                "docs/governance/metadata/front-matter.index.json"
                             ],
                             "metadata_sources": {
                                 "owners": "docs/owners.json",
-                                "audiences": "docs/metadata/audiences.json",
+                                "audiences": "docs/governance/metadata/audiences.json",
                                 "sections": "docs/sections.json"
                             }
                         });
@@ -627,7 +628,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "crate_doc_governance": "docs/_generated/crate-doc-governance.json",
                             "crate_doc_api_table": "docs/_generated/crate-doc-api-table.md",
                             "crate_doc_pruning": "docs/_generated/crate-doc-pruning.json",
-                            "front_matter_index": "docs/metadata/front-matter.index.json",
+                            "front_matter_index": "docs/governance/metadata/front-matter.index.json",
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
