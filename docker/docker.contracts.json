@@ -951,6 +951,20 @@
         }
       ],
       "title": "dockerfile formatting"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "effects": [],
+      "gate_id": "docker.contract.docker_061",
+      "id": "DOCKER-061",
+      "mode": "static",
+      "tests": [
+        {
+          "id": "docker.copy.canonical_config_paths",
+          "title": "tool config COPY sources use canonical configs paths"
+        }
+      ],
+      "title": "canonical config copy paths"
     }
   ],
   "domain": "docker",

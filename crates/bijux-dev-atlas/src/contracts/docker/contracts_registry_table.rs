@@ -712,5 +712,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_dockerfiles_canonical_whitespace,
             }],
         },
+        Contract {
+            id: ContractId("DOCKER-061".to_string()),
+            title: "canonical config copy paths",
+            tests: vec![TestCase {
+                id: TestId("docker.copy.canonical_config_paths".to_string()),
+                title: "tool config COPY sources use canonical configs paths",
+                kind: TestKind::Pure,
+                run: test_copy_uses_canonical_config_paths,
+            }],
+        },
     ])
 }

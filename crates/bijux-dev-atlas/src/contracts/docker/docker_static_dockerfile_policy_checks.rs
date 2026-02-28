@@ -419,6 +419,50 @@ fn test_copy_no_parent_traversal(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_copy_uses_canonical_config_paths(ctx: &RunContext) -> TestResult {
+    let rows = match dockerfiles_with_instructions(ctx) {
+        Ok(v) => v,
+        Err(e) => return TestResult::Error(e),
+    };
+    let expected = [
+        ("rustfmt.toml", "configs/rust/rustfmt.toml"),
+        ("clippy.toml", "configs/rust/clippy.toml"),
+        ("deny.toml", "configs/security/deny.toml"),
+    ];
+    let mut violations = Vec::new();
+    for (rel, instructions) in rows {
+        for ins in instructions {
+            if ins.keyword != "COPY" {
+                continue;
+            }
+            for src in extract_copy_sources(&ins.args) {
+                let Some(file_name) = Path::new(&src).file_name().and_then(|value| value.to_str()) else {
+                    continue;
+                };
+                if let Some((_, canonical_path)) =
+                    expected.iter().find(|(name, _)| *name == file_name)
+                {
+                    if src != *canonical_path {
+                        violations.push(violation(
+                            "DOCKER-061",
+                            "docker.copy.canonical_config_paths",
+                            Some(rel.clone()),
+                            Some(ins.line),
+                            "tool config COPY source must use canonical configs path",
+                            Some(src),
+                        ));
+                    }
+                }
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn image_directories_with_dockerfile(repo_root: &Path) -> Result<BTreeSet<String>, String> {
     let images_root = repo_root.join("docker/images");
     let mut out = BTreeSet::new();

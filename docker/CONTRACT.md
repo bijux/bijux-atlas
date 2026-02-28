@@ -327,6 +327,11 @@ Tests:
 Tests:
 - `docker.dockerfiles.canonical_whitespace` (static, Pure): dockerfiles avoid tabs and trailing whitespace
 
+### DOCKER-061 canonical config copy paths
+
+Tests:
+- `docker.copy.canonical_config_paths` (static, Pure): tool config COPY sources use canonical configs paths
+
 ## Mapping
 
 | Contract | Gate | Command |
@@ -393,6 +398,7 @@ Tests:
 | `DOCKER-058` | `docker.contract.docker_058` | `bijux dev atlas contracts docker --mode static` |
 | `DOCKER-059` | `docker.contract.docker_059` | `bijux dev atlas contracts docker --mode static` |
 | `DOCKER-060` | `docker.contract.docker_060` | `bijux dev atlas contracts docker --mode static` |
+| `DOCKER-061` | `docker.contract.docker_061` | `bijux dev atlas contracts docker --mode static` |
 
 ## Rule
 

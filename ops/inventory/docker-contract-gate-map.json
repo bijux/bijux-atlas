@@ -309,6 +309,11 @@
       "command": "bijux dev atlas contracts docker --mode static",
       "contract_id": "DOCKER-060",
       "gate_id": "docker.contract.docker_060"
+    },
+    {
+      "command": "bijux dev atlas contracts docker --mode static",
+      "contract_id": "DOCKER-061",
+      "gate_id": "docker.contract.docker_061"
     }
   ],
   "schema_version": 1

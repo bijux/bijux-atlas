@@ -285,6 +285,48 @@
     }
 
     #[test]
+    fn detects_noncanonical_config_copy_source() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        mk_repo(
+            tmp.path(),
+            "ARG RUST_VERSION=1\nARG IMAGE_VERSION=1\nARG VCS_REF=1\nARG BUILD_DATE=1970-01-01T00:00:00Z\nARG SOURCE_DATE_EPOCH=0\nFROM rust:1@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa AS builder\nWORKDIR /workspace\nCOPY rustfmt.toml /workspace/configs/rust/rustfmt.toml\nRUN cargo build --locked\nFROM gcr.io/distroless/cc-debian12:nonroot@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb AS runtime\nWORKDIR /app\nCOPY --from=builder /workspace/configs/rust/rustfmt.toml /app/configs/rust/rustfmt.toml\nUSER nonroot:nonroot\nLABEL org.opencontainers.image.source=\"x\"\nLABEL org.opencontainers.image.version=\"x\"\nLABEL org.opencontainers.image.revision=\"x\"\nLABEL org.opencontainers.image.created=\"1970-01-01T00:00:00Z\"\nLABEL org.opencontainers.image.ref.name=\"x\"\nLABEL org.opencontainers.image.licenses=\"Apache-2.0\"\nENTRYPOINT [\"/app/bijux-atlas\", \"version\"]\n",
+        );
+        std::fs::write(tmp.path().join("rustfmt.toml"), "max_width = 100\n")
+            .expect("write legacy rustfmt");
+        std::os::unix::fs::symlink("docker/images/runtime/Dockerfile", tmp.path().join("Dockerfile"))
+            .expect("symlink");
+        sync_contract_markdown(tmp.path()).expect("sync contract doc");
+        sync_contract_registry_json(tmp.path()).expect("sync contract registry");
+        sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");
+        let report = crate::contracts::run(
+            "docker",
+            contracts,
+            tmp.path(),
+            &crate::contracts::RunOptions {
+                mode: crate::contracts::Mode::Static,
+                allow_subprocess: false,
+                allow_network: false,
+                allow_k8s: false,
+                allow_fs_write: false,
+                allow_docker_daemon: false,
+                skip_missing_tools: false,
+                timeout_seconds: 300,
+                fail_fast: false,
+                contract_filter: Some("DOCKER-061".to_string()),
+                test_filter: Some("docker.copy.canonical_config_paths".to_string()),
+                only_contracts: Vec::new(),
+                only_tests: Vec::new(),
+                skip_contracts: Vec::new(),
+                tags: Vec::new(),
+                list_only: false,
+                artifacts_root: None,
+            },
+        )
+        .expect("run contracts");
+        assert_eq!(report.fail_count(), 1);
+    }
+
+    #[test]
     fn detects_missing_smoke_manifest_entry() {
         let tmp = tempfile::tempdir().expect("tempdir");
         mk_repo(

@@ -485,6 +485,11 @@ pub fn contract_explain(contract_id: &str) -> String {
             "Use LABEL directives for org.opencontainers.image.* keys required by policy.",
         ]
         .join("\n"),
+        "DOCKER-061" => [
+            "Tooling config files copied into Docker builds must come from canonical configs/... paths.",
+            "Do not copy rustfmt.toml, clippy.toml, or deny.toml from legacy root-level paths.",
+        ]
+        .join("\n"),
         _ => "Fix violations listed for this contract and rerun `bijux dev atlas contracts docker`."
             .to_string(),
     }
