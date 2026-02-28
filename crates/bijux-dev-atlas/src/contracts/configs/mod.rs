@@ -1010,7 +1010,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=18)
+    let expected = (1..=35)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
@@ -1143,6 +1143,26 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
                 ));
             }
         }
+    }
+    let mapped_enforcement_checks = surface
+        .contracts
+        .iter()
+        .map(|row| row.enforced_by.test_id.clone())
+        .collect::<BTreeSet<_>>();
+    let unmapped_executable_checks = executable_tests
+        .difference(&mapped_enforcement_checks)
+        .cloned()
+        .collect::<Vec<_>>();
+    if !unmapped_executable_checks.is_empty() {
+        violations.push(violation(
+            "CONFIGS-010",
+            "configs.contracts.no_policy_theater",
+            CONTRACT_SURFACE_PATH,
+            format!(
+                "configs contract registry leaves executable checks unmapped: {:?}",
+                unmapped_executable_checks
+            ),
+        ));
     }
     if violations.is_empty() {
         TestResult::Pass
@@ -2626,7 +2646,7 @@ mod tests {
         let surface = read_contract_surface(&repo_root()).expect("contract surface");
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 18);
+        assert_eq!(surface.contracts.len(), 35);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -2637,7 +2657,7 @@ mod tests {
     #[test]
     fn cfg_contract_coverage_payload_is_stable() {
         let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
-        assert_eq!(payload["contract_count"].as_u64(), Some(18));
+        assert_eq!(payload["contract_count"].as_u64(), Some(35));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());
