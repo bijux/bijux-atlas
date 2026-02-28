@@ -2,16 +2,12 @@
 
 Owner: `bijux-atlas-operations`  
 Type: `reference`  
-Reason to exist: canonical configuration catalog and ownership mapping.
-
-## Status
-
-Placeholder page. The configuration inventory is populated from generated sources.
+Reason to exist: canonical configuration inventory and ownership mapping.
 
 ## Source Of Truth
 
 - `configs/inventory/consumers.json`
 
-## Update Method
+## Table Scope
 
-- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
+Configuration keys and ownership tables are maintained only in this section.

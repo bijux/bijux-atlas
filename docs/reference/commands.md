@@ -2,16 +2,12 @@
 
 Owner: `bijux-atlas-operations`  
 Type: `reference`  
-Reason to exist: canonical command catalog for supported Atlas workflows.
-
-## Status
-
-Placeholder page. The command inventory is populated from generated sources.
+Reason to exist: canonical command inventory for supported workflows.
 
 ## Source Of Truth
 
 - `docs/_generated/command-index.json`
 
-## Update Method
+## Table Scope
 
-- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
+Command tables are generated from the source of truth and maintained only in this section.

@@ -2,18 +2,17 @@
 
 Owner: `docs-governance`  
 Type: `reference`  
-Reason to exist: central factual reference index for commands, configs, schemas, and errors.
+Reason to exist: all factual surfaces live here.
 
-## Core Reference Pages
+## Canonical Reference Pages
 
 - [Commands](commands.md)
+- [Make](make.md)
 - [Configs](configs.md)
 - [Schemas](schemas.md)
-- [Make Targets](make-targets.md)
-- [Repository Map](repo-map.md)
+- [Errors](errors.md)
+- [Dataset Operations](dataset-operations.md)
 
-## What To Read Next
+## Rule
 
-- [API](../api/index.md)
-- [Operations](../operations/index.md)
-- [Development](../development/index.md)
+Reference pages are factual and table-first. Narrative guidance belongs outside `docs/reference/`.

@@ -2,16 +2,12 @@
 
 Owner: `bijux-atlas-operations`  
 Type: `reference`  
-Reason to exist: canonical schema catalog for validated contracts.
-
-## Status
-
-Placeholder page. The schema index is populated from generated sources.
+Reason to exist: canonical schema inventory for validated contracts.
 
 ## Source Of Truth
 
 - `docs/_generated/schema-index.json`
 
-## Update Method
+## Table Scope
 
-- `bijux dev atlas docs reference generate --allow-subprocess --allow-write`
+Schema tables are maintained only in this section.
