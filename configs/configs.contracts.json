@@ -297,6 +297,273 @@
         "configs/inventory/configs.json"
       ],
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json"
+    },
+    {
+      "id": "CFG-019",
+      "title": "all config groups declare lifecycle metadata",
+      "severity": "must",
+      "contract_type": "drift",
+      "rationale": "each declared configs group carries explicit stability metadata.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.lifecycle"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-020",
+      "title": "all config groups declare tool entrypoints",
+      "severity": "must",
+      "contract_type": "drift",
+      "rationale": "each declared configs group states which command surfaces consume it.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.tool_entrypoints"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-021",
+      "title": "all config groups declare schema ownership",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "schema-bearing groups identify an explicit schema owner.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.schema_owner"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/schema/*.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-022",
+      "title": "no undocumented config files remain in the registry surface",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "every governed configs file must be declared by the registry.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.no_undocumented_files"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-023",
+      "title": "internal-only config naming stays explicit",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "internal config surfaces keep explicit private naming boundaries.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.naming.internal_surface"
+      },
+      "touched_paths": [
+        "configs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-024",
+      "title": "generated and authored config surfaces do not overlap",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "generated configs remain isolated from authored config inputs.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.generated.authored_boundary"
+      },
+      "touched_paths": [
+        "configs/_generated/**",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-025",
+      "title": "json config surfaces parse cleanly",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "json and jsonc config inputs must stay parseable.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.parse.json"
+      },
+      "touched_paths": [
+        "configs/**.json",
+        "configs/**.jsonc"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-026",
+      "title": "yaml config surfaces parse cleanly",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "yaml config inputs must stay parseable.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.parse.yaml"
+      },
+      "touched_paths": [
+        "configs/**.yml",
+        "configs/**.yaml"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-027",
+      "title": "toml config surfaces parse cleanly",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "toml config inputs must stay parseable.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.parse.toml"
+      },
+      "touched_paths": [
+        "configs/**.toml"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-028",
+      "title": "text config surfaces avoid whitespace drift",
+      "severity": "must",
+      "contract_type": "drift",
+      "rationale": "text-based config files must avoid trailing whitespace drift.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.text.hygiene"
+      },
+      "touched_paths": [
+        "configs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-029",
+      "title": "docs tooling directory contains no nested markdown",
+      "severity": "blocker",
+      "contract_type": "filelayout",
+      "rationale": "configs keeps markdown only at the root docs surface.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.docs.no_nested_markdown"
+      },
+      "touched_paths": [
+        "configs/docs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-030",
+      "title": "docs tooling directory stays tooling-only",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "configs docs tooling paths contain only declared tooling inputs.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.docs.tooling_surface"
+      },
+      "touched_paths": [
+        "configs/docs/**",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-031",
+      "title": "root owner map stays aligned with the registry",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "the canonical owner map must stay in sync with declared groups.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.owners.group_alignment"
+      },
+      "touched_paths": [
+        "configs/OWNERS.json",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-032",
+      "title": "the configs contract registry is fully mapped to executable checks",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "every executable configs check must have an explicit contract row and no contract row may point at a missing check.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.contracts.no_policy_theater"
+      },
+      "touched_paths": [
+        "configs/configs.contracts.json",
+        "configs/CONTRACT.md",
+        "configs/_generated/configs-index.json"
+      ],
+      "evidence_artifact": "artifacts/atlas-dev/configs/<run_id>/cfg-contract-coverage.json"
+    },
+    {
+      "id": "CFG-033",
+      "title": "all config groups declare owners",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "every configs group must declare an owner in the registry.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.owner_complete"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-034",
+      "title": "all config groups declare schema coverage",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "schema-bearing config groups must reference real schema files.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schema.coverage"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/schema/*.json",
+        "configs/contracts/*.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-035",
+      "title": "all config groups stay within per-group depth budgets",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "each configs group enforces its declared maximum relative path depth.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.group_depth_budget"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/**"
+      ],
+      "evidence_artifact": null
     }
   ]
 }
