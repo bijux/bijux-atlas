@@ -1,4 +1,4 @@
-# Docs Dashboard
+# Docs dashboard
 
 - Owner: `docs-governance`
 - Type: `policy`

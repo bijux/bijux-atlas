@@ -19,10 +19,10 @@ Provide the canonical product story: what Atlas is, who it serves, and the promi
 
 ## What You Will Find Here
 
-- [What Is Bijux Atlas](what-is-bijux-atlas.md)
-- [Compatibility Promise](compatibility-promise.md)
-- [Non-Goals](non-goals.md)
-- [Release Model](release-model.md)
+- [What is Bijux Atlas](what-is-bijux-atlas.md)
+- [Compatibility promise](compatibility-promise.md)
+- [Non-goals](non-goals.md)
+- [Release model](release-model.md)
 
 ## What This Page Is Not
 

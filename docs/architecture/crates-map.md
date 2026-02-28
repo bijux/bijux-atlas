@@ -1,4 +1,4 @@
-# Crates Map
+# Crates map
 
 - Owner: `architecture`
 - Type: `concept`
@@ -27,25 +27,25 @@ flowchart LR
   dev[bijux-dev-atlas] --> cli
 ```
 
-## Foundation Layer
+## Foundation layer
 
 - `bijux-atlas-core`: core invariants, canonicalization helpers, and shared primitives.
 - `bijux-atlas-model`: domain model types shared across runtime and tooling.
 - `bijux-atlas-policies`: policy evaluation and policy schema surfaces.
 
-## Runtime Data Layer
+## Runtime data layer
 
 - `bijux-atlas-ingest`: source ingestion, validation, and artifact build path.
 - `bijux-atlas-store`: artifact and serving-store access layer.
 - `bijux-atlas-query`: deterministic query execution over serving data.
 
-## Runtime Interface Layer
+## Runtime interface layer
 
 - `bijux-atlas-api`: HTTP/API behavior contracts and response semantics.
 - `bijux-atlas-server`: production server process, readiness, and serving controls.
 - `bijux-atlas-cli`: runtime-facing CLI workflows and local operations.
 
-## Control-Plane Layer
+## Control-plane layer
 
 - `bijux-dev-atlas`: contributor and CI control-plane entrypoint.
 - `ops/` surfaces: operational orchestration, validation, and reporting lanes.
@@ -67,7 +67,7 @@ flowchart LR
 
 ## What to Read Next
 
-- [Layering Rules](layering-rules.md)
+- [Layering rules](layering-rules.md)
 - [Boundaries](boundaries.md)
 - [Dataflow](dataflow.md)
 

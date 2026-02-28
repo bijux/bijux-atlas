@@ -1,4 +1,4 @@
-# What Is Bijux Atlas
+# What is Bijux Atlas
 
 - Owner: `bijux-atlas-product`
 
@@ -45,6 +45,6 @@ Expected output: contract checks and full test suite pass.
 
 ## See also
 
-- [Compatibility Promise](compatibility-promise.md)
-- [Non Goals](non-goals.md)
+- [Compatibility promise](compatibility-promise.md)
+- [Non-goals](non-goals.md)
 - [Glossary](../glossary.md)

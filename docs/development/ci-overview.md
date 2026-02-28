@@ -1,4 +1,4 @@
-# CI Overview
+# CI overview
 
 - Owner: `platform`
 - Type: `guide`
@@ -7,7 +7,7 @@
 - Last verified against: `main@d489531b`
 - Reason to exist: describe human-level CI guarantees and lane behavior.
 
-## CI Guarantees
+## CI guarantees
 
 - Required contracts are enforced before merge.
 - Docs and config surfaces are validated deterministically.

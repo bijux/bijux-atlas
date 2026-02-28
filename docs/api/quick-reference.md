@@ -1,4 +1,4 @@
-# API Quick Reference
+# API quick reference
 
 - Owner: `api-contracts`
 - Type: `guide`

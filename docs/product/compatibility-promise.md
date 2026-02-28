@@ -1,4 +1,4 @@
-# Compatibility Promise
+# Compatibility promise
 
 Owner: `product`  
 Type: `concept`  
@@ -22,14 +22,14 @@ Reason to exist: define stable compatibility guarantees for public Atlas surface
 - `bijux dev atlas contracts check --checks breakage`
 - `make contracts-docs`
 
-## Reproducibility And Stability Guarantees
+## Reproducibility and stability guarantees
 
 - Deterministic serialization and stable ordering are required for generated artifacts.
 - Tool and configuration inputs must remain pinned in automation.
 - Stability commitments apply to documented API, model, and operations contract surfaces.
 
-## Related Pages
+## Related pages
 
-- [API Versioning](../api/versioning.md)
-- [Errors Reference](../reference/errors.md)
-- [What Is Bijux Atlas](what-is-bijux-atlas.md)
+- [API versioning](../api/versioning.md)
+- [Reference errors](../reference/errors.md)
+- [What is Bijux Atlas](what-is-bijux-atlas.md)

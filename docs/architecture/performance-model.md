@@ -1,4 +1,4 @@
-# Performance Model
+# Performance model
 
 - Owner: `architecture`
 - Type: `concept`
@@ -7,7 +7,7 @@
 - Last verified against: `main@ff4b8084`
 - Reason to exist: define caches, hot paths, bottlenecks, and overload behavior.
 
-## Hot Paths
+## Hot paths
 
 - Query planning and execution for common API filters and pagination.
 - Serving-store index lookups for release-bound dataset reads.
@@ -25,7 +25,7 @@
 - Wide-range or low-selectivity query scans.
 - I/O pressure on shared serving-store infrastructure.
 
-## Overload and Degradation
+## Overload and degradation
 
 - Capacity controls prioritize critical read traffic.
 - Degradation paths are explicit, measurable, and contract-checked.
@@ -42,11 +42,11 @@
 - This model does not guarantee zero-latency behavior for unbounded scans.
 - This model does not bypass correctness for raw throughput gains.
 
-## Operational Relevance
+## Operational relevance
 
 Operators need deterministic behavior when balancing stability against throughput.
 
-## What This Page Is Not
+## What this page is not
 
 This page is not a load test runbook and not an SLO policy table.
 
@@ -54,7 +54,7 @@ This page is not a load test runbook and not an SLO policy table.
 
 - [Architecture](index.md)
 - [Storage](storage.md)
-- [Operations Load](../operations/load/index.md)
+- [Operations load](../operations/load/index.md)
 - [Glossary](../glossary.md)
 
 ## Document Taxonomy

@@ -13,16 +13,16 @@ Describe how Atlas is structured so contributors and operators share one durable
 
 ## How to Read This Section
 
-Start with [Dataflow](dataflow.md), then [Boundaries](boundaries.md), then choose either [Runtime Data Model](runtime-data-model.md) or [Storage](storage.md) based on your change scope.
+Start with [Dataflow](dataflow.md), then [Boundaries](boundaries.md), then choose either [Runtime data model](runtime-data-model.md) or [Storage](storage.md) based on your change scope.
 
 ## What You Will Find Here
 
 - [Dataflow](dataflow.md)
 - [Boundaries](boundaries.md)
-- [Crates Map](crates-map.md)
-- [Runtime Data Model](runtime-data-model.md)
+- [Crates map](crates-map.md)
+- [Runtime data model](runtime-data-model.md)
 - [Storage](storage.md)
-- [Performance Model](performance-model.md)
+- [Performance model](performance-model.md)
 - [Query model](query-model.md)
 - [Ingest and QC model](ingest-qc-model.md)
 - [Hot paths](hot-paths.md)
