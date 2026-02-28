@@ -108,7 +108,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "6320e29b0b7fce663c8989874f9d4a88c9f569a1382e32a85e0d4dd3dad8c25d",
+            "7c71a2fcbd9f8185bf6108fc30b2b02e3fecc2b9c06b83858966ddf1dff651c3",
         ),
     ];
     for (args, expected) in cases {
