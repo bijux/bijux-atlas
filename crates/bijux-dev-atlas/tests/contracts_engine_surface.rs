@@ -17,12 +17,14 @@ fn registry_lints_detect_duplicate_contract_and_test_ids() {
         RegistrySnapshotRow {
             domain: "docker".to_string(),
             id: "DOCKER-001".to_string(),
+            severity: "must".to_string(),
             title: "first".to_string(),
             test_ids: vec!["docker.sample.same".to_string()],
         },
         RegistrySnapshotRow {
             domain: "ops".to_string(),
             id: "DOCKER-001".to_string(),
+            severity: "must".to_string(),
             title: "second".to_string(),
             test_ids: vec!["docker.sample.same".to_string()],
         },
@@ -40,18 +42,21 @@ fn registry_lints_detect_invalid_id_duplicate_title_and_filler_only_title() {
         RegistrySnapshotRow {
             domain: "docker".to_string(),
             id: "docker-1".to_string(),
+            severity: "must".to_string(),
             title: "policy contract".to_string(),
             test_ids: vec!["docker.sample.one".to_string()],
         },
         RegistrySnapshotRow {
             domain: "ops".to_string(),
             id: "OPS-ROOT-001".to_string(),
+            severity: "must".to_string(),
             title: "shared title".to_string(),
             test_ids: vec!["ops.root.one".to_string()],
         },
         RegistrySnapshotRow {
             domain: "make".to_string(),
             id: "MAKE-001".to_string(),
+            severity: "must".to_string(),
             title: "shared title".to_string(),
             test_ids: vec!["make.targets.one".to_string()],
         },
