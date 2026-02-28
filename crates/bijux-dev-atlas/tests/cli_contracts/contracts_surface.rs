@@ -61,6 +61,34 @@ fn contracts_ops_list_contains_curated_contract_ids() {
 }
 
 #[test]
+fn contracts_ops_list_keeps_root_markdown_contract_tests_stable() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--list", "--format", "json"])
+        .output()
+        .expect("contracts ops list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let contracts = payload["contracts"].as_array().expect("contracts array");
+    for (expected, expected_tests) in [
+        ("OPS-ROOT-002", vec!["ops.root.forbid_extra_markdown"]),
+        ("OPS-ROOT-015", vec!["ops.root.no_extra_pillar_markdown"]),
+    ] {
+        let row = contracts
+            .iter()
+            .find(|row| row["id"].as_str() == Some(expected))
+            .unwrap_or_else(|| panic!("missing ops contract {expected}"));
+        let tests = row["tests"].as_array().expect("tests array");
+        let actual = tests
+            .iter()
+            .filter_map(|test| test["test_id"].as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(actual, expected_tests, "unexpected tests for {expected}");
+    }
+}
+
+#[test]
 fn contracts_ops_supports_junit_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
