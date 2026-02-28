@@ -262,9 +262,24 @@ fn test_effect_smoke_each_manifest_image(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for (name, dockerfile, smoke) in entries {
         let tag = image_tag();
-        let smoke_args = smoke.iter().map(|v| v.as_str()).collect::<Vec<_>>();
-        let mut args = vec!["run", "--rm", tag.as_str()];
-        args.extend(smoke_args);
+        let mut args = vec!["run", "--rm"];
+        if let Some((entrypoint, trailing_args)) = smoke.split_first() {
+            if entrypoint.contains('/') {
+                args.push("--entrypoint");
+                args.push(entrypoint.as_str());
+                args.push(tag.as_str());
+                for arg in trailing_args {
+                    args.push(arg.as_str());
+                }
+            } else {
+                args.push(tag.as_str());
+                for arg in smoke.iter() {
+                    args.push(arg.as_str());
+                }
+            }
+        } else {
+            args.push(tag.as_str());
+        }
         let output = match run_command_with_artifacts(
             ctx,
             "docker",

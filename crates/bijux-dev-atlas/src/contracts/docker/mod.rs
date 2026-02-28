@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::process::Stdio;
 use std::thread;
+use std::time::SystemTime;
 use std::time::{Duration, Instant};
 
 use serde_json::Value;
@@ -222,28 +223,34 @@ fn run_command_with_artifacts(
     stderr_name: &str,
 ) -> Result<std::process::Output, String> {
     let artifact_dir = effect_artifact_dir(ctx);
-    let mut stdout_path = None;
-    let mut stderr_path = None;
+    let capture_root = artifact_dir
+        .clone()
+        .unwrap_or_else(std::env::temp_dir);
+    let nonce = SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|value| value.as_nanos())
+        .unwrap_or(0);
+    let stdout_capture = capture_root.join(format!(
+        ".capture-{}-{}-{stdout_name}",
+        std::process::id(),
+        nonce
+    ));
+    let stderr_capture = capture_root.join(format!(
+        ".capture-{}-{}-{stderr_name}",
+        std::process::id(),
+        nonce
+    ));
+    let stdout_file = File::create(&stdout_capture)
+        .map_err(|e| format!("create {} failed: {e}", stdout_capture.display()))?;
+    let stderr_file = File::create(&stderr_capture)
+        .map_err(|e| format!("create {} failed: {e}", stderr_capture.display()))?;
     let mut command = Command::new(program);
     command
         .args(args)
         .current_dir(&ctx.repo_root)
-        .stdin(Stdio::null());
-    if let Some(dir) = &artifact_dir {
-        let out_path = dir.join(stdout_name);
-        let err_path = dir.join(stderr_name);
-        let out_file = File::create(&out_path)
-            .map_err(|e| format!("create {} failed: {e}", out_path.display()))?;
-        let err_file = File::create(&err_path)
-            .map_err(|e| format!("create {} failed: {e}", err_path.display()))?;
-        command.stdout(Stdio::from(out_file));
-        command.stderr(Stdio::from(err_file));
-        stdout_path = Some(out_path);
-        stderr_path = Some(err_path);
-    } else {
-        command.stdout(Stdio::piped());
-        command.stderr(Stdio::piped());
-    }
+        .stdin(Stdio::null())
+        .stdout(Stdio::from(stdout_file))
+        .stderr(Stdio::from(stderr_file));
     command.env("TZ", "UTC").env("LC_ALL", "C").env("LANG", "C");
     let mut child = match command.spawn() {
         Ok(v) => v,
@@ -271,32 +278,28 @@ fn run_command_with_artifacts(
             Err(e) => return Err(format!("wait for `{program}` failed: {e}")),
         }
     }
-    let output = if let (Some(out_path), Some(err_path)) = (stdout_path, stderr_path) {
-        let status = child
-            .wait()
-            .map_err(|e| format!("wait for `{program}` failed: {e}"))?;
-        let mut stdout = Vec::new();
-        let mut stderr = Vec::new();
-        File::open(&out_path)
-            .and_then(|mut f| f.read_to_end(&mut stdout))
-            .map_err(|e| format!("read {} failed: {e}", out_path.display()))?;
-        File::open(&err_path)
-            .and_then(|mut f| f.read_to_end(&mut stderr))
-            .map_err(|e| format!("read {} failed: {e}", err_path.display()))?;
-        std::process::Output {
-            status,
-            stdout,
-            stderr,
-        }
-    } else {
-        child
-            .wait_with_output()
-            .map_err(|e| format!("collect `{program}` output failed: {e}"))?
+    let status = child
+        .wait()
+        .map_err(|e| format!("collect `{program}` status failed: {e}"))?;
+    let mut stdout = Vec::new();
+    File::open(&stdout_capture)
+        .and_then(|mut file| file.read_to_end(&mut stdout))
+        .map_err(|e| format!("read {} failed: {e}", stdout_capture.display()))?;
+    let mut stderr = Vec::new();
+    File::open(&stderr_capture)
+        .and_then(|mut file| file.read_to_end(&mut stderr))
+        .map_err(|e| format!("read {} failed: {e}", stderr_capture.display()))?;
+    let output = std::process::Output {
+        status,
+        stdout,
+        stderr,
     };
     if let Some(dir) = artifact_dir {
-        let _ = std::fs::write(dir.join(stdout_name), &output.stdout);
-        let _ = std::fs::write(dir.join(stderr_name), &output.stderr);
+        let _ = std::fs::copy(&stdout_capture, dir.join(stdout_name));
+        let _ = std::fs::copy(&stderr_capture, dir.join(stderr_name));
     }
+    let _ = std::fs::remove_file(&stdout_capture);
+    let _ = std::fs::remove_file(&stderr_capture);
     if program == "docker" && !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         if stderr.contains("Cannot connect to the Docker daemon")
