@@ -1,29 +1,27 @@
 # Documentation Ownership
 
-Owner: `docs-governance`  
-Status: `active`  
-Effective date: `2026-02-28`
+## Section Owners
+
+- `product/`: `bijux-atlas-product`
+- `architecture/`: `bijux-atlas-architecture`
+- `api/`: `bijux-atlas-api`
+- `operations/`: `bijux-atlas-operations`
+- `development/`: `bijux-atlas-developer-experience`
+- `reference/`: `bijux-atlas-docs`
+- `governance/`: `bijux-atlas-docs`
+
+## Review Requirements
+
+- Every docs change must be approved by the owner of the touched top-level section.
+- Cross-section changes require approvals from every impacted section owner.
 
 ## Service Levels
 
-- Urgent factual correction: `24h` maximum to merge a fix.
-- Standard correction: `72h` maximum to merge a fix.
+- Urgent correctness fixes: merged within 24 hours.
+- Standard correctness fixes: merged within 72 hours.
 
-## Section Owners
+## Enforcement Rules
 
-- `docs/product/`: `product`
-- `docs/architecture/`: `architecture`
-- `docs/api/`: `api-contracts`
-- `docs/operations/`: `bijux-atlas-operations`
-- `docs/development/`: `platform`
-- `docs/reference/`: `docs-governance`
-- `docs/governance/`: `docs-governance`
-- `docs/_assets/`: `docs-governance`
-- `docs/_drafts/`: `docs-governance`
-
-## Accountability Rules
-
-- Each top-level docs section has exactly one accountable owner.
-- Owner approval is required for `policy` and `runbook` changes in the owned section.
-- Cross-section edits require approval from each touched section owner.
-- Unowned sections must not receive new content until ownership is assigned here.
+- A section without a listed owner is non-compliant.
+- A docs PR without section-owner approval is non-compliant.
+- SLA misses require a follow-up corrective action item in governance review.
