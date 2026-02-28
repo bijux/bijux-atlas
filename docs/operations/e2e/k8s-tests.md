@@ -1,50 +1,36 @@
-# E2E Kubernetes Tests
+# Kubernetes E2E Guarantees
 
 - Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@c59da0bf`
+- Reason to exist: describe what Kubernetes E2E coverage guarantees before release.
 
-- Owner: `bijux-atlas-operations`
+## What this suite guarantees
 
-## What
+- Chart installs with required defaults.
+- Policy controls remain enforced.
+- Rollout and rollback paths complete without orphaned resources.
+- Readiness and health probes converge.
 
-Canonical description of chart validation tests under `ops/k8s/tests`.
+## What this suite does not guarantee
 
-## Why
+- Long-duration capacity planning.
+- Production-specific cloud policy behavior outside Atlas chart controls.
 
-Ensures install, policy, and operational semantics are validated consistently.
-
-## Scope
-
-Install, network policy, secrets, cached-only mode, rollout/rollback, HPA, and warmup job checks.
-
-## Non-goals
-
-Does not duplicate each test script implementation.
-
-## Contracts
-
-- Runner: `ops-k8s-tests`
-- Local one-command smoke runner: `k8s-smoke`
-- Report on failure: `bin/bijux dev atlas ./crates/bijux-dev-atlas/src/commands/ops/k8s/tests/report.py`
-- Full contract list: `../k8s/k8s-test-contract.md`
-
-## Failure modes
-
-Chart drift can break runtime semantics while unit tests remain green.
-
-## How to verify
+## Commands
 
 ```bash
-$ make k8s-validate
-$ make ops-k8s-tests
+make k8s-validate
+make ops-k8s-tests
 ```
 
-Expected output: smoke or full K8s suite passes with evidence under `artifacts/evidence/k8s/<run_id>/`.
+## Verify success
 
-## See also
+Expected result: both commands pass and produce evidence in `artifacts/evidence/k8s/`.
 
-- [E2E Overview](overview.md)
-- [Load Overview](../load/overview.md)
-- [Deploy](../deploy.md)
+## Next
+
+- [End-to-end Tests](index.md)
+- [Incident Response](../incident-response.md)

@@ -1,47 +1,38 @@
-# E2E Fixtures
+# Fixture Taxonomy
 
 - Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+- Type: `reference`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@c59da0bf`
+- Reason to exist: define fixture classes and constraints for E2E reliability.
 
-- Owner: `bijux-atlas-operations`
+## Fixture classes
 
-## What
+- `baseline`: minimal dataset for smoke and startup checks.
+- `regression`: targeted datasets for known failure classes.
+- `stress`: high-cardinality datasets used by load and soak checks.
 
-Defines pinned fixture packs used by e2e workflows.
+## Constraints
 
-## Why
+- Fixtures must be pinned and checksum-verified.
+- E2E flows must use fixture IDs, not ad-hoc paths.
+- Fixture changes require updated promotion evidence.
 
-Keeps fixture provenance and checksums deterministic.
+Authoritative sources:
 
-## Scope
+- `ops/datasets/manifest.json`
+- `ops/datasets/generated/fixture-inventory.json`
 
-`ops/e2e/fixtures/README.md` and fixture lock usage.
-
-## Non-goals
-
-Does not define ingest artifact contract.
-
-## Contracts
-
-- Fixture lock is authoritative for URLs and SHA256.
-- E2E scripts must consume pinned fixture entries only.
-
-## Failure modes
-
-Unpinned fixtures introduce nondeterministic failures.
-
-## How to verify
+## Verify success
 
 ```bash
-$ make ops-fast
+make ops-datasets-fetch
 ```
 
-Expected output: fixture downloads pass checksum validation.
+Expected result: fixture fetch and checksum validation pass.
 
-## See also
+## Next
 
-- [E2E Overview](overview.md)
-- [Fixtures Reference](../../reference/fixtures/index.md)
-- [Contracts Artifacts](../../reference/contracts/artifacts/index.md)
+- [Dataset Workflow](../dataset-workflow.md)
+- [Fixture Dataset Ingest](../fixture-dataset-ingest.md)
