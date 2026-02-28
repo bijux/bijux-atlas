@@ -69,7 +69,14 @@ fn severity_label(severity: &str) -> &'static str {
     }
 }
 
-fn render_canonical_contract_doc(domain: &ContractDocDomain, contracts: &[Contract]) -> String {
+fn render_canonical_contract_doc(
+    repo_root: &std::path::Path,
+    domain: &ContractDocDomain,
+    contracts: &[Contract],
+) -> String {
+    if domain.name == "docker" {
+        return super::docker::render_contract_markdown(repo_root).unwrap_or_default();
+    }
     let mut rows = contracts.iter().collect::<Vec<_>>();
     rows.sort_by(|a, b| a.id.0.cmp(&b.id.0));
     let mut out = String::new();
@@ -158,7 +165,7 @@ fn test_root_041_contract_docs_canonical_template(ctx: &RunContext) -> TestResul
                 continue;
             }
         };
-        let expected = render_canonical_contract_doc(&domain, &contracts);
+        let expected = render_canonical_contract_doc(&ctx.repo_root, &domain, &contracts);
         let actual = match read_root_text(
             ctx,
             domain.file,

@@ -442,17 +442,20 @@ mod tests {
     use super::*;
 
     fn repo_root() -> std::path::PathBuf {
-        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        let manifest_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let workspace = manifest_dir
             .parent()
-            .expect("workspace")
+            .unwrap_or_else(|| panic!("missing workspace root from {}", manifest_dir.display()));
+        workspace
             .parent()
-            .expect("repo")
+            .unwrap_or_else(|| panic!("missing repo root from {}", workspace.display()))
             .to_path_buf()
     }
 
     #[test]
     fn registry_index_parses_and_exposes_groups() {
-        let index = registry_index(&repo_root()).expect("registry");
+        let index = registry_index(&repo_root())
+            .unwrap_or_else(|err| panic!("registry index parse failed: {err}"));
         assert_eq!(index.registry.schema_version, 1);
         assert!(index
             .registry
@@ -473,10 +476,14 @@ mod tests {
     #[test]
     fn generated_index_render_is_stable() {
         let root = repo_root();
-        let first = generated_index_json(&root).expect("first");
-        let second = generated_index_json(&root).expect("second");
+        let first = generated_index_json(&root)
+            .unwrap_or_else(|err| panic!("first generated index render failed: {err}"));
+        let second = generated_index_json(&root)
+            .unwrap_or_else(|err| panic!("second generated index render failed: {err}"));
         assert_eq!(first, second);
-        let groups = first["groups"].as_array().expect("groups");
+        let groups = first["groups"]
+            .as_array()
+            .unwrap_or_else(|| panic!("groups array missing from generated index"));
         assert!(!groups.is_empty());
     }
 
@@ -498,8 +505,8 @@ mod tests {
 
     #[test]
     fn explain_payload_returns_group_metadata() {
-        let payload =
-            explain_payload(&repo_root(), "configs/rust/rustfmt.toml").expect("explain payload");
+        let payload = explain_payload(&repo_root(), "configs/rust/rustfmt.toml")
+            .unwrap_or_else(|err| panic!("explain payload failed: {err}"));
         assert_eq!(payload["group"].as_str(), Some("rust"));
         assert_eq!(payload["visibility"].as_str(), Some("public"));
         assert_eq!(payload["owner"].as_str(), Some("rust-foundation"));
@@ -512,7 +519,7 @@ mod tests {
     #[test]
     fn explain_payload_returns_schema_for_json_file() {
         let payload = explain_payload(&repo_root(), "configs/inventory/configs.json")
-            .expect("explain payload");
+            .unwrap_or_else(|err| panic!("explain payload failed: {err}"));
         assert_eq!(
             payload["schema"].as_str(),
             Some("configs/contracts/inventory-configs.schema.json")
@@ -521,10 +528,11 @@ mod tests {
 
     #[test]
     fn contract_surface_registry_parses_and_covers_cfg_ids() {
-        let surface = read_contract_surface(&repo_root()).expect("contract surface");
+        let surface = read_contract_surface(&repo_root())
+            .unwrap_or_else(|err| panic!("contract surface parse failed: {err}"));
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 39);
+        assert_eq!(surface.contracts.len(), 41);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -534,8 +542,9 @@ mod tests {
 
     #[test]
     fn cfg_contract_coverage_payload_is_stable() {
-        let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
-        assert_eq!(payload["contract_count"].as_u64(), Some(39));
+        let payload = cfg_contract_coverage_payload(&repo_root())
+            .unwrap_or_else(|err| panic!("coverage payload failed: {err}"));
+        assert_eq!(payload["contract_count"].as_u64(), Some(41));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());

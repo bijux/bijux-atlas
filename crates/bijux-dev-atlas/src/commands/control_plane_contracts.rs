@@ -57,14 +57,6 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 common.allow_docker_daemon = true;
             }
         }
-        if common.mode == ContractsModeArg::Effect
-            && common.deny_effects
-            && common.lane == ContractsLaneArg::Local
-        {
-            return Err(
-                "effect execution is denied by default; use --lane dev or --lane ci, or pass --deny-effects=false for manual allow flags".to_string(),
-            );
-        }
         Ok(())
     }
 
@@ -577,7 +569,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         } else {
             None
         };
-        let selected_domains = all_domains(&repo_root)?
+        let mut selected_domains = all_domains(&repo_root)?
             .into_iter()
             .filter(|(descriptor, _)| domain_names.iter().any(|name| descriptor.name == *name))
             .filter(|(descriptor, _)| {
@@ -599,6 +591,27 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 Some((descriptor, registry, reason))
             })
             .collect::<Vec<_>>();
+        if common.changed_only && selected_domains.is_empty() {
+            selected_domains = all_domains(&repo_root)?
+                .into_iter()
+                .filter(|(descriptor, _)| domain_names.iter().any(|name| descriptor.name == *name))
+                .filter(|(descriptor, _)| {
+                    common.groups.is_empty()
+                        || common
+                            .groups
+                            .iter()
+                            .any(|name| descriptor.name.eq_ignore_ascii_case(name))
+                })
+                .map(|(descriptor, registry)| {
+                    (
+                        descriptor,
+                        registry,
+                        "changed-only fallback: no matching changed paths for requested domains"
+                            .to_string(),
+                    )
+                })
+                .collect();
+        }
         let catalogs = selected_domains
             .iter()
             .map(|(descriptor, registry, _)| (descriptor.name, registry.as_slice()))

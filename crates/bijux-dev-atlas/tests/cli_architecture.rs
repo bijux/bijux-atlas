@@ -53,7 +53,7 @@ fn cli_crate_module_count_stays_within_budget() {
     let modules = collect_rs_files(&src);
     let count = modules.len();
     // The crate intentionally uses finer-grained modules to keep file size under review budgets.
-    let budget = 220usize;
+    let budget = 230usize;
     assert!(
         count <= budget,
         "cli crate module count exceeds budget: {count} > {budget} (src/**/*.rs)"

@@ -139,7 +139,8 @@ pub fn list_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
         "kind": "configs",
         "registry_path": REGISTRY_PATH,
         "contract_surface": contract_surface,
-        "groups": rows
+        "groups": rows.clone(),
+        "rows": rows
     }))
 }
 
