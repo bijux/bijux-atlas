@@ -16,68 +16,46 @@ contracts-help: ## Show contracts gate targets
 
 contracts: _contracts_guard ## Run all contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts all running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-fast: _contracts_guard ## Run static-only contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-fast running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-changed: _contracts_guard ## Run changed-only contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --changed-only --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --changed-only --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-changed running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --changed-only --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-json: _contracts_guard ## Run all contracts and emit json
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-json running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode static --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-ci: _contracts_guard ## Run strict CI contracts lane
 	@printf '%s\n' "run: CI=1 $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@CI=1 $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-ci running"; sleep 10; done; \
-	wait $$pid
+	@CI=1 $(CONTRACTS_DEV_ATLAS_BIN) contracts all --mode effect --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format json --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-root: _contracts_guard ## Run root contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts root --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts root --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-root running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts root --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-configs: _contracts_guard ## Run configs contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts configs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts configs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-configs running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts configs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-docs: _contracts_guard ## Run docs contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts docs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts docs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-docs running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts docs --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-docker: _contracts_guard ## Run docker contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts docker --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts docker --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-docker running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts docker --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-make: _contracts_guard ## Run make contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts make --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts make --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-make running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts make --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(CONTRACTS_DEV_ATLAS_BIN) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
-	@$(CONTRACTS_DEV_ATLAS_BIN) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT) & pid=$$!; \
-	while kill -0 $$pid >/dev/null 2>&1; do printf '%s\n' "progress: contracts-ops running"; sleep 10; done; \
-	wait $$pid
+	@$(CONTRACTS_DEV_ATLAS_BIN) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
 .PHONY: _contracts_guard contracts-help contracts contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-docs contracts-docker contracts-make contracts-ops
