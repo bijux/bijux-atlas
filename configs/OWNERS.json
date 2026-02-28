@@ -1,5 +1,4 @@
 {
-  "schema_version": 1,
   "groups": {
     "ci": "platform",
     "docs": "docs-governance",
@@ -16,5 +15,6 @@
     "schema": "platform",
     "security": "security",
     "slo": "bijux-atlas-operations"
-  }
+  },
+  "schema_version": 1
 }

@@ -1,25 +1,22 @@
 {
-  "schema_version": 1,
   "files": {
     "configs/CONSUMERS.json": "configs/schema/configs-consumer-map.schema.json",
-    "configs/configs.contracts.json": "configs/schema/configs-contracts.schema.json",
     "configs/OWNERS.json": "configs/schema/configs-owner-map.schema.json",
     "configs/SCHEMAS.json": "configs/schema/configs-schema-map.schema.json",
-    "configs/inventory.json": "configs/contracts/inventory-configs.schema.json",
+    "configs/_generated/configs-index.json": "configs/schema/configs-index.schema.json",
     "configs/ci/env-contract.json": "configs/contracts/env.schema.json",
     "configs/ci/lanes.json": "configs/contracts/inventory-commands.schema.json",
-    "configs/docs/.markdownlint-cli2.jsonc": "configs/contracts/inventory-configs.schema.json",
+    "configs/configs.contracts.json": "configs/schema/configs-contracts.schema.json",
     "configs/docs/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/docs/*.jsonc": "configs/contracts/inventory-configs.schema.json",
+    "configs/docs/.markdownlint-cli2.jsonc": "configs/contracts/inventory-configs.schema.json",
+    "configs/gates/*.json": "configs/contracts/inventory-commands.schema.json",
+    "configs/inventory.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/configs.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/consumers.json": "configs/schema/configs-consumer-map.schema.json",
     "configs/inventory/groups.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/owners.json": "configs/contracts/inventory-owners.schema.json",
-    "configs/_generated/configs-index.json": "configs/schema/configs-index.schema.json",
     "configs/layout/*.json": "configs/contracts/inventory-budgets.schema.json",
-    "configs/repo/*.json": "configs/schema/public-surface.schema.json",
-    "configs/gates/*.json": "configs/contracts/inventory-commands.schema.json",
-    "configs/product/*.json": "configs/product/artifact-manifest.schema.json",
     "configs/make/*.json": "configs/contracts/inventory-make.schema.json",
     "configs/meta/*.json": "configs/schema/meta-ownership.schema.json",
     "configs/openapi/**/*.json": "configs/schema/public-surface.schema.json",
@@ -27,7 +24,10 @@
     "configs/ops/*/*.json": "configs/contracts/inventory-ops.schema.json",
     "configs/perf/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/policy/*.json": "configs/policy/policy.schema.json",
+    "configs/product/*.json": "configs/product/artifact-manifest.schema.json",
+    "configs/repo/*.json": "configs/schema/public-surface.schema.json",
     "configs/rust/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/slo/*.json": "configs/contracts/inventory-configs.schema.json"
-  }
+  },
+  "schema_version": 1
 }
