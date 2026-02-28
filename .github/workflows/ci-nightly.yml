@@ -70,13 +70,14 @@ jobs:
           cp make/target-list.json "${report_root}/make-target-list.json"
           cargo run -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts make --mode static --format text --artifacts-root "${contracts_root}" > "${contracts_root}/make-static.txt" 2> "${logs_root}/make-contracts-static.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- contracts ops --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/ops-static.json" 2> "${logs_root}/ops-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts docker --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/docker-static.json" 2> "${logs_root}/docker-contracts-static.stderr.log"
           ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make docker-contracts-effect > "${logs_root}/docker-contracts-effect.stdout.log" 2> "${logs_root}/docker-contracts-effect.stderr.log"
           make ops-contracts-effect > "${logs_root}/ops-contracts-effect.stdout.log" 2> "${logs_root}/ops-contracts-effect.stderr.log"
           make ops-nightly > "${report_root}/ci-nightly.json" 2> "${logs_root}/ci-nightly.stderr.log"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-nightly.json"
-          printf "- lane: ci-nightly\n- report: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts docker static: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
-            "${report_root}/ci-nightly.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/docker-static.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          printf "- lane: ci-nightly\n- report: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/ci-nightly.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
