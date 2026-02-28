@@ -1,4 +1,4 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 17] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 18] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
@@ -16,6 +16,7 @@ const ROOT_ALLOWED_VISIBLE: [&str; 17] = [
     "configs",
     "crates",
     "docker",
+    "root-surface.json",
 ];
 
 const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] = ["docs", "make", "mkdocs.yml", "ops", "rust-toolchain.toml"];
@@ -162,6 +163,36 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: ".gitignore does not hide tracked contract outputs",
                 kind: TestKind::Pure,
                 run: test_root_014_gitignore_tracked_contract_outputs,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-016".to_string()),
+            title: "repo root keeps a machine-readable surface manifest",
+            tests: vec![TestCase {
+                id: TestId("root.surface.manifest_complete".to_string()),
+                title: "root surface manifest matches the sealed root surface",
+                kind: TestKind::Pure,
+                run: test_root_016_surface_manifest_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-027".to_string()),
+            title: "root surface manifest declares the configs and ops ssot roots",
+            tests: vec![TestCase {
+                id: TestId("root.surface.ssot_roots".to_string()),
+                title: "root surface manifest names configs and ops as ssot roots",
+                kind: TestKind::Pure,
+                run: test_root_027_manifest_ssot_roots,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-028".to_string()),
+            title: "root surface manifest keeps docs under contract governance",
+            tests: vec![TestCase {
+                id: TestId("root.surface.docs_governed".to_string()),
+                title: "root surface manifest names docs as a governed root",
+                kind: TestKind::Pure,
+                run: test_root_028_manifest_docs_governed,
             }],
         },
         Contract {

@@ -25,6 +25,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-012" => "CONTRIBUTING.md must point contributors to `bijux dev atlas` as the canonical control plane.".to_string(),
         "ROOT-013" => "CHANGELOG.md must include a versioned release header.".to_string(),
         "ROOT-014" => "The root .gitignore may not hide tracked contract outputs.".to_string(),
+        "ROOT-016" => "The sealed repo root must be described by a committed root-surface.json manifest that matches the actual root surface.".to_string(),
+        "ROOT-027" => "The root surface manifest must declare configs and ops as SSOT roots.".to_string(),
+        "ROOT-028" => "The root surface manifest must declare docs as a governed root and docs/ must exist.".to_string(),
         "ROOT-021" => "The repo root must keep `.editorconfig` so shared formatting contracts have a single source.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts root`.".to_string(),
     }

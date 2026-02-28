@@ -478,6 +478,173 @@ fn test_root_014_gitignore_tracked_contract_outputs(ctx: &RunContext) -> TestRes
     }
 }
 
+fn root_surface_manifest(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<serde_json::Value, TestResult> {
+    let contents = match read_root_text(ctx, "root-surface.json", contract_id, test_id) {
+        Ok(contents) => contents,
+        Err(result) => return Err(result),
+    };
+    serde_json::from_str(&contents).map_err(|err| {
+        TestResult::Fail(vec![Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("root-surface.json".to_string()),
+            line: None,
+            message: format!("invalid json: {err}"),
+            evidence: None,
+        }])
+    })
+}
+
+fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
+    let payload = match root_surface_manifest(ctx, "ROOT-016", "root.surface.manifest_complete") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let entries = match payload["entries"].as_object() {
+        Some(entries) => entries,
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-016".to_string(),
+                test_id: "root.surface.manifest_complete".to_string(),
+                file: Some("root-surface.json".to_string()),
+                line: None,
+                message: "`entries` object is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let expected = ROOT_ALLOWED_VISIBLE
+        .iter()
+        .chain(ROOT_ALLOWED_VISIBLE_TAIL.iter())
+        .map(|value| (*value).to_string())
+        .collect::<std::collections::BTreeSet<_>>();
+    let manifest_entries = entries.keys().cloned().collect::<std::collections::BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for name in expected.difference(&manifest_entries) {
+        push_root_violation(
+            &mut violations,
+            "ROOT-016",
+            "root.surface.manifest_complete",
+            Some(name.clone()),
+            "sealed root entry is missing from root-surface.json",
+        );
+    }
+    for name in manifest_entries.difference(&expected) {
+        push_root_violation(
+            &mut violations,
+            "ROOT-016",
+            "root.surface.manifest_complete",
+            Some(name.clone()),
+            "root-surface.json references an undeclared root entry",
+        );
+    }
+    for name in manifest_entries {
+        let path = ctx.repo_root.join(&name);
+        if !path.exists() {
+            push_root_violation(
+                &mut violations,
+                "ROOT-016",
+                "root.surface.manifest_complete",
+                Some(name),
+                "root-surface.json references a missing repo root entry",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_027_manifest_ssot_roots(ctx: &RunContext) -> TestResult {
+    let payload = match root_surface_manifest(ctx, "ROOT-027", "root.surface.ssot_roots") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let ssot_roots = match payload["ssot_roots"].as_array() {
+        Some(values) => values
+            .iter()
+            .filter_map(|value| value.as_str())
+            .collect::<std::collections::BTreeSet<_>>(),
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-027".to_string(),
+                test_id: "root.surface.ssot_roots".to_string(),
+                file: Some("root-surface.json".to_string()),
+                line: None,
+                message: "`ssot_roots` array is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let mut violations = Vec::new();
+    for required in ["configs", "ops"] {
+        if !ssot_roots.contains(required) {
+            push_root_violation(
+                &mut violations,
+                "ROOT-027",
+                "root.surface.ssot_roots",
+                Some("root-surface.json".to_string()),
+                format!("missing ssot root declaration: {required}"),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_028_manifest_docs_governed(ctx: &RunContext) -> TestResult {
+    let payload = match root_surface_manifest(ctx, "ROOT-028", "root.surface.docs_governed") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let ssot_roots = match payload["ssot_roots"].as_array() {
+        Some(values) => values
+            .iter()
+            .filter_map(|value| value.as_str())
+            .collect::<std::collections::BTreeSet<_>>(),
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-028".to_string(),
+                test_id: "root.surface.docs_governed".to_string(),
+                file: Some("root-surface.json".to_string()),
+                line: None,
+                message: "`ssot_roots` array is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let mut violations = Vec::new();
+    if !ctx.repo_root.join("docs").is_dir() {
+        push_root_violation(
+            &mut violations,
+            "ROOT-028",
+            "root.surface.docs_governed",
+            Some("docs".to_string()),
+            "docs/ must exist at the repo root",
+        );
+    }
+    if !ssot_roots.contains("docs") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-028",
+            "root.surface.docs_governed",
+            Some("root-surface.json".to_string()),
+            "docs must be declared as a governed root in ssot_roots",
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_root_021_editorconfig_exists(ctx: &RunContext) -> TestResult {
     if ctx.repo_root.join(".editorconfig").is_file() {
         TestResult::Pass
