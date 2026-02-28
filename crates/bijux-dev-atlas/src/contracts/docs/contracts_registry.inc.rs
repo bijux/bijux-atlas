@@ -171,5 +171,45 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_012_root_entrypoint_links_resolve,
             }],
         },
+        Contract {
+            id: ContractId("DOC-013".to_string()),
+            title: "docs entrypoint pages declare owner metadata",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.entrypoint_owner".to_string()),
+                title: "docs entrypoint pages include a non-empty owner field",
+                kind: TestKind::Pure,
+                run: test_docs_013_entrypoint_owner,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-014".to_string()),
+            title: "docs entrypoint page stability values stay normalized",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.entrypoint_stability".to_string()),
+                title: "docs entrypoint pages use only approved stability values when declared",
+                kind: TestKind::Pure,
+                run: test_docs_014_entrypoint_stability,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-015".to_string()),
+            title: "deprecated docs entrypoints name a replacement path",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.deprecated_replacement".to_string()),
+                title: "deprecated docs entrypoint pages include replacement guidance",
+                kind: TestKind::Pure,
+                run: test_docs_015_deprecated_replacement,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-016".to_string()),
+            title: "docs section entrypoint owners align with the owner registry",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.section_owner_alignment".to_string()),
+                title: "required section index pages use the owner declared in docs/owners.json",
+                kind: TestKind::Pure,
+                run: test_docs_016_section_owner_alignment,
+            }],
+        },
     ])
 }

@@ -23,6 +23,10 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-010" => "Each top-level docs section must either require or forbid INDEX.md exactly as declared in docs/sections.json.".to_string(),
         "DOC-011" => "Links inside top-level section INDEX.md files must resolve to real repo files.".to_string(),
         "DOC-012" => "Links inside the docs root entrypoint pages must resolve to real repo files.".to_string(),
+        "DOC-013" => "The current docs entrypoint pages must declare a non-empty `- Owner:` metadata line near the top.".to_string(),
+        "DOC-014" => "When entrypoint pages declare stability metadata, it must use only the approved normalized values.".to_string(),
+        "DOC-015" => "Deprecated docs entrypoint pages must point readers to a replacement page.".to_string(),
+        "DOC-016" => "Each required section INDEX.md must use the owner declared for that section in docs/owners.json.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

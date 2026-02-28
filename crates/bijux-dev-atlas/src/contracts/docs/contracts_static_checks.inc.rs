@@ -2,6 +2,81 @@ fn docs_root_path(ctx: &RunContext) -> std::path::PathBuf {
     ctx.repo_root.join("docs")
 }
 
+fn parse_docs_field(contents: &str, labels: &[&str]) -> Option<String> {
+    for line in contents.lines().take(12) {
+        let trimmed = line.trim();
+        for label in labels {
+            let prefix = format!("- {label}:");
+            if let Some(value) = trimmed.strip_prefix(&prefix) {
+                let normalized = value.trim().trim_matches('`').trim().to_string();
+                if !normalized.is_empty() {
+                    return Some(normalized);
+                }
+            }
+        }
+    }
+    None
+}
+
+fn docs_section_owners_payload(
+    ctx: &RunContext,
+    contract_id: &str,
+    test_id: &str,
+) -> Result<serde_json::Value, TestResult> {
+    let owners_path = docs_root_path(ctx).join("owners.json");
+    let contents = match std::fs::read_to_string(&owners_path) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return Err(TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("docs/owners.json".to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]))
+        }
+    };
+    match serde_json::from_str(&contents) {
+        Ok(payload) => Ok(payload),
+        Err(err) => Err(TestResult::Fail(vec![Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("docs/owners.json".to_string()),
+            line: None,
+            message: format!("invalid json: {err}"),
+            evidence: None,
+        }])),
+    }
+}
+
+fn docs_entrypoint_pages(ctx: &RunContext) -> Result<Vec<(String, bool)>, TestResult> {
+    let mut pages = vec![("docs/index.md".to_string(), true)];
+    let sections_payload = docs_sections_payload(ctx, "DOC-013", "docs.metadata.entrypoint_owner")?;
+    let sections = match sections_payload["sections"].as_object() {
+        Some(map) => map,
+        None => {
+            return Err(TestResult::Fail(vec![Violation {
+                contract_id: "DOC-013".to_string(),
+                test_id: "docs.metadata.entrypoint_owner".to_string(),
+                file: Some("docs/sections.json".to_string()),
+                line: None,
+                message: "`sections` object is required".to_string(),
+                evidence: None,
+            }]))
+        }
+    };
+    let mut section_names = sections.keys().cloned().collect::<Vec<_>>();
+    section_names.sort();
+    for name in section_names {
+        let requires_index = sections[&name]["requires_index"].as_bool().unwrap_or(false);
+        if requires_index {
+            pages.push((format!("docs/{name}/INDEX.md"), false));
+        }
+    }
+    Ok(pages)
+}
+
 fn push_docs_violation(
     violations: &mut Vec<Violation>,
     contract_id: &str,
@@ -210,32 +285,9 @@ fn test_docs_007_allowed_root_files(ctx: &RunContext) -> TestResult {
 }
 
 fn test_docs_008_section_owner_coverage(ctx: &RunContext) -> TestResult {
-    let owners_path = docs_root_path(ctx).join("owners.json");
-    let contents = match std::fs::read_to_string(&owners_path) {
-        Ok(contents) => contents,
-        Err(err) => {
-            return TestResult::Fail(vec![Violation {
-                contract_id: "DOC-008".to_string(),
-                test_id: "docs.owners.section_coverage".to_string(),
-                file: Some("docs/owners.json".to_string()),
-                line: None,
-                message: format!("read failed: {err}"),
-                evidence: None,
-            }])
-        }
-    };
-    let payload: serde_json::Value = match serde_json::from_str(&contents) {
+    let payload = match docs_section_owners_payload(ctx, "DOC-008", "docs.owners.section_coverage") {
         Ok(payload) => payload,
-        Err(err) => {
-            return TestResult::Fail(vec![Violation {
-                contract_id: "DOC-008".to_string(),
-                test_id: "docs.owners.section_coverage".to_string(),
-                file: Some("docs/owners.json".to_string()),
-                line: None,
-                message: format!("invalid json: {err}"),
-                evidence: None,
-            }])
-        }
+        Err(result) => return result,
     };
     let section_map = match payload["section_owners"].as_object() {
         Some(map) => map,
@@ -435,6 +487,213 @@ fn test_docs_010_section_index_policy(ctx: &RunContext) -> TestResult {
                     "section forbids INDEX.md but the file exists".to_string()
                 },
             );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_013_entrypoint_owner(ctx: &RunContext) -> TestResult {
+    let pages = match docs_entrypoint_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for (relative, _) in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-013",
+                    "docs.metadata.entrypoint_owner",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        if parse_docs_field(&contents, &["Owner"]).is_none() {
+            push_docs_violation(
+                &mut violations,
+                "DOC-013",
+                "docs.metadata.entrypoint_owner",
+                Some(relative),
+                "docs entrypoint page must declare `- Owner:` metadata near the top",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_014_entrypoint_stability(ctx: &RunContext) -> TestResult {
+    let pages = match docs_entrypoint_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let allowed = ["stable", "evolving", "deprecated"];
+    let mut violations = Vec::new();
+    for (relative, _) in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-014",
+                    "docs.metadata.entrypoint_stability",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        if let Some(value) = parse_docs_field(&contents, &["Stability", "Status"]) {
+            if !allowed.iter().any(|candidate| *candidate == value) {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-014",
+                    "docs.metadata.entrypoint_stability",
+                    Some(relative),
+                    format!("unsupported stability value: {value}"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_015_deprecated_replacement(ctx: &RunContext) -> TestResult {
+    let pages = match docs_entrypoint_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for (relative, _) in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-015",
+                    "docs.metadata.deprecated_replacement",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let is_deprecated = parse_docs_field(&contents, &["Stability", "Status"]).as_deref() == Some("deprecated");
+        if is_deprecated {
+            let lowered = contents.to_lowercase();
+            if !lowered.contains("replacement") && !lowered.contains("canonical page") {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-015",
+                    "docs.metadata.deprecated_replacement",
+                    Some(relative),
+                    "deprecated docs entrypoint page must name a replacement path",
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
+    let owners_payload = match docs_section_owners_payload(ctx, "DOC-016", "docs.metadata.section_owner_alignment") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let section_owners = match owners_payload["section_owners"].as_object() {
+        Some(map) => map,
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-016".to_string(),
+                test_id: "docs.metadata.section_owner_alignment".to_string(),
+                file: Some("docs/owners.json".to_string()),
+                line: None,
+                message: "`section_owners` object is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let pages = match docs_entrypoint_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for (relative, is_root_entrypoint) in pages {
+        if is_root_entrypoint {
+            continue;
+        }
+        let section = relative
+            .trim_start_matches("docs/")
+            .split('/')
+            .next()
+            .unwrap_or_default()
+            .to_string();
+        let expected = match section_owners.get(&section).and_then(|value| value.as_str()) {
+            Some(value) if !value.is_empty() => value,
+            _ => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-016",
+                    "docs.metadata.section_owner_alignment",
+                    Some("docs/owners.json".to_string()),
+                    format!("missing section owner mapping for {section}"),
+                );
+                continue;
+            }
+        };
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-016",
+                    "docs.metadata.section_owner_alignment",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let actual = parse_docs_field(&contents, &["Owner"]);
+        match actual.as_deref() {
+            Some(value) if value == expected => {}
+            Some(value) => push_docs_violation(
+                &mut violations,
+                "DOC-016",
+                "docs.metadata.section_owner_alignment",
+                Some(relative),
+                format!("entrypoint owner `{value}` does not match docs/owners.json `{expected}`"),
+            ),
+            None => push_docs_violation(
+                &mut violations,
+                "DOC-016",
+                "docs.metadata.section_owner_alignment",
+                Some(relative),
+                "docs entrypoint page must declare `- Owner:` metadata near the top",
+            ),
         }
     }
     if violations.is_empty() {
