@@ -245,5 +245,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_root_021_editorconfig_exists,
             }],
         },
+        Contract {
+            id: ContractId("ROOT-023".to_string()),
+            title: "root readme keeps the canonical entrypoint sections",
+            tests: vec![TestCase {
+                id: TestId("root.readme.entrypoint_sections".to_string()),
+                title: "README.md keeps the required top-level entrypoint sections",
+                kind: TestKind::Pure,
+                run: test_root_023_readme_entrypoint_sections,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-024".to_string()),
+            title: "root docs avoid legacy control-plane references",
+            tests: vec![TestCase {
+                id: TestId("root.docs.no_legacy_links".to_string()),
+                title: "root docs do not reference deleted legacy control-plane surfaces",
+                kind: TestKind::Pure,
+                run: test_root_024_docs_no_legacy_links,
+            }],
+        },
     ])
 }

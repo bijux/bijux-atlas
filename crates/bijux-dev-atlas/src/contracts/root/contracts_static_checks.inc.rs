@@ -831,3 +831,61 @@ fn test_root_021_editorconfig_exists(ctx: &RunContext) -> TestResult {
         }])
     }
 }
+
+fn test_root_023_readme_entrypoint_sections(ctx: &RunContext) -> TestResult {
+    let contents = match read_root_text(ctx, "README.md", "ROOT-023", "root.readme.entrypoint_sections") {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for required_heading in [
+        "## Product Narrative",
+        "## Quick Start",
+        "## Documentation Entrypoints",
+        "## Repository Surfaces",
+    ] {
+        if !contents.contains(required_heading) {
+            push_root_violation(
+                &mut violations,
+                "ROOT-023",
+                "root.readme.entrypoint_sections",
+                Some("README.md".to_string()),
+                format!("missing required README section: {required_heading}"),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_024_docs_no_legacy_links(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let root_docs = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md"];
+    let forbidden_patterns = [("scripts/", "legacy scripts directory reference"), ("xtask", "legacy xtask reference")];
+    for relative in root_docs {
+        let contents = match read_root_text(ctx, relative, "ROOT-024", "root.docs.no_legacy_links") {
+            Ok(contents) => contents,
+            Err(result) => return result,
+        };
+        for (pattern, message) in forbidden_patterns {
+            if contents.contains(pattern) {
+                push_root_violation(
+                    &mut violations,
+                    "ROOT-024",
+                    "root.docs.no_legacy_links",
+                    Some(relative.to_string()),
+                    format!("{message}: `{pattern}`"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

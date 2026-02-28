@@ -33,6 +33,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-027" => "The root surface manifest must declare configs and ops as SSOT roots.".to_string(),
         "ROOT-028" => "The root surface manifest must declare docs as a governed root and docs/ must exist.".to_string(),
         "ROOT-021" => "The repo root must keep `.editorconfig` so shared formatting contracts have a single source.".to_string(),
+        "ROOT-023" => "README.md must keep the canonical root entrypoint sections so the root surface remains navigable and stable.".to_string(),
+        "ROOT-024" => "Root documentation files may not reference deleted legacy control-plane surfaces such as `scripts/` or `xtask`.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts root`.".to_string(),
     }
 }
