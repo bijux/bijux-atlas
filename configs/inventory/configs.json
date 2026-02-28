@@ -265,7 +265,9 @@
       "internal_files": [
         "configs/contracts/*.json"
       ],
-      "generated_files": [],
+      "generated_files": [
+        "configs/schema/generated/*.json"
+      ],
       "schemas": [
         "configs/schema/*.json",
         "configs/contracts/*.json"

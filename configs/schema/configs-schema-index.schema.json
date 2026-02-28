@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "schema_map_path",
+    "input_schemas",
+    "output_schemas",
+    "referenced_schemas",
+    "orphan_input_schemas",
+    "mapped_file_patterns"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "kind": { "const": "configs-schema-index" },
+    "schema_map_path": { "type": "string", "minLength": 1 },
+    "input_schemas": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "output_schemas": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "referenced_schemas": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "orphan_input_schemas": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "mapped_file_patterns": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "additionalProperties": false
+}

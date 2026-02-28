@@ -396,10 +396,10 @@
     },
     {
       "counts": {
-        "covered": 38,
-        "generated": 0,
+        "covered": 40,
+        "generated": 1,
         "internal": 21,
-        "public": 17,
+        "public": 18,
         "schemas": 2
       },
       "files": [
@@ -430,8 +430,10 @@
         "configs/schema/configs-index.schema.json",
         "configs/schema/configs-owner-map.schema.json",
         "configs/schema/configs-ownership.schema.json",
+        "configs/schema/configs-schema-index.schema.json",
         "configs/schema/configs-schema-map.schema.json",
         "configs/schema/forbidden-adjectives-approvals.schema.json",
+        "configs/schema/generated/schema-index.json",
         "configs/schema/hpa-safety-caps.schema.json",
         "configs/schema/layer-live-diff-allowlist.schema.json",
         "configs/schema/layer-relaxations.schema.json",

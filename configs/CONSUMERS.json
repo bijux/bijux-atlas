@@ -137,6 +137,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/schema/generated/*.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/security/*.toml": [
       "ci"
     ],

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
@@ -471,7 +471,71 @@ pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
     let payload = generated_index_json(repo_root)?;
     std::fs::write(
         &path,
+        canonical_json_string(&payload)
+            .map_err(|err| format!("encode {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    Ok(path.display().to_string())
+}
+
+fn schema_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
+    let schemas = read_schemas(repo_root)?;
+    let input_schemas = walk_files_under(&repo_root.join("configs/schema"))
+        .into_iter()
+        .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("json"))
+        .filter_map(|path| {
+            let rel = path
+                .strip_prefix(repo_root)
+                .ok()?
+                .display()
+                .to_string()
+                .replace('\\', "/");
+            if rel.starts_with("configs/schema/generated/") {
+                None
+            } else {
+                Some(rel)
+            }
+        })
+        .collect::<BTreeSet<_>>();
+    let output_schemas = walk_files_under(&repo_root.join("configs/contracts"))
+        .into_iter()
+        .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("json"))
+        .filter_map(|path| {
+            path.strip_prefix(repo_root)
+                .ok()
+                .map(|rel| rel.display().to_string().replace('\\', "/"))
+        })
+        .collect::<BTreeSet<_>>();
+    let referenced = schemas.files.values().cloned().collect::<BTreeSet<_>>();
+    let orphan_inputs = input_schemas
+        .iter()
+        .filter(|path| !referenced.contains(*path))
+        .cloned()
+        .collect::<Vec<_>>();
+    let patterns = schemas.files.keys().cloned().collect::<Vec<_>>();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "configs-schema-index",
+        "schema_map_path": SCHEMAS_PATH,
+        "input_schemas": input_schemas,
+        "output_schemas": output_schemas,
+        "referenced_schemas": referenced,
+        "orphan_input_schemas": orphan_inputs,
+        "mapped_file_patterns": patterns
+    }))
+}
+
+pub fn ensure_generated_schema_index(repo_root: &Path) -> Result<String, String> {
+    let path = repo_root.join("configs/schema/generated/schema-index.json");
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+    }
+    let payload = schema_index_json(repo_root)?;
+    std::fs::write(
+        &path,
         serde_json::to_string_pretty(&payload)
+            .map(|text| format!("{text}\n"))
             .map_err(|err| format!("encode {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("write {} failed: {err}", path.display()))?;
@@ -597,6 +661,24 @@ fn parse_supported_config_file(path: &Path) -> Result<(), String> {
         _ => {}
     }
     Ok(())
+}
+
+fn walk_files_under(root: &Path) -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    let entries = match std::fs::read_dir(root) {
+        Ok(entries) => entries,
+        Err(_) => return out,
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            out.extend(walk_files_under(&path));
+        } else {
+            out.push(path);
+        }
+    }
+    out.sort();
+    out
 }
 
 fn root_config_files(index: &RegistryIndex) -> BTreeSet<String> {
@@ -967,7 +1049,10 @@ fn test_configs_009_generated_boundary(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for group in &index.registry.groups {
         for pattern in &group.generated_files {
-            if !pattern.contains("/_generated/") && !pattern.contains("/_generated.") {
+            if !pattern.contains("/_generated/")
+                && !pattern.contains("/_generated.")
+                && !pattern.contains("/schema/generated/")
+            {
                 violations.push(violation(
                     "CONFIGS-009",
                     "configs.generated.authored_boundary",
@@ -985,7 +1070,10 @@ fn test_configs_009_generated_boundary(ctx: &RunContext) -> TestResult {
             .cloned()
             .unwrap_or_default();
         for file in files.generated {
-            if !file.contains("/_generated/") && !file.contains("/_generated.") {
+            if !file.contains("/_generated/")
+                && !file.contains("/_generated.")
+                && !file.contains("/schema/generated/")
+            {
                 violations.push(violation(
                     "CONFIGS-009",
                     "configs.generated.authored_boundary",

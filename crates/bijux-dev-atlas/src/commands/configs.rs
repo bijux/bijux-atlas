@@ -561,6 +561,8 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
                 let mut payload = contracts::configs::list_payload(&ctx.repo_root)?;
                 if common.allow_write {
                     let index_path = contracts::configs::ensure_generated_index(&ctx.repo_root)?;
+                    let schema_index_path =
+                        contracts::configs::ensure_generated_schema_index(&ctx.repo_root)?;
                     let coverage_path = contracts::configs::write_cfg_contract_coverage_artifact(
                         &ctx.repo_root,
                         &ctx.artifacts_root,
@@ -568,6 +570,7 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
                     )?;
                     payload["artifacts"] = serde_json::json!({
                         "generated_index": index_path,
+                        "schema_index": schema_index_path,
                         "cfg_contract_coverage": coverage_path
                     });
                 }
