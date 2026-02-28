@@ -1,49 +1,32 @@
-# SLO Store Backend Error Spike
+# Store Backend Error Spike
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Store Backend Error Spike events.
 
 ## Symptoms
 
-- `BijuxAtlasStoreBackendErrorSpike` firing.
-- Rapid increase in store errors impacting standard/heavy traffic.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `atlas_store_errors_total{backend}`
-- `http_requests_total{class=~"standard|heavy"}`
-- `atlas_shed_total{reason}`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Commands
+## Mitigation
 
-```bash
-make ops-drill-store-outage
-make ops-drill-toxiproxy-latency
-```
-
-## Expected outputs
-
-- Store error ratio falls below threshold.
-- API returns degrade gracefully with controlled shedding.
-
-## Mitigations
-
-- Inspect store backend health and network path latency.
-- Fail over to healthy backend/profile if available.
-- Reduce heavy request load until backend recovers.
-
-## Alerts
-
-- Primary alert: `BijuxAtlasStoreBackendErrorSpike`.
-- Dashboard: `docs/operations/observability/dashboard.md`.
-- Drill references: `make ops-drill-store-outage`, `make ops-drill-toxiproxy-latency`.
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Roll back store client config/version and retry policy changes.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Capture backend error spike source, blast radius, and corrective actions.
+- Escalate to platform owner when mitigation and rollback do not restore service.
+
+## What Changed
+
+- 2026-02-28: normalized runbook structure and canonical response flow.

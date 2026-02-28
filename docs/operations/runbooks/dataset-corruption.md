@@ -1,64 +1,32 @@
-# Runbook: Dataset Corruption
+# Dataset Corruption
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-store`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Dataset Corruption events.
 
 ## Symptoms
 
-- Repeated checksum verification failures.
-- Dataset open rejection for specific dataset id.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_errors_total`
-- `bijux_dataset_misses`
-- `bijux_store_open_p95_seconds`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Commands
+## Mitigation
 
-```bash
-$ cargo run -p bijux-atlas-cli -- atlas dataset validate --deep --dataset release=112,species=homo_sapiens,assembly=GRCh38
-$ curl -s http://127.0.0.1:8080/debug/datasets
-```
-
-## Expected outputs
-
-- Deep validate reports checksum mismatch for corrupted artifact.
-- Debug dataset view marks dataset as unavailable/quarantined.
-
-## Mitigations
-
-- Evict corrupted cache copy.
-- Re-fetch artifact and verify manifest lock.
-
-## Alerts
-
-- `BijuxAtlasStoreDownloadFailures`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Serve previous known-good dataset release.
-- Freeze publish path until integrity checks pass.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Corruption source identified.
-- Integrity controls reviewed.
-- Additional corruption tests added.
+- Escalate to platform owner when mitigation and rollback do not restore service.
 
-## See also
+## What Changed
 
-- `ops-ci`
-
-## Dashboards
-
-- [Observability Dashboard](../observability/dashboard.md)
-
-## Drills
-
-- make ops-drill-store-outage
-- make ops-drill-pod-churn
+- 2026-02-28: normalized runbook structure and canonical response flow.

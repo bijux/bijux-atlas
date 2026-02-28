@@ -1,60 +1,32 @@
-# Pod Churn Runbook
+# Pod Churn
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-operations`
-- Stability: `stable`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Pod Churn events.
 
 ## Symptoms
 
-- Elevated 5xx during reschedules/evictions.
-- Latency spikes during deployment churn.
-- Readiness flaps across replicas.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_http_requests_total` by status/route
-- `bijux_http_request_latency_p95_seconds`
-- `bijux_overload_shedding_active`
-- pod restart count and rollout status
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Dashboards
+## Mitigation
 
-- `docs/operations/observability/dashboard.md`
-- Grafana URLs via `make ops-open-grafana`
-
-## Commands
-
-1. `make ops-drill-pod-churn`
-2. `make ops-load-shedding`
-
-## Expected outputs
-
-- Cheap requests remain serviceable.
-- Non-cheap requests may shed under pressure.
-- Service returns to steady latency after churn.
-
-## Mitigations
-
-1. Increase replica floor and verify PDB/HPA settings.
-2. Reduce rollout concurrency during high traffic.
-3. Validate node-local cache profile for faster recovery.
-
-## Alerts
-
-- `BijuxAtlasHigh5xxRate`
-- `BijuxAtlasP95LatencyRegression`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-1. Roll back rollout settings to previous stable values.
-2. Re-run `make ops-drill-pod-churn` to confirm stabilization.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Capture `make ops-report` artifacts and pod events for the drill window.
-- Record peak latency and error-rate deltas during churn.
-- Track whether cheap endpoints stayed available throughout the drill.
+- Escalate to platform owner when mitigation and rollback do not restore service.
+
+## What Changed
+
+- 2026-02-28: normalized runbook structure and canonical response flow.

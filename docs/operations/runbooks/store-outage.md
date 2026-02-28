@@ -1,71 +1,32 @@
-# Runbook: Store Outage
+# Store Outage
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-server`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Store Outage events.
 
 ## Symptoms
 
-- Rising 5xx on uncached dataset opens.
-- Dataset download failures.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_store_download_p95_seconds`
-- `bijux_store_breaker_open`
-- `bijux_http_requests_total`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Dashboard Panels
+## Mitigation
 
-- `Store Open/Download p95`
-- `Dataset Cache Hit/Miss`
-- `HTTP Request Rate by Route/Status`
-
-## Commands
-
-```bash
-$ make e2e-perf
-$ curl -s http://127.0.0.1:8080/readyz
-```
-
-## Expected outputs
-
-- `readyz` indicates degraded/not-ready when store is unavailable.
-- Perf run shows cached-only behavior preserving cheap query availability.
-
-## Mitigations
-
-- Enable cached-only mode.
-- Reduce heavy-query concurrency and strict limits.
-
-## Alerts
-
-- `BijuxAtlasStoreDownloadFailures`
-- `BijuxAtlasCacheThrash`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Restore store connectivity.
-- Disable cached-only mode after stable metrics window.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Incident timeline complete.
-- Store dependency failure class identified.
-- Retry/circuit-breaker thresholds adjusted if required.
+- Escalate to platform owner when mitigation and rollback do not restore service.
 
-## See also
+## What Changed
 
-- `ops-ci`
-
-## Dashboards
-
-- [Observability Dashboard](../observability/dashboard.md)
-
-## Drills
-
-- make ops-drill-store-outage
-- make ops-drill-pod-churn
+- 2026-02-28: normalized runbook structure and canonical response flow.

@@ -1,66 +1,32 @@
-# Runbook: Rollback Playbook
+# Rollback Playbook
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-operations`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Rollback Playbook events.
 
 ## Symptoms
 
-- New deployment causes sustained error or latency regression.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_http_requests_total`
-- `bijux_http_request_latency_p95_seconds`
-- `bijux_errors_total`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Commands
+## Mitigation
 
-```bash
-$ make k8s/apply-config
-$ make k8s/restart
-$ kubectl rollout undo deploy/bijux-atlas -n default
-$ curl -s http://127.0.0.1:8080/readyz
-```
-
-## Expected outputs
-
-- Rollout undo returns success.
-- Readiness and request metrics return to baseline window.
-
-## Mitigations
-
-- Halt rollout progression.
-- Keep degraded mode controls enabled until stable.
-
-## Alerts
-
-- `BijuxAtlasHigh5xxRate`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Revert API image and catalog pointer to last known good state.
-- Config change workflow in prod: update values -> `helm upgrade` -> `make k8s/restart`.
-- Rollback smoke path: `kubectl rollout undo deploy/<release> -n <namespace>` then verify `/readyz`.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Trigger commit/config identified.
-- Compatibility impact documented.
-- Rollback drill evidence attached.
+- Escalate to platform owner when mitigation and rollback do not restore service.
 
-## See also
+## What Changed
 
-- `ops-ci`
-
-## Dashboards
-
-- [Observability Dashboard](../observability/dashboard.md)
-
-## Drills
-
-- make ops-drill-store-outage
-- make ops-drill-pod-churn
+- 2026-02-28: normalized runbook structure and canonical response flow.

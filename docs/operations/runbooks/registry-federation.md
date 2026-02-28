@@ -1,63 +1,32 @@
-# Runbook: Registry Federation
+# Registry Federation
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-store`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Registry Federation events.
 
 ## Symptoms
 
-- Inconsistent dataset visibility across pods.
-- Catalog churn or conflict-shadow anomalies.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_errors_total`
-- `bijux_dataset_hits`
-- `bijux_dataset_misses`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Commands
+## Mitigation
 
-```bash
-$ curl -s http://127.0.0.1:8080/debug/registry-health
-$ make ssot-check
-```
-
-## Expected outputs
-
-- Registry health endpoint reports deterministic source order.
-- SSOT checks confirm registry contract consistency.
-
-## Mitigations
-
-- Freeze registry refresh during incident.
-- Reorder source priority to trusted registry.
-
-## Alerts
-
-- `BijuxAtlasStoreDownloadFailures`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Restore previous registry source ordering and TTL settings.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Conflict root cause identified.
-- Merge semantics tests updated.
-- Runbook and policy docs updated.
+- Escalate to platform owner when mitigation and rollback do not restore service.
 
-## See also
+## What Changed
 
-- `ops-ci`
-
-## Dashboards
-
-- [Observability Dashboard](../observability/dashboard.md)
-
-## Drills
-
-- make ops-drill-store-outage
-- make ops-drill-pod-churn
+- 2026-02-28: normalized runbook structure and canonical response flow.

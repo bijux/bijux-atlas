@@ -1,71 +1,32 @@
-# Runbook: Incident Playbook
+# Incident Playbook
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-operations`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for Incident Playbook events.
 
 ## Symptoms
 
-- Any sustained SLO breach or elevated 5xx/timeout class errors.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_http_requests_total`
-- `bijux_http_request_latency_p95_seconds`
-- `bijux_errors_total`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Dashboard Panels
+## Mitigation
 
-- `HTTP Request Rate by Route/Status`
-- `HTTP p95 Latency by Route`
-- `SLO Burn Rate (5xx, 5m/1h)`
-- `Dataset Cache Hit/Miss`
-
-## Commands
-
-```bash
-$ curl -s http://127.0.0.1:8080/healthz
-$ curl -s http://127.0.0.1:8080/readyz
-$ curl -s http://127.0.0.1:8080/metrics
-```
-
-## Expected outputs
-
-- Health/ready reflect actual availability.
-- Metrics expose route/status/error trends needed for triage.
-
-## Mitigations
-
-- Apply class-based shedding and rate controls.
-- Shift to cached-only mode when store outage is primary cause.
-
-## Alerts
-
-- `BijuxAtlasHigh5xxRate`
-- `BijuxAtlasP95LatencyRegression`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Roll back last deployment/config release if issue is rollout-induced.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Customer impact quantified.
-- Root cause and trigger captured.
-- Follow-up tasks linked to owners.
+- Escalate to platform owner when mitigation and rollback do not restore service.
 
-## See also
+## What Changed
 
-- `ops-ci`
-
-## Dashboards
-
-- [Observability Dashboard](../observability/dashboard.md)
-
-## Drills
-
-- make ops-drill-store-outage
-- make ops-drill-pod-churn
+- 2026-02-28: normalized runbook structure and canonical response flow.

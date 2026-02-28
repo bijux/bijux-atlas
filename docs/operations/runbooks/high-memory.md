@@ -1,64 +1,32 @@
-# Runbook: High Memory
+# High Memory
 
-- Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/CONTRACT.md`, `ops/inventory/**`, `ops/schema/**`
-
-- Owner: `bijux-atlas-server`
+Owner: `bijux-atlas-operations`  
+Type: `runbook`  
+Reason to exist: provide deterministic incident response steps for High Memory events.
 
 ## Symptoms
 
-- RSS growth crossing memory budget.
-- OOM restarts under sustained load.
+- Key user-visible and operational signals indicating this condition.
 
-## Metrics
+## Diagnosis
 
-- `bijux_dataset_disk_usage_bytes`
-- `bijux_overload_shedding_active`
-- `bijux_http_request_latency_p95_seconds`
+1. Confirm health and readiness state.
+2. Inspect logs, traces, and metrics for the failing component.
+3. Verify recent deployment or config changes.
 
-## Commands
+## Mitigation
 
-```bash
-$ make e2e-perf
-$ cargo test -p bijux-atlas-server --test p99-regression
-```
-
-## Expected outputs
-
-- Perf summary shows sustained memory pressure signature.
-- Latency guard remains within target when mitigations applied.
-
-## Mitigations
-
-- Reduce cache budgets and open-shard caps.
-- Lower heavy concurrency and tighten response-size limits.
-
-## Alerts
-
-- `BijuxAtlasP95LatencyRegression`
+1. Apply the safest immediate stabilization action.
+2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
-- Revert recent performance-related config change.
-- Scale replicas while investigating memory profile.
+- Revert the latest risky deployment or config pointer if mitigation is insufficient.
 
-## Postmortem checklist
+## Escalation
 
-- Memory hotspots documented.
-- Capacity model updated.
-- Guardrails tuned and tested.
+- Escalate to platform owner when mitigation and rollback do not restore service.
 
-## See also
+## What Changed
 
-- `ops-ci`
-
-## Dashboards
-
-- [Observability Dashboard](../observability/dashboard.md)
-
-## Drills
-
-- make ops-drill-store-outage
-- make ops-drill-pod-churn
+- 2026-02-28: normalized runbook structure and canonical response flow.

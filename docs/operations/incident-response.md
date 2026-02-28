@@ -16,7 +16,7 @@ Reason to exist: provide one canonical response flow for production incidents.
 
 ## Canonical Details
 
-- [Runbook Template](runbook-template.md)
-- [Runbooks Index](runbooks/INDEX.md)
-- [Observability Index](observability/INDEX.md)
+- [Runbook Template](../operations/runbook-template.md)
+- [Runbooks Index](runbooks/index.md)
+- [Observability Overview](observability/overview.md)
 - [Policy Violation Triage](policy-violation-triage.md)
