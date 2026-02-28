@@ -30,6 +30,12 @@
 - Cache layers improve hot-path reads but never change correctness semantics.
 - Cache policy is bounded and explicit to avoid untracked memory growth.
 
+## Why SQLite Serving Store
+
+SQLite provides deterministic local semantics, predictable deployment behavior, and strong compatibility control for immutable release reads.
+
+See: [ADR 0002](../governance/adrs/adr-0002-sqlite-serving-store.md).
+
 ## Operational Relevance
 
 Storage invariants define readiness behavior and prevent silent corruption under load.

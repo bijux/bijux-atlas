@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@6856280c`
+- Last verified against: `main@ff4b8084`
 - Reason to exist: define the canonical runtime flow from ingest to serving.
 
 ## Runtime Flow
@@ -15,6 +15,14 @@
 
 - Write path: ingest validates source inputs and publishes immutable artifacts.
 - Read path: query and API serve immutable release data with deterministic semantics.
+
+## Query Semantics Invariants
+
+- Pagination and ordering semantics are stable across equivalent requests.
+- Filters and sorts are contract-defined and do not mutate result correctness.
+- API compatibility policy is enforced independently of runtime cache choices.
+
+See: [API](../api/index.md) and [Reference](../reference/index.md).
 
 ## Determinism Guardrails
 
