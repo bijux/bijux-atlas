@@ -1,32 +1,24 @@
-# V1 Surface
+# API Quick Reference
 
 Owner: `api-contracts`  
 Type: `reference`  
 Surface version: `v1`  
-Reason to exist: define the stable endpoint surface for v1 clients.
+Reason to exist: provide one-page endpoint and contract navigation for API consumers.
 
-## Endpoints
+## Core Endpoints
 
-- `GET /healthz`
-- `GET /readyz`
-- `GET /metrics`
 - `GET /v1/datasets`
 - `GET /v1/datasets/{release}/{species}/{assembly}`
 - `GET /v1/genes`
-- `GET /v1/genes/count`
 - `GET /v1/genes/{gene_id}/transcripts`
-- `GET /v1/genes/{gene_id}/sequence`
 - `GET /v1/sequence/region`
 - `GET /v1/diff/genes`
-- `GET /v1/diff/region`
 - `POST /v1/query/validate`
-- `GET /v1/version`
-- `GET /v1/openapi.json`
 
 ## Example
 
 ```bash
-curl -fsS 'http://127.0.0.1:8080/v1/version'
+curl -fsS 'http://127.0.0.1:8080/v1/datasets'
 ```
 
 ## Related References

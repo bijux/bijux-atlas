@@ -16,7 +16,13 @@ Reason to exist: define stable API versioning and change constraints.
 - Deprecated surfaces must be explicitly marked.
 - Grace windows are announced before removal in future major versions.
 
-## Related Pages
+## Example
 
-- [Compatibility Policy](compatibility.md)
-- [V1 Surface](v1-surface.md)
+```bash
+curl -fsS 'http://127.0.0.1:8080/v1/version'
+```
+
+## Related References
+
+- [Schemas Reference](../reference/schemas.md)
+- [Errors Reference](../reference/errors.md)

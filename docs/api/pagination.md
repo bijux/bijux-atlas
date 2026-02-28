@@ -2,6 +2,7 @@
 
 Owner: `api-contracts`  
 Type: `guide`  
+Surface version: `v1`  
 Reason to exist: define one canonical pagination contract for list endpoints.
 
 ## Contract
@@ -21,7 +22,13 @@ Reason to exist: define one canonical pagination contract for list endpoints.
 - `links.next_cursor` mirrors `page.next_cursor`.
 - Backward pagination is out of scope for v1.
 
-## Related Pages
+## Example
 
-- [API](index.md)
-- [Versioning Policy](versioning.md)
+```bash
+curl -fsS 'http://127.0.0.1:8080/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&limit=5'
+```
+
+## Related References
+
+- [Schemas Reference](../reference/schemas.md)
+- [Errors Reference](../reference/errors.md)

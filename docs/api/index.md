@@ -2,6 +2,7 @@
 
 Owner: `api-contracts`  
 Type: `guide`  
+Surface version: `v1`  
 Reason to exist: define how to call the stable Atlas API surface.
 
 ## How To Call The API
@@ -14,10 +15,16 @@ Reason to exist: define how to call the stable Atlas API surface.
 ## Canonical API Pages
 
 - [V1 Surface](v1-surface.md)
+- [Quick Reference](quick-reference.md)
+- [Client Behavior Expectations](client-behavior.md)
 - [Versioning Policy](versioning.md)
 - [Pagination Guide](pagination.md)
 - [Compatibility Policy](compatibility.md)
 - [Error Handling](errors.md)
+- [Caching Semantics](caching.md)
+- [Deprecation Policy](deprecation.md)
+- [Default Field Set](default-field-set.md)
+- [Troubleshooting](troubleshooting.md)
 
 ## Reference Surfaces
 

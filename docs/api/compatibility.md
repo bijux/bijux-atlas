@@ -2,6 +2,7 @@
 
 Owner: `api-contracts`  
 Type: `policy`  
+Surface version: `v1`  
 Reason to exist: provide one canonical compatibility contract for API consumers.
 
 ## v1 Compatibility Guarantees
@@ -15,8 +16,13 @@ Reason to exist: provide one canonical compatibility contract for API consumers.
 - Undocumented behavior is not guaranteed.
 - Experimental surfaces are excluded from long-term compatibility promises.
 
-## Related Pages
+## Example
 
-- [Versioning Policy](versioning.md)
-- [Errors](errors.md)
+```bash
+curl -fsS 'http://127.0.0.1:8080/v1/openapi.json' >/dev/null
+```
+
+## Related References
+
+- [Errors Reference](../reference/errors.md)
 - [Schemas Reference](../reference/schemas.md)
