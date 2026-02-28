@@ -1,4 +1,12 @@
 pub fn to_pretty(report: &RunReport) -> String {
+    fn status_with_timing(status: CaseStatus, duration_ms: u64, slow_threshold_ms: u64) -> String {
+        if duration_ms >= slow_threshold_ms {
+            format!("{} ({}ms, slow)", status.as_colored(), duration_ms)
+        } else {
+            format!("{} ({}ms)", status.as_colored(), duration_ms)
+        }
+    }
+
     fn dotted_with_width(label: &str, status: &str, width: usize) -> String {
         let left = if label.len() >= width {
             label.to_string()
@@ -22,7 +30,7 @@ pub fn to_pretty(report: &RunReport) -> String {
             "{}\n",
             dotted(
                 &format!("{} {}", contract.id, contract.title),
-                &format!("{} ({}ms)", contract.status.as_colored(), contract.duration_ms)
+                &status_with_timing(contract.status, contract.duration_ms, 1_000)
             )
         ));
         for case in report.cases.iter().filter(|c| c.contract_id == contract.id) {
@@ -30,7 +38,7 @@ pub fn to_pretty(report: &RunReport) -> String {
                 "  {}\n",
                 dotted_with_width(
                     &case.test_id,
-                    &format!("{} ({}ms)", case.status.as_colored(), case.duration_ms),
+                    &status_with_timing(case.status, case.duration_ms, 1_000),
                     70,
                 )
             ));
