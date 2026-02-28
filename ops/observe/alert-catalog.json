@@ -2,6 +2,19 @@
   "schema_version": 1,
   "alerts": [
     {"id": "api.error-rate-high", "severity": "critical"},
-    {"id": "api.latency-p95-high", "severity": "warning"}
+    {"id": "api.latency-p95-high", "severity": "warning"},
+    {"id": "BijuxAtlasHigh5xxRate", "severity": "critical"},
+    {"id": "BijuxAtlasP95LatencyRegression", "severity": "warning"},
+    {"id": "BijuxAtlasStoreDownloadFailures", "severity": "critical"},
+    {"id": "BijuxAtlasCheapSloBurnFast", "severity": "warning"},
+    {"id": "BijuxAtlasCheapSloBurnMedium", "severity": "warning"},
+    {"id": "BijuxAtlasCheapSloBurnSlow", "severity": "warning"},
+    {"id": "BijuxAtlasRegistryRefreshStale", "severity": "warning"},
+    {"id": "BijuxAtlasStandardSloBurnFast", "severity": "warning"},
+    {"id": "BijuxAtlasStandardSloBurnMedium", "severity": "warning"},
+    {"id": "BijuxAtlasStandardSloBurnSlow", "severity": "warning"},
+    {"id": "BijuxAtlasOverloadSurvivalViolated", "severity": "critical"},
+    {"id": "BijuxAtlasStoreBackendErrorSpike", "severity": "critical"},
+    {"id": "BijuxAtlasCacheThrash", "severity": "warning"}
   ]
 }

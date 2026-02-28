@@ -42,6 +42,7 @@ Policy statements in this directory must link to executable contract IDs such as
 - [Ops Entrypoints](entrypoints.md)
 - [Command Surface Reference](reference/commands.md)
 - [Ops Surface Reference](reference/ops-surface.md)
+- [Ops Map](ops-map.md)
 - [Tools Reference](reference/tools.md)
 - [Toolchain Reference](reference/toolchain.md)
 - [Pins Reference](reference/pins.md)

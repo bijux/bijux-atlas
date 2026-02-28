@@ -81,6 +81,21 @@ fn parse_nav_contract_list(text: &str, prefix: &str) -> Vec<String> {
         .collect()
 }
 
+fn parse_markdown_table_rows(text: &str) -> Vec<Vec<String>> {
+    text.lines()
+        .filter(|line| line.trim_start().starts_with('|'))
+        .skip(2)
+        .map(|line| {
+            line.trim()
+                .trim_matches('|')
+                .split('|')
+                .map(|cell| cell.trim().trim_matches('`').to_string())
+                .collect::<Vec<_>>()
+        })
+        .filter(|row| row.len() >= 3)
+        .collect()
+}
+
 #[test]
 fn root_readme_routes_getting_started_to_docs_start_here_only() {
     let root = repo_root();
@@ -298,5 +313,86 @@ fn mkdocs_nav_matches_docs_nav_contract() {
     assert_eq!(
         nav, declared_order,
         "mkdocs top-level nav order must match docs/_nav/INDEX.md"
+    );
+}
+
+#[test]
+fn ops_map_covers_every_pillar_with_one_docs_entrypoint() {
+    let root = repo_root();
+    let ops_map = read(&root.join("docs/operations/ops-map.md"));
+    let rows = parse_markdown_table_rows(&ops_map);
+    let mapped = rows
+        .iter()
+        .map(|row| row[0].clone())
+        .collect::<BTreeSet<_>>();
+    let pillars_json = load_json(&root.join("ops/inventory/pillars.json"));
+    let pillars = pillars_json["pillars"]
+        .as_array()
+        .expect("pillars");
+    let expected = pillars
+        .iter()
+        .filter_map(|row| row["id"].as_str())
+        .map(str::to_string)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        mapped, expected,
+        "docs/operations/ops-map.md must map every ops pillar exactly once"
+    );
+    for row in rows {
+        let surface = &row[1];
+        let docs_entry = &row[2];
+        assert!(root.join("ops").join(surface.trim_start_matches("ops/")).exists() || root.join(surface).exists(),
+            "ops map surface path must exist: {surface}");
+        assert!(root.join("docs/operations").join(docs_entry).exists(),
+            "ops map docs entry must exist: docs/operations/{docs_entry}");
+    }
+}
+
+#[test]
+fn runbooks_reference_known_alert_and_slo_catalog_entries() {
+    let root = repo_root();
+    let alert_catalog = load_json(&root.join("ops/observe/alert-catalog.json"));
+    let alerts = alert_catalog["alerts"]
+        .as_array()
+        .expect("alerts")
+        .iter()
+        .filter_map(|row| row["id"].as_str())
+        .collect::<BTreeSet<_>>();
+    let slo_catalog = load_json(&root.join("ops/observe/slo-definitions.json"));
+    let slos = slo_catalog["slos"]
+        .as_array()
+        .expect("slos")
+        .iter()
+        .filter_map(|row| row["id"].as_str())
+        .collect::<BTreeSet<_>>();
+
+    let alert_re = regex::Regex::new(r"`(BijuxAtlas[A-Za-z0-9]+)`").expect("alert regex");
+    let slo_re = regex::Regex::new(r"`(api\.[a-z0-9_]+)`").expect("slo regex");
+    let mut violations = Vec::new();
+
+    for path in markdown_files(&root.join("docs/operations/runbooks")) {
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        if rel.ends_with("INDEX.md") {
+            continue;
+        }
+        let text = read(&path);
+        for caps in alert_re.captures_iter(&text) {
+            let alert = caps.get(1).expect("alert id").as_str();
+            if !alerts.contains(alert) {
+                violations.push(format!("{rel} references unknown alert `{alert}`"));
+            }
+        }
+        for caps in slo_re.captures_iter(&text) {
+            let slo = caps.get(1).expect("slo id").as_str();
+            if !slos.contains(slo) {
+                violations.push(format!("{rel} references unknown slo `{slo}`"));
+            }
+        }
+    }
+
+    assert!(
+        violations.is_empty(),
+        "operations runbooks must reference alerts and SLOs from canonical catalogs:\n{}",
+        violations.join("\n")
     );
 }
