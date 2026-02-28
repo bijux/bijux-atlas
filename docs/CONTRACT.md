@@ -43,6 +43,7 @@
 | `DOC-028` | docs section indexes avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 | `DOC-029` | docs root entrypoint pages avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 | `DOC-030` | docs index correctness report stays derivable | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-031` | docs root keeps a single canonical entrypoint | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 
 ## Enforcement mapping
 
@@ -78,6 +79,7 @@
 | `DOC-028` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-029` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-030` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-031` | `bijux dev atlas contracts docs --mode static` |
 
 ## Output artifacts
 

@@ -41,6 +41,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-028" => "Each top-level section INDEX.md may link a direct local markdown page at most once.".to_string(),
         "DOC-029" => "The root docs entrypoint pages may link a local markdown page at most once per page.".to_string(),
         "DOC-030" => "Docs contracts must be able to render a deterministic index correctness report artifact.".to_string(),
+        "DOC-031" => "Docs uses docs/index.md as canonical entrypoint and keeps docs/INDEX.md content-identical as a compatibility alias.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

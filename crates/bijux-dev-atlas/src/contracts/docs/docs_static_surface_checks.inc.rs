@@ -188,6 +188,47 @@ fn test_docs_007_allowed_root_files(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_docs_031_single_entrypoint(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let canonical = docs_root_path(ctx).join("index.md");
+    if !canonical.is_file() {
+        push_docs_violation(
+            &mut violations,
+            "DOC-031",
+            "docs.index.single_entrypoint",
+            Some("docs/index.md".to_string()),
+            "docs/index.md is required as the canonical docs entrypoint",
+        );
+    }
+    let uppercase = docs_root_path(ctx).join("INDEX.md");
+    if !uppercase.is_file() {
+        push_docs_violation(
+            &mut violations,
+            "DOC-031",
+            "docs.index.single_entrypoint",
+            Some("docs/INDEX.md".to_string()),
+            "docs/INDEX.md is required as the docs filesystem-compatibility entrypoint alias",
+        );
+    } else {
+        let canonical_text = std::fs::read_to_string(&canonical).unwrap_or_default();
+        let uppercase_text = std::fs::read_to_string(&uppercase).unwrap_or_default();
+        if canonical_text != uppercase_text {
+            push_docs_violation(
+                &mut violations,
+                "DOC-031",
+                "docs.index.single_entrypoint",
+                Some("docs/INDEX.md".to_string()),
+                "docs/INDEX.md and docs/index.md must remain content-identical",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_docs_008_section_owner_coverage(ctx: &RunContext) -> TestResult {
     let payload = match docs_section_owners_payload(ctx, "DOC-008", "docs.owners.section_coverage") {
         Ok(payload) => payload,
@@ -400,4 +441,3 @@ fn test_docs_010_section_index_policy(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

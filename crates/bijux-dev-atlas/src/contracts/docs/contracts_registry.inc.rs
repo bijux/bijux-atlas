@@ -351,5 +351,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_030_index_report_generated,
             }],
         },
+        Contract {
+            id: ContractId("DOC-031".to_string()),
+            title: "docs root keeps a single canonical entrypoint",
+            tests: vec![TestCase {
+                id: TestId("docs.index.single_entrypoint".to_string()),
+                title: "docs root keeps docs/index.md and docs/INDEX.md content-identical as one logical entrypoint",
+                kind: TestKind::Pure,
+                run: test_docs_031_single_entrypoint,
+            }],
+        },
     ])
 }
