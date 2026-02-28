@@ -23,13 +23,8 @@ The control-plane replaces ad-hoc scripts with explicit, contract-governed comma
 - [Add a contract registry in 30 minutes](add-a-contract-registry-in-30-minutes.md)
 - [Add a gate policy](add-a-gate-policy.md)
 - [Debug failing checks](debug-failing-checks.md)
-
-## Additional reference pages
-
-- [Evidence writing style](evidence-writing-style.md)
-- [Performance budget](performance-budget.md)
-- [Tooling dependencies](tooling-dependencies.md)
-- [Known limitations](known-limitations.md)
+- [CLI reference](cli-reference.md)
+- [Lane matrix](lane-matrix.md)
 
 ## Stable entrypoints
 
