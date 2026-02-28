@@ -26,7 +26,7 @@ Institutes need deterministic, versioned query behavior over immutable datasets 
 
 - Dataset identity is explicit: `release/species/assembly`.
 - Artifacts are immutable after publish.
-- All public surfaces are contract-driven from `docs/contracts/`.
+- All public surfaces are contract-driven from `docs/reference/contracts/`.
 
 ## Failure modes
 
@@ -47,4 +47,4 @@ Expected output: contract checks and full test suite pass.
 
 - [Compatibility Promise](compatibility-promise.md)
 - [Non Goals](non-goals.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Glossary](../glossary.md)

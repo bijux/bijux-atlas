@@ -6,7 +6,7 @@ Reason to exist: canonical stable error code registry.
 
 ## Source Of Truth
 
-- `docs/contracts/endpoints.md`
+- `docs/reference/contracts/errors.md`
 - runtime error contract outputs
 
 ## Table Scope

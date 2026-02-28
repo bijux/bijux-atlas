@@ -45,7 +45,7 @@ Expected output: all checks pass.
 ## How to verify
 
 ```bash
-$ rg -n "\[ \]" docs/contracts/contract-change-checklist.md
+$ rg -n "\[ \]" docs/reference/contracts/contract-change-checklist.md
 ```
 
 Expected output: checklist template contains required gate items for reviewers.
@@ -54,4 +54,4 @@ Expected output: checklist template contains required gate items for reviewers.
 
 - [SSOT Workflow](ssot-workflow.md)
 - [Contract Diff Review](contract-diff.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Terms Glossary](../../glossary.md)

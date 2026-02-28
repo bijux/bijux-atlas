@@ -11,7 +11,7 @@ Reason to exist: provide one canonical entrypoint for runtime configuration and 
 
 ## Environment key contracts
 
-- `docs/contracts/CONFIG_KEYS.json`
+- `docs/reference/contracts/CONFIG_KEYS.json`
 - `configs/contracts/env.schema.json`
 
 ## Helm runtime surface

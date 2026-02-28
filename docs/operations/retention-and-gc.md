@@ -24,7 +24,7 @@ Pins are SSOT at `ops/inventory/pins.yaml`:
 - `dataset_ids`: canonical dataset keys to preserve.
 - `artifact_hashes`: exact artifact hashes to preserve.
 
-Contract schema is `docs/contracts/GC_POLICY.json`.
+Contract schema is `docs/reference/contracts/GC_POLICY.json`.
 
 ## How
 

@@ -1,4 +1,4 @@
-# Contracts SSOT and Generation
+# Contracts
 
 - Owner: `docs-governance`
 
@@ -12,7 +12,7 @@ Prevents drift between machine contracts, generated references, and runtime beha
 
 ## Scope
 
-Applies to contract registries under `docs/contracts/*.json` and generated docs under `docs/_generated/`.
+Applies to contract registries under `docs/reference/contracts/*.json` and generated docs under `docs/_generated/`.
 
 ## Non-Goals
 
@@ -20,7 +20,7 @@ Does not document runtime implementation internals outside contract surfaces.
 
 ## Contracts
 
-- SSOT registries live in `docs/contracts/*.json`.
+- SSOT registries live in `docs/reference/contracts/*.json`.
 - Generated contract docs live in `docs/_generated/contracts/`.
 - OpenAPI generated docs live in `docs/_generated/openapi/`.
 
@@ -49,7 +49,6 @@ Expected output: contract checks and docs checks pass.
 
 ## See Also
 
-- [Contracts SSOT](INDEX.md)
 - [Contracts Index](contracts-index.md)
 - [SSOT Workflow](ssot-workflow.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Examples](examples/index.md)

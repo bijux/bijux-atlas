@@ -12,7 +12,7 @@ Provides one navigation page for all contract surfaces and their stability level
 
 ## Scope
 
-Includes JSON registries under `docs/contracts/*.json` and generated contract references.
+Includes JSON registries under `docs/reference/contracts/*.json` and generated contract references.
 
 ## Non-goals
 
@@ -31,13 +31,13 @@ Does not replace registry-specific detail pages.
 | Config keys | `CONFIG_KEYS.json` | `config-keys.md`, config-key checks | Additive |
 | Chart values | `CHART_VALUES.json` | `chart-values.md`, chart values checks | Additive |
 | Artifact schema | `artifacts/ARTIFACT_SCHEMA.json` | `artifacts/manifest-contract.md` | Experimental |
-| Policy schema | `POLICY_SCHEMA.json` | `../governance/index.md`, policy checks | Experimental |
+| Policy schema | `POLICY_SCHEMA.json` | `../../governance/index.md`, policy checks | Experimental |
 | QC schema | `QC_SCHEMA.json` | `qc.md` | Stable |
 | Normalized format schema | `NORMALIZED_FORMAT_SCHEMA.json` | `normalized-format.md` | Evolving |
 | Release diff schema | `DIFF_SCHEMA.json` | `contract-diff.md` | Additive |
-| Sharding schema | `SHARDING_SCHEMA.json` | `../reference/configs.md` | Additive |
-| Cursor schema | `CURSOR_SCHEMA.json` | `../reference/schemas.md` | Additive |
-| GC policy schema | `GC_POLICY.json` | `operations/retention-and-gc.md` | Additive |
+| Sharding schema | `SHARDING_SCHEMA.json` | `../configs.md` | Additive |
+| Cursor schema | `CURSOR_SCHEMA.json` | `../schemas.md` | Additive |
+| GC policy schema | `GC_POLICY.json` | `../../operations/retention-and-gc.md` | Additive |
 
 ## Canonical references
 
@@ -48,7 +48,7 @@ Does not replace registry-specific detail pages.
 - [Config Keys](config-keys.md)
 - [Chart Values](chart-values.md)
 - [Artifact Contracts](artifacts/index.md)
-- [Schema Index](../reference/schemas.md)
+- [Schema Index](../schemas.md)
 
 Note: generated contract artifacts are validated in CI and may not be committed as markdown pages.
 
@@ -74,6 +74,5 @@ Expected output: all contract checks pass.
 
 ## See also
 
-- [Contracts SSOT](INDEX.md)
+- [Contracts](index.md)
 - [SSOT Workflow](ssot-workflow.md)
-- [Terms Glossary](../_style/terms-glossary.md)

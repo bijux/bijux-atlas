@@ -9,14 +9,14 @@ This page is the single compatibility entrypoint.
 ## Scope
 
 - API compatibility guarantees: [`docs/product/compatibility-promise.md`](../product/compatibility-promise.md)
-- Plugin compatibility contract: [`docs/contracts/plugin/umbrella-plugin-contract-v1.md`](plugin/umbrella-plugin-contract-v1.md)
+- Plugin compatibility contract: [`docs/reference/contracts/plugin/umbrella-plugin-contract-v1.md`](plugin/umbrella-plugin-contract-v1.md)
 - Artifact compatibility and producer alignment: generated matrix and registry references.
 
 ## Generated Matrix
 
-- Compatibility matrix references are consolidated under [`docs/reference/index.md`](../reference/index.md).
+- Compatibility matrix references are consolidated under [`docs/reference/index.md`](../index.md).
 
-Compatibility source-of-truth inputs are contract files under `docs/contracts/*.json` and generated outputs under `docs/_generated/contracts/`.
+Compatibility source-of-truth inputs are contract files under `docs/reference/contracts/*.json` and generated outputs under `docs/_generated/contracts/`.
 
 ## What
 
@@ -54,4 +54,4 @@ Run `make docs docs-freeze ssot-check` and confirm all commands exit with status
 
 - [Contracts Overview](INDEX.md)
 - [SSOT Workflow](ssot-workflow.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Terms Glossary](../../glossary.md)

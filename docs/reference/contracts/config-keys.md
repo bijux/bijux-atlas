@@ -135,7 +135,7 @@ Does not define implementation internals outside this contract surface.
 - `XDG_CACHE_HOME`
 - `XDG_CONFIG_HOME`
 
-Policy schema reference: `docs/contracts/POLICY_SCHEMA.json`
+Policy schema reference: `docs/reference/contracts/POLICY_SCHEMA.json`
 
 ## Failure modes
 
@@ -162,4 +162,4 @@ Expected output: both commands exit status 0 and print contract generation/check
 
 - [Contracts Index](contracts-index.md)
 - [SSOT Workflow](ssot-workflow.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Terms Glossary](../../glossary.md)

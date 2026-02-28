@@ -26,14 +26,14 @@ concepts:
       - docs/reference/registry/deterministic-merge.md
       - docs/reference/registry/conflict-resolution.md
   - id: concept.compatibility-matrix
-    canonical: docs/contracts/compatibility.md
+    canonical: docs/reference/contracts/compatibility.md
     pointers:
       - docs/reference/compatibility/bijux-dna-atlas.md
       - docs/reference/compatibility/umbrella-atlas-matrix.md
       - docs/reference/compatibility/cross-project-compatibility-policy.md
       - docs/reference/registry/plugin-versioning-and-release-independence.md
   - id: concept.error-codes
-    canonical: docs/contracts/errors.md
+    canonical: docs/reference/contracts/errors.md
     pointers:
       - docs/reference/registry/error-code-registry.md
   - id: concept.security-coordination
@@ -47,6 +47,6 @@ concepts:
     canonical: docs/reference/registry/shared-core-extraction.md
     pointers: []
   - id: concept.plugin-contract
-    canonical: docs/contracts/plugin/spec.md
+    canonical: docs/reference/contracts/plugin/spec.md
     pointers:
-      - docs/contracts/plugin/mode.md
+      - docs/reference/contracts/plugin/mode.md

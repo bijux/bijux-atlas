@@ -85,4 +85,4 @@ Expected output: both commands exit status 0 and print contract generation/check
 
 - [Contracts Index](contracts-index.md)
 - [SSOT Workflow](ssot-workflow.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Terms Glossary](../../glossary.md)

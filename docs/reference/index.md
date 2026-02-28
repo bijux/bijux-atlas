@@ -15,3 +15,8 @@ Stable factual surfaces used by users, operators, and contributors.
 - [Configs](configs.md)
 - [Schemas](schemas.md)
 - [Errors](errors.md)
+- [Contracts](contracts/index.md)
+
+## Next Step
+
+If you need usage guidance rather than tables, switch to [API](../api/index.md) or [Operations](../operations/index.md).

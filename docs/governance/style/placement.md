@@ -5,7 +5,7 @@
 2. Is this first-run setup or onboarding flow?
    Place in `docs/operations/` and reference from `docs/start-here.md`.
 3. Is this stable API/artifact/schema contract?
-   Place in `docs/contracts/`.
+   Place in `docs/reference/contracts/`.
 4. Is this operational procedure, incident response, or deployment runbook?
    Place in `docs/operations/`.
 5. Is this contributor workflow (CI, make, cargo, release process)?

@@ -2,7 +2,7 @@
 
 - `docs/product/`
 - `docs/architecture/`
-- `docs/contracts/`
+- `docs/reference/contracts/`
 - `docs/operations/`
 - `docs/development/`
 - `docs/science/`

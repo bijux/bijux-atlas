@@ -12,7 +12,7 @@ Contract diffs are API surface changes and require deterministic review.
 
 ## Scope
 
-Applies to every change under `docs/contracts/*.json`.
+Applies to every change under `docs/reference/contracts/*.json`.
 
 ## Non-goals
 
@@ -49,4 +49,4 @@ Expected output: no breaking contract change unless intentionally approved.
 
 - [SSOT Workflow](ssot-workflow.md)
 - [Contract Change Checklist](contract-change-checklist.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- [Terms Glossary](../../glossary.md)
