@@ -126,7 +126,7 @@ fn docs_orphans_report(ctx: &RunContext) -> serde_json::Value {
     }
     let mut reachable = std::collections::BTreeSet::<String>::new();
     let mut queue = std::collections::VecDeque::<String>::new();
-    for seed in ["docs/index.md", "docs/INDEX.md", "docs/START_HERE.md"] {
+    for seed in ["docs/index.md", "docs/index.md", "docs/start-here.md"] {
         if all.contains(seed) && reachable.insert(seed.to_string()) {
             queue.push_back(seed.to_string());
         }

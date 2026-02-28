@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommand, ContractsCommonArgs, ContractsFormatArg, ContractsLaneArg, ContractsModeArg,
-    ContractsOpsDomainArg, ContractsProfileArg, ContractsSnapshotDomainArg, PoliciesCommand,
+    ContractsCommand, ContractsFormatArg, ContractsModeArg, ContractsSnapshotDomainArg,
+    PoliciesCommand,
 };
 use crate::*;
 use bijux_dev_atlas::contracts;
@@ -10,7 +10,6 @@ use bijux_dev_atlas::model::CONTRACT_SCHEMA_VERSION;
 use bijux_dev_atlas::policies::{canonical_policy_json, DevAtlasPolicySet};
 use std::fs;
 use std::io::{self, Write};
-use std::path::Path;
 
 pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32 {
     let result = match command {
@@ -56,7 +55,9 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
 }
 
 mod control_plane_docker;
+mod control_plane_contracts_support;
 pub(crate) use control_plane_docker::run_docker_command;
+use control_plane_contracts_support::*;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
 include!("control_plane_contracts.rs");

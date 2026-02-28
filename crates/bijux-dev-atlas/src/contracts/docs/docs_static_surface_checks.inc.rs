@@ -206,8 +206,8 @@ fn test_docs_031_single_entrypoint(ctx: &RunContext) -> TestResult {
             &mut violations,
             "DOC-031",
             "docs.index.single_entrypoint",
-            Some("docs/INDEX.md".to_string()),
-            "docs/INDEX.md is required as the docs filesystem-compatibility entrypoint alias",
+            Some("docs/index.md".to_string()),
+            "docs/index.md is required as the docs filesystem-compatibility entrypoint alias",
         );
     } else {
         let canonical_text = std::fs::read_to_string(&canonical).unwrap_or_default();
@@ -217,8 +217,8 @@ fn test_docs_031_single_entrypoint(ctx: &RunContext) -> TestResult {
                 &mut violations,
                 "DOC-031",
                 "docs.index.single_entrypoint",
-                Some("docs/INDEX.md".to_string()),
-                "docs/INDEX.md and docs/index.md must remain content-identical",
+                Some("docs/index.md".to_string()),
+                "docs/index.md and docs/index.md must remain content-identical",
             );
         }
     }

@@ -1,6 +1,7 @@
 
     fn mk_repo(base: &Path, dockerfile: &str) {
         std::fs::create_dir_all(base.join("docker/images/runtime")).expect("mkdir docker runtime");
+        std::fs::create_dir_all(base.join("ops/policy")).expect("mkdir ops policy");
         std::fs::write(base.join("docker/images/runtime/Dockerfile"), dockerfile).expect("write dockerfile");
         std::fs::write(base.join("docker/README.md"), "# docker\n").expect("write readme");
         std::fs::write(
@@ -96,6 +97,23 @@
             .to_string(),
         )
         .expect("write policy");
+        std::fs::write(
+            base.join("ops/policy/required-contracts.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "contracts": [
+                    {
+                        "domain": "docker",
+                        "contract_id": "DOCKER-000",
+                        "lanes": ["pr", "merge", "release"],
+                        "owner": "atlas-maintainers",
+                        "rationale": "fixture policy entry"
+                    }
+                ]
+            })
+            .to_string(),
+        )
+        .expect("write required contracts policy");
     }
 
     fn run_options(
@@ -106,6 +124,8 @@
             lane: crate::contracts::ContractLane::Local,
             mode: crate::contracts::Mode::Static,
             required_only: false,
+            ci: false,
+            color_enabled: false,
             allow_subprocess: false,
             allow_network: false,
             allow_k8s: false,
@@ -336,6 +356,7 @@
     fn required_image_contract_fails_when_runtime_missing() {
         let tmp = tempfile::tempdir().expect("tempdir");
         std::fs::create_dir_all(tmp.path().join("docker/images/dev")).expect("mkdir image");
+        std::fs::create_dir_all(tmp.path().join("ops/policy")).expect("mkdir ops policy");
         std::fs::write(
             tmp.path().join("docker/images/dev/Dockerfile"),
             "FROM scratch\n",
@@ -360,6 +381,23 @@
             .to_string(),
         )
         .expect("write policy");
+        std::fs::write(
+            tmp.path().join("ops/policy/required-contracts.json"),
+            serde_json::json!({
+                "schema_version": 1,
+                "contracts": [
+                    {
+                        "domain": "docker",
+                        "contract_id": "DOCKER-012",
+                        "lanes": ["pr", "merge", "release"],
+                        "owner": "atlas-maintainers",
+                        "rationale": "fixture policy entry"
+                    }
+                ]
+            })
+            .to_string(),
+        )
+        .expect("write required contracts policy");
         sync_contract_markdown(tmp.path()).expect("sync contract");
         sync_contract_registry_json(tmp.path()).expect("sync contract registry");
         sync_contract_gate_map_json(tmp.path()).expect("sync contract gate map");

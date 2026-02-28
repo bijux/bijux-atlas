@@ -277,7 +277,7 @@ fn test_docs_018_root_section_coverage(ctx: &RunContext) -> TestResult {
         if !config["root_entrypoint"].as_bool().unwrap_or(false) {
             continue;
         }
-        let expected = format!("{name}/INDEX.md");
+        let expected = format!("{name}/index.md");
         if !target_set.contains(&expected) {
             push_docs_violation(
                 &mut violations,

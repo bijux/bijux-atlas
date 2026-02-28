@@ -160,14 +160,15 @@
     },
     {
       "counts": {
-        "covered": 1,
+        "covered": 2,
         "generated": 0,
         "internal": 0,
-        "public": 1,
+        "public": 2,
         "schemas": 1
       },
       "files": [
-        "configs/meta/owners.json"
+        "configs/meta/owners.json",
+        "configs/owners/identities.json"
       ],
       "name": "meta",
       "owner": "platform",

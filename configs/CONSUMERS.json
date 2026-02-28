@@ -101,6 +101,11 @@
       "runtime",
       "ci"
     ],
+    "configs/owners/*.json": [
+      "bijux-dev-atlas",
+      "docs-build",
+      "runtime"
+    ],
     "configs/perf/*.json": [
       "bijux-dev-atlas",
       "runtime"

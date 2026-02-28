@@ -22,6 +22,7 @@
     "configs/openapi/**/*.json": "configs/schema/public-surface.schema.json",
     "configs/ops/*.json": "configs/contracts/inventory-ops.schema.json",
     "configs/ops/*/*.json": "configs/contracts/inventory-ops.schema.json",
+    "configs/owners/*.json": "configs/contracts/inventory-owners.schema.json",
     "configs/perf/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/policy/*.json": "configs/policy/policy.schema.json",
     "configs/product/*.json": "configs/product/artifact-manifest.schema.json",

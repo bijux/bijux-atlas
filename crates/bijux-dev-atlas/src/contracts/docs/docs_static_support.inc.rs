@@ -73,7 +73,7 @@ fn docs_entrypoint_pages(ctx: &RunContext) -> Result<Vec<(String, bool)>, TestRe
     for name in section_names {
         let requires_index = sections[&name]["requires_index"].as_bool().unwrap_or(false);
         if requires_index {
-            pages.push((format!("docs/{name}/INDEX.md"), false));
+            pages.push((format!("docs/{name}/index.md"), false));
         }
     }
     Ok(pages)

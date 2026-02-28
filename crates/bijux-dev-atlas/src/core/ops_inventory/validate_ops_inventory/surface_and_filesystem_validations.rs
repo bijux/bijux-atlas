@@ -86,6 +86,7 @@ fn validate_surface_and_filesystem_policies(
         "k8s",
         "load",
         "observe",
+        "policy",
         "report",
         "schema",
         "stack",

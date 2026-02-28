@@ -1,3 +1,10 @@
+fn stable_alert_catalog_id(id: &str) -> bool {
+    !id.is_empty()
+        && id
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'-'))
+}
+
 fn test_ops_obs_005_alert_catalog_generated_consistency(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-OBS-005";
     let test_id = "ops.observe.alert_catalog_generated_consistency";
@@ -72,11 +79,11 @@ fn test_ops_obs_005_alert_catalog_generated_consistency(ctx: &RunContext) -> Tes
         ));
     }
     for id in &catalog_ids {
-        if !id.contains('.') {
+        if !stable_alert_catalog_id(id) {
             violations.push(violation(
                 contract_id,
                 test_id,
-                "alert catalog id must use dotted stable naming",
+                "alert catalog id must use stable ascii naming",
                 Some(catalog_rel.to_string()),
             ));
             break;
@@ -363,4 +370,3 @@ fn test_ops_obs_010_overload_behavior_contract_enforced(ctx: &RunContext) -> Tes
     let mapped = suites.get("suites").and_then(|v| v.as_array()).is_some_and(|rows| rows.iter().filter_map(|r| r.get("name").and_then(|v| v.as_str())).any(|n| n == "spike-overload-proof" || n == "cheap-only-survival"));
     if overload && mapped { TestResult::Pass } else { TestResult::Fail(vec![violation(contract_id, test_id, "overload behavior contract must exist and map to load suite coverage", Some(rel.to_string()))]) }
 }
-

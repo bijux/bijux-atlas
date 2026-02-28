@@ -128,7 +128,8 @@
         "bijux dev atlas configs verify"
       ],
       "public_files": [
-        "configs/meta/*.json"
+        "configs/meta/*.json",
+        "configs/owners/*.json"
       ],
       "internal_files": [],
       "generated_files": [],

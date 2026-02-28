@@ -6,7 +6,7 @@ fn test_docs_026_unique_section_links(ctx: &RunContext) -> TestResult {
     let mut seen = std::collections::BTreeSet::new();
     let mut violations = Vec::new();
     for target in targets {
-        if !target.ends_with("/INDEX.md") {
+        if !target.ends_with("/index.md") {
             continue;
         }
         if !seen.insert(target.clone()) {
@@ -61,7 +61,7 @@ fn test_docs_027_section_indexes_list_local_pages(ctx: &RunContext) -> TestResul
                     &mut violations,
                     "DOC-027",
                     "docs.index.section_indexes_list_local_pages",
-                    Some(format!("docs/{name}/INDEX.md")),
+                    Some(format!("docs/{name}/index.md")),
                     format!("read failed: {err}"),
                 );
                 continue;
@@ -79,7 +79,7 @@ fn test_docs_027_section_indexes_list_local_pages(ctx: &RunContext) -> TestResul
                 &mut violations,
                 "DOC-027",
                 "docs.index.section_indexes_list_local_pages",
-                Some(format!("docs/{name}/INDEX.md")),
+                Some(format!("docs/{name}/index.md")),
                 "required section index must link at least one local markdown page",
             );
         }

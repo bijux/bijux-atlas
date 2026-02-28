@@ -44,6 +44,7 @@
     "configs/openapi/**/*.json",
     "configs/ops/*.json",
     "configs/ops/*/*.json",
+    "configs/owners/*.json",
     "configs/perf/*.json",
     "configs/policy/*.json",
     "configs/product/*.json",

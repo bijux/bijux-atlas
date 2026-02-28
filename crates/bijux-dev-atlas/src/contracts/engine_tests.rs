@@ -85,7 +85,7 @@ mod tests {
         let root = repo_root();
         let report = run("docker", sample_contracts, &root, &options).expect("run");
         let pretty = to_pretty(&report);
-        assert!(pretty.contains("Contracts: docker (mode=static, duration="));
+        assert!(pretty.contains("Contracts: docker (lane=local, mode=static, duration="));
         assert!(pretty.contains("DOCKER-001 sample"));
         assert!(pretty.contains("docker.sample.pass"));
         assert!(pretty.contains("PASS"));

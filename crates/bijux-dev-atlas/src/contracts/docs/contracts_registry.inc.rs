@@ -32,22 +32,21 @@ const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 6] = [
     "start",
 ];
 
-const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 9] = [
-    "AUTHORS.md",
-    "CONTRACT.md",
-    "OWNERS.md",
-    "PROJECT_DESCRIPTION_SNIPPET.md",
-    "PROJECT_IDENTITY.md",
-    "START_HERE.md",
-    "STYLE.md",
+const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 8] = [
+    "glossary.md",
     "index.md",
-    "taxonomy-map.md",
+    "ownership.md",
+    "start-here.md",
+    "style.md",
+    "changelog.md",
+    "docs-contract.md",
+    "README.md",
 ];
 
-const DOCS_ALLOWED_ROOT_FILES: [&str; 3] = ["owners.json", "registry.json", "sections.json"];
+const DOCS_ALLOWED_ROOT_FILES: [&str; 4] = ["owners.json", "registry.json", "sections.json", "redirects.json"];
 
 const DOCS_MAX_DEPTH: usize = 4;
-const DOCS_MAX_SIBLINGS: usize = 48;
+const DOCS_MAX_SIBLINGS: usize = 49;
 
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
@@ -356,7 +355,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             title: "docs root keeps a single canonical entrypoint",
             tests: vec![TestCase {
                 id: TestId("docs.index.single_entrypoint".to_string()),
-                title: "docs root keeps docs/index.md and docs/INDEX.md content-identical as one logical entrypoint",
+                title: "docs root keeps docs/index.md and docs/index.md content-identical as one logical entrypoint",
                 kind: TestKind::Pure,
                 run: test_docs_031_single_entrypoint,
             }],

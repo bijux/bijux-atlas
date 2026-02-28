@@ -113,26 +113,30 @@ fn append_ops_effect_log(ctx: &RunContext, entry: &serde_json::Value) {
         .and_then(|mut file| std::io::Write::write_all(&mut file, line.as_bytes()));
 }
 
+struct OpsEffectCommand<'a> {
+    contract_id: &'a str,
+    test_id: &'a str,
+    program: &'a str,
+    args: &'a [&'a str],
+    stdout_rel: String,
+    stderr_rel: String,
+    network_allowed: bool,
+}
+
 fn run_ops_effect_command(
     ctx: &RunContext,
-    contract_id: &str,
-    test_id: &str,
-    program: &str,
-    args: &[&str],
-    stdout_rel: &str,
-    stderr_rel: &str,
-    network_allowed: bool,
+    spec: OpsEffectCommand<'_>,
 ) -> Result<std::process::Output, TestResult> {
     if !ctx.allow_subprocess {
         return Err(TestResult::Error("requires --allow-subprocess".to_string()));
     }
-    if network_allowed && !ctx.allow_network {
+    if spec.network_allowed && !ctx.allow_network {
         return Err(TestResult::Error("requires --allow-network".to_string()));
     }
     let started = Instant::now();
-    let mut command = Command::new(program);
+    let mut command = Command::new(spec.program);
     command
-        .args(args)
+        .args(spec.args)
         .current_dir(&ctx.repo_root)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
@@ -143,15 +147,21 @@ fn run_ops_effect_command(
     let output = match command.output() {
         Ok(output) => output,
         Err(err) if err.kind() == std::io::ErrorKind::NotFound && ctx.skip_missing_tools => {
-            return Err(TestResult::Skip(format!("`{program}` is not installed")));
+            return Err(TestResult::Skip(format!(
+                "`{}` is not installed",
+                spec.program
+            )));
         }
         Err(err) => {
-            return Err(TestResult::Error(format!("spawn `{program}` failed: {err}")));
+            return Err(TestResult::Error(format!(
+                "spawn `{}` failed: {err}",
+                spec.program
+            )));
         }
     };
     if let Some(root) = ops_effect_artifact_dir(ctx) {
-        let stdout_path = root.join(stdout_rel);
-        let stderr_path = root.join(stderr_rel);
+        let stdout_path = root.join(&spec.stdout_rel);
+        let stderr_path = root.join(&spec.stderr_rel);
         if let Some(parent) = stdout_path.parent() {
             let _ = fs::create_dir_all(parent);
         }
@@ -164,11 +174,11 @@ fn run_ops_effect_command(
     append_ops_effect_log(
         ctx,
         &serde_json::json!({
-            "contract_id": contract_id,
-            "test_id": test_id,
-            "program": program,
-            "args": args,
-            "network_allowed": network_allowed,
+            "contract_id": spec.contract_id,
+            "test_id": spec.test_id,
+            "program": spec.program,
+            "args": spec.args,
+            "network_allowed": spec.network_allowed,
             "duration_ms": started.elapsed().as_millis() as u64,
             "status": output.status.code(),
         }),
@@ -196,13 +206,15 @@ fn verify_declared_tool_versions(ctx: &RunContext, tool_names: &[&str]) -> TestR
     for tool in tool_names {
         let output = match run_ops_effect_command(
             ctx,
-            "OPS-ROOT-001",
-            "ops.effect.tools.version_policy_present",
-            tool,
-            &["version"],
-            &format!("tools/{tool}.stdout.log"),
-            &format!("tools/{tool}.stderr.log"),
-            false,
+            OpsEffectCommand {
+                contract_id: "OPS-ROOT-001",
+                test_id: "ops.effect.tools.version_policy_present",
+                program: tool,
+                args: &["version"],
+                stdout_rel: format!("tools/{tool}.stdout.log"),
+                stderr_rel: format!("tools/{tool}.stderr.log"),
+                network_allowed: false,
+            },
         ) {
             Ok(output) => output,
             Err(TestResult::Skip(reason)) => {

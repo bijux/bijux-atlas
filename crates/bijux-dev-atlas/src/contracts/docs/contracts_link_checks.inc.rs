@@ -115,7 +115,7 @@ fn test_docs_011_section_index_links_resolve(ctx: &RunContext) -> TestResult {
 
 fn test_docs_012_root_entrypoint_links_resolve(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
-    for relative in ["docs/index.md", "docs/START_HERE.md"] {
+    for relative in ["docs/index.md", "docs/start-here.md"] {
         validate_markdown_links(
             ctx,
             &ctx.repo_root.join(relative),
@@ -244,7 +244,7 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
                     &mut violations,
                     "DOC-028",
                     "docs.index.section_indexes_unique_local_pages",
-                    Some(format!("docs/{name}/INDEX.md")),
+                    Some(format!("docs/{name}/index.md")),
                     format!("read failed: {err}"),
                 );
                 continue;
@@ -273,7 +273,7 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
                 Err(_) => continue,
             };
             let expected_prefix = format!("docs/{name}/");
-            if rel.starts_with(&expected_prefix) && rel.ends_with(".md") && rel != format!("docs/{name}/INDEX.md") {
+            if rel.starts_with(&expected_prefix) && rel.ends_with(".md") && rel != format!("docs/{name}/index.md") {
                 *counts.entry(rel).or_insert(0) += 1;
             }
         }
@@ -283,7 +283,7 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
                     &mut violations,
                     "DOC-028",
                     "docs.index.section_indexes_unique_local_pages",
-                    Some(format!("docs/{name}/INDEX.md")),
+                    Some(format!("docs/{name}/index.md")),
                     format!("section index links `{rel}` {count} times"),
                 );
             }
@@ -299,7 +299,7 @@ fn test_docs_028_section_indexes_unique_local_pages(ctx: &RunContext) -> TestRes
 
 fn test_docs_029_root_entrypoints_unique_local_pages(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
-    for relative in ["docs/index.md", "docs/START_HERE.md"] {
+    for relative in ["docs/index.md", "docs/start-here.md"] {
         let path = ctx.repo_root.join(relative);
         let contents = match std::fs::read_to_string(&path) {
             Ok(contents) => contents,
@@ -374,7 +374,7 @@ fn docs_index_correctness_report(ctx: &RunContext) -> Result<serde_json::Value, 
         .ok_or_else(|| "`sections` object is required".to_string())?;
     let mut rows = Vec::new();
     let mut root_duplicates = 0usize;
-    for relative in ["docs/index.md", "docs/START_HERE.md"] {
+    for relative in ["docs/index.md", "docs/start-here.md"] {
         let path = ctx.repo_root.join(relative);
         let contents = std::fs::read_to_string(&path)
             .map_err(|err| format!("read {} failed: {err}", path.display()))?;
@@ -436,7 +436,7 @@ fn docs_index_correctness_report(ctx: &RunContext) -> Result<serde_json::Value, 
             };
             let rel = rel.display().to_string();
             let prefix = format!("docs/{name}/");
-            if rel.starts_with(&prefix) && rel.ends_with(".md") && rel != format!("docs/{name}/INDEX.md")
+            if rel.starts_with(&prefix) && rel.ends_with(".md") && rel != format!("docs/{name}/index.md")
             {
                 local_pages.insert(rel.clone());
                 *counts.entry(rel).or_insert(0) += 1;
@@ -445,7 +445,7 @@ fn docs_index_correctness_report(ctx: &RunContext) -> Result<serde_json::Value, 
         duplicates += counts.values().filter(|count| **count > 1).count();
         rows.push(serde_json::json!({
             "section": name,
-            "index_path": format!("docs/{name}/INDEX.md"),
+            "index_path": format!("docs/{name}/index.md"),
             "requires_index": true,
             "local_pages_linked": local_pages.len(),
             "duplicate_local_links": duplicates
