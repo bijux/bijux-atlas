@@ -4,6 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
 
 use serde::Deserialize;
+use sha2::{Digest, Sha256};
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
@@ -418,6 +419,7 @@ fn generated_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
 
 pub fn list_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
     let index = registry_index(repo_root)?;
+    let contract_surface = cfg_contract_coverage_payload(repo_root)?;
     let rows = index
         .registry
         .groups
@@ -447,6 +449,7 @@ pub fn list_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
         "schema_version": 1,
         "kind": "configs",
         "registry_path": REGISTRY_PATH,
+        "contract_surface": contract_surface,
         "groups": rows
     }))
 }
@@ -458,6 +461,79 @@ pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
             .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
     }
     let payload = generated_index_json(repo_root)?;
+    std::fs::write(
+        &path,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    Ok(path.display().to_string())
+}
+
+pub fn cfg_contract_coverage_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
+    let surface = read_contract_surface(repo_root)?;
+    let surface_text = read_text(&repo_root.join(CONTRACT_SURFACE_PATH))?;
+    let executable_contracts = contracts(repo_root)?;
+    let total_tests = executable_contracts
+        .iter()
+        .map(|contract| contract.tests.len())
+        .sum::<usize>();
+    let mapped_checks = surface
+        .contracts
+        .iter()
+        .map(|row| row.enforced_by.test_id.clone())
+        .collect::<BTreeSet<_>>();
+    let executable_checks = executable_contracts
+        .iter()
+        .flat_map(|contract| contract.tests.iter().map(|test| test.id.0.clone()))
+        .collect::<BTreeSet<_>>();
+    let mapped_count = mapped_checks.intersection(&executable_checks).count();
+    let coverage_pct = if total_tests == 0 {
+        100
+    } else {
+        ((mapped_count * 100) / total_tests) as u64
+    };
+    let unmapped_checks = executable_checks
+        .difference(&mapped_checks)
+        .cloned()
+        .collect::<Vec<_>>();
+    let contract_type_counts =
+        surface
+            .contracts
+            .iter()
+            .fold(BTreeMap::<String, usize>::new(), |mut counts, row| {
+                *counts.entry(row.contract_type.clone()).or_default() += 1;
+                counts
+            });
+    let mut hasher = Sha256::new();
+    hasher.update(surface_text.as_bytes());
+    let registry_sha256 = format!("{:x}", hasher.finalize());
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "registry_path": CONTRACT_SURFACE_PATH,
+        "registry_sha256": registry_sha256,
+        "contract_count": surface.contracts.len(),
+        "mapped_checks": mapped_count,
+        "total_checks": total_tests,
+        "coverage_pct": coverage_pct,
+        "unmapped_checks": unmapped_checks,
+        "contract_type_counts": contract_type_counts
+    }))
+}
+
+pub fn write_cfg_contract_coverage_artifact(
+    repo_root: &Path,
+    artifacts_root: &Path,
+    run_id: &str,
+) -> Result<String, String> {
+    let payload = cfg_contract_coverage_payload(repo_root)?;
+    let out_dir = artifacts_root
+        .join("atlas-dev")
+        .join("configs")
+        .join(run_id);
+    std::fs::create_dir_all(&out_dir)
+        .map_err(|err| format!("create {} failed: {err}", out_dir.display()))?;
+    let path = out_dir.join("cfg-contract-coverage.json");
     std::fs::write(
         &path,
         serde_json::to_string_pretty(&payload)
@@ -2556,5 +2632,15 @@ mod tests {
             .contracts
             .iter()
             .any(|row| row.enforced_by.test_id == "configs.schemas.file_coverage"));
+    }
+
+    #[test]
+    fn cfg_contract_coverage_payload_is_stable() {
+        let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
+        assert_eq!(payload["contract_count"].as_u64(), Some(18));
+        assert!(payload["mapped_checks"].as_u64().is_some());
+        assert!(payload["total_checks"].as_u64().is_some());
+        assert!(payload["coverage_pct"].as_u64().is_some());
+        assert!(payload["registry_sha256"].as_str().is_some());
     }
 }

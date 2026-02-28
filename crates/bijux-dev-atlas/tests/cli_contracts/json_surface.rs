@@ -111,6 +111,18 @@ fn configs_list_uses_registry_groups() {
                 .and_then(|v| v.as_array())
                 .is_some_and(|entries| !entries.is_empty())
     }));
+    assert_eq!(
+        payload
+            .get("contract_surface")
+            .and_then(|v| v.get("contract_count"))
+            .and_then(|v| v.as_u64()),
+        Some(18)
+    );
+    assert!(payload
+        .get("contract_surface")
+        .and_then(|v| v.get("registry_sha256"))
+        .and_then(|v| v.as_str())
+        .is_some());
 }
 
 #[test]
