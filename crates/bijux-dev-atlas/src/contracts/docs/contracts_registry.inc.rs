@@ -231,5 +231,55 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_018_root_section_coverage,
             }],
         },
+        Contract {
+            id: ContractId("DOC-019".to_string()),
+            title: "docs entrypoint pages stay within the word budget",
+            tests: vec![TestCase {
+                id: TestId("docs.quality.entrypoint_word_budget".to_string()),
+                title: "docs entrypoint pages stay within the approved word budget",
+                kind: TestKind::Pure,
+                run: test_docs_019_entrypoint_word_budget,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-020".to_string()),
+            title: "stable docs entrypoint pages avoid placeholder markers",
+            tests: vec![TestCase {
+                id: TestId("docs.quality.no_placeholders".to_string()),
+                title: "stable docs entrypoint pages do not contain TODO-style placeholders",
+                kind: TestKind::Pure,
+                run: test_docs_020_no_placeholders,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-021".to_string()),
+            title: "docs entrypoint pages avoid raw tabs",
+            tests: vec![TestCase {
+                id: TestId("docs.format.no_tabs".to_string()),
+                title: "docs entrypoint pages do not contain raw tab characters",
+                kind: TestKind::Pure,
+                run: test_docs_021_no_tabs,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-022".to_string()),
+            title: "docs entrypoint pages avoid trailing whitespace",
+            tests: vec![TestCase {
+                id: TestId("docs.format.no_trailing_whitespace".to_string()),
+                title: "docs entrypoint pages do not contain trailing whitespace",
+                kind: TestKind::Pure,
+                run: test_docs_022_no_trailing_whitespace,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-023".to_string()),
+            title: "docs entrypoint pages keep a single top-level heading",
+            tests: vec![TestCase {
+                id: TestId("docs.structure.single_h1".to_string()),
+                title: "docs entrypoint pages contain exactly one H1 heading",
+                kind: TestKind::Pure,
+                run: test_docs_023_single_h1,
+            }],
+        },
     ])
 }
