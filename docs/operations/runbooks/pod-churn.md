@@ -1,27 +1,40 @@
 # Pod Churn
 
-Owner: `bijux-atlas-operations`  
-Type: `runbook`  
+Owner: \'bijux-atlas-operations\'  
+Type: \'runbook\'  
 Reason to exist: provide deterministic incident response steps for Pod Churn events.
 
 ## Symptoms
 
 - Key user-visible and operational signals indicating this condition.
 
-## Diagnosis
+## Metrics
 
-1. Confirm health and readiness state.
-2. Inspect logs, traces, and metrics for the failing component.
-3. Verify recent deployment or config changes.
+- Primary SLO and saturation metrics to validate detection and recovery.
 
-## Mitigation
+## Commands
 
-1. Apply the safest immediate stabilization action.
+1. Run canonical health and readiness checks for affected services.
+2. Query recent error and latency windows for the impacted surface.
+3. Verify recent config and release changes before mitigation.
+
+## Expected outputs
+
+- Health signals identify the failing component and blast radius.
+- Metrics confirm whether mitigation improves service behavior.
+
+## Mitigations
+
+1. Apply the safest stabilization action for the identified failure mode.
 2. Reduce blast radius while preserving critical read paths.
 
 ## Rollback
 
 - Revert the latest risky deployment or config pointer if mitigation is insufficient.
+
+## Postmortem checklist
+
+- Capture timeline, impact, contributing factors, and permanent corrective actions.
 
 ## Escalation
 
@@ -29,4 +42,4 @@ Reason to exist: provide deterministic incident response steps for Pod Churn eve
 
 ## What Changed
 
-- 2026-02-28: normalized runbook structure and canonical response flow.
+- 2026-02-28: aligned structure with canonical runbook template headings.
