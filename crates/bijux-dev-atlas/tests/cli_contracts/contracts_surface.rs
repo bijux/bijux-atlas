@@ -146,6 +146,61 @@ fn contracts_all_list_includes_severity_column() {
 }
 
 #[test]
+fn contracts_all_list_is_sorted_by_domain_then_id() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "all", "--list", "--format", "json"])
+        .output()
+        .expect("contracts all list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let rows = payload["contracts"].as_array().expect("contracts array");
+    let mut actual = rows
+        .iter()
+        .map(|row| {
+            (
+                row["domain"].as_str().expect("domain").to_string(),
+                row["id"].as_str().expect("id").to_string(),
+            )
+        })
+        .collect::<Vec<_>>();
+    let mut sorted = actual.clone();
+    sorted.sort();
+    assert_eq!(actual, sorted, "contracts --list must stay sorted");
+    actual.dedup();
+    assert_eq!(actual.len(), rows.len(), "contracts list must not include duplicates");
+}
+
+#[test]
+fn contracts_all_list_json_is_deterministic() {
+    let run = || {
+        Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+            .current_dir(repo_root())
+            .args(["contracts", "all", "--list", "--format", "json"])
+            .output()
+            .expect("contracts all list")
+    };
+    let first = run();
+    let second = run();
+    assert!(first.status.success());
+    assert!(second.status.success());
+    assert_eq!(first.stdout, second.stdout, "contracts list output must be deterministic");
+}
+
+#[test]
+fn contracts_all_json_domain_order_is_stable() {
+    let source = fs::read_to_string(
+        repo_root().join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
+    )
+    .expect("read contracts command source");
+    assert!(
+        source.contains(r#"vec!["root", "docker", "make", "ops", "configs", "docs"]"#),
+        "contracts all domain order changed"
+    );
+}
+
+#[test]
 fn contracts_configs_runs_and_reports_summary() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
