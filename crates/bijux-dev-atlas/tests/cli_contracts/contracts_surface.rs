@@ -129,6 +129,20 @@ fn contracts_configs_runs_and_reports_summary() {
 }
 
 #[test]
+fn contracts_docs_runs_and_reports_summary() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "docs", "--format", "json"])
+        .output()
+        .expect("contracts docs");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["domain"].as_str(), Some("docs"));
+    assert_eq!(payload["summary"]["fail"].as_u64(), Some(0));
+}
+
+#[test]
 fn contracts_make_supports_table_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
