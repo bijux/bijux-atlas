@@ -38,7 +38,7 @@ Temporary exceptions are declared only in `ops/inventory/authority-tier-exceptio
 
 ## Canonical Locations
 
-- Narrative entrypoint: `docs/operations/INDEX.md`
+- Narrative entrypoint: `docs/operations/index.md`
 - Ops narrative glossary: `docs/_style/terms-glossary.md`
 - Normative ops root contracts: `ops/*.md` (minimal Tier-1 set)
 

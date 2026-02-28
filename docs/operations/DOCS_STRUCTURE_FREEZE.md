@@ -17,7 +17,7 @@
 
 ## Change Control
 
-- Structure changes require updating this document and `docs/operations/INDEX.md`.
+- Structure changes require updating this document and `docs/operations/index.md`.
 - New narrative pages must include Tier/Audience/Source-of-truth headers.
 
 ## Enforcement

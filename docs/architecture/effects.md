@@ -1,38 +1,27 @@
-# Effects And Boundaries
+# Effects
 
-Concept ID: `concept.effects-boundary`
+Owner: `architecture`  
+Type: `concept`  
+Reason to exist: define where side effects are allowed and where purity is required.
 
-- Owner: `bijux-atlas-server`
+## Effect Policy
 
-Effect policy for the current stable contract:
+- Pure crates: `core`, `model`, `ingest`, and pure planning parts of `query`.
+- Effectful crates: `store` (storage I/O), `server` (runtime wiring and controlled I/O).
+- `api` remains a read-mapping layer and does not execute ingest or mutation effects.
 
-- Pure domain and transformation crates: `core`, `model`, `ingest`, `query`.
-  - No external process spawning.
-  - No direct filesystem/network side effects.
-- Store crate (`bijux-atlas-store`): allowed to perform storage I/O.
-- Server crate (`bijux-atlas-server`): allowed to perform wiring/bootstrap I/O only.
-- API crate (`bijux-atlas-api`): pure read-service layer over query outputs.
-  - No raw GFF3/FASTA reading.
-  - No process spawning.
+## Scripting And Control Rules
 
-```mermaid
-flowchart LR
-  subgraph Pure
-    core[core]
-    model[model]
-    query[query]
-  end
-  subgraph Effectful
-    store[store io]
-    server[server runtime io]
-  end
-  api[api mapping]
+- Repository automation entrypoints are control-plane commands, not direct script execution surfaces.
+- Cross-layer fixups are forbidden; defects are fixed in the owning layer.
+- Escape hatches require explicit policy approval and ownership.
 
-  core --> model
-  model --> query
-  query --> api
-  api --> server
-  server --> store
-```
+## Forbidden Patterns
 
-Override/escape hatches are forbidden unless explicitly documented and approved in policy docs.
+- External process spawning from pure crates.
+- Direct filesystem or network side effects from pure planning modules.
+- Runtime mutation during report generation.
+
+## Operational Relevance
+
+Effect boundary discipline prevents hidden writes, keeps incidents diagnosable, and preserves deterministic behavior.

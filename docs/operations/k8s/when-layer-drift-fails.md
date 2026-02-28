@@ -48,5 +48,5 @@ Expected output: live snapshot comparison passes or reports only approved allowl
 
 ## See also
 
-- `docs/architecture/layering/BOUNDARY_RULES.md`
+- `docs/architecture/boundaries.md`
 - `docs/operations/e2e/what-e2e-is-not.md`

@@ -22,6 +22,6 @@ bijux dev atlas docs render-diagrams --report text
 ```
 
 See also:
-- [Architecture Index](../../architecture/INDEX.md)
+- [Architecture Index](../../architecture/index.md)
 - [Depth Rubric](../../_style/DEPTH_RUBRIC.md)
 - [Style Guide](../../_style/style-guide.md)

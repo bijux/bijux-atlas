@@ -1,29 +1,35 @@
 # Architecture Map
 
-- Owner: `atlas-platform`
-- Stability: `stable`
+Owner: `architecture`  
+Type: `concept`  
+Reason to exist: provide one canonical system map for components, boundaries, and runtime direction.
 
-Generated crate-level architecture map from workspace metadata.
+## System Flow
 
-## Crate Nodes
-
-| Crate | Role | Internal Dependencies |
-| --- | --- | --- |
-| `bijux-atlas-api` | `api-surface` | `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-query` |
-| `bijux-atlas-cli` | `cli-ops` | `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-query`, `bijux-atlas-store` |
-| `bijux-atlas-core` | `shared-core` | `(none)` |
-| `bijux-atlas-ingest` | `ingest-pipeline` | `bijux-atlas-core`, `bijux-atlas-model` |
-| `bijux-atlas-model` | `shared-model` | `(none)` |
-| `bijux-atlas-policies` | `policy-contracts` | `(none)` |
-| `bijux-atlas-query` | `query-engine` | `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-store` |
-| `bijux-atlas-server` | `runtime-server` | `bijux-atlas-api`, `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-query`, `bijux-atlas-store` |
-| `bijux-atlas-store` | `artifact-store` | `bijux-atlas-core`, `bijux-atlas-model` |
+`contracts -> crates -> runtime services -> operations evidence`
 
 ## Runtime Direction
 
 `bijux-atlas-server -> bijux-atlas-query -> bijux-atlas-store -> immutable artifacts`
 
-## Notes
+## Crate Roles
 
-- This file is generated; do not hand-edit.
-- Regenerate via `bijux dev atlas docs generate-architecture-map`.
+| Crate | Role | Internal Dependencies |
+| --- | --- | --- |
+| `bijux-atlas-api` | API surface | `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-query` |
+| `bijux-atlas-cli` | control and operations entrypoints | `bijux-atlas-core`, `bijux-atlas-ingest`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-query`, `bijux-atlas-store` |
+| `bijux-atlas-core` | shared core primitives | `(none)` |
+| `bijux-atlas-ingest` | ingest pipeline | `bijux-atlas-core`, `bijux-atlas-model` |
+| `bijux-atlas-model` | shared data model | `(none)` |
+| `bijux-atlas-policies` | policy contracts | `(none)` |
+| `bijux-atlas-query` | query engine | `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-policies`, `bijux-atlas-store` |
+| `bijux-atlas-server` | runtime server | `bijux-atlas-api`, `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-query`, `bijux-atlas-store` |
+| `bijux-atlas-store` | artifact store | `bijux-atlas-core`, `bijux-atlas-model` |
+
+## Diagram
+
+![System graph](../_assets/system-graph.svg)
+
+## Operational Relevance
+
+This map defines where production changes must be implemented and which layer owns incident diagnostics.

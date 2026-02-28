@@ -50,5 +50,5 @@ Expected output: contract checks and tests pass with no drift.
 ## See also
 
 - [Contracts SSOT](../contracts/INDEX.md)
-- [Operations Index](../operations/INDEX.md)
+- [Operations Index](../operations/index.md)
 - [Terms Glossary](../_style/terms-glossary.md)

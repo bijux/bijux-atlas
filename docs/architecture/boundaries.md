@@ -1,10 +1,10 @@
-# Bijux Atlas Crate Boundaries
+# Boundaries
 
-Concept ID: `concept.crate-boundaries`
+Owner: `architecture`  
+Type: `concept`  
+Reason to exist: define enforceable crate and layer boundaries for implementation and operations.
 
-- Owner: `bijux-atlas-core`
-
-Allowed crate dependency directions:
+## Allowed Crate Dependencies
 
 - `bijux-atlas-core`: no internal dependencies.
 - `bijux-atlas-model` -> `bijux-atlas-core`.
@@ -15,43 +15,21 @@ Allowed crate dependency directions:
 - `bijux-atlas-cli` -> `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-ingest`, `bijux-atlas-store`, `bijux-atlas-query`, `bijux-atlas-policies`.
 - `bijux-atlas-server` -> `bijux-atlas-core`, `bijux-atlas-model`, `bijux-atlas-api`, `bijux-atlas-store`, `bijux-atlas-query`.
 
-```mermaid
-flowchart LR
-  core[core]
-  model[model]
-  ingest[ingest]
-  store[store]
-  query[query]
-  api[api]
-  cli[cli]
-  server[server]
+## Layer Boundary Rules
 
-  model --> core
-  ingest --> core
-  ingest --> model
-  store --> core
-  store --> model
-  query --> core
-  query --> model
-  query --> store
-  api --> core
-  api --> model
-  api --> query
-  cli --> core
-  cli --> model
-  cli --> ingest
-  cli --> store
-  cli --> query
-  server --> core
-  server --> model
-  server --> api
-  server --> store
-  server --> query
-```
+- `stack` provisions and tears down substrate services only.
+- `k8s` owns deployment mechanics and health gates.
+- `e2e` consumes canonical entrypoints and never patches infrastructure directly.
+- `observe` validates telemetry and drills without deployment mutations.
+- `load` runs workload and scoring, without changing cluster configuration.
 
-Disallowed by default:
+## Forbidden Patterns
 
-- Any dependency edge not listed above.
+- Dependency edges not listed above.
 - Cycles among internal crates.
-- `bijux-atlas-server` importing ingest internals directly.
-- Query runtime dependencies (`tokio`, `reqwest`, `axum`, `hyper`) in `bijux-atlas-query`.
+- Cross-layer fixups where one layer repairs another layer's contract break.
+- Query-runtime-only dependencies in pure planning modules.
+
+## Operational Relevance
+
+Boundary violations produce hidden coupling, nondeterministic incidents, and brittle recovery playbooks.
