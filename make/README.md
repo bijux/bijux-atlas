@@ -1,14 +1,8 @@
 # Make Surface
 
-This directory defines Make governance and wrappers.
+Make is a thin wrapper layer for curated developer entrypoints.
 
-- `public.mk`: public entrypoint includes
-- `internal.mk`: delegated engine includes
-- `help.mk`: public help and reference targets
-- `vars.mk`: stable variables
-- `paths.mk`: stable path variables
-- `env.mk`: shared macros for tool/file/variable checks
-- `phony.mk`: centralized phony target declarations
-- `checks.mk`: governance checks
-- `help.md`: public target index
-- `CONTRACT.mk`: enforceable Make contract
+Public targets are exposed through `make help` and route through the control plane or approved local cargo lanes.
+Make does not own policy or operational logic.
+
+Contracts are defined in `make/CONTRACT.md` and enforced by `bijux dev atlas contracts make`.

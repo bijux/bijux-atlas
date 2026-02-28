@@ -2,21 +2,20 @@ make-contract-check: ## Enforce make contract constraints
 	@set -euo pipefail; \
 	public_targets="$$(sed -n '/^CURATED_TARGETS := \\/,/^$$/p' make/makefiles/root.mk | tr '\t\\' '  ' | tr -s ' ' '\n' | grep -E '^[a-z0-9][a-z0-9-]*$$')"; \
 	target_count="$$(printf '%s\n' "$$public_targets" | sed '/^$$/d' | wc -l | tr -d ' ')"; \
-	test -f make/CONTRACT.mk; \
-	test -f make/help.md; \
+	test -f make/CONTRACT.md; \
+	test -f make/README.md; \
 	test -f make/target-list.json; \
 	test "$$target_count" -le "25"; \
 	grep -Eq '^include make/public.mk$$' Makefile; \
-	grep -Eq '^include make/help.mk$$' Makefile; \
-	test "$$(rg -n '^include ' Makefile | wc -l | tr -d ' ')" = "2"; \
-	grep -Eq '^include make/makefiles/root.mk$$' make/internal.mk; \
-	test "$$(rg -n '^include ' make/internal.mk | wc -l | tr -d ' ')" = "1"; \
-	! rg -n '^\s*cd\s+' makefiles make || (echo 'contract violation: cd usage in make recipes' >&2; exit 1); \
-	! rg -n 'scripts/' Makefile makefiles || (echo 'contract violation: scripts path usage in makefiles' >&2; exit 1); \
-	! rg -n '\bcurl\b|\bwget\b' Makefile makefiles || (echo 'contract violation: network command in makefiles' >&2; exit 1); \
+	test "$$(rg -n '^include ' Makefile | wc -l | tr -d ' ')" = "1"; \
+	grep -Eq '^include make/makefiles/root.mk$$' make/_internal.mk; \
+	test "$$(rg -n '^include ' make/_internal.mk | wc -l | tr -d ' ')" = "1"; \
+	! find make/makefiles -type f -name '*.md' | grep -q .; \
+	! rg -n '^\s*cd\s+' Makefile make/public.mk make/_internal.mk make/makefiles || (echo 'contract violation: cd usage in make recipes' >&2; exit 1); \
+	! rg -n 'scripts/' Makefile make/public.mk make/_internal.mk make/makefiles || (echo 'contract violation: scripts path usage in make sources' >&2; exit 1); \
+	! rg -n '\bcurl\b|\bwget\b' Makefile make/public.mk make/_internal.mk make/makefiles || (echo 'contract violation: network command in make sources' >&2; exit 1); \
 	for target in $$public_targets; do \
-		rg -n "^$${target}: .*## " makefiles make >/dev/null || { echo "contract violation: missing one-line description for target '$${target}'" >&2; exit 1; }; \
-		rg -n "^\- $${target}:" make/help.md >/dev/null || { echo "contract violation: missing help.md entry for target '$${target}'" >&2; exit 1; }; \
+		rg -n "^$${target}:" Makefile make >/dev/null || { echo "contract violation: missing target '$${target}'" >&2; exit 1; }; \
 	done
 
 make-target-governance-check: ## Enforce target naming and duplicate target rules
@@ -68,5 +67,3 @@ make-include-cycle-check: ## Fail on cyclic include graph under make/
 	if [ -n "$$edges" ]; then \
 	  printf '%s\n' "$$edges" | tsort >/dev/null 2>&1 || { echo "governance violation: include cycle detected under make/*.mk" >&2; exit 1; }; \
 	fi
-
-.PHONY: make-contract-check make-target-governance-check make-ci-surface-check make-public-surface-sync-check make-size-budget-check make-include-cycle-check

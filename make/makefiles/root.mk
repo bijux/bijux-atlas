@@ -6,7 +6,6 @@ ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 
 include make/makefiles/_cargo.mk
-include make/makefiles/_macro.mk
 include make/makefiles/_configs.mk
 include make/makefiles/_docs.mk
 include make/makefiles/docker.mk
@@ -15,7 +14,7 @@ include make/makefiles/_policies.mk
 include make/makefiles/build.mk
 include make/makefiles/ci.mk
 include make/makefiles/dev.mk
-include make/makefiles/env.mk
+include make/makefiles/_runenv.mk
 include make/makefiles/gates.mk
 include make/makefiles/k8s.mk
 include make/makefiles/verification.mk
