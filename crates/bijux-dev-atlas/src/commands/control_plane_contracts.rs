@@ -39,6 +39,35 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
     }
 
+    fn apply_lane_policy(common: &mut ContractsCommonArgs) -> Result<(), String> {
+        match common.lane {
+            ContractsLaneArg::Local => {}
+            ContractsLaneArg::Dev => {
+                common.mode = ContractsModeArg::Effect;
+                common.allow_subprocess = true;
+                common.allow_fs_write = true;
+            }
+            ContractsLaneArg::Ci => {
+                common.mode = ContractsModeArg::Effect;
+                common.profile = ContractsProfileArg::Ci;
+                common.allow_subprocess = true;
+                common.allow_network = true;
+                common.allow_k8s = true;
+                common.allow_fs_write = true;
+                common.allow_docker_daemon = true;
+            }
+        }
+        if common.mode == ContractsModeArg::Effect
+            && common.deny_effects
+            && common.lane == ContractsLaneArg::Local
+        {
+            return Err(
+                "effect execution is denied by default; use --lane dev or --lane ci, or pass --deny-effects=false for manual allow flags".to_string(),
+            );
+        }
+        Ok(())
+    }
+
     fn write_optional(path: &Option<PathBuf>, rendered: &str) -> Result<(), String> {
         if let Some(path) = path {
             if let Some(parent) = path.parent() {
@@ -441,7 +470,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             return Ok((rendered, 0));
         }
 
-        let (repo_root, common, domain_names, contract_filter_override) = match &command {
+        let (repo_root, mut common, domain_names, contract_filter_override) = match &command {
             ContractsCommand::All(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
@@ -486,6 +515,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ),
             ContractsCommand::Snapshot(_) => unreachable!("handled above"),
         };
+        apply_lane_policy(&mut common)?;
 
         let format = common_format(&common);
         let lints = registry_lints(&repo_root)?;

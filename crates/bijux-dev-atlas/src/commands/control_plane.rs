@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    ContractsCommand, ContractsCommonArgs, ContractsFormatArg, ContractsModeArg,
-    ContractsOpsDomainArg, ContractsSnapshotDomainArg, PoliciesCommand,
+    ContractsCommand, ContractsCommonArgs, ContractsFormatArg, ContractsLaneArg, ContractsModeArg,
+    ContractsOpsDomainArg, ContractsProfileArg, ContractsSnapshotDomainArg, PoliciesCommand,
 };
 use crate::*;
 use bijux_dev_atlas::contracts;
