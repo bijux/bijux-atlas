@@ -30,7 +30,7 @@
     {
       "name": "contracts",
       "defined_in": [
-        "make/public.mk"
+        "make/contracts.mk"
       ],
       "visibility": "public",
       "used_in": [
@@ -40,7 +40,7 @@
     {
       "name": "contracts-configs",
       "defined_in": [
-        "make/public.mk"
+        "make/contracts.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -1024,6 +1024,86 @@
         "makefiles/root.mk"
       ],
       "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts-fast",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-changed",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-json",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-ci",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-root",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-docs",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-docker",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-make",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-ops",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-help",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
       "used_in": []
     }
   ]

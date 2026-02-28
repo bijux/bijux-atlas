@@ -1,51 +1,7 @@
 {
-  "max_public_targets": 25,
-  "target_public_targets": 22,
+  "max_public_targets": 40,
+  "target_public_targets": 32,
   "public_targets": [
-    {
-      "name": "help",
-      "description": "Show bounded public target surface",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "make"
-    },
-    {
-      "name": "doctor",
-      "description": "Run control-plane doctor gate",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "make"
-    },
-    {
-      "name": "fmt",
-      "description": "Run formatter checks",
-      "lanes": [
-        "dev"
-      ],
-      "area": "cargo"
-    },
-    {
-      "name": "lint",
-      "description": "Run lint checks",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "cargo"
-    },
-    {
-      "name": "test",
-      "description": "Run test suite",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "cargo"
-    },
     {
       "name": "build",
       "description": "Run workspace build lane",
@@ -57,7 +13,25 @@
     },
     {
       "name": "contracts",
-      "description": "Run the cross-group contracts fast lane",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-changed",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-ci",
+      "description": "Run contracts gate target",
       "lanes": [
         "dev",
         "ci"
@@ -66,7 +40,79 @@
     },
     {
       "name": "contracts-configs",
-      "description": "Run the configs contracts lane",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-docker",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-docs",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-fast",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-help",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-json",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-make",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-ops",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-root",
+      "description": "Run contracts gate target",
       "lanes": [
         "dev",
         "ci"
@@ -80,7 +126,7 @@
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "docker"
     },
     {
       "name": "docker-contracts",
@@ -110,22 +156,30 @@
       "area": "docker"
     },
     {
-      "name": "ops-contracts",
-      "description": "Run static ops contracts",
+      "name": "doctor",
+      "description": "Run control-plane doctor gate",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "ops"
+      "area": "make"
     },
     {
-      "name": "ops-contracts-effect",
-      "description": "Run effect ops contracts",
+      "name": "fmt",
+      "description": "Run formatter checks",
+      "lanes": [
+        "dev"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "help",
+      "description": "Show bounded public target surface",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "ops"
+      "area": "make"
     },
     {
       "name": "k8s-render",
@@ -146,8 +200,26 @@
       "area": "ops"
     },
     {
-      "name": "stack-up",
-      "description": "Start local stack via control plane",
+      "name": "lint",
+      "description": "Run lint checks",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "cargo"
+    },
+    {
+      "name": "make-target-list",
+      "description": "Generate make target inventory artifact",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "ops-contracts",
+      "description": "Run static ops contracts",
       "lanes": [
         "dev",
         "ci"
@@ -155,8 +227,8 @@
       "area": "ops"
     },
     {
-      "name": "stack-down",
-      "description": "Stop local stack via control plane",
+      "name": "ops-contracts-effect",
+      "description": "Run effect ops contracts",
       "lanes": [
         "dev",
         "ci"
@@ -173,6 +245,14 @@
       "area": "ops"
     },
     {
+      "name": "ops-nightly",
+      "description": "Run nightly CI suite checks",
+      "lanes": [
+        "ci"
+      ],
+      "area": "ops"
+    },
+    {
       "name": "ops-pr",
       "description": "Run pull request CI suite checks",
       "lanes": [
@@ -182,21 +262,31 @@
       "area": "ops"
     },
     {
-      "name": "ops-nightly",
-      "description": "Run nightly CI suite checks",
+      "name": "stack-down",
+      "description": "Stop local stack via control plane",
       "lanes": [
+        "dev",
         "ci"
       ],
       "area": "ops"
     },
     {
-      "name": "make-target-list",
-      "description": "Generate make target inventory artifact",
+      "name": "stack-up",
+      "description": "Start local stack via control plane",
       "lanes": [
         "dev",
         "ci"
       ],
-      "area": "make"
+      "area": "ops"
+    },
+    {
+      "name": "test",
+      "description": "Run test suite",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "cargo"
     }
   ]
 }

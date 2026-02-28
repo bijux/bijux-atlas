@@ -13,6 +13,9 @@
 
 | ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
 | --- | --- | --- | --- | --- | --- |
+| `MAKE-001` | contracts gate uses make/contracts.mk as single entrypoint | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-002` | contracts gate public targets are explicit and stable | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-003` | contracts gate targets are thin delegates to the contracts runner | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-ART-001` | make run scoped artifacts | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-CI-001` | make workflow curated usage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-DIR-001` | make root docs boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
@@ -51,6 +54,9 @@
 
 | Contract | Command(s) |
 | --- | --- |
+| `MAKE-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-003` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-ART-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-CI-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-DIR-001` | `bijux dev atlas contracts make --mode static` |
