@@ -1135,7 +1135,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=36)
+    let expected = (1..=37)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
@@ -2375,6 +2375,55 @@ fn test_configs_032_root_json_canonical(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_033_schema_index_matches_committed(ctx: &RunContext) -> TestResult {
+    let expected = match schema_index_json(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-033",
+                "configs.schema.index_committed_match",
+                SCHEMAS_PATH,
+                err,
+            )
+        }
+    };
+    let path = ctx
+        .repo_root
+        .join("configs/schema/generated/schema-index.json");
+    let text = match read_text(&path) {
+        Ok(text) => text,
+        Err(err) => {
+            return fail(
+                "CONFIGS-033",
+                "configs.schema.index_committed_match",
+                "configs/schema/generated/schema-index.json",
+                err,
+            )
+        }
+    };
+    let actual = match serde_json::from_str::<serde_json::Value>(&text) {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                "CONFIGS-033",
+                "configs.schema.index_committed_match",
+                "configs/schema/generated/schema-index.json",
+                format!("parse configs/schema/generated/schema-index.json failed: {err}"),
+            )
+        }
+    };
+    if actual == expected {
+        TestResult::Pass
+    } else {
+        fail(
+            "CONFIGS-033",
+            "configs.schema.index_committed_match",
+            "configs/schema/generated/schema-index.json",
+            "committed schema index does not match the canonical schema map render",
+        )
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -2601,6 +2650,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "root authority json files use canonical stable formatting",
             test_configs_032_root_json_canonical,
         ),
+        contract(
+            "CONFIGS-033",
+            "configs schema index matches committed output",
+            "configs.schema.index_committed_match",
+            "committed schema index matches the canonical schema map render",
+            test_configs_033_schema_index_matches_committed,
+        ),
     ])
 }
 
@@ -2657,6 +2713,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-030" => "Every public or generated config file must have explicit file-level consumer coverage in configs/CONSUMERS.json.".to_string(),
         "CONFIGS-031" => "Root, public, and generated JSON or JSONC configs must map to explicit schema coverage in configs/SCHEMAS.json.".to_string(),
         "CONFIGS-032" => "The root configs authority JSON files and generated configs index must stay in canonical sorted pretty JSON form.".to_string(),
+        "CONFIGS-033" => "The committed configs schema index must match the canonical render from configs/SCHEMAS.json and the schema directories.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
@@ -2834,7 +2891,7 @@ mod tests {
         let surface = read_contract_surface(&repo_root()).expect("contract surface");
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 36);
+        assert_eq!(surface.contracts.len(), 37);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -2845,7 +2902,7 @@ mod tests {
     #[test]
     fn cfg_contract_coverage_payload_is_stable() {
         let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
-        assert_eq!(payload["contract_count"].as_u64(), Some(36));
+        assert_eq!(payload["contract_count"].as_u64(), Some(37));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());

@@ -40,3 +40,4 @@
 | `CFG-034` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.schema.coverage` |
 | `CFG-035` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.registry.group_depth_budget` |
 | `CFG-036` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.json.canonical_root_surface` |
+| `CFG-037` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.schema.index_committed_match` |

@@ -582,6 +582,24 @@
         "configs/inventory.json",
         "configs/_generated/configs-index.json"
       ]
+    },
+    {
+      "contract_type": "drift",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schema.index_committed_match"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-037",
+      "rationale": "the committed schema index must exactly match the canonical render from the schema map and schema directories.",
+      "severity": "must",
+      "title": "committed configs schema index stays aligned",
+      "touched_paths": [
+        "configs/SCHEMAS.json",
+        "configs/schema/*.json",
+        "configs/schema/generated/schema-index.json",
+        "configs/contracts/*.json"
+      ]
     }
   ],
   "domain": "configs",
