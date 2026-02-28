@@ -11,7 +11,7 @@
 
 ## Frozen Structure
 
-- `docs/operations/reference/` for generated references from SSOT
+- `docs/reference/` for canonical generated and factual reference surfaces
 - `docs/operations/runbooks/` for operator runbooks
 - domain narrative subtrees (`k8s`, `observability`, `load`, `e2e`, `security`, `slo`)
 

@@ -37,4 +37,4 @@ Canonical meta target: `ops-full`.
 
 - `ops/README.md` (Tier-1 normative root overview)
 - `ops/inventory/surfaces.json` (machine truth)
-- `docs/operations/reference/ops-surface.md` (generated reference)
+- `docs/reference/commands.md` and `docs/reference/configs.md` (canonical references)

@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Tier: `tier2`
 - Audience: `operators`
-- Source-of-truth: `docs/operations/reference/commands.md`, `docs/operations/reference/ops-surface.md`, `ops/inventory/surfaces.json`
+- Source-of-truth: `docs/reference/commands.md`, `docs/reference/configs.md`, `ops/inventory/surfaces.json`
 
 ## Canonical Entrypoints
 
