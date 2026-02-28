@@ -1,45 +1,28 @@
 # Compatibility Promise
 
-- Owner: `bijux-atlas-product`
+Owner: `product`  
+Type: `concept`  
+Reason to exist: define stable compatibility guarantees for public Atlas surfaces.
 
-## What
+## Promise
 
-Upgrade guarantees for API, artifact, and cursor contracts.
+- Existing documented v1 API paths and fields remain stable.
+- Published artifact layouts remain backward-readable within v1.
+- Cursor formats remain backward-decodable within v1.
+- Existing error code identifiers remain valid within v1.
 
-## Why
+## Limits
 
-Consumers need predictable upgrades without query rewrites.
+- Undocumented or experimental surfaces are excluded.
+- Any intentional break requires explicit versioning policy updates.
 
-## Scope
+## Verification
 
-Applies to v1 surfaces.
+- `bijux dev atlas contracts check --checks breakage`
+- `make openapi-drift`
 
-## Non-goals
+## Related Pages
 
-Does not promise behavior for undocumented fields or incubating registries.
-
-## Contracts
-
-- API: existing paths and documented fields remain stable within v1.
-- Artifacts: manifest and dataset layout remain backward-readable within v1.
-- Cursor: decoder remains backward-compatible for previous v1 cursor versions.
-- Error codes: existing codes remain valid identifiers.
-
-## Failure modes
-
-Breaking changes without version bump are contract violations and must fail CI.
-
-## How to verify
-
-```bash
-$ bijux dev atlas contracts check --checks breakage
-$ make openapi-drift
-```
-
-Expected output: no breaking change detected and OpenAPI drift check passes.
-
-## See also
-
-- [Contracts Compatibility](../contracts/compatibility.md)
-- [API Versioning](../reference/evolution/api-versioning.md)
-- [JSON Compatibility](../reference/compatibility/json-wire-compatibility.md)
+- [API Versioning](../api/versioning.md)
+- [Errors Reference](../reference/errors.md)
+- [What Is Bijux Atlas](what-is-bijux-atlas.md)

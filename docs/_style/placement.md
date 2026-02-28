@@ -3,7 +3,7 @@
 1. Is this end-user framing, scope, or promise?
    Place in `docs/product/`.
 2. Is this first-run setup or onboarding flow?
-   Place in `docs/quickstart/`.
+   Place in `docs/operations/` and reference from `docs/start-here.md`.
 3. Is this stable API/artifact/schema contract?
    Place in `docs/contracts/`.
 4. Is this operational procedure, incident response, or deployment runbook?

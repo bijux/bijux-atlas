@@ -41,5 +41,5 @@ printf '{"status":"ok"}\n' | jq -e '.status == "ok"' >/dev/null
 
 ## See also
 - [OpenAPI Contract](../contracts/endpoints.md)
-- [Quickstart Local Cluster Setup](../quickstart/local-cluster-setup.md)
+- [Local Cluster Setup](../operations/local-cluster-setup.md)
 - [Contracts Examples](../contracts/examples/INDEX.md)

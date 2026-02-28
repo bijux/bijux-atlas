@@ -31,5 +31,5 @@ Expected output: example extraction, snippet execution, and schema checks pass.
 
 ## See also
 - [Contracts Index](../contracts/INDEX.md)
-- [Quickstart Index](../quickstart/INDEX.md)
+- [Run Locally](../operations/run-locally.md)
 - [Repo Surface](../development/repo-surface.md)
