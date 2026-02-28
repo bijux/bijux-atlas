@@ -1,8 +1,9 @@
 {
+  "non_root": {
+    "ops/e2e/stack": "ops/stack"
+  },
   "root": {
     "Dockerfile": "docker/images/runtime/Dockerfile"
   },
-  "non_root": {
-    "ops/e2e/stack": "ops/stack"
-  }
+  "schema_version": 1
 }

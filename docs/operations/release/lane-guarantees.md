@@ -34,3 +34,4 @@
 - Source-of-truth: `ops/policy/required-contracts.json`
 - Committed artifact: `artifacts/contracts/required.json`
 - Approval metadata: `ops/policy/required-contracts-change.json`
+- Merge and release wall: `docs/operations/release/quality-wall.md`

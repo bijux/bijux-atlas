@@ -68,6 +68,7 @@ Policy statements in this directory must link to executable contract IDs such as
 - [Fixture Dataset Ingest](fixture-dataset-ingest.md)
 - [Input Sources](input-sources.md)
 - [Promotion Record](promotion-record.md)
+- [Release Quality Wall](release/quality-wall.md)
 - [Cache Topology](cache-topology.md)
 - [Policy Violation Triage](policy-violation-triage.md)
 - [No Direct Path Usage](no-direct-path-usage.md)

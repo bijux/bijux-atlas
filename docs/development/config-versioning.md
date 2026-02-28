@@ -13,7 +13,7 @@ Prevents silent breaking changes in policy/config surfaces consumed by CI and ru
 
 ## Scope
 
-`configs/policy/policy.schema.json`, `configs/policy/policy.json`, and mirrored contract docs.
+`configs/policy/policy.schema.json`, `configs/policy/policy.json`, `configs/contracts/env.schema.json`, `docs/contracts/CONFIG_KEYS.json`, and mirrored contract docs.
 
 ## Non-goals
 
