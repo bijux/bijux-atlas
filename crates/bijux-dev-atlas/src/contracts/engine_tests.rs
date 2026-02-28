@@ -65,8 +65,11 @@ mod tests {
         };
         let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
         let pretty = to_pretty(&report);
-        let expected = "Contracts: docker (mode=static)\nDOCKER-001 sample ....................................................... \u{1b}[32mPASS\u{1b}[0m\n  docker.sample.pass .................................................... \u{1b}[32mPASS\u{1b}[0m\nSummary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error\n";
-        assert_eq!(pretty, expected);
+        assert!(pretty.contains("Contracts: docker (mode=static, duration="));
+        assert!(pretty.contains("DOCKER-001 sample"));
+        assert!(pretty.contains("docker.sample.pass"));
+        assert!(pretty.contains("PASS"));
+        assert!(pretty.contains("Summary: 1 contracts, 1 tests: 1 pass, 0 fail, 0 skip, 0 error"));
     }
 
     #[test]
@@ -97,6 +100,9 @@ mod tests {
         assert_eq!(payload["summary"]["contracts"], 1);
         assert_eq!(payload["summary"]["tests"], 1);
         assert_eq!(payload["summary"]["fail"], 1);
+        assert!(payload["summary"]["duration_ms"].is_u64());
+        assert!(payload["contracts"][0]["duration_ms"].is_u64());
+        assert!(payload["contracts"][0]["checks"][0]["duration_ms"].is_u64());
         assert_eq!(
             payload["tests"][0]["violations"][0]["message"],
             "sample failure"

@@ -172,6 +172,7 @@ pub struct CaseReport {
     pub test_title: String,
     pub kind: TestKind,
     pub status: CaseStatus,
+    pub duration_ms: u64,
     pub violations: Vec<Violation>,
     pub note: Option<String>,
 }
@@ -182,6 +183,7 @@ pub struct ContractSummary {
     pub mode: ContractMode,
     pub effects: Vec<EffectKind>,
     pub status: CaseStatus,
+    pub duration_ms: u64,
 }
 
 pub struct RunMetadata {
@@ -196,6 +198,7 @@ pub struct RunReport {
     pub metadata: RunMetadata,
     pub contracts: Vec<ContractSummary>,
     pub cases: Vec<CaseReport>,
+    pub duration_ms: u64,
 }
 
 pub struct RegistrySnapshotRow {

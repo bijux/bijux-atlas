@@ -14,21 +14,25 @@ pub fn to_pretty(report: &RunReport) -> String {
 
     let mut out = String::new();
     out.push_str(&format!(
-        "Contracts: {} (mode={})\n",
-        report.domain, report.mode
+        "Contracts: {} (mode={}, duration={}ms)\n",
+        report.domain, report.mode, report.duration_ms
     ));
     for contract in &report.contracts {
         out.push_str(&format!(
             "{}\n",
             dotted(
                 &format!("{} {}", contract.id, contract.title),
-                contract.status.as_colored()
+                &format!("{} ({}ms)", contract.status.as_colored(), contract.duration_ms)
             )
         ));
         for case in report.cases.iter().filter(|c| c.contract_id == contract.id) {
             out.push_str(&format!(
                 "  {}\n",
-                dotted_with_width(&case.test_id, case.status.as_colored(), 70)
+                dotted_with_width(
+                    &case.test_id,
+                    &format!("{} ({}ms)", case.status.as_colored(), case.duration_ms),
+                    70,
+                )
             ));
             for violation in &case.violations {
                 let location = match (&violation.file, violation.line) {
@@ -107,7 +111,8 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "fail": report.fail_count(),
             "skip": report.skip_count(),
             "error": report.error_count(),
-            "exit_code": report.exit_code()
+            "exit_code": report.exit_code(),
+            "duration_ms": report.duration_ms
         },
         "maturity": maturity_score(&report.contracts),
         "contracts": report.contracts.iter().map(|c| serde_json::json!({
@@ -118,11 +123,13 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "mode": c.mode.as_str(),
             "effects": c.effects.iter().map(|effect| effect.as_str()).collect::<Vec<_>>(),
             "status": c.status.as_str(),
+            "duration_ms": c.duration_ms,
             "summary": c.title,
             "tests": report.cases.iter().filter(|t| t.contract_id == c.id).count(),
             "checks": report.cases.iter().filter(|t| t.contract_id == c.id).map(|t| serde_json::json!({
                 "test_id": t.test_id,
                 "status": t.status.as_str(),
+                "duration_ms": t.duration_ms,
                 "details": t.note,
                 "violations": t.violations.iter().map(|v| serde_json::json!({
                     "file": v.file,
@@ -139,6 +146,7 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "test_title": t.test_title,
             "kind": format!("{:?}", t.kind).to_ascii_lowercase(),
             "status": t.status.as_str(),
+            "duration_ms": t.duration_ms,
             "note": t.note,
             "violations": t.violations.iter().map(|v| serde_json::json!({
                 "contract_id": v.contract_id,
@@ -174,7 +182,8 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
             "fail": fail,
             "skip": skip,
             "error": error,
-            "exit_code": exit_code
+            "exit_code": exit_code,
+            "duration_ms": reports.iter().map(|report| report.duration_ms).sum::<u64>()
         },
         "maturity": serde_json::json!({
             "domains": reports.iter().map(|report| serde_json::json!({

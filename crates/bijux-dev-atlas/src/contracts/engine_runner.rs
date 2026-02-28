@@ -1,9 +1,12 @@
+use std::time::Instant;
+
 pub fn run(
     domain: &str,
     contracts_fn: fn(&Path) -> Result<Vec<Contract>, String>,
     repo_root: &Path,
     options: &RunOptions,
 ) -> Result<RunReport, String> {
+    let run_started = Instant::now();
     let mut contracts = contracts_fn(repo_root)?;
     contracts.sort_by_key(|c| c.id.0.clone());
 
@@ -39,6 +42,7 @@ pub fn run(
         cases.sort_by_key(|t| t.id.0.clone());
         let mut contract_status = CaseStatus::Pass;
         let mut has_case = false;
+        let contract_started = Instant::now();
         for case in cases {
             if !matches_filter(&options.test_filter, &case.id.0)
                 || !matches_any_filter(&options.only_tests, &case.id.0)
@@ -46,6 +50,7 @@ pub fn run(
                 continue;
             }
             has_case = true;
+            let case_started = Instant::now();
             let result = if options.list_only {
                 TestResult::Skip("list-only".to_string())
             } else {
@@ -88,6 +93,7 @@ pub fn run(
                 test_title: case.title.to_string(),
                 kind: case.kind,
                 status,
+                duration_ms: case_started.elapsed().as_millis() as u64,
                 violations,
                 note,
             });
@@ -102,6 +108,7 @@ pub fn run(
                 mode: contract_mode,
                 effects: contract_effects,
                 status: contract_status,
+                duration_ms: contract_started.elapsed().as_millis() as u64,
             });
         }
         if options.fail_fast && matches!(contract_status, CaseStatus::Fail | CaseStatus::Error) {
@@ -115,6 +122,7 @@ pub fn run(
         metadata: run_metadata(repo_root),
         contracts: contract_rows,
         cases: case_rows,
+        duration_ms: run_started.elapsed().as_millis() as u64,
     };
 
     if let Some(root) = &options.artifacts_root {
