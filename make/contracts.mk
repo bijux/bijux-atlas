@@ -1,10 +1,11 @@
 CONTRACTS_ARTIFACT_ROOT ?= $(ARTIFACT_ROOT)/contracts/$(RUN_ID)
-CONTRACTS_DEV_ATLAS_BIN ?= artifacts/target/debug/bijux-dev-atlas
+CONTRACTS_DEV_ATLAS_TARGET_DIR ?= $(WORKSPACE_ROOT)/artifacts/target
+CONTRACTS_DEV_ATLAS_BIN ?= $(CONTRACTS_DEV_ATLAS_TARGET_DIR)/debug/bijux-dev-atlas
 
 _contracts_guard:
 	@if [ ! -x "$(CONTRACTS_DEV_ATLAS_BIN)" ]; then \
 		printf '%s\n' "build: cargo build -p bijux-dev-atlas"; \
-		cargo build -q -p bijux-dev-atlas; \
+		CARGO_TARGET_DIR="$(CONTRACTS_DEV_ATLAS_TARGET_DIR)" cargo build -q -p bijux-dev-atlas; \
 	fi
 	@command -v "$(CONTRACTS_DEV_ATLAS_BIN)" >/dev/null 2>&1 || { \
 		printf '%s\n' "missing $(CONTRACTS_DEV_ATLAS_BIN); run: cargo build -p bijux-dev-atlas"; \

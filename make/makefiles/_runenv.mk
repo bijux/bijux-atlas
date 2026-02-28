@@ -8,7 +8,7 @@ MAKE_RUN_TS ?= $(shell date -u +%Y%m%dT%H%M%SZ)
 MAKE_RUN_ID ?= $(MAKE_PRIMARY_GOAL)-$(MAKE_RUN_TS)-$(shell sh -c 'echo $$PPID')
 WORKSPACE_ROOT ?= $(abspath .)
 
-ISO_ROOT ?= $(WORKSPACE_ROOT)/artifacts/isolate/$(MAKE_PRIMARY_GOAL)/$(MAKE_RUN_ID)
+ISO_ROOT ?= $(WORKSPACE_ROOT)/artifacts/isolate/$(MAKE_PRIMARY_GOAL)
 ISO_ROOT := $(abspath $(ISO_ROOT))
 ISO_RUN_ID ?= $(MAKE_RUN_ID)
 ISO_TAG ?= $(MAKE_RUN_ID)
