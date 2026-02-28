@@ -1,9 +1,11 @@
 # Repository Layout
 
-Owner: `platform`  
-Type: `guide`  
-Audience: `contributor`  
-Reason to exist: describe canonical directory responsibilities and invariants.
+- Owner: `platform`
+- Type: `guide`
+- Audience: `contributor`
+- Stability: `stable`
+- Last verified against: `main@d489531b`
+- Reason to exist: describe canonical directory responsibilities and invariants.
 
 ## Invariants
 
@@ -23,4 +25,21 @@ Reason to exist: describe canonical directory responsibilities and invariants.
 
 ## Build Entry Surface
 
-Makefiles are thin wrappers over canonical crate and control-plane commands. Use `make` as a convenience layer, not as a hidden source of truth.
+Makefiles are thin wrappers over canonical crate and control-plane commands.
+Use `make` as a convenience layer, not as a hidden source of truth.
+
+## Verify Success
+
+Contributor changes should not introduce new top-level alias directories or duplicate entry surfaces.
+
+## What to Read Next
+
+- [Contributing](contributing.md)
+- [Control Plane](control-plane.md)
+
+## Document Taxonomy
+
+- Audience: `contributor`
+- Type: `guide`
+- Stability: `stable`
+- Owner: `platform`
