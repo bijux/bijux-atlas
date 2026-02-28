@@ -1,9 +1,0 @@
-{
-  "schema_version": "v1",
-  "enabled": false,
-  "events": [
-    "docs_registry_build",
-    "docs_registry_validate",
-    "docs_links_check"
-  ]
-}

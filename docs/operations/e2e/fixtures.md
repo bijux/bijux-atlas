@@ -43,5 +43,5 @@ Expected output: fixture downloads pass checksum validation.
 ## See also
 
 - [E2E Overview](overview.md)
-- [Fixtures Reference](../../reference/fixtures/INDEX.md)
-- [Contracts Artifacts](../../contracts/artifacts/INDEX.md)
+- [Fixtures Reference](../../reference/index.md)
+- [Reference Schemas](../../reference/schemas.md)
