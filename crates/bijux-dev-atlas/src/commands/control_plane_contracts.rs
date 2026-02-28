@@ -470,6 +470,37 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             return Ok((rendered, 0));
         }
 
+        if let ContractsCommand::SelfCheck(args) = &command {
+            let repo_root = resolve_repo_root(args.repo_root.clone())?;
+            let format = common_format(args);
+            let mut lints = registry_lints(&repo_root)?;
+            let domains = all_domains(&repo_root)?;
+            let catalogs = domains
+                .iter()
+                .map(|(descriptor, registry)| (descriptor.name, registry.as_slice()))
+                .collect::<Vec<_>>();
+            lints.extend(contracts::lint_contracts(&catalogs));
+            if lints.is_empty() {
+                let rendered = match format {
+                    ContractsFormatArg::Json => serde_json::to_string_pretty(&serde_json::json!({
+                        "schema_version": 1,
+                        "status": "pass",
+                        "check": "contracts-self-check",
+                        "lint_count": 0
+                    }))
+                    .map_err(|e| format!("encode contracts self-check failed: {e}"))?,
+                    ContractsFormatArg::Human
+                    | ContractsFormatArg::Table
+                    | ContractsFormatArg::Junit
+                    | ContractsFormatArg::Github => {
+                        "contracts self-check: PASS".to_string()
+                    }
+                };
+                return Ok((rendered, 0));
+            }
+            return Ok((render_registry_lints(&lints, format)?, 1));
+        }
+
         let (repo_root, mut common, domain_names, contract_filter_override) = match &command {
             ContractsCommand::All(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
@@ -513,6 +544,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 vec!["ops"],
                 args.domain.map(ops_domain_filter),
             ),
+            ContractsCommand::SelfCheck(_) => unreachable!("handled above"),
             ContractsCommand::Snapshot(_) => unreachable!("handled above"),
         };
         apply_lane_policy(&mut common)?;

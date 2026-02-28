@@ -238,6 +238,7 @@ fn force_json_contracts(command: &mut ContractsCommand) {
         ContractsCommand::Docker(args) => args.common.json = true,
         ContractsCommand::Make(args) => args.common.json = true,
         ContractsCommand::Ops(args) => args.common.json = true,
+        ContractsCommand::SelfCheck(args) => args.json = true,
         ContractsCommand::Snapshot(_) => {}
     }
 }
@@ -317,6 +318,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             ContractsCommand::Docker(args) => args.common.fail_fast = true,
             ContractsCommand::Make(args) => args.common.fail_fast = true,
             ContractsCommand::Ops(args) => args.common.fail_fast = true,
+            ContractsCommand::SelfCheck(args) => args.fail_fast = true,
             ContractsCommand::Snapshot(_) => {}
         },
         _ => {}
@@ -584,6 +586,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             ContractsCommand::Docker(args) => args.common.repo_root = Some(root.clone()),
             ContractsCommand::Make(args) => args.common.repo_root = Some(root.clone()),
             ContractsCommand::Ops(args) => args.common.repo_root = Some(root.clone()),
+            ContractsCommand::SelfCheck(args) => args.repo_root = Some(root.clone()),
             ContractsCommand::Snapshot(args) => args.repo_root = Some(root.clone()),
         },
         Command::Ci { command } | Command::Workflows { command } => match command {

@@ -246,6 +246,7 @@ pub enum ContractsCommand {
     Docker(ContractsDockerArgs),
     Make(ContractsMakeArgs),
     Ops(ContractsOpsArgs),
+    SelfCheck(ContractsCommonArgs),
     Snapshot(ContractsSnapshotArgs),
 }
 
