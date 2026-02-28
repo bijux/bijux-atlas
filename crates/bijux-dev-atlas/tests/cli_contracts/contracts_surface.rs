@@ -49,6 +49,8 @@ fn contracts_ops_list_contains_curated_contract_ids() {
         "OPS-ROOT-001",
         "OPS-ROOT-002",
         "OPS-ROOT-015",
+        "OPS-ROOT-021",
+        "OPS-ROOT-023",
         "OPS-INV-001",
         "OPS-SCHEMA-001",
         "OPS-STACK-001",
