@@ -1,0 +1,13 @@
+# Documentation Review Checklist
+
+Owner: `docs-governance`  
+Type: `policy`  
+Reason to exist: define merge gates for documentation updates.
+
+## Required Checks
+
+- Page includes owner, audience, type, and reason-to-exist.
+- Content matches current commands, make targets, and behavior.
+- Duplicate content is removed or redirected to the canonical page.
+- Links resolve and point to canonical section entrypoints.
+- Change is clearer and more actionable than the previous version.
