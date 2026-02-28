@@ -171,9 +171,7 @@ fn schema_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
                 .display()
                 .to_string()
                 .replace('\\', "/");
-            if rel.starts_with("configs/schema/generated/") {
-                None
-            } else if !schema_like(&rel) {
+            if rel.starts_with("configs/schema/generated/") || !schema_like(&rel) {
                 None
             } else {
                 Some(rel)
@@ -418,4 +416,3 @@ fn canonical_json_string(value: &serde_json::Value) -> Result<String, String> {
         .map(|text| format!("{text}\n"))
         .map_err(|err| format!("render canonical json failed: {err}"))
 }
-

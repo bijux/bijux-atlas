@@ -513,10 +513,7 @@ fn test_root_015_no_duplicate_toolchain_authority(ctx: &RunContext) -> TestResul
 }
 
 fn root_surface_manifest(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<serde_json::Value, TestResult> {
-    let contents = match read_root_text(ctx, "root-surface.json", contract_id, test_id) {
-        Ok(contents) => contents,
-        Err(result) => return Err(result),
-    };
+    let contents = read_root_text(ctx, "root-surface.json", contract_id, test_id)?;
     serde_json::from_str(&contents).map_err(|err| {
         TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
@@ -528,4 +525,3 @@ fn root_surface_manifest(ctx: &RunContext, contract_id: &str, test_id: &str) -> 
         }])
     })
 }
-
