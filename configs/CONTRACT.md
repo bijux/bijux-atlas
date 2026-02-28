@@ -6,14 +6,14 @@
 | --- | --- | --- | --- |
 | `CFG-001` | `blocker` | `filelayout` | `bijux dev atlas contracts configs` / `configs.root.only_root_docs` |
 | `CFG-002` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.layout.depth_budget` |
-| `CFG-003` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_overlap` |
+| `CFG-003` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_undocumented_files` |
 | `CFG-004` | `blocker` | `schema` | `bijux dev atlas contracts configs` / `configs.schemas.file_coverage` |
 | `CFG-005` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.registry.schema_owner` |
-| `CFG-006` | `must` | `supplychain` | `bijux dev atlas contracts configs` / `configs.lockfiles.required_pairs` |
-| `CFG-007` | `must` | `static` | `bijux dev atlas contracts configs` / `configs.registry.visibility_classification` |
-| `CFG-008` | `must` | `supplychain` | `bijux dev atlas contracts configs` / `configs.lockfiles.required_pairs` |
-| `CFG-009` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.owners.group_alignment` |
-| `CFG-010` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.consumers.file_coverage` |
+| `CFG-006` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.schema.coverage` |
+| `CFG-007` | `must` | `supplychain` | `bijux dev atlas contracts configs` / `configs.lockfiles.required_pairs` |
+| `CFG-008` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_overlap` |
+| `CFG-009` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.generated.authored_boundary` |
+| `CFG-010` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.contracts.no_policy_theater` |
 | `CFG-011` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.registry.group_budget` |
 | `CFG-012` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_orphans` |
 | `CFG-013` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_dead_entries` |

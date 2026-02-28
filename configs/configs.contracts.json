@@ -74,14 +74,28 @@
       },
       "evidence_artifact": null,
       "id": "CFG-005",
-      "rationale": "schema-bearing config groups need explicit schema ownership and real schema declarations.",
+      "rationale": "every configs group needs an explicit owner in the canonical registry.",
       "severity": "must",
-      "title": "schema-bearing config groups declare schema ownership",
+      "title": "all configs groups declare an owner",
       "touched_paths": [
-        "configs/schema/*.json",
-        "configs/contracts/*.json",
+        "configs/inventory/configs.json"
+      ]
+    },
+    {
+      "contract_type": "schema",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schema.coverage"
+      },
+      "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json",
+      "id": "CFG-006",
+      "rationale": "json-bearing config groups need explicit schema declarations and those schema paths must resolve to real files.",
+      "severity": "must",
+      "title": "json-bearing config groups declare real schema files",
+      "touched_paths": [
         "configs/inventory/configs.json",
-        "configs/SCHEMAS.json"
+        "configs/schema/*.json",
+        "configs/contracts/*.json"
       ]
     },
     {
@@ -91,7 +105,7 @@
         "test_id": "configs.lockfiles.required_pairs"
       },
       "evidence_artifact": null,
-      "id": "CFG-006",
+      "id": "CFG-007",
       "rationale": "declared tool inputs that require lock companions must keep those lock surfaces committed.",
       "severity": "must",
       "title": "required lockfile pairs exist for tool-managed config inputs",
@@ -99,8 +113,7 @@
         "configs/docs/package.json",
         "configs/docs/package-lock.json",
         "configs/docs/requirements.txt",
-        "configs/docs/requirements.lock.txt",
-        "configs/rust/*.json"
+        "configs/docs/requirements.lock.txt"
       ]
     },
     {
@@ -110,7 +123,7 @@
         "test_id": "configs.registry.no_overlap"
       },
       "evidence_artifact": null,
-      "id": "CFG-007",
+      "id": "CFG-008",
       "rationale": "a governed config file may belong to only one canonical group in the registry.",
       "severity": "must",
       "title": "no config file is claimed by multiple groups",
@@ -126,29 +139,13 @@
         "test_id": "configs.generated.authored_boundary"
       },
       "evidence_artifact": null,
-      "id": "CFG-008",
+      "id": "CFG-009",
       "rationale": "generated config files must stay isolated from authored config inputs.",
       "severity": "must",
       "title": "generated config surfaces stay separate from authored inputs",
       "touched_paths": [
         "configs/_generated/**",
         "configs/schema/generated/**",
-        "configs/inventory/configs.json"
-      ]
-    },
-    {
-      "contract_type": "drift",
-      "enforced_by": {
-        "command": "bijux dev atlas contracts configs",
-        "test_id": "configs.owners.group_alignment"
-      },
-      "evidence_artifact": null,
-      "id": "CFG-009",
-      "rationale": "the root owner authority file must stay aligned with the declared registry groups.",
-      "severity": "blocker",
-      "title": "root owner map stays aligned with the registry",
-      "touched_paths": [
-        "configs/OWNERS.json",
         "configs/inventory/configs.json"
       ]
     },
