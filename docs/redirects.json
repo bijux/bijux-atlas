@@ -1,1 +1,24 @@
-{}
+{
+  "docs/root/architecture-overview.md": "docs/architecture/index.md",
+  "docs/root/ops-overview.md": "docs/operations/index.md",
+  "docs/root/docker-overview.md": "docs/operations/deploy.md",
+  "docs/root/makefiles-overview.md": "docs/development/repo-layout.md",
+  "docs/root/commands-reference.md": "docs/reference/commands.md",
+  "docs/root/command-index.md": "docs/reference/commands.md",
+  "docs/root/configs-overview.md": "docs/reference/configs.md",
+  "docs/root/schema-index.md": "docs/reference/schemas.md",
+  "docs/root/security-model.md": "docs/operations/security/index.md",
+  "docs/root/observability-overview.md": "docs/operations/observability/index.md",
+  "docs/root/repository-structure.md": "docs/development/repo-layout.md",
+  "docs/root/ci-workflow-explanation.md": "docs/development/ci-overview.md",
+  "docs/root/control-plane-overview.md": "docs/development/control-plane.md",
+  "docs/root/reproducibility-guarantees.md": "docs/product/compatibility-promise.md",
+  "docs/root/stability-guarantees.md": "docs/product/compatibility-promise.md",
+  "docs/root/compatibility-policy.md": "docs/product/compatibility-promise.md",
+  "docs/root/release-process-overview.md": "docs/operations/release/index.md",
+  "docs/root/faq.md": "docs/start-here.md",
+  "docs/root/glossary.md": "docs/glossary.md",
+  "docs/root/terminology-rules.md": "docs/style.md",
+  "docs/root/navigation-policy.md": "docs/governance/docs-navigation-policy.md",
+  "docs/root/index.md": "docs/index.md"
+}
