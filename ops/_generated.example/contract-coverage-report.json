@@ -1,66 +1,66 @@
 {
-  "schema_version": 1,
-  "generated_by": "bijux dev atlas ops contracts coverage",
   "contracts": [
     {
-      "path": "ops/datasets/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/datasets/CONTRACT.md"
     },
     {
-      "path": "ops/e2e/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/e2e/CONTRACT.md"
     },
     {
-      "path": "ops/env/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 2,
       "invariants": 8,
-      "enforcement_links": 2
+      "path": "ops/env/CONTRACT.md"
     },
     {
-      "path": "ops/inventory/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/inventory/CONTRACT.md"
     },
     {
-      "path": "ops/k8s/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 2,
       "invariants": 8,
-      "enforcement_links": 2
+      "path": "ops/k8s/CONTRACT.md"
     },
     {
-      "path": "ops/load/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 2,
       "invariants": 8,
-      "enforcement_links": 2
+      "path": "ops/load/CONTRACT.md"
     },
     {
-      "path": "ops/observe/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/observe/CONTRACT.md"
     },
     {
-      "path": "ops/report/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/report/CONTRACT.md"
     },
     {
-      "path": "ops/schema/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/schema/CONTRACT.md"
     },
     {
-      "path": "ops/stack/CONTRACT.md",
       "authored_vs_generated": true,
+      "enforcement_links": 3,
       "invariants": 8,
-      "enforcement_links": 3
+      "path": "ops/stack/CONTRACT.md"
     }
-  ]
+  ],
+  "generated_by": "bijux dev atlas ops contracts coverage",
+  "schema_version": 1
 }

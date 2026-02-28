@@ -561,6 +561,16 @@
       "title": "inventory contract gate map canonical order contract"
     },
     {
+      "id": "OPS-INV-MAP-011",
+      "tests": [
+        {
+          "test_id": "ops.inventory.contract_gate_map.effect_metadata_declared",
+          "title": "effect mappings declare external tools, artifacts, and reproducible commands"
+        }
+      ],
+      "title": "inventory contract gate map effect metadata contract"
+    },
+    {
       "id": "OPS-INV-PILLARS-001",
       "tests": [
         {
@@ -694,14 +704,44 @@
       "id": "OPS-K8S-E-001",
       "tests": [
         {
+          "test_id": "ops.k8s.effect.chart_defaults_rendered",
+          "title": "effect lane renders chart defaults with helm template and emits rendered manifest"
+        }
+      ],
+      "title": "k8s effect chart defaults render contract"
+    },
+    {
+      "id": "OPS-K8S-E-002",
+      "tests": [
+        {
+          "test_id": "ops.k8s.effect.chart_minimal_values_rendered",
+          "title": "effect lane renders a minimal chart values profile"
+        }
+      ],
+      "title": "k8s effect minimal values render contract"
+    },
+    {
+      "id": "OPS-K8S-E-003",
+      "tests": [
+        {
+          "test_id": "ops.k8s.effect.kubeconform_render_validation",
+          "title": "effect lane validates rendered manifests with kubeconform"
+        }
+      ],
+      "title": "k8s effect kubeconform contract"
+    },
+    {
+      "id": "OPS-K8S-E-004",
+      "tests": [
+        {
           "test_id": "ops.k8s.effect.helm_install_contract_defined",
           "title": "effect lane requires kind install profile in k8s install matrix"
         }
       ],
-      "title": "k8s effect helm install contract"
+      "title": "k8s effect install matrix contract"
     },
     {
-      "id": "OPS-K8S-E-002",
+      "id": "OPS-K8S-E-005",
       "tests": [
         {
           "test_id": "ops.k8s.effect.rollout_safety_contract_satisfied",
@@ -711,14 +751,14 @@
       "title": "k8s effect rollout safety contract"
     },
     {
-      "id": "OPS-K8S-E-003",
+      "id": "OPS-K8S-E-006",
       "tests": [
         {
-          "test_id": "ops.k8s.effect.service_endpoints_reachable_contract",
-          "title": "effect lane requires non-empty k8s suite coverage for endpoint checks"
+          "test_id": "ops.k8s.effect.tool_versions_recorded",
+          "title": "effect lane records helm and kubeconform versions and enforces allowed major versions"
         }
       ],
-      "title": "k8s effect endpoint reachability contract"
+      "title": "k8s effect tool versions contract"
     },
     {
       "id": "OPS-LOAD-001",
@@ -1691,6 +1731,16 @@
         }
       ],
       "title": "stack effect health report contract"
+    },
+    {
+      "id": "OPS-STACK-E-005",
+      "tests": [
+        {
+          "test_id": "ops.stack.effect.kind_install_smoke",
+          "title": "release lane verifies kind-backed install planning and cluster profile tooling"
+        }
+      ],
+      "title": "stack effect kind install smoke contract"
     }
   ],
   "domain": "ops",

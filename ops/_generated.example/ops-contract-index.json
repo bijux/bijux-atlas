@@ -886,6 +886,21 @@
       "command": "bijux dev atlas ops check",
       "effects_required": [],
       "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "id": "OPS-INV-MAP-011",
+      "mode": "static",
+      "pillar": "inventory",
+      "static_only": true,
+      "test_ids": [
+        "ops.inventory.contract_gate_map.effect_metadata_declared"
+      ],
+      "title": "inventory contract gate map effect metadata contract"
+    },
+    {
+      "command": "bijux dev atlas ops check",
+      "effects_required": [],
+      "gate_ids": [
         "ops.gate.inventory"
       ],
       "id": "OPS-INV-PILLARS-001",
@@ -1090,9 +1105,9 @@
       "pillar": "k8s",
       "static_only": false,
       "test_ids": [
-        "ops.k8s.effect.helm_install_contract_defined"
+        "ops.k8s.effect.chart_defaults_rendered"
       ],
-      "title": "k8s effect helm install contract"
+      "title": "k8s effect chart defaults render contract"
     },
     {
       "command": "bijux dev atlas ops run",
@@ -1107,14 +1122,14 @@
       "pillar": "k8s",
       "static_only": false,
       "test_ids": [
-        "ops.k8s.effect.rollout_safety_contract_satisfied"
+        "ops.k8s.effect.chart_minimal_values_rendered"
       ],
-      "title": "k8s effect rollout safety contract"
+      "title": "k8s effect minimal values render contract"
     },
     {
       "command": "bijux dev atlas ops run",
       "effects_required": [
-        "network"
+        "subprocess"
       ],
       "gate_ids": [
         "ops.gate.k8s-determinism"
@@ -1124,9 +1139,60 @@
       "pillar": "k8s",
       "static_only": false,
       "test_ids": [
-        "ops.k8s.effect.service_endpoints_reachable_contract"
+        "ops.k8s.effect.kubeconform_render_validation"
       ],
-      "title": "k8s effect endpoint reachability contract"
+      "title": "k8s effect kubeconform contract"
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-K8S-E-004",
+      "mode": "effect",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.effect.helm_install_contract_defined"
+      ],
+      "title": "k8s effect install matrix contract"
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-K8S-E-005",
+      "mode": "effect",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.effect.rollout_safety_contract_satisfied"
+      ],
+      "title": "k8s effect rollout safety contract"
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "id": "OPS-K8S-E-006",
+      "mode": "effect",
+      "pillar": "k8s",
+      "static_only": false,
+      "test_ids": [
+        "ops.k8s.effect.tool_versions_recorded"
+      ],
+      "title": "k8s effect tool versions contract"
     },
     {
       "command": "bijux dev atlas ops check",
@@ -2565,6 +2631,23 @@
         "ops.stack.effect.health_report_generated"
       ],
       "title": "stack effect health report contract"
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "effects_required": [
+        "subprocess"
+      ],
+      "gate_ids": [
+        "ops.gate.stack-reproducibility"
+      ],
+      "id": "OPS-STACK-E-005",
+      "mode": "effect",
+      "pillar": "stack",
+      "static_only": false,
+      "test_ids": [
+        "ops.stack.effect.kind_install_smoke"
+      ],
+      "title": "stack effect kind install smoke contract"
     }
   ],
   "domain": "ops",
