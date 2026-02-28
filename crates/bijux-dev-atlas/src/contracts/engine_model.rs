@@ -463,6 +463,12 @@ pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
 pub fn lint_contracts(catalogs: &[(&str, &[Contract])]) -> Vec<RegistryLint> {
     let mut lints = Vec::new();
     for (domain, contracts) in catalogs {
+        if contracts.is_empty() {
+            lints.push(RegistryLint {
+                code: "empty-group",
+                message: format!("{domain} contract registry is empty"),
+            });
+        }
         for contract in *contracts {
             let mode = contract_mode(contract);
             let effects = contract_effects(contract);

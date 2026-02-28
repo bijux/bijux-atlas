@@ -3,7 +3,7 @@
 use std::path::Path;
 
 use bijux_dev_atlas::contracts::{
-    lint_registry_rows, run, Contract, ContractId, Mode, RegistrySnapshotRow, RunContext,
+    lint_contracts, lint_registry_rows, run, Contract, ContractId, Mode, RegistrySnapshotRow, RunContext,
     RunOptions, TestCase, TestId, TestKind, TestResult,
 };
 
@@ -131,4 +131,10 @@ fn run_honors_only_skip_and_tag_filters() {
     let report = run("ops", registry, Path::new("."), &options).expect("run");
     assert_eq!(report.total_contracts(), 1);
     assert_eq!(report.contracts[0].id, "OPS-ROOT-001");
+}
+
+#[test]
+fn contract_lints_detect_empty_group_registry() {
+    let lints = lint_contracts(&[("docs", &[]), ("ops", &[])]);
+    assert!(lints.iter().any(|lint| lint.code == "empty-group"));
 }
