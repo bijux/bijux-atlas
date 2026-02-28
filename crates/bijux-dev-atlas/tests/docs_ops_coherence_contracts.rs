@@ -396,3 +396,125 @@ fn runbooks_reference_known_alert_and_slo_catalog_entries() {
         violations.join("\n")
     );
 }
+
+#[test]
+fn operations_docs_bind_kind_fixture_and_promotion_pages_to_canonical_ops_paths() {
+    let root = repo_root();
+    let cases = [
+        (
+            "docs/operations/kind-profile.md",
+            [
+                "ops/stack/profiles.json",
+                "ops/stack/kind/cluster-dev.yaml",
+                "ops/stack/kind/cluster-perf.yaml",
+                "ops/stack/kind/cluster-small.yaml",
+            ]
+            .as_slice(),
+        ),
+        (
+            "docs/operations/fixture-dataset-ingest.md",
+            [
+                "ops/datasets/manifest.json",
+                "ops/datasets/generated/fixture-inventory.json",
+                "ops/datasets/fixture-policy.json",
+            ]
+            .as_slice(),
+        ),
+        (
+            "docs/operations/promotion-record.md",
+            [
+                "ops/datasets/promotion-rules.json",
+                "ops/datasets/rollback-policy.json",
+                "ops/_generated.example/fixture-drift-report.json",
+            ]
+            .as_slice(),
+        ),
+    ];
+    for (page, required) in cases {
+        let text = read(&root.join(page));
+        for rel in required {
+            assert!(text.contains(rel), "{page} must reference `{rel}`");
+            assert!(root.join(rel).exists(), "{page} reference must exist: {rel}");
+        }
+    }
+}
+
+#[test]
+fn docs_must_not_invent_ops_steps_outside_control_plane_and_manifest_surfaces() {
+    let root = repo_root();
+    let surfaces = load_json(&root.join("ops/inventory/surfaces.json"));
+    let commands = surfaces["bijux-dev-atlas_commands"]
+        .as_array()
+        .expect("ops commands")
+        .iter()
+        .filter_map(Value::as_str)
+        .collect::<Vec<_>>();
+    let allowed_make = surfaces["entrypoints"]
+        .as_array()
+        .expect("entrypoints")
+        .iter()
+        .filter_map(Value::as_str)
+        .map(|name| format!("make {name}"))
+        .collect::<BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for path in markdown_files(&root.join("docs/operations")) {
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let text = read(&path);
+        for line in text.lines() {
+            let trimmed = line.trim();
+            if !trimmed.starts_with("bijux dev atlas ops ") && !trimmed.starts_with("make ops-") {
+                continue;
+            }
+            let exact = trimmed.trim_matches('`');
+            let known_cli = commands.iter().any(|cmd| exact.starts_with(cmd));
+            let known_make = allowed_make.iter().any(|cmd| exact.starts_with(cmd));
+            if !known_cli && !known_make {
+                violations.push(format!("{rel} invents non-canonical ops command `{exact}`"));
+            }
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "operations docs must use canonical control-plane commands only:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn ops_help_output_lists_pillars_and_doc_entrypoints() {
+    let root = repo_root();
+    let output = std::process::Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(&root)
+        .args(["ops", "--help"])
+        .output()
+        .expect("ops --help");
+    assert!(output.status.success(), "ops --help must succeed");
+    let help = String::from_utf8(output.stdout).expect("utf8");
+    for required in [
+        "Ops Pillars And Docs Entrypoints:",
+        "inventory -> docs/operations/reference/ops-surface.md",
+        "k8s -> docs/operations/k8s/INDEX.md",
+        "datasets -> docs/operations/datasets.md",
+        "report -> docs/operations/unified-report.md",
+    ] {
+        assert!(help.contains(required), "ops --help missing `{required}`");
+    }
+}
+
+#[test]
+fn ops_contract_ids_stay_explicit_and_non_range_based() {
+    let root = repo_root();
+    let snapshot = load_json(&root.join("ops/_generated.example/contracts-registry-snapshot.json"));
+    let ids = snapshot["contracts"]
+        .as_array()
+        .expect("contracts")
+        .iter()
+        .filter_map(|row| row["id"].as_str());
+    let range_re = regex::Regex::new(r"OPS-[A-Z0-9-]+-\d{3}-\d{3}$").expect("range regex");
+    for id in ids {
+        assert!(
+            !range_re.is_match(id),
+            "ops contract ids must stay explicit and non-range-based: {id}"
+        );
+    }
+}

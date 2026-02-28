@@ -107,6 +107,41 @@ fn chart_templates_keep_service_and_port_contracts_in_sync() {
 }
 
 #[test]
+fn deployment_template_keeps_probe_resource_and_security_policies_explicit() {
+    let root = repo_root();
+    let text = read(&root.join("ops/k8s/charts/bijux-atlas/templates/deployment.yaml"));
+    for required in [
+        "readinessProbe:",
+        "livenessProbe:",
+        "resources:",
+        "securityContext:",
+        "imagePullPolicy: {{ .Values.image.pullPolicy }}",
+    ] {
+        assert!(text.contains(required), "deployment template missing `{required}`");
+    }
+}
+
+#[test]
+fn immutable_release_labels_are_present_in_workload_and_service_templates() {
+    let root = repo_root();
+    let deployment = read(&root.join("ops/k8s/charts/bijux-atlas/templates/deployment.yaml"));
+    let service = read(&root.join("ops/k8s/charts/bijux-atlas/templates/service.yaml"));
+    for required in [
+        "app.kubernetes.io/name:",
+        "app.kubernetes.io/instance:",
+    ] {
+        assert!(
+            deployment.contains(required),
+            "deployment template missing immutable release label `{required}`"
+        );
+        assert!(
+            service.contains(required),
+            "service template missing immutable release label `{required}`"
+        );
+    }
+}
+
+#[test]
 fn service_account_and_rbac_expectations_are_explicit() {
     let root = repo_root();
     let templates_dir = root.join("ops/k8s/charts/bijux-atlas/templates");
