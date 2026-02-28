@@ -44,7 +44,7 @@ const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 9] = [
     "taxonomy-map.md",
 ];
 
-const DOCS_ALLOWED_ROOT_FILES: [&str; 2] = ["owners.json", "registry.json"];
+const DOCS_ALLOWED_ROOT_FILES: [&str; 3] = ["owners.json", "registry.json", "sections.json"];
 
 const DOCS_MAX_DEPTH: usize = 4;
 const DOCS_MAX_SIBLINGS: usize = 48;
@@ -129,6 +129,26 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: "docs owners map covers all top-level section directories",
                 kind: TestKind::Pure,
                 run: test_docs_008_section_owner_coverage,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-009".to_string()),
+            title: "docs section manifest stays complete",
+            tests: vec![TestCase {
+                id: TestId("docs.sections.manifest_complete".to_string()),
+                title: "docs section manifest covers every top-level section",
+                kind: TestKind::Pure,
+                run: test_docs_009_section_manifest_complete,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-010".to_string()),
+            title: "docs section entrypoints follow the declared manifest",
+            tests: vec![TestCase {
+                id: TestId("docs.sections.index_policy".to_string()),
+                title: "docs section INDEX.md presence follows the manifest",
+                kind: TestKind::Pure,
+                run: test_docs_010_section_index_policy,
             }],
         },
     ])

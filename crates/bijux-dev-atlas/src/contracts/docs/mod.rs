@@ -19,6 +19,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-006" => "Docs needs a single canonical entrypoint at docs/index.md.".to_string(),
         "DOC-007" => "The docs root may only expose the declared non-markdown files.".to_string(),
         "DOC-008" => "Every top-level docs section directory must have a non-empty owner mapping in docs/owners.json.".to_string(),
+        "DOC-009" => "Every top-level docs section must be declared in docs/sections.json, with no dead section entries.".to_string(),
+        "DOC-010" => "Each top-level docs section must either require or forbid INDEX.md exactly as declared in docs/sections.json.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

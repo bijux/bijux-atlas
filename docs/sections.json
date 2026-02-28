@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "sections": {
+    "_assets": { "requires_index": true },
+    "_drafts": { "requires_index": true },
+    "_generated": { "requires_index": false },
+    "_lint": { "requires_index": true },
+    "_nav": { "requires_index": true },
+    "_style": { "requires_index": true },
+    "adrs": { "requires_index": true },
+    "api": { "requires_index": true },
+    "architecture": { "requires_index": true },
+    "contracts": { "requires_index": true },
+    "control-plane": { "requires_index": false },
+    "dev": { "requires_index": false },
+    "development": { "requires_index": true },
+    "docs": { "requires_index": false },
+    "engineering": { "requires_index": false },
+    "examples": { "requires_index": true },
+    "governance": { "requires_index": false },
+    "metadata": { "requires_index": false },
+    "operations": { "requires_index": true },
+    "policies": { "requires_index": false },
+    "product": { "requires_index": true },
+    "quickstart": { "requires_index": true },
+    "reference": { "requires_index": true },
+    "release": { "requires_index": true },
+    "root": { "requires_index": true },
+    "science": { "requires_index": true },
+    "security": { "requires_index": true },
+    "start": { "requires_index": true }
+  }
+}
