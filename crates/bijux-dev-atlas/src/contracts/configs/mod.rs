@@ -8,6 +8,15 @@ use serde::Deserialize;
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
 const REGISTRY_PATH: &str = "configs/inventory/configs.json";
+const ROOT_MARKDOWN_FILES: [&str; 2] = ["configs/README.md", "configs/CONTRACT.md"];
+const DOCS_TOOLING_PATTERNS: [&str; 6] = [
+    "configs/docs/.markdownlint-cli2.jsonc",
+    "configs/docs/.vale.ini",
+    "configs/docs/*.json",
+    "configs/docs/*.jsonc",
+    "configs/docs/*.txt",
+    "configs/docs/.vale/styles/**",
+];
 
 #[derive(Clone, Deserialize)]
 struct ConfigsRegistry {
@@ -795,7 +804,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=25)
+    let expected = (1..=27)
         .map(|n| format!("CONFIGS-{n:03}"))
         .collect::<BTreeSet<_>>();
     if index.contract_ids == expected {
@@ -1410,6 +1419,75 @@ fn test_configs_025_text_hygiene(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-026",
+                "configs.docs.no_nested_markdown",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let violations = config_files_without_exclusions(&index)
+        .into_iter()
+        .filter(|file| file.ends_with(".md"))
+        .filter(|file| !ROOT_MARKDOWN_FILES.contains(&file.as_str()))
+        .filter(|file| file.starts_with("configs/docs/"))
+        .map(|file| {
+            violation(
+                "CONFIGS-026",
+                "configs.docs.no_nested_markdown",
+                &file,
+                "configs/docs must contain tooling inputs only; move narrative markdown into docs/ or configs root",
+            )
+        })
+        .collect::<Vec<_>>();
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_027_docs_tooling_surface(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-027",
+                "configs.docs.tooling_surface",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for file in config_files_without_exclusions(&index) {
+        if !file.starts_with("configs/docs/") {
+            continue;
+        }
+        if !DOCS_TOOLING_PATTERNS
+            .iter()
+            .any(|pattern| wildcard_match(pattern, &file))
+        {
+            violations.push(violation(
+                "CONFIGS-027",
+                "configs.docs.tooling_surface",
+                &file,
+                "configs/docs contains a file outside the declared tooling surface",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -1587,6 +1665,20 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "text config files avoid trailing whitespace drift",
             test_configs_025_text_hygiene,
         ),
+        contract(
+            "CONFIGS-026",
+            "configs docs directory forbids nested markdown",
+            "configs.docs.no_nested_markdown",
+            "configs docs keeps tooling inputs only",
+            test_configs_026_docs_markdown_removed,
+        ),
+        contract(
+            "CONFIGS-027",
+            "configs docs directory stays tooling only",
+            "configs.docs.tooling_surface",
+            "configs docs files stay within the declared tooling surface",
+            test_configs_027_docs_tooling_surface,
+        ),
     ])
 }
 
@@ -1636,6 +1728,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-023" => "YAML config files must parse successfully.".to_string(),
         "CONFIGS-024" => "TOML config files must parse successfully.".to_string(),
         "CONFIGS-025" => "Config text files must not accumulate trailing whitespace drift.".to_string(),
+        "CONFIGS-026" => "The configs/docs directory must not contain narrative markdown.".to_string(),
+        "CONFIGS-027" => "The configs/docs directory must stay within its declared tooling file surface.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
