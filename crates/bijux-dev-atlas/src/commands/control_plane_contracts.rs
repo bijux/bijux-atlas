@@ -260,7 +260,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
     }
 
-    fn changed_paths_since_merge_base(repo_root: &Path) -> Vec<String> {
+    fn changed_paths_since_merge_base(repo_root: &Path) -> Option<Vec<String>> {
         let repo_display = repo_root.display().to_string();
         let target = std::env::var("CONTRACTS_CHANGED_BASE")
             .ok()
@@ -270,30 +270,32 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             .args(["-C", &repo_display, "merge-base", "HEAD", &target])
             .output();
         let Ok(base) = base else {
-            return Vec::new();
+            return None;
         };
         if !base.status.success() {
-            return Vec::new();
+            return None;
         }
         let base_sha = String::from_utf8_lossy(&base.stdout).trim().to_string();
         if base_sha.is_empty() {
-            return Vec::new();
+            return None;
         }
         let diff = std::process::Command::new("git")
             .args(["-C", &repo_display, "diff", "--name-only", &base_sha, "HEAD"])
             .output();
         let Ok(diff) = diff else {
-            return Vec::new();
+            return None;
         };
         if !diff.status.success() {
-            return Vec::new();
+            return None;
         }
-        String::from_utf8_lossy(&diff.stdout)
-            .lines()
-            .map(str::trim)
-            .filter(|path| !path.is_empty())
-            .map(ToOwned::to_owned)
-            .collect()
+        Some(
+            String::from_utf8_lossy(&diff.stdout)
+                .lines()
+                .map(str::trim)
+                .filter(|path| !path.is_empty())
+                .map(ToOwned::to_owned)
+                .collect(),
+        )
     }
 
     fn domain_change_reason(name: &str, changed_paths: &[String]) -> Option<String> {
@@ -573,7 +575,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         let changed_paths = if common.changed_only {
             changed_paths_since_merge_base(&repo_root)
         } else {
-            Vec::new()
+            None
         };
         let selected_domains = all_domains(&repo_root)?
             .into_iter()
@@ -587,7 +589,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             })
             .filter_map(|(descriptor, registry)| {
                 let reason = if common.changed_only {
-                    domain_change_reason(descriptor.name, &changed_paths)?
+                    match &changed_paths {
+                        Some(paths) => domain_change_reason(descriptor.name, paths)?,
+                        None => "changed-only merge-base unavailable; selected by fallback".to_string(),
+                    }
                 } else {
                     "selected by requested contracts domain".to_string()
                 };
@@ -765,8 +770,10 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 lines.push(format!(
                     "Changed-only selection base: merge-base(HEAD, {base})"
                 ));
-                if changed_paths.is_empty() {
+                if matches!(changed_paths, Some(ref paths) if paths.is_empty()) {
                     lines.push("Changed-only selection note: no merge-base diff paths detected; no domains selected".to_string());
+                } else if changed_paths.is_none() {
+                    lines.push("Changed-only selection note: merge-base diff could not be resolved; selecting requested domains".to_string());
                 }
             }
             if !selected_domains.is_empty() {
