@@ -201,6 +201,7 @@ pub struct RunReport {
 pub struct RegistrySnapshotRow {
     pub domain: String,
     pub id: String,
+    pub severity: String,
     pub title: String,
     pub test_ids: Vec<String>,
 }
@@ -337,6 +338,7 @@ pub fn registry_snapshot(domain: &str, contracts: &[Contract]) -> Vec<RegistrySn
             RegistrySnapshotRow {
                 domain: domain.to_string(),
                 id: contract.id.0.clone(),
+                severity: "must".to_string(),
                 title: contract.title.to_string(),
                 test_ids,
             }

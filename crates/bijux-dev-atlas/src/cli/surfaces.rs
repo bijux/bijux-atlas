@@ -240,7 +240,9 @@ pub struct ConfigsCommonArgs {
 #[derive(Subcommand, Debug)]
 pub enum ContractsCommand {
     All(ContractsCommonArgs),
+    Root(ContractsCommonArgs),
     Configs(ContractsCommonArgs),
+    Docs(ContractsCommonArgs),
     Docker(ContractsDockerArgs),
     Make(ContractsMakeArgs),
     Ops(ContractsOpsArgs),
@@ -286,7 +288,10 @@ pub struct ContractsCommonArgs {
     #[arg(long, default_value_t = false)]
     pub fail_fast: bool,
     #[arg(long = "filter-contract", alias = "filter")]
+    #[arg(alias = "id")]
     pub filter_contract: Option<String>,
+    #[arg(long = "group")]
+    pub groups: Vec<String>,
     #[arg(long)]
     pub filter_test: Option<String>,
     #[arg(long = "only")]
@@ -301,6 +306,8 @@ pub struct ContractsCommonArgs {
     pub list: bool,
     #[arg(long, default_value_t = false)]
     pub list_tests: bool,
+    #[arg(long, default_value_t = false)]
+    pub changed_only: bool,
     #[arg(long)]
     pub explain: Option<String>,
     #[arg(long = "explain-test")]
@@ -363,7 +370,9 @@ pub struct ContractsMakeArgs {
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ContractsSnapshotDomainArg {
     All,
+    Root,
     Configs,
+    Docs,
     Docker,
     Make,
     Ops,

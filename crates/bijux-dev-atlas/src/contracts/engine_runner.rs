@@ -73,6 +73,14 @@ pub fn run(
                 TestResult::Skip(reason) => (Vec::new(), Some(reason)),
                 TestResult::Error(err) => (Vec::new(), Some(err)),
             };
+            let mut violations = violations;
+            violations.sort_by(|a, b| {
+                a.contract_id
+                    .cmp(&b.contract_id)
+                    .then(a.file.cmp(&b.file))
+                    .then(a.line.cmp(&b.line))
+                    .then(a.message.cmp(&b.message))
+            });
             case_rows.push(CaseReport {
                 contract_id: contract_id.clone(),
                 contract_title: contract_title.clone(),

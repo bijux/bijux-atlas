@@ -88,11 +88,11 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
 
     fn domain_descriptor(name: &str) -> Option<DomainDescriptor> {
         match name {
-            "configs" => Some(DomainDescriptor {
-                name: "configs",
-                contracts_fn: contracts::configs::contracts,
-                explain_fn: contracts::configs::contract_explain,
-                gate_fn: contracts::configs::contract_gate_command,
+            "root" => Some(DomainDescriptor {
+                name: "root",
+                contracts_fn: contracts::root::contracts,
+                explain_fn: contracts::root::contract_explain,
+                gate_fn: contracts::root::contract_gate_command,
             }),
             "docker" => Some(DomainDescriptor {
                 name: "docker",
@@ -112,13 +112,25 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 explain_fn: |id| contracts::ops::contract_explain(id).to_string(),
                 gate_fn: contracts::ops::contract_gate_command,
             }),
+            "configs" => Some(DomainDescriptor {
+                name: "configs",
+                contracts_fn: contracts::configs::contracts,
+                explain_fn: contracts::configs::contract_explain,
+                gate_fn: contracts::configs::contract_gate_command,
+            }),
+            "docs" => Some(DomainDescriptor {
+                name: "docs",
+                contracts_fn: contracts::docs::contracts,
+                explain_fn: contracts::docs::contract_explain,
+                gate_fn: contracts::docs::contract_gate_command,
+            }),
             _ => None,
         }
     }
 
     fn all_domains(repo_root: &Path) -> Result<Vec<(DomainDescriptor, Vec<contracts::Contract>)>, String> {
         let mut out = Vec::new();
-        for name in ["configs", "docker", "make", "ops"] {
+        for name in ["root", "docker", "make", "ops", "configs", "docs"] {
             let descriptor = domain_descriptor(name)
                 .ok_or_else(|| format!("internal contracts domain registry is missing `{name}`"))?;
             out.push((descriptor, (descriptor.contracts_fn)(repo_root)?));
@@ -189,6 +201,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 "contracts": rows.iter().map(|row| serde_json::json!({
                     "domain": row.domain,
                     "id": row.id,
+                    "severity": row.severity,
                     "title": row.title,
                     "tests": row.test_ids.iter().map(|test_id| serde_json::json!({
                         "test_id": test_id
@@ -201,9 +214,12 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             | ContractsFormatArg::Junit
             | ContractsFormatArg::Github => {
                 let mut out = String::new();
-                out.push_str("DOMAIN   CONTRACT ID        TITLE\n");
+                out.push_str("GROUP    CONTRACT ID        SEVERITY TITLE\n");
                 for row in rows {
-                    out.push_str(&format!("{:<8} {:<18} {}\n", row.domain, row.id, row.title));
+                    out.push_str(&format!(
+                        "{:<8} {:<18} {:<8} {}\n",
+                        row.domain, row.id, row.severity, row.title
+                    ));
                     if include_tests {
                         for test_id in row.test_ids {
                             out.push_str(&format!("         - {}\n", test_id));
@@ -213,6 +229,44 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 Ok(out)
             }
         }
+    }
+
+    fn domain_has_changes(repo_root: &Path, name: &str) -> bool {
+        let repo_display = repo_root.display().to_string();
+        let output = std::process::Command::new("git")
+            .args(["-C", &repo_display, "status", "--porcelain"])
+            .output();
+        let Ok(output) = output else {
+            return true;
+        };
+        if !output.status.success() {
+            return true;
+        }
+        let changed = String::from_utf8_lossy(&output.stdout);
+        let prefix = match name {
+            "docs" => Some("docs/"),
+            "root" => None,
+            _ => return true,
+        };
+        for line in changed.lines() {
+            if line.len() < 4 {
+                continue;
+            }
+            let path = &line[3..];
+            match prefix {
+                Some(prefix) => {
+                    if path.starts_with(prefix) {
+                        return true;
+                    }
+                }
+                None => {
+                    if !path.contains('/') {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 
     fn explain_test(
@@ -334,10 +388,20 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         .collect::<Vec<_>>(),
                     PathBuf::from("artifacts/contracts/all/registry-snapshot.json"),
                 ),
+                ContractsSnapshotDomainArg::Root => (
+                    "root",
+                    contracts::registry_snapshot("root", domain_registry(&domains, "root")?),
+                    PathBuf::from("artifacts/contracts/root/registry-snapshot.json"),
+                ),
                 ContractsSnapshotDomainArg::Configs => (
                     "configs",
                     contracts::registry_snapshot("configs", domain_registry(&domains, "configs")?),
                     PathBuf::from("artifacts/contracts/configs/registry-snapshot.json"),
+                ),
+                ContractsSnapshotDomainArg::Docs => (
+                    "docs",
+                    contracts::registry_snapshot("docs", domain_registry(&domains, "docs")?),
+                    PathBuf::from("artifacts/contracts/docs/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Docker => (
                     "docker",
@@ -381,13 +445,25 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ContractsCommand::All(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
-                vec!["configs", "docker", "make", "ops"],
+                vec!["root", "docker", "make", "ops", "configs", "docs"],
+                None,
+            ),
+            ContractsCommand::Root(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["root"],
                 None,
             ),
             ContractsCommand::Configs(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
                 vec!["configs"],
+                None,
+            ),
+            ContractsCommand::Docs(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["docs"],
                 None,
             ),
             ContractsCommand::Docker(args) => (
@@ -421,6 +497,14 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         let selected_domains = all_domains(&repo_root)?
             .into_iter()
             .filter(|(descriptor, _)| domain_names.iter().any(|name| descriptor.name == *name))
+            .filter(|(descriptor, _)| {
+                common.groups.is_empty()
+                    || common
+                        .groups
+                        .iter()
+                        .any(|name| descriptor.name.eq_ignore_ascii_case(name))
+            })
+            .filter(|(descriptor, _)| !common.changed_only || domain_has_changes(&repo_root, descriptor.name))
             .collect::<Vec<_>>();
         let catalogs = selected_domains
             .iter()
@@ -633,6 +717,27 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         .map_err(|e| format!("encode contracts all coverage failed: {e}"))?,
                 )
                 .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
+                let summary = serde_json::json!({
+                    "schema_version": 1,
+                    "kind": "contracts-summary",
+                    "groups": reports.iter().map(|report| serde_json::json!({
+                        "group": report.domain,
+                        "contracts": report.total_contracts(),
+                        "tests": report.total_tests(),
+                        "pass": report.pass_count(),
+                        "fail": report.fail_count(),
+                        "skip": report.skip_count(),
+                        "error": report.error_count(),
+                        "exit_code": report.exit_code(),
+                    })).collect::<Vec<_>>()
+                });
+                let summary_path = root.join("contracts-summary.json");
+                fs::write(
+                    &summary_path,
+                    serde_json::to_string_pretty(&summary)
+                        .map_err(|e| format!("encode contracts summary failed: {e}"))?,
+                )
+                .map_err(|e| format!("write {} failed: {e}", summary_path.display()))?;
             }
         }
 
