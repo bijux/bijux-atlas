@@ -1,27 +1,23 @@
-# bijux-atlas
+# Atlas Documentation
 
-- Owner: `docs-governance`
-- Stability: `stable`
+Owner: `docs-governance`  
+Status: `active`
 
-## Docs Spine
+Atlas is the stable platform surface for operating, evolving, and consuming the bijux ecosystem through explicit contracts, predictable workflows, and verifiable runtime behavior.
 
-- Start: [Start Here](START_HERE.md)
-- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
-- Architecture: [Architecture Index](architecture/INDEX.md)
-- API: [API Surface Index](api/INDEX.md)
-- Ops: [Operations Index](operations/INDEX.md)
-- Dev: [Development Index](development/INDEX.md)
-- Reference: [Reference Index](reference/INDEX.md)
+## Reader Spine
 
-## Navigation
+- [Start Here](start-here.md)
+- [Product](product/index.md)
+- [Architecture](architecture/index.md)
+- [API](api/index.md)
+- [Operations](operations/index.md)
+- [Development](development/index.md)
+- [Reference](reference/index.md)
+- [Governance](governance/index.md)
 
-- Product index: [Product Index](product/INDEX.md)
-- Release index: [Release Index](release/INDEX.md)
-- Root index: [Root Index](root/INDEX.md)
-- Security index: [Security Index](security/INDEX.md)
-- Contracts: [Contracts Index](contracts/INDEX.md)
-- Quickstart category: [Quickstart Index](quickstart/INDEX.md)
-- Docs structure: [Start Index](start/INDEX.md)
-- Concept registry: [Concept Registry](_style/CONCEPT_REGISTRY.md)
-- Glossary: [Terms Glossary](_style/terms-glossary.md)
-- Generated inventory: [Topic Index](_generated/topic-index.md)
+## Navigation Model
+
+Navigation is defined only by this page and each section `index.md` page.
+
+Legacy index maps and generated navigation files are not canonical entrypoints.
