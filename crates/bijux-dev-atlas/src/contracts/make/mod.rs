@@ -353,7 +353,9 @@ fn test_make_contracts_003_delegate_only(ctx: &RunContext) -> TestResult {
                 test_id: test_id.to_string(),
                 file: Some(rel(&path, &ctx.repo_root)),
                 line: Some(index + 1),
-                message: "contracts targets must delegate only to bijux-dev-atlas contracts commands".to_string(),
+                message:
+                    "contracts targets must delegate only to bijux-dev-atlas contracts commands"
+                        .to_string(),
                 evidence: Some(trimmed.to_string()),
             });
         }
