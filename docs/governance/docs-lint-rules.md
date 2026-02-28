@@ -26,3 +26,16 @@ Reason to exist: keep duplicate-topic and observability documentation checks in 
 ```bash
 make docs
 ```
+
+## Repository Lint Baseline
+
+- `unsafe` is forbidden.
+- `unwrap` and `expect` are denied in production code.
+- `todo!()` is forbidden.
+- `dbg!()`, `println!()`, and `eprintln!()` are denied by policy.
+- `panic!()` is forbidden in library crates.
+
+Lint source of truth:
+
+- workspace lints in `Cargo.toml`
+- `configs/rust/clippy.toml`
