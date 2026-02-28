@@ -4,6 +4,12 @@ Owner: `docs-governance`
 Status: `active`  
 Effective date: `2026-02-28`
 
+## Change Freeze Window
+
+- Freeze starts: `2026-02-28`.
+- Freeze ends: `2026-03-31`.
+- During freeze, new pages are allowed only when they replace or consolidate existing content.
+
 ## Reader Spine
 
 Mandatory entrypoints for all readers:
