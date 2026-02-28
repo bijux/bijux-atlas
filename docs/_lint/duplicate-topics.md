@@ -8,7 +8,7 @@ Use one canonical page per topic and convert other pages to short pointer stubs.
 
 - Architecture boundaries: `docs/architecture/boundaries.md`
 - Architecture effects: `docs/architecture/effects.md`
-- Boundary maps: `docs/architecture/boundary-maps.md`
+- Boundaries: `docs/architecture/boundaries.md`
 - Plugin contract: `docs/contracts/plugin/spec.md`
 - Plugin mode: `docs/contracts/plugin/mode.md`
 - Immutability and aliases: `docs/product/immutability-and-aliases.md`
