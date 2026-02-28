@@ -250,3 +250,80 @@ fn test_root_042_meta_registry_integrity(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_root_043_meta_test_mapping_integrity(ctx: &RunContext) -> TestResult {
+    let mut rows = Vec::new();
+    for domain in CONTRACT_DOC_DOMAINS {
+        let contracts = match contracts_for_domain(&ctx.repo_root, domain.name) {
+            Ok(value) => value,
+            Err(err) => {
+                return TestResult::Fail(vec![Violation {
+                    contract_id: "ROOT-043".to_string(),
+                    test_id: "root.contracts.meta_test_mapping_integrity".to_string(),
+                    file: Some(domain.file.to_string()),
+                    line: None,
+                    message: format!("load contracts failed: {err}"),
+                    evidence: None,
+                }]);
+            }
+        };
+        rows.extend(super::registry_snapshot(domain.name, &contracts));
+    }
+    let lints = super::lint_registry_rows(&rows);
+    let mut violations = Vec::new();
+    for lint in lints {
+        if lint.code == "duplicate-test-id" {
+            violations.push(Violation {
+                contract_id: "ROOT-043".to_string(),
+                test_id: "root.contracts.meta_test_mapping_integrity".to_string(),
+                file: None,
+                line: None,
+                message: lint.message,
+                evidence: Some(lint.code.to_string()),
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_044_meta_ordering_stable(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let expected_run_order = r#"vec!["root", "docker", "make", "ops", "configs", "docs"]"#;
+    let command_source = match std::fs::read_to_string(
+        ctx.repo_root
+            .join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
+    ) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-044".to_string(),
+                test_id: "root.contracts.meta_ordering_stable".to_string(),
+                file: Some(
+                    "crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs".to_string(),
+                ),
+                line: None,
+                message: format!("read contracts command source failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    if !command_source.contains(expected_run_order) {
+        violations.push(Violation {
+            contract_id: "ROOT-044".to_string(),
+            test_id: "root.contracts.meta_ordering_stable".to_string(),
+            file: Some("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs".to_string()),
+            line: None,
+            message: "all-domain contracts execution order changed".to_string(),
+            evidence: Some(expected_run_order.to_string()),
+        });
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

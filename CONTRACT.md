@@ -55,6 +55,8 @@
 | `ROOT-040` | workspace crates keep canonical naming | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-041` | top-level contract documents follow the canonical executable template | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-042` | contract registries keep unique contract ids and mapped checks | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
+| `ROOT-043` | contract registries keep check-to-contract mappings non-orphaned | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
+| `ROOT-044` | contracts list and group execution order stay deterministic | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 
 ## Enforcement mapping
 
@@ -102,6 +104,8 @@
 | `ROOT-040` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-041` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-042` | `bijux dev atlas contracts root --mode static` |
+| `ROOT-043` | `bijux dev atlas contracts root --mode static` |
+| `ROOT-044` | `bijux dev atlas contracts root --mode static` |
 
 ## Output artifacts
 

@@ -446,5 +446,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_root_042_meta_registry_integrity,
             }],
         },
+        Contract {
+            id: ContractId("ROOT-043".to_string()),
+            title: "contract registries keep check-to-contract mappings non-orphaned",
+            tests: vec![TestCase {
+                id: TestId("root.contracts.meta_test_mapping_integrity".to_string()),
+                title: "all test ids map to exactly one contract across registries",
+                kind: TestKind::Pure,
+                run: test_root_043_meta_test_mapping_integrity,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-044".to_string()),
+            title: "contracts list and group execution order stay deterministic",
+            tests: vec![TestCase {
+                id: TestId("root.contracts.meta_ordering_stable".to_string()),
+                title: "contracts list ordering and all-domain execution order stay stable",
+                kind: TestKind::Pure,
+                run: test_root_044_meta_ordering_stable,
+            }],
+        },
     ])
 }
