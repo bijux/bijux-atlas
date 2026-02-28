@@ -361,5 +361,45 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_031_single_entrypoint,
             }],
         },
+        Contract {
+            id: ContractId("DOC-032".to_string()),
+            title: "docs broken links report is generated deterministically",
+            tests: vec![TestCase {
+                id: TestId("docs.reports.broken_links_generated".to_string()),
+                title: "docs contracts write the broken links artifact report",
+                kind: TestKind::Pure,
+                run: test_docs_032_broken_links_report_generated,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-033".to_string()),
+            title: "docs orphan pages report is generated deterministically",
+            tests: vec![TestCase {
+                id: TestId("docs.reports.orphans_generated".to_string()),
+                title: "docs contracts write the orphan pages artifact report",
+                kind: TestKind::Pure,
+                run: test_docs_033_orphans_report_generated,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-034".to_string()),
+            title: "docs metadata coverage report is generated deterministically",
+            tests: vec![TestCase {
+                id: TestId("docs.reports.metadata_coverage_generated".to_string()),
+                title: "docs contracts write the metadata coverage artifact report",
+                kind: TestKind::Pure,
+                run: test_docs_034_metadata_coverage_report_generated,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-035".to_string()),
+            title: "docs duplication report is generated deterministically",
+            tests: vec![TestCase {
+                id: TestId("docs.reports.duplication_generated".to_string()),
+                title: "docs contracts write the duplication artifact report",
+                kind: TestKind::Pure,
+                run: test_docs_035_duplication_report_generated,
+            }],
+        },
     ])
 }

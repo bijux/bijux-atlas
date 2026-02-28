@@ -114,3 +114,65 @@ fn push_docs_violation(
     });
 }
 
+fn docs_markdown_files(ctx: &RunContext) -> Vec<std::path::PathBuf> {
+    fn walk(dir: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
+        let Ok(entries) = std::fs::read_dir(dir) else {
+            return;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let Ok(kind) = entry.file_type() else {
+                continue;
+            };
+            if kind.is_dir() {
+                walk(&path, out);
+                continue;
+            }
+            if kind.is_file() && path.extension().and_then(|value| value.to_str()) == Some("md") {
+                out.push(path);
+            }
+        }
+    }
+
+    let mut files = Vec::new();
+    walk(&docs_root_path(ctx), &mut files);
+    files.sort();
+    files
+}
+
+fn write_docs_report_artifact(
+    ctx: &RunContext,
+    contract_id: &str,
+    test_id: &str,
+    artifact_name: &str,
+    payload: &serde_json::Value,
+) -> TestResult {
+    let Some(root) = &ctx.artifacts_root else {
+        return TestResult::Pass;
+    };
+    let path = root.join(artifact_name);
+    let encoded = match serde_json::to_string_pretty(payload) {
+        Ok(encoded) => encoded,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("docs".to_string()),
+                line: None,
+                message: format!("encode report failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    match std::fs::write(&path, encoded) {
+        Ok(()) => TestResult::Pass,
+        Err(err) => TestResult::Fail(vec![Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some(path.display().to_string()),
+            line: None,
+            message: format!("write failed: {err}"),
+            evidence: None,
+        }]),
+    }
+}

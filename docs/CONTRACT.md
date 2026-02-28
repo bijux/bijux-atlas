@@ -44,6 +44,10 @@
 | `DOC-029` | docs root entrypoint pages avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 | `DOC-030` | docs index correctness report stays derivable | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 | `DOC-031` | docs root keeps a single canonical entrypoint | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-032` | docs broken links report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-033` | docs orphan pages report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-034` | docs metadata coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-035` | docs duplication report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
 
 ## Enforcement mapping
 
@@ -80,6 +84,10 @@
 | `DOC-029` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-030` | `bijux dev atlas contracts docs --mode static` |
 | `DOC-031` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-032` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-033` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-034` | `bijux dev atlas contracts docs --mode static` |
+| `DOC-035` | `bijux dev atlas contracts docs --mode static` |
 
 ## Output artifacts
 
