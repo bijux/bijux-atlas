@@ -68,6 +68,21 @@ fn registry_lints_detect_invalid_id_duplicate_title_and_filler_only_title() {
 }
 
 #[test]
+fn registry_lints_detect_contract_without_check_mapping() {
+    let rows = vec![RegistrySnapshotRow {
+        domain: "root".to_string(),
+        id: "ROOT-900".to_string(),
+        severity: "must".to_string(),
+        title: "meta".to_string(),
+        test_ids: Vec::new(),
+    }];
+    let lints = lint_registry_rows(&rows);
+    assert!(lints
+        .iter()
+        .any(|lint| lint.code == "missing-check-mapping"));
+}
+
+#[test]
 fn run_honors_only_skip_and_tag_filters() {
     fn registry(_: &Path) -> Result<Vec<Contract>, String> {
         Ok(vec![

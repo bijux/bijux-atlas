@@ -388,6 +388,10 @@ pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
             .push(format!("{}:{}", row.domain, row.id));
         if row.test_ids.is_empty() {
             lints.push(RegistryLint {
+                code: "missing-check-mapping",
+                message: format!("{} has no mapped checks/tests", row.id),
+            });
+            lints.push(RegistryLint {
                 code: "empty-contract",
                 message: format!("{} has no tests", row.id),
             });
