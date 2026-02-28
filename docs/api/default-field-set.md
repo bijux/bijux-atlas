@@ -1,21 +1,26 @@
-# Default Field Set (`/v1/genes`)
+# Default Field Set
 
-`include` controls optional fields for `GET /v1/genes`.
+Owner: `api-contracts`  
+Type: `guide`  
+Surface version: `v1`  
+Reason to exist: define the canonical default and optional response fields for `/v1/genes`.
 
-- Default response (no `include`): `gene_id`, `name`
-- Optional include values:
-  - `coords` -> `seqid`, `start`, `end`
-  - `biotype` -> `biotype`
-  - `counts` -> `transcript_count`
-  - `length` -> `sequence_length`
+## Contract
 
-Examples:
+- Default fields: `gene_id`, `name`.
+- Optional include tokens:
+  - `coords`
+  - `biotype`
+  - `counts`
+  - `length`
 
-- Minimal:
-  - `GET /v1/genes?release=110&species=homo_sapiens&assembly=GRCh38`
-- Add coordinates and counts:
-  - `GET /v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&include=coords,counts`
+## Example
 
-## Non-goal
+```bash
+curl -fsS 'http://127.0.0.1:8080/v1/genes?release=110&species=homo_sapiens&assembly=GRCh38&include=coords,counts&limit=5'
+```
 
-`fields=` projection is not part of v1. Requests using `fields` are rejected with `400` and must use `include`.
+## Related References
+
+- [Schemas Reference](../reference/schemas.md)
+- [Errors Reference](../reference/errors.md)

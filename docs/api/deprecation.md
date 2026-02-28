@@ -1,17 +1,23 @@
-# API Deprecation
+# Deprecation Policy
 
-- Owner: `api`
-- Stability: `stable`
+Owner: `api-contracts`  
+Type: `policy`  
+Surface version: `v1`  
+Reason to exist: define endpoint deprecation rules for stable API consumers.
 
 ## Policy
 
-- Deprecations in v1 are signaled as:
-- OpenAPI `deprecated: true`
-- Documentation note in `docs/api/v1-surface.md`
-- `Deprecation` + `Sunset` response headers when applicable
+- Deprecation is announced in docs and contract metadata.
+- Deprecated endpoints are marked before any removal in future major versions.
+- Existing v1 compatibility guarantees remain active during deprecation windows.
 
-## Timeline
+## Example
 
-- Deprecation announcement: immediate in docs + contract.
-- Grace period: minimum two minor releases.
-- Removal: only in next major API version (not within v1).
+```bash
+curl -i -fsS 'http://127.0.0.1:8080/v1/datasets'
+```
+
+## Related References
+
+- [Schemas Reference](../reference/schemas.md)
+- [Errors Reference](../reference/errors.md)

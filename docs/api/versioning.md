@@ -2,6 +2,7 @@
 
 Owner: `api-contracts`  
 Type: `policy`  
+Surface version: `v1`  
 Reason to exist: define stable API versioning and change constraints.
 
 ## Rules
