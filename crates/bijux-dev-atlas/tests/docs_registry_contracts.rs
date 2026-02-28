@@ -24,6 +24,10 @@ fn load_json(path: &Path) -> Value {
         .unwrap_or_else(|err| panic!("failed to parse {}: {err}", path.display()))
 }
 
+fn section_manifest(root: &Path) -> Value {
+    load_json(&root.join("docs/sections.json"))
+}
+
 fn markdown_files(root: &Path) -> Vec<PathBuf> {
     let mut out = Vec::new();
     let mut stack = vec![root.to_path_buf()];
@@ -99,6 +103,20 @@ fn bare_fence_lines(contents: &str) -> Vec<usize> {
     lines
 }
 
+fn parse_mkdocs_top_level_nav(root: &Path) -> Vec<String> {
+    let yaml: serde_yaml::Value =
+        serde_yaml::from_str(&read(&root.join("mkdocs.yml"))).expect("mkdocs.yml must parse");
+    yaml.get("nav")
+        .and_then(serde_yaml::Value::as_sequence)
+        .expect("mkdocs nav")
+        .iter()
+        .filter_map(|item| item.as_mapping())
+        .filter_map(|map| map.keys().next())
+        .filter_map(serde_yaml::Value::as_str)
+        .map(str::to_string)
+        .collect()
+}
+
 #[test]
 fn generated_docs_surface_is_committed_and_non_empty() {
     let root = repo_root();
@@ -113,6 +131,7 @@ fn generated_docs_surface_is_committed_and_non_empty() {
         "docs/_generated/command-index.json",
         "docs/_generated/schema-index.json",
         "docs/_generated/docs-quality-dashboard.json",
+        "docs/_generated/docs-contract-coverage.json",
         "docs/_generated/concept-registry.json",
         "docs/_generated/concept-registry.md",
         "docs/_generated/make-targets.md",
@@ -651,5 +670,148 @@ fn governance_docs_keep_tagged_code_blocks() {
         violations.is_empty(),
         "new governance docs must keep tagged code fences:\n{}",
         violations.join("\n")
+    );
+}
+
+#[test]
+fn docs_sections_requiring_indexes_have_canonical_index_pages() {
+    let root = repo_root();
+    let sections = section_manifest(&root);
+    let section_map = sections["sections"].as_object().expect("sections object");
+    let mut violations = Vec::new();
+    for (section, policy) in section_map {
+        if policy["requires_index"].as_bool() != Some(true) {
+            continue;
+        }
+        let index_path = root.join("docs").join(section).join("INDEX.md");
+        if !index_path.exists() {
+            violations.push(format!("docs/{section}/INDEX.md"));
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "docs sections requiring indexes must keep canonical INDEX.md pages:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn docs_top_level_surface_matches_section_owner_and_audience_registries() {
+    let root = repo_root();
+    let sections = section_manifest(&root);
+    let section_map = sections["sections"].as_object().expect("sections object");
+    let owners_json = load_json(&root.join("docs/owners.json"));
+    let owners = owners_json["section_owners"]
+        .as_object()
+        .expect("section owners");
+    let audiences_json = load_json(&root.join("docs/metadata/audiences.json"));
+    let audiences = audiences_json["section_defaults"]
+        .as_object()
+        .expect("section defaults");
+
+    let mut dirs = BTreeSet::new();
+    for entry in fs::read_dir(root.join("docs")).expect("read docs root") {
+        let entry = entry.expect("docs entry");
+        if entry.path().is_dir() {
+            dirs.insert(entry.file_name().to_string_lossy().to_string());
+        }
+    }
+
+    let allowed = section_map.keys().cloned().collect::<BTreeSet<_>>();
+    assert_eq!(
+        dirs, allowed,
+        "docs top-level directories must match docs/sections.json exactly"
+    );
+    for dir in &dirs {
+        assert!(owners.contains_key(dir), "docs/owners.json missing section owner for `{dir}`");
+        assert!(
+            audiences.contains_key(dir),
+            "docs/metadata/audiences.json missing section default for `{dir}`"
+        );
+    }
+}
+
+#[test]
+fn docs_generated_artifacts_are_covered_by_contract_coverage_report() {
+    let root = repo_root();
+    let payload = load_json(&root.join("docs/_generated/docs-contract-coverage.json"));
+    assert_eq!(payload["kind"].as_str(), Some("docs_contract_coverage_v1"));
+    let artifacts = payload["generated_artifacts"]
+        .as_array()
+        .expect("generated artifacts");
+    for rel in [
+        "docs/_generated/docs-inventory.md",
+        "docs/_generated/topic-index.json",
+        "docs/_generated/search-index.json",
+        "docs/_generated/sitemap.json",
+        "docs/_generated/breadcrumbs.json",
+        "docs/_generated/docs-dependency-graph.json",
+        "docs/_generated/docs-quality-dashboard.json",
+        "docs/_generated/docs-contract-coverage.json",
+        "docs/_generated/concept-registry.json",
+        "docs/metadata/front-matter.index.json",
+    ] {
+        assert!(
+            artifacts.iter().any(|row| row.as_str() == Some(rel)),
+            "docs contract coverage must include `{rel}`"
+        );
+    }
+}
+
+#[test]
+fn docs_navigation_policy_is_single_sourced_and_deterministic() {
+    let root = repo_root();
+    let mkdocs = read(&root.join("mkdocs.yml"));
+    let nav_policy = read(&root.join("docs/_nav/INDEX.md"));
+    assert!(
+        nav_policy.contains("Navigation is defined only in `mkdocs.yml`."),
+        "docs/_nav/INDEX.md must declare mkdocs.yml as the navigation source of truth"
+    );
+    let expected_order =
+        "Start Here -> Product -> Quickstart -> Reference -> Contracts -> API -> Operations -> Development -> Architecture -> Science -> Generated -> ADRs";
+    assert!(
+        nav_policy.contains(expected_order),
+        "docs/_nav/INDEX.md must declare the canonical top-level order"
+    );
+    let top_level = parse_mkdocs_top_level_nav(&root);
+    assert_eq!(
+        top_level,
+        vec![
+            "Start Here",
+            "Product",
+            "Quickstart",
+            "Reference",
+            "Contracts",
+            "API",
+            "Operations",
+            "Development",
+            "Architecture",
+            "Science",
+            "Generated",
+            "ADRs",
+        ],
+        "mkdocs top-level navigation must remain deterministic"
+    );
+    assert!(
+        mkdocs.contains("strict: true"),
+        "mkdocs.yml must keep warnings-as-errors enabled via strict: true"
+    );
+}
+
+#[test]
+fn docs_workflow_runs_strict_build_and_offline_validation_lane() {
+    let root = repo_root();
+    let workflow = read(&root.join(".github/workflows/docs-only.yml"));
+    assert!(
+        workflow.contains("mkdocs build --strict"),
+        "docs-only workflow must run mkdocs build in strict mode"
+    );
+    assert!(
+        workflow.contains("docs validate --format json"),
+        "docs-only workflow must run the docs validation lane"
+    );
+    assert!(
+        !workflow.contains("docs validate --allow-network"),
+        "docs validation lane must remain offline by default in CI"
     );
 }

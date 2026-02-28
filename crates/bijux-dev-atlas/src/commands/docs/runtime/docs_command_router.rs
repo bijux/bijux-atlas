@@ -550,6 +550,36 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("docs quality dashboard encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write docs quality dashboard failed: {e}"))?;
+                        let docs_contract_coverage = serde_json::json!({
+                            "schema_version": 1,
+                            "kind": "docs_contract_coverage_v1",
+                            "documents_total": docs_rows.len(),
+                            "section_count": docs_rows.iter().filter_map(|row| row["area"].as_str()).collect::<BTreeSet<_>>().len(),
+                            "generated_artifacts": [
+                                "docs/_generated/docs-inventory.md",
+                                "docs/_generated/topic-index.json",
+                                "docs/_generated/search-index.json",
+                                "docs/_generated/sitemap.json",
+                                "docs/_generated/breadcrumbs.json",
+                                "docs/_generated/docs-dependency-graph.json",
+                                "docs/_generated/docs-quality-dashboard.json",
+                                "docs/_generated/docs-contract-coverage.json",
+                                "docs/_generated/concept-registry.json",
+                                "docs/_generated/concept-registry.md",
+                                "docs/metadata/front-matter.index.json"
+                            ],
+                            "metadata_sources": {
+                                "owners": "docs/owners.json",
+                                "audiences": "docs/metadata/audiences.json",
+                                "sections": "docs/sections.json"
+                            }
+                        });
+                        fs::write(
+                            generated_dir.join("docs-contract-coverage.json"),
+                            serde_json::to_string_pretty(&docs_contract_coverage)
+                                .map_err(|e| format!("docs contract coverage encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write docs contract coverage failed: {e}"))?;
                         let concept_rows = load_docs_concepts(&ctx.repo_root)?;
                         fs::write(
                             generated_dir.join("concept-registry.json"),
@@ -601,6 +631,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
+                            "docs_contract_coverage": "docs/_generated/docs-contract-coverage.json",
                             "concept_registry": "docs/_generated/concept-registry.json",
                             "concept_registry_page": "docs/_generated/concept-registry.md",
                             "generated_make_targets": "docs/_generated/make-targets.md"
