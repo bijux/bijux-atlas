@@ -36,13 +36,13 @@
       "contract_type": "drift",
       "enforced_by": {
         "command": "bijux dev atlas contracts configs",
-        "test_id": "configs.registry.no_overlap"
+        "test_id": "configs.registry.no_undocumented_files"
       },
       "evidence_artifact": null,
       "id": "CFG-003",
-      "rationale": "one governed file maps to one authoritative group.",
+      "rationale": "every governed config file must be explicitly declared by the canonical registry.",
       "severity": "blocker",
-      "title": "no duplicate sources of truth across configs groups",
+      "title": "all governed config files are declared in the registry",
       "touched_paths": [
         "configs/inventory/configs.json",
         "configs/**"
@@ -56,12 +56,12 @@
       },
       "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json",
       "id": "CFG-004",
-      "rationale": "governed config inputs must be inventoried and schema-backed or explicitly excluded.",
+      "rationale": "governed root, public, and generated JSON or JSONC config inputs must carry explicit schema coverage.",
       "severity": "blocker",
-      "title": "all governed config files have inventory and schema coverage",
+      "title": "governed JSON config files have explicit schema coverage",
       "touched_paths": [
-        "configs/inventory/configs.json",
         "configs/SCHEMAS.json",
+        "configs/inventory/configs.json",
         "configs/**.json",
         "configs/**.jsonc"
       ]
@@ -74,12 +74,13 @@
       },
       "evidence_artifact": null,
       "id": "CFG-005",
-      "rationale": "schema inputs must be present and parseable.",
+      "rationale": "schema-bearing config groups need explicit schema ownership and real schema declarations.",
       "severity": "must",
-      "title": "all schemas compile and validate",
+      "title": "schema-bearing config groups declare schema ownership",
       "touched_paths": [
         "configs/schema/*.json",
         "configs/contracts/*.json",
+        "configs/inventory/configs.json",
         "configs/SCHEMAS.json"
       ]
     },
@@ -91,9 +92,9 @@
       },
       "evidence_artifact": null,
       "id": "CFG-006",
-      "rationale": "toolchain inputs must stay pinned and governed by lock or registry policy.",
+      "rationale": "declared tool inputs that require lock companions must keep those lock surfaces committed.",
       "severity": "must",
-      "title": "no unpinned toolchain references in configs",
+      "title": "required lockfile pairs exist for tool-managed config inputs",
       "touched_paths": [
         "configs/docs/package.json",
         "configs/docs/package-lock.json",
@@ -103,38 +104,36 @@
       ]
     },
     {
-      "contract_type": "static",
+      "contract_type": "drift",
       "enforced_by": {
         "command": "bijux dev atlas contracts configs",
-        "test_id": "configs.registry.visibility_classification"
+        "test_id": "configs.registry.no_overlap"
       },
       "evidence_artifact": null,
       "id": "CFG-007",
-      "rationale": "ops and runtime-facing configs must be bounded by declared surfaces.",
+      "rationale": "a governed config file may belong to only one canonical group in the registry.",
       "severity": "must",
-      "title": "no forbidden keys in ops or runtime config surface",
+      "title": "no config file is claimed by multiple groups",
       "touched_paths": [
-        "configs/ops/**",
-        "configs/openapi/**",
-        "configs/slo/**"
+        "configs/inventory/configs.json",
+        "configs/**"
       ]
     },
     {
-      "contract_type": "supplychain",
+      "contract_type": "filelayout",
       "enforced_by": {
         "command": "bijux dev atlas contracts configs",
-        "test_id": "configs.lockfiles.required_pairs"
+        "test_id": "configs.generated.authored_boundary"
       },
       "evidence_artifact": null,
       "id": "CFG-008",
-      "rationale": "tool dependency manifests require matching lock surfaces.",
+      "rationale": "generated config files must stay isolated from authored config inputs.",
       "severity": "must",
-      "title": "locks exist and match policy",
+      "title": "generated config surfaces stay separate from authored inputs",
       "touched_paths": [
-        "configs/docs/package.json",
-        "configs/docs/package-lock.json",
-        "configs/docs/requirements.txt",
-        "configs/docs/requirements.lock.txt"
+        "configs/_generated/**",
+        "configs/schema/generated/**",
+        "configs/inventory/configs.json"
       ]
     },
     {
@@ -145,9 +144,9 @@
       },
       "evidence_artifact": null,
       "id": "CFG-009",
-      "rationale": "every configs group has a canonical owner.",
+      "rationale": "the root owner authority file must stay aligned with the declared registry groups.",
       "severity": "blocker",
-      "title": "all configs owners mapped",
+      "title": "root owner map stays aligned with the registry",
       "touched_paths": [
         "configs/OWNERS.json",
         "configs/inventory/configs.json"
@@ -161,9 +160,9 @@
       },
       "evidence_artifact": null,
       "id": "CFG-010",
-      "rationale": "every governed config surface carries canonical consumer metadata.",
+      "rationale": "every governed public or generated config file must carry explicit file-level consumer metadata.",
       "severity": "blocker",
-      "title": "all configs consumers mapped",
+      "title": "governed config files declare file-level consumer coverage",
       "touched_paths": [
         "configs/CONSUMERS.json",
         "configs/inventory/configs.json"
@@ -249,19 +248,19 @@
       ]
     },
     {
-      "contract_type": "supplychain",
+      "contract_type": "drift",
       "enforced_by": {
         "command": "bijux dev atlas contracts configs",
-        "test_id": "configs.parse.json"
+        "test_id": "configs.registry.visibility_classification"
       },
       "evidence_artifact": null,
       "id": "CFG-016",
-      "rationale": "relaxations need explicit bounded approval data.",
+      "rationale": "each governed config file belongs to exactly one visibility class and each group declares valid stability.",
       "severity": "should",
-      "title": "no relaxed bypass policies without horizon and approval record",
+      "title": "config visibility classification stays explicit and singular",
       "touched_paths": [
-        "configs/policy/*.json",
-        "configs/policy/*.yml"
+        "configs/inventory/configs.json",
+        "configs/**"
       ]
     },
     {
