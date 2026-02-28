@@ -1,33 +1,38 @@
-# Run Locally
+# Run locally (5 minutes)
 
 - Owner: `bijux-atlas-operations`
 - Type: `runbook`
 - Audience: `operator`
 - Stability: `stable`
-- Last verified against: `main@50be979f`
-- Reason to exist: provide one canonical local workflow from prerequisites through cleanup.
+- Last verified against: `main@fbf7e658`
+- Reason to exist: provide one canonical 5-minute local workflow with explicit verification and recovery guidance.
 
 ## Prerequisites
 
-- Container runtime is installed and healthy.
-- Required local tooling is available.
-- Fixture dataset source is available.
+- Docker or compatible runtime healthy
+- `make` available
+- `kubectl` `v1.30+`
+- `helm` `v3.15+`
 
-## Start
+## Run
 
 ```bash
 make ops-doctor
 make stack-up
 ```
 
-## Verify Success
+## Verify success
 
 ```bash
 make ops-e2e-smoke
 make ops-observability-verify
 ```
 
-Expected outcome: local stack responds and smoke checks pass.
+Expected outputs:
+
+- stack services are healthy
+- smoke checks return exit code `0`
+- observability checks confirm baseline metrics and logs
 
 ## Stop
 
@@ -35,17 +40,22 @@ Expected outcome: local stack responds and smoke checks pass.
 make stack-down
 ```
 
-## Cleanup
+## Reset and cleanup
 
 ```bash
 make ops-clean
 ```
 
-## Rollback
+## Common failures and fixes
 
-No rollback is required for local-only workflows; stop and clean reset the environment.
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `make stack-up` fails | local runtime unavailable | start docker runtime, rerun `make ops-doctor` |
+| smoke checks fail | stale local state | run cleanup commands and restart stack |
+| observability verify fails | telemetry service not ready | wait for readiness and rerun `make ops-observability-verify` |
 
-## Next
+## Next steps
 
-- Deployment workflow: [Deploy](deploy.md)
-- Incident process: [Incident Response](incident-response.md)
+- kind deployment: [Deploy to kind (10 minutes)](deploy-kind.md)
+- production deployment: [Deploy to Kubernetes (prod minimal)](deploy-kubernetes-minimal.md)
+- incident process: [Incident response](incident-response.md)

@@ -11,10 +11,12 @@
 
 1. [Run Locally](run-locally.md)
 2. [Deploy](deploy.md)
-3. [Observability](observability/index.md)
-4. [Incident Response](incident-response.md)
-5. [Release](release/index.md)
-6. [Security Posture](security-posture.md)
+3. [Deploy to kind (10 minutes)](deploy-kind.md)
+4. [Deploy to Kubernetes (prod minimal)](deploy-kubernetes-minimal.md)
+5. [Observability](observability/index.md)
+6. [Incident Response](incident-response.md)
+7. [Release](release/index.md)
+8. [Security Posture](security-posture.md)
 
 ## What This Page Is Not
 
