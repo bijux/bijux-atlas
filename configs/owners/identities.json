@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "identities": {
+    "api": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-data": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-docs": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-observability": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-operations": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-performance": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-platform": {
+      "github_handles": ["@bijan"]
+    },
+    "docs-governance": {
+      "github_handles": ["@bijan"]
+    },
+    "platform": {
+      "github_handles": ["@bijan"]
+    }
+  }
+}

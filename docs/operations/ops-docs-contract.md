@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Tier: `tier2`
 - Audience: `mixed`
-- Source-of-truth: `ops/AUTHORITY_TIERS.md`, `ops/inventory/**`, `ops/schema/**`, `ops/CONTRACT.md`
+- Source-of-truth: `ops/inventory/authority-index.json`, `ops/inventory/**`, `ops/schema/**`, `ops/CONTRACT.md`
 
 ## Authority Tiers
 

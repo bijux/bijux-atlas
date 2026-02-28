@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
-- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/control-plane.snapshot.md`
+- Source-of-truth: `ops/inventory/surfaces.json`, `ops/_generated.example/contracts-registry-snapshot.json`
 
 ## Purpose
 

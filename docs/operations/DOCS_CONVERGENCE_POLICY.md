@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Tier: `tier2`
 - Audience: `mixed`
-- Source-of-truth: `docs/operations/ops-docs-contract.md`, `ops/TIER1_ROOT_SURFACE.md`, `ops/CONTRACT.md`
+- Source-of-truth: `docs/operations/ops-docs-contract.md`, `ops/inventory/surfaces.json`, `ops/CONTRACT.md`
 
 ## Convergence Rule
 

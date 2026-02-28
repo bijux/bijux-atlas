@@ -18,6 +18,9 @@
 - `Obs`: observability pack, signal contracts, dashboards, and drills.
 - `Load`: k6 suites, scenarios, baselines, and load reports.
 - `E2E`: composition-only workflows spanning stack + k8s + observe + datasets + load.
+- `Fixture`: a committed or generated sample dataset used for deterministic validation.
+- `Profile`: a named operational configuration selection such as `local`, `kind`, or `ci`.
+- `Lane`: a named contract selection such as `local`, `pr`, `merge`, or `release`.
 
 ## Synonym Policy
 
