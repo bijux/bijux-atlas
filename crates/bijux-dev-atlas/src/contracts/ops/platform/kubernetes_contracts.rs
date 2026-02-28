@@ -14,32 +14,62 @@ fn k8s_contracts() -> Vec<Contract> {
         Contract { id: ContractId("OPS-K8S-010".to_string()), title: "k8s generated index determinism contract", tests: vec![TestCase { id: TestId("ops.k8s.generated_indexes_deterministic_schema_valid".to_string()), title: "generated k8s indexes are schema-versioned and deterministic", kind: TestKind::Pure, run: test_ops_k8s_010_generated_indexes_deterministic_schema_valid, }] },
         Contract {
             id: ContractId("OPS-K8S-E-001".to_string()),
-            title: "k8s effect helm install contract",
+            title: "k8s effect chart defaults render contract",
             tests: vec![TestCase {
-                id: TestId("ops.k8s.effect.helm_install_contract_defined".to_string()),
-                title: "effect lane requires kind install profile in k8s install matrix",
+                id: TestId("ops.k8s.effect.chart_defaults_rendered".to_string()),
+                title: "effect lane renders chart defaults with helm template and emits rendered manifest",
                 kind: TestKind::Subprocess,
-                run: test_ops_k8s_e_001_helm_install_contract_defined,
+                run: test_ops_k8s_e_001_chart_defaults_rendered,
             }],
         },
         Contract {
             id: ContractId("OPS-K8S-E-002".to_string()),
+            title: "k8s effect minimal values render contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.effect.chart_minimal_values_rendered".to_string()),
+                title: "effect lane renders a minimal chart values profile",
+                kind: TestKind::Subprocess,
+                run: test_ops_k8s_e_002_chart_minimal_values_rendered,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-E-003".to_string()),
+            title: "k8s effect kubeconform contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.effect.kubeconform_render_validation".to_string()),
+                title: "effect lane validates rendered manifests with kubeconform",
+                kind: TestKind::Subprocess,
+                run: test_ops_k8s_e_003_kubeconform_render_validation,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-E-004".to_string()),
+            title: "k8s effect install matrix contract",
+            tests: vec![TestCase {
+                id: TestId("ops.k8s.effect.helm_install_contract_defined".to_string()),
+                title: "effect lane requires kind install profile in k8s install matrix",
+                kind: TestKind::Subprocess,
+                run: test_ops_k8s_e_004_helm_install_contract_defined,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-K8S-E-005".to_string()),
             title: "k8s effect rollout safety contract",
             tests: vec![TestCase {
                 id: TestId("ops.k8s.effect.rollout_safety_contract_satisfied".to_string()),
                 title: "effect lane requires rollout safety contract checks",
                 kind: TestKind::Subprocess,
-                run: test_ops_k8s_e_002_rollout_safety_contract_satisfied,
+                run: test_ops_k8s_e_005_rollout_safety_contract_satisfied,
             }],
         },
         Contract {
-            id: ContractId("OPS-K8S-E-003".to_string()),
-            title: "k8s effect endpoint reachability contract",
+            id: ContractId("OPS-K8S-E-006".to_string()),
+            title: "k8s effect tool versions contract",
             tests: vec![TestCase {
-                id: TestId("ops.k8s.effect.service_endpoints_reachable_contract".to_string()),
-                title: "effect lane requires non-empty k8s suite coverage for endpoint checks",
-                kind: TestKind::Network,
-                run: test_ops_k8s_e_003_service_endpoints_reachable_contract,
+                id: TestId("ops.k8s.effect.tool_versions_recorded".to_string()),
+                title: "effect lane records helm and kubeconform versions and enforces allowed major versions",
+                kind: TestKind::Subprocess,
+                run: test_ops_k8s_e_006_tool_versions_recorded,
             }],
         },
     ]

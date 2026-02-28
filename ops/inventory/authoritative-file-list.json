@@ -29,6 +29,7 @@
     "ops/inventory/surfaces.json",
     "ops/inventory/toolchain.json",
     "ops/inventory/tools.toml",
+    "ops/policy/effect-tool-version-policy.json",
     "ops/policy/required-contracts-change.json",
     "ops/policy/required-contracts.json",
     "ops/load/contracts/deterministic-seed-policy.json"

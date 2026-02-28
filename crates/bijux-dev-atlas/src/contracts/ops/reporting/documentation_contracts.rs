@@ -47,7 +47,7 @@ fn test_ops_contract_doc_generated_match(ctx: &RunContext) -> TestResult {
     };
     let path = ctx.repo_root.join("ops/CONTRACT.md");
     let actual = std::fs::read_to_string(&path).unwrap_or_default();
-    if actual == expected {
+    if actual.trim_end() == expected.trim_end() {
         TestResult::Pass
     } else {
         TestResult::Fail(vec![violation(

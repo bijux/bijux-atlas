@@ -459,8 +459,172 @@ fn test_ops_stack_e_004_stack_health_report_generated(ctx: &RunContext) -> TestR
     TestResult::Pass
 }
 
-fn test_ops_k8s_e_001_helm_install_contract_defined(ctx: &RunContext) -> TestResult {
+fn test_ops_k8s_e_001_chart_defaults_rendered(ctx: &RunContext) -> TestResult {
     let contract_id = "OPS-K8S-E-001";
+    let test_id = "ops.k8s.effect.chart_defaults_rendered";
+    let chart = "ops/k8s/charts/bijux-atlas";
+    let values = "ops/k8s/charts/bijux-atlas/values.yaml";
+    let output = match run_ops_effect_command(
+        ctx,
+        contract_id,
+        test_id,
+        "helm",
+        &[
+            "template",
+            "bijux-atlas",
+            chart,
+            "--namespace",
+            "bijux-atlas",
+            "-f",
+            values,
+        ],
+        "helm/defaults.stdout.log",
+        "helm/defaults.stderr.log",
+        false,
+    ) {
+        Ok(output) => output,
+        Err(result) => return result,
+    };
+    let rendered = String::from_utf8_lossy(&output.stdout);
+    if let Some(root) = ops_effect_artifact_dir(ctx) {
+        let path = root.join("helm/rendered.yaml");
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let _ = std::fs::write(path, rendered.as_bytes());
+    }
+    if output.status.success() && rendered.contains("kind: Deployment") {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![effect_violation(
+            contract_id,
+            test_id,
+            "helm template with chart defaults must succeed and include a Deployment",
+            chart,
+        )])
+    }
+}
+
+fn test_ops_k8s_e_002_chart_minimal_values_rendered(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-K8S-E-002";
+    let test_id = "ops.k8s.effect.chart_minimal_values_rendered";
+    let chart = "ops/k8s/charts/bijux-atlas";
+    let values = "ops/k8s/values/local.yaml";
+    let output = match run_ops_effect_command(
+        ctx,
+        contract_id,
+        test_id,
+        "helm",
+        &[
+            "template",
+            "bijux-atlas",
+            chart,
+            "--namespace",
+            "bijux-atlas",
+            "-f",
+            values,
+        ],
+        "helm/minimal.stdout.log",
+        "helm/minimal.stderr.log",
+        false,
+    ) {
+        Ok(output) => output,
+        Err(result) => return result,
+    };
+    let rendered = String::from_utf8_lossy(&output.stdout);
+    if output.status.success() && rendered.contains("kind: Service") {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![effect_violation(
+            contract_id,
+            test_id,
+            "helm template with minimal values must succeed and include a Service",
+            values,
+        )])
+    }
+}
+
+fn test_ops_k8s_e_003_kubeconform_render_validation(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-K8S-E-003";
+    let test_id = "ops.k8s.effect.kubeconform_render_validation";
+    let rendered_path = ctx
+        .artifacts_root
+        .as_ref()
+        .map(|root| root.join("contracts/ops/helm/rendered.manifest.yaml"))
+        .unwrap_or_else(|| ctx.repo_root.join("artifacts/contracts/ops/helm/rendered.manifest.yaml"));
+    if let Some(parent) = rendered_path.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+    let render = match run_ops_effect_command(
+        ctx,
+        contract_id,
+        test_id,
+        "helm",
+        &[
+            "template",
+            "bijux-atlas",
+            "ops/k8s/charts/bijux-atlas",
+            "--namespace",
+            "bijux-atlas",
+            "-f",
+            "ops/k8s/charts/bijux-atlas/values.yaml",
+        ],
+        "helm/kubeconform-render.stdout.log",
+        "helm/kubeconform-render.stderr.log",
+        false,
+    ) {
+        Ok(output) => output,
+        Err(result) => return result,
+    };
+    if !render.status.success() {
+        return TestResult::Fail(vec![effect_violation(
+            contract_id,
+            test_id,
+            "helm render must succeed before kubeconform validation",
+            "ops/k8s/charts/bijux-atlas",
+        )]);
+    }
+    let _ = std::fs::write(&rendered_path, &render.stdout);
+    let rendered_arg = rendered_path.display().to_string();
+    let output = match run_ops_effect_command(
+        ctx,
+        contract_id,
+        test_id,
+        "kubeconform",
+        &["-strict", "-summary", &rendered_arg],
+        "helm/kubeconform.stdout.log",
+        "helm/kubeconform.stderr.log",
+        false,
+    ) {
+        Ok(output) => output,
+        Err(result) => return result,
+    };
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+    let _ = write_ops_effect_json(
+        ctx,
+        "helm/kubeconform.json",
+        &serde_json::json!({
+            "schema_version": 1,
+            "status": if output.status.success() { "ok" } else { "failed" },
+            "stdout": stdout,
+            "stderr": stderr,
+        }),
+    );
+    if output.status.success() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![effect_violation(
+            contract_id,
+            test_id,
+            "kubeconform validation failed for rendered chart manifests",
+            "artifacts/contracts/ops/helm/kubeconform.json",
+        )])
+    }
+}
+
+fn test_ops_k8s_e_004_helm_install_contract_defined(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-K8S-E-004";
     let test_id = "ops.k8s.effect.helm_install_contract_defined";
     let matrix_rel = "ops/k8s/install-matrix.json";
     let Some(matrix) = read_json(&ctx.repo_root.join(matrix_rel)) else {
@@ -490,8 +654,8 @@ fn test_ops_k8s_e_001_helm_install_contract_defined(ctx: &RunContext) -> TestRes
     TestResult::Pass
 }
 
-fn test_ops_k8s_e_002_rollout_safety_contract_satisfied(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-K8S-E-002";
+fn test_ops_k8s_e_005_rollout_safety_contract_satisfied(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-K8S-E-005";
     let test_id = "ops.k8s.effect.rollout_safety_contract_satisfied";
     let rel = "ops/k8s/rollout-safety-contract.json";
     let Some(contract) = read_json(&ctx.repo_root.join(rel)) else {
@@ -517,31 +681,36 @@ fn test_ops_k8s_e_002_rollout_safety_contract_satisfied(ctx: &RunContext) -> Tes
     TestResult::Pass
 }
 
-fn test_ops_k8s_e_003_service_endpoints_reachable_contract(ctx: &RunContext) -> TestResult {
-    let contract_id = "OPS-K8S-E-003";
-    let test_id = "ops.k8s.effect.service_endpoints_reachable_contract";
-    let rel = "ops/k8s/tests/suites.json";
-    let Some(suites) = read_json(&ctx.repo_root.join(rel)) else {
-        return TestResult::Fail(vec![effect_violation(
-            contract_id,
-            test_id,
-            "k8s suites contract must be parseable",
-            rel,
-        )]);
+fn test_ops_k8s_e_006_tool_versions_recorded(ctx: &RunContext) -> TestResult {
+    verify_declared_tool_versions(ctx, &["helm", "kubeconform"])
+}
+
+fn test_ops_stack_e_005_kind_install_smoke(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-STACK-E-005";
+    let test_id = "ops.stack.effect.kind_install_smoke";
+    let output = match run_ops_effect_command(
+        ctx,
+        contract_id,
+        test_id,
+        "kind",
+        &["get", "clusters"],
+        "kind/clusters.stdout.log",
+        "kind/clusters.stderr.log",
+        false,
+    ) {
+        Ok(output) => output,
+        Err(result) => return result,
     };
-    if suites
-        .get("suites")
-        .and_then(|v| v.as_array())
-        .is_none_or(|rows| rows.is_empty())
-    {
-        return TestResult::Fail(vec![effect_violation(
+    if output.status.success() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![effect_violation(
             contract_id,
             test_id,
-            "k8s suites contract must include non-empty suites array",
-            rel,
-        )]);
+            "kind cluster discovery must succeed in the release lane environment",
+            "ops/stack/kind/cluster-dev.yaml",
+        )])
     }
-    TestResult::Pass
 }
 
 fn test_ops_obs_e_001_scrape_metrics_contract(ctx: &RunContext) -> TestResult {

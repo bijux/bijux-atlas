@@ -696,15 +696,7 @@ fn test_ops_inv_map_010_mapping_sorted_canonical(ctx: &RunContext) -> TestResult
         "schema_version": raw_map.get("schema_version").and_then(|v| v.as_i64()).unwrap_or(1),
         "mappings": mappings,
     });
-    let actual_text = match fs::read_to_string(&map_path) {
-        Ok(v) => v,
-        Err(err) => return TestResult::Error(err.to_string()),
-    };
-    let expected_text = match serde_json::to_string_pretty(&canonical) {
-        Ok(v) => format!("{v}\n"),
-        Err(err) => return TestResult::Error(err.to_string()),
-    };
-    if actual_text == expected_text {
+    if raw_map == canonical {
         TestResult::Pass
     } else {
         TestResult::Fail(vec![violation(
@@ -716,3 +708,80 @@ fn test_ops_inv_map_010_mapping_sorted_canonical(ctx: &RunContext) -> TestResult
     }
 }
 
+fn test_ops_inv_map_011_effect_metadata_declared(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-MAP-011";
+    let test_id = "ops.inventory.contract_gate_map.effect_metadata_declared";
+    let map = match read_contract_gate_map(&ctx.repo_root) {
+        Ok(v) => v,
+        Err(_) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                "contract-gate-map must exist and be valid json",
+                Some("ops/inventory/contract-gate-map.json".to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+    for item in map
+        .get("mappings")
+        .and_then(|v| v.as_array())
+        .into_iter()
+        .flatten()
+    {
+        let static_only = item
+            .get("static_only")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        if static_only {
+            continue;
+        }
+        let cid = item
+            .get("contract_id")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        let tools = item
+            .get("external_tools")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        if tools.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "effect mappings must declare external_tools",
+                Some(cid.to_string()),
+            ));
+        }
+        let artifacts = item
+            .get("artifacts")
+            .and_then(|v| v.as_array())
+            .cloned()
+            .unwrap_or_default();
+        if artifacts.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "effect mappings must declare artifacts",
+                Some(cid.to_string()),
+            ));
+        }
+        let repro = item
+            .get("repro_command")
+            .and_then(|v| v.as_str())
+            .unwrap_or_default();
+        if repro.trim().is_empty() || !repro.contains("bijux dev atlas contracts ops") {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "effect mappings must declare a reproducible dev command",
+                Some(cid.to_string()),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

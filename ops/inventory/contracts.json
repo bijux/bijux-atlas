@@ -56,6 +56,7 @@
     "OPS-INV-MAP-008",
     "OPS-INV-MAP-009",
     "OPS-INV-MAP-010",
+    "OPS-INV-MAP-011",
     "OPS-INV-PILLARS-001",
     "OPS-INV-PILLARS-002",
     "OPS-INV-PILLARS-003",
@@ -72,6 +73,9 @@
     "OPS-K8S-E-001",
     "OPS-K8S-E-002",
     "OPS-K8S-E-003",
+    "OPS-K8S-E-004",
+    "OPS-K8S-E-005",
+    "OPS-K8S-E-006",
     "OPS-LOAD-001",
     "OPS-LOAD-002",
     "OPS-LOAD-003",
@@ -165,7 +169,8 @@
     "OPS-STACK-E-001",
     "OPS-STACK-E-002",
     "OPS-STACK-E-003",
-    "OPS-STACK-E-004"
+    "OPS-STACK-E-004",
+    "OPS-STACK-E-005"
   ],
   "contracts": [
     {
@@ -234,6 +239,18 @@
     },
     {
       "path": "ops/inventory/tools.toml",
+      "version": 1
+    },
+    {
+      "path": "ops/policy/effect-tool-version-policy.json",
+      "version": 1
+    },
+    {
+      "path": "ops/policy/required-contracts-change.json",
+      "version": 1
+    },
+    {
+      "path": "ops/policy/required-contracts.json",
       "version": 1
     },
     {

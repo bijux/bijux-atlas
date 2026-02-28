@@ -220,6 +220,16 @@ fn inventory_contracts() -> Vec<Contract> {
             }],
         },
         Contract {
+            id: ContractId("OPS-INV-MAP-011".to_string()),
+            title: "inventory contract gate map effect metadata contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contract_gate_map.effect_metadata_declared".to_string()),
+                title: "effect mappings declare external tools, artifacts, and reproducible commands",
+                kind: TestKind::Pure,
+                run: test_ops_inv_map_011_effect_metadata_declared,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-INV-PILLARS-001".to_string()),
             title: "inventory pillars registry contract",
             tests: vec![TestCase {

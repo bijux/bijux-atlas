@@ -1,4 +1,5 @@
 {
+  "schema_version": 1,
   "mappings": [
     {
       "command": "bijux dev atlas ops check",
@@ -213,6 +214,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "cargo"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-E2E-E-001",
       "gate_ids": [
         "ops.validate"
       ],
@@ -224,6 +232,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "cargo"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-E2E-E-002",
       "gate_ids": [
         "ops.validate"
       ],
@@ -548,6 +563,15 @@
     },
     {
       "command": "bijux dev atlas ops check",
+      "contract_id": "OPS-INV-MAP-011",
+      "effects_required": [],
+      "gate_ids": [
+        "ops.gate.structure"
+      ],
+      "static_only": true
+    },
+    {
+      "command": "bijux dev atlas ops check",
       "contract_id": "OPS-INV-PILLARS-001",
       "effects_required": [],
       "gate_ids": [
@@ -669,6 +693,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "helm"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/helm/rendered.yaml"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-001",
       "gate_ids": [
         "ops.gate.k8s-determinism"
       ],
@@ -680,6 +711,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "helm"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/helm/minimal.stdout.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-002",
       "gate_ids": [
         "ops.gate.k8s-determinism"
       ],
@@ -689,8 +727,71 @@
       "command": "bijux dev atlas ops run",
       "contract_id": "OPS-K8S-E-003",
       "effects_required": [
-        "network"
+        "subprocess"
       ],
+      "external_tools": [
+        "helm",
+        "kubeconform"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/helm/kubeconform.json"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-003",
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "static_only": false
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "contract_id": "OPS-K8S-E-004",
+      "effects_required": [
+        "subprocess"
+      ],
+      "external_tools": [
+        "helm"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-004",
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "static_only": false
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "contract_id": "OPS-K8S-E-005",
+      "effects_required": [
+        "subprocess"
+      ],
+      "external_tools": [
+        "helm"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-005",
+      "gate_ids": [
+        "ops.gate.k8s-determinism"
+      ],
+      "static_only": false
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "contract_id": "OPS-K8S-E-006",
+      "effects_required": [
+        "subprocess"
+      ],
+      "external_tools": [
+        "helm",
+        "kubeconform"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/tools.json"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-K8S-E-006",
       "gate_ids": [
         "ops.gate.k8s-determinism"
       ],
@@ -792,6 +893,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "k6"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-LOAD-E-001",
       "gate_ids": [
         "ops.validate"
       ],
@@ -803,6 +911,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "k6"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-LOAD-E-002",
       "gate_ids": [
         "ops.validate"
       ],
@@ -814,6 +929,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "k6"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-LOAD-E-003",
       "gate_ids": [
         "ops.validate"
       ],
@@ -933,6 +1055,13 @@
       "effects_required": [
         "network"
       ],
+      "external_tools": [
+        "kubectl"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-network --only-contract OPS-OBS-E-001",
       "gate_ids": [
         "ops.gate.observe-coverage"
       ],
@@ -944,6 +1073,13 @@
       "effects_required": [
         "network"
       ],
+      "external_tools": [
+        "kubectl"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-network --only-contract OPS-OBS-E-002",
       "gate_ids": [
         "ops.gate.observe-coverage"
       ],
@@ -955,6 +1091,13 @@
       "effects_required": [
         "network"
       ],
+      "external_tools": [
+        "kubectl"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-network --only-contract OPS-OBS-E-003",
       "gate_ids": [
         "ops.gate.observe-coverage"
       ],
@@ -1524,6 +1667,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "kind"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-001",
       "gate_ids": [
         "ops.gate.stack-reproducibility"
       ],
@@ -1535,6 +1685,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "kubectl"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-002",
       "gate_ids": [
         "ops.gate.stack-reproducibility"
       ],
@@ -1546,6 +1703,13 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "kubectl"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-003",
       "gate_ids": [
         "ops.gate.stack-reproducibility"
       ],
@@ -1557,11 +1721,35 @@
       "effects_required": [
         "subprocess"
       ],
+      "external_tools": [
+        "kind"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/effects.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-004",
+      "gate_ids": [
+        "ops.gate.stack-reproducibility"
+      ],
+      "static_only": false
+    },
+    {
+      "command": "bijux dev atlas ops run",
+      "contract_id": "OPS-STACK-E-005",
+      "effects_required": [
+        "subprocess"
+      ],
+      "external_tools": [
+        "kind"
+      ],
+      "artifacts": [
+        "artifacts/contracts/ops/kind/clusters.stdout.log"
+      ],
+      "repro_command": "bijux dev atlas contracts ops --mode effect --allow-subprocess --only-contract OPS-STACK-E-005",
       "gate_ids": [
         "ops.gate.stack-reproducibility"
       ],
       "static_only": false
     }
-  ],
-  "schema_version": 1
+  ]
 }

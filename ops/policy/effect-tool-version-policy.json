@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "tools": {
+    "docker": {
+      "allowed_major": 28
+    },
+    "syft": {
+      "allowed_major": 1
+    },
+    "trivy": {
+      "allowed_major": 0
+    },
+    "helm": {
+      "allowed_major": 3
+    },
+    "kubeconform": {
+      "allowed_major": 0
+    },
+    "kind": {
+      "allowed_major": 0
+    }
+  }
+}

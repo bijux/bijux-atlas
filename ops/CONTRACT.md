@@ -69,6 +69,7 @@
 | `OPS-INV-MAP-008` | inventory contract gate map effect kind contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-MAP-009` | inventory contract gate map explain coverage contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-MAP-010` | inventory contract gate map canonical order contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-INV-MAP-011` | inventory contract gate map effect metadata contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-PILLARS-001` | inventory pillars registry contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-PILLARS-002` | inventory pillar directory contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-PILLARS-003` | inventory pillar strictness contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
@@ -82,9 +83,12 @@
 | `OPS-K8S-008` | k8s conformance suite contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-K8S-009` | k8s install matrix generated consistency contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-K8S-010` | k8s generated index determinism contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
-| `OPS-K8S-E-001` | k8s effect helm install contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
-| `OPS-K8S-E-002` | k8s effect rollout safety contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
-| `OPS-K8S-E-003` | k8s effect endpoint reachability contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-K8S-E-001` | k8s effect chart defaults render contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-K8S-E-002` | k8s effect minimal values render contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-K8S-E-003` | k8s effect kubeconform contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-K8S-E-004` | k8s effect install matrix contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-K8S-E-005` | k8s effect rollout safety contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-K8S-E-006` | k8s effect tool versions contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-LOAD-001` | load scenario schema contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-LOAD-002` | load thresholds coverage contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-LOAD-003` | load pinned query lock contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
@@ -179,6 +183,7 @@
 | `OPS-STACK-E-002` | stack effect component rollout contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-STACK-E-003` | stack effect ports inventory contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-STACK-E-004` | stack effect health report contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-STACK-E-005` | stack effect kind install smoke contract | `high` | `effect` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 
 ## Enforcement mapping
 
@@ -240,6 +245,7 @@
 | `OPS-INV-MAP-008` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-MAP-009` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-MAP-010` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-INV-MAP-011` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-PILLARS-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-PILLARS-002` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-PILLARS-003` | `bijux dev atlas contracts ops --mode static` |
@@ -256,6 +262,9 @@
 | `OPS-K8S-E-001` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-K8S-E-002` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-K8S-E-003` | `bijux dev atlas contracts ops --mode effect` |
+| `OPS-K8S-E-004` | `bijux dev atlas contracts ops --mode effect` |
+| `OPS-K8S-E-005` | `bijux dev atlas contracts ops --mode effect` |
+| `OPS-K8S-E-006` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-LOAD-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-LOAD-002` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-LOAD-003` | `bijux dev atlas contracts ops --mode static` |
@@ -350,6 +359,7 @@
 | `OPS-STACK-E-002` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-STACK-E-003` | `bijux dev atlas contracts ops --mode effect` |
 | `OPS-STACK-E-004` | `bijux dev atlas contracts ops --mode effect` |
+| `OPS-STACK-E-005` | `bijux dev atlas contracts ops --mode effect` |
 
 ## Output artifacts
 
@@ -364,3 +374,4 @@
 ## Exceptions policy
 
 - No exceptions are allowed by this document.
+

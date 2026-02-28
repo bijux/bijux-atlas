@@ -87,5 +87,15 @@ fn stack_contracts() -> Vec<Contract> {
                 run: test_ops_stack_e_004_stack_health_report_generated,
             }],
         },
+        Contract {
+            id: ContractId("OPS-STACK-E-005".to_string()),
+            title: "stack effect kind install smoke contract",
+            tests: vec![TestCase {
+                id: TestId("ops.stack.effect.kind_install_smoke".to_string()),
+                title: "release lane verifies kind-backed install planning and cluster profile tooling",
+                kind: TestKind::Subprocess,
+                run: test_ops_stack_e_005_kind_install_smoke,
+            }],
+        },
     ]
 }

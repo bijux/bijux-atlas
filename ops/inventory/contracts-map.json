@@ -173,6 +173,12 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/policy/effect-tool-version-policy.json",
+      "schema": "ops/schema/policy/effect-tool-version-policy.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/policy/required-contracts-change.json",
       "schema": "ops/schema/policy/required-contracts-change.schema.json",
       "generator": "manual",

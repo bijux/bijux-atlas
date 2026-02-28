@@ -11,8 +11,8 @@
     },
     {
       "pillar": "inventory",
-      "target": 27,
-      "max": 27,
+      "target": 28,
+      "max": 28,
       "required_classes": [
         "safety"
       ]
@@ -51,16 +51,16 @@
     },
     {
       "pillar": "stack",
-      "target": 13,
-      "max": 13,
+      "target": 14,
+      "max": 14,
       "required_classes": [
         "effect"
       ]
     },
     {
       "pillar": "k8s",
-      "target": 13,
-      "max": 13,
+      "target": 16,
+      "max": 16,
       "required_classes": [
         "effect"
       ]

@@ -21,10 +21,98 @@
       "required": true
     },
     {
+      "contract_id": "DOCKER-100",
+      "domain": "docker",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "DOCKER-101",
+      "domain": "docker",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "DOCKER-102",
+      "domain": "docker",
+      "lanes": [
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "DOCKER-103",
+      "domain": "docker",
+      "lanes": [
+        "release"
+      ],
+      "required": true
+    },
+    {
       "contract_id": "MAKE-001",
       "domain": "make",
       "lanes": [
         "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-K8S-E-001",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-K8S-E-002",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-K8S-E-003",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-K8S-E-004",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-K8S-E-005",
+      "domain": "ops",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-K8S-E-006",
+      "domain": "ops",
+      "lanes": [
         "merge",
         "release"
       ],
@@ -36,6 +124,14 @@
       "lanes": [
         "pr",
         "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-STACK-E-005",
+      "domain": "ops",
+      "lanes": [
         "release"
       ],
       "required": true

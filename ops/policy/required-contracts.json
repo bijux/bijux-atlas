@@ -37,11 +37,88 @@
       "rationale": "Keep container build inputs and policy checks canonical."
     },
     {
+      "domain": "docker",
+      "contract_id": "DOCKER-100",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must prove the runtime image still builds."
+    },
+    {
+      "domain": "docker",
+      "contract_id": "DOCKER-101",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must prove the runtime image still exposes core smoke commands."
+    },
+    {
+      "domain": "docker",
+      "contract_id": "DOCKER-102",
+      "lanes": ["release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Release gating must emit an SBOM for the runtime image."
+    },
+    {
+      "domain": "docker",
+      "contract_id": "DOCKER-103",
+      "lanes": ["release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Release gating must enforce the vulnerability severity threshold."
+    },
+    {
       "domain": "ops",
       "contract_id": "OPS-ROOT-001",
       "lanes": ["pr", "merge", "release"],
       "owner": "atlas-maintainers",
       "rationale": "Protect ops root inventory and pillar entrypoints."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-K8S-E-001",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must render chart defaults with helm."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-K8S-E-002",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must render a minimal chart values profile."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-K8S-E-003",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must validate rendered manifests with kubeconform."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-K8S-E-004",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must keep install matrix coverage for kind-backed installs."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-K8S-E-005",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must keep rollout safety checks active."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-K8S-E-006",
+      "lanes": ["merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Merge gating must record helm and kubeconform tool versions."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-STACK-E-005",
+      "lanes": ["release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Release gating must verify kind-backed install smoke prerequisites."
     }
   ]
 }
