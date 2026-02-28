@@ -50,5 +50,5 @@ Expected output: contract checks and docs checks pass.
 ## See Also
 
 - [Contracts Index](contracts-index.md)
-- [SSOT Workflow](ssot-workflow.md)
+- [SSOT Workflow](../../governance/contract-ssot-workflow.md)
 - [Examples](examples/index.md)

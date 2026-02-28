@@ -24,5 +24,6 @@ curl -fsS 'http://127.0.0.1:8080/v1/openapi.json' >/dev/null
 
 ## Related References
 
+- [Product Compatibility Promise](../product/compatibility-promise.md)
 - [Errors Reference](../reference/errors.md)
 - [Schemas Reference](../reference/schemas.md)

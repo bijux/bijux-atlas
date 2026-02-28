@@ -8,8 +8,8 @@ This page is the single compatibility entrypoint.
 
 ## Scope
 
-- API compatibility guarantees: [`docs/product/compatibility-promise.md`](../product/compatibility-promise.md)
-- Plugin compatibility contract: [`docs/reference/contracts/plugin/umbrella-plugin-contract-v1.md`](plugin/umbrella-plugin-contract-v1.md)
+- API compatibility guarantees: [`docs/product/compatibility-promise.md`](../../product/compatibility-promise.md)
+- Plugin compatibility contract: [`docs/reference/contracts/plugins/umbrella-plugin-contract-v1.md`](plugins/umbrella-plugin-contract-v1.md)
 - Artifact compatibility and producer alignment: generated matrix and registry references.
 
 ## Generated Matrix
@@ -52,6 +52,6 @@ Run `make docs docs-freeze ssot-check` and confirm all commands exit with status
 
 ## See also
 
-- [Contracts Overview](INDEX.md)
-- [SSOT Workflow](ssot-workflow.md)
+- [Contracts Overview](index.md)
+- [SSOT Workflow](../../governance/contract-ssot-workflow.md)
 - [Terms Glossary](../../glossary.md)

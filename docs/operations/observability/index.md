@@ -13,8 +13,7 @@ Reason to exist: provide one canonical observability entrypoint for operators.
 
 ## Contract References
 
-- `docs/reference/contracts/metrics.md`
-- `docs/reference/contracts/tracing.md`
+- `docs/reference/contracts/telemetry.md`
 
 ## Operational Goal
 

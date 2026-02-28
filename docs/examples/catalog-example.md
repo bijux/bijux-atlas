@@ -29,5 +29,5 @@ Expected output: command exits `0`.
 
 ## See also
 - [Reference Index](../reference/index.md)
-- [Artifact Directory Contract](../reference/contracts/artifacts/directory-contract.md)
+- [Artifact Schema Contract](../reference/contracts/artifacts/index.md)
 - [Contract Examples](../reference/contracts/examples/index.md)

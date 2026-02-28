@@ -25,12 +25,11 @@ Does not replace registry-specific detail pages.
 | Error codes | `schemas/ERROR_CODES.json` | `errors.md`, API/core generated Rust | Frozen |
 | Error envelope schema | `schemas/ERROR_SCHEMA.json` | `errors.md`, envelope validation checks | Stable |
 | Error status map | `schemas/ERROR_STATUS_MAP.json` | `errors.md`, status-code validation checks | Stable |
-| Metrics | `schemas/METRICS.json` | `metrics.md`, server telemetry constants | Additive |
-| Trace spans | `schemas/TRACE_SPANS.json` | `tracing.md`, server span constants | Additive |
+| Metrics + trace spans | `schemas/METRICS.json`, `schemas/TRACE_SPANS.json` | `telemetry.md`, server telemetry constants | Additive |
 | Endpoints | `schemas/ENDPOINTS.json` | `endpoints.md`, OpenAPI drift checks | Additive |
 | Config keys | `schemas/CONFIG_KEYS.json` | `config-keys.md`, config-key checks | Additive |
 | Chart values | `schemas/CHART_VALUES.json` | `chart-values.md`, chart values checks | Additive |
-| Artifact schema | `schemas/ARTIFACT_SCHEMA.json` | `artifacts/manifest-contract.md` | Experimental |
+| Artifact schema | `schemas/ARTIFACT_SCHEMA.json` | `artifacts/index.md` | Experimental |
 | Policy schema | `schemas/POLICY_SCHEMA.json` | `../../governance/index.md`, policy checks | Experimental |
 | QC schema | `schemas/QC_SCHEMA.json` | `qc.md` | Stable |
 | Normalized format schema | `schemas/NORMALIZED_FORMAT_SCHEMA.json` | `normalized-format.md` | Evolving |
@@ -43,8 +42,7 @@ Does not replace registry-specific detail pages.
 
 - [Error Codes](errors.md)
 - [Endpoints](endpoints.md)
-- [Metrics](metrics.md)
-- [Trace Spans](tracing.md)
+- [Telemetry](telemetry.md)
 - [Config Keys](config-keys.md)
 - [Chart Values](chart-values.md)
 - [Artifact Contracts](artifacts/index.md)
@@ -75,4 +73,4 @@ Expected output: all contract checks pass.
 ## See also
 
 - [Contracts](index.md)
-- [SSOT Workflow](ssot-workflow.md)
+- [SSOT Workflow](../../governance/contract-ssot-workflow.md)

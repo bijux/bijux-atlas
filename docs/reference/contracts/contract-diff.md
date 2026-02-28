@@ -31,7 +31,7 @@ Missing or unordered review causes drift and compatibility regressions.
 ## Examples
 
 ```bash
-$ rg --files docs/contracts | rg '\.json$'
+$ rg --files docs/reference/contracts/schemas | rg '\.json$'
 $ bijux dev atlas contracts check --checks breakage
 ```
 
@@ -47,6 +47,6 @@ Expected output: no breaking contract change unless intentionally approved.
 
 ## See also
 
-- [SSOT Workflow](ssot-workflow.md)
-- [Contract Change Checklist](contract-change-checklist.md)
+- [SSOT Workflow](../../governance/contract-ssot-workflow.md)
+- [Contract Change Checklist](../../governance/contract-change-checklist.md)
 - [Terms Glossary](../../glossary.md)
