@@ -10,4 +10,4 @@ Reference:
 - `makefiles/PHILOSOPHY.md`
 - `makefiles/TARGETS_REGISTRY.md`
 - `makefiles/CI_LANES.md`
-- `makefiles/GENERATED_TARGETS.md`
+- `docs/_generated/make-targets.md`

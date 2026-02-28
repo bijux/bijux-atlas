@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-operations`
 - Tier: `generated`
 - Audience: `operators`
-- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `makefiles/GENERATED_TARGETS.md`
+- Source-of-truth: `bijux dev atlas --help`, `bijux dev atlas ops --help`, `docs/_generated/make-targets.md`
 
 ## Purpose
 
@@ -65,7 +65,7 @@ Commands:
 
 ## Make Wrapper Surface
 
-See `makefiles/GENERATED_TARGETS.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.
+See `docs/_generated/make-targets.md` and generated ops surface references. Narrative docs must not duplicate long `make ops-*` command lists.
 
 ## Regenerate
 

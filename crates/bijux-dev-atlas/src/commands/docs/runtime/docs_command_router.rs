@@ -435,7 +435,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                                 ));
                             }
                             fs::write(
-                                ctx.repo_root.join("make/makefiles/GENERATED_TARGETS.md"),
+                                ctx.repo_root.join("docs/_generated/make-targets.md"),
                                 generated_make,
                             )
                             .map_err(|e| format!("write generated make targets failed: {e}"))?;
@@ -517,7 +517,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
-                            "generated_make_targets": "make/makefiles/GENERATED_TARGETS.md"
+                            "generated_make_targets": "docs/_generated/make-targets.md"
                         },
                         "changes_summary": {
                             "message": "docs registry updated",
