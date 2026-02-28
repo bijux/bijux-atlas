@@ -19,8 +19,8 @@ This keeps `Release-indexed` operational flows anchored to one entry page per pi
 
 | Pillar | Ops Surface | Docs Entry |
 |---|---|---|
-| `inventory` | `ops/inventory` | `reference/ops-surface.md` |
-| `schema` | `ops/schema` | `reference/schema-index.md` |
+| `inventory` | `ops/inventory` | `../reference/ops-surface.md` |
+| `schema` | `ops/schema` | `../reference/schemas.md` |
 | `datasets` | `ops/datasets` | `datasets.md` |
 | `e2e` | `ops/e2e` | `e2e/index.md` |
 | `env` | `ops/env` | `config.md` |
