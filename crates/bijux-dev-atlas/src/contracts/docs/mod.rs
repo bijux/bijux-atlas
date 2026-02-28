@@ -27,6 +27,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-014" => "When entrypoint pages declare stability metadata, it must use only the approved normalized values.".to_string(),
         "DOC-015" => "Deprecated docs entrypoint pages must point readers to a replacement page.".to_string(),
         "DOC-016" => "Each required section INDEX.md must use the owner declared for that section in docs/owners.json.".to_string(),
+        "DOC-017" => "Every indexed top-level docs section must explicitly declare whether it belongs on the root docs entrypoint.".to_string(),
+        "DOC-018" => "docs/index.md must link every top-level docs section that is explicitly marked as a root entrypoint section.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

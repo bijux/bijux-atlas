@@ -211,5 +211,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_016_section_owner_alignment,
             }],
         },
+        Contract {
+            id: ContractId("DOC-017".to_string()),
+            title: "docs section manifest declares root entrypoint coverage",
+            tests: vec![TestCase {
+                id: TestId("docs.sections.root_entrypoint_flags".to_string()),
+                title: "indexed docs sections declare whether they must appear in docs/index.md",
+                kind: TestKind::Pure,
+                run: test_docs_017_root_entrypoint_flags,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-018".to_string()),
+            title: "docs root entrypoint links every declared root section",
+            tests: vec![TestCase {
+                id: TestId("docs.index.root_section_coverage".to_string()),
+                title: "docs/index.md links every section marked for root entrypoint coverage",
+                kind: TestKind::Pure,
+                run: test_docs_018_root_section_coverage,
+            }],
+        },
     ])
 }

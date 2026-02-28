@@ -77,6 +77,24 @@ fn docs_entrypoint_pages(ctx: &RunContext) -> Result<Vec<(String, bool)>, TestRe
     Ok(pages)
 }
 
+fn docs_root_index_targets(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<Vec<String>, TestResult> {
+    let path = ctx.repo_root.join("docs/index.md");
+    let contents = match std::fs::read_to_string(&path) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return Err(TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("docs/index.md".to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]))
+        }
+    };
+    Ok(markdown_links(&contents))
+}
+
 fn push_docs_violation(
     violations: &mut Vec<Violation>,
     contract_id: &str,
@@ -694,6 +712,97 @@ fn test_docs_016_section_owner_alignment(ctx: &RunContext) -> TestResult {
                 Some(relative),
                 "docs entrypoint page must declare `- Owner:` metadata near the top",
             ),
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_017_root_entrypoint_flags(ctx: &RunContext) -> TestResult {
+    let payload = match docs_sections_payload(ctx, "DOC-017", "docs.sections.root_entrypoint_flags") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let section_map = match payload["sections"].as_object() {
+        Some(map) => map,
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-017".to_string(),
+                test_id: "docs.sections.root_entrypoint_flags".to_string(),
+                file: Some("docs/sections.json".to_string()),
+                line: None,
+                message: "`sections` object is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let mut violations = Vec::new();
+    for (name, config) in section_map {
+        if !config["requires_index"].as_bool().unwrap_or(false) {
+            continue;
+        }
+        if config.get("root_entrypoint").and_then(|value| value.as_bool()).is_none() {
+            push_docs_violation(
+                &mut violations,
+                "DOC-017",
+                "docs.sections.root_entrypoint_flags",
+                Some("docs/sections.json".to_string()),
+                format!("indexed section `{name}` must declare boolean `root_entrypoint`"),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_docs_018_root_section_coverage(ctx: &RunContext) -> TestResult {
+    let payload = match docs_sections_payload(ctx, "DOC-018", "docs.index.root_section_coverage") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let section_map = match payload["sections"].as_object() {
+        Some(map) => map,
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-018".to_string(),
+                test_id: "docs.index.root_section_coverage".to_string(),
+                file: Some("docs/sections.json".to_string()),
+                line: None,
+                message: "`sections` object is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let targets = match docs_root_index_targets(ctx, "DOC-018", "docs.index.root_section_coverage") {
+        Ok(targets) => targets,
+        Err(result) => return result,
+    };
+    let target_set = targets.into_iter().collect::<std::collections::BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for (name, config) in section_map {
+        if !config["requires_index"].as_bool().unwrap_or(false) {
+            continue;
+        }
+        if !config["root_entrypoint"].as_bool().unwrap_or(false) {
+            continue;
+        }
+        let expected = format!("{name}/INDEX.md");
+        if !target_set.contains(&expected) {
+            push_docs_violation(
+                &mut violations,
+                "DOC-018",
+                "docs.index.root_section_coverage",
+                Some("docs/index.md".to_string()),
+                format!("docs/index.md must link `{expected}`"),
+            );
         }
     }
     if violations.is_empty() {

@@ -16,6 +16,7 @@ Use this page as the only docs entrypoint.
 - Deprecation policy: [docs/reference/registry/deprecation-policy.md](reference/registry/deprecation-policy.md)
 - Contract system (SSOT): [docs/contracts/INDEX.md](contracts/INDEX.md)
 - Ops setup: [docs/quickstart/local-cluster-setup.md](quickstart/local-cluster-setup.md)
+- Quickstart category: [docs/quickstart/INDEX.md](quickstart/INDEX.md)
 
 ## Authoring Rules
 
@@ -67,6 +68,7 @@ Expected output: docs checks pass.
 ## See also
 
 - [Product Index](product/INDEX.md)
+- [Reference Index](reference/INDEX.md)
 - [Security Index](security/INDEX.md)
 - [Release Index](release/INDEX.md)
 - [Naming Standard](_style/naming-standard.md)
