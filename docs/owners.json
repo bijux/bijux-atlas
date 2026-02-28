@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "section_owners": {
+    "_assets": "docs-governance",
+    "_drafts": "docs-governance",
+    "_generated": "docs-governance",
+    "_lint": "docs-governance",
+    "_nav": "docs-governance",
+    "_style": "docs-governance",
+    "adrs": "architecture",
+    "api": "api-contracts",
+    "architecture": "architecture",
+    "contracts": "platform",
+    "control-plane": "bijux-atlas-operations",
+    "dev": "platform",
+    "development": "platform",
+    "docs": "docs-governance",
+    "engineering": "platform",
+    "examples": "platform",
+    "governance": "platform",
+    "metadata": "platform",
+    "operations": "bijux-atlas-operations",
+    "policies": "platform",
+    "product": "product",
+    "quickstart": "platform",
+    "reference": "docs-governance",
+    "release": "release",
+    "root": "docs-governance",
+    "science": "science",
+    "security": "security",
+    "start": "platform"
+  }
+}

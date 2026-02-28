@@ -44,6 +44,8 @@ const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 9] = [
     "taxonomy-map.md",
 ];
 
+const DOCS_ALLOWED_ROOT_FILES: [&str; 2] = ["owners.json", "registry.json"];
+
 const DOCS_MAX_DEPTH: usize = 4;
 const DOCS_MAX_SIBLINGS: usize = 48;
 
@@ -107,6 +109,26 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: "docs index exists",
                 kind: TestKind::Pure,
                 run: test_docs_006_index_exists,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-007".to_string()),
+            title: "docs root files stay on the declared non-markdown surface",
+            tests: vec![TestCase {
+                id: TestId("docs.surface.allowed_root_files".to_string()),
+                title: "docs root non-markdown files stay in the allowlist",
+                kind: TestKind::Pure,
+                run: test_docs_007_allowed_root_files,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-008".to_string()),
+            title: "docs top-level sections keep declared owners",
+            tests: vec![TestCase {
+                id: TestId("docs.owners.section_coverage".to_string()),
+                title: "docs owners map covers all top-level section directories",
+                kind: TestKind::Pure,
+                run: test_docs_008_section_owner_coverage,
             }],
         },
     ])
