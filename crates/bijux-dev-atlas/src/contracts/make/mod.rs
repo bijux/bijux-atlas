@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
 mod surface_contracts;
+mod wrapper_contracts;
 
 pub(super) fn rel(path: &Path, repo_root: &Path) -> String {
     path.strip_prefix(repo_root)
@@ -166,7 +167,6 @@ fn test_make_dir_003_allowed_root_files(ctx: &RunContext) -> TestResult {
         "checks.mk",
         "macros.mk",
         "paths.mk",
-        "phony.mk",
         "public.mk",
         "target-list.json",
         "vars.mk",
@@ -394,7 +394,6 @@ fn test_make_include_002_public_surface(ctx: &RunContext) -> TestResult {
         "make/checks.mk".to_string(),
         "make/macros.mk".to_string(),
         "make/paths.mk".to_string(),
-        "make/phony.mk".to_string(),
         "make/vars.mk".to_string(),
     ];
     let internal_includes = match include_lines(&internal_path) {
@@ -417,7 +416,7 @@ fn test_make_include_002_public_surface(ctx: &RunContext) -> TestResult {
             test_id,
             &public_path,
             &ctx.repo_root,
-            "make/public.mk must include only vars, paths, macros, phony, _internal, and checks",
+            "make/public.mk must include only vars, paths, macros, _internal, and checks",
         ));
     }
     if internal_includes != ["make/makefiles/root.mk".to_string()] {
@@ -589,6 +588,7 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
     ];
     contracts.extend(surface_contracts::contracts());
+    contracts.extend(wrapper_contracts::contracts());
     Ok(contracts)
 }
 
@@ -621,6 +621,7 @@ pub fn contract_explain(contract_id: &str) -> String {
             "Keep the make include graph acyclic so wrapper composition stays reviewable.".to_string()
         }
         _ => surface_contracts::contract_explain(contract_id)
+            .or_else(|| wrapper_contracts::contract_explain(contract_id))
             .unwrap_or("Unknown make contract id.")
             .to_string(),
     }

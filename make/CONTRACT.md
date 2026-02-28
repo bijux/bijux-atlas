@@ -17,9 +17,9 @@
 - `MAKE-INTERNAL-002`: Make recipes must not invoke `scripts/` directly. Enforced by: `make.internal.no_scripts_path`.
 - `MAKE-NET-001`: Make recipes must not use `curl` or `wget`. Enforced by: `make.network.no_curl_or_wget`.
 - `MAKE-SHELL-001`: Make recipes must not use `cd` chains. Enforced by: `make.shell.no_cd`.
-- `MAKE-SHELL-002`: Public targets must avoid shell pipeline-heavy logic. Enforced by: `bijux dev atlas contracts make` wrapper surface review.
+- `MAKE-SHELL-002`: Public targets must avoid multi-hop shell pipelines. Enforced by: `make.shell.no_multi_hop_pipes`.
 - `MAKE-REPRO-001`: Tool-invoking targets must route through exported deterministic run-environment defaults. Enforced by: `make.repro.runenv_exports`.
-- `MAKE-ART-001`: Make-generated artifacts must use run-scoped output roots. Enforced by: `bijux dev atlas contracts make` wrapper surface review.
+- `MAKE-ART-001`: Make-generated artifacts must use run-scoped output roots. Enforced by: `make.artifacts.run_scoped`.
 - `MAKE-CI-001`: CI workflows may call only curated public targets. Enforced by: `make.ci.curated_workflow_usage`.
 - `MAKE-STRUCT-001`: No markdown may exist under `make/` except `README.md` and `CONTRACT.md`. Enforced by: `make.docs.allowed_root_docs_only` and `make.docs.no_nested_markdown`.
 - `MAKE-STRUCT-002`: `make/makefiles/` may contain only `.mk` files. Enforced by: `make.structure.mk_only`.
@@ -28,3 +28,7 @@
 - `MAKE-STYLE-001`: Internal helpers must stay out of the curated help surface. Enforced by: `make.internal.root_helpers_prefixed` and `make.surface.single_source`.
 - `MAKE-DRIFT-001`: `make/target-list.json` must match the curated target source and config registry. Enforced by: `make.surface.target_list_drift`.
 - `MAKE-SSOT-001`: Make is not the authority for make contracts; Rust contracts are the SSOT. Enforced by: `make.ssot.checks_delegate_to_contracts`.
+- `MAKE-TARGETLIST-001`: `make/target-list.json` must declare an explicit committed schema and source policy. Enforced by: `make.target_list.explicit_policy`.
+- `MAKE-NAME-001`: Helper-only files under `make/makefiles/` must use `_*.mk`. Enforced by: `make.naming.helper_files_prefixed`.
+- `MAKE-NAME-002`: Files that declare curated public targets must not start with `_`. Enforced by: `make.naming.public_files_clear`.
+- `MAKE-ENGINE-001`: Make wrappers must not invoke `kubectl`, `helm`, `docker`, or `k6` directly. Enforced by: `make.engine.no_direct_tools`.
