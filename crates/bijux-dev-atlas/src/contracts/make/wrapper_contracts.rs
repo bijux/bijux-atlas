@@ -105,12 +105,52 @@ fn count_recipe_pipes(recipe: &str) -> usize {
     recipe.match_indices(" | ").count()
 }
 
+fn file_line_count(path: &Path) -> Result<usize, String> {
+    read_text(path).map(|text| text.lines().count())
+}
+
 fn line_invokes_direct_tool(line: &str) -> bool {
     let trimmed = line.trim_start();
     let trimmed = trimmed.strip_prefix('@').unwrap_or(trimmed).trim_start();
     ["kubectl ", "helm ", "docker ", "k6 "]
         .iter()
         .any(|pattern| trimmed.starts_with(pattern))
+}
+
+fn make_registry_targets(
+    repo_root: &Path,
+) -> Result<BTreeMap<String, (String, Vec<String>)>, String> {
+    let path = repo_root.join("configs/ops/make-target-registry.json");
+    let json: Value = serde_json::from_str(&read_text(&path)?)
+        .map_err(|err| format!("parse {} failed: {err}", path.display()))?;
+    let mut rows = BTreeMap::new();
+    for row in json
+        .get("targets")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("{} missing targets array", path.display()))?
+    {
+        let Some(name) = row.get("name").and_then(Value::as_str) else {
+            continue;
+        };
+        let visibility = row
+            .get("visibility")
+            .and_then(Value::as_str)
+            .unwrap_or("unknown")
+            .to_string();
+        let defined_in = row
+            .get("defined_in")
+            .and_then(Value::as_array)
+            .map(|items| {
+                items
+                    .iter()
+                    .filter_map(Value::as_str)
+                    .map(str::to_string)
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        rows.insert(name.to_string(), (visibility, defined_in));
+    }
+    Ok(rows)
 }
 
 fn test_make_targetlist_001_explicit_policy(ctx: &RunContext) -> TestResult {
@@ -344,6 +384,165 @@ fn test_make_engine_001_no_direct_tool_invocation(ctx: &RunContext) -> TestResul
     TestResult::Pass
 }
 
+fn test_make_docs_001_line_budgets(ctx: &RunContext) -> TestResult {
+    let readme_path = ctx.repo_root.join("make/README.md");
+    let readme_lines = match file_line_count(&readme_path) {
+        Ok(lines) => lines,
+        Err(err) => {
+            return fail(
+                "MAKE-DOCS-001",
+                "make.docs.line_budgets",
+                "make/README.md",
+                err,
+            )
+        }
+    };
+    if readme_lines > 120 {
+        return fail(
+            "MAKE-DOCS-001",
+            "make.docs.line_budgets",
+            "make/README.md",
+            format!("make/README.md exceeds the 120-line budget ({readme_lines} lines)"),
+        );
+    }
+
+    let contract_path = ctx.repo_root.join("make/CONTRACT.md");
+    let contract_lines = match file_line_count(&contract_path) {
+        Ok(lines) => lines,
+        Err(err) => {
+            return fail(
+                "MAKE-DOCS-001",
+                "make.docs.line_budgets",
+                "make/CONTRACT.md",
+                err,
+            )
+        }
+    };
+    if contract_lines > 200 {
+        return fail(
+            "MAKE-DOCS-001",
+            "make.docs.line_budgets",
+            "make/CONTRACT.md",
+            format!("make/CONTRACT.md exceeds the 200-line budget ({contract_lines} lines)"),
+        );
+    }
+
+    TestResult::Pass
+}
+
+fn test_make_gates_001_curated_targets_mapped(ctx: &RunContext) -> TestResult {
+    let curated = match curated_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-GATES-001",
+                "make.gates.curated_targets_mapped",
+                "make/makefiles/root.mk",
+                err,
+            )
+        }
+    };
+    let registry = match make_registry_targets(&ctx.repo_root) {
+        Ok(rows) => rows,
+        Err(err) => {
+            return fail(
+                "MAKE-GATES-001",
+                "make.gates.curated_targets_mapped",
+                "configs/ops/make-target-registry.json",
+                err,
+            )
+        }
+    };
+    for target in curated {
+        if !registry.contains_key(&target) {
+            return fail(
+                "MAKE-GATES-001",
+                "make.gates.curated_targets_mapped",
+                "configs/ops/make-target-registry.json",
+                format!("curated target {target} is missing from the make target registry"),
+            );
+        }
+    }
+    TestResult::Pass
+}
+
+fn test_make_gates_002_curated_targets_public(ctx: &RunContext) -> TestResult {
+    let curated = match curated_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-GATES-002",
+                "make.gates.curated_targets_public",
+                "make/makefiles/root.mk",
+                err,
+            )
+        }
+    };
+    let registry = match make_registry_targets(&ctx.repo_root) {
+        Ok(rows) => rows,
+        Err(err) => {
+            return fail(
+                "MAKE-GATES-002",
+                "make.gates.curated_targets_public",
+                "configs/ops/make-target-registry.json",
+                err,
+            )
+        }
+    };
+    for target in curated {
+        let Some((visibility, _)) = registry.get(&target) else {
+            continue;
+        };
+        if visibility != "public" {
+            return fail(
+                "MAKE-GATES-002",
+                "make.gates.curated_targets_public",
+                "configs/ops/make-target-registry.json",
+                format!(
+                    "curated target {target} must be marked public in the make target registry"
+                ),
+            );
+        }
+    }
+    TestResult::Pass
+}
+
+fn test_make_gates_003_no_orphan_public_targets(ctx: &RunContext) -> TestResult {
+    let curated = match curated_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-GATES-003",
+                "make.gates.no_orphan_public_targets",
+                "make/makefiles/root.mk",
+                err,
+            )
+        }
+    };
+    let registry = match make_registry_targets(&ctx.repo_root) {
+        Ok(rows) => rows,
+        Err(err) => {
+            return fail(
+                "MAKE-GATES-003",
+                "make.gates.no_orphan_public_targets",
+                "configs/ops/make-target-registry.json",
+                err,
+            )
+        }
+    };
+    for (name, (visibility, _)) in registry {
+        if visibility == "public" && !curated.contains(&name) {
+            return fail(
+                "MAKE-GATES-003",
+                "make.gates.no_orphan_public_targets",
+                "configs/ops/make-target-registry.json",
+                format!("public registry target {name} is not part of CURATED_TARGETS"),
+            );
+        }
+    }
+    TestResult::Pass
+}
+
 pub(super) fn contracts() -> Vec<Contract> {
     vec![
         Contract {
@@ -406,6 +605,46 @@ pub(super) fn contracts() -> Vec<Contract> {
                 run: test_make_engine_001_no_direct_tool_invocation,
             }],
         },
+        Contract {
+            id: ContractId("MAKE-DOCS-001".to_string()),
+            title: "make docs line budgets",
+            tests: vec![TestCase {
+                id: TestId("make.docs.line_budgets".to_string()),
+                title: "make docs stay inside bounded review budgets",
+                kind: TestKind::Pure,
+                run: test_make_docs_001_line_budgets,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-GATES-001".to_string()),
+            title: "make gate mapping coverage",
+            tests: vec![TestCase {
+                id: TestId("make.gates.curated_targets_mapped".to_string()),
+                title: "every curated target appears in the make target registry",
+                kind: TestKind::Pure,
+                run: test_make_gates_001_curated_targets_mapped,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-GATES-002".to_string()),
+            title: "make public gate visibility",
+            tests: vec![TestCase {
+                id: TestId("make.gates.curated_targets_public".to_string()),
+                title: "curated targets are marked public in the make target registry",
+                kind: TestKind::Pure,
+                run: test_make_gates_002_curated_targets_public,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-GATES-003".to_string()),
+            title: "make orphan public gate removal",
+            tests: vec![TestCase {
+                id: TestId("make.gates.no_orphan_public_targets".to_string()),
+                title: "the make target registry has no public targets outside CURATED_TARGETS",
+                kind: TestKind::Pure,
+                run: test_make_gates_003_no_orphan_public_targets,
+            }],
+        },
     ]
 }
 
@@ -422,6 +661,14 @@ pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
         "MAKE-SHELL-002" => Some("Curated wrappers must avoid multi-hop shell pipelines."),
         "MAKE-ENGINE-001" => {
             Some("Make is a wrapper layer, not the owner of direct infra tool invocations.")
+        }
+        "MAKE-DOCS-001" => Some("Make docs must stay small enough to remain reviewer-readable."),
+        "MAKE-GATES-001" => Some("Every curated target must have a target registry mapping."),
+        "MAKE-GATES-002" => {
+            Some("Curated targets must be represented as public in the make target registry.")
+        }
+        "MAKE-GATES-003" => {
+            Some("The make target registry must not expose public orphan targets outside CURATED_TARGETS.")
         }
         _ => None,
     }

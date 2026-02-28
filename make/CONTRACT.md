@@ -32,3 +32,7 @@
 - `MAKE-NAME-001`: Helper-only files under `make/makefiles/` must use `_*.mk`. Enforced by: `make.naming.helper_files_prefixed`.
 - `MAKE-NAME-002`: Files that declare curated public targets must not start with `_`. Enforced by: `make.naming.public_files_clear`.
 - `MAKE-ENGINE-001`: Make wrappers must not invoke `kubectl`, `helm`, `docker`, or `k6` directly. Enforced by: `make.engine.no_direct_tools`.
+- `MAKE-DOCS-001`: `make/README.md` and `make/CONTRACT.md` must stay within their review line budgets. Enforced by: `make.docs.line_budgets`.
+- `MAKE-GATES-001`: Every curated make target must have a target registry mapping. Enforced by: `make.gates.curated_targets_mapped`.
+- `MAKE-GATES-002`: Curated make targets must be marked public in the make target registry. Enforced by: `make.gates.curated_targets_public`.
+- `MAKE-GATES-003`: The make target registry must not expose public orphan targets outside the curated make surface. Enforced by: `make.gates.no_orphan_public_targets`.
