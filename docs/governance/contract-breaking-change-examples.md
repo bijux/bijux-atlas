@@ -52,6 +52,6 @@ Expected output: breaking changes are flagged.
 
 ## See also
 
-- [Contracts Index](contracts-index.md)
-- [Contract Diff Review](contract-diff.md)
-- [Terms Glossary](../../glossary.md)
+- [Contracts Index](../reference/contracts/contracts-index.md)
+- [Contract Diff Review](../reference/contracts/contract-diff.md)
+- [Glossary](../glossary.md)

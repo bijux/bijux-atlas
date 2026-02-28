@@ -47,6 +47,6 @@ concepts:
     canonical: docs/reference/registry/shared-core-extraction.md
     pointers: []
   - id: concept.plugin-contract
-    canonical: docs/reference/contracts/plugin/spec.md
+    canonical: docs/reference/contracts/plugins/spec.md
     pointers:
-      - docs/reference/contracts/plugin/mode.md
+      - docs/reference/contracts/plugins/mode.md

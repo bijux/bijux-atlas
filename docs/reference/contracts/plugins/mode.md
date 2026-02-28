@@ -6,7 +6,7 @@ Concept IDs: concept.plugin-contract
 
 `bijux-atlas` is a plugin executable intended to be launched by the `bijux` umbrella.
 
-Canonical page: [`docs/reference/contracts/plugin/spec.md`](spec.md)
+Canonical page: [`docs/reference/contracts/plugins/spec.md`](spec.md)
 
 ## Invocation Model
 
@@ -86,5 +86,5 @@ Run `make docs docs-freeze ssot-check` and confirm all commands exit with status
 ## See also
 
 - [Contracts Overview](../index.md)
-- [SSOT Workflow](../ssot-workflow.md)
+- [SSOT Workflow](../../../governance/contract-ssot-workflow.md)
 - [Terms Glossary](../../../glossary.md)

@@ -45,13 +45,13 @@ Expected output: all checks pass.
 ## How to verify
 
 ```bash
-$ rg -n "\[ \]" docs/reference/contracts/contract-change-checklist.md
+$ rg -n "\[ \]" docs/governance/contract-change-checklist.md
 ```
 
 Expected output: checklist template contains required gate items for reviewers.
 
 ## See also
 
-- [SSOT Workflow](ssot-workflow.md)
-- [Contract Diff Review](contract-diff.md)
-- [Terms Glossary](../../glossary.md)
+- [SSOT Workflow](contract-ssot-workflow.md)
+- [Contract Diff Review](../reference/contracts/contract-diff.md)
+- [Glossary](../glossary.md)

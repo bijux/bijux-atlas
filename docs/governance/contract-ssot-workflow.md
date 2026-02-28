@@ -12,7 +12,7 @@ A single workflow definition removes ambiguity in contract update process.
 
 ## Scope
 
-Applies to all JSON registries under `docs/reference/contracts/`.
+Applies to all JSON registries under `docs/reference/contracts/schemas/`.
 
 ## Non-goals
 
@@ -52,6 +52,6 @@ Expected output: contract pipeline exits 0.
 
 ## See also
 
-- [Contracts Index](contracts-index.md)
+- [Contracts Index](../reference/contracts/contracts-index.md)
 - [Contract Change Checklist](contract-change-checklist.md)
-- [Terms Glossary](../../glossary.md)
+- [Glossary](../glossary.md)
