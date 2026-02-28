@@ -14,4 +14,3 @@ Atlas documentation is organized by reader intent. Start at `start-here.md` for 
 - [Operations](operations/index.md)
 - [Development](development/index.md)
 - [Reference](reference/index.md)
-- [Governance](governance/index.md)

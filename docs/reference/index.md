@@ -1,6 +1,17 @@
-# Reference Index
+# Reference
 
-- Owner: docs-governance
-- Stability: stable
+Owner: `docs-governance`  
+Type: `reference`  
+Audience: `user`  
+Reason to exist: provide factual source-of-truth pages for commands, configs, schemas, and errors.
 
-- [Reference Entry](index.md)
+## What This Section Covers
+
+Stable factual surfaces used by users, operators, and contributors.
+
+## Start Here
+
+- [Commands](commands.md)
+- [Configs](configs.md)
+- [Schemas](schemas.md)
+- [Errors](errors.md)

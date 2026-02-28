@@ -10,3 +10,4 @@ Reason to exist: provide the canonical contributor entrypoint.
 - [Repository Layout](repo-layout.md)
 - [CI Overview](ci-overview.md)
 - [Control Plane](control-plane.md)
+- [Governance Policies](../governance/index.md)
