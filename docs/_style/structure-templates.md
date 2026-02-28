@@ -44,6 +44,16 @@
 6. `## Rollback`
 7. `## Postmortem checklist`
 
+Canonical file: `docs/operations/runbook-template.md`
+
+## Decision Template
+
+1. `## Context`
+2. `## Decision`
+3. `## Consequences`
+
+Canonical file: `docs/architecture/decision-template.md`
+
 ## Pointer Page Template
 
 1. `Concept IDs: <id list>`

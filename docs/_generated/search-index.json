@@ -3606,6 +3606,16 @@
     },
     {
       "keywords": [
+        "docs-removal-policy"
+      ],
+      "path": "docs/DOCS_REMOVAL_POLICY.md",
+      "tags": [
+        "docs-removal-policy"
+      ],
+      "topic": "DOCS_REMOVAL_POLICY"
+    },
+    {
+      "keywords": [
         "owners"
       ],
       "path": "docs/OWNERS.md",
@@ -4231,6 +4241,18 @@
         "data-access-patterns"
       ],
       "topic": "data-access-patterns"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "decision-template"
+      ],
+      "path": "docs/architecture/decision-template.md",
+      "tags": [
+        "architecture",
+        "decision-template"
+      ],
+      "topic": "decision-template"
     },
     {
       "keywords": [
@@ -7121,6 +7143,18 @@
         "retention-and-gc"
       ],
       "topic": "retention-and-gc"
+    },
+    {
+      "keywords": [
+        "operations",
+        "runbook-template"
+      ],
+      "path": "docs/operations/runbook-template.md",
+      "tags": [
+        "operations",
+        "runbook-template"
+      ],
+      "topic": "runbook-template"
     },
     {
       "keywords": [

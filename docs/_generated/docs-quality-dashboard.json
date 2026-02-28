@@ -184,6 +184,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docker/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/AUTHORS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/CONTRACT.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/DOCS_REMOVAL_POLICY.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/OWNERS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/PROJECT_DESCRIPTION_SNIPPET.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/PROJECT_IDENTITY.md` has no inbound doc links",
@@ -205,6 +206,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/boundary-maps.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/crate-boundary-dependency-graph.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/crate-layout-contract.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/decision-template.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/layout-shell-migration.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/architecture/policy-enforcement-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/contracts/artifacts/directory-contract.md` has no inbound doc links",
@@ -282,6 +284,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/observability/startup-warm-cache-strategy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/ops-docs-contract.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/release/lane-guarantees.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbook-template.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks/dataset-corruption.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks/high-memory.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks/incident-playbook.md` has no inbound doc links",
@@ -351,7 +354,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 23,
-    "registered": 750,
-    "warnings": 390
+    "registered": 753,
+    "warnings": 393
   }
 }

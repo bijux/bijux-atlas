@@ -1403,6 +1403,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/DOCS_REMOVAL_POLICY.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/OWNERS.md"
     },
     {
@@ -1664,6 +1669,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/architecture/data-access-patterns.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/decision-template.md"
     },
     {
       "crate": null,
@@ -2779,6 +2789,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/retention-and-gc.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/runbook-template.md"
     },
     {
       "crate": null,

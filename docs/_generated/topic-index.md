@@ -61,6 +61,7 @@
 | `DOCS_OWNERSHIP` | `docs/governance/DOCS_OWNERSHIP.md` |
 | `DOCS_PHILOSOPHY` | `docs/root/DOCS_PHILOSOPHY.md` |
 | `DOCS_QUALITY_POLICY` | `docs/governance/DOCS_QUALITY_POLICY.md` |
+| `DOCS_REMOVAL_POLICY` | `docs/DOCS_REMOVAL_POLICY.md` |
 | `DOCS_STRUCTURE_FREEZE` | `docs/operations/DOCS_STRUCTURE_FREEZE.md` |
 | `ENGINE_CONTRACT` | `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` |
 | `ENSEMBL_LAYOUT` | `crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md` |
@@ -235,6 +236,7 @@
 | `datasets` | `docs/operations/datasets.md` |
 | `debug-overload` | `docs/operations/observability/debug-overload.md` |
 | `debug-p99-latency` | `docs/operations/observability/debug-p99-latency.md` |
+| `decision-template` | `docs/architecture/decision-template.md` |
 | `default-field-set` | `docs/api/default-field-set.md` |
 | `dependency-update-policy` | `docs/development/ci/dependency-update-policy.md` |
 | `deprecation` | `docs/api/deprecation.md` |
@@ -402,6 +404,7 @@
 | `rollback-playbook` | `docs/operations/runbooks/rollback-playbook.md` |
 | `root-inventory` | `docs/development/root-inventory.md` |
 | `runbook-dashboard-alert-map` | `docs/operations/observability/runbook-dashboard-alert-map.md` |
+| `runbook-template` | `docs/operations/runbook-template.md` |
 | `runtime-model` | `crates/bijux-atlas-server/docs/runtime-model.md` |
 | `runtime-policy` | `docs/operations/load/runtime-policy.md` |
 | `runtime-startup-config` | `crates/bijux-atlas-server/docs/generated/runtime-startup-config.md` |

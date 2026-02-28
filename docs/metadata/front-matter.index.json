@@ -2242,6 +2242,14 @@
       "title": "Docs Contract"
     },
     {
+      "area": "DOCS_REMOVAL_POLICY.md",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/DOCS_REMOVAL_POLICY.md",
+      "stability": "stable",
+      "title": "Docs Removal Policy"
+    },
+    {
       "area": "OWNERS.md",
       "audience": "contributors",
       "owner": "docs-governance",
@@ -2664,6 +2672,14 @@
       "path": "docs/architecture/data-access-patterns.md",
       "stability": "stable",
       "title": "Data Access Patterns"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/architecture/decision-template.md",
+      "stability": "stable",
+      "title": "Decision Template"
     },
     {
       "area": "architecture",
@@ -4448,6 +4464,14 @@
       "path": "docs/operations/retention-and-gc.md",
       "stability": "evolving",
       "title": "Retention And GC"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbook-template.md",
+      "stability": "stable",
+      "title": "Runbook Template"
     },
     {
       "area": "operations",

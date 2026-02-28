@@ -227,6 +227,9 @@
     "DOCS_QUALITY_POLICY": [
       "docs/governance/DOCS_QUALITY_POLICY.md"
     ],
+    "DOCS_REMOVAL_POLICY": [
+      "docs/DOCS_REMOVAL_POLICY.md"
+    ],
     "DOCS_STRUCTURE_FREEZE": [
       "docs/operations/DOCS_STRUCTURE_FREEZE.md"
     ],
@@ -921,6 +924,9 @@
     "debug-p99-latency": [
       "docs/operations/observability/debug-p99-latency.md"
     ],
+    "decision-template": [
+      "docs/architecture/decision-template.md"
+    ],
     "default-field-set": [
       "docs/api/default-field-set.md"
     ],
@@ -1458,6 +1464,9 @@
     ],
     "runbook-dashboard-alert-map": [
       "docs/operations/observability/runbook-dashboard-alert-map.md"
+    ],
+    "runbook-template": [
+      "docs/operations/runbook-template.md"
     ],
     "runtime-model": [
       "crates/bijux-atlas-server/docs/runtime-model.md"

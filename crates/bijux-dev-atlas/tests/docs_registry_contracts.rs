@@ -59,6 +59,46 @@ fn parse_docs_field(contents: &str, labels: &[&str]) -> Option<String> {
     None
 }
 
+fn markdown_links(contents: &str) -> Vec<String> {
+    let link_re = regex::Regex::new(r"\[[^\]]+\]\(([^)]+)\)").expect("link regex");
+    link_re
+        .captures_iter(contents)
+        .filter_map(|caps| caps.get(1).map(|m| m.as_str().trim().to_string()))
+        .collect()
+}
+
+fn markdown_images(contents: &str) -> Vec<String> {
+    let image_re = regex::Regex::new(r"!\[[^\]]*\]\(([^)]+)\)").expect("image regex");
+    image_re
+        .captures_iter(contents)
+        .filter_map(|caps| caps.get(1).map(|m| m.as_str().trim().to_string()))
+        .collect()
+}
+
+fn bare_fence_lines(contents: &str) -> Vec<usize> {
+    let mut lines = Vec::new();
+    let mut in_fence = false;
+    for (idx, line) in contents.lines().enumerate() {
+        let trimmed = line.trim();
+        if !trimmed.starts_with("```") {
+            continue;
+        }
+        if in_fence {
+            if trimmed == "```" {
+                in_fence = false;
+            }
+            continue;
+        }
+        if trimmed == "```" {
+            lines.push(idx + 1);
+            in_fence = true;
+        } else {
+            in_fence = true;
+        }
+    }
+    lines
+}
+
 #[test]
 fn generated_docs_surface_is_committed_and_non_empty() {
     let root = repo_root();
@@ -340,4 +380,252 @@ fn docs_audience_policy_is_curated_and_front_matter_uses_allowed_values() {
             "front matter audience must use allowed values: {path} -> {audience}"
         );
     }
+}
+
+#[test]
+fn canonical_front_matter_index_covers_every_docs_page() {
+    let root = repo_root();
+    let index = load_json(&root.join("docs/metadata/front-matter.index.json"));
+    let indexed = index["documents"]
+        .as_array()
+        .expect("documents array")
+        .iter()
+        .filter_map(|row| row["path"].as_str())
+        .collect::<BTreeSet<_>>();
+    let mut missing = Vec::new();
+    for path in markdown_files(&root.join("docs")) {
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        if rel.starts_with("docs/_generated/") || rel.starts_with("docs/_drafts/") {
+            continue;
+        }
+        if !indexed.contains(rel.as_str()) {
+            missing.push(rel);
+        }
+    }
+    assert!(
+        missing.is_empty(),
+        "front matter index must cover every docs page:\n{}",
+        missing.join("\n")
+    );
+}
+
+#[test]
+fn drafts_stay_out_of_main_index_and_nav() {
+    let root = repo_root();
+    let index = read(&root.join("docs/index.md"));
+    let nav = read(&root.join("docs/_nav/INDEX.md"));
+    assert!(
+        !index.contains("_drafts/"),
+        "docs/index.md must not link draft pages"
+    );
+    assert!(
+        !nav.contains("_drafts/"),
+        "docs/_nav/INDEX.md must not link draft pages"
+    );
+}
+
+#[test]
+fn docs_growth_budget_and_removal_policy_are_committed() {
+    let root = repo_root();
+    let policy = load_json(&root.join("docs/metadata/growth-budget.json"));
+    let max = policy["max_markdown_files"]
+        .as_u64()
+        .expect("max_markdown_files") as usize;
+    let count = markdown_files(&root.join("docs")).len();
+    assert!(
+        count <= max,
+        "docs markdown count {} exceeds budget {}",
+        count,
+        max
+    );
+    let removal = read(&root.join("docs/DOCS_REMOVAL_POLICY.md"));
+    for required in [
+        "Deleting docs is allowed",
+        "Adding new stable docs requires explicit justification",
+        "growth budget contract",
+    ] {
+        assert!(
+            removal.contains(required),
+            "docs removal policy missing `{required}`"
+        );
+    }
+}
+
+#[test]
+fn runbook_and_decision_templates_are_canonical_and_enforced() {
+    let root = repo_root();
+    let runbook_template = read(&root.join("docs/operations/runbook-template.md"));
+    for heading in [
+        "## Symptoms",
+        "## Metrics",
+        "## Commands",
+        "## Expected outputs",
+        "## Mitigations",
+        "## Rollback",
+        "## Postmortem checklist",
+    ] {
+        assert!(
+            runbook_template.contains(heading),
+            "runbook template missing `{heading}`"
+        );
+    }
+    let decision_template = read(&root.join("docs/architecture/decision-template.md"));
+    for heading in ["## Context", "## Decision", "## Consequences"] {
+        assert!(
+            decision_template.contains(heading),
+            "decision template missing `{heading}`"
+        );
+    }
+
+    let mut runbook_violations = Vec::new();
+    for path in markdown_files(&root.join("docs/operations/runbooks")) {
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        if rel.ends_with("INDEX.md") {
+            continue;
+        }
+        let text = read(&path);
+        for heading in [
+            "## Symptoms",
+            "## Metrics",
+            "## Commands",
+            "## Expected outputs",
+            "## Mitigations",
+            "## Rollback",
+            "## Postmortem checklist",
+        ] {
+            if !text.contains(heading) {
+                runbook_violations.push(format!("{rel} missing `{heading}`"));
+            }
+        }
+    }
+    assert!(
+        runbook_violations.is_empty(),
+        "runbooks must follow the canonical structure:\n{}",
+        runbook_violations.join("\n")
+    );
+
+    let mut adr_violations = Vec::new();
+    for path in markdown_files(&root.join("docs/adrs")) {
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        if rel.ends_with("INDEX.md") {
+            continue;
+        }
+        let text = read(&path);
+        for heading in ["Context:", "Decision:", "Consequences:"] {
+            if !text.contains(heading) {
+                adr_violations.push(format!("{rel} missing `{heading}`"));
+            }
+        }
+    }
+    assert!(
+        adr_violations.is_empty(),
+        "ADRs must follow the canonical decision structure:\n{}",
+        adr_violations.join("\n")
+    );
+}
+
+#[test]
+fn docs_links_and_images_follow_governance_rules() {
+    let root = repo_root();
+    let allowlist = load_json(&root.join("docs/operations/external-link-allowlist.json"));
+    let allowed_http = allowlist["entries"]
+        .as_array()
+        .expect("allowlist entries")
+        .iter()
+        .filter_map(|row| row["url"].as_str())
+        .collect::<BTreeSet<_>>();
+    let html_re = regex::Regex::new(
+        r"(?i)</?(?:div|span|p|img|table|thead|tbody|tr|td|th|br|details|summary|kbd|sub|sup|a|code|pre|strong|em|ul|ol|li|blockquote|h[1-6])\b[^>]*>",
+    )
+    .expect("html regex");
+    let image_budget = 1_500_000u64;
+    let mut violations = Vec::new();
+
+    for path in markdown_files(&root.join("docs")) {
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let text = read(&path);
+        for (idx, line) in text.lines().enumerate() {
+            let trimmed = line.trim();
+            let code_span_count = trimmed.matches('`').count();
+            if code_span_count == 0 && html_re.is_match(trimmed) {
+                violations.push(format!(
+                    "{rel}:{} raw HTML is forbidden unless explicitly allowlisted",
+                    idx + 1
+                ));
+            }
+        }
+
+        for target in markdown_links(&text) {
+            if target.starts_with("mailto:") || target.starts_with('#') {
+                continue;
+            }
+            if target.starts_with("http://") {
+                if !allowed_http.contains(target.as_str()) {
+                    violations.push(format!("{rel} uses non-HTTPS link `{target}` outside allowlist"));
+                }
+                continue;
+            }
+            if target.starts_with("https://") {
+                continue;
+            }
+        }
+
+        for image in markdown_images(&text) {
+            if image.starts_with("http://") || image.starts_with("https://") {
+                violations.push(format!("{rel} image must be repo-local: `{image}`"));
+                continue;
+            }
+            let image_path = path
+                .parent()
+                .unwrap_or(root.join("docs").as_path())
+                .join(image.split('#').next().unwrap_or(&image));
+            if !image_path.exists() {
+                violations.push(format!("{rel} image target missing: `{image}`"));
+                continue;
+            }
+            let size = fs::metadata(&image_path)
+                .unwrap_or_else(|err| panic!("failed to stat {}: {err}", image_path.display()))
+                .len();
+            if size > image_budget {
+                let image_rel = image_path
+                    .strip_prefix(&root)
+                    .unwrap_or(&image_path)
+                    .display()
+                    .to_string();
+                violations.push(format!(
+                    "{rel} image `{image_rel}` exceeds {} bytes",
+                    image_budget
+                ));
+            }
+        }
+    }
+
+    assert!(
+        violations.is_empty(),
+        "docs markdown must keep raw html out and links/images valid:\n{}",
+        violations.join("\n")
+    );
+}
+
+#[test]
+fn governance_docs_keep_tagged_code_blocks() {
+    let root = repo_root();
+    let mut violations = Vec::new();
+    for rel in [
+        "docs/DOCS_REMOVAL_POLICY.md",
+        "docs/operations/runbook-template.md",
+        "docs/architecture/decision-template.md",
+    ] {
+        let text = read(&root.join(rel));
+        for line in bare_fence_lines(&text) {
+            violations.push(format!(
+                "{rel}:{line} fenced code block must declare a language"
+            ));
+        }
+    }
+    assert!(
+        violations.is_empty(),
+        "new governance docs must keep tagged code fences:\n{}",
+        violations.join("\n")
+    );
 }

@@ -284,6 +284,7 @@ License: Apache-2.0
 | `docker/README.md` | `concept` | `docs-governance` | `stable` |
 | `docs/AUTHORS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
+| `docs/DOCS_REMOVAL_POLICY.md` | `concept` | `docs-governance` | `stable` |
 | `docs/OWNERS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_DESCRIPTION_SNIPPET.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_IDENTITY.md` | `concept` | `docs-governance` | `stable` |
@@ -337,6 +338,7 @@ License: Apache-2.0
 | `docs/architecture/crate-boundary-dependency-graph.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/crate-layout-contract.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/data-access-patterns.md` | `concept` | `platform` | `stable` |
+| `docs/architecture/decision-template.md` | `concept` | `docs-governance` | `stable` |
 | `docs/architecture/effects.md` | `concept` | `bijux-atlas-server` | `stable` |
 | `docs/architecture/layering/INDEX.md` | `concept` | `platform-architecture` | `stable` |
 | `docs/architecture/layering/boundary-rules.md` | `concept` | `docs-governance` | `stable` |
@@ -560,6 +562,7 @@ License: Apache-2.0
 | `docs/operations/release-workflows.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/lane-guarantees.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/retention-and-gc.md` | `concept` | `bijux-atlas-operations` | `evolving` |
+| `docs/operations/runbook-template.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/runbooks/INDEX.md` | `runbook` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/runbooks/dataset-corruption.md` | `runbook` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/runbooks/high-memory.md` | `runbook` | `bijux-atlas-operations` | `stable` |

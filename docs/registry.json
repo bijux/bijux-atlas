@@ -6685,6 +6685,27 @@
       "topic": "CONTRACT"
     },
     {
+      "area": "DOCS_REMOVAL_POLICY.md",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-removal-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/DOCS_REMOVAL_POLICY.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-removal-policy"
+      ],
+      "title": "Docs Removal Policy",
+      "topic": "DOCS_REMOVAL_POLICY"
+    },
+    {
       "area": "OWNERS.md",
       "audience": "contributors",
       "crate": null,
@@ -7894,6 +7915,29 @@
       ],
       "title": "Data Access Patterns",
       "topic": "data-access-patterns"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "decision-template"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/architecture/decision-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "decision-template"
+      ],
+      "title": "Decision Template",
+      "topic": "decision-template"
     },
     {
       "area": "architecture",
@@ -13237,6 +13281,29 @@
       ],
       "title": "Retention And GC",
       "topic": "retention-and-gc"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "runbook-template"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/operations/runbook-template.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "runbook-template"
+      ],
+      "title": "Runbook Template",
+      "topic": "runbook-template"
     },
     {
       "area": "operations",

@@ -2505,6 +2505,13 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/DOCS_REMOVAL_POLICY.md"
+      ],
+      "path": "docs/DOCS_REMOVAL_POLICY.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/OWNERS.md"
       ],
       "path": "docs/OWNERS.md"
@@ -2921,6 +2928,14 @@
         "docs/architecture/data-access-patterns.md"
       ],
       "path": "docs/architecture/data-access-patterns.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/decision-template.md"
+      ],
+      "path": "docs/architecture/decision-template.md"
     },
     {
       "breadcrumbs": [
@@ -4824,6 +4839,14 @@
         "docs/operations/retention-and-gc.md"
       ],
       "path": "docs/operations/retention-and-gc.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/runbook-template.md"
+      ],
+      "path": "docs/operations/runbook-template.md"
     },
     {
       "breadcrumbs": [
