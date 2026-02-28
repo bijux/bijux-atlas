@@ -4,6 +4,7 @@
 - Tier: `tier2`
 - Audience: `operators`
 - Source-of-truth: `ops/stack/profiles.json`, `ops/stack/kind/cluster-dev.yaml`, `ops/stack/kind/cluster-perf.yaml`, `ops/stack/kind/cluster-small.yaml`
+- Contract references: `OPS-ROOT-023`, `OPS-STACK-005`, `OPS-K8S-003`
 
 ## What
 

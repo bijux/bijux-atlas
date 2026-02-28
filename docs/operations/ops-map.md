@@ -4,6 +4,7 @@
 - Tier: `tier2`
 - Audience: `operators`
 - Source-of-truth: `ops/inventory/pillars.json`, `ops/inventory/surfaces.json`
+- Contract references: `OPS-ROOT-023`, `OPS-INV-PILLARS-001`, `OPS-INV-001`
 
 ## What
 

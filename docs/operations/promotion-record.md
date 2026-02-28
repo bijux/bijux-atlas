@@ -4,6 +4,7 @@
 - Tier: `tier2`
 - Audience: `operators`
 - Source-of-truth: `ops/datasets/promotion-rules.json`, `ops/datasets/rollback-policy.json`, `ops/_generated.example/fixture-drift-report.json`
+- Contract references: `OPS-ROOT-023`, `OPS-DATASETS-003`, `OPS-DATASETS-006`, `OPS-DATASETS-007`
 
 ## What
 

@@ -1,18 +1,11 @@
-# Legacy Navigation Freeze
+# Navigation
 
-Owner: `docs-governance`  
-Type: `policy`  
-Reason to exist: prevent parallel navigation systems.
+- Owner: docs-governance
+- Stability: stable
 
-## Status
+Navigation is defined only in `mkdocs.yml`.
 
-`docs/_nav/` is frozen and non-canonical.
+Top-level navigation labels are fixed: `Start Here`, `Product`, `Quickstart`, `Reference`, `Contracts`, `API`, `Operations`, `Development`, `Architecture`, `Science`, `Generated`, `ADRs`.
+Top-level navigation order is fixed: `Start Here -> Product -> Quickstart -> Reference -> Contracts -> API -> Operations -> Development -> Architecture -> Science -> Generated -> ADRs`.
 
-## Canonical Navigation
-
-Use only:
-
-- `docs/index.md`
-- `docs/*/index.md`
-
-No new authored navigation files are allowed under `docs/_nav/`.
+- [Docs Home](../index.md)

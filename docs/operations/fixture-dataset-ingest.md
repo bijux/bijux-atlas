@@ -4,6 +4,7 @@
 - Tier: `tier2`
 - Audience: `operators`
 - Source-of-truth: `ops/datasets/manifest.json`, `ops/datasets/generated/fixture-inventory.json`, `ops/datasets/fixture-policy.json`
+- Contract references: `OPS-ROOT-023`, `OPS-DATASETS-001`, `OPS-DATASETS-002`, `OPS-DATASETS-007`
 
 ## What
 

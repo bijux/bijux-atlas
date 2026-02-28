@@ -1,3 +1,14 @@
 # Start Here
 
-Canonical onboarding entrypoint moved to [start-here.md](start-here.md).
+- Owner: docs-governance
+- Stability: stable
+
+This is the only onboarding root in `docs/`.
+
+Use [docs/index.md](index.md) to navigate all sections.
+
+Canonical quickstart command:
+
+```bash
+bijux dev atlas demo quickstart
+```
