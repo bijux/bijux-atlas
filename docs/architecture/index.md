@@ -16,6 +16,8 @@ Describe how Atlas is structured so contributors and operators share one durable
 - [Dataflow](dataflow.md)
 - [Boundaries](boundaries.md)
 - [Components](components.md)
+- [Crates Map](crates-map.md)
+- [Layering Rules](layering-rules.md)
 - [Storage](storage.md)
 - [Performance Model](performance-model.md)
 - [Architecture Map](architecture-map.md)
