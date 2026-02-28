@@ -3,24 +3,22 @@
 - Owner: `platform`
 - Type: `policy`
 - Audience: `contributor`
-- Reason to exist: define documentation governance rules and operational policies.
+- Stability: `stable`
+- Reason to exist: define contributor-only policy, review, and decision controls for documentation.
 
-Governance defines documentation policy, review rules, ownership, and decision records.
-This section is contributor-facing and not part of the primary reader spine.
+## Purpose
 
-## Start Here
+Provide governance rules that keep reader docs accurate, minimal, and stable.
 
-- [Documentation Charter](docs-charter.md)
-- [Ownership](../ownership.md)
+## What You Will Find Here
+
+- [Docs Charter](docs-charter.md)
+- [Governance Readers Guide](readers-guide.md)
 - [Docs Contract](docs-contract.md)
-- [Navigation Policy](docs-navigation-policy.md)
-- [Naming Standard](naming.md)
-- [Style Guide](style-guide.md)
 - [Docs Review Checklist](docs-review-checklist.md)
 - [Docs Removal Policy](docs-removal-policy.md)
-- [Docs Lint Rules](docs-lint-rules.md)
-- [Generated Content Policy](generated-content-policy.md)
-- [Contract SSOT Workflow](contract-ssot-workflow.md)
-- [Contract Change Checklist](contract-change-checklist.md)
-- [Contract Breaking Change Examples](contract-breaking-change-examples.md)
 - [ADRs](adrs/index.md)
+
+## Next Steps
+
+Use [Development](../development/index.md) for contributor workflows and [Ownership](../ownership.md) for accountability.
