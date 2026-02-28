@@ -1,33 +1,24 @@
 # Configs Contract
 
-- `CONFIGS-001`: Only `configs/README.md` and `configs/CONTRACT.md` may exist as markdown at the `configs/` root. Enforced by: `configs.root.only_root_docs`.
-- `CONFIGS-002`: Every governed config file must be covered by the configs registry or an explicit registry exclusion. Enforced by: `configs.registry.no_undocumented_files`.
-- `CONFIGS-003`: Governed config paths must stay within the configured depth budget. Enforced by: `configs.layout.depth_budget`.
-- `CONFIGS-004`: Internal-only config surfaces must use explicit internal classification and allowed internal naming homes. Enforced by: `configs.naming.internal_surface`.
-- `CONFIGS-005`: Every configs group must declare a non-empty owner in the configs registry. Enforced by: `configs.registry.owner_complete`.
-- `CONFIGS-006`: JSON config files must either be schema files, map to schema coverage, or be explicitly excluded. Enforced by: `configs.schema.coverage`.
-- `CONFIGS-007`: Tool dependency configs must carry lock companions. Enforced by: `configs.lockfiles.required_pairs`.
-- `CONFIGS-008`: Registry ownership must not overlap; one governed file maps to one authoritative registry home. Enforced by: `configs.registry.no_overlap`.
-- `CONFIGS-009`: Generated config paths are forbidden unless explicitly modeled in the registry. Enforced by: `configs.generated.authored_boundary`.
-- `CONFIGS-010`: Documented contracts must match the enforced configs contract set. Enforced by: `configs.contracts.no_policy_theater`.
-- `CONFIGS-011`: The configs registry must cover the full `configs/` file surface. Enforced by: `configs.registry.complete_surface`.
-- `CONFIGS-012`: No non-excluded config file may be orphaned outside the registry. Enforced by: `configs.registry.no_orphans`.
-- `CONFIGS-013`: Registry entries must resolve to real files. Enforced by: `configs.registry.no_dead_entries`.
-- `CONFIGS-014`: The configs registry group count must stay inside the declared budget. Enforced by: `configs.registry.group_budget`.
-- `CONFIGS-015`: Included group file paths must stay inside the declared per-group depth budget. Enforced by: `configs.registry.group_depth_budget`.
-- `CONFIGS-016`: Every group must classify covered files as public, internal, generated, or schema-backed. Enforced by: `configs.registry.visibility_classification`.
-- `CONFIGS-017`: Every configs group must declare the command entrypoints that consume it. Enforced by: `configs.registry.tool_entrypoints`.
-- `CONFIGS-018`: Every schema-bearing configs group must declare a schema owner and real schema paths. Enforced by: `configs.registry.schema_owner`.
-- `CONFIGS-019`: Every configs group must declare lifecycle metadata through owner, schema owner, and stability. Enforced by: `configs.registry.lifecycle`.
-- `CONFIGS-020`: The generated configs index must render deterministically from the registry. Enforced by: `configs.generated_index.deterministic`.
-- `CONFIGS-021`: The committed generated configs index must match the canonical registry render. Enforced by: `configs.generated_index.committed_match`.
-- `CONFIGS-022`: JSON and JSONC config files must parse successfully. Enforced by: `configs.parse.json`.
-- `CONFIGS-023`: YAML config files must parse successfully. Enforced by: `configs.parse.yaml`.
-- `CONFIGS-024`: TOML config files must parse successfully. Enforced by: `configs.parse.toml`.
-- `CONFIGS-025`: Config text files must not accumulate trailing whitespace drift. Enforced by: `configs.text.hygiene`.
-- `CONFIGS-026`: `configs/docs/` must not contain narrative markdown. Enforced by: `configs.docs.no_nested_markdown`.
-- `CONFIGS-027`: `configs/docs/` must stay within its declared tooling-only file surface. Enforced by: `configs.docs.tooling_surface`.
-- `CONFIGS-028`: `configs/OWNERS.json` must match the registry group owners. Enforced by: `configs.owners.group_alignment`.
-- `CONFIGS-029`: `configs/CONSUMERS.json` must cover the declared registry groups. Enforced by: `configs.consumers.group_alignment`.
-- `CONFIGS-030`: Every public or generated config file must match a file-level consumer declaration in `configs/CONSUMERS.json`. Enforced by: `configs.consumers.file_coverage`.
-- `CONFIGS-031`: Every root, public, or generated JSON or JSONC config file must match a file-level schema declaration in `configs/SCHEMAS.json`. Enforced by: `configs.schemas.file_coverage`.
+`bijux dev atlas contracts configs` is the primary evidence for the configs contract surface. The authoritative registry is `configs/configs.contracts.json`.
+
+| Contract | Severity | Type | Enforced By |
+| --- | --- | --- | --- |
+| `CFG-001` | `blocker` | `filelayout` | `bijux dev atlas contracts configs` / `configs.root.only_root_docs` |
+| `CFG-002` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.layout.depth_budget` |
+| `CFG-003` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_overlap` |
+| `CFG-004` | `blocker` | `schema` | `bijux dev atlas contracts configs` / `configs.schemas.file_coverage` |
+| `CFG-005` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.registry.schema_owner` |
+| `CFG-006` | `must` | `supplychain` | `bijux dev atlas contracts configs` / `configs.lockfiles.required_pairs` |
+| `CFG-007` | `must` | `static` | `bijux dev atlas contracts configs` / `configs.registry.visibility_classification` |
+| `CFG-008` | `must` | `supplychain` | `bijux dev atlas contracts configs` / `configs.lockfiles.required_pairs` |
+| `CFG-009` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.owners.group_alignment` |
+| `CFG-010` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.consumers.file_coverage` |
+| `CFG-011` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.registry.group_budget` |
+| `CFG-012` | `blocker` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_orphans` |
+| `CFG-013` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.registry.no_dead_entries` |
+| `CFG-014` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.generated_index.committed_match` |
+| `CFG-015` | `should` | `supplychain` | `bijux dev atlas contracts configs` / `configs.consumers.group_alignment` |
+| `CFG-016` | `should` | `supplychain` | `bijux dev atlas contracts configs` / `configs.parse.json` |
+| `CFG-017` | `must` | `filelayout` | `bijux dev atlas contracts configs` / `configs.registry.complete_surface` |
+| `CFG-018` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.generated_index.deterministic` |

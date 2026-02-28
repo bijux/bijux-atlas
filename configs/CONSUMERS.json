@@ -5,6 +5,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/configs.contracts.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/OWNERS.json": [
       "bijux-dev-atlas",
       "ci"

@@ -415,10 +415,10 @@
     },
     {
       "counts": {
-        "covered": 37,
+        "covered": 38,
         "generated": 0,
         "internal": 21,
-        "public": 16,
+        "public": 17,
         "schemas": 2
       },
       "files": [
@@ -445,6 +445,7 @@
         "configs/contracts/tooling-tool-output.schema.json",
         "configs/schema/config-compiler-report.schema.json",
         "configs/schema/configs-consumer-map.schema.json",
+        "configs/schema/configs-contracts.schema.json",
         "configs/schema/configs-index.schema.json",
         "configs/schema/configs-owner-map.schema.json",
         "configs/schema/configs-ownership.schema.json",
@@ -531,6 +532,7 @@
     "configs/CONSUMERS.json",
     "configs/OWNERS.json",
     "configs/SCHEMAS.json",
+    "configs/configs.contracts.json",
     "configs/inventory.json"
   ],
   "schema_version": 1

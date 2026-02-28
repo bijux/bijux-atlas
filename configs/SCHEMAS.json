@@ -2,6 +2,7 @@
   "schema_version": 1,
   "files": {
     "configs/CONSUMERS.json": "configs/schema/configs-consumer-map.schema.json",
+    "configs/configs.contracts.json": "configs/schema/configs-contracts.schema.json",
     "configs/OWNERS.json": "configs/schema/configs-owner-map.schema.json",
     "configs/SCHEMAS.json": "configs/schema/configs-schema-map.schema.json",
     "configs/inventory.json": "configs/contracts/inventory-configs.schema.json",

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "domain",
+    "contracts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "domain": {
+      "type": "string",
+      "const": "configs"
+    },
+    "contracts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "severity",
+          "contract_type",
+          "rationale",
+          "enforced_by",
+          "touched_paths",
+          "evidence_artifact"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^CFG-[0-9]{3}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "blocker",
+              "must",
+              "should"
+            ]
+          },
+          "contract_type": {
+            "type": "string",
+            "enum": [
+              "static",
+              "filelayout",
+              "schema",
+              "drift",
+              "supplychain"
+            ]
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "enforced_by": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "command",
+              "test_id"
+            ],
+            "properties": {
+              "command": {
+                "type": "string",
+                "minLength": 1
+              },
+              "test_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "touched_paths": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "evidence_artifact": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "domain": "configs",
+  "contracts": [
+    {
+      "id": "CFG-001",
+      "title": "configs docs surface is minimal",
+      "severity": "blocker",
+      "contract_type": "filelayout",
+      "rationale": "configs keeps only a minimal human-facing markdown surface.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.root.only_root_docs"
+      },
+      "touched_paths": [
+        "configs/README.md",
+        "configs/CONTRACT.md",
+        "configs/**.md"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-002",
+      "title": "configs max depth budget",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "configs path depth stays within a bounded reviewable shape.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.layout.depth_budget"
+      },
+      "touched_paths": [
+        "configs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-003",
+      "title": "no duplicate sources of truth across configs groups",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "one governed file maps to one authoritative group.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.no_overlap"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-004",
+      "title": "all governed config files have inventory and schema coverage",
+      "severity": "blocker",
+      "contract_type": "schema",
+      "rationale": "governed config inputs must be inventoried and schema-backed or explicitly excluded.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schemas.file_coverage"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/SCHEMAS.json",
+        "configs/**.json",
+        "configs/**.jsonc"
+      ],
+      "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json"
+    },
+    {
+      "id": "CFG-005",
+      "title": "all schemas compile and validate",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "schema inputs must be present and parseable.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.schema_owner"
+      },
+      "touched_paths": [
+        "configs/schema/*.json",
+        "configs/contracts/*.json",
+        "configs/SCHEMAS.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-006",
+      "title": "no unpinned toolchain references in configs",
+      "severity": "must",
+      "contract_type": "supplychain",
+      "rationale": "toolchain inputs must stay pinned and governed by lock or registry policy.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.lockfiles.required_pairs"
+      },
+      "touched_paths": [
+        "configs/docs/package.json",
+        "configs/docs/package-lock.json",
+        "configs/docs/requirements.txt",
+        "configs/docs/requirements.lock.txt",
+        "configs/rust/*.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-007",
+      "title": "no forbidden keys in ops or runtime config surface",
+      "severity": "must",
+      "contract_type": "static",
+      "rationale": "ops and runtime-facing configs must be bounded by declared surfaces.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.visibility_classification"
+      },
+      "touched_paths": [
+        "configs/ops/**",
+        "configs/openapi/**",
+        "configs/slo/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-008",
+      "title": "locks exist and match policy",
+      "severity": "must",
+      "contract_type": "supplychain",
+      "rationale": "tool dependency manifests require matching lock surfaces.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.lockfiles.required_pairs"
+      },
+      "touched_paths": [
+        "configs/docs/package.json",
+        "configs/docs/package-lock.json",
+        "configs/docs/requirements.txt",
+        "configs/docs/requirements.lock.txt"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-009",
+      "title": "all configs owners mapped",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "every configs group has a canonical owner.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.owners.group_alignment"
+      },
+      "touched_paths": [
+        "configs/OWNERS.json",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-010",
+      "title": "all configs consumers mapped",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "every governed config surface carries canonical consumer metadata.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.consumers.file_coverage"
+      },
+      "touched_paths": [
+        "configs/CONSUMERS.json",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-011",
+      "title": "all config groups declared and bounded",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "groups stay explicit, finite, and budgeted.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.group_budget"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-012",
+      "title": "no orphan config files",
+      "severity": "blocker",
+      "contract_type": "drift",
+      "rationale": "every governed config file belongs to the registry.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.no_orphans"
+      },
+      "touched_paths": [
+        "configs/**",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.touched-paths.json"
+    },
+    {
+      "id": "CFG-013",
+      "title": "no dead config files",
+      "severity": "must",
+      "contract_type": "drift",
+      "rationale": "registry patterns and exclusions must resolve to real files.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.no_dead_entries"
+      },
+      "touched_paths": [
+        "configs/inventory/configs.json",
+        "configs/**"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-014",
+      "title": "all config contract outputs conform to schemas",
+      "severity": "must",
+      "contract_type": "schema",
+      "rationale": "configs contract outputs stay machine-valid and stable.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.generated_index.committed_match"
+      },
+      "touched_paths": [
+        "configs/contracts/*.json",
+        "configs/_generated/configs-index.json"
+      ],
+      "evidence_artifact": "artifacts/contracts/configs/<run_id>/status.json"
+    },
+    {
+      "id": "CFG-015",
+      "title": "no hidden network-fetch allowlists without explicit policy contract",
+      "severity": "should",
+      "contract_type": "supplychain",
+      "rationale": "network bypasses stay explicit and reviewable.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.consumers.group_alignment"
+      },
+      "touched_paths": [
+        "configs/policy/*.txt",
+        "configs/policy/*.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-016",
+      "title": "no relaxed bypass policies without horizon and approval record",
+      "severity": "should",
+      "contract_type": "supplychain",
+      "rationale": "relaxations need explicit bounded approval data.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.parse.json"
+      },
+      "touched_paths": [
+        "configs/policy/*.json",
+        "configs/policy/*.yml"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-017",
+      "title": "no root-level symlink shims unless explicitly allowed",
+      "severity": "must",
+      "contract_type": "filelayout",
+      "rationale": "root-level config shims stay explicit and bounded.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.registry.complete_surface"
+      },
+      "touched_paths": [
+        "configs/repo/*.json",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": null
+    },
+    {
+      "id": "CFG-018",
+      "title": "all configs are deterministic",
+      "severity": "must",
+      "contract_type": "drift",
+      "rationale": "generated and rendered configs stay stable across runs.",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.generated_index.deterministic"
+      },
+      "touched_paths": [
+        "configs/_generated/configs-index.json",
+        "configs/inventory/configs.json"
+      ],
+      "evidence_artifact": "artifacts/contracts/configs/<run_id>/configs.coverage.json"
+    }
+  ]
+}
