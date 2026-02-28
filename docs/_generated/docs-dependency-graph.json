@@ -3808,157 +3808,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/ARTIFACTS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/AUTHORITY_TIERS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/BREAKING_CHANGE_TEMPLATE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/CONTROL_PLANE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DELETE_HALF_OPS_SIMULATION_REPORT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DEPRECATION_WORKFLOW.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DETERMINISM_PROOF.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DIRECTORY_BUDGET_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DIRECTORY_NECESSITY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DOC_NECESSITY_CHECKLIST.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DOMAIN_DOCUMENT_TEMPLATE_CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/DRIFT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/EMERGENCY_OVERRIDE_WORKFLOW.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/ERRORS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/ESCALATION_MAPPING.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/EVIDENCE_SIGNOFF_WORKFLOW.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/GENERATED_LIFECYCLE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/GOLDEN_REFRESH_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/INCIDENT_PLAYBOOK_GENERATION.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/MATURITY_SCORECARD.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/MINIMAL_RELEASE_SURFACE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/NAMING.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/OPS_ADR_TEMPLATE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/OPS_CHANGE_REVIEW_CHECKLIST.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/OPS_FREEZE_WORKFLOW.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/OPS_INVARIANTS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/OWNERSHIP_ROTATION_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/PORTABILITY_MATRIX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/PUBLIC_SURFACE_CONTRACT_SUMMARY.md"
     },
     {
       "crate": null,
@@ -3968,112 +3818,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/RELEASE_READINESS_SIGNOFF_CHECKLIST.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/RUNBOOK_GENERATION_FROM_GRAPH.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "from": "ops/SCHEMA_EVOLUTION_WORKFLOW.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/SSOT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/SUPPLY_CHAIN_MODEL.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/THREAT_MODEL.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/TIER1_ROOT_SURFACE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/WHAT_FAILS_WHEN.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/INDEX.example.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/MIRROR_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/OWNER.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/control-plane.snapshot.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated.example/ops-ledger.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated/OWNER.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/_generated/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/datasets/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/FIXTURE_LIFECYCLE.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/OWNER.md"
     },
     {
       "crate": null,
@@ -4083,52 +3828,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/datasets/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/fixtures/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/fixtures/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/fixtures/OWNER.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/fixtures/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/datasets/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/e2e/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/END_TO_END_INVARIANTS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/OWNER.md"
     },
     {
       "crate": null,
@@ -4138,42 +3838,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/e2e/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/fixtures/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/k6/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/k8s/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/e2e/realdata/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/env/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/env/OWNER.md"
     },
     {
       "crate": null,
@@ -4183,17 +3848,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/env/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/inventory/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/inventory/OWNER.md"
     },
     {
       "crate": null,
@@ -4203,22 +3858,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/inventory/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/k8s/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/k8s/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/k8s/OWNER.md"
     },
     {
       "crate": null,
@@ -4228,37 +3868,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/k8s/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/k8s/charts/bijux-atlas/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/k8s/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/k8s/tests/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/load/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/OWNER.md"
     },
     {
       "crate": null,
@@ -4268,57 +3878,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/load/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/SCENARIO_RETENTION.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/baselines/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/compose/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/evaluations/POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/k6/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/load/k6/queries/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/observe/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/OWNER.md"
     },
     {
       "crate": null,
@@ -4328,52 +3888,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/observe/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/dashboards/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/drills/OWNERSHIP.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/drills/templates/incident-template.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/observe/pack/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/report/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/EVIDENCE_COMPLETENESS_CHECKLIST.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/OWNER.md"
     },
     {
       "crate": null,
@@ -4383,37 +3898,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/report/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/docs/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/docs/REFERENCE_INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/report/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/BUDGET_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/schema/CONTRACT.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/OWNER.md"
     },
     {
       "crate": null,
@@ -4423,82 +3908,12 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/schema/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "from": "ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "from": "ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/VERSIONING_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/configs/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/configs/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/schema/generated/schema-index.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/stack/CONTRACT.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/stack/INDEX.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/stack/OWNER.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "ops/stack/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/stack/REQUIRED_FILES.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/stack/dependencies.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/stack/generated/README.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "ops/stack/kind/README.md"
     }
   ],
   "schema_version": 1
