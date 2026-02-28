@@ -341,5 +341,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_029_root_entrypoints_unique_local_pages,
             }],
         },
+        Contract {
+            id: ContractId("DOC-030".to_string()),
+            title: "docs index correctness report stays derivable",
+            tests: vec![TestCase {
+                id: TestId("docs.index.report_generated".to_string()),
+                title: "docs contracts can render a deterministic index correctness report artifact",
+                kind: TestKind::Pure,
+                run: test_docs_030_index_report_generated,
+            }],
+        },
     ])
 }

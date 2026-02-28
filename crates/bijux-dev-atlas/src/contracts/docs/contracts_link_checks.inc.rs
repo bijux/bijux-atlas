@@ -363,3 +363,142 @@ fn test_docs_029_root_entrypoints_unique_local_pages(ctx: &RunContext) -> TestRe
         TestResult::Fail(violations)
     }
 }
+
+fn docs_index_correctness_report(ctx: &RunContext) -> Result<serde_json::Value, String> {
+    let sections_payload =
+        docs_sections_payload(ctx, "DOC-030", "docs.index.report_generated").map_err(|_| {
+            "docs section manifest must parse before index report can be rendered".to_string()
+        })?;
+    let section_map = sections_payload["sections"]
+        .as_object()
+        .ok_or_else(|| "`sections` object is required".to_string())?;
+    let mut rows = Vec::new();
+    let mut root_duplicates = 0usize;
+    for relative in ["docs/index.md", "docs/START_HERE.md"] {
+        let path = ctx.repo_root.join(relative);
+        let contents = std::fs::read_to_string(&path)
+            .map_err(|err| format!("read {} failed: {err}", path.display()))?;
+        let mut counts = std::collections::BTreeMap::<String, usize>::new();
+        for target in markdown_links(&contents) {
+            if target.starts_with("http://")
+                || target.starts_with("https://")
+                || target.starts_with('#')
+                || target.starts_with("mailto:")
+            {
+                continue;
+            }
+            let clean = target.split('#').next().unwrap_or(&target);
+            if clean.is_empty() {
+                continue;
+            }
+            let resolved = if clean.starts_with('/') {
+                ctx.repo_root.join(clean.trim_start_matches('/'))
+            } else {
+                path.parent().unwrap_or(&path).join(clean)
+            };
+            let normalized = std::fs::canonicalize(&resolved).unwrap_or(resolved);
+            let Ok(rel) = normalized.strip_prefix(&ctx.repo_root) else {
+                continue;
+            };
+            let rel = rel.display().to_string();
+            if rel.ends_with(".md") {
+                *counts.entry(rel).or_insert(0) += 1;
+            }
+        }
+        root_duplicates += counts.values().filter(|count| **count > 1).count();
+    }
+    for (name, config) in section_map {
+        if !config["requires_index"].as_bool().unwrap_or(false) {
+            continue;
+        }
+        let index_path = ctx.repo_root.join("docs").join(name).join("INDEX.md");
+        let contents = std::fs::read_to_string(&index_path)
+            .map_err(|err| format!("read {} failed: {err}", index_path.display()))?;
+        let mut local_pages = std::collections::BTreeSet::new();
+        let mut duplicates = 0usize;
+        let mut counts = std::collections::BTreeMap::<String, usize>::new();
+        for target in markdown_links(&contents) {
+            if target.starts_with("http://")
+                || target.starts_with("https://")
+                || target.starts_with('#')
+                || target.starts_with("mailto:")
+            {
+                continue;
+            }
+            let clean = target.split('#').next().unwrap_or(&target);
+            if clean.is_empty() {
+                continue;
+            }
+            let resolved = index_path.parent().unwrap_or(&index_path).join(clean);
+            let normalized = std::fs::canonicalize(&resolved).unwrap_or(resolved);
+            let Ok(rel) = normalized.strip_prefix(&ctx.repo_root) else {
+                continue;
+            };
+            let rel = rel.display().to_string();
+            let prefix = format!("docs/{name}/");
+            if rel.starts_with(&prefix) && rel.ends_with(".md") && rel != format!("docs/{name}/INDEX.md")
+            {
+                local_pages.insert(rel.clone());
+                *counts.entry(rel).or_insert(0) += 1;
+            }
+        }
+        duplicates += counts.values().filter(|count| **count > 1).count();
+        rows.push(serde_json::json!({
+            "section": name,
+            "index_path": format!("docs/{name}/INDEX.md"),
+            "requires_index": true,
+            "local_pages_linked": local_pages.len(),
+            "duplicate_local_links": duplicates
+        }));
+    }
+    rows.sort_by(|a, b| a["section"].as_str().cmp(&b["section"].as_str()));
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "docs_index_correctness",
+        "root_entrypoint_duplicate_targets": root_duplicates,
+        "sections": rows
+    }))
+}
+
+fn test_docs_030_index_report_generated(ctx: &RunContext) -> TestResult {
+    let payload = match docs_index_correctness_report(ctx) {
+        Ok(payload) => payload,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-030".to_string(),
+                test_id: "docs.index.report_generated".to_string(),
+                file: Some("docs".to_string()),
+                line: None,
+                message: err,
+                evidence: None,
+            }])
+        }
+    };
+    if let Some(root) = &ctx.artifacts_root {
+        let path = root.join("docs-index-correctness.json");
+        let encoded = match serde_json::to_string_pretty(&payload) {
+            Ok(encoded) => encoded,
+            Err(err) => {
+                return TestResult::Fail(vec![Violation {
+                    contract_id: "DOC-030".to_string(),
+                    test_id: "docs.index.report_generated".to_string(),
+                    file: Some("docs".to_string()),
+                    line: None,
+                    message: format!("encode report failed: {err}"),
+                    evidence: None,
+                }])
+            }
+        };
+        if let Err(err) = std::fs::write(&path, encoded) {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-030".to_string(),
+                test_id: "docs.index.report_generated".to_string(),
+                file: Some(path.display().to_string()),
+                line: None,
+                message: format!("write failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    }
+    TestResult::Pass
+}
