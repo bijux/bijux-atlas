@@ -1,27 +1,45 @@
 # Incident Response
 
-Owner: `bijux-atlas-operations`  
-Audience: `operator`  
-Type: `runbook`  
-Reason to exist: provide one canonical response flow for production incidents.
+- Owner: `bijux-atlas-operations`
+- Audience: `operator`
+- Type: `runbook`
+- Stability: `stable`
+- Last verified against: `main@c59da0bf`
+- Reason to exist: provide the first-15-minute response playbook for Atlas incidents.
 
-## Response Flow
+## First 15 minutes
 
-1. Detect and classify incident severity.
-2. Stabilize user-facing impact.
-3. Diagnose cause using logs, traces, and metrics.
-4. Apply mitigation or rollback.
-5. Escalate when the runbook ceiling is reached.
-6. Record timeline and follow-up actions.
+1. **Acknowledge**: page owner acknowledges and opens incident channel.
+2. **Classify impact**: identify user impact and affected surfaces.
+3. **Stabilize**: apply safest immediate mitigation from mapped runbook.
+4. **Diagnose**: use observability triage to find the likely failing component.
+5. **Escalate**: page secondary owner if recovery is not progressing in 10 minutes.
+6. **Communicate**: publish status update with impact, mitigation, and next update time.
 
-## Policy Violation Triage
+## Runbook selection
 
-- Confirm violation source and blast radius.
-- Contain impact before broad policy changes.
-- Apply minimal safe mitigation and record evidence.
-- Escalate if mitigation requires contract bypass.
+- Unknown cause: [Incident Playbook](runbooks/incident-playbook.md)
+- Store degradation: [Store Backend Error Spike](runbooks/slo-store-backend-error-spike.md)
+- Full store failure: [Store Outage](runbooks/store-outage.md)
+- Dataset integrity issue: [Dataset Corruption](runbooks/dataset-corruption.md)
+- Federation failure: [Registry Federation](runbooks/registry-federation.md)
+- Capacity overload: [Traffic Spike](runbooks/traffic-spike.md)
+- Failed mitigation: [Rollback Playbook](runbooks/rollback-playbook.md)
 
-## Canonical Details
+## Verify success
 
-- [Incident Playbook](runbooks/incident-playbook.md)
-- [Observability Overview](observability/overview.md)
+```bash
+make ops-readiness-scorecard
+make ops-observability-verify
+```
+
+Expected result: service returns to SLO range and alert noise declines to baseline.
+
+## Rollback
+
+If mitigation fails, execute [Rollback Playbook](runbooks/rollback-playbook.md).
+
+## Next
+
+- [Observability](observability/index.md)
+- [Runbooks](runbooks/index.md)

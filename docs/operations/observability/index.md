@@ -1,20 +1,33 @@
-# Observability Overview
+# Observability
 
-Owner: `bijux-atlas-operations`  
-Type: `runbook`  
-Reason to exist: provide one canonical observability entrypoint for operators.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@c59da0bf`
+- Reason to exist: provide the single observability entrypoint for detection, diagnosis, and recovery verification.
 
-## Core Surfaces
+## Purpose
 
-- [Alerts](alerts.md)
-- [Dashboards](dashboards.md)
-- [Tracing](tracing.md)
-- [SLO Policy](slo-policy.md)
+Detect service regression quickly, route alerts to actionable runbooks, and confirm recovery.
 
-## Contract References
+## What you will find here
 
-- `docs/reference/contracts/telemetry.md`
+- [Alerts](alerts.md): alert-to-runbook routing and severity model
+- [Dashboards](dashboards.md): dashboard set for incident triage
+- [Tracing](tracing.md): trace-first diagnosis flow
+- [SLO policy](slo-policy.md): target objectives and burn policy
+- Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`
 
-## Operational Goal
+## Verify success
 
-Detect incidents early, diagnose quickly, and verify recovery against stable service objectives.
+```bash
+make ops-observability-verify
+```
+
+Expected result: alert, metric, and trace checks pass for the current environment.
+
+## Next
+
+- [Incident Response](../incident-response.md)
+- [Runbooks](../runbooks/index.md)
