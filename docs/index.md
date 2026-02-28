@@ -31,6 +31,6 @@ Atlas documentation is organized by audience, with one onboarding entrypoint.
 ## Next steps
 
 - Onboarding: [Start here](start-here.md)
-- Reading tracks: [What to read next](what-to-read-next.md)
-- Structure map: [Site map](site-map.md)
+- Reading tracks: [Reading tracks](product/reading-tracks.md)
+- Structure map: [Docs site map](development/docs-site-map.md)
 - Terms: [Glossary](glossary.md)

@@ -1,4 +1,4 @@
-# Site map
+# Docs site map
 
 This documentation set is organized around three audience paths and a shared reader spine.
 
@@ -10,15 +10,15 @@ This documentation set is organized around three audience paths and a shared rea
 
 ## Core sections
 
-- [Home](index.md)
-- [Start here](start-here.md)
-- [Product](product/index.md)
-- [Architecture](architecture/index.md)
-- [API](api/index.md)
-- [Operations](operations/index.md)
-- [Development](development/index.md)
-- [Reference](reference/index.md)
-- [Glossary](glossary.md)
+- [Home](../index.md)
+- [Start here](../start-here.md)
+- [Product](../product/index.md)
+- [Architecture](../architecture/index.md)
+- [API](../api/index.md)
+- [Operations](../operations/index.md)
+- [Development](index.md)
+- [Reference](../reference/index.md)
+- [Glossary](../glossary.md)
 
 ## Navigation policy
 
@@ -28,5 +28,5 @@ This documentation set is organized around three audience paths and a shared rea
 
 ## Next steps
 
-- Reading tracks: [What to read next](what-to-read-next.md)
-- Contributor docs governance: [Docs governance](governance/index.md)
+- Reading tracks: [Reading tracks](../product/reading-tracks.md)
+- Contributor docs governance: [Docs governance](../governance/index.md)

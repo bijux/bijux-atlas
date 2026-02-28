@@ -7,9 +7,10 @@ Reason to exist: store governance metadata consumed by documentation validation 
 
 ## Core Metadata Files
 
-- `registry.json`
 - `concepts.yml`
-- `owners.json`
 - `taxonomy-map.md`
 - `front-matter.index.json`
 - `reference-canonicals.json`
+- Canonical docs registry: `docs/registry.json`
+- Canonical docs owners map: `docs/owners.json`
+- Canonical section map: `docs/sections.json`

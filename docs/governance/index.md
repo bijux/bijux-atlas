@@ -29,4 +29,4 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 
 ## Next Steps
 
-Use [Development](../development/index.md) for contributor workflows and [Ownership](../ownership.md) for accountability.
+Use [Development](../development/index.md) for contributor workflows and [Documentation ownership](docs-ownership.md) for accountability.

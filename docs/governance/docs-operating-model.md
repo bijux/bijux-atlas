@@ -89,7 +89,7 @@ A documentation change merges only if the updated state is clearer and more acti
 ## Ownership Model
 
 - Each top-level section has exactly one accountable owner.
-- Ownership must be listed in `docs/ownership.md`.
+- Ownership must be listed in `docs/governance/docs-ownership.md`.
 
 ## Service Levels
 

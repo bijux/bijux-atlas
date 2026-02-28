@@ -473,6 +473,90 @@ fn canonical_front_matter_index_covers_every_docs_page() {
 }
 
 #[test]
+fn docs_ssot_files_have_single_authoritative_locations() {
+    let root = repo_root();
+    let docs_root = root.join("docs");
+    let mut owners_paths = Vec::new();
+    let mut registry_paths = Vec::new();
+    let mut sections_paths = Vec::new();
+    let mut stack = vec![docs_root.clone()];
+    while let Some(dir) = stack.pop() {
+        if let Ok(entries) = fs::read_dir(&dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.is_dir() {
+                    stack.push(path);
+                    continue;
+                }
+                let rel = path
+                    .strip_prefix(&root)
+                    .expect("repo relative")
+                    .display()
+                    .to_string();
+                match path.file_name().and_then(|v| v.to_str()) {
+                    Some("owners.json") => owners_paths.push(rel),
+                    Some("registry.json") => registry_paths.push(rel),
+                    Some("sections.json") => sections_paths.push(rel),
+                    _ => {}
+                }
+            }
+        }
+    }
+    owners_paths.sort();
+    registry_paths.sort();
+    sections_paths.sort();
+
+    assert_eq!(
+        owners_paths,
+        vec!["docs/owners.json".to_string()],
+        "owners.json must exist only at docs/owners.json"
+    );
+    assert_eq!(
+        registry_paths,
+        vec!["docs/registry.json".to_string()],
+        "registry.json must exist only at docs/registry.json"
+    );
+    assert_eq!(
+        sections_paths,
+        vec!["docs/sections.json".to_string()],
+        "sections.json must exist only at docs/sections.json"
+    );
+}
+
+#[test]
+fn docs_schema_index_contract_coverage_points_to_registry_ssot() {
+    let root = repo_root();
+    let coverage = load_json(&root.join("docs/_generated/docs-contract-coverage.json"));
+    let sources = &coverage["metadata_sources"];
+    assert_eq!(
+        sources["sections"].as_str(),
+        Some("docs/sections.json"),
+        "docs contract coverage must reference docs/sections.json as sections ssot"
+    );
+    assert_eq!(
+        sources["owners"].as_str(),
+        Some("docs/owners.json"),
+        "docs contract coverage must reference docs/owners.json as owners ssot"
+    );
+    assert_eq!(
+        coverage["generated_artifacts"]
+            .as_array()
+            .expect("generated_artifacts")
+            .iter()
+            .filter_map(|v| v.as_str())
+            .any(|p| p == "docs/governance/metadata/front-matter.index.json"),
+        true,
+        "docs contract coverage must include generated front-matter inventory"
+    );
+    let front_matter = load_json(&root.join("docs/governance/metadata/front-matter.index.json"));
+    assert_eq!(
+        front_matter["source"].as_str(),
+        Some("docs/registry.json"),
+        "front matter inventory must be generated from docs/registry.json"
+    );
+}
+
+#[test]
 fn drafts_stay_out_of_main_index_and_nav() {
     let root = repo_root();
     let index = read(&root.join("docs/index.md"));

@@ -18,7 +18,7 @@
   "docs/root/release-process-overview.md": "docs/operations/release/index.md",
   "docs/root/faq.md": "docs/start-here.md",
   "docs/root/glossary.md": "docs/glossary.md",
-  "docs/root/terminology-rules.md": "docs/style.md",
+  "docs/root/terminology-rules.md": "docs/governance/docs-style.md",
   "docs/root/navigation-policy.md": "docs/governance/docs-navigation-policy.md",
   "docs/root/index.md": "docs/index.md",
   "docs/contracts/index.md": "docs/reference/contracts/index.md",
@@ -56,10 +56,16 @@
   "docs/engineering/lints.md": "docs/governance/docs-lint-rules.md",
   "docs/governance/docs-rewrite-plan.md": "docs/_meta/internal/docs-rewrite-plan.md",
   "docs/governance/root-legacy-mapping.md": "docs/_meta/internal/root-legacy-mapping.md",
+  "docs/ownership.md": "docs/governance/docs-ownership.md",
+  "docs/style.md": "docs/governance/docs-style.md",
+  "docs/site-map.md": "docs/development/docs-site-map.md",
+  "docs/what-to-read-next.md": "docs/product/reading-tracks.md",
   "docs/metadata/audiences.json": "docs/governance/metadata/audiences.json",
   "docs/metadata/concepts.yml": "docs/governance/metadata/concepts.yml",
   "docs/metadata/front-matter.index.json": "docs/governance/metadata/front-matter.index.json",
   "docs/metadata/growth-budget.json": "docs/governance/metadata/growth-budget.json",
   "docs/metadata/reference-canonicals.json": "docs/governance/metadata/reference-canonicals.json",
-  "docs/metadata/registry.json": "docs/governance/metadata/registry.json"
+  "docs/metadata/registry.json": "docs/registry.json",
+  "docs/governance/metadata/owners.json": "docs/owners.json",
+  "docs/governance/metadata/registry.json": "docs/registry.json"
 }
