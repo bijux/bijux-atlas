@@ -98,6 +98,15 @@ fn render_canonical_contract_doc(
     out.push_str("- Non-goals:\n");
     out.push_str("- This document does not replace executable contract checks.\n");
     out.push_str("- This document does not grant manual exception authority.\n\n");
+    if domain.name == "root" {
+        out.push_str("## Lane policy\n\n");
+        out.push_str("- `local`: ad hoc developer runs; no merge-blocking selection is implied.\n");
+        out.push_str("- `pr`: runs all required contracts plus static coverage.\n");
+        out.push_str("- `merge`: runs required contracts plus effect coverage.\n");
+        out.push_str("- `release`: runs the full matrix of required, effect, and slow coverage.\n");
+        out.push_str("- Required contracts artifact: `artifacts/contracts/required.json`.\n");
+        out.push_str("- Lane guarantees reference: `docs/operations/release/lane-guarantees.md`.\n\n");
+    }
     out.push_str("## Contract IDs\n\n");
     out.push_str("| ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |\n");
     out.push_str("| --- | --- | --- | --- | --- | --- |\n");
@@ -327,6 +336,255 @@ fn test_root_044_meta_ordering_stable(ctx: &RunContext) -> TestResult {
             message: "all-domain contracts execution order changed".to_string(),
             evidence: Some(expected_run_order.to_string()),
         });
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn required_contract_rows(
+    repo_root: &std::path::Path,
+) -> Result<Vec<(String, String, Vec<String>)>, String> {
+    let mut rows = super::required_contract_map(repo_root)?
+        .into_iter()
+        .flat_map(|(domain, contracts)| {
+            contracts.into_iter().map(move |(contract_id, lanes)| {
+                (
+                    domain.clone(),
+                    contract_id,
+                    lanes
+                        .into_iter()
+                        .map(|lane| lane.as_str().to_string())
+                        .collect::<Vec<_>>(),
+                )
+            })
+        })
+        .collect::<Vec<_>>();
+    rows.sort_by(|a, b| a.0.cmp(&b.0).then(a.1.cmp(&b.1)));
+    Ok(rows)
+}
+
+fn approval_metadata_active(repo_root: &std::path::Path) -> Result<bool, String> {
+    let path = super::required_contract_change_path(repo_root);
+    let text =
+        std::fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    let json = serde_json::from_str::<serde_json::Value>(&text)
+        .map_err(|e| format!("parse {} failed: {e}", path.display()))?;
+    let owner = json.get("owner").and_then(|value| value.as_str()).unwrap_or("");
+    let rationale = json
+        .get("rationale")
+        .and_then(|value| value.as_str())
+        .unwrap_or("");
+    let expiry = json.get("expiry").and_then(|value| value.as_str()).unwrap_or("");
+    let changes = json
+        .get("approved_contract_changes")
+        .and_then(|value| value.as_array())
+        .map(|rows| !rows.is_empty())
+        .unwrap_or(false);
+    Ok(!owner.trim().is_empty()
+        && !rationale.trim().is_empty()
+        && !expiry.trim().is_empty()
+        && changes)
+}
+
+fn test_meta_req_001_required_contracts_stable_and_approved(ctx: &RunContext) -> TestResult {
+    let contract_id = "META-REQ-001";
+    let test_id = "root.required_contracts.stable_and_approved";
+    let expected = match required_contract_rows(&ctx.repo_root) {
+        Ok(rows) => rows,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/policy/required-contracts.json".to_string()),
+                line: None,
+                message: err,
+                evidence: None,
+            }]);
+        }
+    };
+    let artifact_path = ctx.repo_root.join("artifacts/contracts/required.json");
+    let actual_text = match std::fs::read_to_string(&artifact_path) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("artifacts/contracts/required.json".to_string()),
+                line: None,
+                message: format!("read {} failed: {err}", artifact_path.display()),
+                evidence: None,
+            }]);
+        }
+    };
+    let actual_json = match serde_json::from_str::<serde_json::Value>(&actual_text) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("artifacts/contracts/required.json".to_string()),
+                line: None,
+                message: format!("parse required artifact failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+    let mut actual = actual_json
+        .get("contracts")
+        .and_then(|value| value.as_array())
+        .map(|rows| {
+            rows.iter()
+                .map(|row| {
+                    (
+                        row.get("domain")
+                            .and_then(|value| value.as_str())
+                            .unwrap_or("")
+                            .to_string(),
+                        row.get("contract_id")
+                            .and_then(|value| value.as_str())
+                            .unwrap_or("")
+                            .to_string(),
+                        row.get("lanes")
+                            .and_then(|value| value.as_array())
+                            .into_iter()
+                            .flatten()
+                            .filter_map(|value| value.as_str().map(ToOwned::to_owned))
+                            .collect::<Vec<_>>(),
+                    )
+                })
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    actual.sort_by(|a, b| a.0.cmp(&b.0).then(a.1.cmp(&b.1)));
+    if actual == expected {
+        return TestResult::Pass;
+    }
+    let approval_active = approval_metadata_active(&ctx.repo_root).unwrap_or(false);
+    if approval_active {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("artifacts/contracts/required.json".to_string()),
+            line: None,
+            message: "required contracts drifted from the committed artifact without active approval metadata".to_string(),
+            evidence: Some("refresh artifacts/contracts/required.json and populate ops/policy/required-contracts-change.json when the required set changes".to_string()),
+        }])
+    }
+}
+
+fn test_meta_req_002_required_contracts_cover_every_pillar(ctx: &RunContext) -> TestResult {
+    let contract_id = "META-REQ-002";
+    let test_id = "root.required_contracts.cover_every_pillar";
+    let rows = match required_contract_rows(&ctx.repo_root) {
+        Ok(rows) => rows,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/policy/required-contracts.json".to_string()),
+                line: None,
+                message: err,
+                evidence: None,
+            }]);
+        }
+    };
+    let present = rows
+        .into_iter()
+        .map(|(domain, _, _)| domain)
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut violations = Vec::new();
+    for domain in ["root", "docs", "make", "configs", "docker", "ops"] {
+        if !present.contains(domain) {
+            violations.push(Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/policy/required-contracts.json".to_string()),
+                line: None,
+                message: format!("required contracts must include at least one `{domain}` contract"),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_meta_req_003_required_contracts_no_placeholder_stubs(ctx: &RunContext) -> TestResult {
+    let contract_id = "META-REQ-003";
+    let test_id = "root.required_contracts.no_placeholder_stubs";
+    let placeholder_words = ["placeholder", "stub", "todo", "tbd"];
+    let rows = match required_contract_rows(&ctx.repo_root) {
+        Ok(rows) => rows,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/policy/required-contracts.json".to_string()),
+                line: None,
+                message: err,
+                evidence: None,
+            }]);
+        }
+    };
+    let mut violations = Vec::new();
+    for (domain, required_contract_id, _) in rows {
+        let contracts = match contracts_for_domain(&ctx.repo_root, &domain) {
+            Ok(value) => value,
+            Err(err) => {
+                violations.push(Violation {
+                    contract_id: contract_id.to_string(),
+                    test_id: test_id.to_string(),
+                    file: Some("ops/policy/required-contracts.json".to_string()),
+                    line: None,
+                    message: format!("load contracts for `{domain}` failed: {err}"),
+                    evidence: None,
+                });
+                continue;
+            }
+        };
+        let Some(contract) = contracts.into_iter().find(|row| row.id.0 == required_contract_id) else {
+            violations.push(Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/policy/required-contracts.json".to_string()),
+                line: None,
+                message: format!("required contract `{required_contract_id}` is missing from `{domain}` registry"),
+                evidence: None,
+            });
+            continue;
+        };
+        let title = contract.title.to_ascii_lowercase();
+        if placeholder_words.iter().any(|word| title.contains(word)) {
+            violations.push(Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/policy/required-contracts.json".to_string()),
+                line: None,
+                message: format!("required contract `{required_contract_id}` uses placeholder wording in its title"),
+                evidence: Some(contract.title.to_string()),
+            });
+        }
+        for case in &contract.tests {
+            let test_title = case.title.to_ascii_lowercase();
+            if placeholder_words.iter().any(|word| test_title.contains(word)) {
+                violations.push(Violation {
+                    contract_id: contract_id.to_string(),
+                    test_id: test_id.to_string(),
+                    file: Some("ops/policy/required-contracts.json".to_string()),
+                    line: None,
+                    message: format!("required contract `{required_contract_id}` contains placeholder wording in test `{}`", case.id.0),
+                    evidence: Some(case.title.to_string()),
+                });
+            }
+        }
     }
     if violations.is_empty() {
         TestResult::Pass

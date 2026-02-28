@@ -38,6 +38,36 @@
       ]
     },
     {
+      "name": "contracts-merge",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "contracts-pr",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "contracts-release",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/release-candidate.yml"
+      ]
+    },
+    {
       "name": "contracts-configs",
       "defined_in": [
         "make/contracts.mk"

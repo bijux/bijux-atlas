@@ -9,10 +9,22 @@
 - This document does not replace executable contract checks.
 - This document does not grant manual exception authority.
 
+## Lane policy
+
+- `local`: ad hoc developer runs; no merge-blocking selection is implied.
+- `pr`: runs all required contracts plus static coverage.
+- `merge`: runs required contracts plus effect coverage.
+- `release`: runs the full matrix of required, effect, and slow coverage.
+- Required contracts artifact: `artifacts/contracts/required.json`.
+- Lane guarantees reference: `docs/operations/release/lane-guarantees.md`.
+
 ## Contract IDs
 
 | ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
 | --- | --- | --- | --- | --- | --- |
+| `META-REQ-001` | required contracts stay stable and approved | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
+| `META-REQ-002` | required contracts cover every pillar | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
+| `META-REQ-003` | required contracts avoid placeholder stubs | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-001` | repo root matches the sealed surface | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-002` | repo root markdown stays within the documented surface | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-003` | repo root forbids legacy script directories | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
@@ -62,6 +74,9 @@
 
 | Contract | Command(s) |
 | --- | --- |
+| `META-REQ-001` | `bijux dev atlas contracts root --mode static` |
+| `META-REQ-002` | `bijux dev atlas contracts root --mode static` |
+| `META-REQ-003` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-001` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-002` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-003` | `bijux dev atlas contracts root --mode static` |

@@ -466,5 +466,35 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_root_044_meta_ordering_stable,
             }],
         },
+        Contract {
+            id: ContractId("META-REQ-001".to_string()),
+            title: "required contracts stay stable and approved",
+            tests: vec![TestCase {
+                id: TestId("root.required_contracts.stable_and_approved".to_string()),
+                title: "required contracts manifest and artifact stay aligned unless active approval metadata exists",
+                kind: TestKind::Pure,
+                run: test_meta_req_001_required_contracts_stable_and_approved,
+            }],
+        },
+        Contract {
+            id: ContractId("META-REQ-002".to_string()),
+            title: "required contracts cover every pillar",
+            tests: vec![TestCase {
+                id: TestId("root.required_contracts.cover_every_pillar".to_string()),
+                title: "required contracts include root docs make configs docker and ops coverage",
+                kind: TestKind::Pure,
+                run: test_meta_req_002_required_contracts_cover_every_pillar,
+            }],
+        },
+        Contract {
+            id: ContractId("META-REQ-003".to_string()),
+            title: "required contracts avoid placeholder stubs",
+            tests: vec![TestCase {
+                id: TestId("root.required_contracts.no_placeholder_stubs".to_string()),
+                title: "required contracts point to concrete non-placeholder rules and tests",
+                kind: TestKind::Pure,
+                run: test_meta_req_003_required_contracts_no_placeholder_stubs,
+            }],
+        },
     ])
 }

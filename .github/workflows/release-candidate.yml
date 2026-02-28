@@ -84,6 +84,14 @@ jobs:
           report_root="artifacts/${RUN_ID}/reports"
           mkdir -p "${report_root}"
           cargo run -q -p bijux-dev-atlas -- release check --format json > "${report_root}/release-check.json"
+      - name: Run release contracts lane
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_root="artifacts/${RUN_ID}/reports"
+          logs_root="artifacts/${RUN_ID}/logs/release-candidate"
+          mkdir -p "${report_root}" "${logs_root}"
+          ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make contracts-release > "${report_root}/contracts-release.txt" 2> "${logs_root}/contracts-release.stderr.log"
       - name: Run ops readiness gate
         shell: bash
         run: |
@@ -99,8 +107,8 @@ jobs:
           logs_root="artifacts/${RUN_ID}/logs/release-candidate"
           mkdir -p "${report_root}" "${logs_root}"
           cargo run -q -p bijux-dev-atlas -- build dist --allow-subprocess --allow-write --format json > "${report_root}/release-candidate.json" 2> "${logs_root}/release-candidate.stderr.log"
-          printf -- "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- release check: %s\n- ops readiness: %s\n- input version: %s\n" \
-            "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${report_root}/release-check.json" "${report_root}/ops-readiness.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
+          printf -- "- lane: release-candidate\n- report: %s\n- docs completeness: %s\n- release check: %s\n- release contracts: %s\n- ops readiness: %s\n- input version: %s\n" \
+            "${report_root}/release-candidate.json" "${report_root}/docs-completeness.json" "${report_root}/release-check.json" "${report_root}/contracts-release.txt" "${report_root}/ops-readiness.json" "${{ github.event.inputs.version }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Generate report checksums
         shell: bash

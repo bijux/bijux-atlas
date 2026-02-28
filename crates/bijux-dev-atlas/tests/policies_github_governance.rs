@@ -73,6 +73,25 @@ fn release_candidate_workflow_requires_ops_readiness_gate() {
         content.contains("ops-readiness.json"),
         "release-candidate workflow must persist ops readiness report artifact"
     );
+    assert!(
+        content.contains("make contracts-release"),
+        "release-candidate workflow must execute `make contracts-release`"
+    );
+}
+
+#[test]
+fn ci_pr_workflow_uses_lane_specific_contract_targets() {
+    let root = workspace_root();
+    let workflow = root.join(".github/workflows/ci-pr.yml");
+    let content = fs::read_to_string(&workflow).expect("read ci-pr workflow");
+    assert!(
+        content.contains("make contracts-pr"),
+        "ci-pr workflow must execute `make contracts-pr`"
+    );
+    assert!(
+        content.contains("make contracts-merge"),
+        "ci-pr workflow must execute `make contracts-merge` for merge-group runs"
+    );
 }
 
 #[test]

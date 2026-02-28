@@ -88,7 +88,11 @@ jobs:
           make help > "${logs_root}/make-help.stdout.log" 2> "${logs_root}/make-help.stderr.log"
           make make-target-list > "${logs_root}/make-target-list.stdout.log" 2> "${logs_root}/make-target-list.stderr.log"
           cp make/target-list.json "${report_root}/make-target-list.json"
-          ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make contracts > "${contracts_root}/all.json" 2> "${logs_root}/contracts-all.stderr.log"
+          if [ "${GITHUB_EVENT_NAME}" = "merge_group" ]; then
+            ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make contracts-merge > "${contracts_root}/all.json" 2> "${logs_root}/contracts-merge.stderr.log"
+          else
+            ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make contracts-pr > "${contracts_root}/all.json" 2> "${logs_root}/contracts-pr.stderr.log"
+          fi
           cargo run -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-report.stdout.log" 2> "${logs_root}/lint-policy-report.stderr.log"
           printf 'workspace_lints_file=Cargo.toml\nclippy_conf_dir=configs/rust\n' > "${report_root}/effective-clippy-policy.txt"
           cargo run -q -p bijux-dev-atlas -- check run --domain root --tag lint --format json > "${logs_root}/lint-policy-enforce.stdout.log" 2> "${logs_root}/lint-policy-enforce.stderr.log"

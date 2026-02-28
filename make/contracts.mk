@@ -19,6 +19,18 @@ contracts: _contracts_guard ## Run all contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts all --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
+contracts-pr: _contracts_guard ## Run required and static contracts for pull requests
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane pr --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) contracts all --lane pr --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
+contracts-merge: _contracts_guard ## Run required and effect contracts for merge gating
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane merge --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) contracts all --lane merge --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
+contracts-release: _contracts_guard ## Run full release contracts matrix
+	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --lane release --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
+	@CI=1 $(DEV_ATLAS) contracts all --lane release --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
+
 contracts-all: _contracts_guard ## Run all contracts with effect lane (no static mode skips)
 	@printf '%s\n' "run: CI=1 $(DEV_ATLAS) contracts all --mode effect --profile ci --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@CI=1 $(DEV_ATLAS) contracts all --mode effect --profile ci --allow-subprocess --allow-network --allow-k8s --allow-fs-write --allow-docker-daemon --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
@@ -63,4 +75,4 @@ contracts-ops: _contracts_guard ## Run ops contracts
 	@printf '%s\n' "run: $(DEV_ATLAS) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)"
 	@$(DEV_ATLAS) contracts ops --mode static --format human --artifacts-root $(CONTRACTS_ARTIFACT_ROOT)
 
-.PHONY: _contracts_guard contracts-help contracts contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-docs contracts-docker contracts-make contracts-ops
+.PHONY: _contracts_guard contracts-help contracts contracts-pr contracts-merge contracts-release contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-docs contracts-docker contracts-make contracts-ops

@@ -1,6 +1,6 @@
 {
   "max_public_targets": 40,
-  "target_public_targets": 34,
+  "target_public_targets": 37,
   "public_targets": [
     {
       "name": "build",
@@ -26,6 +26,15 @@
       "lanes": [
         "dev",
         "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-merge",
+      "description": "Run merge contracts lane",
+      "lanes": [
+        "merge",
+        "release"
       ],
       "area": "contracts"
     },
@@ -102,6 +111,15 @@
       "area": "contracts"
     },
     {
+      "name": "contracts-pr",
+      "description": "Run pull request contracts lane",
+      "lanes": [
+        "pr",
+        "merge"
+      ],
+      "area": "contracts"
+    },
+    {
       "name": "contracts-make",
       "description": "Run contracts gate target",
       "lanes": [
@@ -125,6 +143,14 @@
       "lanes": [
         "dev",
         "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-release",
+      "description": "Run release contracts lane",
+      "lanes": [
+        "release"
       ],
       "area": "contracts"
     },
