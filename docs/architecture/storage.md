@@ -19,11 +19,24 @@
 - Indexes are part of contract-governed performance behavior.
 - Schema drift is blocked by contract and migration checks.
 
+## Practical schema surfaces
+
+| Surface | Purpose |
+| --- | --- |
+| release metadata tables | map release and alias state |
+| serving indexes | accelerate filter/sort/cursor query paths |
+| integrity metadata | preserve hash and compatibility checks |
+
 ## Migration Philosophy
 
 - Forward-only migrations are preferred for deterministic release upgrades.
 - Migration failures fail closed before runtime serving proceeds.
 - Rollback strategy is release alias rollback, not ad-hoc schema edits.
+
+## Limits and non-goals
+
+- Storage model does not permit serving-path writes to immutable artifact source data.
+- Storage model does not allow ad-hoc schema edits outside migration workflow.
 
 ## Caching Strategy
 
@@ -49,6 +62,7 @@ This page is not a deployment recipe and not a SQL dump.
 - [Architecture](index.md)
 - [Dataflow](dataflow.md)
 - [Performance Model](performance-model.md)
+- [Store integrity model](store-integrity-model.md)
 - [Glossary](../glossary.md)
 
 ## Document Taxonomy

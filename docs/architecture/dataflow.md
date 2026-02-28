@@ -52,6 +52,13 @@ See: [API](../api/index.md) and [Reference](../reference/index.md).
 - Store or query pressure triggers degraded but explicit behavior. See [Store outage runbook](../operations/runbooks/store-outage.md).
 - Client-facing failures are mapped in [Reference errors](../reference/errors.md).
 
+## Subsystem limits and non-goals
+
+- Ingest: does not publish artifacts when QC fails.
+- Registry: does not auto-resolve ambiguous release conflicts.
+- Serving store: does not permit serving-path mutation of immutable artifact sources.
+- Query/API: do not trade deterministic semantics for opportunistic response shaping.
+
 ## Operational Relevance
 
 Each stage has independent verification and rollback controls for safer deployments.
@@ -65,6 +72,12 @@ This page is not a runbook and not a schema reference.
 ```text
 Input file accepted -> artifact published -> release alias updated -> query served.
 ```
+
+## Terminology used here
+
+- Artifact: [Glossary](../glossary.md)
+- Release: [Glossary](../glossary.md)
+- Query: [Glossary](../glossary.md)
 
 ## What to Read Next
 

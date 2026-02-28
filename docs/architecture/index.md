@@ -23,8 +23,10 @@ Start with [Dataflow](dataflow.md), then [Boundaries](boundaries.md), then choos
 - [Runtime Data Model](runtime-data-model.md)
 - [Storage](storage.md)
 - [Performance Model](performance-model.md)
-- [Components](components.md)
-- [Architecture Map](architecture-map.md)
+- [Query model](query-model.md)
+- [Ingest and QC model](ingest-qc-model.md)
+- [Hot paths](hot-paths.md)
+- [System graph explained](system-graph-explained.md)
 
 ## Next steps
 

@@ -69,6 +69,12 @@ This page is not a contributor onboarding checklist and not a deployment guide.
 If query behavior changes, update query-layer contracts; do not patch API handlers as a shortcut.
 ```
 
+## Terminology used here
+
+- Boundary: [Glossary](../glossary.md)
+- Contract: [Glossary](../glossary.md)
+- Lane: [Glossary](../glossary.md)
+
 ## What to Read Next
 
 - [Architecture](index.md)

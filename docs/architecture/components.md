@@ -33,6 +33,11 @@
 - API and query layers do not mutate immutable release artifacts.
 - Control-plane lanes do not hide effectful steps behind undocumented scripts.
 
+## Limits and non-goals
+
+- Component boundaries are not designed for cross-layer hotfix shortcuts.
+- Components do not guarantee zero coordination cost for bypassed architecture rules.
+
 ## Operational Relevance
 
 Clear component boundaries reduce incident triage time and prevent cross-layer hotfixes.
@@ -48,6 +53,11 @@ This page is not a crate-by-crate API reference.
 - [Dataflow](dataflow.md)
 - [Crates Map](crates-map.md)
 - [Glossary](../glossary.md)
+
+## Terminology used here
+
+- Artifact: [Glossary](../glossary.md)
+- Control-plane: [Glossary](../glossary.md)
 
 ## Document Taxonomy
 

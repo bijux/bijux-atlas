@@ -31,6 +31,17 @@
 - Degradation paths are explicit, measurable, and contract-checked.
 - Observability stays available under degradation for operator triage.
 
+## Latency targets
+
+- p50 targets are optimized for common filtered query paths.
+- p95 targets are maintained under sustained expected concurrency.
+- p99 targets define overload thresholds and mitigation behavior.
+
+## Limits and non-goals
+
+- This model does not guarantee zero-latency behavior for unbounded scans.
+- This model does not bypass correctness for raw throughput gains.
+
 ## Operational Relevance
 
 Operators need deterministic behavior when balancing stability against throughput.

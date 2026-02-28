@@ -25,11 +25,21 @@
 - Deterministic registry merge behavior.
 - Read-path semantics independent of transient cache state.
 
+## Limits and non-goals
+
+- Runtime data model does not permit in-place mutation of published artifact state.
+- Runtime data model does not allow ambiguous alias mapping outcomes.
+
 ## What to Read Next
 
 - [Dataflow](dataflow.md)
 - [Storage](storage.md)
 - [Reference Schemas](../reference/schemas.md)
+
+## Terminology used here
+
+- Artifact: [Glossary](../glossary.md)
+- Registry: [Glossary](../glossary.md)
 
 ## Document Taxonomy
 
