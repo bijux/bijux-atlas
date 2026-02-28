@@ -1,0 +1,3 @@
+docs/_generated/concept-registry.json
+docs/_generated/concept-registry.md
+docs/_style/CONCEPT_REGISTRY.md

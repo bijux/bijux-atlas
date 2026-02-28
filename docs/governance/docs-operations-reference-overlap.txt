@@ -1,0 +1,10 @@
+docs/operations/reference/commands.md
+docs/operations/reference/drills.md
+docs/operations/reference/evidence-model.md
+docs/operations/reference/gates.md
+docs/operations/reference/ops-surface.md
+docs/operations/reference/pins.md
+docs/operations/reference/schema-index.md
+docs/operations/reference/toolchain.md
+docs/operations/reference/tools.md
+docs/operations/reference/what-breaks-if-removed.md
