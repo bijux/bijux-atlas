@@ -29,3 +29,4 @@ Generated artifacts support validation but are not part of reader navigation.
 
 - [Docs Charter](docs-charter.md)
 - [Governance Index](index.md)
+- [Docs Dashboard](docs-dashboard.md)

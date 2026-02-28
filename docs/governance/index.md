@@ -14,9 +14,11 @@ Provide governance rules that keep reader docs accurate, minimal, and stable.
 
 - [Docs Charter](docs-charter.md)
 - [Governance Readers Guide](readers-guide.md)
+- [Docs Dashboard](docs-dashboard.md)
 - [Docs Contract](docs-contract.md)
 - [Docs Review Checklist](docs-review-checklist.md)
 - [Docs Removal Policy](docs-removal-policy.md)
+- [Redirects Policy](redirects-policy.md)
 - [ADRs](adrs/index.md)
 
 ## Next Steps
