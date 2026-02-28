@@ -151,5 +151,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_010_section_index_policy,
             }],
         },
+        Contract {
+            id: ContractId("DOC-011".to_string()),
+            title: "docs section index links resolve",
+            tests: vec![TestCase {
+                id: TestId("docs.links.section_indexes_resolve".to_string()),
+                title: "links in top-level section index pages resolve to real files",
+                kind: TestKind::Pure,
+                run: test_docs_011_section_index_links_resolve,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-012".to_string()),
+            title: "docs root entrypoint links resolve",
+            tests: vec![TestCase {
+                id: TestId("docs.links.root_entrypoints_resolve".to_string()),
+                title: "links in docs root entrypoint pages resolve to real files",
+                kind: TestKind::Pure,
+                run: test_docs_012_root_entrypoint_links_resolve,
+            }],
+        },
     ])
 }

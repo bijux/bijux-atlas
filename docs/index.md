@@ -25,12 +25,12 @@ Use this page as the only docs entrypoint.
 
 ## Generated Docs
 
-Generated artifacts are published under [docs/_generated/](_generated/INDEX.md).
+Generated artifacts are published under [docs/_generated/topic-index.md](_generated/topic-index.md).
 
 ## Find a Concept
 
 - Concept registry: [docs/_style/CONCEPT_REGISTRY.md](_style/CONCEPT_REGISTRY.md)
-- Concept graph: [docs/_generated/concepts.md](_generated/concepts.md)
+- Concept graph: [docs/_generated/docs-dependency-graph.json](_generated/docs-dependency-graph.json)
 
 ## What
 

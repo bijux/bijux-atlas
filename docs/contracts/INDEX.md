@@ -54,6 +54,6 @@ Expected output: both commands exit 0.
 - [Normalized Format Contract](normalized-format.md)
 - [GFF3 Acceptance Contract](gff3-acceptance.md)
 - [Release Diffs (Evolution)](../reference/evolution/release-diffs.md)
-- [Sharding Schema](../_generated/contracts/SHARDING_SCHEMA.md)
+- [Sharding Schema](SHARDING_SCHEMA.json)
 - [SSOT Workflow](ssot-workflow.md)
 - [Terms Glossary](../_style/terms-glossary.md)

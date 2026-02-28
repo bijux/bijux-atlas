@@ -21,6 +21,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-008" => "Every top-level docs section directory must have a non-empty owner mapping in docs/owners.json.".to_string(),
         "DOC-009" => "Every top-level docs section must be declared in docs/sections.json, with no dead section entries.".to_string(),
         "DOC-010" => "Each top-level docs section must either require or forbid INDEX.md exactly as declared in docs/sections.json.".to_string(),
+        "DOC-011" => "Links inside top-level section INDEX.md files must resolve to real repo files.".to_string(),
+        "DOC-012" => "Links inside the docs root entrypoint pages must resolve to real repo files.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
