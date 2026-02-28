@@ -1,15 +1,22 @@
 # Security
 
-Owner: `bijux-atlas-security`  
-Type: `runbook`  
-Audience: `operator`  
-Reason to exist: define operational security controls and threat-boundary references.
+- Owner: `bijux-atlas-security`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: provide security operations entrypoints.
 
-## Scope
+## Start here
 
-Security operations cover dependency policy enforcement, access controls, and incident response coordination for production workloads.
+- [Security Posture](../security-posture.md)
+- [Advisory Process](advisory-process.md)
+- [Incident Response](../incident-response.md)
 
-## Canonical References
+## Verify success
 
-- `docs/operations/security/advisory-process.md`
-- `docs/operations/incident-response.md`
+Security workflows are successful when posture checks pass and incident handling remains auditable.
+
+## Next
+
+- [Release Operations](../release/index.md)

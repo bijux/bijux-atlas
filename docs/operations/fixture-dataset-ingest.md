@@ -1,29 +1,51 @@
 # Fixture Dataset Ingest
 
 - Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/datasets/manifest.json`, `ops/datasets/generated/fixture-inventory.json`, `ops/datasets/fixture-policy.json`
-- Contract references: `OPS-ROOT-023`, `OPS-DATASETS-001`, `OPS-DATASETS-002`, `OPS-DATASETS-007`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: provide the strict ingest recipe for fixture-backed datasets.
 
-## What
+## Why you are reading this
 
-Describes the canonical fixture dataset sources used for local ingest and regression checks.
+Use this page when you need to ingest fixture datasets with deterministic inputs and verifiable outputs.
 
-## Why
-
-Fixture ingest steps must point to the governed dataset manifests instead of ad-hoc local files.
-
-## Canonical Inputs
+## Inputs
 
 - Dataset manifest: `ops/datasets/manifest.json`
 - Fixture inventory: `ops/datasets/generated/fixture-inventory.json`
 - Fixture policy: `ops/datasets/fixture-policy.json`
 
-## How To Verify
+## Procedure
+
+1. Validate fixture sources.
 
 ```bash
-cargo test -q -p bijux-dev-atlas --test docs_ops_coherence_contracts -- --nocapture
+make ops-datasets-fetch
 ```
 
-Expected output: docs references resolve to existing fixture manifests and generated inventories.
+2. Run dataset quality checks.
+
+```bash
+make ops-dataset-qc
+```
+
+3. Run readiness checks before promotion.
+
+```bash
+make ops-readiness-scorecard
+```
+
+## Verify success
+
+Expected result: dataset fetch, QC, and readiness checks pass with no contract violations.
+
+## Rollback
+
+If ingest validation fails, keep the current promoted dataset and fix source manifests before rerun.
+
+## Next
+
+- [Dataset Workflow](dataset-workflow.md)
+- [Promotion Record](promotion-record.md)

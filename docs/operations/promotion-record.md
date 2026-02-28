@@ -1,29 +1,47 @@
 # Promotion Record
 
 - Owner: `bijux-atlas-operations`
-- Tier: `tier2`
-- Audience: `operators`
-- Source-of-truth: `ops/datasets/promotion-rules.json`, `ops/datasets/rollback-policy.json`, `ops/_generated.example/fixture-drift-report.json`
-- Contract references: `OPS-ROOT-023`, `OPS-DATASETS-003`, `OPS-DATASETS-006`, `OPS-DATASETS-007`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: define what evidence is required for dataset promotion and rollback safety.
 
-## What
+## Why you are reading this
 
-Defines the canonical evidence and cross-links used when promoting fixture-backed dataset changes.
+Use this page to assemble and verify release evidence before promoting a dataset pointer.
 
-## Why
-
-Promotion decisions must point to the same fixture drift and rollback policies that release reviewers use.
-
-## Required Evidence
+## Required evidence
 
 - Promotion rules: `ops/datasets/promotion-rules.json`
 - Rollback policy: `ops/datasets/rollback-policy.json`
 - Fixture drift report: `ops/_generated.example/fixture-drift-report.json`
 
-## How To Verify
+## Procedure
+
+1. Validate promotion prerequisites.
 
 ```bash
-cargo test -q -p bijux-dev-atlas --test docs_ops_coherence_contracts -- --nocapture
+make ops-release-update
 ```
 
-Expected output: promotion docs stay linked to the canonical fixture governance evidence.
+2. Confirm rollback path is available.
+
+```bash
+make ops-release-rollback
+```
+
+3. Record release decision and linked evidence artifacts.
+
+## Verify success
+
+Expected result: promotion record contains all required evidence and rollback route is verified.
+
+## Rollback
+
+Use `make ops-release-rollback` if post-promotion checks fail.
+
+## Next
+
+- [Release Workflow](release-workflow.md)
+- [Incident Response](incident-response.md)

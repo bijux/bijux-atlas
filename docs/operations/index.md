@@ -14,6 +14,7 @@
 3. [Observability](observability/index.md)
 4. [Incident Response](incident-response.md)
 5. [Release](release/index.md)
+6. [Security Posture](security-posture.md)
 
 ## What This Page Is Not
 

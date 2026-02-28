@@ -1,15 +1,33 @@
-# Release
+# Release Operations
 
-Owner: `build-and-release`  
-Type: `runbook`  
-Audience: `operator`  
-Reason to exist: define canonical release workflow and validation gates.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: provide the release operator entrypoint.
 
-## Release Flow
+## Why you are reading this
 
-Release promotion is controlled by deterministic CI lanes and control-plane validation gates before artifact publication.
+Use this section to ship, verify, and recover Atlas releases.
 
-## Canonical References
+## Start here
 
-- [Compatibility Promise](../../product/compatibility-promise.md)
-- [Deploy](../deploy.md)
+- [Release Workflow](../release-workflow.md)
+- [Upgrade Procedure](upgrade-procedure.md)
+- [Rollback Procedure](rollback-procedure.md)
+- [Backup and Restore](backup-and-restore.md)
+
+## Verify success
+
+```bash
+make ops-release-update
+make ops-readiness-scorecard
+```
+
+Expected result: release checks pass and serving remains healthy.
+
+## Next
+
+- [Capacity Planning](capacity-planning.md)
+- [Security Posture](../security-posture.md)
