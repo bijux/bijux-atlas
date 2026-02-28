@@ -89,6 +89,31 @@ fn help_inventory_supports_json_format() {
 }
 
 #[test]
+fn configs_list_uses_registry_groups() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["configs", "list", "--format", "json"])
+        .output()
+        .expect("configs list json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("configs"));
+    let groups = payload
+        .get("groups")
+        .and_then(|v| v.as_array())
+        .expect("groups array");
+    assert!(!groups.is_empty());
+    assert!(groups.iter().any(|row| {
+        row.get("group").and_then(|v| v.as_str()) == Some("inventory")
+            && row
+                .get("tool_entrypoints")
+                .and_then(|v| v.as_array())
+                .is_some_and(|entries| !entries.is_empty())
+    }));
+}
+
+#[test]
 fn plugin_metadata_matches_umbrella_contract_shape() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .arg("--bijux-plugin-metadata")
@@ -469,4 +494,3 @@ fn policies_report_supports_json_format() {
         Some("control_plane_policies")
     );
 }
-

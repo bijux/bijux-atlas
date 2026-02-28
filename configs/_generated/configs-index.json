@@ -1,0 +1,533 @@
+{
+  "exclusions": [
+    {
+      "pattern": "configs/docs/.vale/styles/**",
+      "reason": "legacy deep style bundles stay explicit until docs config flattening"
+    },
+    {
+      "pattern": "configs/ops/perf/baselines/**",
+      "reason": "legacy deep perf baselines stay explicit until perf config flattening"
+    }
+  ],
+  "groups": [
+    {
+      "counts": {
+        "covered": 4,
+        "generated": 0,
+        "internal": 2,
+        "public": 2,
+        "schemas": 1
+      },
+      "files": [
+        "configs/ci/INDEX.md",
+        "configs/ci/README.md",
+        "configs/ci/env-contract.json",
+        "configs/ci/lanes.json"
+      ],
+      "name": "ci",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/ci-run-output.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas configs list"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 17,
+        "generated": 0,
+        "internal": 7,
+        "public": 10,
+        "schemas": 1
+      },
+      "files": [
+        "configs/docs/.markdownlint-cli2.jsonc",
+        "configs/docs/.vale.ini",
+        "configs/docs/INDEX.md",
+        "configs/docs/README.md",
+        "configs/docs/codespell-ignore-words.txt",
+        "configs/docs/config-diff.md",
+        "configs/docs/configs-lifecycle.md",
+        "configs/docs/cspell.config.json",
+        "configs/docs/depth-budget.json",
+        "configs/docs/environment-contract.md",
+        "configs/docs/package-lock.json",
+        "configs/docs/package.json",
+        "configs/docs/quality-policy.json",
+        "configs/docs/requirements.lock.txt",
+        "configs/docs/requirements.txt",
+        "configs/docs/schema-overview.md",
+        "configs/docs/schema-validation.md"
+      ],
+      "name": "docs",
+      "owner": "docs-governance",
+      "schema_owner": "docs-governance",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas docs build",
+        "bijux dev atlas docs lint"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 5,
+        "generated": 0,
+        "internal": 1,
+        "public": 4,
+        "schemas": 2
+      },
+      "files": [
+        "configs/inventory/README.md",
+        "configs/inventory/configs.json",
+        "configs/inventory/consumers.json",
+        "configs/inventory/groups.json",
+        "configs/inventory/owners.json"
+      ],
+      "name": "inventory",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/inventory-owners.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs list",
+        "bijux dev atlas configs inventory"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 15,
+        "generated": 0,
+        "internal": 2,
+        "public": 13,
+        "schemas": 1
+      },
+      "files": [
+        "configs/coverage/README.md",
+        "configs/coverage/thresholds.toml",
+        "configs/gates/lanes.json",
+        "configs/layout/README.md",
+        "configs/layout/inventory-budgets.json",
+        "configs/product/artifact-manifest.schema.json",
+        "configs/product/external-tools-manifest.json",
+        "configs/repo/README.md",
+        "configs/repo/root-symlink-shims.md",
+        "configs/repo/surface-snapshot.json",
+        "configs/repo/surfaces.json",
+        "configs/repo/symlink-allowlist.json",
+        "configs/repo/tree-budget-exceptions.json",
+        "configs/shellcheck/README.md",
+        "configs/shellcheck/shellcheckrc"
+      ],
+      "name": "layout",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-budgets.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check tree-budgets",
+        "bijux dev atlas configs validate"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 4,
+        "generated": 0,
+        "internal": 1,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/make/README.md",
+        "configs/make/public-targets.json",
+        "configs/make/retired-makefiles.json",
+        "configs/make/targets.json"
+      ],
+      "name": "make",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/contracts/inventory-make.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas contracts make",
+        "make contracts"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 1,
+        "generated": 0,
+        "internal": 0,
+        "public": 1,
+        "schemas": 1
+      },
+      "files": [
+        "configs/meta/owners.json"
+      ],
+      "name": "meta",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schema/meta-ownership.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs verify"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 2,
+        "generated": 0,
+        "internal": 1,
+        "public": 1,
+        "schemas": 0
+      },
+      "files": [
+        "configs/nextest/README.md",
+        "configs/nextest/nextest.toml"
+      ],
+      "name": "nextest",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo nextest run"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 3,
+        "generated": 0,
+        "internal": 1,
+        "public": 2,
+        "schemas": 1
+      },
+      "files": [
+        "configs/openapi/README.md",
+        "configs/openapi/v1/openapi.generated.json",
+        "configs/openapi/v1/openapi.snapshot.json"
+      ],
+      "name": "openapi",
+      "owner": "api-contracts",
+      "schema_owner": "api-contracts",
+      "schemas": [
+        "configs/schema/public-surface.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check registry doctor"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 51,
+        "generated": 0,
+        "internal": 1,
+        "public": 50,
+        "schemas": 3
+      },
+      "files": [
+        "configs/ops/README.md",
+        "configs/ops/artifact-retention.json",
+        "configs/ops/artifacts-allowlist.txt",
+        "configs/ops/budgets.json",
+        "configs/ops/cache-budget-thresholds.v1.json",
+        "configs/ops/cargo-invocation-legacy.txt",
+        "configs/ops/command-artifact-retention.json",
+        "configs/ops/command-capabilities.json",
+        "configs/ops/config-sources.json",
+        "configs/ops/dataset-qc-thresholds.v1.json",
+        "configs/ops/env.schema.json",
+        "configs/ops/external-tools-allowlist.json",
+        "configs/ops/hpa-safety-caps.json",
+        "configs/ops/internal-config-keys.txt",
+        "configs/ops/load/suite-baselines.json",
+        "configs/ops/load/suite-baselines.schema.json",
+        "configs/ops/make-target-registry.json",
+        "configs/ops/manifests-registry.json",
+        "configs/ops/namespaces.json",
+        "configs/ops/network-policy.json",
+        "configs/ops/obs/budgets.json",
+        "configs/ops/observability-pack.json",
+        "configs/ops/ops-domain-surface.json",
+        "configs/ops/ops-module-budgets.json",
+        "configs/ops/ops-subprocess-allowlist.json",
+        "configs/ops/ops-surface-manifest.json",
+        "configs/ops/pins.json",
+        "configs/ops/pins/datasets.json",
+        "configs/ops/pins/helm.json",
+        "configs/ops/pins/images.json",
+        "configs/ops/pins/tools.json",
+        "configs/ops/policies/README.md",
+        "configs/ops/policies/ops-smoke-budget.json",
+        "configs/ops/ports.json",
+        "configs/ops/public-make-targets.json",
+        "configs/ops/public-surface-doc-exceptions.txt",
+        "configs/ops/runtime/README.md",
+        "configs/ops/scenarios.schema.json",
+        "configs/ops/schema-contracts.json",
+        "configs/ops/sharding-policy.json",
+        "configs/ops/slo/classes.json",
+        "configs/ops/slo/loosening-approval.json",
+        "configs/ops/slo/sli.schema.json",
+        "configs/ops/slo/slis.v1.json",
+        "configs/ops/slo/slo.schema.json",
+        "configs/ops/slo/slo.v1.json",
+        "configs/ops/suites.json",
+        "configs/ops/target-renames.json",
+        "configs/ops/tool-versions.json",
+        "configs/ops/tools/README.md",
+        "configs/ops/vendor-allow.json"
+      ],
+      "name": "ops",
+      "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/contracts/inventory-ops.schema.json",
+        "configs/ops/env.schema.json",
+        "configs/ops/scenarios.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas contracts ops",
+        "bijux dev atlas ops list"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 4,
+        "generated": 0,
+        "internal": 1,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/perf/README.md",
+        "configs/perf/critical_queries.json",
+        "configs/perf/critical_queries_explain_snapshot.json",
+        "configs/perf/k6-thresholds.v1.json"
+      ],
+      "name": "perf",
+      "owner": "bijux-atlas-performance",
+      "schema_owner": "bijux-atlas-performance",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas ops load plan",
+        "bijux dev atlas ops load report"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 32,
+        "generated": 0,
+        "internal": 1,
+        "public": 31,
+        "schemas": 2
+      },
+      "files": [
+        "configs/policy/README.md",
+        "configs/policy/budget-exceptions.yml",
+        "configs/policy/budget-relaxations.json",
+        "configs/policy/bypass-budget.json",
+        "configs/policy/bypass-count-baseline.json",
+        "configs/policy/bypass-files-registry.json",
+        "configs/policy/bypass-horizon-approvals.json",
+        "configs/policy/bypass-new-entry-approvals.json",
+        "configs/policy/bypass-owner-aliases.json",
+        "configs/policy/bypass-removal-milestones.json",
+        "configs/policy/bypass-types.json",
+        "configs/policy/check-filename-allowlist.json",
+        "configs/policy/check-id-migration.json",
+        "configs/policy/check_speed_approvals.json",
+        "configs/policy/checks-registry-transition.json",
+        "configs/policy/dependency-exceptions.json",
+        "configs/policy/forbidden-adjectives-allowlist.txt",
+        "configs/policy/forbidden-adjectives-approvals.json",
+        "configs/policy/forbidden-adjectives-migration-map.json",
+        "configs/policy/layer-live-diff-allowlist.json",
+        "configs/policy/migration-progress-baseline.json",
+        "configs/policy/ops-image-digest-policy.json",
+        "configs/policy/ops-lint-relaxations.json",
+        "configs/policy/ops-run-temp-script-approvals.json",
+        "configs/policy/ops-smoke-budget-relaxations.json",
+        "configs/policy/pin-relaxations.json",
+        "configs/policy/policy-relaxations.json",
+        "configs/policy/policy.json",
+        "configs/policy/policy.schema.json",
+        "configs/policy/shell-network-fetch-allowlist.txt",
+        "configs/policy/shell-probes-allowlist.txt",
+        "configs/policy/slow-checks-ratchet.json"
+      ],
+      "name": "policy",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/policy/policy.schema.json",
+        "configs/schema/policy-relaxations.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas policies validate",
+        "bijux dev atlas configs lint"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 5,
+        "generated": 0,
+        "internal": 2,
+        "public": 3,
+        "schemas": 1
+      },
+      "files": [
+        "configs/rust/LINT_POLICY.md",
+        "configs/rust/README.md",
+        "configs/rust/clippy.toml",
+        "configs/rust/rustfmt.toml",
+        "configs/rust/toolchain.json"
+      ],
+      "name": "rust",
+      "owner": "rust-foundation",
+      "schema_owner": "rust-foundation",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo fmt",
+        "cargo clippy"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 33,
+        "generated": 0,
+        "internal": 20,
+        "public": 13,
+        "schemas": 2
+      },
+      "files": [
+        "configs/contracts/ci-run-output.schema.json",
+        "configs/contracts/contracts-coverage-output.schema.json",
+        "configs/contracts/contracts-output.schema.json",
+        "configs/contracts/dev-atlas-output.schema.json",
+        "configs/contracts/env.schema.json",
+        "configs/contracts/inventory-budgets.schema.json",
+        "configs/contracts/inventory-commands.schema.json",
+        "configs/contracts/inventory-configs.schema.json",
+        "configs/contracts/inventory-contracts.schema.json",
+        "configs/contracts/inventory-make.schema.json",
+        "configs/contracts/inventory-ops.schema.json",
+        "configs/contracts/inventory-owners.schema.json",
+        "configs/contracts/inventory-schemas.schema.json",
+        "configs/contracts/inventory-touched-paths.schema.json",
+        "configs/contracts/make-contracts-check-output.schema.json",
+        "configs/contracts/ops-lint-output.schema.json",
+        "configs/contracts/reporting-ci-summary-output.schema.json",
+        "configs/contracts/tooling-doctor-output.schema.json",
+        "configs/contracts/tooling-surface-output.schema.json",
+        "configs/contracts/tooling-tool-output.schema.json",
+        "configs/schema/config-compiler-report.schema.json",
+        "configs/schema/configs-index.schema.json",
+        "configs/schema/configs-ownership.schema.json",
+        "configs/schema/forbidden-adjectives-approvals.schema.json",
+        "configs/schema/hpa-safety-caps.schema.json",
+        "configs/schema/layer-live-diff-allowlist.schema.json",
+        "configs/schema/layer-relaxations.schema.json",
+        "configs/schema/meta-ownership.schema.json",
+        "configs/schema/ops-lint-relaxations.schema.json",
+        "configs/schema/policy-relaxations.schema.json",
+        "configs/schema/public-surface.schema.json",
+        "configs/schema/target-renames.schema.json",
+        "configs/schema/tool-versions.schema.json"
+      ],
+      "name": "schema",
+      "owner": "platform",
+      "schema_owner": "platform",
+      "schemas": [
+        "configs/schema/*.json",
+        "configs/contracts/*.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas contracts configs"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 3,
+        "generated": 0,
+        "internal": 1,
+        "public": 2,
+        "schemas": 0
+      },
+      "files": [
+        "configs/security/README.md",
+        "configs/security/audit-allowlist.toml",
+        "configs/security/deny.toml"
+      ],
+      "name": "security",
+      "owner": "security",
+      "schema_owner": "security",
+      "schemas": [],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "cargo deny",
+        "cargo audit"
+      ]
+    },
+    {
+      "counts": {
+        "covered": 2,
+        "generated": 0,
+        "internal": 1,
+        "public": 1,
+        "schemas": 1
+      },
+      "files": [
+        "configs/slo/README.md",
+        "configs/slo/slo.json"
+      ],
+      "name": "slo",
+      "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
+      "schemas": [
+        "configs/contracts/inventory-configs.schema.json"
+      ],
+      "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas ops report readiness"
+      ]
+    }
+  ],
+  "kind": "configs-index",
+  "max_depth": 4,
+  "max_group_depth": 2,
+  "max_groups": 15,
+  "registry_path": "configs/inventory/configs.json",
+  "root_files": [
+    "configs/README.md",
+    "configs/CONTRACT.md",
+    "configs/inventory.json"
+  ],
+  "schema_version": 1
+}

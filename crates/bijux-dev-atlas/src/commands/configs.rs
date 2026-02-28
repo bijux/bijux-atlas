@@ -3,6 +3,7 @@
 mod configs_path_drift;
 
 use crate::*;
+use bijux_dev_atlas::contracts;
 pub(crate) use configs_path_drift::configs_context;
 pub(crate) use configs_path_drift::parse_config_file;
 use configs_path_drift::{configs_files, configs_verify_payload};
@@ -557,8 +558,23 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
             }
             ConfigsCommand::List(common) => {
                 let ctx = configs_context(&common)?;
-                let mut payload = configs_inventory_payload(&ctx, &common)?;
-                payload["text"] = serde_json::json!("configs list inventory");
+                let mut payload = contracts::configs::list_payload(&ctx.repo_root)?;
+                if common.allow_write {
+                    let index_path = contracts::configs::ensure_generated_index(&ctx.repo_root)?;
+                    payload["artifacts"] = serde_json::json!({
+                        "generated_index": index_path
+                    });
+                }
+                payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
+                payload["text"] = serde_json::json!("configs list registry");
+                payload["capabilities"] = serde_json::json!({
+                    "fs_write": common.allow_write,
+                    "subprocess": common.allow_subprocess,
+                    "network": common.allow_network
+                });
+                payload["options"] = serde_json::json!({
+                    "strict": common.strict
+                });
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
