@@ -149,17 +149,92 @@ fn test_ops_meta_001_contract_source_path_mapping(ctx: &RunContext) -> TestResul
     }
 }
 
+fn test_ops_meta_002_contract_io_locality(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-META-002";
+    let test_id = "ops.meta.contract_io_locality";
+    let mut files = Vec::new();
+    walk_files(
+        &ctx.repo_root.join("crates/bijux-dev-atlas/src/contracts/ops"),
+        &mut files,
+    );
+    files.sort();
+
+    let join_pattern = match Regex::new(
+        r#"(?:ctx\.repo_root|repo_root)\.join\(\s*"([^"]+)"\s*\)"#,
+    ) {
+        Ok(value) => value,
+        Err(err) => {
+            return TestResult::Fail(vec![violation(
+                contract_id,
+                test_id,
+                &format!("failed to build locality matcher: {err}"),
+                Some("crates/bijux-dev-atlas/src/contracts/ops".to_string()),
+            )]);
+        }
+    };
+    let mut violations = Vec::new();
+
+    for path in files {
+        if path.extension().and_then(|value| value.to_str()) != Some("rs") {
+            continue;
+        }
+        let rel = rel_to_root(&path, &ctx.repo_root);
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+        for captures in join_pattern.captures_iter(&content) {
+            let Some(target) = captures.get(1).map(|value| value.as_str()) else {
+                continue;
+            };
+            let allowlisted = target.starts_with("ops/")
+                || target == "ops"
+                || target.starts_with("docs/operations/")
+                || target == "docs/operations"
+                || target.starts_with("artifacts/contracts/ops/")
+                || target.starts_with("crates/bijux-dev-atlas/src/contracts/ops/")
+                || target == "crates/bijux-dev-atlas/src/contracts/ops"
+                || target == ".gitignore";
+            if allowlisted {
+                continue;
+            }
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "ops contracts must not read/write outside allowlisted ops-local surfaces",
+                Some(format!("{rel} -> {target}")),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn meta_contracts() -> Vec<Contract> {
-    vec![Contract {
-        id: ContractId("OPS-META-001".to_string()),
-        title: "ops contracts map each contract id to a source file path",
-        tests: vec![TestCase {
-            id: TestId("ops.meta.contract_source_path_mapping".to_string()),
-            title: "every ops contract id maps to an existing source file path under ops contracts",
-            kind: TestKind::Pure,
-            run: test_ops_meta_001_contract_source_path_mapping,
-        }],
-    }]
+    vec![
+        Contract {
+            id: ContractId("OPS-META-001".to_string()),
+            title: "ops contracts map each contract id to a source file path",
+            tests: vec![TestCase {
+                id: TestId("ops.meta.contract_source_path_mapping".to_string()),
+                title: "every ops contract id maps to an existing source file path under ops contracts",
+                kind: TestKind::Pure,
+                run: test_ops_meta_001_contract_source_path_mapping,
+            }],
+        },
+        Contract {
+            id: ContractId("OPS-META-002".to_string()),
+            title: "ops contracts enforce io locality to ops surfaces",
+            tests: vec![TestCase {
+                id: TestId("ops.meta.contract_io_locality".to_string()),
+                title: "ops contracts read and write only ops-local paths or explicit allowlisted sources",
+                kind: TestKind::Pure,
+                run: test_ops_meta_002_contract_io_locality,
+            }],
+        },
+    ]
 }
 
 fn budget_pillar_label(classified_pillar: &str) -> &str {

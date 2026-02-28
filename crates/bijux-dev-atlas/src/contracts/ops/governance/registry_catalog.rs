@@ -10,6 +10,7 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 pub fn contract_explain(contract_id: &str) -> &'static str {
     match contract_id {
         "OPS-META-001" => "Ensures every ops contract id has an explicit mapping to a source file under ops contracts.",
+        "OPS-META-002" => "Ensures ops contracts only read/write ops-local paths unless explicitly allowlisted.",
         "OPS-ROOT-017" => "Defines the only allowed root ops filesystem surface and markdown envelope.",
         "OPS-ROOT-018" => "Governs generated artifact lifecycle boundaries under _generated and _generated.example.",
         "OPS-ROOT-019" => "Requires per-domain README/CONTRACT and forbids legacy duplicate docs.",
