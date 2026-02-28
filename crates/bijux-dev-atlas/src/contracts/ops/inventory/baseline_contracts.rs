@@ -103,6 +103,16 @@ fn inventory_contracts() -> Vec<Contract> {
             }],
         },
         Contract {
+            id: ContractId("OPS-INV-011".to_string()),
+            title: "inventory contracts listing pillar coverage contract",
+            tests: vec![TestCase {
+                id: TestId("ops.inventory.contracts_listing_matches_pillars".to_string()),
+                title: "contracts.json lists CONTRACT.md entries for every declared pillar required_dir",
+                kind: TestKind::Pure,
+                run: test_ops_inv_011_contracts_listing_matches_pillars,
+            }],
+        },
+        Contract {
             id: ContractId("OPS-INV-MAP-001".to_string()),
             title: "inventory contract gate map coverage contract",
             tests: vec![TestCase {

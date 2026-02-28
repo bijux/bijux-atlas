@@ -54,6 +54,7 @@ pub fn contract_explain(contract_id: &str) -> &'static str {
         "OPS-INV-008" => "Ensures drills registry ids map to runnable observability drill definitions.",
         "OPS-INV-009" => "Ensures owners registry covers each canonical ops domain directory.",
         "OPS-INV-010" => "Ensures required inventory schema files exist under ops/schema/inventory.",
+        "OPS-INV-011" => "Ensures contracts.json lists a CONTRACT.md entry for every pillar required_dir declared in pillars.json.",
         "OPS-INV-MAP-001" => "Ensures every contract id is present in contract-gate-map mappings.",
         "OPS-INV-MAP-002" => "Ensures mapped gate ids resolve to declared entries in gates registry.",
         "OPS-INV-MAP-003" => "Ensures mapped commands exist in the ops command surface router snapshot.",

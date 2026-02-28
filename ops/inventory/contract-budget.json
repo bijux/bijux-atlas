@@ -11,8 +11,8 @@
     },
     {
       "pillar": "inventory",
-      "target": 26,
-      "max": 26,
+      "target": 27,
+      "max": 27,
       "required_classes": [
         "safety"
       ]

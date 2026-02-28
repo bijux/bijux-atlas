@@ -57,6 +57,7 @@
 | `OPS-INV-008` | inventory drills registry contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-009` | inventory owners registry contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-010` | inventory schema coverage contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
+| `OPS-INV-011` | inventory contracts listing pillar coverage contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-DEBT-001` | inventory contract debt registry contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-MAP-001` | inventory contract gate map coverage contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
 | `OPS-INV-MAP-002` | inventory contract gate map gate reference contract | `high` | `static` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |
@@ -227,6 +228,7 @@
 | `OPS-INV-008` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-009` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-010` | `bijux dev atlas contracts ops --mode static` |
+| `OPS-INV-011` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-DEBT-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-MAP-001` | `bijux dev atlas contracts ops --mode static` |
 | `OPS-INV-MAP-002` | `bijux dev atlas contracts ops --mode static` |

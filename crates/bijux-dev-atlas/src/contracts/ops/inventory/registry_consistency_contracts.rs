@@ -530,3 +530,55 @@ fn test_ops_inv_010_inventory_schema_coverage(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_ops_inv_011_contracts_listing_matches_pillars(ctx: &RunContext) -> TestResult {
+    let contract_id = "OPS-INV-011";
+    let test_id = "ops.inventory.contracts_listing_matches_pillars";
+    let pillars_doc = match read_pillars_doc(&ctx.repo_root) {
+        Ok(value) => value,
+        Err(err) => return TestResult::Error(err),
+    };
+    let contracts_path = ctx.repo_root.join("ops/inventory/contracts.json");
+    let Some(contracts_doc) = read_json(&contracts_path) else {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contracts.json must exist and be valid json",
+            Some("ops/inventory/contracts.json".to_string()),
+        )]);
+    };
+    let listed_paths: BTreeSet<String> = contracts_doc
+        .get("contracts")
+        .and_then(|value| value.as_array())
+        .map(|rows| {
+            rows.iter()
+                .filter_map(|row| row.get("path").and_then(|value| value.as_str()))
+                .map(ToOwned::to_owned)
+                .collect()
+        })
+        .unwrap_or_default();
+    if listed_paths.is_empty() {
+        return TestResult::Fail(vec![violation(
+            contract_id,
+            test_id,
+            "contracts.json must contain a non-empty contracts array with path entries",
+            Some("ops/inventory/contracts.json".to_string()),
+        )]);
+    }
+    let mut violations = Vec::new();
+    for pillar in pillars_doc.pillars {
+        let expected = format!("ops/{}/CONTRACT.md", pillar.id);
+        if !listed_paths.contains(&expected) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                "contracts.json is missing pillar contract document entry derived from pillars.json",
+                Some(expected),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}

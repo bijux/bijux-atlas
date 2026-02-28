@@ -20,6 +20,14 @@
       "version": 1
     },
     {
+      "path": "ops/env/CONTRACT.md",
+      "version": 1
+    },
+    {
+      "path": "ops/inventory/CONTRACT.md",
+      "version": 1
+    },
+    {
       "path": "ops/inventory/contract-gate-map.json",
       "version": 1
     },
@@ -84,6 +92,10 @@
       "version": 1
     },
     {
+      "path": "ops/schema/CONTRACT.md",
+      "version": 1
+    },
+    {
       "path": "ops/stack/CONTRACT.md",
       "version": 1
     },
@@ -137,6 +149,7 @@
     "OPS-INV-008",
     "OPS-INV-009",
     "OPS-INV-010",
+    "OPS-INV-011",
     "OPS-INV-DEBT-001",
     "OPS-INV-MAP-001",
     "OPS-INV-MAP-002",
