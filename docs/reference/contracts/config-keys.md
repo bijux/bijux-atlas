@@ -144,7 +144,7 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ## Examples
 
 ```bash
-$ make ssot-check
+$ make contracts
 ```
 
 Expected output: "config key contract check passed".
@@ -152,8 +152,8 @@ Expected output: "config key contract check passed".
 ## How to verify
 
 ```bash
-$ make ssot-check
-$ make docs-freeze
+$ make contracts
+$ make contracts-docs
 ```
 
 Expected output: both commands exit status 0 and print contract generation/check success.

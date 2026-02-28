@@ -41,7 +41,7 @@ Invalid contract input is rejected with stable machine-readable errors.
 ## Examples
 
 ```bash
-$ make ssot-check
+$ make contracts
 ```
 
 Expected output: a zero exit code and "contract artifacts generated" for successful checks.

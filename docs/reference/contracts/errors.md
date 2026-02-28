@@ -422,8 +422,8 @@ Invalid or drifted registry content is rejected by contract checks and CI gates.
 ## How to verify
 
 ```bash
-$ make ssot-check
-$ make docs-freeze
+$ make contracts
+$ make contracts-docs
 ```
 
 Expected output: both commands exit status 0 and print contract generation/check success.

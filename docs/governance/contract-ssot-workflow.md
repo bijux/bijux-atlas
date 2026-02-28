@@ -37,7 +37,7 @@ Does not define product release choreography outside contract updates.
 ```bash
 $ bijux dev atlas contracts check --checks drift
 $ bijux dev atlas contracts generate --generators artifacts
-$ make ssot-check
+$ make contracts
 ```
 
 Expected output: all checks pass with no drift.
@@ -45,7 +45,7 @@ Expected output: all checks pass with no drift.
 ## How to verify
 
 ```bash
-$ make ssot-check
+$ make contracts
 ```
 
 Expected output: contract pipeline exits 0.

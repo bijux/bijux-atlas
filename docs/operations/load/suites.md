@@ -67,9 +67,9 @@ Scenario drift causes incomplete load coverage.
 ## How to verify
 
 ```bash
-$ make ops-load-smoke
-$ make ops-load-full
-$ make ops-load-ci
+$ make ops-fast
+$ make ops-nightly
+$ make ops-pr
 $ bijux dev atlas ops load --report text run --suite mixed-80-20
 $ bijux dev atlas report ci-summary --latest
 ```

@@ -37,7 +37,7 @@ Chart drift can break runtime semantics while unit tests remain green.
 ## How to verify
 
 ```bash
-$ make k8s-smoke
+$ make k8s-validate
 $ make ops-k8s-tests
 ```
 

@@ -20,7 +20,7 @@ Reason to exist: define stable compatibility guarantees for public Atlas surface
 ## Verification
 
 - `bijux dev atlas contracts check --checks breakage`
-- `make openapi-drift`
+- `make contracts-docs`
 
 ## Reproducibility And Stability Guarantees
 

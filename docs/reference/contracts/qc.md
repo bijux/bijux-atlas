@@ -36,5 +36,5 @@ Invalid/missing fields fail `atlas ingest-validate` and publish gates.
 ## How to verify
 
 ```bash
-make ops-dataset-qc
+make ops-contracts
 ```

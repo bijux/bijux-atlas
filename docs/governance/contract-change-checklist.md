@@ -22,11 +22,11 @@ Does not supersede required reviewer approval policy.
 
 - [ ] `bijux dev atlas check run --suite ci_fast` passes.
 - [ ] `bijux dev atlas docs build` run and committed.
-- [ ] `make ssot-check` passes.
+- [ ] `make contracts` passes.
 - [ ] `check_breaking_contract_change.py` output reviewed.
 - [ ] Any new relaxation is explicitly registered in `configs/policy/policy-relaxations.json` with owner/justification/expiry and `ATLAS-EXC-*` reference tag in code.
 - [ ] Any allowlist relaxation is scoped to `dataset_identity` + `artifact_hash` (no repo-wide or name-only allowlists).
-- [ ] `make docs-freeze` passes.
+- [ ] `make contracts-docs` passes.
 - [ ] `make docs` passes.
 
 ## Failure modes
@@ -36,7 +36,7 @@ Unchecked boxes mean the change is incomplete and must not merge.
 ## Examples
 
 ```bash
-$ make ssot-check
+$ make contracts
 $ make docs docs-freeze
 ```
 

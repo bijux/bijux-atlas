@@ -31,7 +31,7 @@ Contract schema is `docs/reference/contracts/schemas/GC_POLICY.json`.
 Use make entrypoints for ops smoke:
 
 ```bash
-make ops-gc-smoke
+make ops-fast
 ```
 
 Manual planning/apply:

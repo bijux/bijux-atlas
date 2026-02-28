@@ -38,7 +38,7 @@ Scenario score above thresholds fails nightly gates.
 
 ```bash
 $ rg -n "p95_ms_max|p99_ms_max|error_rate_max|cold_start_p99_ms_max" configs/slo/slo.json
-$ make e2e-perf
+$ make ops-nightly
 ```
 
 Expected output: SLO file is parsed and perf scoring passes.

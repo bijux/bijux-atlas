@@ -32,8 +32,8 @@ Does not document runtime implementation internals outside contract surfaces.
 ## Examples
 
 ```bash
-$ make ssot-check
-$ make docs-freeze
+$ make contracts
+$ make contracts-docs
 ```
 
 Expected output: both commands exit 0 with no contract drift.
@@ -41,7 +41,7 @@ Expected output: both commands exit 0 with no contract drift.
 ## How To Verify
 
 ```bash
-$ make ssot-check
+$ make contracts
 $ make docs
 ```
 

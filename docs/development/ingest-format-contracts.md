@@ -23,5 +23,5 @@ Reason to exist: document ingest-specific format acceptance rules that are imple
 Run ingest contract checks through:
 
 ```bash
-make ssot-check
+make contracts
 ```

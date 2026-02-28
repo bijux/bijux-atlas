@@ -8,7 +8,7 @@ Reason to exist: define required checks before merging changes.
 ## Required Checks
 
 ```bash
-make check-gates
+make check
 make docs
 make test
 ```

@@ -35,7 +35,7 @@ Unpinned fixtures introduce nondeterministic failures.
 ## How to verify
 
 ```bash
-$ make fetch-real-datasets
+$ make ops-fast
 ```
 
 Expected output: fixture downloads pass checksum validation.

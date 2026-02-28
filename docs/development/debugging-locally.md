@@ -9,7 +9,7 @@ Reason to exist: provide local debugging entrypoints for fast issue isolation.
 
 ```bash
 make test
-make ops-local-full
+make stack-up
 ```
 
 ## Check Failure Triage

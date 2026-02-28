@@ -22,9 +22,9 @@ Reason to exist: provide one canonical local workflow from prerequisites through
 ## Verification
 
 ```bash
-make ops-prereqs
+make doctor
 make ops-doctor
-make ops-local-full
+make stack-up
 ```
 
 ## Cleanup

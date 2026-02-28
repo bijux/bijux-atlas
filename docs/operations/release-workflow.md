@@ -8,13 +8,13 @@ Reason to exist: define canonical release update and rollback operations.
 ## Update
 
 ```bash
-make ops-release-update DATASET=medium
+make ops-pr
 ```
 
 ## Rollback
 
 ```bash
-make ops-release-rollback DATASET=medium
+make stack-down
 ```
 
 Artifacts remain immutable; rollback only changes catalog pointers.

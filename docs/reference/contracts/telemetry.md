@@ -19,6 +19,6 @@ Reason to exist: provide one canonical contract for metrics and trace spans.
 ## Validation
 
 ```bash
-make ssot-check
-make docs-freeze
+make contracts
+make contracts-docs
 ```

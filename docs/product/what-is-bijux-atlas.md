@@ -37,7 +37,7 @@ Institutes need deterministic, versioned query behavior over immutable datasets 
 ## How to verify
 
 ```bash
-$ make ssot-check
+$ make contracts
 $ make test
 ```
 
