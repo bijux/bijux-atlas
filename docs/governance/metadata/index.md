@@ -1,4 +1,11 @@
-# metadata
+# Metadata
 
-Section entrypoint for 
-each document in this directory.
+Owner: `docs-governance`  
+Type: `reference`  
+Audience: `contributor`  
+Reason to exist: store governance metadata consumed by documentation validation tooling.
+
+## Core Metadata Files
+
+- `registry.json`
+- `concepts.yml`
