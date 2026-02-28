@@ -1,55 +1,23 @@
-# Queries That Matter
+# User Stories
 
-- Owner: `bijux-atlas-product`
+Owner: `product`  
+Type: `concept`  
+Reason to exist: map real user goals to stable Atlas query capabilities.
 
-## What
+## Core Stories
 
-Concrete institute questions mapped to API calls.
+1. As a researcher, I can find genes in an explicit dataset identity.
+2. As a curator, I can inspect transcript details for a target gene.
+3. As an operator, I can compare release-to-release gene differences.
 
-## Why
+## Example Queries
 
-Product value is measured by answerable, reproducible queries.
+- `GET /v1/genes?release=112&species=homo_sapiens&assembly=GRCh38&name_prefix=BRCA&limit=5`
+- `GET /v1/genes/ENSG00000139618/transcripts?release=112&species=homo_sapiens&assembly=GRCh38&limit=10`
+- `GET /v1/diff/genes?from_release=111&to_release=112&species=homo_sapiens&assembly=GRCh38&limit=20`
 
-## Scope
+## Related Pages
 
-Examples use versioned `/v1` endpoints and explicit dataset dimensions.
-
-## Non-goals
-
-No synthetic toy flows without endpoint examples.
-
-## Contracts
-
-- Every query includes dataset identity or explicit alias endpoint.
-- Pagination uses stable cursors.
-- Errors return stable machine codes.
-
-## Examples
-
-```bash
-$ curl -s "http://localhost:8080/v1/genes?release=112&species=homo_sapiens&assembly=GRCh38&name_prefix=BRCA&limit=5"
-$ curl -s "http://localhost:8080/v1/genes/ENSG00000139618/transcripts?release=112&species=homo_sapiens&assembly=GRCh38&limit=10"
-$ curl -s "http://localhost:8080/v1/diff/genes?from_release=111&to_release=112&species=homo_sapiens&assembly=GRCh38&limit=20"
-```
-
-Expected output: JSON objects with deterministic ordering, `data` arrays, and pagination metadata.
-
-## Failure modes
-
-- Unknown filter fields => 400 `InvalidQueryParameter`.
-- Limit above policy => 400 `QueryRejectedByPolicy`.
-- Invalid cursor signature => 400 `InvalidCursor`.
-
-## How to verify
-
-```bash
-$ cargo run -p bijux-atlas-cli -- atlas smoke --dataset release=112,species=homo_sapiens,assembly=GRCh38
-```
-
-Expected output: smoke suite reports all canonical queries passed.
-
-## See also
-
-- [Sequence v1](sequence-v1.md)
-- [Transcripts v1](transcripts-v1.md)
-- [Diffs v1](diffs-v1.md)
+- [What Is Bijux Atlas](what-is-bijux-atlas.md)
+- [Compatibility Promise](compatibility-promise.md)
+- [API Surface](../api/v1-surface.md)
