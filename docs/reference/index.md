@@ -23,3 +23,16 @@ Centralize stable facts so guides and runbooks stay concise and non-duplicative.
 ## Next Steps
 
 Use [API](../api/index.md) for usage guidance or [Operations](../operations/index.md) for procedures.
+
+## What to Read Next
+
+- Usage guidance: [API](../api/index.md)
+- Operator procedures: [Operations](../operations/index.md)
+- Core terms: [Glossary](../glossary.md)
+
+## Document Taxonomy
+
+- Audience: `user`
+- Type: `reference`
+- Stability: `stable`
+- Owner: `docs-governance`

@@ -18,7 +18,21 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [CI Overview](ci-overview.md)
 - [Contributing](contributing.md)
 - [Toolchain](toolchain.md)
+- [Doc Conventions](doc-conventions.md)
 
 ## Next Steps
 
 Use [Governance Readers Guide](../governance/readers-guide.md) for docs policy and [Architecture](../architecture/index.md) for runtime boundaries.
+
+## What to Read Next
+
+- Governance policy: [Governance Readers Guide](../governance/readers-guide.md)
+- Runtime boundaries: [Architecture](../architecture/index.md)
+- Core terms: [Glossary](../glossary.md)
+
+## Document Taxonomy
+
+- Audience: `contributor`
+- Type: `guide`
+- Stability: `stable`
+- Owner: `platform`

@@ -34,3 +34,16 @@ You executed the canonical onboarding flow and confirmed a runnable environment.
 - Operator path: [Operations](operations/index.md)
 - Contributor path: [Development](development/index.md)
 - API client path: [API](api/index.md)
+
+## What to Read Next
+
+- Product overview: [Product](product/index.md)
+- Runtime model: [Architecture Dataflow](architecture/dataflow.md)
+- Core terms: [Glossary](glossary.md)
+
+## Document Taxonomy
+
+- Audience: `user`
+- Type: `guide`
+- Stability: `stable`
+- Owner: `docs-governance`

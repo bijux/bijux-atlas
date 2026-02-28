@@ -21,3 +21,16 @@ Provide the canonical product narrative and compatibility commitments.
 ## Next Steps
 
 Continue with [Operations](../operations/index.md) for runtime workflows or [API](../api/index.md) for client behavior.
+
+## What to Read Next
+
+- API behavior: [API](../api/index.md)
+- Runtime operations: [Operations](../operations/index.md)
+- Core terms: [Glossary](../glossary.md)
+
+## Document Taxonomy
+
+- Audience: `user`
+- Type: `concept`
+- Stability: `stable`
+- Owner: `product`

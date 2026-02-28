@@ -22,3 +22,16 @@ Explain how clients call Atlas APIs, handle responses, and reason about compatib
 ## Next Steps
 
 Use [Reference](../reference/index.md) for schema-level facts and [Operations](../operations/index.md) for service-side troubleshooting.
+
+## What to Read Next
+
+- Endpoint facts: [Reference](../reference/index.md)
+- Service troubleshooting: [Operations](../operations/index.md)
+- Core terms: [Glossary](../glossary.md)
+
+## Document Taxonomy
+
+- Audience: `user`
+- Type: `guide`
+- Stability: `stable`
+- Owner: `api-contracts`
