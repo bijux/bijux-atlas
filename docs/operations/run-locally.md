@@ -34,6 +34,12 @@ Expected outputs:
 - smoke checks return exit code `0`
 - observability checks confirm baseline metrics and logs
 
+## How to interpret success
+
+- Health and smoke checks passing means runtime dependencies are wired correctly.
+- Observability checks passing means metrics/log pipelines are reachable.
+- A clean `0` exit code across checks means local operator workflow is ready for deploy-path progression.
+
 ## Stop
 
 ```bash
@@ -45,6 +51,12 @@ make stack-down
 ```bash
 make ops-clean
 ```
+
+## Where artifacts and logs live
+
+- Control-plane artifacts: `artifacts/`
+- Runtime logs: container runtime logs for stack services
+- Generated docs diagnostics: `docs/_generated/` (contributor-only)
 
 ## Common failures and fixes
 
@@ -59,3 +71,5 @@ make ops-clean
 - kind deployment: [Deploy to kind (10 minutes)](deploy-kind.md)
 - production deployment: [Deploy to Kubernetes (prod minimal)](deploy-kubernetes-minimal.md)
 - incident process: [Incident response](incident-response.md)
+- architecture context: [Architecture](../architecture/index.md)
+- contributor workflows: [Development](../development/index.md)

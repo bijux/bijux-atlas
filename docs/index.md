@@ -23,7 +23,8 @@ Atlas documentation is organized by audience, with one onboarding entrypoint.
 ## Top pages
 
 - [Run locally](operations/run-locally.md)
-- [Deploy](operations/deploy.md)
+- [Deploy to kind](operations/deploy-kind.md)
+- [Deploy to Kubernetes (prod minimal)](operations/deploy-kubernetes-minimal.md)
 - [Incident response](operations/incident-response.md)
 - [Quick reference](api/quick-reference.md)
 - [Commands](reference/commands.md)

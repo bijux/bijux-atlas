@@ -29,6 +29,12 @@ Apply minimal production overrides:
 - storage class and persistence size
 - telemetry endpoints
 
+## What gets installed
+
+- Atlas runtime workloads for production baseline
+- persistent storage bindings required by serving components
+- service, ingress, and telemetry wiring for operational visibility
+
 ## Verify success
 
 ```bash
@@ -42,6 +48,12 @@ Expected outputs:
 - probes healthy
 - metrics and logs visible
 
+## How to interpret success
+
+- Ready pods and healthy probes indicate deploy-time config is valid.
+- Visible telemetry confirms observability endpoints and collectors are correctly configured.
+- A passing verification run indicates rollout can proceed to release workflow controls.
+
 ## Reset and cleanup
 
 ```bash
@@ -49,6 +61,12 @@ make stack-down
 ```
 
 Use rollback workflow for failed production changes.
+
+## Where artifacts and logs live
+
+- Control-plane artifacts: `artifacts/`
+- Cluster diagnostics: `kubectl` events, logs, and rollout status
+- Release evidence: operator reports linked from release workflow and runbooks
 
 ## Common failures and fixes
 
@@ -62,3 +80,5 @@ Use rollback workflow for failed production changes.
 
 - Release controls: [Release workflow](release-workflow.md)
 - Rollback controls: [Rollback procedure](release/rollback-procedure.md)
+- architecture context: [Architecture](../architecture/index.md)
+- contributor workflows: [Development](../development/index.md)

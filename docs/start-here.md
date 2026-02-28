@@ -21,15 +21,15 @@ bijux dev atlas demo quickstart --format json
 
 ## Run locally
 
-- [ ] Check prerequisites in [Run locally](operations/run-locally.md)
+- [ ] Follow [Run locally (5 minutes)](operations/run-locally.md)
 - [ ] Start stack and run smoke checks
 - [ ] Verify success and read outputs
 
 ## Deploy
 
-- [ ] Read [Deploy](operations/deploy.md)
-- [ ] Apply deployment and readiness checks
-- [ ] Verify observability and rollback path
+- [ ] Run [Deploy to kind (10 minutes)](operations/deploy-kind.md)
+- [ ] Run [Deploy to Kubernetes (prod minimal)](operations/deploy-kubernetes-minimal.md)
+- [ ] Verify observability and rollback controls
 
 ## Extend
 
@@ -43,4 +43,6 @@ bijux dev atlas demo quickstart --format json
 - Runtime model: [Architecture dataflow](architecture/dataflow.md)
 - Operator workflows: [Operations](operations/index.md)
 - Contributor workflows: [Development](development/index.md)
+- Guided tracks: [Reading tracks](product/reading-tracks.md)
+- Onboarding checklist: [Contributor onboarding checklist (30 minutes)](development/contributor-onboarding-checklist.md)
 - Terms: [Glossary](glossary.md)

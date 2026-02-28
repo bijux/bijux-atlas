@@ -38,6 +38,7 @@ All required checks pass and documentation reflects behavior truthfully.
 - [Control Plane](control-plane.md)
 - [Doc Conventions](doc-conventions.md)
 - [How to Change Docs](how-to-change-docs.md)
+- [Contributor onboarding checklist (30 minutes)](contributor-onboarding-checklist.md)
 
 ## Document Taxonomy
 

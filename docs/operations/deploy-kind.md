@@ -21,6 +21,12 @@ make kind-up
 make ops-deploy
 ```
 
+## What gets installed
+
+- Atlas runtime workloads
+- service and networking resources required for local cluster access
+- readiness and observability wiring used by operator checks
+
 ## Verify success
 
 ```bash
@@ -33,6 +39,18 @@ Expected outputs:
 - all workload pods report `Running`
 - readiness checks pass
 - smoke checks return exit code `0`
+
+## How to interpret success
+
+- Running pods plus readiness checks indicate chart values and runtime config are compatible.
+- Passing smoke checks indicate API and query paths are reachable in-cluster.
+- A successful run means the cluster is valid for release rehearsal or regression testing.
+
+## Where artifacts and logs live
+
+- Control-plane artifacts: `artifacts/`
+- Kubernetes events/logs: `kubectl` logs and describe output for deployed namespace
+- Generated diagnostics: `docs/_generated/` for contributor-only quality traces
 
 ## Reset and cleanup
 
@@ -54,3 +72,5 @@ make ops-clean
 
 - Production-like deployment: [Deploy to Kubernetes (prod minimal)](deploy-kubernetes-minimal.md)
 - Incident handling: [Incident response](incident-response.md)
+- architecture context: [Architecture](../architecture/index.md)
+- contributor workflows: [Development](../development/index.md)
