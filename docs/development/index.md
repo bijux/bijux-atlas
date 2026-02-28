@@ -22,8 +22,15 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Debugging Locally](debugging-locally.md)
 - [How to Add Check](how-to-add-check.md)
 - [How to Add Contract Registry](how-to-add-contract-registry.md)
-- [How to Add Gate Policy](how-to-add-gate-policy.md)
 - [Docs governance](../governance/index.md)
+- [Docs change process](../_meta/docs-change-process.md)
+- [Docs taxonomy quick reference](../_meta/docs-taxonomy-quick-reference.md)
+
+## Where to ask questions
+
+- Documentation policy and structure: use your team docs governance channel and tag `docs-governance`.
+- Control-plane and CI behavior: use your platform engineering channel and include command output.
+- Runtime/operator questions: open an issue and label it `ops-docs`.
 
 ## Next steps
 

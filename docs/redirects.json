@@ -54,6 +54,12 @@
   "docs/dev/check-failures.md": "docs/development/debugging-locally.md",
   "docs/engineering/index.md": "docs/governance/docs-lint-rules.md",
   "docs/engineering/lints.md": "docs/governance/docs-lint-rules.md",
+  "docs/governance/docs-rewrite-plan.md": "docs/_meta/internal/docs-rewrite-plan.md",
+  "docs/governance/root-legacy-mapping.md": "docs/_meta/internal/root-legacy-mapping.md",
+  "docs/metadata/audiences.json": "docs/governance/metadata/audiences.json",
+  "docs/metadata/concepts.yml": "docs/governance/metadata/concepts.yml",
   "docs/metadata/front-matter.index.json": "docs/governance/metadata/front-matter.index.json",
-  "docs/metadata/reference-canonicals.json": "docs/governance/metadata/reference-canonicals.json"
+  "docs/metadata/growth-budget.json": "docs/governance/metadata/growth-budget.json",
+  "docs/metadata/reference-canonicals.json": "docs/governance/metadata/reference-canonicals.json",
+  "docs/metadata/registry.json": "docs/governance/metadata/registry.json"
 }

@@ -6,6 +6,8 @@
 - Stability: `stable`
 - Reason to exist: provide one contributor entrypoint to generated documentation audits and quality signals.
 
+> Contributor-only: enforcement machinery.
+
 ## Generated Audit Surfaces
 
 - [Governance Audit Index](../_generated/governance-audit/index.md)
@@ -20,8 +22,8 @@
 - Do not copy generated artifacts into reader pages.
 - Open generated files from this page only for contributor troubleshooting.
 
-## Next
+## Next steps
 
 - [Governance Readers Guide](readers-guide.md)
-- [Generated Content Policy](generated-content-policy.md)
+- [Generated artifacts](../_meta/generated-artifacts.md)
 - [Docs Search Tips](docs-search-tips.md)

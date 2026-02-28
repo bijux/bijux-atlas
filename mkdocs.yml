@@ -60,6 +60,8 @@ nav:
   - Architecture: architecture/index.md
   - API: api/index.md
   - Operations: operations/index.md
-  - Development: development/index.md
+  - Development:
+      - Overview: development/index.md
+      - Docs governance: governance/index.md
+      - Docs Dashboard: governance/docs-dashboard.md
   - Reference: reference/index.md
-  - Governance: governance/index.md

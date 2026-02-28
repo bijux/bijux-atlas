@@ -6,6 +6,8 @@
 - Stability: `stable`
 - Reason to exist: explain how the reader-facing docs system is organized and maintained.
 
+> Contributor-only: enforcement machinery.
+
 ## How Atlas Docs Are Organized
 
 - Reader-facing sections: `product`, `architecture`, `api`, `operations`, `development`, `reference`

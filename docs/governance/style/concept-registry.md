@@ -43,4 +43,4 @@ Expected output: concept registry checks and docs build pass.
 
 - [Concept IDs](concept-ids.md)
 - [Structure Templates](structure-templates.md)
-- [Generated Concept Registry](../../_generated/concept-registry.json)
+- Generated concept registry is available from [Docs Dashboard](../docs-dashboard.md).

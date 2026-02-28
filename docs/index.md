@@ -6,7 +6,7 @@ Atlas documentation is organized by audience, with one onboarding entrypoint.
 
 - API user: [Start here](start-here.md) -> [API](api/index.md) -> [Reference](reference/index.md)
 - Operator: [Start here](start-here.md) -> [Operations](operations/index.md) -> [Reference](reference/index.md)
-- Contributor: [Start here](start-here.md) -> [Development](development/index.md) -> [Docs governance](governance/index.md)
+- Contributor: [Start here](start-here.md) -> [Development](development/index.md) -> [Control plane](development/control-plane.md)
 
 ## Docs Spine
 
