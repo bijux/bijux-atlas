@@ -6,6 +6,7 @@
   "root_files": [
     "configs/README.md",
     "configs/CONTRACT.md",
+    "configs/CONSUMERS.json",
     "configs/OWNERS.json",
     "configs/inventory.json"
   ],
@@ -49,6 +50,7 @@
       "internal_files": [],
       "generated_files": [],
       "schemas": [
+        "configs/schema/configs-consumer-map.schema.json",
         "configs/schema/configs-owner-map.schema.json",
         "configs/contracts/inventory-configs.schema.json"
       ]

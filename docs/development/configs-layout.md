@@ -13,6 +13,7 @@
 ## Contracts
 - Every top-level `configs/<area>/` must contain `README.md`.
 - Ownership map: `configs/OWNERS.json`.
+- Consumer map: `configs/CONSUMERS.json`.
 - Schemas live under `configs/schema/`.
 - Generated surfaces:
   - `docs/_generated/configs-surface.md`

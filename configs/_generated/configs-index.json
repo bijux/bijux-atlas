@@ -42,7 +42,7 @@
         "generated": 0,
         "internal": 0,
         "public": 10,
-        "schemas": 2
+        "schemas": 3
       },
       "files": [
         "configs/docs/.markdownlint-cli2.jsonc",
@@ -60,6 +60,7 @@
       "owner": "docs-governance",
       "schema_owner": "docs-governance",
       "schemas": [
+        "configs/schema/configs-consumer-map.schema.json",
         "configs/schema/configs-owner-map.schema.json",
         "configs/contracts/inventory-configs.schema.json"
       ],
@@ -414,10 +415,10 @@
     },
     {
       "counts": {
-        "covered": 35,
+        "covered": 36,
         "generated": 0,
         "internal": 21,
-        "public": 14,
+        "public": 15,
         "schemas": 2
       },
       "files": [
@@ -443,6 +444,7 @@
         "configs/contracts/tooling-surface-output.schema.json",
         "configs/contracts/tooling-tool-output.schema.json",
         "configs/schema/config-compiler-report.schema.json",
+        "configs/schema/configs-consumer-map.schema.json",
         "configs/schema/configs-index.schema.json",
         "configs/schema/configs-owner-map.schema.json",
         "configs/schema/configs-ownership.schema.json",
@@ -525,6 +527,7 @@
   "root_files": [
     "configs/README.md",
     "configs/CONTRACT.md",
+    "configs/CONSUMERS.json",
     "configs/OWNERS.json",
     "configs/inventory.json"
   ],

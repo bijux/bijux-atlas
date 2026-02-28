@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "ci": [
+      "ci"
+    ],
+    "docs": [
+      "docs-build",
+      "ci"
+    ],
+    "inventory": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "layout": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "make": [
+      "make",
+      "bijux-dev-atlas"
+    ],
+    "meta": [
+      "bijux-dev-atlas"
+    ],
+    "nextest": [
+      "ci"
+    ],
+    "openapi": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "ops": [
+      "bijux-dev-atlas",
+      "runtime",
+      "ci"
+    ],
+    "perf": [
+      "bijux-dev-atlas",
+      "runtime"
+    ],
+    "policy": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "rust": [
+      "ci",
+      "bijux-dev-atlas"
+    ],
+    "schema": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
+    "security": [
+      "ci"
+    ],
+    "slo": [
+      "bijux-dev-atlas",
+      "runtime"
+    ]
+  }
+}
