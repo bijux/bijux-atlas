@@ -1,5 +1,10 @@
 use std::path::PathBuf;
 
+const ROOT_FORBIDDEN_BINARY_EXTENSIONS: [&str; 12] = [
+    "bin", "dmg", "exe", "gz", "iso", "jar", "o", "so", "tar", "tgz", "war", "zip",
+];
+const ROOT_DIRECTORY_BUDGET: usize = 8;
+
 fn test_root_001_surface_allowlist(ctx: &RunContext) -> TestResult {
     let mut allowed = ROOT_ALLOWED_VISIBLE
         .iter()
@@ -547,6 +552,173 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
                 "root.surface.manifest_complete",
                 Some(name),
                 "root-surface.json references a missing repo root entry",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_017_no_binary_artifacts(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let entries = match std::fs::read_dir(&ctx.repo_root) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-017".to_string(),
+                test_id: "root.surface.no_binary_artifacts".to_string(),
+                file: None,
+                line: None,
+                message: format!("read repo root failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            continue;
+        }
+        let name = entry.file_name().to_string_lossy().to_string();
+        let extension = match path.extension().and_then(|value| value.to_str()) {
+            Some(extension) => extension,
+            None => continue,
+        };
+        if ROOT_FORBIDDEN_BINARY_EXTENSIONS
+            .iter()
+            .any(|candidate| extension.eq_ignore_ascii_case(candidate))
+        {
+            push_root_violation(
+                &mut violations,
+                "ROOT-017",
+                "root.surface.no_binary_artifacts",
+                Some(name),
+                format!("root binary artifact extension is forbidden: .{extension}"),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_018_no_env_files(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let entries = match std::fs::read_dir(&ctx.repo_root) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-018".to_string(),
+                test_id: "root.surface.no_env_files".to_string(),
+                file: None,
+                line: None,
+                message: format!("read repo root failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().to_string();
+        if name == ".env" || (name.starts_with(".env.") && name.len() > 5) {
+            push_root_violation(
+                &mut violations,
+                "ROOT-018",
+                "root.surface.no_env_files",
+                Some(name),
+                "committed root .env files are forbidden",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_019_directory_budget(ctx: &RunContext) -> TestResult {
+    let mut visible_directories = Vec::new();
+    let entries = match std::fs::read_dir(&ctx.repo_root) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-019".to_string(),
+                test_id: "root.surface.directory_budget".to_string(),
+                file: None,
+                line: None,
+                message: format!("read repo root failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        if !entry.path().is_dir() {
+            continue;
+        }
+        let name = entry.file_name().to_string_lossy().to_string();
+        if ROOT_IGNORED_LOCAL.iter().any(|ignored| *ignored == name) {
+            continue;
+        }
+        visible_directories.push(name);
+    }
+    visible_directories.sort();
+    let mut violations = Vec::new();
+    if visible_directories.len() > ROOT_DIRECTORY_BUDGET {
+        push_root_violation(
+            &mut violations,
+            "ROOT-019",
+            "root.surface.directory_budget",
+            None,
+            format!(
+                "repo root directory budget exceeded: {} > {} ({})",
+                visible_directories.len(),
+                ROOT_DIRECTORY_BUDGET,
+                visible_directories.join(", ")
+            ),
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_020_single_segment_entries(ctx: &RunContext) -> TestResult {
+    let payload = match root_surface_manifest(ctx, "ROOT-020", "root.surface.single_segment_entries") {
+        Ok(payload) => payload,
+        Err(result) => return result,
+    };
+    let entries = match payload["entries"].as_object() {
+        Some(entries) => entries,
+        None => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-020".to_string(),
+                test_id: "root.surface.single_segment_entries".to_string(),
+                file: Some("root-surface.json".to_string()),
+                line: None,
+                message: "`entries` object is required".to_string(),
+                evidence: None,
+            }])
+        }
+    };
+    let mut violations = Vec::new();
+    for name in entries.keys() {
+        if name.contains('/') || name.contains('\\') {
+            push_root_violation(
+                &mut violations,
+                "ROOT-020",
+                "root.surface.single_segment_entries",
+                Some(name.clone()),
+                "root manifest entries must be single-segment repo root names",
             );
         }
     }

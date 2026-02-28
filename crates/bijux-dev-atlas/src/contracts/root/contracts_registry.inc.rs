@@ -176,6 +176,46 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("ROOT-017".to_string()),
+            title: "repo root forbids undeclared binary-like artifacts",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_binary_artifacts".to_string()),
+                title: "root files may not use binary artifact extensions",
+                kind: TestKind::Pure,
+                run: test_root_017_no_binary_artifacts,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-018".to_string()),
+            title: "repo root forbids committed environment files",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_env_files".to_string()),
+                title: "root .env files stay absent",
+                kind: TestKind::Pure,
+                run: test_root_018_no_env_files,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-019".to_string()),
+            title: "repo root keeps a bounded top-level directory surface",
+            tests: vec![TestCase {
+                id: TestId("root.surface.directory_budget".to_string()),
+                title: "root directory count stays within the approved budget",
+                kind: TestKind::Pure,
+                run: test_root_019_directory_budget,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-020".to_string()),
+            title: "repo root manifest keeps single-segment entry paths",
+            tests: vec![TestCase {
+                id: TestId("root.surface.single_segment_entries".to_string()),
+                title: "root surface manifest entries stay single-segment",
+                kind: TestKind::Pure,
+                run: test_root_020_single_segment_entries,
+            }],
+        },
+        Contract {
             id: ContractId("ROOT-027".to_string()),
             title: "root surface manifest declares the configs and ops ssot roots",
             tests: vec![TestCase {
