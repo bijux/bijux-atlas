@@ -5948,6 +5948,18 @@
     },
     {
       "keywords": [
+        "fixture-dataset-ingest",
+        "operations"
+      ],
+      "path": "docs/operations/fixture-dataset-ingest.md",
+      "tags": [
+        "fixture-dataset-ingest",
+        "operations"
+      ],
+      "topic": "fixture-dataset-ingest"
+    },
+    {
+      "keywords": [
         "full-stack-local",
         "operations"
       ],
@@ -6259,6 +6271,18 @@
         "when-layer-drift-fails"
       ],
       "topic": "when-layer-drift-fails"
+    },
+    {
+      "keywords": [
+        "kind-profile",
+        "operations"
+      ],
+      "path": "docs/operations/kind-profile.md",
+      "tags": [
+        "kind-profile",
+        "operations"
+      ],
+      "topic": "kind-profile"
     },
     {
       "keywords": [
@@ -6780,6 +6804,18 @@
     },
     {
       "keywords": [
+        "operations",
+        "ops-map"
+      ],
+      "path": "docs/operations/ops-map.md",
+      "tags": [
+        "operations",
+        "ops-map"
+      ],
+      "topic": "ops-map"
+    },
+    {
+      "keywords": [
         "index",
         "operations",
         "ops-system"
@@ -6970,6 +7006,18 @@
     },
     {
       "keywords": [
+        "operations",
+        "promotion-record"
+      ],
+      "path": "docs/operations/promotion-record.md",
+      "tags": [
+        "operations",
+        "promotion-record"
+      ],
+      "topic": "promotion-record"
+    },
+    {
+      "keywords": [
         "commands",
         "operations",
         "reference"
@@ -7133,6 +7181,20 @@
         "release"
       ],
       "topic": "lane-guarantees"
+    },
+    {
+      "keywords": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "path": "docs/operations/release/quality-wall.md",
+      "tags": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "topic": "quality-wall"
     },
     {
       "keywords": [

@@ -3765,6 +3765,14 @@
       "area": "operations",
       "audience": "operators",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/fixture-dataset-ingest.md",
+      "stability": "stable",
+      "title": "Fixture Dataset Ingest"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/full-stack-local.md",
       "stability": "stable",
       "title": "Full Stack Local"
@@ -3944,6 +3952,14 @@
       "path": "docs/operations/k8s/when-layer-drift-fails.md",
       "stability": "stable",
       "title": "When Layer Drift Fails"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/kind-profile.md",
+      "stability": "stable",
+      "title": "Kind Profile"
     },
     {
       "area": "operations",
@@ -4251,6 +4267,14 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/ops-map.md",
+      "stability": "stable",
+      "title": "Ops Map"
+    },
+    {
+      "area": "operations",
       "audience": "mixed",
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/ops-system/INDEX.md",
@@ -4365,6 +4389,14 @@
       "area": "operations",
       "audience": "operators",
       "owner": "bijux-atlas-operations",
+      "path": "docs/operations/promotion-record.md",
+      "stability": "stable",
+      "title": "Promotion Record"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/reference/commands.md",
       "stability": "stable",
       "title": "Command Surface Reference"
@@ -4456,6 +4488,14 @@
       "path": "docs/operations/release/lane-guarantees.md",
       "stability": "stable",
       "title": "Release Lane Guarantees"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/quality-wall.md",
+      "stability": "stable",
+      "title": "Quality Wall"
     },
     {
       "area": "operations",

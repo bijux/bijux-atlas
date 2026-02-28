@@ -474,6 +474,7 @@ License: Apache-2.0
 | `docs/operations/e2e/what-e2e-is-not.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/entrypoints.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/evidence-policy.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/fixture-dataset-ingest.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/full-stack-local.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/health-endpoint-semantics.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/how-to-run-locally.md` | `how-to` | `bijux-atlas-operations` | `stable` |
@@ -497,6 +498,7 @@ License: Apache-2.0
 | `docs/operations/k8s/values.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/k8s/warm-on-rollout.md` | `concept` | `bijux-atlas-operations` | `evolving` |
 | `docs/operations/k8s/when-layer-drift-fails.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/kind-profile.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/kubernetes.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/load/INDEX.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/load/baseline-update-policy.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -535,6 +537,7 @@ License: Apache-2.0
 | `docs/operations/ops-acceptance-checklist.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/ops-docs-contract.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/ops-layout.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/ops-map.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/ops-system/INDEX.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/ops-system/contracts.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/ops-system/evidence.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -549,6 +552,7 @@ License: Apache-2.0
 | `docs/operations/platform-handover.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/policy-violation-triage.md` | `concept` | `bijux-atlas-operations` | `evolving` |
 | `docs/operations/production-readiness-checklist.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/promotion-record.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/reference/commands.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/reference/drills.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/reference/evidence-model.md` | `reference` | `bijux-atlas-operations` | `stable` |
@@ -561,6 +565,7 @@ License: Apache-2.0
 | `docs/operations/reference/what-breaks-if-removed.md` | `reference` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release-workflows.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/release/lane-guarantees.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/release/quality-wall.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/retention-and-gc.md` | `concept` | `bijux-atlas-operations` | `evolving` |
 | `docs/operations/runbook-template.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/runbooks/INDEX.md` | `runbook` | `bijux-atlas-operations` | `stable` |

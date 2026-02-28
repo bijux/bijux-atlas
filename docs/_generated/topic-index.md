@@ -269,6 +269,7 @@
 | `fasta-derived-metrics` | `docs/contracts/fasta-derived-metrics.md` |
 | `federation-semantics` | `docs/reference/registry/federation-semantics.md` |
 | `filters` | `docs/reference/querying/filters.md` |
+| `fixture-dataset-ingest` | `docs/operations/fixture-dataset-ingest.md` |
 | `fixtures` | `docs/operations/e2e/fixtures.md` |
 | `fixtures-policy` | `docs/reference/store/fixtures-policy.md` |
 | `full-stack-local` | `docs/operations/full-stack-local.md` |
@@ -292,6 +293,7 @@
 | `k8s-perf-chaos` | `docs/operations/runbooks/k8s-perf-chaos.md` |
 | `k8s-test-contract` | `docs/operations/k8s/k8s-test-contract.md` |
 | `k8s-tests` | `docs/operations/e2e/k8s-tests.md` |
+| `kind-profile` | `docs/operations/kind-profile.md` |
 | `kubernetes` | `docs/operations/kubernetes.md` |
 | `kustomize-policy` | `docs/operations/k8s/kustomize-policy.md` |
 | `lane-guarantees` | `docs/operations/release/lane-guarantees.md` |
@@ -343,6 +345,7 @@
 | `ops-intent-naming` | `docs/development/ops-intent-naming.md` |
 | `ops-layout` | `docs/operations/ops-layout.md` |
 | `ops-local-full` | `docs/quickstart/ops-local-full.md` |
+| `ops-map` | `docs/operations/ops-map.md` |
 | `ops-surface` | `docs/operations/reference/ops-surface.md` |
 | `ordering` | `docs/reference/querying/ordering.md` |
 | `otel-outage-behavior` | `docs/operations/observability/otel-outage-behavior.md` |
@@ -368,11 +371,13 @@
 | `profiles` | `docs/operations/observability/profiles.md` |
 | `profiling` | `docs/reference/performance/profiling.md` |
 | `promotion` | `docs/reference/datasets/promotion.md` |
+| `promotion-record` | `docs/operations/promotion-record.md` |
 | `public-api` | `crates/bijux-atlas-api/docs/public-api.md, crates/bijux-atlas-cli/docs/public-api.md, crates/bijux-atlas-core/docs/public-api.md, crates/bijux-atlas-ingest/docs/public-api.md, crates/bijux-atlas-model/docs/public-api.md, crates/bijux-atlas-policies/docs/public-api.md, crates/bijux-atlas-query/docs/public-api.md, crates/bijux-atlas-server/docs/public-api.md, crates/bijux-atlas-store/docs/public-api.md` |
 | `public-api-checklist` | `crates/bijux-atlas-api/docs/public-api-checklist.md` |
 | `pull_request_template` | `.github/pull_request_template.md` |
 | `qc` | `docs/contracts/qc.md` |
 | `qc-report-schema` | `docs/reference/ingestion/qc-report-schema.md` |
+| `quality-wall` | `docs/operations/release/quality-wall.md` |
 | `query-benchmarks` | `docs/reference/performance/query-benchmarks.md` |
 | `query-connection-strategy` | `docs/architecture/query-connection-strategy.md` |
 | `rbac-minimalism` | `docs/operations/k8s/rbac-minimalism.md` |

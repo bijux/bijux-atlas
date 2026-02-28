@@ -1044,6 +1044,9 @@
     "filters": [
       "docs/reference/querying/filters.md"
     ],
+    "fixture-dataset-ingest": [
+      "docs/operations/fixture-dataset-ingest.md"
+    ],
     "fixtures": [
       "docs/operations/e2e/fixtures.md"
     ],
@@ -1114,6 +1117,9 @@
     ],
     "k8s-tests": [
       "docs/operations/e2e/k8s-tests.md"
+    ],
+    "kind-profile": [
+      "docs/operations/kind-profile.md"
     ],
     "kubernetes": [
       "docs/operations/kubernetes.md"
@@ -1272,6 +1278,9 @@
     "ops-local-full": [
       "docs/quickstart/ops-local-full.md"
     ],
+    "ops-map": [
+      "docs/operations/ops-map.md"
+    ],
     "ops-surface": [
       "docs/operations/reference/ops-surface.md"
     ],
@@ -1349,6 +1358,9 @@
     "promotion": [
       "docs/reference/datasets/promotion.md"
     ],
+    "promotion-record": [
+      "docs/operations/promotion-record.md"
+    ],
     "public-api": [
       "crates/bijux-atlas-api/docs/public-api.md",
       "crates/bijux-atlas-cli/docs/public-api.md",
@@ -1371,6 +1383,9 @@
     ],
     "qc-report-schema": [
       "docs/reference/ingestion/qc-report-schema.md"
+    ],
+    "quality-wall": [
+      "docs/operations/release/quality-wall.md"
     ],
     "query-benchmarks": [
       "docs/reference/performance/query-benchmarks.md"

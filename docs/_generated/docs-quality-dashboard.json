@@ -283,7 +283,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/observability/performance-baseline.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/observability/startup-warm-cache-strategy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/ops-docs-contract.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/release/lane-guarantees.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbook-template.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks/dataset-corruption.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbooks/high-memory.md` has no inbound doc links",
@@ -354,7 +353,7 @@
   "schema_version": 1,
   "summary": {
     "errors": 23,
-    "registered": 753,
-    "warnings": 393
+    "registered": 758,
+    "warnings": 392
   }
 }

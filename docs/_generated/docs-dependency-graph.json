@@ -2353,6 +2353,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/fixture-dataset-ingest.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/full-stack-local.md"
     },
     {
@@ -2464,6 +2469,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/k8s/when-layer-drift-fails.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/kind-profile.md"
     },
     {
       "crate": null,
@@ -2658,6 +2668,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/ops-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/ops-system/INDEX.md"
     },
     {
@@ -2727,6 +2742,11 @@
     },
     {
       "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/promotion-record.md"
+    },
+    {
+      "crate": null,
       "doc_type": "reference",
       "from": "docs/operations/reference/commands.md"
     },
@@ -2784,6 +2804,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/release/lane-guarantees.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/quality-wall.md"
     },
     {
       "crate": null,

@@ -4068,6 +4068,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/fixture-dataset-ingest.md"
+      ],
+      "path": "docs/operations/fixture-dataset-ingest.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/full-stack-local.md"
       ],
       "path": "docs/operations/full-stack-local.md"
@@ -4266,6 +4274,14 @@
         "docs/operations/k8s/when-layer-drift-fails.md"
       ],
       "path": "docs/operations/k8s/when-layer-drift-fails.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/kind-profile.md"
+      ],
+      "path": "docs/operations/kind-profile.md"
     },
     {
       "breadcrumbs": [
@@ -4607,6 +4623,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/ops-map.md"
+      ],
+      "path": "docs/operations/ops-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/ops-system",
         "docs/operations/ops-system/INDEX.md"
       ],
@@ -4730,6 +4754,14 @@
       "breadcrumbs": [
         "docs",
         "docs/operations",
+        "docs/operations/promotion-record.md"
+      ],
+      "path": "docs/operations/promotion-record.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
         "docs/operations/reference",
         "docs/operations/reference/commands.md"
       ],
@@ -4832,6 +4864,15 @@
         "docs/operations/release/lane-guarantees.md"
       ],
       "path": "docs/operations/release/lane-guarantees.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/quality-wall.md"
+      ],
+      "path": "docs/operations/release/quality-wall.md"
     },
     {
       "breadcrumbs": [

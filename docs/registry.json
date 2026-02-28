@@ -11123,6 +11123,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "fixture-dataset-ingest",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/fixture-dataset-ingest.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "fixture-dataset-ingest",
+        "operations"
+      ],
+      "title": "Fixture Dataset Ingest",
+      "topic": "fixture-dataset-ingest"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "full-stack-local",
         "operations"
       ],
@@ -11682,6 +11705,29 @@
       ],
       "title": "When Layer Drift Fails",
       "topic": "when-layer-drift-fails"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "kind-profile",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/kind-profile.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "kind-profile",
+        "operations"
+      ],
+      "title": "Kind Profile",
+      "topic": "kind-profile"
     },
     {
       "area": "operations",
@@ -12621,6 +12667,29 @@
     },
     {
       "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "ops-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/ops-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "ops-map"
+      ],
+      "title": "Ops Map",
+      "topic": "ops-map"
+    },
+    {
+      "area": "operations",
       "audience": "mixed",
       "crate": null,
       "doc_type": "concept",
@@ -12967,6 +13036,29 @@
       "area": "operations",
       "audience": "operators",
       "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "promotion-record"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/promotion-record.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "promotion-record"
+      ],
+      "title": "Promotion Record",
+      "topic": "promotion-record"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
@@ -13260,6 +13352,31 @@
       ],
       "title": "Release Lane Guarantees",
       "topic": "lane-guarantees"
+    },
+    {
+      "area": "operations",
+      "audience": "operators",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/quality-wall.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "quality-wall",
+        "release"
+      ],
+      "title": "Quality Wall",
+      "topic": "quality-wall"
     },
     {
       "area": "operations",
