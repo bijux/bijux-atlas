@@ -1,19 +1,18 @@
 # Contributing
 
-- Owner: `docs-governance`
+Owner: `platform`  
+Type: `guide`  
+Audience: `contributor`  
+Reason to exist: define required checks before merging changes.
 
-## Layout rule
-
-Do not add new root directories. Put operational assets under `ops/` and expose workflows through `make` targets.
-
-## Required checks
+## Required Checks
 
 ```bash
-$ make check-gates
-$ make governance-check
+make check-gates
+make docs
+make test
 ```
 
-## See also
+## Documentation Rule
 
-- [Repository Layout](repo-layout.md)
-- [Ops Canonical Layout](ops-canonical-layout.md)
+When behavior changes, update the canonical docs page instead of adding parallel narratives.

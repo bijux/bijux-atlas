@@ -1,54 +1,14 @@
-# Add a New Metric or Span
+# Add Metric Span
 
-- Owner: `docs-governance`
-- Stability: `stable`
+Owner: `platform`  
+Type: `guide`  
+Audience: `contributor`  
+Reason to exist: provide minimal checklist for telemetry additions.
 
-## What
+## Checklist
 
-Contract workflow to add telemetry metrics and trace spans.
-
-## Why
-
-Keeps observability surfaces stable and queryable across releases.
-
-## Scope
-
-Metric/span registries, runtime instrumentation, docs generation, and checks.
-
-## Non-goals
-
-Does not prescribe dashboard layout details.
-
-## Contracts
-
-- Metrics registry: [Metrics Contract](../contracts/metrics.md).
-- Trace spans registry: [Tracing Contract](../contracts/tracing.md).
-- Generated docs and runtime constants must remain synchronized.
-
-## Steps
-
-1. Add entries to `METRICS.json` and/or `TRACE_SPANS.json`.
-2. Add instrumentation in runtime code.
-3. Update tests/alerting contracts if needed.
-4. Regenerate contracts/docs.
-
-## Failure modes
-
-- Instrumentation without registry entry breaks contract drift gates.
-- Registry entry without instrumentation creates dead telemetry.
-
-## How to verify
-
-```bash
-$ make contracts
-$ make test
-$ make ops-observability-validate
-```
-
-Expected output: telemetry contract checks and observability gates pass.
-
-## See also
-
-- [Metrics Contract](../contracts/metrics.md)
-- [Tracing Contract](../contracts/tracing.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+1. Register metric or span contract.
+2. Add runtime instrumentation.
+3. Add tests for emission and schema stability.
+4. Update observability docs only in canonical pages.
+5. Run contract, docs, and test checks.

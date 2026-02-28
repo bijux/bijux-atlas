@@ -1,19 +1,20 @@
 # Development
 
 Owner: `platform`  
+Audience: `contributor`  
 Type: `guide`  
-Reason to exist: provide contributor onboarding and implementation workflow entrypoints.
+Reason to exist: provide the single contributor entrypoint for making code changes safely.
 
-## Contributor Entry Points
+## Start Here
 
 - [Contributing](contributing.md)
 - [Repository Layout](repo-layout.md)
-- [Tooling](tooling/INDEX.md)
+- [CI Overview](ci-overview.md)
+- [Toolchain](toolchain.md)
+- [Debugging Locally](debugging-locally.md)
+
+## Implementation Checklists
+
 - [Add Endpoint](add-endpoint.md)
 - [Add Dataset Type](add-dataset-type.md)
-
-## What To Read Next
-
-- [Start Here](../start-here.md)
-- [Architecture](../architecture/index.md)
-- [Operations](../operations/index.md)
+- [Add Metric Span](add-metric-span.md)
