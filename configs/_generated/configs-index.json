@@ -12,15 +12,13 @@
   "groups": [
     {
       "counts": {
-        "covered": 4,
+        "covered": 2,
         "generated": 0,
-        "internal": 2,
+        "internal": 0,
         "public": 2,
         "schemas": 1
       },
       "files": [
-        "configs/ci/INDEX.md",
-        "configs/ci/README.md",
         "configs/ci/env-contract.json",
         "configs/ci/lanes.json"
       ],
@@ -72,15 +70,14 @@
     },
     {
       "counts": {
-        "covered": 6,
+        "covered": 5,
         "generated": 1,
-        "internal": 1,
+        "internal": 0,
         "public": 4,
         "schemas": 3
       },
       "files": [
         "configs/_generated/configs-index.json",
-        "configs/inventory/README.md",
         "configs/inventory/configs.json",
         "configs/inventory/consumers.json",
         "configs/inventory/groups.json",
@@ -102,27 +99,22 @@
     },
     {
       "counts": {
-        "covered": 15,
+        "covered": 10,
         "generated": 0,
-        "internal": 2,
-        "public": 13,
+        "internal": 0,
+        "public": 10,
         "schemas": 1
       },
       "files": [
-        "configs/coverage/README.md",
         "configs/coverage/thresholds.toml",
         "configs/gates/lanes.json",
-        "configs/layout/README.md",
         "configs/layout/inventory-budgets.json",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
-        "configs/repo/README.md",
-        "configs/repo/root-symlink-shims.md",
         "configs/repo/surface-snapshot.json",
         "configs/repo/surfaces.json",
         "configs/repo/symlink-allowlist.json",
         "configs/repo/tree-budget-exceptions.json",
-        "configs/shellcheck/README.md",
         "configs/shellcheck/shellcheckrc"
       ],
       "name": "layout",
@@ -139,14 +131,13 @@
     },
     {
       "counts": {
-        "covered": 4,
+        "covered": 3,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 3,
         "schemas": 1
       },
       "files": [
-        "configs/make/README.md",
         "configs/make/public-targets.json",
         "configs/make/retired-makefiles.json",
         "configs/make/targets.json"
@@ -187,14 +178,13 @@
     },
     {
       "counts": {
-        "covered": 2,
+        "covered": 1,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 1,
         "schemas": 0
       },
       "files": [
-        "configs/nextest/README.md",
         "configs/nextest/nextest.toml"
       ],
       "name": "nextest",
@@ -208,14 +198,13 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 2,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 2,
         "schemas": 1
       },
       "files": [
-        "configs/openapi/README.md",
         "configs/openapi/v1/openapi.generated.json",
         "configs/openapi/v1/openapi.snapshot.json"
       ],
@@ -232,14 +221,13 @@
     },
     {
       "counts": {
-        "covered": 51,
+        "covered": 47,
         "generated": 0,
-        "internal": 1,
-        "public": 50,
+        "internal": 0,
+        "public": 47,
         "schemas": 3
       },
       "files": [
-        "configs/ops/README.md",
         "configs/ops/artifact-retention.json",
         "configs/ops/artifacts-allowlist.txt",
         "configs/ops/budgets.json",
@@ -270,12 +258,10 @@
         "configs/ops/pins/helm.json",
         "configs/ops/pins/images.json",
         "configs/ops/pins/tools.json",
-        "configs/ops/policies/README.md",
         "configs/ops/policies/ops-smoke-budget.json",
         "configs/ops/ports.json",
         "configs/ops/public-make-targets.json",
         "configs/ops/public-surface-doc-exceptions.txt",
-        "configs/ops/runtime/README.md",
         "configs/ops/scenarios.schema.json",
         "configs/ops/schema-contracts.json",
         "configs/ops/sharding-policy.json",
@@ -288,7 +274,6 @@
         "configs/ops/suites.json",
         "configs/ops/target-renames.json",
         "configs/ops/tool-versions.json",
-        "configs/ops/tools/README.md",
         "configs/ops/vendor-allow.json"
       ],
       "name": "ops",
@@ -307,14 +292,13 @@
     },
     {
       "counts": {
-        "covered": 4,
+        "covered": 3,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 3,
         "schemas": 1
       },
       "files": [
-        "configs/perf/README.md",
         "configs/perf/critical_queries.json",
         "configs/perf/critical_queries_explain_snapshot.json",
         "configs/perf/k6-thresholds.v1.json"
@@ -333,14 +317,13 @@
     },
     {
       "counts": {
-        "covered": 32,
+        "covered": 31,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 31,
         "schemas": 2
       },
       "files": [
-        "configs/policy/README.md",
         "configs/policy/budget-exceptions.yml",
         "configs/policy/budget-relaxations.json",
         "configs/policy/bypass-budget.json",
@@ -388,15 +371,13 @@
     },
     {
       "counts": {
-        "covered": 5,
+        "covered": 3,
         "generated": 0,
-        "internal": 2,
+        "internal": 0,
         "public": 3,
         "schemas": 1
       },
       "files": [
-        "configs/rust/LINT_POLICY.md",
-        "configs/rust/README.md",
         "configs/rust/clippy.toml",
         "configs/rust/rustfmt.toml",
         "configs/rust/toolchain.json"
@@ -476,14 +457,13 @@
     },
     {
       "counts": {
-        "covered": 3,
+        "covered": 2,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 2,
         "schemas": 0
       },
       "files": [
-        "configs/security/README.md",
         "configs/security/audit-allowlist.toml",
         "configs/security/deny.toml"
       ],
@@ -499,14 +479,13 @@
     },
     {
       "counts": {
-        "covered": 2,
+        "covered": 1,
         "generated": 0,
-        "internal": 1,
+        "internal": 0,
         "public": 1,
         "schemas": 1
       },
       "files": [
-        "configs/slo/README.md",
         "configs/slo/slo.json"
       ],
       "name": "slo",

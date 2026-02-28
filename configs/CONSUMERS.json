@@ -114,11 +114,6 @@
       "runtime",
       "ci"
     ],
-    "configs/ops/*/*.md": [
-      "bijux-dev-atlas",
-      "runtime",
-      "ci"
-    ],
     "configs/perf/*.json": [
       "bijux-dev-atlas",
       "runtime"

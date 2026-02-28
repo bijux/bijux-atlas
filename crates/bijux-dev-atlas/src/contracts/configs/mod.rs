@@ -1784,13 +1784,12 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
         .into_iter()
         .filter(|file| file.ends_with(".md"))
         .filter(|file| !ROOT_MARKDOWN_FILES.contains(&file.as_str()))
-        .filter(|file| file.starts_with("configs/docs/"))
         .map(|file| {
             violation(
                 "CONFIGS-026",
                 "configs.docs.no_nested_markdown",
                 &file,
-                "configs/docs must contain tooling inputs only; move narrative markdown into docs/ or configs root",
+                "configs keeps markdown only at the root authority surface; move narrative markdown into docs/",
             )
         })
         .collect::<Vec<_>>();

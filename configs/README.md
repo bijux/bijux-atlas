@@ -5,3 +5,5 @@
 Common commands:
 - `bijux dev atlas contracts configs --format table`
 - `bijux dev atlas configs list --format json`
+
+Narrative docs belong under `docs/`, not under `configs/`.

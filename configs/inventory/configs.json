@@ -25,9 +25,7 @@
       "public_files": [
         "configs/ci/*.json"
       ],
-      "internal_files": [
-        "configs/ci/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/ci-run-output.schema.json"
@@ -70,9 +68,7 @@
         "configs/inventory/configs.json",
         "configs/inventory/*.json"
       ],
-      "internal_files": [
-        "configs/inventory/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [
         "configs/_generated/configs-index.json"
       ],
@@ -99,9 +95,7 @@
         "configs/shellcheck/*",
         "configs/product/*"
       ],
-      "internal_files": [
-        "configs/repo/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-budgets.schema.json"
@@ -119,9 +113,7 @@
       "public_files": [
         "configs/make/*.json"
       ],
-      "internal_files": [
-        "configs/make/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-make.schema.json"
@@ -155,9 +147,7 @@
       "public_files": [
         "configs/nextest/*.toml"
       ],
-      "internal_files": [
-        "configs/nextest/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": []
     },
@@ -172,9 +162,7 @@
       "public_files": [
         "configs/openapi/**/*.json"
       ],
-      "internal_files": [
-        "configs/openapi/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/schema/public-surface.schema.json"
@@ -194,12 +182,9 @@
         "configs/ops/*.txt",
         "configs/ops/*.schema.json",
         "configs/ops/*/*.json",
-        "configs/ops/*/*.txt",
-        "configs/ops/*/*.md"
+        "configs/ops/*/*.txt"
       ],
-      "internal_files": [
-        "configs/ops/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-ops.schema.json",
@@ -219,9 +204,7 @@
       "public_files": [
         "configs/perf/*.json"
       ],
-      "internal_files": [
-        "configs/perf/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-configs.schema.json"
@@ -241,9 +224,7 @@
         "configs/policy/*.yml",
         "configs/policy/*.txt"
       ],
-      "internal_files": [
-        "configs/policy/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/policy/policy.schema.json",
@@ -263,9 +244,7 @@
         "configs/rust/*.toml",
         "configs/rust/*.json"
       ],
-      "internal_files": [
-        "configs/rust/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-configs.schema.json"
@@ -304,9 +283,7 @@
       "public_files": [
         "configs/security/*.toml"
       ],
-      "internal_files": [
-        "configs/security/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": []
     },
@@ -321,9 +298,7 @@
       "public_files": [
         "configs/slo/*.json"
       ],
-      "internal_files": [
-        "configs/slo/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-configs.schema.json"
