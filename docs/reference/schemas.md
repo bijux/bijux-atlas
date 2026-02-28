@@ -7,6 +7,7 @@ Reason to exist: canonical schema inventory for validated contracts.
 ## Source Of Truth
 
 - `docs/_generated/schema-index.json`
+- `docs/contracts/`
 
 ## Table Scope
 

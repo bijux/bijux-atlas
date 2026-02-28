@@ -11,3 +11,11 @@ Reason to exist: describe essential CI expectations for contributors.
 - Tests must pass.
 - Docs validation must pass.
 - No bypass of required policy gates.
+
+## CI Lanes
+
+- PR validation
+- Docs validation
+- Operations validation
+- Nightly validation
+- Release candidate validation

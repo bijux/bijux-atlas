@@ -11,6 +11,11 @@ Reason to exist: provide one canonical observability entrypoint for operators.
 - [Tracing](tracing.md)
 - [SLO Policy](slo-policy.md)
 
+## Contract References
+
+- `docs/contracts/metrics.md`
+- `docs/contracts/tracing.md`
+
 ## Operational Goal
 
 Detect incidents early, diagnose quickly, and verify recovery against stable service objectives.

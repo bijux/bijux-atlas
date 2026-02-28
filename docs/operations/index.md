@@ -1,11 +1,17 @@
-# Operations Index
+# Operations
 
-- Owner: bijux-atlas-operations
-- Stability: stable
+Owner: `bijux-atlas-operations`  
+Type: `guide`  
+Audience: `operator`  
+Reason to exist: provide one operational entrypoint for lifecycle and incident work.
 
-Operational policies are enforced by contracts, while this section stays focused on operational guidance.
-Contract definitions stay under `docs/contracts/`.
-Contract references: `OPS-ROOT-021`, `OPS-ROOT-023`.
+## Scope
 
-- [Operations Entry](index.md)
+Operations documentation covers local lifecycle, deployment, observability, and incident response.
+
+## Start Here
+
 - [Run Locally](run-locally.md)
+- [Deploy](deploy.md)
+- [Incident Response](incident-response.md)
+- [Observability](observability/index.md)

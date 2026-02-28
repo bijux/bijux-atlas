@@ -18,3 +18,10 @@ Reason to exist: define canonical deployment flow for production and staging clu
 - [Release Workflow](release-workflow.md)
 - [Incident Response](incident-response.md)
 - [Runbooks](runbooks/incident-playbook.md)
+
+## Container Governance
+
+Container images and Docker build policy are defined under:
+
+- `docker/README.md`
+- `docker/CONTRACT.md`

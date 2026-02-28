@@ -1,7 +1,20 @@
-# Architecture Index
+# Architecture
 
-- Owner: docs-governance
-- Stability: stable
+Owner: `architecture`  
+Type: `concept`  
+Audience: `contributor`  
+Reason to exist: define canonical system structure and enduring boundaries.
 
-- [Architecture Entry](index.md)
+## System Shape
+
+`bijux-atlas` is organized around domain crates, runtime crates, and control-plane crates.
+
+- Domain foundation: `bijux-atlas-core`, `bijux-atlas-model`
+- Data and query path: `bijux-atlas-ingest`, `bijux-atlas-store`, `bijux-atlas-query`
+- Product interfaces: `bijux-atlas-api`, `bijux-atlas-server`, `bijux-atlas-cli`
+- Development control plane: `bijux-dev-atlas`
+
+## Canonical Pages
+
 - [Boundaries](boundaries.md)
+- [Architecture Map](architecture-map.md)

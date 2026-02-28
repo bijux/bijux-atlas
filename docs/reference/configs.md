@@ -6,7 +6,9 @@ Reason to exist: canonical configuration inventory and ownership mapping.
 
 ## Source Of Truth
 
-- `configs/inventory/consumers.json`
+- `configs/inventory/configs.json`
+- `configs/README.md`
+- `configs/CONTRACT.md`
 
 ## Table Scope
 
