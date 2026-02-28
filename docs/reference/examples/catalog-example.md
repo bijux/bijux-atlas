@@ -22,12 +22,12 @@ Mismatched catalog shape causes publish and fetch errors.
 
 ## How to verify
 ```bash
-$ jq -e '.datasets[0].dataset_id.release == "110"' docs/examples/sample-catalog.json >/dev/null
+$ jq -e '.datasets[0].dataset_id.release == "110"' docs/reference/examples/sample-catalog.json >/dev/null
 ```
 
 Expected output: command exits `0`.
 
 ## See also
-- [Reference Index](../reference/index.md)
-- [Artifact Schema Contract](../reference/contracts/artifacts/index.md)
-- [Contract Examples](../reference/contracts/examples/index.md)
+- [Reference Index](../index.md)
+- [Artifact Schema Contract](../contracts/artifacts/index.md)
+- [Contract Examples](../contracts/examples/index.md)

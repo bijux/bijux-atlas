@@ -11,5 +11,5 @@ Security operations cover dependency policy enforcement, access controls, and in
 
 ## Canonical References
 
-- `docs/security/index.md`
+- `docs/operations/security/advisory-process.md`
 - `docs/operations/incident-response.md`

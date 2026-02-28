@@ -16,6 +16,7 @@ Stable factual surfaces used by users, operators, and contributors.
 - [Schemas](schemas.md)
 - [Errors](errors.md)
 - [Contracts](contracts/index.md)
+- [Examples](examples/index.md)
 
 ## Next Step
 
