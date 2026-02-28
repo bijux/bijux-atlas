@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "plans": {
+      "items": {
+        "enum": [
+          "none",
+          "contig",
+          "region_grid"
+        ],
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "router": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset": {
+          "additionalProperties": false,
+          "properties": {
+            "assembly": {
+              "type": "string"
+            },
+            "release": {
+              "type": "string"
+            },
+            "species": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "release",
+            "species",
+            "assembly"
+          ],
+          "type": "object"
+        },
+        "mode": {
+          "enum": [
+            "contig",
+            "contig_partitioned"
+          ],
+          "type": "string"
+        },
+        "shards": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "seqids": {
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "shard_id": {
+                "type": "string"
+              },
+              "sqlite_path": {
+                "type": "string"
+              },
+              "sqlite_sha256": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "shard_id",
+              "seqids",
+              "sqlite_path",
+              "sqlite_sha256"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "dataset",
+        "mode",
+        "shards"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "plans",
+    "router"
+  ],
+  "title": "Sharding Plan Contract",
+  "type": "object"
+}

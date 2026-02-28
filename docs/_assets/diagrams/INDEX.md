@@ -23,5 +23,5 @@ bijux dev atlas docs render-diagrams --report text
 
 See also:
 - [Architecture Index](../../architecture/index.md)
-- [Docs Review Checklist](../../governance/docs-review-checklist.md)
-- [Style Guide](../../governance/style-guide.md)
+- [Depth Rubric](../../_style/DEPTH_RUBRIC.md)
+- [Style Guide](../../_style/style-guide.md)

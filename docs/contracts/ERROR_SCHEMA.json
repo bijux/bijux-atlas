@@ -1,0 +1,35 @@
+{
+  "fields": {
+    "code": {
+      "required": true,
+      "type": "string"
+    },
+    "details": {
+      "required": true,
+      "type": "object"
+    },
+    "hint": {
+      "required": false,
+      "type": "string"
+    },
+    "message": {
+      "required": true,
+      "type": "string"
+    },
+    "request_id": {
+      "required": true,
+      "type": "string"
+    },
+    "retryable": {
+      "required": false,
+      "type": "boolean"
+    }
+  },
+  "problem_details_alignment": {
+    "status_in_http": true,
+    "title_maps_to_message": true,
+    "type_maps_to_code_namespace": true
+  },
+  "schema_version": 1,
+  "type": "api_error_envelope"
+}

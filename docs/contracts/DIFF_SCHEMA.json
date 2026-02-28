@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "stringListOrChunkRef": {
+      "oneOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "inline_count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "total_count": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "truncated": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "truncated",
+            "total_count",
+            "inline_count"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chunk_manifest": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "chunk": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "count": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "field": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "chunk",
+          "path",
+          "count"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "compatibility": {
+      "enum": [
+        "additive-only"
+      ],
+      "type": "string"
+    },
+    "genes_added": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    },
+    "genes_changed_biotype": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    },
+    "genes_changed_coords": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    },
+    "genes_changed_signature": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    },
+    "genes_removed": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    },
+    "identity": {
+      "additionalProperties": false,
+      "properties": {
+        "assembly": {
+          "type": "string"
+        },
+        "from_release": {
+          "type": "string"
+        },
+        "species": {
+          "type": "string"
+        },
+        "to_release": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_release",
+        "to_release",
+        "species",
+        "assembly"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1",
+      "type": "string"
+    },
+    "transcripts_added": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    },
+    "transcripts_removed": {
+      "$ref": "#/$defs/stringListOrChunkRef"
+    }
+  },
+  "required": [
+    "schema_version",
+    "identity",
+    "genes_added",
+    "genes_removed",
+    "genes_changed_coords",
+    "genes_changed_biotype",
+    "transcripts_added",
+    "transcripts_removed"
+  ],
+  "title": "Release Diff Artifact",
+  "type": "object"
+}

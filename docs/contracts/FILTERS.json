@@ -1,0 +1,74 @@
+{
+  "endpoint": "/v1/genes",
+  "filters": [
+    {
+      "max_length": 128,
+      "name": "gene_id",
+      "operators": [
+        "eq"
+      ],
+      "type": "string"
+    },
+    {
+      "max_length": 256,
+      "name": "name",
+      "operators": [
+        "eq"
+      ],
+      "type": "string"
+    },
+    {
+      "max_length": 256,
+      "name": "name_like",
+      "operators": [
+        "prefix"
+      ],
+      "type": "string"
+    },
+    {
+      "max_length": 128,
+      "name": "biotype",
+      "operators": [
+        "eq"
+      ],
+      "type": "string"
+    },
+    {
+      "max_length": 128,
+      "name": "contig",
+      "operators": [
+        "eq"
+      ],
+      "type": "string"
+    },
+    {
+      "max_length": 128,
+      "name": "range",
+      "operators": [
+        "overlaps"
+      ],
+      "type": "range"
+    },
+    {
+      "max_length": 16,
+      "name": "min_transcripts",
+      "operators": [
+        "gte"
+      ],
+      "type": "integer"
+    },
+    {
+      "max_length": 16,
+      "name": "max_transcripts",
+      "operators": [
+        "lte"
+      ],
+      "type": "integer"
+    }
+  ],
+  "max_filter_count": 6,
+  "range_format": "range=chr:start-end",
+  "schema_version": 1,
+  "sort_contract_ref": "docs/contracts/SORTS.json",
+  "type": "filters_registry"
+}

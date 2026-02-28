@@ -1,0 +1,1115 @@
+{
+  "api_contract_version": "v1",
+  "compatibility": "additive-only",
+  "deprecation_policy": {
+    "no_removal_within_v1": true,
+    "signal": "OpenAPI deprecated=true + Sunset header + docs/api/deprecation.md timeline"
+  },
+  "endpoints": [
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "path": "/debug/dataset-health",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/datasets",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/debug/registry-health",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/healthz",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "health"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/healthz/overload",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "health"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/metrics",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "metrics"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/readyz",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "health"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/v1/_debug/echo",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "404"
+        }
+      ],
+      "telemetry_class": "debug"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include_bom",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 500,
+          "name": "limit",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 4096,
+          "name": "cursor",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "path": "/v1/datasets",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "304"
+        },
+        {
+          "envelope": "api_error",
+          "status": "429"
+        }
+      ],
+      "telemetry_class": "catalog"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include_bom",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "path": "/v1/datasets/{release}/{species}/{assembly}",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "api_error",
+          "status": "404"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "catalog"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "from_release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "to_release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 500,
+          "name": "limit",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "cursor",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "path": "/v1/diff/genes",
+      "responses": [
+        {
+          "envelope": "json",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "304"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        }
+      ],
+      "telemetry_class": "diff"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "from_release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "to_release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "region",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 500,
+          "name": "limit",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "cursor",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "path": "/v1/diff/region",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "304"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        }
+      ],
+      "telemetry_class": "diff"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 32,
+          "name": "sort",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 500,
+          "name": "limit",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 4096,
+          "name": "cursor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "pretty",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "explain",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "gene_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 256,
+          "name": "name",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 256,
+          "name": "name_like",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "biotype",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "contig",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "range",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 16,
+          "name": "min_transcripts",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 16,
+          "name": "max_transcripts",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "path": "/v1/genes",
+      "responses": [
+        {
+          "envelope": "json",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "304"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "api_error",
+          "status": "413"
+        },
+        {
+          "envelope": "api_error",
+          "status": "422"
+        },
+        {
+          "envelope": "api_error",
+          "status": "429"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "query"
+    },
+    {
+      "deprecated": true,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "gene_id",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 256,
+          "name": "name",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 256,
+          "name": "name_like",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "biotype",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "contig",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 128,
+          "name": "range",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 16,
+          "name": "min_transcripts",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 16,
+          "name": "max_transcripts",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "path": "/v1/genes/count",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        }
+      ],
+      "telemetry_class": "query"
+    },
+    {
+      "deprecated": true,
+      "deprecation_note": "Use /v1/datasets/{release}/{species}/{assembly}; this route returns 308 Permanent Redirect.",
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "gene_id",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "flank",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include_stats",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "path": "/v1/genes/{gene_id}/sequence",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "404"
+        },
+        {
+          "envelope": "api_error",
+          "status": "422"
+        }
+      ],
+      "telemetry_class": "sequence"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "gene_id",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": 500,
+          "name": "limit",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "cursor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "biotype",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "type",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "region",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "path": "/v1/genes/{gene_id}/transcripts",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "api_error",
+          "status": "429"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "transcript"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/v1/openapi.json",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "control"
+    },
+    {
+      "deprecated": false,
+      "method": "POST",
+      "params": [],
+      "path": "/v1/query/validate",
+      "responses": [
+        {
+          "envelope": "json",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        }
+      ],
+      "telemetry_class": "query"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include_bom",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "path": "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "308"
+        }
+      ],
+      "telemetry_class": "catalog"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "region",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "include_stats",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "path": "/v1/sequence/region",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "none",
+          "status": "304"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "api_error",
+          "status": "401"
+        },
+        {
+          "envelope": "api_error",
+          "status": "422"
+        },
+        {
+          "envelope": "api_error",
+          "status": "429"
+        }
+      ],
+      "telemetry_class": "sequence"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [
+        {
+          "default": null,
+          "in": "path",
+          "max": null,
+          "name": "tx_id",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "release",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "species",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "in": "query",
+          "max": null,
+          "name": "assembly",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "path": "/v1/transcripts/{tx_id}",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        },
+        {
+          "envelope": "api_error",
+          "status": "400"
+        },
+        {
+          "envelope": "api_error",
+          "status": "404"
+        },
+        {
+          "envelope": "api_error",
+          "status": "503"
+        }
+      ],
+      "telemetry_class": "transcript"
+    },
+    {
+      "deprecated": false,
+      "method": "GET",
+      "params": [],
+      "path": "/v1/version",
+      "responses": [
+        {
+          "envelope": "none",
+          "status": "200"
+        }
+      ],
+      "telemetry_class": "control"
+    }
+  ],
+  "schema_version": 2,
+  "type": "endpoint_registry"
+}

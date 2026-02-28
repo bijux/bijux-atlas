@@ -1,0 +1,52 @@
+concepts:
+  - id: concept.crate-boundaries
+    canonical: docs/architecture/boundaries.md
+    pointers: []
+  - id: concept.effects-boundary
+    canonical: docs/architecture/effects.md
+    pointers:
+      - docs/architecture/boundary-maps.md
+  - id: concept.query-pagination
+    canonical: docs/reference/querying/pagination.md
+    pointers: []
+  - id: concept.store-integrity
+    canonical: docs/reference/store/integrity-model.md
+    pointers: []
+  - id: concept.dataset-immutability
+    canonical: docs/product/immutability-and-aliases.md
+    pointers:
+      - docs/reference/store/immutability-guarantee.md
+  - id: concept.latest-release-alias
+    canonical: docs/product/immutability-and-aliases.md
+    pointers:
+      - docs/reference/registry/latest-release-alias-policy.md
+  - id: concept.registry-federation
+    canonical: docs/reference/registry/federation-semantics.md
+    pointers:
+      - docs/reference/registry/deterministic-merge.md
+      - docs/reference/registry/conflict-resolution.md
+  - id: concept.compatibility-matrix
+    canonical: docs/contracts/compatibility.md
+    pointers:
+      - docs/reference/compatibility/bijux-dna-atlas.md
+      - docs/reference/compatibility/umbrella-atlas-matrix.md
+      - docs/reference/compatibility/cross-project-compatibility-policy.md
+      - docs/reference/registry/plugin-versioning-and-release-independence.md
+  - id: concept.error-codes
+    canonical: docs/contracts/errors.md
+    pointers:
+      - docs/reference/registry/error-code-registry.md
+  - id: concept.security-coordination
+    canonical: docs/operations/security/advisory-process.md
+    pointers:
+      - docs/reference/registry/security-response-coordination.md
+  - id: concept.no-dna-dependency
+    canonical: docs/reference/registry/no-dna-dependency-policy.md
+    pointers: []
+  - id: concept.shared-core-extraction
+    canonical: docs/reference/registry/shared-core-extraction.md
+    pointers: []
+  - id: concept.plugin-contract
+    canonical: docs/contracts/plugin/spec.md
+    pointers:
+      - docs/contracts/plugin/mode.md

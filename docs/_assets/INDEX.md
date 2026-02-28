@@ -38,5 +38,5 @@ Expected output: docs checks pass and links resolve.
 ## See also
 
 - [Docs Home](../index.md)
-- [Style Guide](../governance/style-guide.md)
-- [Glossary](../glossary.md)
+- [Naming Standard](../_style/naming-standard.md)
+- [Terms Glossary](../_style/terms-glossary.md)

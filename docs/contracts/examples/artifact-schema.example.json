@@ -1,0 +1,53 @@
+{
+  "db_meta": {
+    "required_keys": [
+      "schema_version",
+      "build_params",
+      "analyze_ran"
+    ],
+    "required_table": "atlas_meta"
+  },
+  "manifest": {
+    "checksums_fields": [
+      "gff3_sha256",
+      "fasta_sha256",
+      "fai_sha256",
+      "sqlite_sha256"
+    ],
+    "dataset_fields": [
+      "release",
+      "species",
+      "assembly"
+    ],
+    "qc_report_fields": [
+      "missing_parents",
+      "missing_transcript_parents",
+      "multiple_parent_transcripts",
+      "unknown_contigs",
+      "overlapping_ids",
+      "duplicate_gene_ids",
+      "overlapping_gene_ids_across_contigs",
+      "orphan_transcripts",
+      "parent_cycles",
+      "attribute_fallbacks"
+    ],
+    "required_fields": [
+      "schema_version",
+      "db_schema_version",
+      "dataset",
+      "checksums",
+      "db_hash",
+      "artifact_hash",
+      "stats",
+      "qc_report",
+      "schema_evolution_note"
+    ],
+    "stats_fields": [
+      "gene_count",
+      "contig_count",
+      "transcript_count"
+    ]
+  },
+  "schema_version": 1,
+  "type": "artifact_schema_contract"
+}

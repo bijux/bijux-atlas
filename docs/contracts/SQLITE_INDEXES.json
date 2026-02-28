@@ -1,0 +1,30 @@
+{
+  "no_full_scan_patterns": [
+    "SCAN gene_summary"
+  ],
+  "required_indexes": {
+    "exons": [
+      "idx_exons_transcript"
+    ],
+    "gene_summary": [
+      "idx_gene_summary_gene_id",
+      "idx_gene_summary_name",
+      "idx_gene_summary_biotype",
+      "idx_gene_summary_cover_region",
+      "idx_gene_summary_region"
+    ],
+    "genes": [
+      "idx_genes_gene_id",
+      "idx_genes_name",
+      "idx_genes_biotype",
+      "idx_genes_order_page"
+    ],
+    "transcripts": [
+      "idx_transcripts_parent_gene"
+    ]
+  },
+  "required_virtual_tables": [
+    "gene_summary_rtree"
+  ],
+  "schema_version": "v1"
+}

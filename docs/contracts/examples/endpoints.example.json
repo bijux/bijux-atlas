@@ -1,0 +1,102 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/debug/dataset-health",
+      "telemetry_class": "debug"
+    },
+    {
+      "method": "GET",
+      "path": "/debug/datasets",
+      "telemetry_class": "debug"
+    },
+    {
+      "method": "GET",
+      "path": "/debug/registry-health",
+      "telemetry_class": "debug"
+    },
+    {
+      "method": "GET",
+      "path": "/healthz",
+      "telemetry_class": "health"
+    },
+    {
+      "method": "GET",
+      "path": "/healthz/overload",
+      "telemetry_class": "health"
+    },
+    {
+      "method": "GET",
+      "path": "/metrics",
+      "telemetry_class": "metrics"
+    },
+    {
+      "method": "GET",
+      "path": "/readyz",
+      "telemetry_class": "health"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/datasets",
+      "telemetry_class": "catalog"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/diff/genes",
+      "telemetry_class": "diff"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/diff/region",
+      "telemetry_class": "diff"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/genes",
+      "telemetry_class": "query"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/genes/count",
+      "telemetry_class": "query"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/genes/{gene_id}/sequence",
+      "telemetry_class": "sequence"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/genes/{gene_id}/transcripts",
+      "telemetry_class": "transcript"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/datasets/{release}/{species}/{assembly}",
+      "telemetry_class": "catalog"
+    },
+    {
+      "deprecated": true,
+      "method": "GET",
+      "path": "/v1/releases/{release}/species/{species}/assemblies/{assembly}",
+      "telemetry_class": "catalog"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/sequence/region",
+      "telemetry_class": "sequence"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/trantooling/{tx_id}",
+      "telemetry_class": "transcript"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/version",
+      "telemetry_class": "control"
+    }
+  ],
+  "schema_version": 1,
+  "type": "endpoint_registry"
+}

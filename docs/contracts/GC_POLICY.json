@@ -1,0 +1,54 @@
+{
+  "properties": {
+    "pins": {
+      "properties": {
+        "artifact_hashes": {
+          "items": {
+            "pattern": "^[A-Fa-f0-9]{64}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dataset_ids": {
+          "items": {
+            "pattern": "^release=[A-Za-z0-9._-]+&species=[A-Za-z0-9._-]+&assembly=[A-Za-z0-9._-]+$",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "dataset_ids",
+        "artifact_hashes"
+      ],
+      "type": "object"
+    },
+    "retention": {
+      "properties": {
+        "catalog_reachable_protected": {
+          "type": "boolean"
+        },
+        "default_window_days": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "default_window_days",
+        "catalog_reachable_protected"
+      ],
+      "type": "object"
+    },
+    "store_root": {
+      "description": "Canonical artifact store root that GC is allowed to touch.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "store_root",
+    "retention",
+    "pins"
+  ],
+  "schema_version": 1,
+  "type": "gc_policy"
+}

@@ -1,0 +1,31 @@
+{
+  "format": "jsonl.zst",
+  "kind_values": [
+    "gene",
+    "transcript",
+    "exon"
+  ],
+  "ordering_contract": [
+    "kind",
+    "seqid",
+    "start",
+    "end",
+    "record_id"
+  ],
+  "required_record_fields": [
+    "schema_version",
+    "kind",
+    "record_id",
+    "seqid",
+    "start",
+    "end",
+    "payload"
+  ],
+  "schema_version": 1,
+  "serving_dependency": false,
+  "stability_policy": {
+    "breaking_change_requires_schema_version_bump": true,
+    "fields_additive_only": true
+  },
+  "type": "normalized_feature_jsonl_zst"
+}
