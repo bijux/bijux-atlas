@@ -47,7 +47,7 @@ Does not replace registry-specific detail pages.
 - [Trace Spans](tracing.md)
 - [Config Keys](config-keys.md)
 - [Chart Values](chart-values.md)
-- [Artifact Contracts](artifacts/INDEX.md)
+- [Artifact Contracts](artifacts/index.md)
 - [Schema Index](../reference/schemas.md)
 
 Note: generated contract artifacts are validated in CI and may not be committed as markdown pages.

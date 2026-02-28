@@ -10,7 +10,7 @@ To enforce deterministic behavior, typed contracts, and testable governance surf
 Under `artifacts/` with run-id-scoped directories.
 
 ## Where is the docs source of truth?
-`docs/registry.json` and canonical pages under `docs/`.
+`docs/governance/metadata/registry.json` and canonical pages under `docs/`.
 
 ## How do I find stable command surfaces?
 Use `make help` and `docs/root/COMMANDS_REFERENCE.md`.

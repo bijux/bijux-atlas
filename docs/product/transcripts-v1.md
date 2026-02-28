@@ -58,6 +58,6 @@ Expected output: transcript query plan and ordering tests pass.
 
 ## See also
 
-- [Science Index](../science/INDEX.md)
+- [Science Index](../science/index.md)
 - [Reference Index](../reference/index.md)
 - [API Quick Reference](../api/quick-reference.md)

@@ -11,5 +11,5 @@
 - Development control plane: `bijux-dev-atlas*`
 
 Detailed architecture references:
-- `docs/architecture/INDEX.md`
+- `docs/architecture/index.md`
 - `docs/development/crates-map.md`

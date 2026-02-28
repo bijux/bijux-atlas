@@ -16,7 +16,7 @@ bijux dev atlas checks failures --last-run artifacts/evidence/checks/repo.json -
 ```
 
 3. Resolve in SSOT metadata:
-- `configs/policy/check-owners.json`
+- `configs/policy/check-governance/metadata/owners.json`
 - `configs/policy/check-intents.json`
 - `configs/policy/check-remediation-map.json`
 

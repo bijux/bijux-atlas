@@ -22,12 +22,12 @@ This keeps `Release-indexed` operational flows anchored to one entry page per pi
 | `inventory` | `ops/inventory` | `reference/ops-surface.md` |
 | `schema` | `ops/schema` | `reference/schema-index.md` |
 | `datasets` | `ops/datasets` | `datasets.md` |
-| `e2e` | `ops/e2e` | `e2e/INDEX.md` |
+| `e2e` | `ops/e2e` | `e2e/index.md` |
 | `env` | `ops/env` | `config.md` |
 | `stack` | `ops/stack` | `local-stack.md` |
-| `k8s` | `ops/k8s` | `k8s/INDEX.md` |
-| `load` | `ops/load` | `load/INDEX.md` |
-| `observe` | `ops/observe` | `observability/INDEX.md` |
+| `k8s` | `ops/k8s` | `k8s/index.md` |
+| `load` | `ops/load` | `load/index.md` |
+| `observe` | `ops/observe` | `observability/index.md` |
 | `report` | `ops/report` | `unified-report.md` |
 
 ## How To Verify

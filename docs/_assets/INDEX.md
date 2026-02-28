@@ -1,42 +1,11 @@
-# Assets Index
+# Assets Policy
 
-- Owner: `docs-governance`
+Owner: `docs-governance`  
+Type: `policy`  
+Reason to exist: constrain documentation assets to one location.
 
-## What
+## Rules
 
-Catalog of shared documentation assets (images and diagrams).
-
-## Why
-
-Centralized assets prevent duplication and broken references.
-
-## Scope
-
-Static files in `docs/_assets/`.
-
-## Non-goals
-
-No generated assets or binary artifacts from CI runs.
-
-## Contracts
-
-- Asset filenames must be kebab-case.
-- Asset references must use docs-relative paths.
-
-## Failure modes
-
-Duplicate or untracked assets create drift and stale references.
-
-## How to verify
-
-```bash
-$ make docs
-```
-
-Expected output: docs checks pass and links resolve.
-
-## See also
-
-- [Docs Home](../index.md)
-- [Naming Standard](../_style/naming-standard.md)
-- [Terms Glossary](../_style/terms-glossary.md)
+- Store all documentation images and diagrams under `docs/_assets/`.
+- Do not store images in section directories.
+- Use stable, descriptive file names in `kebab-case`.

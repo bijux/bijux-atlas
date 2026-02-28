@@ -6,5 +6,5 @@
 Operations documentation covers stack lifecycle, render/apply safety, observability, load validation, and runbooks.
 
 Reference:
-- `docs/operations/INDEX.md`
-- `docs/operations/ops-system/INDEX.md`
+- `docs/operations/index.md`
+- `docs/operations/ops-system/index.md`

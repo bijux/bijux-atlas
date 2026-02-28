@@ -1,59 +1,55 @@
-# Contracts SSOT
+# Contracts SSOT and Generation
 
 - Owner: `docs-governance`
-- Stability: `stable`
 
 ## What
 
-`docs/contracts/` is the single source of truth for machine-facing registries.
+Defines how contracts are sourced from SSOT registries and generated into docs/code artifacts.
 
 ## Why
 
-A single source prevents drift across API, CLI, server telemetry, and chart surfaces.
+Prevents drift between machine contracts, generated references, and runtime behavior.
 
 ## Scope
 
-Covers contract registry JSON and generated contract references.
+Applies to contract registries under `docs/contracts/*.json` and generated docs under `docs/_generated/`.
 
-## Non-goals
+## Non-Goals
 
-Does not define runtime implementation details outside contract surfaces.
+Does not document runtime implementation internals outside contract surfaces.
 
 ## Contracts
 
-- Registry files live in this directory as JSON SSOT.
-- Generated documentation and code must be derived from these registries.
-- Workflow details live only in `ssot-workflow.md`.
+- SSOT registries live in `docs/contracts/*.json`.
+- Generated contract docs live in `docs/_generated/contracts/`.
+- OpenAPI generated docs live in `docs/_generated/openapi/`.
 
-## Failure modes
+## Failure Modes
 
-Drift between SSOT and generated artifacts fails contract checks and CI gates.
+- Registry updates without regeneration cause contract drift failures.
+- Generated docs modified manually drift from SSOT and fail checks.
 
 ## Examples
-
-```bash
-$ make ssot-check
-```
-
-Expected output: contract checks and drift checks pass with exit status 0.
-
-## How to verify
 
 ```bash
 $ make ssot-check
 $ make docs-freeze
 ```
 
-Expected output: both commands exit 0.
+Expected output: both commands exit 0 with no contract drift.
 
-## See also
+## How To Verify
 
+```bash
+$ make ssot-check
+$ make docs
+```
+
+Expected output: contract checks and docs checks pass.
+
+## See Also
+
+- [Contracts SSOT](INDEX.md)
 - [Contracts Index](contracts-index.md)
-- [Contracts README](README.md)
-- [Ingest QC Contract](qc.md)
-- [Normalized Format Contract](normalized-format.md)
-- [GFF3 Acceptance Contract](gff3-acceptance.md)
-- [Reference Index](../reference/index.md)
-- [Sharding Schema](SHARDING_SCHEMA.json)
 - [SSOT Workflow](ssot-workflow.md)
 - [Terms Glossary](../_style/terms-glossary.md)

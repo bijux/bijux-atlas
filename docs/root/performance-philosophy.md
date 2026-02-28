@@ -6,5 +6,5 @@
 Performance policy prioritizes deterministic behavior, measurable regressions, and explicit cost budgets.
 
 Reference:
-- `docs/reference/performance/INDEX.md`
-- `docs/operations/performance/INDEX.md`
+- `docs/reference/performance/index.md`
+- `docs/operations/performance/index.md`

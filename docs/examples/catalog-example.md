@@ -30,4 +30,4 @@ Expected output: command exits `0`.
 ## See also
 - [Reference Index](../reference/index.md)
 - [Artifact Directory Contract](../contracts/artifacts/directory-contract.md)
-- [Contract Examples](../contracts/examples/INDEX.md)
+- [Contract Examples](../contracts/examples/index.md)

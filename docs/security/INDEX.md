@@ -1,8 +1,3 @@
-# Security Index
+# Security
 
-- Owner: `docs-governance`
-
-Security policies, controls, and operations references.
-
-- Operations security runbooks: [Incident Response](../operations/incident-response.md)
-- Security reference: [Reference](../reference/index.md)
+Security guidance and references for Atlas operations and interfaces.

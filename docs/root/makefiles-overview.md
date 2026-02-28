@@ -6,7 +6,7 @@
 Makefiles are thin wrappers over canonical crate commands and dev-atlas surfaces.
 
 Reference:
-- `makefiles/INDEX.md`
+- `makefiles/index.md`
 - `makefiles/PHILOSOPHY.md`
 - `makefiles/TARGETS_REGISTRY.md`
 - `makefiles/CI_LANES.md`

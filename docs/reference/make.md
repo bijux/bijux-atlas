@@ -6,7 +6,7 @@ Reason to exist: canonical make target inventory.
 
 ## Source Of Truth
 
-- `configs/ops/make-target-registry.json`
+- `configs/ops/make-target-governance/metadata/registry.json`
 
 ## Table Scope
 

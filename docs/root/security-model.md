@@ -6,5 +6,5 @@
 Security model covers dependency policy, operational controls, and threat boundaries.
 
 Reference:
-- `docs/operations/security/INDEX.md`
+- `docs/operations/security/index.md`
 - `docs/reference/security/threat-model.md`
