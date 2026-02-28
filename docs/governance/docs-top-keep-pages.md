@@ -17,7 +17,7 @@ Reason to exist: define the highest-value pages that remain canonical during con
 12. `docs/architecture/architecture-map.md`
 13. `docs/architecture/boundaries.md`
 14. `docs/architecture/effects.md`
-15. `docs/architecture/store-and-registry.md`
+15. `docs/architecture/components.md`
 16. `docs/api/index.md`
 17. `docs/api/v1-surface.md`
 18. `docs/api/versioning.md`
