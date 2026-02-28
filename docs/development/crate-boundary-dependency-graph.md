@@ -44,6 +44,6 @@ graph TD
 ```
 
 Source of truth for boundaries and guardrails:
-- `docs/boundaries.md`
+- `docs/architecture/boundaries.md`
 - `docs/architecture/effects.md`
 - crate-level `docs/ARCHITECTURE.md`

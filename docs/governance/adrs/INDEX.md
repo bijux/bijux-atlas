@@ -12,7 +12,7 @@ ADRs capture significant technical decisions and tradeoffs.
 
 ## Scope
 
-Applies to decisions stored under `docs/adrs/`.
+Applies to decisions stored under `docs/governance/adrs/`.
 
 ## Non-goals
 

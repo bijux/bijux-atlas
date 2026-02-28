@@ -44,6 +44,5 @@ Expected output: crates map is regenerated and crate docs contract passes.
 
 ## See also
 
-- [Crate Layout Contract](../architecture/crate-layout-contract.md)
-- [Crate Boundary Graph](../architecture/crate-boundary-dependency-graph.md)
+- [Crate Boundary Graph](crate-boundary-dependency-graph.md)
 - [Terms Glossary](../_style/terms-glossary.md)
