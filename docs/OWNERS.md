@@ -1,30 +1,7 @@
 # Docs Owners
 
-- `docs/_assets`: `docs-governance`
-- `docs/_drafts`: `docs-governance`
-- `docs/_generated`: `docs-governance`
-- `docs/_lint`: `docs-governance`
-- `docs/_nav`: `docs-governance`
-- `docs/_style`: `docs-governance`
-- `docs/adrs`: `architecture`
-- `docs/api`: `api-contracts`
-- `docs/architecture`: `architecture`
-- `docs/contracts`: `platform`
-- `docs/control-plane`: `bijux-atlas-operations`
-- `docs/dev`: `platform`
-- `docs/development`: `platform`
-- `docs/docs`: `docs-governance`
-- `docs/engineering`: `platform`
-- `docs/examples`: `platform`
-- `docs/governance`: `platform`
-- `docs/metadata`: `platform`
-- `docs/operations`: `bijux-atlas-operations`
-- `docs/policies`: `platform`
-- `docs/product`: `product`
-- `docs/quickstart`: `platform`
-- `docs/reference`: `docs-governance`
-- `docs/release`: `release`
-- `docs/root`: `docs-governance`
-- `docs/science`: `science`
-- `docs/security`: `security`
-- `docs/start`: `platform`
+Canonical ownership policy and section owner map now live in:
+
+- `docs/ownership.md`
+
+This file remains as a compatibility pointer and should not be expanded.
