@@ -143,6 +143,18 @@ fn contracts_docs_runs_and_reports_summary() {
 }
 
 #[test]
+fn contracts_ops_supports_table_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--format", "table"])
+        .output()
+        .expect("contracts ops table");
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    assert!(text.contains("CONTRACT_ID | STATUS | TESTS | SUMMARY"));
+}
+
+#[test]
 fn contracts_make_supports_table_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
