@@ -99,4 +99,4 @@ jobs:
         with:
           name: ci-nightly-${{ env.RUN_ID }}
           path: artifacts/${{ env.RUN_ID }}
-          retention-days: 21
+          retention-days: 14

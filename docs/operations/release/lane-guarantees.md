@@ -17,6 +17,18 @@
 - `make contracts-merge`
 - `make contracts-release`
 
+## Effect truth checks
+
+- `merge`: requires runtime image build, runtime smoke help, helm defaults render, minimal chart render, kubeconform validation, and recorded helm or kubeconform tool versions.
+- `release`: adds runtime SBOM generation, vulnerability threshold enforcement, and kind-backed install smoke prerequisites.
+- Effect subprocess calls are logged to `artifacts/contracts/ops/effects.log` and `artifacts/contracts/docker/effect/effects.log`.
+
+## Slow lane policy
+
+- Kind-backed and other slow effect checks stay out of PR gating.
+- The slow lane runs daily through `.github/workflows/ci-nightly.yml` and `.github/workflows/ops-integration-kind.yml`.
+- Nightly artifact retention is governed by `configs/ops/artifact-retention.json`.
+
 ## Required contracts
 
 - Source-of-truth: `ops/policy/required-contracts.json`

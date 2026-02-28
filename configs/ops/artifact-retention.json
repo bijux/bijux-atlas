@@ -2,5 +2,7 @@
   "schema_version": 1,
   "ops_retention_days": 7,
   "evidence_retention_days": 14,
-  "evidence_keep_last_per_area": 10
+  "evidence_keep_last_per_area": 10,
+  "nightly_retention_days": 14,
+  "nightly_keep_last_runs": 14
 }
