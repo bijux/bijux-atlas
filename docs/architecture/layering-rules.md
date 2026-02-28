@@ -4,29 +4,12 @@
 - Type: `policy`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@ff4b8084`
-- Reason to exist: define allowed dependency directions in human-readable form.
+- Last verified against: `main@bdd91bc0`
+- Reason to exist: preserve stable URL while canonical layering rules live in Boundaries.
 
-## Dependency Direction
+This page is retained as a stable URL. Canonical layering rules are now in [Boundaries](boundaries.md).
 
-- Foundation layer has no runtime dependency on higher layers.
-- Runtime data layer depends only on foundation and adjacent data-layer crates.
-- Runtime interface layer depends on foundation and runtime data/query crates.
-- Control-plane layer orchestrates checks and operations, but does not become runtime business logic.
-
-## Allowed Patterns
-
-- Query reads immutable artifacts through store-defined contracts.
-- API exposes query behavior without mutating persisted release state.
-- Control-plane invokes runtime or ops surfaces through explicit command contracts.
-
-## Forbidden Patterns
-
-- Interface layer writing directly to ingest artifacts.
-- Runtime crates invoking control-plane-only orchestration helpers.
-- Undocumented cross-layer shortcuts that bypass contracts.
-
-## What to Read Next
+## Next steps
 
 - [Boundaries](boundaries.md)
 - [Crates Map](crates-map.md)

@@ -4,8 +4,12 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@6856280c`
-- Reason to exist: define enforceable crate, layer, and effects boundaries.
+- Last verified against: `main@bdd91bc0`
+- Reason to exist: define enforceable crate, layer, and effects boundaries in plain language.
+
+## Plain-language summary
+
+Atlas keeps runtime behavior predictable by separating data ingestion, storage, querying, and serving responsibilities. Each layer has clear allowed dependencies and explicit effects ownership.
 
 ## Allowed Crate Dependencies
 
@@ -30,6 +34,20 @@
 - `k8s`, `e2e`, `observe`, and `load` do not patch each other state.
 - Boundary violations are fixed in the owning layer, not by orchestration shortcuts.
 - Contract checks enforce dependency and behavior boundaries.
+
+## Layering rules (merged)
+
+- Foundation crates do not depend on runtime interface crates.
+- Runtime data crates can depend on foundation crates and approved adjacent data crates.
+- Runtime interface crates expose behavior but do not mutate ingest artifacts directly.
+- Control-plane surfaces orchestrate checks and operations and do not become runtime business logic.
+
+## Contract-to-runtime mapping (merged)
+
+- Ingest behavior is constrained by ingest validation contracts.
+- Artifact publication is constrained by artifact schema contracts.
+- Registry progression is constrained by registry and compatibility contracts.
+- Query and API serving are constrained by query/API contracts and error taxonomy.
 
 ## Contract, Observability, and Security Boundaries
 

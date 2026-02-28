@@ -4,7 +4,7 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@6856280c`
+- Last verified against: `main@bdd91bc0`
 - Reason to exist: define canonical runtime structure, boundaries, and invariants.
 
 ## Purpose
@@ -19,14 +19,12 @@ Start with [Dataflow](dataflow.md), then [Boundaries](boundaries.md), then choos
 
 - [Dataflow](dataflow.md)
 - [Boundaries](boundaries.md)
-- [Components](components.md)
 - [Crates Map](crates-map.md)
-- [Layering Rules](layering-rules.md)
 - [Runtime Data Model](runtime-data-model.md)
 - [Storage](storage.md)
 - [Performance Model](performance-model.md)
+- [Components](components.md)
 - [Architecture Map](architecture-map.md)
-- [Contract Runtime Mapping](contract-runtime-mapping.md)
 
 ## Next steps
 

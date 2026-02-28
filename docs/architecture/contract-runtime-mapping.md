@@ -4,31 +4,12 @@
 - Type: `concept`
 - Audience: `contributor`
 - Stability: `stable`
-- Last verified against: `main@ff4b8084`
-- Reason to exist: map runtime stages to the contracts that constrain them.
+- Last verified against: `main@bdd91bc0`
+- Reason to exist: preserve stable URL while canonical mapping lives in Dataflow.
 
-## Mapping
+This page is retained as a stable URL. Canonical contract-to-runtime mapping is in [Dataflow](dataflow.md).
 
-```mermaid
-flowchart LR
-  ingest[Ingest] --> artifact[Artifact]
-  artifact --> registry[Registry]
-  registry --> query[Query]
-  query --> api[API]
-
-  c1[(Ingest Contracts)] -.-> ingest
-  c2[(Artifact Schema)] -.-> artifact
-  c3[(Registry Contracts)] -.-> registry
-  c4[(Query/API Contracts)] -.-> query
-  c4 -.-> api
-```
-
-## Notes
-
-- Contract checks pin allowed behavior at each runtime stage.
-- Runtime changes that break mapping require explicit contract updates.
-
-## What to Read Next
+## Next steps
 
 - [Runtime Data Model](runtime-data-model.md)
 - [Dataflow](dataflow.md)
