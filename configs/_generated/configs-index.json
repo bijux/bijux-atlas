@@ -1,10 +1,14 @@
 {
   "exclusions": [
     {
+      "approved_by": "docs-governance",
+      "expires_on": "2027-12-31",
       "pattern": "configs/docs/.vale/styles/**",
       "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
     },
     {
+      "approved_by": "perf-governance",
+      "expires_on": "2027-12-31",
       "pattern": "configs/ops/perf/baselines/**",
       "reason": "legacy deep perf baselines stay explicit until perf config flattening"
     }

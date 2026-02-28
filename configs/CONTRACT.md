@@ -43,3 +43,5 @@
 | `CFG-037` | `must` | `drift` | `bijux dev atlas contracts configs` / `configs.schema.index_committed_match` |
 | `CFG-038` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.schema.no_orphan_inputs` |
 | `CFG-039` | `must` | `schema` | `bijux dev atlas contracts configs` / `configs.schema.versioning_policy` |
+| `CFG-040` | `must` | `supplychain` | `bijux dev atlas contracts configs` / `configs.exclusions.governed_metadata` |
+| `CFG-041` | `blocker` | `supplychain` | `bijux dev atlas contracts configs` / `configs.supplychain.no_latest` |

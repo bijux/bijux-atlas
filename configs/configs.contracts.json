@@ -629,6 +629,36 @@
         "configs/schema/*.json",
         "configs/inventory/configs.json"
       ]
+    },
+    {
+      "contract_type": "supplychain",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.exclusions.governed_metadata"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-040",
+      "rationale": "registry exclusions are an allowlist mechanism and must stay reviewable through approver and expiry metadata.",
+      "severity": "must",
+      "title": "registry exclusions declare approver and expiry metadata",
+      "touched_paths": [
+        "configs/inventory/configs.json"
+      ]
+    },
+    {
+      "contract_type": "supplychain",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.supplychain.no_latest"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-041",
+      "rationale": "mutable latest-tag references make config-driven tooling non-reproducible.",
+      "severity": "blocker",
+      "title": "config surfaces forbid mutable latest-tag references",
+      "touched_paths": [
+        "configs/**"
+      ]
     }
   ],
   "domain": "configs",

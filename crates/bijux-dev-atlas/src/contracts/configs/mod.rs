@@ -61,6 +61,8 @@ struct ConfigsGroup {
 struct ConfigsExclusion {
     pattern: String,
     reason: String,
+    approved_by: Option<String>,
+    expires_on: Option<String>,
 }
 
 #[derive(Clone, Deserialize)]
@@ -178,6 +180,17 @@ fn violation(
 
 fn read_text(path: &Path) -> Result<String, String> {
     std::fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))
+}
+
+fn looks_like_iso_date(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    bytes.len() == 10
+        && bytes[4] == b'-'
+        && bytes[7] == b'-'
+        && bytes
+            .iter()
+            .enumerate()
+            .all(|(idx, byte)| matches!(idx, 4 | 7) || byte.is_ascii_digit())
 }
 
 fn read_owners(repo_root: &Path) -> Result<ConfigsOwners, String> {
@@ -441,7 +454,9 @@ fn generated_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
         "groups": groups,
         "exclusions": index.registry.exclusions.iter().map(|item| serde_json::json!({
             "pattern": item.pattern,
-            "reason": item.reason
+            "reason": item.reason,
+            "approved_by": item.approved_by,
+            "expires_on": item.expires_on
         })).collect::<Vec<_>>()
     }))
 }
@@ -1158,7 +1173,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=39)
+    let expected = (1..=41)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
@@ -2614,6 +2629,85 @@ fn test_configs_035_schema_versioning_policy(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_036_exclusion_governance(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-036",
+                "configs.exclusions.governed_metadata",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for exclusion in &index.registry.exclusions {
+        match exclusion.approved_by.as_deref() {
+            Some(value) if !value.trim().is_empty() => {}
+            _ => violations.push(violation(
+                "CONFIGS-036",
+                "configs.exclusions.governed_metadata",
+                REGISTRY_PATH,
+                format!(
+                    "exclusion `{}` must declare a non-empty approved_by",
+                    exclusion.pattern
+                ),
+            )),
+        }
+        match exclusion.expires_on.as_deref() {
+            Some(value) if looks_like_iso_date(value) => {}
+            Some(_) => violations.push(violation(
+                "CONFIGS-036",
+                "configs.exclusions.governed_metadata",
+                REGISTRY_PATH,
+                format!(
+                    "exclusion `{}` must use YYYY-MM-DD expires_on",
+                    exclusion.pattern
+                ),
+            )),
+            None => violations.push(violation(
+                "CONFIGS-036",
+                "configs.exclusions.governed_metadata",
+                REGISTRY_PATH,
+                format!("exclusion `{}` must declare expires_on", exclusion.pattern),
+            )),
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_037_no_latest_refs(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => return fail("CONFIGS-037", "configs.supplychain.no_latest", REGISTRY_PATH, err),
+    };
+    let mut violations = Vec::new();
+    for file in config_files_without_exclusions(&index) {
+        let path = ctx.repo_root.join(&file);
+        let Ok(contents) = std::fs::read_to_string(&path) else {
+            continue;
+        };
+        if contents.contains(":latest") {
+            violations.push(violation(
+                "CONFIGS-037",
+                "configs.supplychain.no_latest",
+                &file,
+                "forbidden mutable `:latest` reference found in config surface",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -2861,6 +2955,20 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "governed public schemas stay covered by the schema versioning policy",
             test_configs_035_schema_versioning_policy,
         ),
+        contract(
+            "CONFIGS-036",
+            "configs exclusions carry approval and expiry metadata",
+            "configs.exclusions.governed_metadata",
+            "registry exclusions declare approver and expiry metadata",
+            test_configs_036_exclusion_governance,
+        ),
+        contract(
+            "CONFIGS-037",
+            "configs surfaces forbid mutable latest-tag references",
+            "configs.supplychain.no_latest",
+            "config files may not embed mutable :latest references",
+            test_configs_037_no_latest_refs,
+        ),
     ])
 }
 
@@ -2920,6 +3028,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-033" => "The committed configs schema index must match the canonical render from configs/SCHEMAS.json and the schema directories.".to_string(),
         "CONFIGS-034" => "Every input schema under configs/schema must be referenced by at least one governed config mapping in configs/SCHEMAS.json.".to_string(),
         "CONFIGS-035" => "Every governed public schema file must be listed in configs/schema/versioning-policy.json with the supported compatibility and versioning rules.".to_string(),
+        "CONFIGS-036" => "Every registry exclusion must carry explicit approver and expiry metadata so allowlists stay reviewable.".to_string(),
+        "CONFIGS-037" => "Config surfaces may not embed mutable latest-tag references.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }

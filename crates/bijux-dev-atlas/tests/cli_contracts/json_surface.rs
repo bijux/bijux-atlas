@@ -116,7 +116,7 @@ fn configs_list_uses_registry_groups() {
             .get("contract_surface")
             .and_then(|v| v.get("contract_count"))
             .and_then(|v| v.as_u64()),
-        Some(39)
+        Some(41)
     );
     assert!(payload
         .get("contract_surface")
