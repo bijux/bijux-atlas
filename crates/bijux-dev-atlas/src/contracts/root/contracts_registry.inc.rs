@@ -1,10 +1,11 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 18] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
     ".github",
     ".gitignore",
     "CHANGELOG.md",
+    "CONTRACT.md",
     "CONTRIBUTING.md",
     "Cargo.lock",
     "Cargo.toml",
@@ -423,6 +424,16 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 title: "policy directories stay out of the repo root surface",
                 kind: TestKind::Pure,
                 run: test_root_026_no_duplicate_policy_dirs,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-041".to_string()),
+            title: "top-level contract documents follow the canonical executable template",
+            tests: vec![TestCase {
+                id: TestId("root.contract_docs.canonical_template".to_string()),
+                title: "root/docs/docker/make/ops/configs CONTRACT.md files stay canonical and registry-complete",
+                kind: TestKind::Pure,
+                run: test_root_041_contract_docs_canonical_template,
             }],
         },
     ])

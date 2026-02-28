@@ -75,7 +75,7 @@ fn push_root_violation(violations: &mut Vec<Violation>, contract_id: &str, test_
 }
 
 fn test_root_002_allowed_markdown(ctx: &RunContext) -> TestResult {
-    let allowed = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md"];
+    let allowed = ["README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md", "CONTRACT.md"];
     let mut violations = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {
         Ok(entries) => entries,
