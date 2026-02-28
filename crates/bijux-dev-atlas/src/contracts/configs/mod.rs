@@ -8,6 +8,7 @@ use serde::Deserialize;
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
 const REGISTRY_PATH: &str = "configs/inventory/configs.json";
+const OWNERS_PATH: &str = "configs/OWNERS.json";
 const ROOT_MARKDOWN_FILES: [&str; 2] = ["configs/README.md", "configs/CONTRACT.md"];
 const DOCS_TOOLING_PATTERNS: [&str; 6] = [
     "configs/docs/.markdownlint-cli2.jsonc",
@@ -47,6 +48,12 @@ struct ConfigsGroup {
 struct ConfigsExclusion {
     pattern: String,
     reason: String,
+}
+
+#[derive(Clone, Deserialize)]
+struct ConfigsOwners {
+    schema_version: u64,
+    groups: BTreeMap<String, String>,
 }
 
 #[derive(Clone)]
@@ -105,6 +112,12 @@ fn violation(
 
 fn read_text(path: &Path) -> Result<String, String> {
     std::fs::read_to_string(path).map_err(|err| format!("read {} failed: {err}", path.display()))
+}
+
+fn read_owners(repo_root: &Path) -> Result<ConfigsOwners, String> {
+    let text = read_text(&repo_root.join(OWNERS_PATH))?;
+    serde_json::from_str::<ConfigsOwners>(&text)
+        .map_err(|err| format!("parse {OWNERS_PATH} failed: {err}"))
 }
 
 fn all_config_files(root: &Path) -> Result<Vec<String>, String> {
@@ -804,7 +817,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=27)
+    let expected = (1..=28)
         .map(|n| format!("CONFIGS-{n:03}"))
         .collect::<BTreeSet<_>>();
     if index.contract_ids == expected {
@@ -1488,6 +1501,86 @@ fn test_configs_027_docs_tooling_surface(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_028_owner_map_alignment(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-028",
+                "configs.owners.group_alignment",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let owners = match read_owners(&ctx.repo_root) {
+        Ok(owners) => owners,
+        Err(err) => {
+            return fail(
+                "CONFIGS-028",
+                "configs.owners.group_alignment",
+                OWNERS_PATH,
+                err,
+            )
+        }
+    };
+    if owners.schema_version != 1 {
+        return fail(
+            "CONFIGS-028",
+            "configs.owners.group_alignment",
+            OWNERS_PATH,
+            format!(
+                "unsupported configs owner map schema_version {}",
+                owners.schema_version
+            ),
+        );
+    }
+    let mut violations = Vec::new();
+    let expected_groups = index
+        .registry
+        .groups
+        .iter()
+        .map(|group| group.name.clone())
+        .collect::<BTreeSet<_>>();
+    let actual_groups = owners.groups.keys().cloned().collect::<BTreeSet<_>>();
+    for missing in expected_groups.difference(&actual_groups) {
+        violations.push(violation(
+            "CONFIGS-028",
+            "configs.owners.group_alignment",
+            OWNERS_PATH,
+            format!("owner map is missing group `{missing}`"),
+        ));
+    }
+    for extra in actual_groups.difference(&expected_groups) {
+        violations.push(violation(
+            "CONFIGS-028",
+            "configs.owners.group_alignment",
+            OWNERS_PATH,
+            format!("owner map declares unknown group `{extra}`"),
+        ));
+    }
+    for group in &index.registry.groups {
+        match owners.groups.get(&group.name) {
+            Some(owner) if owner == &group.owner => {}
+            Some(owner) => violations.push(violation(
+                "CONFIGS-028",
+                "configs.owners.group_alignment",
+                OWNERS_PATH,
+                format!(
+                    "owner map mismatch for `{}`: expected `{}`, found `{owner}`",
+                    group.name, group.owner
+                ),
+            )),
+            None => {}
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -1679,6 +1772,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "configs docs files stay within the declared tooling surface",
             test_configs_027_docs_tooling_surface,
         ),
+        contract(
+            "CONFIGS-028",
+            "configs owner map stays aligned with the registry",
+            "configs.owners.group_alignment",
+            "configs owner map matches the declared group owners",
+            test_configs_028_owner_map_alignment,
+        ),
     ])
 }
 
@@ -1730,8 +1830,73 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-025" => "Config text files must not accumulate trailing whitespace drift.".to_string(),
         "CONFIGS-026" => "The configs/docs directory must not contain narrative markdown.".to_string(),
         "CONFIGS-027" => "The configs/docs directory must stay within its declared tooling file surface.".to_string(),
+        "CONFIGS-028" => "The canonical configs owner map must match the registry group owners.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
+}
+
+pub fn explain_payload(repo_root: &Path, file: &str) -> Result<serde_json::Value, String> {
+    let index = registry_index(repo_root)?;
+    let owners = read_owners(repo_root)?;
+    let normalized = file.replace('\\', "/");
+    if index.root_files.contains(&normalized) {
+        return Ok(serde_json::json!({
+            "schema_version": 1,
+            "kind": "configs_explain",
+            "path": normalized,
+            "group": serde_json::Value::Null,
+            "visibility": "root",
+            "owner": serde_json::Value::Null,
+            "schema_owner": serde_json::Value::Null,
+            "stability": "stable",
+            "tool_entrypoints": [],
+            "summary": "root configs authority file"
+        }));
+    }
+    for exclusion in &index.registry.exclusions {
+        if wildcard_match(&exclusion.pattern, &normalized) {
+            return Ok(serde_json::json!({
+                "schema_version": 1,
+                "kind": "configs_explain",
+                "path": normalized,
+                "group": serde_json::Value::Null,
+                "visibility": "excluded",
+                "owner": serde_json::Value::Null,
+                "schema_owner": serde_json::Value::Null,
+                "stability": serde_json::Value::Null,
+                "tool_entrypoints": [],
+                "summary": exclusion.reason
+            }));
+        }
+    }
+    for group in &index.registry.groups {
+        let visibility = if matches_any(group.public_files.iter(), &normalized) {
+            Some("public")
+        } else if matches_any(group.internal_files.iter(), &normalized) {
+            Some("internal")
+        } else if matches_any(group.generated_files.iter(), &normalized) {
+            Some("generated")
+        } else {
+            None
+        };
+        if let Some(visibility) = visibility {
+            return Ok(serde_json::json!({
+                "schema_version": 1,
+                "kind": "configs_explain",
+                "path": normalized,
+                "group": group.name,
+                "visibility": visibility,
+                "owner": owners.groups.get(&group.name).cloned().unwrap_or_else(|| group.owner.clone()),
+                "schema_owner": group.schema_owner,
+                "stability": group.stability,
+                "tool_entrypoints": group.tool_entrypoints,
+                "summary": format!("configs group `{}` {} file", group.name, visibility)
+            }));
+        }
+    }
+    Err(format!(
+        "config path `{normalized}` is not covered by configs/inventory/configs.json"
+    ))
 }
 
 pub fn contract_gate_command(_contract_id: &str) -> &'static str {
@@ -1795,5 +1960,14 @@ mod tests {
             "configs/docs/*.json",
             "configs/docs/schema-validation.md"
         ));
+    }
+
+    #[test]
+    fn explain_payload_returns_group_metadata() {
+        let payload =
+            explain_payload(&repo_root(), "configs/rust/rustfmt.toml").expect("explain payload");
+        assert_eq!(payload["group"].as_str(), Some("rust"));
+        assert_eq!(payload["visibility"].as_str(), Some("public"));
+        assert_eq!(payload["owner"].as_str(), Some("rust-foundation"));
     }
 }

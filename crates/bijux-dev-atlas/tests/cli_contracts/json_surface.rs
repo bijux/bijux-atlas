@@ -114,6 +114,30 @@ fn configs_list_uses_registry_groups() {
 }
 
 #[test]
+fn configs_explain_reports_registry_metadata() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args([
+            "configs",
+            "explain",
+            "configs/rust/rustfmt.toml",
+            "--format",
+            "json",
+        ])
+        .output()
+        .expect("configs explain json");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload.get("kind").and_then(|v| v.as_str()), Some("configs_explain"));
+    assert_eq!(payload.get("group").and_then(|v| v.as_str()), Some("rust"));
+    assert_eq!(
+        payload.get("owner").and_then(|v| v.as_str()),
+        Some("rust-foundation")
+    );
+}
+
+#[test]
 fn plugin_metadata_matches_umbrella_contract_shape() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .arg("--bijux-plugin-metadata")

@@ -217,6 +217,7 @@ fn force_json_configs(command: &mut ConfigsCommand) {
     match command {
         ConfigsCommand::Print(common)
         | ConfigsCommand::List(common)
+        | ConfigsCommand::Explain(crate::cli::ConfigsExplainArgs { common, .. })
         | ConfigsCommand::Verify(common)
         | ConfigsCommand::Doctor(common)
         | ConfigsCommand::Validate(common)
@@ -301,7 +302,10 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
             | ConfigsCommand::Inventory(common)
             | ConfigsCommand::Diff(common) => common.strict = true,
             ConfigsCommand::Fmt { check, .. } => *check = true,
-            ConfigsCommand::Print(_) | ConfigsCommand::List(_) | ConfigsCommand::Compile(_) => {}
+            ConfigsCommand::Print(_)
+            | ConfigsCommand::List(_)
+            | ConfigsCommand::Explain(_)
+            | ConfigsCommand::Compile(_) => {}
         },
         Command::Contracts { command } => match command {
             ContractsCommand::All(args) => args.fail_fast = true,
@@ -537,6 +541,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         Command::Configs { command } => match command {
             ConfigsCommand::Print(common)
             | ConfigsCommand::List(common)
+            | ConfigsCommand::Explain(crate::cli::ConfigsExplainArgs { common, .. })
             | ConfigsCommand::Verify(common)
             | ConfigsCommand::Doctor(common)
             | ConfigsCommand::Validate(common)

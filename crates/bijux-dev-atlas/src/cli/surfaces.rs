@@ -104,6 +104,7 @@ pub struct DocsGrepArgs {
 pub enum ConfigsCommand {
     Print(ConfigsCommonArgs),
     List(ConfigsCommonArgs),
+    Explain(ConfigsExplainArgs),
     Verify(ConfigsCommonArgs),
     Doctor(ConfigsCommonArgs),
     Validate(ConfigsCommonArgs),
@@ -117,6 +118,13 @@ pub enum ConfigsCommand {
     Inventory(ConfigsCommonArgs),
     Compile(ConfigsCommonArgs),
     Diff(ConfigsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ConfigsExplainArgs {
+    #[command(flatten)]
+    pub common: ConfigsCommonArgs,
+    pub file: String,
 }
 
 #[derive(Subcommand, Debug)]

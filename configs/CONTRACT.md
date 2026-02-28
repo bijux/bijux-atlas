@@ -27,3 +27,4 @@
 - `CONFIGS-025`: Config text files must not accumulate trailing whitespace drift. Enforced by: `configs.text.hygiene`.
 - `CONFIGS-026`: `configs/docs/` must not contain narrative markdown. Enforced by: `configs.docs.no_nested_markdown`.
 - `CONFIGS-027`: `configs/docs/` must stay within its declared tooling-only file surface. Enforced by: `configs.docs.tooling_surface`.
+- `CONFIGS-028`: `configs/OWNERS.json` must match the registry group owners. Enforced by: `configs.owners.group_alignment`.

@@ -578,6 +578,25 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
+            ConfigsCommand::Explain(args) => {
+                let ctx = configs_context(&args.common)?;
+                let mut payload = contracts::configs::explain_payload(&ctx.repo_root, &args.file)?;
+                payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
+                payload["text"] = serde_json::json!("configs explain registry");
+                payload["capabilities"] = serde_json::json!({
+                    "fs_write": args.common.allow_write,
+                    "subprocess": args.common.allow_subprocess,
+                    "network": args.common.allow_network
+                });
+                payload["options"] = serde_json::json!({
+                    "strict": args.common.strict
+                });
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                Ok((
+                    emit_payload(args.common.format, args.common.out.clone(), &payload)?,
+                    0,
+                ))
+            }
             ConfigsCommand::Inventory(common) => {
                 let ctx = configs_context(&common)?;
                 let mut payload = configs_inventory_payload(&ctx, &common)?;
