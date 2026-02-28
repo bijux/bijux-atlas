@@ -1,21 +1,17 @@
-# Atlas Documentation
+# Atlas Docs
 
-Owner: `docs-governance`  
-Status: `active`
+Atlas documentation is organized by reader intent. Start at `start-here.md` for onboarding, then use one section index.
 
-Atlas is the stable platform surface for operating, evolving, and consuming the bijux ecosystem through explicit contracts, predictable workflows, and verifiable runtime behavior.
-
-## Reader Spine
+## Start
 
 - [Start Here](start-here.md)
+
+## Sections
+
 - [Product](product/index.md)
+- [Architecture](architecture/index.md)
+- [API](api/index.md)
 - [Operations](operations/index.md)
 - [Development](development/index.md)
-- [API](api/index.md)
 - [Reference](reference/index.md)
-
-## Navigation Model
-
-Navigation is defined only by this page and each section `index.md` page.
-
-Legacy index maps and generated navigation files are not canonical entrypoints.
+- [Governance](governance/index.md)

@@ -1,20 +1,16 @@
 # Glossary
 
-Owner: `docs-governance`  
-Type: `reference`  
-Reason to exist: provide one canonical term dictionary for all docs.
+## Atlas
+Deterministic genomics serving platform with contract-governed interfaces.
 
-## Usage Rules
+## Contract
+Executable or documented rule that defines stable behavior and compatibility expectations.
 
-- Add terms only here.
-- Link to this page instead of duplicating term lists in section docs.
-- Keep definitions implementation-neutral and stable.
+## Reader spine
+Small set of entrypoint pages every reader starts from.
 
-## Core Terms
+## Runbook
+Operational response guide for diagnosing and mitigating incidents.
 
-- `atlas`: Stable platform surface for bijux operations and consumption.
-- `contract`: Executable or narrative constraint that must remain true.
-- `runbook`: Operational procedure for diagnosis and recovery.
-- `surface`: User-visible API, CLI, config, or policy boundary.
-- `dataset identity`: Explicit `release/species/assembly` selector on data access surfaces.
-- `artifact immutability`: Published dataset artifacts are not mutated in place.
+## Reference
+Factual source of truth for commands, configs, schemas, and error definitions.
