@@ -201,6 +201,40 @@ fn contracts_all_json_domain_order_is_stable() {
 }
 
 #[test]
+fn contracts_changed_only_uses_merge_base_diff_selection() {
+    let source = fs::read_to_string(
+        repo_root().join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
+    )
+    .expect("read contracts command source");
+    assert!(
+        source.contains(r#""merge-base", "HEAD""#),
+        "changed-only must use merge-base selection"
+    );
+    assert!(
+        source.contains(r#""diff", "--name-only""#),
+        "changed-only must use git diff --name-only from merge-base"
+    );
+}
+
+#[test]
+fn contracts_changed_only_reports_fallback_reason_when_merge_base_unavailable() {
+    let source = fs::read_to_string(
+        repo_root().join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
+    )
+    .expect("read contracts command source");
+    assert!(
+        source.contains("changed-only merge-base unavailable; selected by fallback"),
+        "changed-only fallback reason changed"
+    );
+    assert!(
+        source.contains(
+            "Changed-only selection note: merge-base diff could not be resolved; selecting requested domains"
+        ),
+        "changed-only fallback selection note changed"
+    );
+}
+
+#[test]
 fn contracts_configs_runs_and_reports_summary() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
