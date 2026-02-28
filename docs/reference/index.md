@@ -21,7 +21,8 @@ Facts live here. Use this section for canonical definitions, keys, and stable UR
 
 Reference pages are canonical surfaces. Guides should link here instead of duplicating tables.
 
-## Next
+## Next steps
 
 - [API](../api/index.md)
 - [Operations](../operations/index.md)
+- [Glossary](../glossary.md)

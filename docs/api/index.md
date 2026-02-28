@@ -27,7 +27,8 @@ If the service is unhealthy or an error persists, follow [Operations Incident Re
 
 Endpoint and schema facts live in [Reference](../reference/index.md) and [Reference Contracts](../reference/contracts/index.md).
 
-## Next
+## Next steps
 
 - [Reference](../reference/index.md)
 - [Start Here](../start-here.md)
+- [Glossary](../glossary.md)

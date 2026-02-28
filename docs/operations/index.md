@@ -24,9 +24,10 @@ This page is not a command reference and not an architecture deep dive.
 
 Operator workflows are successful when each linked page reaches a concrete verification outcome.
 
-## Next Steps
+## Next steps
 
 Use [Reference](../reference/index.md) for exact flags and schemas, and [Runbooks](runbooks/index.md) during incidents.
+Also review [Glossary](../glossary.md) for canonical terms.
 
 ## What to Read Next
 

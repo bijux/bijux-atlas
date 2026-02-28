@@ -28,9 +28,10 @@ Start with [Dataflow](dataflow.md), then [Boundaries](boundaries.md), then choos
 - [Architecture Map](architecture-map.md)
 - [Contract Runtime Mapping](contract-runtime-mapping.md)
 
-## Next Steps
+## Next steps
 
 Continue with [Operations](../operations/index.md) for runtime procedures or [Development](../development/index.md) for contributor workflows.
+Also review [Glossary](../glossary.md) for canonical terms.
 
 ## What to Read Next
 

@@ -16,3 +16,9 @@
 - `Fixture`: Curated deterministic sample data used for repeatable tests.
 - `Profile`: Named execution mode with specific policy and resource settings.
 - `Lane`: Delivery context (`local`, `pr`, `merge`, `release`) used by contracts and CI.
+
+## Next steps
+
+- Home: [Home](index.md)
+- Onboarding: [Start here](start-here.md)
+- Runtime model: [Architecture](architecture/index.md)

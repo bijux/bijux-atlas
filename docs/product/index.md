@@ -36,9 +36,10 @@ Use API docs to integrate clients.
 Use Operations docs to run the system.
 ```
 
-## Next Steps
+## Next steps
 
 Continue with [Operations](../operations/index.md) for runtime workflows or [API](../api/index.md) for client behavior.
+Also review [Glossary](../glossary.md) for canonical terms.
 
 ## What to Read Next
 
