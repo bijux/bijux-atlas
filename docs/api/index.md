@@ -11,3 +11,9 @@ Reason to exist: explain the stable API surface and contract behavior.
 - [Pagination](pagination.md)
 - [Errors](errors.md)
 - [Compatibility](compatibility.md)
+
+## What To Read Next
+
+- [Start Here](../start-here.md)
+- [Reference](../reference/index.md)
+- [Operations](../operations/index.md)

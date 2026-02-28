@@ -16,3 +16,5 @@ Reason to exist: provide one canonical term dictionary for all docs.
 - `contract`: Executable or narrative constraint that must remain true.
 - `runbook`: Operational procedure for diagnosis and recovery.
 - `surface`: User-visible API, CLI, config, or policy boundary.
+- `dataset identity`: Explicit `release/species/assembly` selector on data access surfaces.
+- `artifact immutability`: Published dataset artifacts are not mutated in place.

@@ -11,3 +11,9 @@ Reason to exist: provide contributor onboarding and implementation workflow entr
 - [Tooling](tooling/INDEX.md)
 - [Add Endpoint](add-endpoint.md)
 - [Add Dataset Type](add-dataset-type.md)
+
+## What To Read Next
+
+- [Start Here](../start-here.md)
+- [Architecture](../architecture/index.md)
+- [Operations](../operations/index.md)

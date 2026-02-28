@@ -30,3 +30,11 @@ Atlas is the stable platform surface for operating, evolving, and consuming the 
 - [Compatibility Promise](compatibility-promise.md)
 - [Non Goals](non-goals.md)
 - [User Stories](user-stories.md)
+- [Release Model](release-model.md)
+
+## What To Read Next
+
+- [Start Here](../start-here.md)
+- [Operations](../operations/index.md)
+- [API](../api/index.md)
+- [Reference](../reference/index.md)

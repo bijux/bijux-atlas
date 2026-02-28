@@ -12,3 +12,9 @@ Reason to exist: provide the operator entrypoint for running, deploying, and rec
 - [Kubernetes](k8s/INDEX.md)
 - [Observability](observability/INDEX.md)
 - [Runbooks](runbooks/INDEX.md)
+
+## What To Read Next
+
+- [Start Here](../start-here.md)
+- [Architecture](../architecture/index.md)
+- [Reference](../reference/index.md)

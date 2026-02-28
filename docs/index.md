@@ -9,12 +9,10 @@ Atlas is the stable platform surface for operating, evolving, and consuming the 
 
 - [Start Here](start-here.md)
 - [Product](product/index.md)
-- [Architecture](architecture/index.md)
-- [API](api/index.md)
 - [Operations](operations/index.md)
 - [Development](development/index.md)
+- [API](api/index.md)
 - [Reference](reference/index.md)
-- [Governance](governance/index.md)
 
 ## Navigation Model
 
