@@ -1,0 +1,477 @@
+{
+  "contracts": [
+    {
+      "domain": "docs",
+      "id": "DOC-001",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.surface.allowed_root_dirs"
+        }
+      ],
+      "title": "docs top-level sections stay curated"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-002",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.surface.allowed_root_markdown"
+        }
+      ],
+      "title": "docs root markdown stays on the curated surface"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-003",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.depth_budget"
+        }
+      ],
+      "title": "docs paths stay within the depth budget"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-004",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.sibling_budget"
+        }
+      ],
+      "title": "docs directories stay within the sibling budget"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-005",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.naming.no_whitespace"
+        }
+      ],
+      "title": "docs filenames avoid whitespace drift"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-006",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.exists"
+        }
+      ],
+      "title": "docs canonical entrypoint exists"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-007",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.surface.allowed_root_files"
+        }
+      ],
+      "title": "docs root files stay on the declared non-markdown surface"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-008",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.owners.section_coverage"
+        }
+      ],
+      "title": "docs top-level sections keep declared owners"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-009",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.sections.manifest_complete"
+        }
+      ],
+      "title": "docs section manifest stays complete"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-010",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.sections.index_policy"
+        }
+      ],
+      "title": "docs section entrypoints follow the declared manifest"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-011",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.section_indexes_resolve"
+        }
+      ],
+      "title": "docs section index links resolve"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-012",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.root_entrypoints_resolve"
+        }
+      ],
+      "title": "docs root entrypoint links resolve"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-013",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.entrypoint_owner"
+        }
+      ],
+      "title": "docs entrypoint pages declare owner metadata"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-014",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.entrypoint_stability"
+        }
+      ],
+      "title": "docs entrypoint page stability values stay normalized"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-015",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.deprecated_replacement"
+        }
+      ],
+      "title": "deprecated docs entrypoints name a replacement path"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-016",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.section_owner_alignment"
+        }
+      ],
+      "title": "docs section entrypoint owners align with the owner registry"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-017",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.sections.root_entrypoint_flags"
+        }
+      ],
+      "title": "docs section manifest declares root entrypoint coverage"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-018",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.root_section_coverage"
+        }
+      ],
+      "title": "docs root entrypoint links every declared root section"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-019",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.quality.entrypoint_word_budget"
+        }
+      ],
+      "title": "docs entrypoint pages stay within the word budget"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-020",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.quality.no_placeholders"
+        }
+      ],
+      "title": "stable docs entrypoint pages avoid placeholder markers"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-021",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.format.no_tabs"
+        }
+      ],
+      "title": "docs entrypoint pages avoid raw tabs"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-022",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.format.no_trailing_whitespace"
+        }
+      ],
+      "title": "docs entrypoint pages avoid trailing whitespace"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-023",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.single_h1"
+        }
+      ],
+      "title": "docs entrypoint pages keep a single top-level heading"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-024",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.no_absolute_local_paths"
+        }
+      ],
+      "title": "docs entrypoint pages avoid absolute local file links"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-025",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.no_raw_http"
+        }
+      ],
+      "title": "docs entrypoint pages avoid raw http links"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-026",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.unique_section_links"
+        }
+      ],
+      "title": "docs root entrypoint avoids duplicate section index links"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-027",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.section_indexes_list_local_pages"
+        }
+      ],
+      "title": "docs section indexes link at least one local page"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-028",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.section_indexes_unique_local_pages"
+        }
+      ],
+      "title": "docs section indexes avoid duplicate local page links"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-029",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.root_entrypoints_unique_local_pages"
+        }
+      ],
+      "title": "docs root entrypoint pages avoid duplicate local page links"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-030",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.report_generated"
+        }
+      ],
+      "title": "docs index correctness report stays derivable"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-031",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.single_entrypoint"
+        }
+      ],
+      "title": "docs root keeps a single canonical entrypoint"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-032",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reports.broken_links_generated"
+        }
+      ],
+      "title": "docs broken links report is generated deterministically"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-033",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reports.orphans_generated"
+        }
+      ],
+      "title": "docs orphan pages report is generated deterministically"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-034",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reports.metadata_coverage_generated"
+        }
+      ],
+      "title": "docs metadata coverage report is generated deterministically"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-035",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reports.duplication_generated"
+        }
+      ],
+      "title": "docs duplication report is generated deterministically"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-036",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.reports.coverage_generated"
+        }
+      ],
+      "title": "docs contract coverage report is generated deterministically"
+    }
+  ],
+  "schema_version": 1
+}

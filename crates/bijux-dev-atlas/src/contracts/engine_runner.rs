@@ -1,5 +1,15 @@
 use std::time::Instant;
 
+fn panic_payload_to_string(payload: &(dyn std::any::Any + Send)) -> String {
+    if let Some(text) = payload.downcast_ref::<&'static str>() {
+        (*text).to_string()
+    } else if let Some(text) = payload.downcast_ref::<String>() {
+        text.clone()
+    } else {
+        "non-string panic payload".to_string()
+    }
+}
+
 pub fn run(
     domain: &str,
     contracts_fn: fn(&Path) -> Result<Vec<Contract>, String>,
@@ -26,6 +36,7 @@ pub fn run(
 
     let mut contract_rows = Vec::new();
     let mut case_rows = Vec::new();
+    let mut panic_rows = Vec::new();
 
     for contract in contracts {
         let required_lanes = contract_required_lanes(&required_map, domain, &contract.id.0);
@@ -78,9 +89,22 @@ pub fn run(
                     (Mode::Effect, TestKind::Network) if !options.allow_network => {
                         TestResult::Error("requires --allow-network".to_string())
                     }
-                    _ => match std::panic::catch_unwind(|| (case.run)(&ctx)) {
+                    _ => match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        (case.run)(&ctx)
+                    })) {
                         Ok(v) => v,
-                        Err(_) => TestResult::Error("test panicked".to_string()),
+                        Err(payload) => {
+                            let payload_text = panic_payload_to_string(payload.as_ref());
+                            let backtrace = std::backtrace::Backtrace::force_capture().to_string();
+                            panic_rows.push(PanicRecord {
+                                domain: domain.to_string(),
+                                contract_id: contract_id.clone(),
+                                test_id: case.id.0.clone(),
+                                payload: payload_text.clone(),
+                                backtrace: backtrace.clone(),
+                            });
+                            TestResult::Error(format!("test panicked: {payload_text}"))
+                        }
                     },
                 }
             };
@@ -141,6 +165,7 @@ pub fn run(
         metadata: run_metadata(repo_root),
         contracts: contract_rows,
         cases: case_rows,
+        panics: panic_rows,
         duration_ms: run_started.elapsed().as_millis() as u64,
     };
 
@@ -218,6 +243,24 @@ pub fn run(
             .map_err(|e| format!("encode contracts status failed: {e}"))?,
         )
         .map_err(|e| format!("write {} failed: {e}", status_path.display()))?;
+        let panics_path = out_dir.join("panics.json");
+        std::fs::write(
+            &panics_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "domain": domain,
+                "run_id": report.metadata.run_id,
+                "panics": report.panics.iter().map(|panic| serde_json::json!({
+                    "domain": panic.domain,
+                    "contract_id": panic.contract_id,
+                    "test_id": panic.test_id,
+                    "payload": panic.payload,
+                    "backtrace": panic.backtrace,
+                })).collect::<Vec<_>>()
+            }))
+            .map_err(|e| format!("encode contracts panic report failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", panics_path.display()))?;
         let coverage = coverage_report(&report);
         let coverage_path = out_dir.join(format!("{domain}.coverage.json"));
         std::fs::write(

@@ -98,6 +98,34 @@
         .expect("write policy");
     }
 
+    fn run_options(
+        contract_filter: Option<&str>,
+        test_filter: Option<&str>,
+    ) -> crate::contracts::RunOptions {
+        crate::contracts::RunOptions {
+            lane: crate::contracts::ContractLane::Local,
+            mode: crate::contracts::Mode::Static,
+            required_only: false,
+            allow_subprocess: false,
+            allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
+            deny_skip_required: true,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
+            fail_fast: false,
+            contract_filter: contract_filter.map(str::to_string),
+            test_filter: test_filter.map(str::to_string),
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
+            list_only: false,
+            artifacts_root: None,
+        }
+    }
+
     #[test]
     fn detects_latest_tag_violation() {
         let tmp = tempfile::tempdir().expect("tempdir");
@@ -117,25 +145,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-006".to_string()),
-                test_filter: Some("docker.from.no_latest".to_string()),
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(Some("DOCKER-006"), Some("docker.from.no_latest")),
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 1);
@@ -157,25 +167,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: None,
-                test_filter: None,
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(None, None),
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 0, "report had failures");
@@ -260,25 +252,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-014".to_string()),
-                test_filter: None,
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(Some("DOCKER-014"), None),
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 1);
@@ -302,25 +276,10 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-061".to_string()),
-                test_filter: Some("docker.copy.canonical_config_paths".to_string()),
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(
+                Some("DOCKER-061"),
+                Some("docker.copy.canonical_config_paths"),
+            ),
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 1);
@@ -346,25 +305,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-033".to_string()),
-                test_filter: None,
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(Some("DOCKER-033"), None),
         )
         .expect("run contracts");
         assert!(report.fail_count() > 0);
@@ -385,25 +326,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-008".to_string()),
-                test_filter: None,
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(Some("DOCKER-008"), None),
         )
         .expect("run contracts");
         assert_eq!(report.fail_count(), 0, "uppercase label keys should pass");
@@ -444,25 +367,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-012".to_string()),
-                test_filter: None,
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(Some("DOCKER-012"), None),
         )
         .expect("run");
         assert!(report.fail_count() > 0, "expected missing runtime violation");
@@ -506,25 +411,7 @@
             "docker",
             contracts,
             tmp.path(),
-            &crate::contracts::RunOptions {
-                mode: crate::contracts::Mode::Static,
-                allow_subprocess: false,
-                allow_network: false,
-                allow_k8s: false,
-                allow_fs_write: false,
-                allow_docker_daemon: false,
-                skip_missing_tools: false,
-                timeout_seconds: 300,
-                fail_fast: false,
-                contract_filter: Some("DOCKER-013".to_string()),
-                test_filter: None,
-                only_contracts: Vec::new(),
-                only_tests: Vec::new(),
-                skip_contracts: Vec::new(),
-                tags: Vec::new(),
-                list_only: false,
-                artifacts_root: None,
-            },
+            &run_options(Some("DOCKER-013"), None),
         )
         .expect("run");
         assert!(report.fail_count() > 0, "expected forbidden extra image violation");

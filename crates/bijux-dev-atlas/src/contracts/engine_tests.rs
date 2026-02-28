@@ -1,7 +1,42 @@
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::Path;
+    use std::fs;
+    use std::path::{Path, PathBuf};
+
+    fn repo_root() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .to_path_buf()
+    }
+
+    fn sample_options() -> RunOptions {
+        RunOptions {
+            lane: ContractLane::Local,
+            mode: Mode::Static,
+            required_only: false,
+            allow_subprocess: false,
+            allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
+            deny_skip_required: true,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
+            list_only: false,
+            artifacts_root: None,
+        }
+    }
 
     fn sample_contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         fn pass_case(_: &RunContext) -> TestResult {
@@ -44,26 +79,9 @@ mod tests {
 
     #[test]
     fn pretty_output_is_stable() {
-        let options = RunOptions {
-            mode: Mode::Static,
-            allow_subprocess: false,
-            allow_network: false,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
-            skip_missing_tools: false,
-            timeout_seconds: 300,
-            fail_fast: false,
-            contract_filter: None,
-            test_filter: None,
-            only_contracts: Vec::new(),
-            only_tests: Vec::new(),
-            skip_contracts: Vec::new(),
-            tags: Vec::new(),
-            list_only: false,
-            artifacts_root: None,
-        };
-        let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
+        let options = sample_options();
+        let root = repo_root();
+        let report = run("docker", sample_contracts, &root, &options).expect("run");
         let pretty = to_pretty(&report);
         assert!(pretty.contains("Contracts: docker (mode=static, duration="));
         assert!(pretty.contains("DOCKER-001 sample"));
@@ -74,27 +92,9 @@ mod tests {
 
     #[test]
     fn json_serialization_contains_summary_and_tests() {
-        let options = RunOptions {
-            mode: Mode::Static,
-            allow_subprocess: false,
-            allow_network: false,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
-            skip_missing_tools: false,
-            timeout_seconds: 300,
-            fail_fast: false,
-            contract_filter: None,
-            test_filter: None,
-            only_contracts: Vec::new(),
-            only_tests: Vec::new(),
-            skip_contracts: Vec::new(),
-            tags: Vec::new(),
-            list_only: false,
-            artifacts_root: None,
-        };
-        let report =
-            run("docker", sample_contracts_failing, Path::new("."), &options).expect("run");
+        let options = sample_options();
+        let root = repo_root();
+        let report = run("docker", sample_contracts_failing, &root, &options).expect("run");
         let payload = to_json(&report);
         assert_eq!(payload["schema_version"], 1);
         assert_eq!(payload["summary"]["contracts"], 1);
@@ -126,52 +126,63 @@ mod tests {
                 }],
             }])
         }
-        let options = RunOptions {
-            mode: Mode::Static,
-            allow_subprocess: false,
-            allow_network: false,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
-            skip_missing_tools: false,
-            timeout_seconds: 300,
-            fail_fast: false,
-            contract_filter: None,
-            test_filter: None,
-            only_contracts: Vec::new(),
-            only_tests: Vec::new(),
-            skip_contracts: Vec::new(),
-            tags: Vec::new(),
-            list_only: false,
-            artifacts_root: None,
-        };
-        let report = run("docker", registry, Path::new("."), &options).expect("run");
+        let options = sample_options();
+        let root = repo_root();
+        let report = run("docker", registry, &root, &options).expect("run");
         assert_eq!(report.error_count(), 1);
         assert_eq!(report.exit_code(), 1);
+        assert_eq!(report.panics.len(), 1);
+        assert_eq!(report.panics[0].payload, "boom");
+        assert!(!report.panics[0].backtrace.trim().is_empty());
+        let payload = to_json(&report);
+        assert_eq!(payload["summary"]["panic_count"].as_u64(), Some(1));
+        assert_eq!(payload["panics"][0]["payload"].as_str(), Some("boom"));
+    }
+
+    #[test]
+    fn panic_artifact_is_written_when_artifacts_root_is_set() {
+        fn panic_case(_: &RunContext) -> TestResult {
+            panic!("artifact boom");
+        }
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            Ok(vec![Contract {
+                id: ContractId("DOCKER-997".to_string()),
+                title: "panic artifact case",
+                tests: vec![TestCase {
+                    id: TestId("docker.sample.panic_artifact".to_string()),
+                    title: "panic artifact case",
+                    kind: TestKind::Pure,
+                    run: panic_case,
+                }],
+            }])
+        }
+        let artifacts_root = std::env::temp_dir().join(format!(
+            "bijux-dev-atlas-engine-tests-{}",
+            std::process::id()
+        ));
+        let _ = fs::remove_dir_all(&artifacts_root);
+        fs::create_dir_all(&artifacts_root).expect("create artifacts root");
+        let mut options = sample_options();
+        options.artifacts_root = Some(artifacts_root.clone());
+        let root = repo_root();
+        let report = run("docker", registry, &root, &options).expect("run");
+        assert_eq!(report.panics.len(), 1);
+        let panic_artifact: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(artifacts_root.join("panics.json")).expect("read panics artifact"),
+        )
+        .expect("parse panics artifact");
+        assert_eq!(
+            panic_artifact["panics"][0]["payload"].as_str(),
+            Some("artifact boom")
+        );
+        let _ = fs::remove_dir_all(&artifacts_root);
     }
 
     #[test]
     fn json_serialization_includes_group_and_nested_checks() {
-        let options = RunOptions {
-            mode: Mode::Static,
-            allow_subprocess: false,
-            allow_network: false,
-            allow_k8s: false,
-            allow_fs_write: false,
-            allow_docker_daemon: false,
-            skip_missing_tools: false,
-            timeout_seconds: 300,
-            fail_fast: false,
-            contract_filter: None,
-            test_filter: None,
-            only_contracts: Vec::new(),
-            only_tests: Vec::new(),
-            skip_contracts: Vec::new(),
-            tags: Vec::new(),
-            list_only: false,
-            artifacts_root: None,
-        };
-        let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
+        let options = sample_options();
+        let root = repo_root();
+        let report = run("docker", sample_contracts, &root, &options).expect("run");
         let payload = to_json(&report);
         assert_eq!(payload["group"].as_str(), Some("docker"));
         assert!(payload["contracts"][0]["checks"].is_array());

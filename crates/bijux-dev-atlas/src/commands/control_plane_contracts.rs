@@ -70,6 +70,22 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         Ok(())
     }
 
+    fn validate_selection_patterns(common: &ContractsCommonArgs) -> Result<(), String> {
+        for pattern in common.filter_contract.iter().chain(common.filter_test.iter()) {
+            contracts::validate_wildcard_pattern(pattern)?;
+        }
+        for pattern in common
+            .only_contracts
+            .iter()
+            .chain(common.only_tests.iter())
+            .chain(common.skip_contracts.iter())
+            .chain(common.tags.iter())
+        {
+            contracts::validate_wildcard_pattern(pattern)?;
+        }
+        Ok(())
+    }
+
     fn write_optional(path: &Option<PathBuf>, rendered: &str) -> Result<(), String> {
         if let Some(path) = path {
             if let Some(parent) = path.parent() {
@@ -690,6 +706,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ContractsCommand::Snapshot(_) => unreachable!("handled above"),
         };
         apply_lane_policy(&mut common)?;
+        validate_selection_patterns(&common).map_err(|err| format!("usage: {err}"))?;
 
         let format = common_format(&common);
         let lints = registry_lints(&repo_root)?;

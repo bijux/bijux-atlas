@@ -222,6 +222,14 @@ pub struct ContractSummary {
     pub duration_ms: u64,
 }
 
+pub struct PanicRecord {
+    pub domain: String,
+    pub contract_id: String,
+    pub test_id: String,
+    pub payload: String,
+    pub backtrace: String,
+}
+
 pub struct RunMetadata {
     pub run_id: String,
     pub commit_sha: Option<String>,
@@ -235,6 +243,7 @@ pub struct RunReport {
     pub metadata: RunMetadata,
     pub contracts: Vec<ContractSummary>,
     pub cases: Vec<CaseReport>,
+    pub panics: Vec<PanicRecord>,
     pub duration_ms: u64,
 }
 

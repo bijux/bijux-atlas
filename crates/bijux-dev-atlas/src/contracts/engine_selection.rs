@@ -1,5 +1,17 @@
 use std::cmp::Ordering;
 
+pub fn validate_wildcard_pattern(pattern: &str) -> Result<(), String> {
+    let unsupported = pattern
+        .chars()
+        .find(|ch| matches!(ch, '[' | ']' | '{' | '}' | '(' | ')'));
+    if let Some(ch) = unsupported {
+        return Err(format!(
+            "invalid wildcard pattern `{pattern}`: unsupported metacharacter `{ch}`; use `*` and `?` only"
+        ));
+    }
+    Ok(())
+}
+
 pub struct SelectionFilters<'a> {
     pub contract_filter: Option<&'a str>,
     pub test_filter: Option<&'a str>,
@@ -126,6 +138,9 @@ pub fn required_effects_for_selection(
 }
 
 pub fn wildcard_match(pattern: &str, text: &str) -> bool {
+    if validate_wildcard_pattern(pattern).is_err() {
+        return false;
+    }
     let mut regex = String::from("^");
     for ch in pattern.chars() {
         match ch {

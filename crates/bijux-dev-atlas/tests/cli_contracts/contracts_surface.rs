@@ -13,6 +13,10 @@ fn repo_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn normalize_newlines(text: &str) -> String {
+    text.replace("\r\n", "\n")
+}
+
 #[test]
 fn contracts_ops_list_includes_tests_by_default() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -201,6 +205,38 @@ fn contracts_all_json_domain_order_is_stable() {
 }
 
 #[test]
+fn contracts_docs_list_json_matches_golden_snapshot() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "docs", "--list", "--format", "json"])
+        .output()
+        .expect("contracts docs list json");
+    assert!(output.status.success());
+    let actual = String::from_utf8(output.stdout).expect("utf8 stdout");
+    let golden = fs::read_to_string(
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/contracts_docs_list.json"),
+    )
+    .expect("read contracts docs list golden");
+    assert_eq!(normalize_newlines(&actual), normalize_newlines(&golden));
+}
+
+#[test]
+fn contracts_docs_list_table_matches_golden_snapshot() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "docs", "--list", "--format", "table"])
+        .output()
+        .expect("contracts docs list table");
+    assert!(output.status.success());
+    let actual = String::from_utf8(output.stdout).expect("utf8 stdout");
+    let golden = fs::read_to_string(
+        repo_root().join("crates/bijux-dev-atlas/tests/goldens/contracts_docs_list_table.txt"),
+    )
+    .expect("read contracts docs table golden");
+    assert_eq!(normalize_newlines(&actual), normalize_newlines(&golden));
+}
+
+#[test]
 fn contracts_changed_only_uses_merge_base_diff_selection() {
     let source = fs::read_to_string(
         repo_root().join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
@@ -232,6 +268,31 @@ fn contracts_changed_only_reports_fallback_reason_when_merge_base_unavailable() 
         ),
         "changed-only fallback selection note changed"
     );
+}
+
+#[test]
+fn contracts_invalid_contract_filter_pattern_is_usage_error() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "docs", "--filter-contract", "DOC-[001"])
+        .output()
+        .expect("contracts invalid contract filter");
+    assert_eq!(output.status.code(), Some(2));
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("invalid wildcard pattern `DOC-[001`"));
+    assert!(stderr.contains("use `*` and `?` only"));
+}
+
+#[test]
+fn contracts_invalid_test_filter_pattern_is_usage_error() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "docs", "--filter-test", "docs.{broken}"])
+        .output()
+        .expect("contracts invalid test filter");
+    assert_eq!(output.status.code(), Some(2));
+    let stderr = String::from_utf8(output.stderr).expect("utf8 stderr");
+    assert!(stderr.contains("invalid wildcard pattern `docs.{broken}`"));
 }
 
 #[test]

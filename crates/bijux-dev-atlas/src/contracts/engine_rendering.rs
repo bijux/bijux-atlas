@@ -135,6 +135,7 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "fail": report.fail_count(),
             "skip": report.skip_count(),
             "error": report.error_count(),
+            "panic_count": report.panics.len(),
             "exit_code": report.exit_code(),
             "required_failures": report.required_failure_ids(),
             "duration_ms": report.duration_ms
@@ -185,6 +186,13 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
                 "message": v.message,
                 "evidence": v.evidence
             })).collect::<Vec<_>>()
+        })).collect::<Vec<_>>(),
+        "panics": report.panics.iter().map(|panic| serde_json::json!({
+            "domain": panic.domain,
+            "contract_id": panic.contract_id,
+            "test_id": panic.test_id,
+            "payload": panic.payload,
+            "backtrace": panic.backtrace,
         })).collect::<Vec<_>>()
     })
 }
@@ -218,6 +226,7 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
             "fail": fail,
             "skip": skip,
             "error": error,
+            "panic_count": reports.iter().map(|report| report.panics.len()).sum::<usize>(),
             "exit_code": exit_code,
             "required_failures": stop_ship,
             "duration_ms": reports.iter().map(|report| report.duration_ms).sum::<u64>()

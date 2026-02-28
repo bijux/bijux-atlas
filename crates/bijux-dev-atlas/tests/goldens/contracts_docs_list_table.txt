@@ -1,0 +1,38 @@
+GROUP    CONTRACT ID        REQUIRED LANES                SEVERITY TITLE
+docs     DOC-001            yes      pr,merge,release     must     docs top-level sections stay curated
+docs     DOC-002            no                            must     docs root markdown stays on the curated surface
+docs     DOC-003            no                            must     docs paths stay within the depth budget
+docs     DOC-004            no                            must     docs directories stay within the sibling budget
+docs     DOC-005            no                            must     docs filenames avoid whitespace drift
+docs     DOC-006            no                            must     docs canonical entrypoint exists
+docs     DOC-007            no                            must     docs root files stay on the declared non-markdown surface
+docs     DOC-008            no                            must     docs top-level sections keep declared owners
+docs     DOC-009            no                            must     docs section manifest stays complete
+docs     DOC-010            no                            must     docs section entrypoints follow the declared manifest
+docs     DOC-011            no                            must     docs section index links resolve
+docs     DOC-012            no                            must     docs root entrypoint links resolve
+docs     DOC-013            no                            must     docs entrypoint pages declare owner metadata
+docs     DOC-014            no                            must     docs entrypoint page stability values stay normalized
+docs     DOC-015            no                            must     deprecated docs entrypoints name a replacement path
+docs     DOC-016            no                            must     docs section entrypoint owners align with the owner registry
+docs     DOC-017            no                            must     docs section manifest declares root entrypoint coverage
+docs     DOC-018            no                            must     docs root entrypoint links every declared root section
+docs     DOC-019            no                            must     docs entrypoint pages stay within the word budget
+docs     DOC-020            no                            must     stable docs entrypoint pages avoid placeholder markers
+docs     DOC-021            no                            must     docs entrypoint pages avoid raw tabs
+docs     DOC-022            no                            must     docs entrypoint pages avoid trailing whitespace
+docs     DOC-023            no                            must     docs entrypoint pages keep a single top-level heading
+docs     DOC-024            no                            must     docs entrypoint pages avoid absolute local file links
+docs     DOC-025            no                            must     docs entrypoint pages avoid raw http links
+docs     DOC-026            no                            must     docs root entrypoint avoids duplicate section index links
+docs     DOC-027            no                            must     docs section indexes link at least one local page
+docs     DOC-028            no                            must     docs section indexes avoid duplicate local page links
+docs     DOC-029            no                            must     docs root entrypoint pages avoid duplicate local page links
+docs     DOC-030            no                            must     docs index correctness report stays derivable
+docs     DOC-031            no                            must     docs root keeps a single canonical entrypoint
+docs     DOC-032            no                            must     docs broken links report is generated deterministically
+docs     DOC-033            no                            must     docs orphan pages report is generated deterministically
+docs     DOC-034            no                            must     docs metadata coverage report is generated deterministically
+docs     DOC-035            no                            must     docs duplication report is generated deterministically
+docs     DOC-036            no                            must     docs contract coverage report is generated deterministically
+
