@@ -1,45 +1,17 @@
 # Non Goals
 
-- Owner: `bijux-atlas-product`
+Owner: `product`  
+Type: `concept`  
+Reason to exist: prevent scope creep and preserve contract stability.
 
-## What
+## Out Of Scope
 
-Strict exclusions for v1/v2 scope control.
+- Atlas does not perform variant interpretation.
+- Atlas does not mutate published datasets.
+- Atlas does not accept implicit dataset defaults.
+- Atlas does not execute remote code from requests.
+- Atlas does not expose write endpoints for genomic entities.
 
-## Why
+## Enforcement
 
-Prevents accidental expansion and contract instability.
-
-## Scope
-
-Applies to API, ingest, and operations commitments.
-
-## Non-goals
-
-- Atlas will not perform variant interpretation.
-- Atlas will not mutate published datasets.
-- Atlas will not accept implicit dataset defaults.
-- Atlas will not execute remote code/plugins from requests.
-- Atlas will not provide write APIs for genomic entities.
-
-## Contracts
-
-Requests requiring excluded behavior must return explicit rejection errors.
-
-## Failure modes
-
-Ambiguous scope introduces unstable endpoints and untestable behavior.
-
-## How to verify
-
-```bash
-$ rg -n "implicit default|write endpoint|mutation" docs/product docs/reference
-```
-
-Expected output: exclusions are explicit and no conflicting commitments exist.
-
-## See also
-
-- [What Is Atlas](what-is-bijux-atlas.md)
-- [Compatibility Promise](compatibility-promise.md)
-- [Release Contract Checklist](release-contract-checklist.md)
+Requests requiring excluded behavior must be rejected with explicit errors.
