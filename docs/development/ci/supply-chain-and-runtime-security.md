@@ -4,7 +4,7 @@
 
 - Generate SBOM for each released image (SPDX JSON).
 - Attach SBOM to release artifacts.
-- Include Python tooling package SBOM metadata for `crates/bijux-dev-atlas` (or `tools/bijux dev atlas` during transition).
+- Include Python tooling package SBOM metadata for `crates/bijux-dev-atlas`.
 
 ## Image Signing
 

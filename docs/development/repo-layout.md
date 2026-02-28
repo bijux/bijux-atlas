@@ -17,9 +17,9 @@ Prevents root sprawl and keeps `ops/` as the single operational source of truth.
 - Root shape gate: `bijux dev atlas check root-shape`.
 - Forbidden-name gate: `bijux dev atlas check forbidden-root-names`.
 - Migration entrypoint: `make layout-migrate`.
-- Python package surfaces live under `crates/` and `tools/`.
+- Python package surfaces live under `crates/` only.
 - New executable Python files outside package roots are forbidden by `bijux dev atlas` repository policy checks.
-- Legacy script-tree paths are transition-only and being removed; no new non-shim entrypoints may be added.
+- Removed script-tree paths must not be reintroduced.
 
 ## Failure modes
 
