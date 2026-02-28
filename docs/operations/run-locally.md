@@ -3,25 +3,32 @@
 Owner: `bijux-atlas-operations`  
 Audience: `operator`, `contributor`  
 Type: `runbook`  
-Reason to exist: provide one canonical local execution workflow.
+Reason to exist: provide one canonical local workflow from prerequisites through cleanup.
 
 ## Prerequisites
 
-- Container runtime available.
-- Local tooling installed for Atlas workflows.
-- Access to fixture datasets.
+- Container runtime installed and healthy.
+- Required local tooling available.
+- Fixture dataset source available.
 
 ## Workflow
 
-1. Start local services.
+1. Start local stack.
 2. Ingest fixture dataset.
-3. Run one API smoke query.
+3. Run API smoke checks.
 4. Verify health and metrics.
-5. Stop services and clean temporary state.
+5. Stop stack and clean temporary artifacts.
 
-## Canonical Details
+## Verification
 
-- [How To Run Locally](how-to-run-locally.md)
-- [Full Stack Local](full-stack-local.md)
-- [Local Stack](local-stack.md)
-- [Fixture Dataset Ingest](fixture-dataset-ingest.md)
+```bash
+make ops-prereqs
+make ops-doctor
+make ops-local-full
+```
+
+## Cleanup
+
+```bash
+make ops-clean
+```

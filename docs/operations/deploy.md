@@ -3,18 +3,18 @@
 Owner: `bijux-atlas-operations`  
 Audience: `operator`  
 Type: `runbook`  
-Reason to exist: define the canonical Atlas deployment workflow.
+Reason to exist: define canonical deployment flow for production and staging clusters.
 
 ## Deployment Flow
 
-1. Validate release inputs and compatibility requirements.
-2. Apply deployment manifests and configuration.
-3. Verify readiness, health, and error budgets.
-4. Confirm post-deploy smoke checks.
+1. Validate release and config inputs.
+2. Apply chart values and manifests.
+3. Verify readiness and health gates.
+4. Run post-deploy smoke checks.
+5. Promote release and record evidence.
 
-## Canonical Details
+## Deep Dives
 
-- [Kubernetes Operations](kubernetes.md)
-- [Kubernetes Index](k8s/INDEX.md)
-- [Release Workflows](release-workflows.md)
-- [Production Readiness Checklist](production-readiness-checklist.md)
+- [Kubernetes Overview](k8s/overview.md)
+- [Chart Values](k8s/values.md)
+- [Autoscaling](k8s/autoscaling.md)
