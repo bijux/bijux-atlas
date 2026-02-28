@@ -32,3 +32,9 @@ Canonical pages under `docs/` with policy controls in `docs/governance/`.
 ### How do I find stable command surfaces?
 
 Use `make help` and `docs/reference/commands.md`.
+
+## Next Step
+
+- Operators: go to [Run Locally](operations/run-locally.md).
+- Contributors: go to [Development](development/index.md).
+- API users: go to [API](api/index.md).

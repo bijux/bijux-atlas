@@ -13,3 +13,7 @@ Product narrative and compatibility commitments for Atlas.
 
 - [What Is Bijux Atlas](what-is-bijux-atlas.md)
 - [Compatibility Promise](compatibility-promise.md)
+
+## Next Step
+
+Continue with [Operations](../operations/index.md) for runtime workflows or [API](../api/index.md) for client behavior.
