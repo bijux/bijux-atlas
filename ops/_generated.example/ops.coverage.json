@@ -1,0 +1,11 @@
+{
+  "contracts": 171,
+  "coverage_pct": 88,
+  "error": 0,
+  "fail": 2,
+  "group": "ops",
+  "pass": 158,
+  "schema_version": 1,
+  "skip": 19,
+  "tests": 179
+}

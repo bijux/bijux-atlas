@@ -1,0 +1,11 @@
+{
+  "domain": "ops",
+  "lane": "local",
+  "maturity": {
+    "effect_safety_pct": 100,
+    "explain_pct": 100,
+    "json_schema_pct": 100,
+    "mapped_gates_pct": 100
+  },
+  "schema_version": 1
+}

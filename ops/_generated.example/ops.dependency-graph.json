@@ -1,0 +1,691 @@
+{
+  "edges": [],
+  "group": "ops",
+  "nodes": [
+    {
+      "id": "OPS-DATASETS-001",
+      "title": "datasets manifest lock contract"
+    },
+    {
+      "id": "OPS-DATASETS-002",
+      "title": "datasets fixture inventory contract"
+    },
+    {
+      "id": "OPS-DATASETS-003",
+      "title": "datasets fixture drift promotion contract"
+    },
+    {
+      "id": "OPS-DATASETS-004",
+      "title": "datasets release diff determinism contract"
+    },
+    {
+      "id": "OPS-DATASETS-005",
+      "title": "datasets qc metadata summary contract"
+    },
+    {
+      "id": "OPS-DATASETS-006",
+      "title": "datasets rollback policy contract"
+    },
+    {
+      "id": "OPS-DATASETS-007",
+      "title": "datasets promotion rules contract"
+    },
+    {
+      "id": "OPS-DATASETS-008",
+      "title": "datasets consumer interface contract"
+    },
+    {
+      "id": "OPS-DATASETS-009",
+      "title": "datasets freeze policy contract"
+    },
+    {
+      "id": "OPS-DATASETS-010",
+      "title": "datasets store layout contract"
+    },
+    {
+      "id": "OPS-DATASETS-011",
+      "title": "datasets fixture archive lock contract"
+    },
+    {
+      "id": "OPS-DATASETS-012",
+      "title": "datasets provenance fields contract"
+    },
+    {
+      "id": "OPS-DATASETS-013",
+      "title": "datasets file type boundary contract"
+    },
+    {
+      "id": "OPS-E2E-001",
+      "title": "e2e suites reference contract"
+    },
+    {
+      "id": "OPS-E2E-002",
+      "title": "e2e smoke manifest contract"
+    },
+    {
+      "id": "OPS-E2E-003",
+      "title": "e2e fixtures lock contract"
+    },
+    {
+      "id": "OPS-E2E-004",
+      "title": "e2e realdata snapshot contract"
+    },
+    {
+      "id": "OPS-E2E-005",
+      "title": "e2e taxonomy coverage contract"
+    },
+    {
+      "id": "OPS-E2E-006",
+      "title": "e2e reproducibility enforcement contract"
+    },
+    {
+      "id": "OPS-E2E-007",
+      "title": "e2e coverage matrix determinism contract"
+    },
+    {
+      "id": "OPS-E2E-008",
+      "title": "e2e realdata scenario registry contract"
+    },
+    {
+      "id": "OPS-E2E-009",
+      "title": "e2e surface artifact boundary contract"
+    },
+    {
+      "id": "OPS-E2E-010",
+      "title": "e2e summary schema contract"
+    },
+    {
+      "id": "OPS-E2E-E-001",
+      "title": "e2e effect smoke suite contract"
+    },
+    {
+      "id": "OPS-E2E-E-002",
+      "title": "e2e effect realdata suite contract"
+    },
+    {
+      "id": "OPS-ENV-001",
+      "title": "environment overlay schema contract"
+    },
+    {
+      "id": "OPS-ENV-002",
+      "title": "environment profile completeness contract"
+    },
+    {
+      "id": "OPS-ENV-003",
+      "title": "environment key strictness contract"
+    },
+    {
+      "id": "OPS-ENV-004",
+      "title": "environment overlay merge determinism contract"
+    },
+    {
+      "id": "OPS-ENV-005",
+      "title": "environment prod safety toggles contract"
+    },
+    {
+      "id": "OPS-ENV-006",
+      "title": "environment ci effect restriction contract"
+    },
+    {
+      "id": "OPS-ENV-007",
+      "title": "environment base defaults contract"
+    },
+    {
+      "id": "OPS-ENV-008",
+      "title": "environment overlay key stability contract"
+    },
+    {
+      "id": "OPS-ENV-009",
+      "title": "environment overlays directory boundary contract"
+    },
+    {
+      "id": "OPS-INV-001",
+      "title": "inventory completeness contract"
+    },
+    {
+      "id": "OPS-INV-002",
+      "title": "inventory orphan files contract"
+    },
+    {
+      "id": "OPS-INV-003",
+      "title": "inventory duplicate source contract"
+    },
+    {
+      "id": "OPS-INV-004",
+      "title": "inventory authority tier contract"
+    },
+    {
+      "id": "OPS-INV-005",
+      "title": "inventory control graph contract"
+    },
+    {
+      "id": "OPS-INV-006",
+      "title": "inventory contract id format contract"
+    },
+    {
+      "id": "OPS-INV-007",
+      "title": "inventory gates registry contract"
+    },
+    {
+      "id": "OPS-INV-008",
+      "title": "inventory drills registry contract"
+    },
+    {
+      "id": "OPS-INV-009",
+      "title": "inventory owners registry contract"
+    },
+    {
+      "id": "OPS-INV-010",
+      "title": "inventory schema coverage contract"
+    },
+    {
+      "id": "OPS-INV-011",
+      "title": "inventory contracts listing pillar coverage contract"
+    },
+    {
+      "id": "OPS-INV-DEBT-001",
+      "title": "inventory contract debt registry contract"
+    },
+    {
+      "id": "OPS-INV-MAP-001",
+      "title": "inventory contract gate map coverage contract"
+    },
+    {
+      "id": "OPS-INV-MAP-002",
+      "title": "inventory contract gate map gate reference contract"
+    },
+    {
+      "id": "OPS-INV-MAP-003",
+      "title": "inventory contract gate map command surface contract"
+    },
+    {
+      "id": "OPS-INV-MAP-004",
+      "title": "inventory contract gate map effects annotation contract"
+    },
+    {
+      "id": "OPS-INV-MAP-005",
+      "title": "inventory contract gate map orphan gate contract"
+    },
+    {
+      "id": "OPS-INV-MAP-006",
+      "title": "inventory contract gate map orphan contract contract"
+    },
+    {
+      "id": "OPS-INV-MAP-007",
+      "title": "inventory contract gate map static purity contract"
+    },
+    {
+      "id": "OPS-INV-MAP-008",
+      "title": "inventory contract gate map effect kind contract"
+    },
+    {
+      "id": "OPS-INV-MAP-009",
+      "title": "inventory contract gate map explain coverage contract"
+    },
+    {
+      "id": "OPS-INV-MAP-010",
+      "title": "inventory contract gate map canonical order contract"
+    },
+    {
+      "id": "OPS-INV-MAP-011",
+      "title": "inventory contract gate map effect metadata contract"
+    },
+    {
+      "id": "OPS-INV-PILLARS-001",
+      "title": "inventory pillars registry contract"
+    },
+    {
+      "id": "OPS-INV-PILLARS-002",
+      "title": "inventory pillar directory contract"
+    },
+    {
+      "id": "OPS-INV-PILLARS-003",
+      "title": "inventory pillar strictness contract"
+    },
+    {
+      "id": "OPS-K8S-001",
+      "title": "k8s static chart render contract"
+    },
+    {
+      "id": "OPS-K8S-002",
+      "title": "k8s values schema validation contract"
+    },
+    {
+      "id": "OPS-K8S-003",
+      "title": "k8s install matrix completeness contract"
+    },
+    {
+      "id": "OPS-K8S-004",
+      "title": "k8s forbidden object policy contract"
+    },
+    {
+      "id": "OPS-K8S-005",
+      "title": "k8s rbac minimalism contract"
+    },
+    {
+      "id": "OPS-K8S-006",
+      "title": "k8s pod security and probes contract"
+    },
+    {
+      "id": "OPS-K8S-007",
+      "title": "k8s rollout safety contract"
+    },
+    {
+      "id": "OPS-K8S-008",
+      "title": "k8s conformance suite contract"
+    },
+    {
+      "id": "OPS-K8S-009",
+      "title": "k8s install matrix generated consistency contract"
+    },
+    {
+      "id": "OPS-K8S-010",
+      "title": "k8s generated index determinism contract"
+    },
+    {
+      "id": "OPS-K8S-E-001",
+      "title": "k8s effect chart defaults render contract"
+    },
+    {
+      "id": "OPS-K8S-E-002",
+      "title": "k8s effect minimal values render contract"
+    },
+    {
+      "id": "OPS-K8S-E-003",
+      "title": "k8s effect kubeconform contract"
+    },
+    {
+      "id": "OPS-K8S-E-004",
+      "title": "k8s effect install matrix contract"
+    },
+    {
+      "id": "OPS-K8S-E-005",
+      "title": "k8s effect rollout safety contract"
+    },
+    {
+      "id": "OPS-K8S-E-006",
+      "title": "k8s effect tool versions contract"
+    },
+    {
+      "id": "OPS-LOAD-001",
+      "title": "load scenario schema contract"
+    },
+    {
+      "id": "OPS-LOAD-002",
+      "title": "load thresholds coverage contract"
+    },
+    {
+      "id": "OPS-LOAD-003",
+      "title": "load pinned query lock contract"
+    },
+    {
+      "id": "OPS-LOAD-004",
+      "title": "load baseline schema contract"
+    },
+    {
+      "id": "OPS-LOAD-005",
+      "title": "load scenario to slo mapping contract"
+    },
+    {
+      "id": "OPS-LOAD-006",
+      "title": "load drift report schema contract"
+    },
+    {
+      "id": "OPS-LOAD-007",
+      "title": "load result schema sample contract"
+    },
+    {
+      "id": "OPS-LOAD-008",
+      "title": "load cheap survival suite gate contract"
+    },
+    {
+      "id": "OPS-LOAD-009",
+      "title": "load cold start p99 suite gate contract"
+    },
+    {
+      "id": "OPS-LOAD-010",
+      "title": "load scenario slo impact mapping contract"
+    },
+    {
+      "id": "OPS-LOAD-E-001",
+      "title": "load effect k6 execution contract"
+    },
+    {
+      "id": "OPS-LOAD-E-002",
+      "title": "load effect thresholds report contract"
+    },
+    {
+      "id": "OPS-LOAD-E-003",
+      "title": "load effect baseline comparison contract"
+    },
+    {
+      "id": "OPS-META-001",
+      "title": "ops contracts map each contract id to a source file path"
+    },
+    {
+      "id": "OPS-META-002",
+      "title": "ops contracts enforce io locality to ops surfaces"
+    },
+    {
+      "id": "OPS-OBS-001",
+      "title": "observability alert rules contract"
+    },
+    {
+      "id": "OPS-OBS-002",
+      "title": "observability dashboard golden contract"
+    },
+    {
+      "id": "OPS-OBS-003",
+      "title": "observability telemetry golden profile contract"
+    },
+    {
+      "id": "OPS-OBS-004",
+      "title": "observability readiness schema contract"
+    },
+    {
+      "id": "OPS-OBS-005",
+      "title": "observability alert catalog generation contract"
+    },
+    {
+      "id": "OPS-OBS-006",
+      "title": "observability slo burn-rate consistency contract"
+    },
+    {
+      "id": "OPS-OBS-007",
+      "title": "observability public surface coverage contract"
+    },
+    {
+      "id": "OPS-OBS-008",
+      "title": "observability telemetry index determinism contract"
+    },
+    {
+      "id": "OPS-OBS-009",
+      "title": "observability drills manifest contract"
+    },
+    {
+      "id": "OPS-OBS-010",
+      "title": "observability overload behavior contract"
+    },
+    {
+      "id": "OPS-OBS-E-001",
+      "title": "observe effect metrics scrape contract"
+    },
+    {
+      "id": "OPS-OBS-E-002",
+      "title": "observe effect trace structure contract"
+    },
+    {
+      "id": "OPS-OBS-E-003",
+      "title": "observe effect alerts load contract"
+    },
+    {
+      "id": "OPS-REPORT-001",
+      "title": "report schema ssot contract"
+    },
+    {
+      "id": "OPS-REPORT-002",
+      "title": "report generated payload contract"
+    },
+    {
+      "id": "OPS-REPORT-003",
+      "title": "report evidence levels contract"
+    },
+    {
+      "id": "OPS-REPORT-004",
+      "title": "report diff structure contract"
+    },
+    {
+      "id": "OPS-REPORT-005",
+      "title": "report readiness score determinism contract"
+    },
+    {
+      "id": "OPS-REPORT-006",
+      "title": "report release evidence bundle contract"
+    },
+    {
+      "id": "OPS-REPORT-007",
+      "title": "report historical comparison contract"
+    },
+    {
+      "id": "OPS-REPORT-008",
+      "title": "report unified example contract"
+    },
+    {
+      "id": "OPS-REPORT-009",
+      "title": "report canonical json output contract"
+    },
+    {
+      "id": "OPS-REPORT-010",
+      "title": "report lane aggregation contract"
+    },
+    {
+      "id": "OPS-ROOT-001",
+      "title": "ops root allowed surface contract"
+    },
+    {
+      "id": "OPS-ROOT-002",
+      "title": "ops root markdown contract"
+    },
+    {
+      "id": "OPS-ROOT-003",
+      "title": "ops no shell scripts contract"
+    },
+    {
+      "id": "OPS-ROOT-004",
+      "title": "ops max directory depth contract"
+    },
+    {
+      "id": "OPS-ROOT-005",
+      "title": "ops filename policy contract"
+    },
+    {
+      "id": "OPS-ROOT-006",
+      "title": "ops generated gitignore policy contract"
+    },
+    {
+      "id": "OPS-ROOT-007",
+      "title": "ops generated example secret guard contract"
+    },
+    {
+      "id": "OPS-ROOT-008",
+      "title": "ops placeholder directory contract"
+    },
+    {
+      "id": "OPS-ROOT-009",
+      "title": "ops policy inventory coverage contract"
+    },
+    {
+      "id": "OPS-ROOT-010",
+      "title": "ops deleted doc name guard contract"
+    },
+    {
+      "id": "OPS-ROOT-011",
+      "title": "ops markdown allowlist contract"
+    },
+    {
+      "id": "OPS-ROOT-012",
+      "title": "ops pillar readme cardinality contract"
+    },
+    {
+      "id": "OPS-ROOT-013",
+      "title": "ops markdown allowlist inventory contract"
+    },
+    {
+      "id": "OPS-ROOT-014",
+      "title": "ops procedure text contract"
+    },
+    {
+      "id": "OPS-ROOT-015",
+      "title": "ops pillar markdown minimalism contract"
+    },
+    {
+      "id": "OPS-ROOT-016",
+      "title": "ops deleted markdown denylist contract"
+    },
+    {
+      "id": "OPS-ROOT-017",
+      "title": "ops directory contract"
+    },
+    {
+      "id": "OPS-ROOT-018",
+      "title": "ops generated lifecycle contract"
+    },
+    {
+      "id": "OPS-ROOT-019",
+      "title": "ops required domain files contract"
+    },
+    {
+      "id": "OPS-ROOT-020",
+      "title": "ops markdown budget contract"
+    },
+    {
+      "id": "OPS-ROOT-021",
+      "title": "ops docs ssot boundary contract"
+    },
+    {
+      "id": "OPS-ROOT-022",
+      "title": "ops contract document generation contract"
+    },
+    {
+      "id": "OPS-ROOT-023",
+      "title": "operations docs policy linkage contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-001",
+      "title": "ops root command surface required commands contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-002",
+      "title": "ops root command surface no hidden commands contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-003",
+      "title": "ops root command surface deterministic ordering contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-004",
+      "title": "ops root command surface effects declaration contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-005",
+      "title": "ops root command surface pillar grouping contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-006",
+      "title": "ops root command surface ad-hoc group guard contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-007",
+      "title": "ops root command surface purpose contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-008",
+      "title": "ops root command surface json output contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-009",
+      "title": "ops root command surface dry-run policy contract"
+    },
+    {
+      "id": "OPS-ROOT-SURFACE-010",
+      "title": "ops root command surface artifacts policy contract"
+    },
+    {
+      "id": "OPS-SCHEMA-001",
+      "title": "schema parseability contract"
+    },
+    {
+      "id": "OPS-SCHEMA-002",
+      "title": "schema index completeness contract"
+    },
+    {
+      "id": "OPS-SCHEMA-003",
+      "title": "schema naming contract"
+    },
+    {
+      "id": "OPS-SCHEMA-004",
+      "title": "schema budget contract"
+    },
+    {
+      "id": "OPS-SCHEMA-005",
+      "title": "schema evolution lock contract"
+    },
+    {
+      "id": "OPS-SCHEMA-006",
+      "title": "schema id consistency contract"
+    },
+    {
+      "id": "OPS-SCHEMA-007",
+      "title": "schema example validation contract"
+    },
+    {
+      "id": "OPS-SCHEMA-008",
+      "title": "schema intent uniqueness contract"
+    },
+    {
+      "id": "OPS-SCHEMA-009",
+      "title": "schema canonical formatting contract"
+    },
+    {
+      "id": "OPS-SCHEMA-010",
+      "title": "schema example coverage contract"
+    },
+    {
+      "id": "OPS-STACK-001",
+      "title": "stack toml profile contract"
+    },
+    {
+      "id": "OPS-STACK-002",
+      "title": "stack service dependency contract"
+    },
+    {
+      "id": "OPS-STACK-003",
+      "title": "stack version manifest contract"
+    },
+    {
+      "id": "OPS-STACK-004",
+      "title": "stack dependency graph contract"
+    },
+    {
+      "id": "OPS-STACK-005",
+      "title": "stack kind profile consistency contract"
+    },
+    {
+      "id": "OPS-STACK-006",
+      "title": "stack ports inventory consistency contract"
+    },
+    {
+      "id": "OPS-STACK-007",
+      "title": "stack health report generator contract"
+    },
+    {
+      "id": "OPS-STACK-008",
+      "title": "stack command surface contract"
+    },
+    {
+      "id": "OPS-STACK-009",
+      "title": "stack offline profile policy contract"
+    },
+    {
+      "id": "OPS-STACK-E-001",
+      "title": "stack effect kind cluster contract"
+    },
+    {
+      "id": "OPS-STACK-E-002",
+      "title": "stack effect component rollout contract"
+    },
+    {
+      "id": "OPS-STACK-E-003",
+      "title": "stack effect ports inventory contract"
+    },
+    {
+      "id": "OPS-STACK-E-004",
+      "title": "stack effect health report contract"
+    },
+    {
+      "id": "OPS-STACK-E-005",
+      "title": "stack effect kind install smoke contract"
+    }
+  ],
+  "schema_version": 1
+}

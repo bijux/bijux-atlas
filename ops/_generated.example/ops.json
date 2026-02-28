@@ -1,0 +1,6511 @@
+{
+  "ci": false,
+  "color_enabled": true,
+  "commit_sha": "a91f1b7a7c81dd960bdc87415d2970ff8411b137",
+  "contracts": [
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.manifest_and_lock_consistent",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets manifest lock contract",
+      "tests": 1,
+      "title": "datasets manifest lock contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.fixture_inventory_matches_disk",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets fixture inventory contract",
+      "tests": 1,
+      "title": "datasets fixture inventory contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.no_fixture_drift_without_promotion_record",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets fixture drift promotion contract",
+      "tests": 1,
+      "title": "datasets fixture drift promotion contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.release_diff_fixtures_deterministic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets release diff determinism contract",
+      "tests": 1,
+      "title": "datasets release diff determinism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.qc_metadata_and_golden_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets qc metadata summary contract",
+      "tests": 1,
+      "title": "datasets qc metadata summary contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.rollback_policy_exists_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets rollback policy contract",
+      "tests": 1,
+      "title": "datasets rollback policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.promotion_rules_exists_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets promotion rules contract",
+      "tests": 1,
+      "title": "datasets promotion rules contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.consumer_list_consistent_with_runtime_queries",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets consumer interface contract",
+      "tests": 1,
+      "title": "datasets consumer interface contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.freeze_policy_exists_enforced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets freeze policy contract",
+      "tests": 1,
+      "title": "datasets freeze policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.dataset_store_layout_contract_enforced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets store layout contract",
+      "tests": 1,
+      "title": "datasets store layout contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.fixture_archives_match_manifest_lock",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-011",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-011",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets fixture archive lock contract",
+      "tests": 1,
+      "title": "datasets fixture archive lock contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.real_datasets_have_provenance",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-012",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-012",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets provenance fields contract",
+      "tests": 1,
+      "title": "datasets provenance fields contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.datasets.allowed_file_types_only",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-DATASETS-013",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-DATASETS-013",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "datasets file type boundary contract",
+      "tests": 1,
+      "title": "datasets file type boundary contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.suites_reference_real_scenarios",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e suites reference contract",
+      "tests": 1,
+      "title": "e2e suites reference contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.smoke_manifest_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e smoke manifest contract",
+      "tests": 1,
+      "title": "e2e smoke manifest contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.fixtures_lock_matches_allowlist",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e fixtures lock contract",
+      "tests": 1,
+      "title": "e2e fixtures lock contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.realdata_snapshots_schema_valid_and_pinned",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e realdata snapshot contract",
+      "tests": 1,
+      "title": "e2e realdata snapshot contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.taxonomy_covers_scenarios",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e taxonomy coverage contract",
+      "tests": 1,
+      "title": "e2e taxonomy coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.reproducibility_policy_enforced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e reproducibility enforcement contract",
+      "tests": 1,
+      "title": "e2e reproducibility enforcement contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.coverage_matrix_deterministic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e coverage matrix determinism contract",
+      "tests": 1,
+      "title": "e2e coverage matrix determinism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.realdata_registry_and_snapshots_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e realdata scenario registry contract",
+      "tests": 1,
+      "title": "e2e realdata scenario registry contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.no_stray_e2e_artifacts",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e surface artifact boundary contract",
+      "tests": 1,
+      "title": "e2e surface artifact boundary contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.e2e.summary_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-E2E-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "e2e summary schema contract",
+      "tests": 1,
+      "title": "e2e summary schema contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.e2e.effect.smoke_suite_passes_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-E-001",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-E2E-E-001",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "e2e effect smoke suite contract",
+      "tests": 1,
+      "title": "e2e effect smoke suite contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.e2e.effect.realdata_scenario_passes_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-E2E-E-002",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-E2E-E-002",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "e2e effect realdata suite contract",
+      "tests": 1,
+      "title": "e2e effect realdata suite contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.overlays_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment overlay schema contract",
+      "tests": 1,
+      "title": "environment overlay schema contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.profiles_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment profile completeness contract",
+      "tests": 1,
+      "title": "environment profile completeness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.no_unknown_keys",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment key strictness contract",
+      "tests": 1,
+      "title": "environment key strictness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.overlay_merge_deterministic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment overlay merge determinism contract",
+      "tests": 1,
+      "title": "environment overlay merge determinism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.prod_forbids_dev_toggles",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment prod safety toggles contract",
+      "tests": 1,
+      "title": "environment prod safety toggles contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.ci_restricts_effects",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment ci effect restriction contract",
+      "tests": 1,
+      "title": "environment ci effect restriction contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.base_overlay_required_defaults",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment base defaults contract",
+      "tests": 1,
+      "title": "environment base defaults contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.overlay_keys_stable",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment overlay key stability contract",
+      "tests": 1,
+      "title": "environment overlay key stability contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.env.overlays_dir_no_stray_files",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ENV-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ENV-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "environment overlays directory boundary contract",
+      "tests": 1,
+      "title": "environment overlays directory boundary contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 4,
+          "status": "PASS",
+          "test_id": "ops.inventory.completeness",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-001",
+      "duration_ms": 4,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory completeness contract",
+      "tests": 1,
+      "title": "inventory completeness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.inventory.no_orphan_files",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-002",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory orphan files contract",
+      "tests": 1,
+      "title": "inventory orphan files contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.inventory.no_duplicate_ssot_sources",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-003",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory duplicate source contract",
+      "tests": 1,
+      "title": "inventory duplicate source contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.authority_tiers_enforced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory authority tier contract",
+      "tests": 1,
+      "title": "inventory authority tier contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.control_graph_validated",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory control graph contract",
+      "tests": 1,
+      "title": "inventory control graph contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_id_format",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-006",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract id format contract",
+      "tests": 1,
+      "title": "inventory contract id format contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.gates_registry_mapped",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory gates registry contract",
+      "tests": 1,
+      "title": "inventory gates registry contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.drills_registry_mapped",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory drills registry contract",
+      "tests": 1,
+      "title": "inventory drills registry contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.owners_registry_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory owners registry contract",
+      "tests": 1,
+      "title": "inventory owners registry contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.schema_coverage",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory schema coverage contract",
+      "tests": 1,
+      "title": "inventory schema coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.contracts_listing_matches_pillars",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-011",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-011",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contracts listing pillar coverage contract",
+      "tests": 1,
+      "title": "inventory contracts listing pillar coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_debt.exists_and_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-DEBT-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-DEBT-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract debt registry contract",
+      "tests": 1,
+      "title": "inventory contract debt registry contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.every_contract_mapped",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-001",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map coverage contract",
+      "tests": 1,
+      "title": "inventory contract gate map coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.mapped_gates_exist",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map gate reference contract",
+      "tests": 1,
+      "title": "inventory contract gate map gate reference contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 1,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.mapped_commands_registered",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-003",
+      "duration_ms": 1,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map command surface contract",
+      "tests": 1,
+      "title": "inventory contract gate map command surface contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.effects_annotation_matches_mode",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-004",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map effects annotation contract",
+      "tests": 1,
+      "title": "inventory contract gate map effects annotation contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 1,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.no_orphan_gates",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-005",
+      "duration_ms": 1,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map orphan gate contract",
+      "tests": 1,
+      "title": "inventory contract gate map orphan gate contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.no_orphan_contracts",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-006",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map orphan contract contract",
+      "tests": 1,
+      "title": "inventory contract gate map orphan contract contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.static_only_contracts_are_pure",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-007",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map static purity contract",
+      "tests": 1,
+      "title": "inventory contract gate map static purity contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.effect_contracts_require_effect_kind",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-008",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map effect kind contract",
+      "tests": 1,
+      "title": "inventory contract gate map effect kind contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.explain_shows_mapped_gates",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map explain coverage contract",
+      "tests": 1,
+      "title": "inventory contract gate map explain coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 1,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.mapping_sorted_canonical",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-010",
+      "duration_ms": 1,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map canonical order contract",
+      "tests": 1,
+      "title": "inventory contract gate map canonical order contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.contract_gate_map.effect_metadata_declared",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-MAP-011",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-MAP-011",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory contract gate map effect metadata contract",
+      "tests": 1,
+      "title": "inventory contract gate map effect metadata contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.pillars.exists_and_validates",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-PILLARS-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-PILLARS-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory pillars registry contract",
+      "tests": 1,
+      "title": "inventory pillars registry contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.pillars.every_pillar_dir_exists",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-PILLARS-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-PILLARS-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory pillar directory contract",
+      "tests": 1,
+      "title": "inventory pillar directory contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.inventory.pillars.no_extra_pillar_dirs",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-INV-PILLARS-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-INV-PILLARS-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "inventory pillar strictness contract",
+      "tests": 1,
+      "title": "inventory pillar strictness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.chart_renders_static",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s static chart render contract",
+      "tests": 1,
+      "title": "k8s static chart render contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 1,
+          "status": "PASS",
+          "test_id": "ops.k8s.values_files_validate_schema",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-002",
+      "duration_ms": 1,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s values schema validation contract",
+      "tests": 1,
+      "title": "k8s values schema validation contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.install_matrix_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s install matrix completeness contract",
+      "tests": 1,
+      "title": "k8s install matrix completeness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.no_forbidden_k8s_objects",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s forbidden object policy contract",
+      "tests": 1,
+      "title": "k8s forbidden object policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.rbac_minimalism",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s rbac minimalism contract",
+      "tests": 1,
+      "title": "k8s rbac minimalism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.pod_security_and_probes",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s pod security and probes contract",
+      "tests": 1,
+      "title": "k8s pod security and probes contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.rollout_safety_enforced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s rollout safety contract",
+      "tests": 1,
+      "title": "k8s rollout safety contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.conformance_suite_runnable",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s conformance suite contract",
+      "tests": 1,
+      "title": "k8s conformance suite contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.install_matrix_and_generated_consistency",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s install matrix generated consistency contract",
+      "tests": 1,
+      "title": "k8s install matrix generated consistency contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.k8s.generated_indexes_deterministic_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-K8S-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "k8s generated index determinism contract",
+      "tests": 1,
+      "title": "k8s generated index determinism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.k8s.effect.chart_defaults_rendered",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-E-001",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-K8S-E-001",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "k8s effect chart defaults render contract",
+      "tests": 1,
+      "title": "k8s effect chart defaults render contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.k8s.effect.chart_minimal_values_rendered",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-E-002",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-K8S-E-002",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "k8s effect minimal values render contract",
+      "tests": 1,
+      "title": "k8s effect minimal values render contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.k8s.effect.kubeconform_render_validation",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-E-003",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-K8S-E-003",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "k8s effect kubeconform contract",
+      "tests": 1,
+      "title": "k8s effect kubeconform contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.k8s.effect.helm_install_contract_defined",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-E-004",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-K8S-E-004",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "k8s effect install matrix contract",
+      "tests": 1,
+      "title": "k8s effect install matrix contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.k8s.effect.rollout_safety_contract_satisfied",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-E-005",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-K8S-E-005",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "k8s effect rollout safety contract",
+      "tests": 1,
+      "title": "k8s effect rollout safety contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.k8s.effect.tool_versions_recorded",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-K8S-E-006",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-K8S-E-006",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "k8s effect tool versions contract",
+      "tests": 1,
+      "title": "k8s effect tool versions contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.scenarios_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load scenario schema contract",
+      "tests": 1,
+      "title": "load scenario schema contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.thresholds_exist_for_each_suite",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load thresholds coverage contract",
+      "tests": 1,
+      "title": "load thresholds coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.pinned_queries_lock_consistent",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load pinned query lock contract",
+      "tests": 1,
+      "title": "load pinned query lock contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.baselines_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load baseline schema contract",
+      "tests": 1,
+      "title": "load baseline schema contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.no_scenario_without_slo_mapping",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load scenario to slo mapping contract",
+      "tests": 1,
+      "title": "load scenario to slo mapping contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.drift_report_generator_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load drift report schema contract",
+      "tests": 1,
+      "title": "load drift report schema contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.result_schema_validates_sample_output",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load result schema sample contract",
+      "tests": 1,
+      "title": "load result schema sample contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.cheap_survival_in_minimal_gate_suite",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load cheap survival suite gate contract",
+      "tests": 1,
+      "title": "load cheap survival suite gate contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.cold_start_p99_in_minimal_gate_suite",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load cold start p99 suite gate contract",
+      "tests": 1,
+      "title": "load cold start p99 suite gate contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.load.every_scenario_has_slo_impact_class",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-LOAD-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "load scenario slo impact mapping contract",
+      "tests": 1,
+      "title": "load scenario slo impact mapping contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.load.effect.k6_suite_executes_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-E-001",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-LOAD-E-001",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "load effect k6 execution contract",
+      "tests": 1,
+      "title": "load effect k6 execution contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.load.effect.thresholds_enforced_report_emitted",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-E-002",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-LOAD-E-002",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "load effect thresholds report contract",
+      "tests": 1,
+      "title": "load effect thresholds report contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.load.effect.baseline_comparison_produced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-LOAD-E-003",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-LOAD-E-003",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "load effect baseline comparison contract",
+      "tests": 1,
+      "title": "load effect baseline comparison contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.meta.contract_source_path_mapping",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-META-001",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-META-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops contracts map each contract id to a source file path",
+      "tests": 1,
+      "title": "ops contracts map each contract id to a source file path"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 6,
+          "status": "PASS",
+          "test_id": "ops.meta.contract_io_locality",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-META-002",
+      "duration_ms": 6,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-META-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops contracts enforce io locality to ops surfaces",
+      "tests": 1,
+      "title": "ops contracts enforce io locality to ops surfaces"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 1,
+          "status": "PASS",
+          "test_id": "ops.observe.alert_rules_exist_parseable",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-001",
+      "duration_ms": 1,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability alert rules contract",
+      "tests": 1,
+      "title": "observability alert rules contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.dashboard_json_parseable_golden_diff",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability dashboard golden contract",
+      "tests": 1,
+      "title": "observability dashboard golden contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.telemetry_goldens_required_profiles",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability telemetry golden profile contract",
+      "tests": 1,
+      "title": "observability telemetry golden profile contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.readiness_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability readiness schema contract",
+      "tests": 1,
+      "title": "observability readiness schema contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.alert_catalog_generated_consistency",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability alert catalog generation contract",
+      "tests": 1,
+      "title": "observability alert catalog generation contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.slo_definitions_burn_rate_consistent",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability slo burn-rate consistency contract",
+      "tests": 1,
+      "title": "observability slo burn-rate consistency contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.public_surface_coverage_matches_rules",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability public surface coverage contract",
+      "tests": 1,
+      "title": "observability public surface coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.telemetry_index_generated_deterministic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability telemetry index determinism contract",
+      "tests": 1,
+      "title": "observability telemetry index determinism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.drills_manifest_exists_runnable",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability drills manifest contract",
+      "tests": 1,
+      "title": "observability drills manifest contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.observe.overload_behavior_contract_enforced",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-OBS-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "observability overload behavior contract",
+      "tests": 1,
+      "title": "observability overload behavior contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.observe.effect.scrape_metrics_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-E-001",
+      "duration_ms": 0,
+      "effects": [
+        "network"
+      ],
+      "group": "ops",
+      "id": "OPS-OBS-E-001",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "observe effect metrics scrape contract",
+      "tests": 1,
+      "title": "observe effect metrics scrape contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.observe.effect.trace_structure_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-E-002",
+      "duration_ms": 0,
+      "effects": [
+        "network"
+      ],
+      "group": "ops",
+      "id": "OPS-OBS-E-002",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "observe effect trace structure contract",
+      "tests": 1,
+      "title": "observe effect trace structure contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.observe.effect.alerts_load_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-OBS-E-003",
+      "duration_ms": 0,
+      "effects": [
+        "network"
+      ],
+      "group": "ops",
+      "id": "OPS-OBS-E-003",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "observe effect alerts load contract",
+      "tests": 1,
+      "title": "observe effect alerts load contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.schema_is_ssot",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report schema ssot contract",
+      "tests": 1,
+      "title": "report schema ssot contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.generated_reports_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report generated payload contract",
+      "tests": 1,
+      "title": "report generated payload contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.evidence_levels_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report evidence levels contract",
+      "tests": 1,
+      "title": "report evidence levels contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.diff_contract_exists",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report diff structure contract",
+      "tests": 1,
+      "title": "report diff structure contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.readiness_score_deterministic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report readiness score determinism contract",
+      "tests": 1,
+      "title": "report readiness score determinism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.release_evidence_bundle_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report release evidence bundle contract",
+      "tests": 1,
+      "title": "report release evidence bundle contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.historical_comparison_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report historical comparison contract",
+      "tests": 1,
+      "title": "report historical comparison contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.unified_report_example_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report unified example contract",
+      "tests": 1,
+      "title": "report unified example contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.outputs_canonical_json",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report canonical json output contract",
+      "tests": 1,
+      "title": "report canonical json output contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.report.lane_reports_aggregated_in_unified_report",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-REPORT-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-REPORT-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "report lane aggregation contract",
+      "tests": 1,
+      "title": "report lane aggregation contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root.allowed_surface",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-001",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root allowed surface contract",
+      "tests": 1,
+      "title": "ops root allowed surface contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root.forbid_extra_markdown",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root markdown contract",
+      "tests": 1,
+      "title": "ops root markdown contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 12,
+          "status": "PASS",
+          "test_id": "ops.root.no_shell_script_files",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-003",
+      "duration_ms": 12,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops no shell scripts contract",
+      "tests": 1,
+      "title": "ops no shell scripts contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.max_directory_depth",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-004",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops max directory depth contract",
+      "tests": 1,
+      "title": "ops max directory depth contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.filename_policy",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-005",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops filename policy contract",
+      "tests": 1,
+      "title": "ops filename policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root.generated_gitignore_policy",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops generated gitignore policy contract",
+      "tests": 1,
+      "title": "ops generated gitignore policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 9,
+          "status": "PASS",
+          "test_id": "ops.root.generated_example_secret_guard",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-007",
+      "duration_ms": 9,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops generated example secret guard contract",
+      "tests": 1,
+      "title": "ops generated example secret guard contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.placeholder_dirs_allowlist",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-008",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops placeholder directory contract",
+      "tests": 1,
+      "title": "ops placeholder directory contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.policy_files_inventory_coverage",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-009",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops policy inventory coverage contract",
+      "tests": 1,
+      "title": "ops policy inventory coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.forbid_deleted_doc_names",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-010",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops deleted doc name guard contract",
+      "tests": 1,
+      "title": "ops deleted doc name guard contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.markdown_allowlist_only",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-011",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-011",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops markdown allowlist contract",
+      "tests": 1,
+      "title": "ops markdown allowlist contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 2,
+          "status": "PASS",
+          "test_id": "ops.root.single_readme_per_pillar",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-012",
+      "duration_ms": 2,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-012",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops pillar readme cardinality contract",
+      "tests": 1,
+      "title": "ops pillar readme cardinality contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root.markdown_allowlist_file_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-013",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-013",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops markdown allowlist inventory contract",
+      "tests": 1,
+      "title": "ops markdown allowlist inventory contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.no_procedure_docs_in_ops",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-014",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-014",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops procedure text contract",
+      "tests": 1,
+      "title": "ops procedure text contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.root.no_extra_pillar_markdown",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-015",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-015",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops pillar markdown minimalism contract",
+      "tests": 1,
+      "title": "ops pillar markdown minimalism contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root.deleted_markdown_denylist",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-016",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-016",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops deleted markdown denylist contract",
+      "tests": 1,
+      "title": "ops deleted markdown denylist contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.dir.allow_only_known_domain_dirs",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.dir.allowed_root_files",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 3,
+          "status": "PASS",
+          "test_id": "ops.dir.forbid_extra_markdown_recursive",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.dir.forbid_extra_markdown_root",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-017",
+      "duration_ms": 3,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-017",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops directory contract",
+      "tests": 4,
+      "title": "ops directory contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.generated.example.allowed_files",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.generated.runtime.allowed_files",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.generated.runtime.no_example_files",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-018",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-018",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops generated lifecycle contract",
+      "tests": 3,
+      "title": "ops generated lifecycle contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.domain.forbid_legacy_docs",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.domain.required_contract_and_readme",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-019",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-019",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops required domain files contract",
+      "tests": 2,
+      "title": "ops required domain files contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.markdown_budget.contract",
+          "violations": []
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.markdown_budget.readme",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-020",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-020",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops markdown budget contract",
+      "tests": 2,
+      "title": "ops markdown budget contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.docs.readme_ssot_boundary",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-021",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-021",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops docs ssot boundary contract",
+      "tests": 1,
+      "title": "ops docs ssot boundary contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 45,
+          "status": "PASS",
+          "test_id": "ops.contract_doc.generated_match",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-022",
+      "duration_ms": 45,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-022",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops contract document generation contract",
+      "tests": 1,
+      "title": "ops contract document generation contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "FAIL",
+          "test_id": "ops.docs.index_crosslinks_contracts",
+          "violations": [
+            {
+              "evidence": null,
+              "file": "docs/operations/INDEX.md",
+              "line": 1,
+              "message": "docs/operations/INDEX.md must state docs/contracts boundary and include OPS contract references"
+            }
+          ]
+        },
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "FAIL",
+          "test_id": "ops.docs.policy_keyword_requires_contract_id",
+          "violations": [
+            {
+              "evidence": null,
+              "file": "docs/operations/fixture-dataset-ingest.md",
+              "line": 1,
+              "message": "operations doc declares policy keywords without OPS contract id reference"
+            },
+            {
+              "evidence": null,
+              "file": "docs/operations/kind-profile.md",
+              "line": 1,
+              "message": "operations doc declares policy keywords without OPS contract id reference"
+            },
+            {
+              "evidence": null,
+              "file": "docs/operations/ops-map.md",
+              "line": 1,
+              "message": "operations doc declares policy keywords without OPS contract id reference"
+            },
+            {
+              "evidence": null,
+              "file": "docs/operations/promotion-record.md",
+              "line": 1,
+              "message": "operations doc declares policy keywords without OPS contract id reference"
+            }
+          ]
+        }
+      ],
+      "contract_id": "OPS-ROOT-023",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-023",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "FAIL",
+      "summary": "operations docs policy linkage contract",
+      "tests": 2,
+      "title": "operations docs policy linkage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.required_commands_exist",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface required commands contract",
+      "tests": 1,
+      "title": "ops root command surface required commands contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 1,
+          "status": "PASS",
+          "test_id": "ops.root_surface.no_hidden_commands",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-002",
+      "duration_ms": 1,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface no hidden commands contract",
+      "tests": 1,
+      "title": "ops root command surface no hidden commands contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.surface_ordering_deterministic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface deterministic ordering contract",
+      "tests": 1,
+      "title": "ops root command surface deterministic ordering contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.commands_declare_effects",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface effects declaration contract",
+      "tests": 1,
+      "title": "ops root command surface effects declaration contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.commands_grouped_by_pillar",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface pillar grouping contract",
+      "tests": 1,
+      "title": "ops root command surface pillar grouping contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.forbid_adhoc_command_groups",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface ad-hoc group guard contract",
+      "tests": 1,
+      "title": "ops root command surface ad-hoc group guard contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.command_purpose_defined",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface purpose contract",
+      "tests": 1,
+      "title": "ops root command surface purpose contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.command_supports_json",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface json output contract",
+      "tests": 1,
+      "title": "ops root command surface json output contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.command_dry_run_policy",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface dry-run policy contract",
+      "tests": 1,
+      "title": "ops root command surface dry-run policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.root_surface.artifacts_root_policy",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-ROOT-SURFACE-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-ROOT-SURFACE-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "ops root command surface artifacts policy contract",
+      "tests": 1,
+      "title": "ops root command surface artifacts policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 33,
+          "status": "PASS",
+          "test_id": "ops.schema.parseable_documents",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-001",
+      "duration_ms": 33,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema parseability contract",
+      "tests": 1,
+      "title": "schema parseability contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.index_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema index completeness contract",
+      "tests": 1,
+      "title": "schema index completeness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.no_unversioned",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema naming contract",
+      "tests": 1,
+      "title": "schema naming contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.budget_policy",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema budget contract",
+      "tests": 1,
+      "title": "schema budget contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.evolution_lock",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema evolution lock contract",
+      "tests": 1,
+      "title": "schema evolution lock contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 5,
+          "status": "PASS",
+          "test_id": "ops.schema.id_and_naming_consistency",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-006",
+      "duration_ms": 5,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema id consistency contract",
+      "tests": 1,
+      "title": "schema id consistency contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.examples_validate_required_fields",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema example validation contract",
+      "tests": 1,
+      "title": "schema example validation contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 5,
+          "status": "PASS",
+          "test_id": "ops.schema.forbid_duplicate_intent",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-008",
+      "duration_ms": 5,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema intent uniqueness contract",
+      "tests": 1,
+      "title": "schema intent uniqueness contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.canonical_json_formatting",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema canonical formatting contract",
+      "tests": 1,
+      "title": "schema canonical formatting contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.schema.example_coverage",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-SCHEMA-010",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-SCHEMA-010",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "schema example coverage contract",
+      "tests": 1,
+      "title": "schema example coverage contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.stack_toml_parseable_complete",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-001",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-001",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack toml profile contract",
+      "tests": 1,
+      "title": "stack toml profile contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.service_dependency_contract_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-002",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-002",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack service dependency contract",
+      "tests": 1,
+      "title": "stack service dependency contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.versions_manifest_schema_valid",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-003",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-003",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack version manifest contract",
+      "tests": 1,
+      "title": "stack version manifest contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.dependency_graph_generated_acyclic",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-004",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-004",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack dependency graph contract",
+      "tests": 1,
+      "title": "stack dependency graph contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.kind_profiles_consistent",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-005",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-005",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack kind profile consistency contract",
+      "tests": 1,
+      "title": "stack kind profile consistency contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.ports_inventory_matches_stack",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-006",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-006",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack ports inventory consistency contract",
+      "tests": 1,
+      "title": "stack ports inventory consistency contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.health_report_generator_contract",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-007",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-007",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack health report generator contract",
+      "tests": 1,
+      "title": "stack health report generator contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.stack_commands_registered",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-008",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-008",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack command surface contract",
+      "tests": 1,
+      "title": "stack command surface contract"
+    },
+    {
+      "checks": [
+        {
+          "details": null,
+          "duration_ms": 0,
+          "status": "PASS",
+          "test_id": "ops.stack.offline_profile_policy",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-009",
+      "duration_ms": 0,
+      "effects": [],
+      "group": "ops",
+      "id": "OPS-STACK-009",
+      "lanes": [],
+      "mode": "static",
+      "required": false,
+      "status": "PASS",
+      "summary": "stack offline profile policy contract",
+      "tests": 1,
+      "title": "stack offline profile policy contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.stack.effect.kind_cluster_up_profile_dev",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-E-001",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-STACK-E-001",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "stack effect kind cluster contract",
+      "tests": 1,
+      "title": "stack effect kind cluster contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.stack.effect.core_components_present",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-E-002",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-STACK-E-002",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "stack effect component rollout contract",
+      "tests": 1,
+      "title": "stack effect component rollout contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.stack.effect.ports_inventory_mapped",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-E-003",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-STACK-E-003",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "stack effect ports inventory contract",
+      "tests": 1,
+      "title": "stack effect ports inventory contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.stack.effect.health_report_generated",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-E-004",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-STACK-E-004",
+      "lanes": [],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "stack effect health report contract",
+      "tests": 1,
+      "title": "stack effect health report contract"
+    },
+    {
+      "checks": [
+        {
+          "details": "effect-only test",
+          "duration_ms": 0,
+          "status": "SKIP",
+          "test_id": "ops.stack.effect.kind_install_smoke",
+          "violations": []
+        }
+      ],
+      "contract_id": "OPS-STACK-E-005",
+      "duration_ms": 0,
+      "effects": [
+        "subprocess"
+      ],
+      "group": "ops",
+      "id": "OPS-STACK-E-005",
+      "lanes": [
+        "release"
+      ],
+      "mode": "effect",
+      "required": false,
+      "status": "SKIP",
+      "summary": "stack effect kind install smoke contract",
+      "tests": 1,
+      "title": "stack effect kind install smoke contract"
+    }
+  ],
+  "dirty_tree": true,
+  "domain": "ops",
+  "group": "ops",
+  "lane": "local",
+  "maturity": {
+    "effect_safety_pct": 100,
+    "explain_pct": 100,
+    "json_schema_pct": 100,
+    "mapped_gates_pct": 100
+  },
+  "mode": "static",
+  "panics": [],
+  "run_id": "local",
+  "schema_version": 1,
+  "summary": {
+    "contracts": 171,
+    "duration_ms": 585,
+    "error": 0,
+    "exit_code": 1,
+    "fail": 2,
+    "panic_count": 0,
+    "pass": 158,
+    "required_failures": [],
+    "skip": 19,
+    "tests": 179
+  },
+  "tests": [
+    {
+      "contract_id": "OPS-DATASETS-001",
+      "contract_title": "datasets manifest lock contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.manifest_and_lock_consistent",
+      "test_title": "dataset manifest and lock ids are consistent",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-002",
+      "contract_title": "datasets fixture inventory contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.fixture_inventory_matches_disk",
+      "test_title": "fixture inventory matches fixture directories and references",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-003",
+      "contract_title": "datasets fixture drift promotion contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.no_fixture_drift_without_promotion_record",
+      "test_title": "fixture drift requires explicit promotion rule coverage",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-004",
+      "contract_title": "datasets release diff determinism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.release_diff_fixtures_deterministic",
+      "test_title": "release-diff fixture lock and golden payloads are deterministic",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-005",
+      "contract_title": "datasets qc metadata summary contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.qc_metadata_and_golden_valid",
+      "test_title": "qc metadata and summary golden are parseable and linked",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-006",
+      "contract_title": "datasets rollback policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.rollback_policy_exists_valid",
+      "test_title": "rollback policy exists and includes required rollback structure",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-007",
+      "contract_title": "datasets promotion rules contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.promotion_rules_exists_valid",
+      "test_title": "promotion rules exist with canonical environment coverage and pin references",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-008",
+      "contract_title": "datasets consumer interface contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.consumer_list_consistent_with_runtime_queries",
+      "test_title": "consumer list interfaces resolve to runnable repository paths",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-009",
+      "contract_title": "datasets freeze policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.freeze_policy_exists_enforced",
+      "test_title": "freeze policy enforces append-only fixture immutability",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-010",
+      "contract_title": "datasets store layout contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.dataset_store_layout_contract_enforced",
+      "test_title": "dataset ids and fixture paths follow canonical store layout",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-011",
+      "contract_title": "datasets fixture archive lock contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.fixture_archives_match_manifest_lock",
+      "test_title": "fixture archives are checksummed and match manifest lock entries",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-012",
+      "contract_title": "datasets provenance fields contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.real_datasets_have_provenance",
+      "test_title": "real datasets declare explicit provenance fields",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-DATASETS-013",
+      "contract_title": "datasets file type boundary contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.datasets.allowed_file_types_only",
+      "test_title": "datasets tree contains only allowlisted file types",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-001",
+      "contract_title": "e2e suites reference contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.suites_reference_real_scenarios",
+      "test_title": "e2e suites reference concrete scenario ids and runnable entrypoints",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-002",
+      "contract_title": "e2e smoke manifest contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.smoke_manifest_valid",
+      "test_title": "smoke manifest is structured and points to existing lock",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-003",
+      "contract_title": "e2e fixtures lock contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.fixtures_lock_matches_allowlist",
+      "test_title": "fixtures lock digest and fixture files match allowlist policy",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-004",
+      "contract_title": "e2e realdata snapshot contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.realdata_snapshots_schema_valid_and_pinned",
+      "test_title": "realdata snapshots are parseable and pinned to canonical queries",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-005",
+      "contract_title": "e2e taxonomy coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.taxonomy_covers_scenarios",
+      "test_title": "taxonomy categories cover canonical scenario classification",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-006",
+      "contract_title": "e2e reproducibility enforcement contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.reproducibility_policy_enforced",
+      "test_title": "reproducibility policy checks and deterministic summary ordering are enforced",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-007",
+      "contract_title": "e2e coverage matrix determinism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.coverage_matrix_deterministic",
+      "test_title": "coverage matrix rows and coverage sets are complete and deterministic",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-008",
+      "contract_title": "e2e realdata scenario registry contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.realdata_registry_and_snapshots_valid",
+      "test_title": "realdata scenarios and snapshots are structurally valid and runnable",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-009",
+      "contract_title": "e2e surface artifact boundary contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.no_stray_e2e_artifacts",
+      "test_title": "e2e root contains only declared artifact directories and files",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-010",
+      "contract_title": "e2e summary schema contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.e2e.summary_schema_valid",
+      "test_title": "e2e summary is schema-valid and aligned with suite/scenario registries",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-E-001",
+      "contract_title": "e2e effect smoke suite contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.e2e.effect.smoke_suite_passes_contract",
+      "test_title": "effect lane requires smoke suite declaration in e2e suite registry",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-E2E-E-002",
+      "contract_title": "e2e effect realdata suite contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.e2e.effect.realdata_scenario_passes_contract",
+      "test_title": "effect lane requires non-empty realdata scenario contract set",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-001",
+      "contract_title": "environment overlay schema contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.overlays_schema_valid",
+      "test_title": "all required environment overlays are structurally valid",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-002",
+      "contract_title": "environment profile completeness contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.profiles_complete",
+      "test_title": "base/ci/dev/prod overlays exist and match profile identity",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-003",
+      "contract_title": "environment key strictness contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.no_unknown_keys",
+      "test_title": "environment overlays reject unknown keys",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-004",
+      "contract_title": "environment overlay merge determinism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.overlay_merge_deterministic",
+      "test_title": "overlay merge with identical inputs is deterministic across profiles",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-005",
+      "contract_title": "environment prod safety toggles contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.prod_forbids_dev_toggles",
+      "test_title": "prod overlay forbids dev-only effect toggles and unrestricted network",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-006",
+      "contract_title": "environment ci effect restriction contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.ci_restricts_effects",
+      "test_title": "ci overlay disables subprocess effects and keeps restricted network mode",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-007",
+      "contract_title": "environment base defaults contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.base_overlay_required_defaults",
+      "test_title": "base overlay defines required default keys for all profiles",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-008",
+      "contract_title": "environment overlay key stability contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.overlay_keys_stable",
+      "test_title": "overlay key sets are stable and schema-versioned across base/dev/ci/prod",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ENV-009",
+      "contract_title": "environment overlays directory boundary contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.env.overlays_dir_no_stray_files",
+      "test_title": "overlays directory has no stray files and portability matrix is present",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-001",
+      "contract_title": "inventory completeness contract",
+      "duration_ms": 4,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.completeness",
+      "test_title": "inventory registers all domains and policy files",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-002",
+      "contract_title": "inventory orphan files contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.no_orphan_files",
+      "test_title": "ops files must be mapped through inventory sources",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-003",
+      "contract_title": "inventory duplicate source contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.no_duplicate_ssot_sources",
+      "test_title": "duplicate ssot markdown sources are forbidden",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-004",
+      "contract_title": "inventory authority tier contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.authority_tiers_enforced",
+      "test_title": "authority tier exceptions are structured and expiry-bound",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-005",
+      "contract_title": "inventory control graph contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.control_graph_validated",
+      "test_title": "control graph edges and node mappings are valid and acyclic",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-006",
+      "contract_title": "inventory contract id format contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_id_format",
+      "test_title": "all ops contract ids follow OPS-<PILLAR>-NNN format",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-007",
+      "contract_title": "inventory gates registry contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.gates_registry_mapped",
+      "test_title": "gates registry exists and maps each gate to one action id",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-008",
+      "contract_title": "inventory drills registry contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.drills_registry_mapped",
+      "test_title": "drills registry ids map to runnable observe drill definitions",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-009",
+      "contract_title": "inventory owners registry contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.owners_registry_complete",
+      "test_title": "owners registry exists and includes all ops domain directories",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-010",
+      "contract_title": "inventory schema coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.schema_coverage",
+      "test_title": "inventory schema directory includes required registry schemas",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-011",
+      "contract_title": "inventory contracts listing pillar coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contracts_listing_matches_pillars",
+      "test_title": "contracts.json lists CONTRACT.md entries for every declared pillar required_dir",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-DEBT-001",
+      "contract_title": "inventory contract debt registry contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_debt.exists_and_complete",
+      "test_title": "contract debt registry exists with owner and target milestone for each entry",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-001",
+      "contract_title": "inventory contract gate map coverage contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.every_contract_mapped",
+      "test_title": "every contract id is mapped in contract-gate-map",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-002",
+      "contract_title": "inventory contract gate map gate reference contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.mapped_gates_exist",
+      "test_title": "every mapped gate id exists in gates registry",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-003",
+      "contract_title": "inventory contract gate map command surface contract",
+      "duration_ms": 1,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.mapped_commands_registered",
+      "test_title": "every mapped command is registered in ops command surface",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-004",
+      "contract_title": "inventory contract gate map effects annotation contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.effects_annotation_matches_mode",
+      "test_title": "effects annotations match contract test kinds and execution mode",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-005",
+      "contract_title": "inventory contract gate map orphan gate contract",
+      "duration_ms": 1,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.no_orphan_gates",
+      "test_title": "every gate id is referenced by at least one contract mapping",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-006",
+      "contract_title": "inventory contract gate map orphan contract contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.no_orphan_contracts",
+      "test_title": "every contract maps to gate ids or is explicitly static-only",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-007",
+      "contract_title": "inventory contract gate map static purity contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.static_only_contracts_are_pure",
+      "test_title": "static-only mappings are restricted to pure test contracts",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-008",
+      "contract_title": "inventory contract gate map effect kind contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.effect_contracts_require_effect_kind",
+      "test_title": "effect mappings require subprocess or network test kinds and annotations",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-009",
+      "contract_title": "inventory contract gate map explain coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.explain_shows_mapped_gates",
+      "test_title": "contract explain source mappings expose gate ids for non-static contracts",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-010",
+      "contract_title": "inventory contract gate map canonical order contract",
+      "duration_ms": 1,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.mapping_sorted_canonical",
+      "test_title": "contract-gate-map is sorted by contract id and canonical json",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-MAP-011",
+      "contract_title": "inventory contract gate map effect metadata contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.contract_gate_map.effect_metadata_declared",
+      "test_title": "effect mappings declare external tools, artifacts, and reproducible commands",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-PILLARS-001",
+      "contract_title": "inventory pillars registry contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.pillars.exists_and_validates",
+      "test_title": "pillars.json exists and validates",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-PILLARS-002",
+      "contract_title": "inventory pillar directory contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.pillars.every_pillar_dir_exists",
+      "test_title": "every declared non-root pillar has a matching ops directory",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-INV-PILLARS-003",
+      "contract_title": "inventory pillar strictness contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.inventory.pillars.no_extra_pillar_dirs",
+      "test_title": "ops root has no undeclared pillar directories",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-001",
+      "contract_title": "k8s static chart render contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.chart_renders_static",
+      "test_title": "helm chart source includes required files and static render inputs",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-002",
+      "contract_title": "k8s values schema validation contract",
+      "duration_ms": 1,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.values_files_validate_schema",
+      "test_title": "install-matrix values files exist and are parseable against chart schema surface",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-003",
+      "contract_title": "k8s install matrix completeness contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.install_matrix_complete",
+      "test_title": "install matrix covers canonical profile set and references existing files",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-004",
+      "contract_title": "k8s forbidden object policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.no_forbidden_k8s_objects",
+      "test_title": "helm templates must not introduce forbidden cluster-scope object kinds",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-005",
+      "contract_title": "k8s rbac minimalism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.rbac_minimalism",
+      "test_title": "helm templates must not declare cluster-admin or wildcard rbac grants",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-006",
+      "contract_title": "k8s pod security and probes contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.pod_security_and_probes",
+      "test_title": "deployment template includes pod security hardening and readiness/liveness probes",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-007",
+      "contract_title": "k8s rollout safety contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.rollout_safety_enforced",
+      "test_title": "rollout safety contract is valid and rollout template enforces rollout steps",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-008",
+      "contract_title": "k8s conformance suite contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.conformance_suite_runnable",
+      "test_title": "k8s conformance suite exists and control-plane exposes conformance verb",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-009",
+      "contract_title": "k8s install matrix generated consistency contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.install_matrix_and_generated_consistency",
+      "test_title": "install matrix and generated k8s artifacts stay aligned and schema-versioned",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-010",
+      "contract_title": "k8s generated index determinism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.k8s.generated_indexes_deterministic_schema_valid",
+      "test_title": "generated k8s indexes are schema-versioned and deterministic",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-E-001",
+      "contract_title": "k8s effect chart defaults render contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.k8s.effect.chart_defaults_rendered",
+      "test_title": "effect lane renders chart defaults with helm template and emits rendered manifest",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-E-002",
+      "contract_title": "k8s effect minimal values render contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.k8s.effect.chart_minimal_values_rendered",
+      "test_title": "effect lane renders a minimal chart values profile",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-E-003",
+      "contract_title": "k8s effect kubeconform contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.k8s.effect.kubeconform_render_validation",
+      "test_title": "effect lane validates rendered manifests with kubeconform",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-E-004",
+      "contract_title": "k8s effect install matrix contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.k8s.effect.helm_install_contract_defined",
+      "test_title": "effect lane requires kind install profile in k8s install matrix",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-E-005",
+      "contract_title": "k8s effect rollout safety contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.k8s.effect.rollout_safety_contract_satisfied",
+      "test_title": "effect lane requires rollout safety contract checks",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-K8S-E-006",
+      "contract_title": "k8s effect tool versions contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "merge",
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.k8s.effect.tool_versions_recorded",
+      "test_title": "effect lane records helm and kubeconform versions and enforces allowed major versions",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-001",
+      "contract_title": "load scenario schema contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.scenarios_schema_valid",
+      "test_title": "load scenarios are parseable and include required fields",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-002",
+      "contract_title": "load thresholds coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.thresholds_exist_for_each_suite",
+      "test_title": "every load suite has a matching thresholds file",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-003",
+      "contract_title": "load pinned query lock contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.pinned_queries_lock_consistent",
+      "test_title": "pinned query lock digests match source query payload",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-004",
+      "contract_title": "load baseline schema contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.baselines_schema_valid",
+      "test_title": "load baselines are parseable and contain required fields",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-005",
+      "contract_title": "load scenario to slo mapping contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.no_scenario_without_slo_mapping",
+      "test_title": "smoke/pr load suites must be represented in inventory SLO mappings",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-006",
+      "contract_title": "load drift report schema contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.drift_report_generator_schema_valid",
+      "test_title": "load drift report exists and is schema-valid",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-007",
+      "contract_title": "load result schema sample contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.result_schema_validates_sample_output",
+      "test_title": "load result schema validates generated sample summary envelope",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-008",
+      "contract_title": "load cheap survival suite gate contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.cheap_survival_in_minimal_gate_suite",
+      "test_title": "cheap-only-survival suite is present in minimal gate lanes",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-009",
+      "contract_title": "load cold start p99 suite gate contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.cold_start_p99_in_minimal_gate_suite",
+      "test_title": "cold-start-p99 suite is present in required confidence lanes",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-010",
+      "contract_title": "load scenario slo impact mapping contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.load.every_scenario_has_slo_impact_class",
+      "test_title": "every load suite maps to a scenario slo impact class entry",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-E-001",
+      "contract_title": "load effect k6 execution contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.load.effect.k6_suite_executes_contract",
+      "test_title": "effect lane requires at least one k6 load suite definition",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-E-002",
+      "contract_title": "load effect thresholds report contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.load.effect.thresholds_enforced_report_emitted",
+      "test_title": "effect lane requires thresholds contract and emitted load summary report",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-LOAD-E-003",
+      "contract_title": "load effect baseline comparison contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.load.effect.baseline_comparison_produced",
+      "test_title": "effect lane requires emitted load drift comparison report",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-META-001",
+      "contract_title": "ops contracts map each contract id to a source file path",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.meta.contract_source_path_mapping",
+      "test_title": "every ops contract id maps to an existing source file path under ops contracts",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-META-002",
+      "contract_title": "ops contracts enforce io locality to ops surfaces",
+      "duration_ms": 6,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.meta.contract_io_locality",
+      "test_title": "ops contracts read and write only ops-local paths or explicit allowlisted sources",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-001",
+      "contract_title": "observability alert rules contract",
+      "duration_ms": 1,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.alert_rules_exist_parseable",
+      "test_title": "required alert rule sources exist and are parseable",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-002",
+      "contract_title": "observability dashboard golden contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.dashboard_json_parseable_golden_diff",
+      "test_title": "dashboard json parses and matches golden identity and panel structure",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-003",
+      "contract_title": "observability telemetry golden profile contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.telemetry_goldens_required_profiles",
+      "test_title": "telemetry goldens exist for required profiles and are indexed",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-004",
+      "contract_title": "observability readiness schema contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.readiness_schema_valid",
+      "test_title": "readiness contract is parseable and uses canonical requirement set",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-005",
+      "contract_title": "observability alert catalog generation contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.alert_catalog_generated_consistency",
+      "test_title": "alert catalog is populated and aligned with parsed alert rules",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-006",
+      "contract_title": "observability slo burn-rate consistency contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.slo_definitions_burn_rate_consistent",
+      "test_title": "slo definitions and burn-rate rules remain aligned",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-007",
+      "contract_title": "observability public surface coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.public_surface_coverage_matches_rules",
+      "test_title": "public surface coverage rules include required surfaces",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-008",
+      "contract_title": "observability telemetry index determinism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.telemetry_index_generated_deterministic",
+      "test_title": "telemetry index is schema-versioned and sorted deterministically",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-009",
+      "contract_title": "observability drills manifest contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.drills_manifest_exists_runnable",
+      "test_title": "drills manifest is populated with runnable drill definitions",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-010",
+      "contract_title": "observability overload behavior contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.observe.overload_behavior_contract_enforced",
+      "test_title": "overload behavior contract exists and maps to load suite coverage",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-E-001",
+      "contract_title": "observe effect metrics scrape contract",
+      "duration_ms": 0,
+      "kind": "network",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.observe.effect.scrape_metrics_contract",
+      "test_title": "effect lane requires non-empty metrics scrape contract",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-E-002",
+      "contract_title": "observe effect trace structure contract",
+      "duration_ms": 0,
+      "kind": "network",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.observe.effect.trace_structure_contract",
+      "test_title": "effect lane requires trace structure golden contract",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-OBS-E-003",
+      "contract_title": "observe effect alerts load contract",
+      "duration_ms": 0,
+      "kind": "network",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.observe.effect.alerts_load_contract",
+      "test_title": "effect lane requires parseable alert rule inputs",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-001",
+      "contract_title": "report schema ssot contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.schema_is_ssot",
+      "test_title": "report schema is parseable and mirrored under ops/schema/report",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-002",
+      "contract_title": "report generated payload contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.generated_reports_schema_valid",
+      "test_title": "generated report payloads are parseable and include schema_version",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-003",
+      "contract_title": "report evidence levels contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.evidence_levels_complete",
+      "test_title": "evidence levels include minimal standard and forensic",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-004",
+      "contract_title": "report diff structure contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.diff_contract_exists",
+      "test_title": "generated report diff includes base target and change set",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-005",
+      "contract_title": "report readiness score determinism contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.readiness_score_deterministic",
+      "test_title": "readiness score report is schema-versioned and uses canonical input keys",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-006",
+      "contract_title": "report release evidence bundle contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.release_evidence_bundle_schema_valid",
+      "test_title": "release evidence bundle is parseable and references existing artifacts",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-007",
+      "contract_title": "report historical comparison contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.historical_comparison_schema_valid",
+      "test_title": "historical comparison report includes schema and readiness trend fields",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-008",
+      "contract_title": "report unified example contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.unified_report_example_schema_valid",
+      "test_title": "unified report example includes required schema and summary sections",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-009",
+      "contract_title": "report canonical json output contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.outputs_canonical_json",
+      "test_title": "report outputs are canonical pretty json with deterministic key ordering",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-REPORT-010",
+      "contract_title": "report lane aggregation contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.report.lane_reports_aggregated_in_unified_report",
+      "test_title": "unified report summary totals are derived from lane report statuses",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-001",
+      "contract_title": "ops root allowed surface contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.allowed_surface",
+      "test_title": "ops root contains only canonical files and domain directories",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-002",
+      "contract_title": "ops root markdown contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.forbid_extra_markdown",
+      "test_title": "ops root forbids markdown files other than README.md and CONTRACT.md",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-003",
+      "contract_title": "ops no shell scripts contract",
+      "duration_ms": 12,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.no_shell_script_files",
+      "test_title": "ops tree contains no shell script files or bash shebangs",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-004",
+      "contract_title": "ops max directory depth contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.max_directory_depth",
+      "test_title": "ops file paths remain within configured depth budget",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-005",
+      "contract_title": "ops filename policy contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.filename_policy",
+      "test_title": "ops filenames follow stable lowercase policy with explicit allowlist exceptions",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-006",
+      "contract_title": "ops generated gitignore policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.generated_gitignore_policy",
+      "test_title": "ops/_generated is gitignored with explicit .gitkeep exception",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-007",
+      "contract_title": "ops generated example secret guard contract",
+      "duration_ms": 9,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.generated_example_secret_guard",
+      "test_title": "ops/_generated.example is secret-free and json payloads are parseable",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-008",
+      "contract_title": "ops placeholder directory contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.placeholder_dirs_allowlist",
+      "test_title": "ops placeholder directories are explicitly allowlisted",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-009",
+      "contract_title": "ops policy inventory coverage contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.policy_files_inventory_coverage",
+      "test_title": "ops policy/config files are covered by inventory sources",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-010",
+      "contract_title": "ops deleted doc name guard contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.forbid_deleted_doc_names",
+      "test_title": "forbidden legacy ops markdown names must not be reintroduced",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-011",
+      "contract_title": "ops markdown allowlist contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.markdown_allowlist_only",
+      "test_title": "ops markdown files are restricted to explicit allowlist paths",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-012",
+      "contract_title": "ops pillar readme cardinality contract",
+      "duration_ms": 2,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.single_readme_per_pillar",
+      "test_title": "each non-root pillar has exactly one README.md at pillar root",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-013",
+      "contract_title": "ops markdown allowlist inventory contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.markdown_allowlist_file_valid",
+      "test_title": "markdown allowlist inventory file exists and is non-empty",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-014",
+      "contract_title": "ops procedure text contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.no_procedure_docs_in_ops",
+      "test_title": "procedure-like language in ops markdown requires OPS contract references",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-015",
+      "contract_title": "ops pillar markdown minimalism contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.no_extra_pillar_markdown",
+      "test_title": "ops pillar markdown surface is restricted to allowlisted files",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-016",
+      "contract_title": "ops deleted markdown denylist contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root.deleted_markdown_denylist",
+      "test_title": "historically deleted markdown paths must not be reintroduced",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-017",
+      "contract_title": "ops directory contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.dir.allow_only_known_domain_dirs",
+      "test_title": "ops root allows only canonical domain directories",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-017",
+      "contract_title": "ops directory contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.dir.allowed_root_files",
+      "test_title": "ops root allows only contract/readme root files",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-017",
+      "contract_title": "ops directory contract",
+      "duration_ms": 3,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.dir.forbid_extra_markdown_recursive",
+      "test_title": "ops forbids recursive markdown outside approved surface",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-017",
+      "contract_title": "ops directory contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.dir.forbid_extra_markdown_root",
+      "test_title": "ops root forbids extra markdown",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-018",
+      "contract_title": "ops generated lifecycle contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.generated.example.allowed_files",
+      "test_title": "ops/_generated.example allows only committed artifact formats",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-018",
+      "contract_title": "ops generated lifecycle contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.generated.runtime.allowed_files",
+      "test_title": "ops/_generated allows only runtime artifact formats",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-018",
+      "contract_title": "ops generated lifecycle contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.generated.runtime.no_example_files",
+      "test_title": "ops/_generated forbids example artifacts",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-019",
+      "contract_title": "ops required domain files contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.domain.forbid_legacy_docs",
+      "test_title": "legacy domain INDEX/OWNER/REQUIRED markdown files are forbidden",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-019",
+      "contract_title": "ops required domain files contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.domain.required_contract_and_readme",
+      "test_title": "each ops domain includes README.md and CONTRACT.md",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-020",
+      "contract_title": "ops markdown budget contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.markdown_budget.contract",
+      "test_title": "CONTRACT markdown files stay within line budget",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-020",
+      "contract_title": "ops markdown budget contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.markdown_budget.readme",
+      "test_title": "README markdown files stay within line budget",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-021",
+      "contract_title": "ops docs ssot boundary contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.docs.readme_ssot_boundary",
+      "test_title": "ops root readme remains navigation-only and references docs/operations",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-022",
+      "contract_title": "ops contract document generation contract",
+      "duration_ms": 45,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.contract_doc.generated_match",
+      "test_title": "ops CONTRACT.md matches generated output from contract registry",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-023",
+      "contract_title": "operations docs policy linkage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "FAIL",
+      "test_id": "ops.docs.index_crosslinks_contracts",
+      "test_title": "operations index must state docs/contracts boundary and include OPS references",
+      "violations": [
+        {
+          "contract_id": "OPS-ROOT-023",
+          "evidence": null,
+          "file": "docs/operations/INDEX.md",
+          "line": 1,
+          "message": "docs/operations/INDEX.md must state docs/contracts boundary and include OPS contract references",
+          "test_id": "ops.docs.index_crosslinks_contracts"
+        }
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-023",
+      "contract_title": "operations docs policy linkage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "FAIL",
+      "test_id": "ops.docs.policy_keyword_requires_contract_id",
+      "test_title": "operations docs with policy keywords must reference OPS contract ids",
+      "violations": [
+        {
+          "contract_id": "OPS-ROOT-023",
+          "evidence": null,
+          "file": "docs/operations/fixture-dataset-ingest.md",
+          "line": 1,
+          "message": "operations doc declares policy keywords without OPS contract id reference",
+          "test_id": "ops.docs.policy_keyword_requires_contract_id"
+        },
+        {
+          "contract_id": "OPS-ROOT-023",
+          "evidence": null,
+          "file": "docs/operations/kind-profile.md",
+          "line": 1,
+          "message": "operations doc declares policy keywords without OPS contract id reference",
+          "test_id": "ops.docs.policy_keyword_requires_contract_id"
+        },
+        {
+          "contract_id": "OPS-ROOT-023",
+          "evidence": null,
+          "file": "docs/operations/ops-map.md",
+          "line": 1,
+          "message": "operations doc declares policy keywords without OPS contract id reference",
+          "test_id": "ops.docs.policy_keyword_requires_contract_id"
+        },
+        {
+          "contract_id": "OPS-ROOT-023",
+          "evidence": null,
+          "file": "docs/operations/promotion-record.md",
+          "line": 1,
+          "message": "operations doc declares policy keywords without OPS contract id reference",
+          "test_id": "ops.docs.policy_keyword_requires_contract_id"
+        }
+      ]
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-001",
+      "contract_title": "ops root command surface required commands contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.required_commands_exist",
+      "test_title": "required ops command verbs exist in command surface registry",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-002",
+      "contract_title": "ops root command surface no hidden commands contract",
+      "duration_ms": 1,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.no_hidden_commands",
+      "test_title": "listed commands and action dispatch entries must match exactly",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-003",
+      "contract_title": "ops root command surface deterministic ordering contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.surface_ordering_deterministic",
+      "test_title": "command surface list is sorted deterministically",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-004",
+      "contract_title": "ops root command surface effects declaration contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.commands_declare_effects",
+      "test_title": "mapped commands declare effects_required annotations",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-005",
+      "contract_title": "ops root command surface pillar grouping contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.commands_grouped_by_pillar",
+      "test_title": "ops command actions use approved pillar-style domain groups",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-006",
+      "contract_title": "ops root command surface ad-hoc group guard contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.forbid_adhoc_command_groups",
+      "test_title": "ops command actions must not use ad-hoc misc/util group names",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-007",
+      "contract_title": "ops root command surface purpose contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.command_purpose_defined",
+      "test_title": "each command action defines a stable purpose string",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-008",
+      "contract_title": "ops root command surface json output contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.command_supports_json",
+      "test_title": "each command action declares json output support",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-009",
+      "contract_title": "ops root command surface dry-run policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.command_dry_run_policy",
+      "test_title": "each command action declares dry-run policy where applicable",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-ROOT-SURFACE-010",
+      "contract_title": "ops root command surface artifacts policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.root_surface.artifacts_root_policy",
+      "test_title": "each command action declares artifacts root write policy",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-001",
+      "contract_title": "schema parseability contract",
+      "duration_ms": 33,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.parseable_documents",
+      "test_title": "ops json/yaml policy documents are parseable",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-002",
+      "contract_title": "schema index completeness contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.index_complete",
+      "test_title": "generated schema index covers all schema sources",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-003",
+      "contract_title": "schema naming contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.no_unversioned",
+      "test_title": "schema sources use stable .schema.json naming",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-004",
+      "contract_title": "schema budget contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.budget_policy",
+      "test_title": "schema count stays within per-domain budgets",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-005",
+      "contract_title": "schema evolution lock contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.evolution_lock",
+      "test_title": "compatibility lock tracks schema evolution targets",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-006",
+      "contract_title": "schema id consistency contract",
+      "duration_ms": 5,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.id_and_naming_consistency",
+      "test_title": "schema files define stable $id values aligned with file names",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-007",
+      "contract_title": "schema example validation contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.examples_validate_required_fields",
+      "test_title": "schema examples satisfy required field coverage from compatibility lock",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-008",
+      "contract_title": "schema intent uniqueness contract",
+      "duration_ms": 5,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.forbid_duplicate_intent",
+      "test_title": "schema ids and titles are unique to avoid duplicated intent",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-009",
+      "contract_title": "schema canonical formatting contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.canonical_json_formatting",
+      "test_title": "generated schema artifacts use canonical pretty json formatting",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-SCHEMA-010",
+      "contract_title": "schema example coverage contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.schema.example_coverage",
+      "test_title": "schema compatibility targets declare existing example fixtures",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-001",
+      "contract_title": "stack toml profile contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.stack_toml_parseable_complete",
+      "test_title": "stack.toml parses and includes canonical ci kind local profiles",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-002",
+      "contract_title": "stack service dependency contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.service_dependency_contract_valid",
+      "test_title": "service dependency contract entries are parseable and resolve to files",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-003",
+      "contract_title": "stack version manifest contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.versions_manifest_schema_valid",
+      "test_title": "version manifest is parseable and image refs are digest pinned",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-004",
+      "contract_title": "stack dependency graph contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.dependency_graph_generated_acyclic",
+      "test_title": "dependency graph is parseable and references real cluster/components",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-005",
+      "contract_title": "stack kind profile consistency contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.kind_profiles_consistent",
+      "test_title": "dev perf and small kind profiles exist and reference valid cluster configs",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-006",
+      "contract_title": "stack ports inventory consistency contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.ports_inventory_matches_stack",
+      "test_title": "ports inventory endpoints are unique and aligned with stack components",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-007",
+      "contract_title": "stack health report generator contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.health_report_generator_contract",
+      "test_title": "health report sample has schema envelope and stack generator provenance",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-008",
+      "contract_title": "stack command surface contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.stack_commands_registered",
+      "test_title": "stack command surface snapshot contains up and down verbs",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-009",
+      "contract_title": "stack offline profile policy contract",
+      "duration_ms": 0,
+      "kind": "pure",
+      "lanes": [],
+      "note": null,
+      "required": false,
+      "status": "PASS",
+      "test_id": "ops.stack.offline_profile_policy",
+      "test_title": "offline claims require offline or airgap profile coverage",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-E-001",
+      "contract_title": "stack effect kind cluster contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.stack.effect.kind_cluster_up_profile_dev",
+      "test_title": "effect lane requires kind dev cluster contract inputs",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-E-002",
+      "contract_title": "stack effect component rollout contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.stack.effect.core_components_present",
+      "test_title": "effect lane requires core stack component manifests",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-E-003",
+      "contract_title": "stack effect ports inventory contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.stack.effect.ports_inventory_mapped",
+      "test_title": "effect lane requires stack ports inventory contract sample",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-E-004",
+      "contract_title": "stack effect health report contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.stack.effect.health_report_generated",
+      "test_title": "effect lane requires stack health report contract sample",
+      "violations": []
+    },
+    {
+      "contract_id": "OPS-STACK-E-005",
+      "contract_title": "stack effect kind install smoke contract",
+      "duration_ms": 0,
+      "kind": "subprocess",
+      "lanes": [
+        "release"
+      ],
+      "note": "effect-only test",
+      "required": false,
+      "status": "SKIP",
+      "test_id": "ops.stack.effect.kind_install_smoke",
+      "test_title": "release lane verifies kind-backed install planning and cluster profile tooling",
+      "violations": []
+    }
+  ]
+}

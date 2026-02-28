@@ -33,19 +33,19 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/_assets/INDEX.md",
+      "path": "docs/_assets/index.md",
       "title": "Assets Index",
       "is_index": true,
       "reachable_from_index": true
     },
     {
-      "path": "docs/_assets/diagrams/INDEX.md",
+      "path": "docs/_assets/diagrams/index.md",
       "title": "Diagrams",
       "is_index": true,
       "reachable_from_index": true
     },
     {
-      "path": "docs/_drafts/INDEX.md",
+      "path": "docs/_drafts/index.md",
       "title": "Drafts Index",
       "is_index": true,
       "reachable_from_index": true
@@ -81,7 +81,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/_lint/INDEX.md",
+      "path": "docs/_lint/index.md",
       "title": "_Lint Index",
       "is_index": true,
       "reachable_from_index": true
@@ -105,7 +105,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/_nav/INDEX.md",
+      "path": "docs/_nav/index.md",
       "title": "Navigation Policy",
       "is_index": true,
       "reachable_from_index": true
@@ -129,7 +129,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/_style/INDEX.md",
+      "path": "docs/_style/index.md",
       "title": "_Style Index",
       "is_index": true,
       "reachable_from_index": true
@@ -225,13 +225,13 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/adrs/INDEX.md",
+      "path": "docs/adrs/index.md",
       "title": "ADR Index",
       "is_index": true,
       "reachable_from_index": true
     },
     {
-      "path": "docs/api/INDEX.md",
+      "path": "docs/api/index.md",
       "title": "API Surface Index",
       "is_index": true,
       "reachable_from_index": true
@@ -291,7 +291,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/architecture/INDEX.md",
+      "path": "docs/architecture/index.md",
       "title": "Architecture Index",
       "is_index": true,
       "reachable_from_index": true
@@ -363,7 +363,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/architecture/layering/INDEX.md",
+      "path": "docs/architecture/layering/index.md",
       "title": "Layering Architecture",
       "is_index": true,
       "reachable_from_index": true
@@ -447,7 +447,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/contracts/INDEX.md",
+      "path": "docs/contracts/index.md",
       "title": "Contracts SSOT",
       "is_index": true,
       "reachable_from_index": true
@@ -459,7 +459,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/contracts/artifacts/INDEX.md",
+      "path": "docs/contracts/artifacts/index.md",
       "title": "Contracts Artifacts Index",
       "is_index": true,
       "reachable_from_index": true
@@ -543,7 +543,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/contracts/examples/INDEX.md",
+      "path": "docs/contracts/examples/index.md",
       "title": "Contract JSON Examples",
       "is_index": true,
       "reachable_from_index": true
@@ -573,7 +573,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/contracts/plugin/INDEX.md",
+      "path": "docs/contracts/plugin/index.md",
       "title": "Contracts Plugin Index",
       "is_index": true,
       "reachable_from_index": true
@@ -633,7 +633,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/development/INDEX.md",
+      "path": "docs/development/index.md",
       "title": "Development Index",
       "is_index": true,
       "reachable_from_index": true
@@ -669,7 +669,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/development/ci/INDEX.md",
+      "path": "docs/development/ci/index.md",
       "title": "Development Ci Index",
       "is_index": true,
       "reachable_from_index": true
@@ -771,7 +771,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/development/makefiles/INDEX.md",
+      "path": "docs/development/makefiles/index.md",
       "title": "Development Makefiles Index",
       "is_index": true,
       "reachable_from_index": true
@@ -849,7 +849,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/development/style/INDEX.md",
+      "path": "docs/development/style/index.md",
       "title": "Style Docs Index",
       "is_index": true,
       "reachable_from_index": true
@@ -879,7 +879,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/development/tooling/INDEX.md",
+      "path": "docs/development/tooling/index.md",
       "title": "Tooling",
       "is_index": true,
       "reachable_from_index": true
@@ -969,13 +969,13 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/docs/checks.md",
+      "path": "docs/governance/checks/docs-checks.md",
       "title": "Docs Checks Contract",
       "is_index": false,
       "reachable_from_index": false
     },
     {
-      "path": "docs/examples/INDEX.md",
+      "path": "docs/examples/index.md",
       "title": "Examples Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1017,7 +1017,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/INDEX.md",
+      "path": "docs/operations/index.md",
       "title": "Operations Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1071,7 +1071,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/operations/e2e/INDEX.md",
+      "path": "docs/operations/e2e/index.md",
       "title": "E2E Operations Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1137,7 +1137,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/k8s/INDEX.md",
+      "path": "docs/operations/k8s/index.md",
       "title": "Kubernetes Operations Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1257,7 +1257,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/load/INDEX.md",
+      "path": "docs/operations/load/index.md",
       "title": "Operations Load Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1323,7 +1323,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/observability/INDEX.md",
+      "path": "docs/operations/observability/index.md",
       "title": "Operations Observability Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1473,7 +1473,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/performance/INDEX.md",
+      "path": "docs/operations/performance/index.md",
       "title": "Operations Performance Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1515,7 +1515,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/runbooks/INDEX.md",
+      "path": "docs/operations/runbooks/index.md",
       "title": "Runbooks Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1623,13 +1623,13 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/operations/security/INDEX.md",
+      "path": "docs/operations/security/index.md",
       "title": "Operations Security Index",
       "is_index": true,
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/security/advisories/INDEX.md",
+      "path": "docs/operations/security/advisories/index.md",
       "title": "Security Advisories Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1671,7 +1671,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/operations/slo/INDEX.md",
+      "path": "docs/operations/slo/index.md",
       "title": "SLO Contract Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1743,13 +1743,13 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/policies/checks.md",
+      "path": "docs/governance/policies/checks.md",
       "title": "Policies Checks Contract",
       "is_index": false,
       "reachable_from_index": false
     },
     {
-      "path": "docs/product/INDEX.md",
+      "path": "docs/product/index.md",
       "title": "Product Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1821,7 +1821,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/quickstart/INDEX.md",
+      "path": "docs/start-here.md",
       "title": "Quickstart Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1845,13 +1845,13 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/reference/INDEX.md",
+      "path": "docs/reference/index.md",
       "title": "Reference Index",
       "is_index": true,
       "reachable_from_index": true
     },
     {
-      "path": "docs/reference/compatibility/INDEX.md",
+      "path": "docs/reference/compatibility/index.md",
       "title": "Compatibility Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1881,7 +1881,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/reference/datasets/INDEX.md",
+      "path": "docs/reference/datasets/index.md",
       "title": "Datasets Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1917,7 +1917,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/reference/evolution/INDEX.md",
+      "path": "docs/reference/evolution/index.md",
       "title": "Reference Evolution Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1947,7 +1947,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/reference/fixtures/INDEX.md",
+      "path": "docs/reference/fixtures/index.md",
       "title": "Reference Fixtures Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1965,7 +1965,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/reference/ingestion/INDEX.md",
+      "path": "docs/reference/ingestion/index.md",
       "title": "Ingestion Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -1995,7 +1995,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/reference/performance/INDEX.md",
+      "path": "docs/reference/performance/index.md",
       "title": "Performance Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -2043,7 +2043,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/reference/querying/INDEX.md",
+      "path": "docs/reference/querying/index.md",
       "title": "Querying Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -2079,7 +2079,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/reference/registry/INDEX.md",
+      "path": "docs/reference/registry/index.md",
       "title": "Registry Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -2157,7 +2157,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/reference/science/INDEX.md",
+      "path": "docs/reference/science/index.md",
       "title": "Reference Science Index",
       "is_index": true,
       "reachable_from_index": true
@@ -2175,7 +2175,7 @@
       "reachable_from_index": false
     },
     {
-      "path": "docs/reference/security/INDEX.md",
+      "path": "docs/reference/security/index.md",
       "title": "Security Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -2205,7 +2205,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/reference/store/INDEX.md",
+      "path": "docs/reference/store/index.md",
       "title": "Store Reference Index",
       "is_index": true,
       "reachable_from_index": true
@@ -2355,13 +2355,13 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/root/FAQ.md",
+      "path": "docs/root/faq.md",
       "title": "FAQ",
       "is_index": false,
       "reachable_from_index": true
     },
     {
-      "path": "docs/root/GLOSSARY.md",
+      "path": "docs/root/glossary.md",
       "title": "Glossary",
       "is_index": false,
       "reachable_from_index": true
@@ -2373,7 +2373,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/root/INDEX.md",
+      "path": "docs/root/index.md",
       "title": "Root Documentation Map",
       "is_index": true,
       "reachable_from_index": true
@@ -2463,7 +2463,7 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/root/START_HERE.md",
+      "path": "docs/root/start-here.md",
       "title": "Start Here",
       "is_index": false,
       "reachable_from_index": true
@@ -2475,13 +2475,13 @@
       "reachable_from_index": true
     },
     {
-      "path": "docs/science/INDEX.md",
+      "path": "docs/science/index.md",
       "title": "Science Index",
       "is_index": true,
       "reachable_from_index": true
     },
     {
-      "path": "docs/taxonomy-map.md",
+      "path": "docs/governance/metadata/taxonomy-map.md",
       "title": "Docs Taxonomy Map",
       "is_index": false,
       "reachable_from_index": false

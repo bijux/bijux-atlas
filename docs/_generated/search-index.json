@@ -3586,426 +3586,6 @@
     },
     {
       "keywords": [
-        "authors"
-      ],
-      "path": "docs/AUTHORS.md",
-      "tags": [
-        "authors"
-      ],
-      "topic": "AUTHORS"
-    },
-    {
-      "keywords": [
-        "contract"
-      ],
-      "path": "docs/CONTRACT.md",
-      "tags": [
-        "contract"
-      ],
-      "topic": "CONTRACT"
-    },
-    {
-      "keywords": [
-        "owners"
-      ],
-      "path": "docs/OWNERS.md",
-      "tags": [
-        "owners"
-      ],
-      "topic": "OWNERS"
-    },
-    {
-      "keywords": [
-        "project-description-snippet"
-      ],
-      "path": "docs/PROJECT_DESCRIPTION_SNIPPET.md",
-      "tags": [
-        "project-description-snippet"
-      ],
-      "topic": "PROJECT_DESCRIPTION_SNIPPET"
-    },
-    {
-      "keywords": [
-        "project-identity"
-      ],
-      "path": "docs/PROJECT_IDENTITY.md",
-      "tags": [
-        "project-identity"
-      ],
-      "topic": "PROJECT_IDENTITY"
-    },
-    {
-      "keywords": [
-        "start-here"
-      ],
-      "path": "docs/START_HERE.md",
-      "tags": [
-        "start-here"
-      ],
-      "topic": "START_HERE"
-    },
-    {
-      "keywords": [
-        "style"
-      ],
-      "path": "docs/STYLE.md",
-      "tags": [
-        "style"
-      ],
-      "topic": "STYLE"
-    },
-    {
-      "keywords": [
-        "-assets",
-        "index"
-      ],
-      "path": "docs/_assets/INDEX.md",
-      "tags": [
-        "-assets",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "-assets",
-        "diagrams",
-        "index"
-      ],
-      "path": "docs/_assets/diagrams/INDEX.md",
-      "tags": [
-        "-assets",
-        "diagrams",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "-lint",
-        "index"
-      ],
-      "path": "docs/_lint/INDEX.md",
-      "tags": [
-        "-lint",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "-lint",
-        "duplicate-topics"
-      ],
-      "path": "docs/_lint/duplicate-topics.md",
-      "tags": [
-        "-lint",
-        "duplicate-topics"
-      ],
-      "topic": "duplicate-topics"
-    },
-    {
-      "keywords": [
-        "-lint",
-        "observability-docs"
-      ],
-      "path": "docs/_lint/observability-docs.md",
-      "tags": [
-        "-lint",
-        "observability-docs"
-      ],
-      "topic": "observability-docs"
-    },
-    {
-      "keywords": [
-        "-lint",
-        "renames"
-      ],
-      "path": "docs/_lint/renames.md",
-      "tags": [
-        "-lint",
-        "renames"
-      ],
-      "topic": "renames"
-    },
-    {
-      "keywords": [
-        "-nav",
-        "index"
-      ],
-      "path": "docs/_nav/INDEX.md",
-      "tags": [
-        "-nav",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "-style",
-        "concept-registry"
-      ],
-      "path": "docs/_style/CONCEPT_REGISTRY.md",
-      "tags": [
-        "-style",
-        "concept-registry"
-      ],
-      "topic": "CONCEPT_REGISTRY"
-    },
-    {
-      "keywords": [
-        "-style",
-        "depth-policy"
-      ],
-      "path": "docs/_style/DEPTH_POLICY.md",
-      "tags": [
-        "-style",
-        "depth-policy"
-      ],
-      "topic": "DEPTH_POLICY"
-    },
-    {
-      "keywords": [
-        "-style",
-        "depth-rubric"
-      ],
-      "path": "docs/_style/DEPTH_RUBRIC.md",
-      "tags": [
-        "-style",
-        "depth-rubric"
-      ],
-      "topic": "DEPTH_RUBRIC"
-    },
-    {
-      "keywords": [
-        "-style",
-        "index"
-      ],
-      "path": "docs/_style/INDEX.md",
-      "tags": [
-        "-style",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "-style",
-        "concept-ids"
-      ],
-      "path": "docs/_style/concept-ids.md",
-      "tags": [
-        "-style",
-        "concept-ids"
-      ],
-      "topic": "concept-ids"
-    },
-    {
-      "keywords": [
-        "-style",
-        "crate-docs-depth-rubric"
-      ],
-      "path": "docs/_style/crate-docs-depth-rubric.md",
-      "tags": [
-        "-style",
-        "crate-docs-depth-rubric"
-      ],
-      "topic": "crate-docs-depth-rubric"
-    },
-    {
-      "keywords": [
-        "-style",
-        "docs-removal-policy"
-      ],
-      "path": "docs/_style/docs-removal-policy.md",
-      "tags": [
-        "-style",
-        "docs-removal-policy"
-      ],
-      "topic": "docs-removal-policy"
-    },
-    {
-      "keywords": [
-        "-style",
-        "docs-review-checklist"
-      ],
-      "path": "docs/_style/docs-review-checklist.md",
-      "tags": [
-        "-style",
-        "docs-review-checklist"
-      ],
-      "topic": "docs-review-checklist"
-    },
-    {
-      "keywords": [
-        "-style",
-        "naming-standard"
-      ],
-      "path": "docs/_style/naming-standard.md",
-      "tags": [
-        "-style",
-        "naming-standard"
-      ],
-      "topic": "naming-standard"
-    },
-    {
-      "keywords": [
-        "-style",
-        "placement"
-      ],
-      "path": "docs/_style/placement.md",
-      "tags": [
-        "-style",
-        "placement"
-      ],
-      "topic": "placement"
-    },
-    {
-      "keywords": [
-        "-style",
-        "stability-levels"
-      ],
-      "path": "docs/_style/stability-levels.md",
-      "tags": [
-        "-style",
-        "stability-levels"
-      ],
-      "topic": "stability-levels"
-    },
-    {
-      "keywords": [
-        "-style",
-        "structure-templates"
-      ],
-      "path": "docs/_style/structure-templates.md",
-      "tags": [
-        "-style",
-        "structure-templates"
-      ],
-      "topic": "structure-templates"
-    },
-    {
-      "keywords": [
-        "-style",
-        "style-guide"
-      ],
-      "path": "docs/_style/style-guide.md",
-      "tags": [
-        "-style",
-        "style-guide"
-      ],
-      "topic": "style-guide"
-    },
-    {
-      "keywords": [
-        "-style",
-        "terms-glossary"
-      ],
-      "path": "docs/_style/terms-glossary.md",
-      "tags": [
-        "-style",
-        "terms-glossary"
-      ],
-      "topic": "terms-glossary"
-    },
-    {
-      "keywords": [
-        "-style",
-        "writing-rules"
-      ],
-      "path": "docs/_style/writing-rules.md",
-      "tags": [
-        "-style",
-        "writing-rules"
-      ],
-      "topic": "writing-rules"
-    },
-    {
-      "keywords": [
-        "adr-0001-workspace-boundaries-and-effects",
-        "adrs"
-      ],
-      "path": "docs/adrs/ADR-0001-workspace-boundaries-and-effects.md",
-      "tags": [
-        "adr-0001-workspace-boundaries-and-effects",
-        "adrs"
-      ],
-      "topic": "ADR-0001-workspace-boundaries-and-effects"
-    },
-    {
-      "keywords": [
-        "adr-0002-sqlite-serving-store",
-        "adrs"
-      ],
-      "path": "docs/adrs/ADR-0002-sqlite-serving-store.md",
-      "tags": [
-        "adr-0002-sqlite-serving-store",
-        "adrs"
-      ],
-      "topic": "ADR-0002-sqlite-serving-store"
-    },
-    {
-      "keywords": [
-        "adr-0003-federated-registry-deterministic-merge",
-        "adrs"
-      ],
-      "path": "docs/adrs/ADR-0003-federated-registry-deterministic-merge.md",
-      "tags": [
-        "adr-0003-federated-registry-deterministic-merge",
-        "adrs"
-      ],
-      "topic": "ADR-0003-federated-registry-deterministic-merge"
-    },
-    {
-      "keywords": [
-        "adr-0004-plugin-contract-and-umbrella-dispatch",
-        "adrs"
-      ],
-      "path": "docs/adrs/ADR-0004-plugin-contract-and-umbrella-dispatch.md",
-      "tags": [
-        "adr-0004-plugin-contract-and-umbrella-dispatch",
-        "adrs"
-      ],
-      "topic": "ADR-0004-plugin-contract-and-umbrella-dispatch"
-    },
-    {
-      "keywords": [
-        "adr-0005-security-defaults-and-enterprise-controls",
-        "adrs"
-      ],
-      "path": "docs/adrs/ADR-0005-security-defaults-and-enterprise-controls.md",
-      "tags": [
-        "adr-0005-security-defaults-and-enterprise-controls",
-        "adrs"
-      ],
-      "topic": "ADR-0005-security-defaults-and-enterprise-controls"
-    },
-    {
-      "keywords": [
-        "adrs",
-        "index"
-      ],
-      "path": "docs/adrs/INDEX.md",
-      "tags": [
-        "adrs",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "api",
-        "index"
-      ],
-      "path": "docs/api/INDEX.md",
-      "tags": [
-        "api",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
         "api",
         "caching"
       ],
@@ -4015,6 +3595,18 @@
         "caching"
       ],
       "topic": "caching"
+    },
+    {
+      "keywords": [
+        "api",
+        "client-behavior"
+      ],
+      "path": "docs/api/client-behavior.md",
+      "tags": [
+        "api",
+        "client-behavior"
+      ],
+      "topic": "client-behavior"
     },
     {
       "keywords": [
@@ -4067,6 +3659,18 @@
     {
       "keywords": [
         "api",
+        "index"
+      ],
+      "path": "docs/api/index.md",
+      "tags": [
+        "api",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "api",
         "pagination"
       ],
       "path": "docs/api/pagination.md",
@@ -4075,6 +3679,30 @@
         "pagination"
       ],
       "topic": "pagination"
+    },
+    {
+      "keywords": [
+        "api",
+        "quick-reference"
+      ],
+      "path": "docs/api/quick-reference.md",
+      "tags": [
+        "api",
+        "quick-reference"
+      ],
+      "topic": "quick-reference"
+    },
+    {
+      "keywords": [
+        "api",
+        "troubleshooting"
+      ],
+      "path": "docs/api/troubleshooting.md",
+      "tags": [
+        "api",
+        "troubleshooting"
+      ],
+      "topic": "troubleshooting"
     },
     {
       "keywords": [
@@ -4091,18 +3719,6 @@
     {
       "keywords": [
         "api",
-        "v2-plan"
-      ],
-      "path": "docs/api/v2-plan.md",
-      "tags": [
-        "api",
-        "v2-plan"
-      ],
-      "topic": "v2-plan"
-    },
-    {
-      "keywords": [
-        "api",
         "versioning"
       ],
       "path": "docs/api/versioning.md",
@@ -4111,18 +3727,6 @@
         "versioning"
       ],
       "topic": "versioning"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "index"
-      ],
-      "path": "docs/architecture/INDEX.md",
-      "tags": [
-        "architecture",
-        "index"
-      ],
-      "topic": "INDEX"
     },
     {
       "keywords": [
@@ -4139,18 +3743,6 @@
     {
       "keywords": [
         "architecture",
-        "backend-architecture"
-      ],
-      "path": "docs/architecture/backend-architecture.md",
-      "tags": [
-        "architecture",
-        "backend-architecture"
-      ],
-      "topic": "backend-architecture"
-    },
-    {
-      "keywords": [
-        "architecture",
         "boundaries"
       ],
       "path": "docs/architecture/boundaries.md",
@@ -4163,98 +3755,26 @@
     {
       "keywords": [
         "architecture",
-        "boundary-maps"
+        "components"
       ],
-      "path": "docs/architecture/boundary-maps.md",
+      "path": "docs/architecture/components.md",
       "tags": [
         "architecture",
-        "boundary-maps"
+        "components"
       ],
-      "topic": "boundary-maps"
+      "topic": "components"
     },
     {
       "keywords": [
         "architecture",
-        "build-serve-split"
+        "dataflow"
       ],
-      "path": "docs/architecture/build-serve-split.md",
+      "path": "docs/architecture/dataflow.md",
       "tags": [
         "architecture",
-        "build-serve-split"
+        "dataflow"
       ],
-      "topic": "build-serve-split"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "cache-manager"
-      ],
-      "path": "docs/architecture/cache-manager.md",
-      "tags": [
-        "architecture",
-        "cache-manager"
-      ],
-      "topic": "cache-manager"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "component-responsibilities"
-      ],
-      "path": "docs/architecture/component-responsibilities.md",
-      "tags": [
-        "architecture",
-        "component-responsibilities"
-      ],
-      "topic": "component-responsibilities"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "crate-boundary-dependency-graph"
-      ],
-      "path": "docs/architecture/crate-boundary-dependency-graph.md",
-      "tags": [
-        "architecture",
-        "crate-boundary-dependency-graph"
-      ],
-      "topic": "crate-boundary-dependency-graph"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "crate-layout-contract"
-      ],
-      "path": "docs/architecture/crate-layout-contract.md",
-      "tags": [
-        "architecture",
-        "crate-layout-contract"
-      ],
-      "topic": "crate-layout-contract"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "data-access-patterns"
-      ],
-      "path": "docs/architecture/data-access-patterns.md",
-      "tags": [
-        "architecture",
-        "data-access-patterns"
-      ],
-      "topic": "data-access-patterns"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "decision-template"
-      ],
-      "path": "docs/architecture/decision-template.md",
-      "tags": [
-        "architecture",
-        "decision-template"
-      ],
-      "topic": "decision-template"
+      "topic": "dataflow"
     },
     {
       "keywords": [
@@ -4271,592 +3791,50 @@
     {
       "keywords": [
         "architecture",
-        "index",
-        "layering"
+        "faq"
       ],
-      "path": "docs/architecture/layering/INDEX.md",
+      "path": "docs/architecture/faq.md",
       "tags": [
         "architecture",
-        "index",
-        "layering"
+        "faq"
       ],
-      "topic": "INDEX"
+      "topic": "faq"
     },
     {
       "keywords": [
         "architecture",
-        "boundary-rules",
-        "layering"
-      ],
-      "path": "docs/architecture/layering/boundary-rules.md",
-      "tags": [
-        "architecture",
-        "boundary-rules",
-        "layering"
-      ],
-      "topic": "boundary-rules"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "layering",
-        "no-layer-fixups"
-      ],
-      "path": "docs/architecture/layering/no-layer-fixups.md",
-      "tags": [
-        "architecture",
-        "layering",
-        "no-layer-fixups"
-      ],
-      "topic": "no-layer-fixups"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "layout-shell-migration"
-      ],
-      "path": "docs/architecture/layout-shell-migration.md",
-      "tags": [
-        "architecture",
-        "layout-shell-migration"
-      ],
-      "topic": "layout-shell-migration"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "no-layer-fixups"
-      ],
-      "path": "docs/architecture/no-layer-fixups.md",
-      "tags": [
-        "architecture",
-        "no-layer-fixups"
-      ],
-      "topic": "no-layer-fixups"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "no-serving-writes"
-      ],
-      "path": "docs/architecture/no-serving-writes.md",
-      "tags": [
-        "architecture",
-        "no-serving-writes"
-      ],
-      "topic": "no-serving-writes"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "overload-and-degradation"
-      ],
-      "path": "docs/architecture/overload-and-degradation.md",
-      "tags": [
-        "architecture",
-        "overload-and-degradation"
-      ],
-      "topic": "overload-and-degradation"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "policy-enforcement-map"
-      ],
-      "path": "docs/architecture/policy-enforcement-map.md",
-      "tags": [
-        "architecture",
-        "policy-enforcement-map"
-      ],
-      "topic": "policy-enforcement-map"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "query-connection-strategy"
-      ],
-      "path": "docs/architecture/query-connection-strategy.md",
-      "tags": [
-        "architecture",
-        "query-connection-strategy"
-      ],
-      "topic": "query-connection-strategy"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "removed-compatibility-paths"
-      ],
-      "path": "docs/architecture/removed-compatibility-paths.md",
-      "tags": [
-        "architecture",
-        "removed-compatibility-paths"
-      ],
-      "topic": "removed-compatibility-paths"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "repo-overview"
-      ],
-      "path": "docs/architecture/repo-overview.md",
-      "tags": [
-        "architecture",
-        "repo-overview"
-      ],
-      "topic": "repo-overview"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "scripting"
-      ],
-      "path": "docs/architecture/scripting.md",
-      "tags": [
-        "architecture",
-        "scripting"
-      ],
-      "topic": "scripting"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "store-and-registry"
-      ],
-      "path": "docs/architecture/store-and-registry.md",
-      "tags": [
-        "architecture",
-        "store-and-registry"
-      ],
-      "topic": "store-and-registry"
-    },
-    {
-      "keywords": [
-        "architecture",
-        "system-graph"
-      ],
-      "path": "docs/architecture/system-graph.md",
-      "tags": [
-        "architecture",
-        "system-graph"
-      ],
-      "topic": "system-graph"
-    },
-    {
-      "keywords": [
-        "contracts",
         "index"
       ],
-      "path": "docs/contracts/INDEX.md",
+      "path": "docs/architecture/index.md",
       "tags": [
-        "contracts",
+        "architecture",
         "index"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "contracts",
-        "readme"
+        "architecture",
+        "performance-model"
       ],
-      "path": "docs/contracts/README.md",
+      "path": "docs/architecture/performance-model.md",
       "tags": [
-        "contracts",
-        "readme"
+        "architecture",
+        "performance-model"
       ],
-      "topic": "README"
+      "topic": "performance-model"
     },
     {
       "keywords": [
-        "artifacts",
-        "contracts",
-        "index"
+        "architecture",
+        "storage"
       ],
-      "path": "docs/contracts/artifacts/INDEX.md",
+      "path": "docs/architecture/storage.md",
       "tags": [
-        "artifacts",
-        "contracts",
-        "index"
+        "architecture",
+        "storage"
       ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "directory-contract"
-      ],
-      "path": "docs/contracts/artifacts/directory-contract.md",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "directory-contract"
-      ],
-      "topic": "directory-contract"
-    },
-    {
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "manifest-contract"
-      ],
-      "path": "docs/contracts/artifacts/manifest-contract.md",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "manifest-contract"
-      ],
-      "topic": "manifest-contract"
-    },
-    {
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-contract"
-      ],
-      "path": "docs/contracts/artifacts/sqlite-schema-contract.md",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-contract"
-      ],
-      "topic": "sqlite-schema-contract"
-    },
-    {
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-evolution-strategy"
-      ],
-      "path": "docs/contracts/artifacts/sqlite-schema-evolution-strategy.md",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-evolution-strategy"
-      ],
-      "topic": "sqlite-schema-evolution-strategy"
-    },
-    {
-      "keywords": [
-        "breaking-change-examples",
-        "contracts"
-      ],
-      "path": "docs/contracts/breaking-change-examples.md",
-      "tags": [
-        "breaking-change-examples",
-        "contracts"
-      ],
-      "topic": "breaking-change-examples"
-    },
-    {
-      "keywords": [
-        "chart-values",
-        "contracts"
-      ],
-      "path": "docs/contracts/chart-values.md",
-      "tags": [
-        "chart-values",
-        "contracts"
-      ],
-      "topic": "chart-values"
-    },
-    {
-      "keywords": [
-        "compatibility",
-        "contracts"
-      ],
-      "path": "docs/contracts/compatibility.md",
-      "tags": [
-        "compatibility",
-        "contracts"
-      ],
-      "topic": "compatibility"
-    },
-    {
-      "keywords": [
-        "config-keys",
-        "contracts"
-      ],
-      "path": "docs/contracts/config-keys.md",
-      "tags": [
-        "config-keys",
-        "contracts"
-      ],
-      "topic": "config-keys"
-    },
-    {
-      "keywords": [
-        "contract-change-checklist",
-        "contracts"
-      ],
-      "path": "docs/contracts/contract-change-checklist.md",
-      "tags": [
-        "contract-change-checklist",
-        "contracts"
-      ],
-      "topic": "contract-change-checklist"
-    },
-    {
-      "keywords": [
-        "contract-diff",
-        "contracts"
-      ],
-      "path": "docs/contracts/contract-diff.md",
-      "tags": [
-        "contract-diff",
-        "contracts"
-      ],
-      "topic": "contract-diff"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "contracts-index"
-      ],
-      "path": "docs/contracts/contracts-index.md",
-      "tags": [
-        "contracts",
-        "contracts-index"
-      ],
-      "topic": "contracts-index"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "endpoints"
-      ],
-      "path": "docs/contracts/endpoints.md",
-      "tags": [
-        "contracts",
-        "endpoints"
-      ],
-      "topic": "endpoints"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "errors"
-      ],
-      "path": "docs/contracts/errors.md",
-      "tags": [
-        "contracts",
-        "errors"
-      ],
-      "topic": "errors"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "examples",
-        "index"
-      ],
-      "path": "docs/contracts/examples/INDEX.md",
-      "tags": [
-        "contracts",
-        "examples",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "fasta-derived-metrics"
-      ],
-      "path": "docs/contracts/fasta-derived-metrics.md",
-      "tags": [
-        "contracts",
-        "fasta-derived-metrics"
-      ],
-      "topic": "fasta-derived-metrics"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "gff3-acceptance"
-      ],
-      "path": "docs/contracts/gff3-acceptance.md",
-      "tags": [
-        "contracts",
-        "gff3-acceptance"
-      ],
-      "topic": "gff3-acceptance"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "metrics"
-      ],
-      "path": "docs/contracts/metrics.md",
-      "tags": [
-        "contracts",
-        "metrics"
-      ],
-      "topic": "metrics"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "normalized-format"
-      ],
-      "path": "docs/contracts/normalized-format.md",
-      "tags": [
-        "contracts",
-        "normalized-format"
-      ],
-      "topic": "normalized-format"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "index",
-        "plugin"
-      ],
-      "path": "docs/contracts/plugin/INDEX.md",
-      "tags": [
-        "contracts",
-        "index",
-        "plugin"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "conformance-checklist",
-        "contracts",
-        "plugin"
-      ],
-      "path": "docs/contracts/plugin/conformance-checklist.md",
-      "tags": [
-        "conformance-checklist",
-        "contracts",
-        "plugin"
-      ],
-      "topic": "conformance-checklist"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "mode",
-        "plugin"
-      ],
-      "path": "docs/contracts/plugin/mode.md",
-      "tags": [
-        "contracts",
-        "mode",
-        "plugin"
-      ],
-      "topic": "mode"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "plugin",
-        "spec"
-      ],
-      "path": "docs/contracts/plugin/spec.md",
-      "tags": [
-        "contracts",
-        "plugin",
-        "spec"
-      ],
-      "topic": "spec"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "plugin",
-        "umbrella-plugin-contract-v1"
-      ],
-      "path": "docs/contracts/plugin/umbrella-plugin-contract-v1.md",
-      "tags": [
-        "contracts",
-        "plugin",
-        "umbrella-plugin-contract-v1"
-      ],
-      "topic": "umbrella-plugin-contract-v1"
-    },
-    {
-      "keywords": [
-        "contracts"
-      ],
-      "path": "docs/contracts/qc.md",
-      "tags": [
-        "contracts"
-      ],
-      "topic": "qc"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "ssot-workflow"
-      ],
-      "path": "docs/contracts/ssot-workflow.md",
-      "tags": [
-        "contracts",
-        "ssot-workflow"
-      ],
-      "topic": "ssot-workflow"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "tracing"
-      ],
-      "path": "docs/contracts/tracing.md",
-      "tags": [
-        "contracts",
-        "tracing"
-      ],
-      "topic": "tracing"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "control-plane"
-      ],
-      "path": "docs/control-plane/contracts.md",
-      "tags": [
-        "contracts",
-        "control-plane"
-      ],
-      "topic": "contracts"
-    },
-    {
-      "keywords": [
-        "control-plane",
-        "ops-boundary"
-      ],
-      "path": "docs/control-plane/ops-boundary.md",
-      "tags": [
-        "control-plane",
-        "ops-boundary"
-      ],
-      "topic": "ops-boundary"
-    },
-    {
-      "keywords": [
-        "check-failures",
-        "dev"
-      ],
-      "path": "docs/dev/check-failures.md",
-      "tags": [
-        "check-failures",
-        "dev"
-      ],
-      "topic": "check-failures"
-    },
-    {
-      "keywords": [
-        "development",
-        "index"
-      ],
-      "path": "docs/development/INDEX.md",
-      "tags": [
-        "development",
-        "index"
-      ],
-      "topic": "INDEX"
+      "topic": "storage"
     },
     {
       "keywords": [
@@ -4896,157 +3874,15 @@
     },
     {
       "keywords": [
-        "cargo-profiles-ssot",
+        "ci-overview",
         "development"
       ],
-      "path": "docs/development/cargo-profiles-ssot.md",
+      "path": "docs/development/ci-overview.md",
       "tags": [
-        "cargo-profiles-ssot",
+        "ci-overview",
         "development"
       ],
-      "topic": "cargo-profiles-ssot"
-    },
-    {
-      "keywords": [
-        "cargo",
-        "development"
-      ],
-      "path": "docs/development/cargo.md",
-      "tags": [
-        "cargo",
-        "development"
-      ],
-      "topic": "cargo"
-    },
-    {
-      "keywords": [
-        "development",
-        "index"
-      ],
-      "path": "docs/development/ci/INDEX.md",
-      "tags": [
-        "development",
-        "index"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "cache-policy",
-        "development"
-      ],
-      "path": "docs/development/ci/cache-policy.md",
-      "tags": [
-        "cache-policy",
-        "development"
-      ],
-      "topic": "cache-policy"
-    },
-    {
-      "keywords": [
-        "development"
-      ],
-      "path": "docs/development/ci/ci.md",
-      "tags": [
-        "development"
-      ],
-      "topic": "ci"
-    },
-    {
-      "keywords": [
-        "coverage",
-        "development"
-      ],
-      "path": "docs/development/ci/coverage.md",
-      "tags": [
-        "coverage",
-        "development"
-      ],
-      "topic": "coverage"
-    },
-    {
-      "keywords": [
-        "dependency-update-policy",
-        "development"
-      ],
-      "path": "docs/development/ci/dependency-update-policy.md",
-      "tags": [
-        "dependency-update-policy",
-        "development"
-      ],
-      "topic": "dependency-update-policy"
-    },
-    {
-      "keywords": [
-        "development",
-        "reproducible-build-hints"
-      ],
-      "path": "docs/development/ci/reproducible-build-hints.md",
-      "tags": [
-        "development",
-        "reproducible-build-hints"
-      ],
-      "topic": "reproducible-build-hints"
-    },
-    {
-      "keywords": [
-        "development",
-        "security-audit-policy"
-      ],
-      "path": "docs/development/ci/security-audit-policy.md",
-      "tags": [
-        "development",
-        "security-audit-policy"
-      ],
-      "topic": "security-audit-policy"
-    },
-    {
-      "keywords": [
-        "development",
-        "supply-chain-and-runtime-security"
-      ],
-      "path": "docs/development/ci/supply-chain-and-runtime-security.md",
-      "tags": [
-        "development",
-        "supply-chain-and-runtime-security"
-      ],
-      "topic": "supply-chain-and-runtime-security"
-    },
-    {
-      "keywords": [
-        "config-changelog",
-        "development"
-      ],
-      "path": "docs/development/config-changelog.md",
-      "tags": [
-        "config-changelog",
-        "development"
-      ],
-      "topic": "config-changelog"
-    },
-    {
-      "keywords": [
-        "config-versioning",
-        "development"
-      ],
-      "path": "docs/development/config-versioning.md",
-      "tags": [
-        "config-versioning",
-        "development"
-      ],
-      "topic": "config-versioning"
-    },
-    {
-      "keywords": [
-        "configs-layout",
-        "development"
-      ],
-      "path": "docs/development/configs-layout.md",
-      "tags": [
-        "configs-layout",
-        "development"
-      ],
-      "topic": "configs-layout"
+      "topic": "ci-overview"
     },
     {
       "keywords": [
@@ -5062,163 +3898,51 @@
     },
     {
       "keywords": [
-        "crates-map",
+        "control-plane",
         "development"
       ],
-      "path": "docs/development/crates-map.md",
+      "path": "docs/development/control-plane.md",
       "tags": [
-        "crates-map",
+        "control-plane",
         "development"
       ],
-      "topic": "crates-map"
+      "topic": "control-plane"
     },
     {
       "keywords": [
-        "dataset-identity",
+        "debugging-locally",
         "development"
       ],
-      "path": "docs/development/dataset-identity.md",
+      "path": "docs/development/debugging-locally.md",
       "tags": [
-        "dataset-identity",
+        "debugging-locally",
         "development"
       ],
-      "topic": "dataset-identity"
+      "topic": "debugging-locally"
     },
     {
       "keywords": [
         "development",
-        "docs-depth-contract"
+        "index"
       ],
-      "path": "docs/development/docs-depth-contract.md",
+      "path": "docs/development/index.md",
       "tags": [
         "development",
-        "docs-depth-contract"
+        "index"
       ],
-      "topic": "docs-depth-contract"
+      "topic": "index"
     },
     {
       "keywords": [
         "development",
-        "local-noise"
+        "ingest-format-contracts"
       ],
-      "path": "docs/development/local-noise.md",
+      "path": "docs/development/ingest-format-contracts.md",
       "tags": [
         "development",
-        "local-noise"
+        "ingest-format-contracts"
       ],
-      "topic": "local-noise"
-    },
-    {
-      "keywords": [
-        "development",
-        "make-targets-inventory"
-      ],
-      "path": "docs/development/make-targets-inventory.md",
-      "tags": [
-        "development",
-        "make-targets-inventory"
-      ],
-      "topic": "make-targets-inventory"
-    },
-    {
-      "keywords": [
-        "development",
-        "make-targets"
-      ],
-      "path": "docs/development/make-targets.md",
-      "tags": [
-        "development",
-        "make-targets"
-      ],
-      "topic": "make-targets"
-    },
-    {
-      "keywords": [
-        "development",
-        "index",
-        "makefiles"
-      ],
-      "path": "docs/development/makefiles/INDEX.md",
-      "tags": [
-        "development",
-        "index",
-        "makefiles"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "development",
-        "makefiles",
-        "surface"
-      ],
-      "path": "docs/development/makefiles/surface.md",
-      "tags": [
-        "development",
-        "makefiles",
-        "surface"
-      ],
-      "topic": "surface"
-    },
-    {
-      "keywords": [
-        "development",
-        "naming-and-wording-conventions"
-      ],
-      "path": "docs/development/naming-and-wording-conventions.md",
-      "tags": [
-        "development",
-        "naming-and-wording-conventions"
-      ],
-      "topic": "naming-and-wording-conventions"
-    },
-    {
-      "keywords": [
-        "development",
-        "normalized-format"
-      ],
-      "path": "docs/development/normalized-format.md",
-      "tags": [
-        "development",
-        "normalized-format"
-      ],
-      "topic": "normalized-format"
-    },
-    {
-      "keywords": [
-        "development",
-        "ops-canonical-layout"
-      ],
-      "path": "docs/development/ops-canonical-layout.md",
-      "tags": [
-        "development",
-        "ops-canonical-layout"
-      ],
-      "topic": "ops-canonical-layout"
-    },
-    {
-      "keywords": [
-        "development",
-        "ops-intent-naming"
-      ],
-      "path": "docs/development/ops-intent-naming.md",
-      "tags": [
-        "development",
-        "ops-intent-naming"
-      ],
-      "topic": "ops-intent-naming"
-    },
-    {
-      "keywords": [
-        "development",
-        "reorg-plan"
-      ],
-      "path": "docs/development/reorg-plan.md",
-      "tags": [
-        "development",
-        "reorg-plan"
-      ],
-      "topic": "reorg-plan"
+      "topic": "ingest-format-contracts"
     },
     {
       "keywords": [
@@ -5235,430 +3959,546 @@
     {
       "keywords": [
         "development",
-        "repo-surface"
+        "toolchain"
       ],
-      "path": "docs/development/repo-surface.md",
+      "path": "docs/development/toolchain.md",
       "tags": [
         "development",
-        "repo-surface"
+        "toolchain"
       ],
-      "topic": "repo-surface"
+      "topic": "toolchain"
     },
     {
       "keywords": [
-        "development",
-        "root-inventory"
+        "glossary"
       ],
-      "path": "docs/development/root-inventory.md",
+      "path": "docs/glossary.md",
       "tags": [
-        "development",
-        "root-inventory"
+        "glossary"
       ],
-      "topic": "root-inventory"
+      "topic": "glossary"
     },
     {
       "keywords": [
-        "development",
-        "script-naming"
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs",
+        "governance"
       ],
-      "path": "docs/development/script-naming.md",
+      "path": "docs/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
       "tags": [
-        "development",
-        "script-naming"
+        "adr-0001-workspace-boundaries-and-effects",
+        "adrs",
+        "governance"
       ],
-      "topic": "script-naming"
+      "topic": "adr-0001-workspace-boundaries-and-effects"
     },
     {
       "keywords": [
-        "development",
-        "scripts-graph"
+        "adr-0002-sqlite-serving-store",
+        "adrs",
+        "governance"
       ],
-      "path": "docs/development/scripts-graph.md",
+      "path": "docs/governance/adrs/adr-0002-sqlite-serving-store.md",
       "tags": [
-        "development",
-        "scripts-graph"
+        "adr-0002-sqlite-serving-store",
+        "adrs",
+        "governance"
       ],
-      "topic": "scripts-graph"
+      "topic": "adr-0002-sqlite-serving-store"
     },
     {
       "keywords": [
-        "development",
-        "snapshot-test-policy"
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs",
+        "governance"
       ],
-      "path": "docs/development/snapshot-test-policy.md",
+      "path": "docs/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",
       "tags": [
-        "development",
-        "snapshot-test-policy"
+        "adr-0003-federated-registry-deterministic-merge",
+        "adrs",
+        "governance"
       ],
-      "topic": "snapshot-test-policy"
+      "topic": "adr-0003-federated-registry-deterministic-merge"
     },
     {
       "keywords": [
-        "development",
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs",
+        "governance"
+      ],
+      "path": "docs/governance/adrs/adr-0004-plugin-contract-and-umbrella-dispatch.md",
+      "tags": [
+        "adr-0004-plugin-contract-and-umbrella-dispatch",
+        "adrs",
+        "governance"
+      ],
+      "topic": "adr-0004-plugin-contract-and-umbrella-dispatch"
+    },
+    {
+      "keywords": [
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs",
+        "governance"
+      ],
+      "path": "docs/governance/adrs/adr-0005-security-defaults-and-enterprise-controls.md",
+      "tags": [
+        "adr-0005-security-defaults-and-enterprise-controls",
+        "adrs",
+        "governance"
+      ],
+      "topic": "adr-0005-security-defaults-and-enterprise-controls"
+    },
+    {
+      "keywords": [
+        "adrs",
+        "governance",
+        "index"
+      ],
+      "path": "docs/governance/adrs/index.md",
+      "tags": [
+        "adrs",
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "checks",
+        "docs-checks",
+        "governance"
+      ],
+      "path": "docs/governance/checks/docs-checks.md",
+      "tags": [
+        "checks",
+        "docs-checks",
+        "governance"
+      ],
+      "topic": "docs-checks"
+    },
+    {
+      "keywords": [
+        "checks",
+        "governance",
+        "index"
+      ],
+      "path": "docs/governance/checks/index.md",
+      "tags": [
+        "checks",
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "path": "docs/governance/contract-breaking-change-examples.md",
+      "tags": [
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "topic": "contract-breaking-change-examples"
+    },
+    {
+      "keywords": [
+        "contract-change-checklist",
+        "governance"
+      ],
+      "path": "docs/governance/contract-change-checklist.md",
+      "tags": [
+        "contract-change-checklist",
+        "governance"
+      ],
+      "topic": "contract-change-checklist"
+    },
+    {
+      "keywords": [
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "path": "docs/governance/contract-ssot-workflow.md",
+      "tags": [
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "topic": "contract-ssot-workflow"
+    },
+    {
+      "keywords": [
+        "decision-template",
+        "governance"
+      ],
+      "path": "docs/governance/decision-template.md",
+      "tags": [
+        "decision-template",
+        "governance"
+      ],
+      "topic": "decision-template"
+    },
+    {
+      "keywords": [
+        "docs-charter",
+        "governance"
+      ],
+      "path": "docs/governance/docs-charter.md",
+      "tags": [
+        "docs-charter",
+        "governance"
+      ],
+      "topic": "docs-charter"
+    },
+    {
+      "keywords": [
+        "docs-contract",
+        "governance"
+      ],
+      "path": "docs/governance/docs-contract.md",
+      "tags": [
+        "docs-contract",
+        "governance"
+      ],
+      "topic": "docs-contract"
+    },
+    {
+      "keywords": [
+        "docs-lint-rules",
+        "governance"
+      ],
+      "path": "docs/governance/docs-lint-rules.md",
+      "tags": [
+        "docs-lint-rules",
+        "governance"
+      ],
+      "topic": "docs-lint-rules"
+    },
+    {
+      "keywords": [
+        "docs-navigation-policy",
+        "governance"
+      ],
+      "path": "docs/governance/docs-navigation-policy.md",
+      "tags": [
+        "docs-navigation-policy",
+        "governance"
+      ],
+      "topic": "docs-navigation-policy"
+    },
+    {
+      "keywords": [
+        "docs-operating-model",
+        "governance"
+      ],
+      "path": "docs/governance/docs-operating-model.md",
+      "tags": [
+        "docs-operating-model",
+        "governance"
+      ],
+      "topic": "docs-operating-model"
+    },
+    {
+      "keywords": [
+        "docs-quality-policy",
+        "governance"
+      ],
+      "path": "docs/governance/docs-quality-policy.md",
+      "tags": [
+        "docs-quality-policy",
+        "governance"
+      ],
+      "topic": "docs-quality-policy"
+    },
+    {
+      "keywords": [
+        "docs-removal-policy",
+        "governance"
+      ],
+      "path": "docs/governance/docs-removal-policy.md",
+      "tags": [
+        "docs-removal-policy",
+        "governance"
+      ],
+      "topic": "docs-removal-policy"
+    },
+    {
+      "keywords": [
+        "docs-review-checklist",
+        "governance"
+      ],
+      "path": "docs/governance/docs-review-checklist.md",
+      "tags": [
+        "docs-review-checklist",
+        "governance"
+      ],
+      "topic": "docs-review-checklist"
+    },
+    {
+      "keywords": [
+        "docs-rewrite-plan",
+        "governance"
+      ],
+      "path": "docs/governance/docs-rewrite-plan.md",
+      "tags": [
+        "docs-rewrite-plan",
+        "governance"
+      ],
+      "topic": "docs-rewrite-plan"
+    },
+    {
+      "keywords": [
+        "generated-content-policy",
+        "governance"
+      ],
+      "path": "docs/governance/generated-content-policy.md",
+      "tags": [
+        "generated-content-policy",
+        "governance"
+      ],
+      "topic": "generated-content-policy"
+    },
+    {
+      "keywords": [
+        "governance",
+        "index"
+      ],
+      "path": "docs/governance/index.md",
+      "tags": [
+        "governance",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "governance",
         "index",
-        "style"
+        "metadata"
       ],
-      "path": "docs/development/style/INDEX.md",
+      "path": "docs/governance/metadata/index.md",
       "tags": [
-        "development",
+        "governance",
         "index",
-        "style"
+        "metadata"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "development",
-        "style",
-        "why-this-layout"
+        "governance",
+        "metadata",
+        "taxonomy-map"
       ],
-      "path": "docs/development/style/why-this-layout.md",
+      "path": "docs/governance/metadata/taxonomy-map.md",
       "tags": [
-        "development",
-        "style",
-        "why-this-layout"
+        "governance",
+        "metadata",
+        "taxonomy-map"
       ],
-      "topic": "why-this-layout"
+      "topic": "taxonomy-map"
     },
     {
       "keywords": [
-        "development",
-        "symlinks"
+        "governance",
+        "naming"
       ],
-      "path": "docs/development/symlinks.md",
+      "path": "docs/governance/naming.md",
       "tags": [
-        "development",
-        "symlinks"
+        "governance",
+        "naming"
       ],
-      "topic": "symlinks"
+      "topic": "naming"
     },
     {
       "keywords": [
-        "development",
-        "task-runner-removal-map"
+        "checks",
+        "governance",
+        "policies"
       ],
-      "path": "docs/development/task-runner-removal-map.md",
+      "path": "docs/governance/policies/checks.md",
       "tags": [
-        "development",
-        "task-runner-removal-map"
-      ],
-      "topic": "task-runner-removal-map"
-    },
-    {
-      "keywords": [
-        "development",
-        "tool-config-shims"
-      ],
-      "path": "docs/development/tool-config-shims.md",
-      "tags": [
-        "development",
-        "tool-config-shims"
-      ],
-      "topic": "tool-config-shims"
-    },
-    {
-      "keywords": [
-        "development",
-        "index",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/INDEX.md",
-      "tags": [
-        "development",
-        "index",
-        "tooling"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "build-outputs",
-        "development",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/build-outputs.md",
-      "tags": [
-        "build-outputs",
-        "development",
-        "tooling"
-      ],
-      "topic": "build-outputs"
-    },
-    {
-      "keywords": [
-        "command-inventory",
-        "development",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/command-inventory.md",
-      "tags": [
-        "command-inventory",
-        "development",
-        "tooling"
-      ],
-      "topic": "command-inventory"
-    },
-    {
-      "keywords": [
-        "compat-matrix",
-        "development",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/compat-matrix.md",
-      "tags": [
-        "compat-matrix",
-        "development",
-        "tooling"
-      ],
-      "topic": "compat-matrix"
-    },
-    {
-      "keywords": [
-        "control-plane",
-        "development",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/control-plane.md",
-      "tags": [
-        "control-plane",
-        "development",
-        "tooling"
-      ],
-      "topic": "control-plane"
-    },
-    {
-      "keywords": [
-        "dev-atlas-docs",
-        "development",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/dev-atlas-docs.md",
-      "tags": [
-        "dev-atlas-docs",
-        "development",
-        "tooling"
-      ],
-      "topic": "dev-atlas-docs"
-    },
-    {
-      "keywords": [
-        "dev-atlas-ops",
-        "development",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/dev-atlas-ops.md",
-      "tags": [
-        "dev-atlas-ops",
-        "development",
-        "tooling"
-      ],
-      "topic": "dev-atlas-ops"
-    },
-    {
-      "keywords": [
-        "development",
-        "make-workflow-governance-entrypoints",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/make-workflow-governance-entrypoints.md",
-      "tags": [
-        "development",
-        "make-workflow-governance-entrypoints",
-        "tooling"
-      ],
-      "topic": "make-workflow-governance-entrypoints"
-    },
-    {
-      "keywords": [
-        "development",
-        "naming-policy",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/naming-policy.md",
-      "tags": [
-        "development",
-        "naming-policy",
-        "tooling"
-      ],
-      "topic": "naming-policy"
-    },
-    {
-      "keywords": [
-        "development",
-        "ops-command-inventory",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/ops-command-inventory.md",
-      "tags": [
-        "development",
-        "ops-command-inventory",
-        "tooling"
-      ],
-      "topic": "ops-command-inventory"
-    },
-    {
-      "keywords": [
-        "development",
-        "release-packaging-plan",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/release-packaging-plan.md",
-      "tags": [
-        "development",
-        "release-packaging-plan",
-        "tooling"
-      ],
-      "topic": "release-packaging-plan"
-    },
-    {
-      "keywords": [
-        "development",
-        "rust-toolchain",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/rust-toolchain.md",
-      "tags": [
-        "development",
-        "rust-toolchain",
-        "tooling"
-      ],
-      "topic": "rust-toolchain"
-    },
-    {
-      "keywords": [
-        "development",
-        "scripts-compat-policy",
-        "tooling"
-      ],
-      "path": "docs/development/tooling/scripts-compat-policy.md",
-      "tags": [
-        "development",
-        "scripts-compat-policy",
-        "tooling"
-      ],
-      "topic": "scripts-compat-policy"
-    },
-    {
-      "keywords": [
-        "development",
-        "tooling",
-        "tools"
-      ],
-      "path": "docs/development/tooling/tools.md",
-      "tags": [
-        "development",
-        "tooling",
-        "tools"
-      ],
-      "topic": "tools"
-    },
-    {
-      "keywords": [
-        "development",
-        "tooling",
-        "versioning-alignment"
-      ],
-      "path": "docs/development/tooling/versioning-alignment.md",
-      "tags": [
-        "development",
-        "tooling",
-        "versioning-alignment"
-      ],
-      "topic": "versioning-alignment"
-    },
-    {
-      "keywords": [
-        "checks"
-      ],
-      "path": "docs/docs/checks.md",
-      "tags": [
-        "checks"
+        "checks",
+        "governance",
+        "policies"
       ],
       "topic": "checks"
     },
     {
       "keywords": [
-        "engineering",
-        "lints"
+        "governance",
+        "index",
+        "policies"
       ],
-      "path": "docs/engineering/lints.md",
+      "path": "docs/governance/policies/index.md",
       "tags": [
-        "engineering",
-        "lints"
+        "governance",
+        "index",
+        "policies"
       ],
-      "topic": "lints"
+      "topic": "index"
     },
     {
       "keywords": [
-        "examples",
-        "index"
+        "governance",
+        "policy-enforcement-mapping"
       ],
-      "path": "docs/examples/INDEX.md",
+      "path": "docs/governance/policy-enforcement-mapping.md",
       "tags": [
-        "examples",
-        "index"
+        "governance",
+        "policy-enforcement-mapping"
       ],
-      "topic": "INDEX"
+      "topic": "policy-enforcement-mapping"
     },
     {
       "keywords": [
-        "catalog-example",
-        "examples"
+        "governance",
+        "root-legacy-mapping"
       ],
-      "path": "docs/examples/catalog-example.md",
+      "path": "docs/governance/root-legacy-mapping.md",
       "tags": [
-        "catalog-example",
-        "examples"
+        "governance",
+        "root-legacy-mapping"
       ],
-      "topic": "catalog-example"
+      "topic": "root-legacy-mapping"
     },
     {
       "keywords": [
-        "curl-requests",
-        "examples"
+        "governance",
+        "style-guide"
       ],
-      "path": "docs/examples/curl-requests.md",
+      "path": "docs/governance/style-guide.md",
       "tags": [
-        "curl-requests",
-        "examples"
+        "governance",
+        "style-guide"
       ],
-      "topic": "curl-requests"
+      "topic": "style-guide"
     },
     {
       "keywords": [
-        "docs-front-matter",
-        "governance"
+        "concept-ids",
+        "governance",
+        "style"
       ],
-      "path": "docs/governance/DOCS_FRONT_MATTER.md",
+      "path": "docs/governance/style/concept-ids.md",
       "tags": [
-        "docs-front-matter",
-        "governance"
+        "concept-ids",
+        "governance",
+        "style"
       ],
-      "topic": "DOCS_FRONT_MATTER"
+      "topic": "concept-ids"
     },
     {
       "keywords": [
-        "docs-ownership",
-        "governance"
+        "concept-registry",
+        "governance",
+        "style"
       ],
-      "path": "docs/governance/DOCS_OWNERSHIP.md",
+      "path": "docs/governance/style/concept-registry.md",
       "tags": [
-        "docs-ownership",
-        "governance"
+        "concept-registry",
+        "governance",
+        "style"
       ],
-      "topic": "DOCS_OWNERSHIP"
+      "topic": "concept-registry"
     },
     {
       "keywords": [
-        "docs-quality-policy",
-        "governance"
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
       ],
-      "path": "docs/governance/DOCS_QUALITY_POLICY.md",
+      "path": "docs/governance/style/crate-docs-depth-rubric.md",
       "tags": [
-        "docs-quality-policy",
-        "governance"
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
       ],
-      "topic": "DOCS_QUALITY_POLICY"
+      "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "keywords": [
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "path": "docs/governance/style/depth-policy.md",
+      "tags": [
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "topic": "depth-policy"
+    },
+    {
+      "keywords": [
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "path": "docs/governance/style/depth-rubric.md",
+      "tags": [
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "topic": "depth-rubric"
+    },
+    {
+      "keywords": [
+        "governance",
+        "index",
+        "style"
+      ],
+      "path": "docs/governance/style/index.md",
+      "tags": [
+        "governance",
+        "index",
+        "style"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "governance",
+        "placement",
+        "style"
+      ],
+      "path": "docs/governance/style/placement.md",
+      "tags": [
+        "governance",
+        "placement",
+        "style"
+      ],
+      "topic": "placement"
+    },
+    {
+      "keywords": [
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "path": "docs/governance/style/stability-levels.md",
+      "tags": [
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "topic": "stability-levels"
+    },
+    {
+      "keywords": [
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "path": "docs/governance/style/structure-templates.md",
+      "tags": [
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "topic": "structure-templates"
     },
     {
       "keywords": [
@@ -5669,126 +4509,6 @@
         "index"
       ],
       "topic": "index"
-    },
-    {
-      "keywords": [
-        "docs-convergence-policy",
-        "operations"
-      ],
-      "path": "docs/operations/DOCS_CONVERGENCE_POLICY.md",
-      "tags": [
-        "docs-convergence-policy",
-        "operations"
-      ],
-      "topic": "DOCS_CONVERGENCE_POLICY"
-    },
-    {
-      "keywords": [
-        "docs-structure-freeze",
-        "operations"
-      ],
-      "path": "docs/operations/DOCS_STRUCTURE_FREEZE.md",
-      "tags": [
-        "docs-structure-freeze",
-        "operations"
-      ],
-      "topic": "DOCS_STRUCTURE_FREEZE"
-    },
-    {
-      "keywords": [
-        "example-incident-walkthrough",
-        "operations"
-      ],
-      "path": "docs/operations/EXAMPLE_INCIDENT_WALKTHROUGH.md",
-      "tags": [
-        "example-incident-walkthrough",
-        "operations"
-      ],
-      "topic": "EXAMPLE_INCIDENT_WALKTHROUGH"
-    },
-    {
-      "keywords": [
-        "example-release-walkthrough",
-        "operations"
-      ],
-      "path": "docs/operations/EXAMPLE_RELEASE_WALKTHROUGH.md",
-      "tags": [
-        "example-release-walkthrough",
-        "operations"
-      ],
-      "topic": "EXAMPLE_RELEASE_WALKTHROUGH"
-    },
-    {
-      "keywords": [
-        "index",
-        "operations"
-      ],
-      "path": "docs/operations/INDEX.md",
-      "tags": [
-        "index",
-        "operations"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "path": "docs/operations/REDIRECT_EXPIRY_WORKFLOW.md",
-      "tags": [
-        "operations",
-        "redirect-expiry-workflow"
-      ],
-      "topic": "REDIRECT_EXPIRY_WORKFLOW"
-    },
-    {
-      "keywords": [
-        "air-gapped-install",
-        "operations"
-      ],
-      "path": "docs/operations/air-gapped-install.md",
-      "tags": [
-        "air-gapped-install",
-        "operations"
-      ],
-      "topic": "air-gapped-install"
-    },
-    {
-      "keywords": [
-        "cache-topology",
-        "operations"
-      ],
-      "path": "docs/operations/cache-topology.md",
-      "tags": [
-        "cache-topology",
-        "operations"
-      ],
-      "topic": "cache-topology"
-    },
-    {
-      "keywords": [
-        "cached-only-slo",
-        "operations"
-      ],
-      "path": "docs/operations/cached-only-slo.md",
-      "tags": [
-        "cached-only-slo",
-        "operations"
-      ],
-      "topic": "cached-only-slo"
-    },
-    {
-      "keywords": [
-        "canonical-workflows",
-        "operations"
-      ],
-      "path": "docs/operations/canonical-workflows.md",
-      "tags": [
-        "canonical-workflows",
-        "operations"
-      ],
-      "topic": "canonical-workflows"
     },
     {
       "keywords": [
@@ -5804,53 +4524,39 @@
     },
     {
       "keywords": [
-        "container",
+        "dataset-workflow",
         "operations"
       ],
-      "path": "docs/operations/container.md",
+      "path": "docs/operations/dataset-workflow.md",
       "tags": [
-        "container",
+        "dataset-workflow",
         "operations"
       ],
-      "topic": "container"
+      "topic": "dataset-workflow"
     },
     {
       "keywords": [
-        "dataset-promotion-pipeline",
+        "deploy",
         "operations"
       ],
-      "path": "docs/operations/dataset-promotion-pipeline.md",
+      "path": "docs/operations/deploy.md",
       "tags": [
-        "dataset-promotion-pipeline",
+        "deploy",
         "operations"
       ],
-      "topic": "dataset-promotion-pipeline"
+      "topic": "deploy"
     },
     {
       "keywords": [
-        "datasets",
+        "drills-program",
         "operations"
       ],
-      "path": "docs/operations/datasets.md",
+      "path": "docs/operations/drills-program.md",
       "tags": [
-        "datasets",
+        "drills-program",
         "operations"
       ],
-      "topic": "datasets"
-    },
-    {
-      "keywords": [
-        "e2e",
-        "index",
-        "operations"
-      ],
-      "path": "docs/operations/e2e/INDEX.md",
-      "tags": [
-        "e2e",
-        "index",
-        "operations"
-      ],
-      "topic": "INDEX"
+      "topic": "drills-program"
     },
     {
       "keywords": [
@@ -5869,6 +4575,20 @@
     {
       "keywords": [
         "e2e",
+        "index",
+        "operations"
+      ],
+      "path": "docs/operations/e2e/index.md",
+      "tags": [
+        "e2e",
+        "index",
+        "operations"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "e2e",
         "k8s-tests",
         "operations"
       ],
@@ -5879,72 +4599,6 @@
         "operations"
       ],
       "topic": "k8s-tests"
-    },
-    {
-      "keywords": [
-        "e2e",
-        "operations",
-        "realdata-drills"
-      ],
-      "path": "docs/operations/e2e/realdata-drills.md",
-      "tags": [
-        "e2e",
-        "operations",
-        "realdata-drills"
-      ],
-      "topic": "realdata-drills"
-    },
-    {
-      "keywords": [
-        "e2e",
-        "operations",
-        "stack"
-      ],
-      "path": "docs/operations/e2e/stack.md",
-      "tags": [
-        "e2e",
-        "operations",
-        "stack"
-      ],
-      "topic": "stack"
-    },
-    {
-      "keywords": [
-        "e2e",
-        "operations",
-        "what-e2e-is-not"
-      ],
-      "path": "docs/operations/e2e/what-e2e-is-not.md",
-      "tags": [
-        "e2e",
-        "operations",
-        "what-e2e-is-not"
-      ],
-      "topic": "what-e2e-is-not"
-    },
-    {
-      "keywords": [
-        "entrypoints",
-        "operations"
-      ],
-      "path": "docs/operations/entrypoints.md",
-      "tags": [
-        "entrypoints",
-        "operations"
-      ],
-      "topic": "entrypoints"
-    },
-    {
-      "keywords": [
-        "evidence-policy",
-        "operations"
-      ],
-      "path": "docs/operations/evidence-policy.md",
-      "tags": [
-        "evidence-policy",
-        "operations"
-      ],
-      "topic": "evidence-policy"
     },
     {
       "keywords": [
@@ -5960,51 +4614,27 @@
     },
     {
       "keywords": [
-        "full-stack-local",
+        "incident-response",
         "operations"
       ],
-      "path": "docs/operations/full-stack-local.md",
+      "path": "docs/operations/incident-response.md",
       "tags": [
-        "full-stack-local",
+        "incident-response",
         "operations"
       ],
-      "topic": "full-stack-local"
+      "topic": "incident-response"
     },
     {
       "keywords": [
-        "health-endpoint-semantics",
+        "index",
         "operations"
       ],
-      "path": "docs/operations/health-endpoint-semantics.md",
+      "path": "docs/operations/index.md",
       "tags": [
-        "health-endpoint-semantics",
+        "index",
         "operations"
       ],
-      "topic": "health-endpoint-semantics"
-    },
-    {
-      "keywords": [
-        "how-to-run-locally",
-        "operations"
-      ],
-      "path": "docs/operations/how-to-run-locally.md",
-      "tags": [
-        "how-to-run-locally",
-        "operations"
-      ],
-      "topic": "how-to-run-locally"
-    },
-    {
-      "keywords": [
-        "input-sources",
-        "operations"
-      ],
-      "path": "docs/operations/input-sources.md",
-      "tags": [
-        "input-sources",
-        "operations"
-      ],
-      "topic": "input-sources"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -6012,265 +4642,13 @@
         "k8s",
         "operations"
       ],
-      "path": "docs/operations/k8s/INDEX.md",
+      "path": "docs/operations/k8s/index.md",
       "tags": [
         "index",
         "k8s",
         "operations"
       ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "autoscaling-contract",
-        "k8s",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/autoscaling-contract.md",
-      "tags": [
-        "autoscaling-contract",
-        "k8s",
-        "operations"
-      ],
-      "topic": "autoscaling-contract"
-    },
-    {
-      "keywords": [
-        "canary-progressive-delivery",
-        "k8s",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/canary-progressive-delivery.md",
-      "tags": [
-        "canary-progressive-delivery",
-        "k8s",
-        "operations"
-      ],
-      "topic": "canary-progressive-delivery"
-    },
-    {
-      "keywords": [
-        "chart",
-        "k8s",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/chart.md",
-      "tags": [
-        "chart",
-        "k8s",
-        "operations"
-      ],
-      "topic": "chart"
-    },
-    {
-      "keywords": [
-        "cluster-resource-profile",
-        "k8s",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/cluster-resource-profile.md",
-      "tags": [
-        "cluster-resource-profile",
-        "k8s",
-        "operations"
-      ],
-      "topic": "cluster-resource-profile"
-    },
-    {
-      "keywords": [
-        "crd-dependency-policy",
-        "k8s",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/crd-dependency-policy.md",
-      "tags": [
-        "crd-dependency-policy",
-        "k8s",
-        "operations"
-      ],
-      "topic": "crd-dependency-policy"
-    },
-    {
-      "keywords": [
-        "dataset-locality-and-shard-scaling",
-        "k8s",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/dataset-locality-and-shard-scaling.md",
-      "tags": [
-        "dataset-locality-and-shard-scaling",
-        "k8s",
-        "operations"
-      ],
-      "topic": "dataset-locality-and-shard-scaling"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "k8s-test-contract",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/k8s-test-contract.md",
-      "tags": [
-        "k8s",
-        "k8s-test-contract",
-        "operations"
-      ],
-      "topic": "k8s-test-contract"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "kustomize-policy",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/kustomize-policy.md",
-      "tags": [
-        "k8s",
-        "kustomize-policy",
-        "operations"
-      ],
-      "topic": "kustomize-policy"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "network-policy-correctness",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/network-policy-correctness.md",
-      "tags": [
-        "k8s",
-        "network-policy-correctness",
-        "operations"
-      ],
-      "topic": "network-policy-correctness"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "node-local-shared-cache-profile",
-        "operations"
-      ],
-      "path": "docs/operations/k8s/node-local-shared-cache-profile.md",
-      "tags": [
-        "k8s",
-        "node-local-shared-cache-profile",
-        "operations"
-      ],
-      "topic": "node-local-shared-cache-profile"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "packaging-and-ops"
-      ],
-      "path": "docs/operations/k8s/packaging-and-ops.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "packaging-and-ops"
-      ],
-      "topic": "packaging-and-ops"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "plugin-mode-entrypoint"
-      ],
-      "path": "docs/operations/k8s/plugin-mode-entrypoint.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "plugin-mode-entrypoint"
-      ],
-      "topic": "plugin-mode-entrypoint"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "rbac-minimalism"
-      ],
-      "path": "docs/operations/k8s/rbac-minimalism.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "rbac-minimalism"
-      ],
-      "topic": "rbac-minimalism"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "release-install-matrix"
-      ],
-      "path": "docs/operations/k8s/release-install-matrix.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "release-install-matrix"
-      ],
-      "topic": "release-install-matrix"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "values-schema"
-      ],
-      "path": "docs/operations/k8s/values-schema.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "values-schema"
-      ],
-      "topic": "values-schema"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "values"
-      ],
-      "path": "docs/operations/k8s/values.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "values"
-      ],
-      "topic": "values"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "warm-on-rollout"
-      ],
-      "path": "docs/operations/k8s/warm-on-rollout.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "warm-on-rollout"
-      ],
-      "topic": "warm-on-rollout"
-    },
-    {
-      "keywords": [
-        "k8s",
-        "operations",
-        "when-layer-drift-fails"
-      ],
-      "path": "docs/operations/k8s/when-layer-drift-fails.md",
-      "tags": [
-        "k8s",
-        "operations",
-        "when-layer-drift-fails"
-      ],
-      "topic": "when-layer-drift-fails"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -6286,57 +4664,17 @@
     },
     {
       "keywords": [
-        "kubernetes",
-        "operations"
-      ],
-      "path": "docs/operations/kubernetes.md",
-      "tags": [
-        "kubernetes",
-        "operations"
-      ],
-      "topic": "kubernetes"
-    },
-    {
-      "keywords": [
         "index",
         "load",
         "operations"
       ],
-      "path": "docs/operations/load/INDEX.md",
+      "path": "docs/operations/load/index.md",
       "tags": [
         "index",
         "load",
         "operations"
       ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "baseline-update-policy",
-        "load",
-        "operations"
-      ],
-      "path": "docs/operations/load/baseline-update-policy.md",
-      "tags": [
-        "baseline-update-policy",
-        "load",
-        "operations"
-      ],
-      "topic": "baseline-update-policy"
-    },
-    {
-      "keywords": [
-        "ci-policy",
-        "load",
-        "operations"
-      ],
-      "path": "docs/operations/load/ci-policy.md",
-      "tags": [
-        "ci-policy",
-        "load",
-        "operations"
-      ],
-      "topic": "ci-policy"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -6354,62 +4692,6 @@
       "keywords": [
         "load",
         "operations",
-        "perf-acceptance-checklist"
-      ],
-      "path": "docs/operations/load/perf-acceptance-checklist.md",
-      "tags": [
-        "load",
-        "operations",
-        "perf-acceptance-checklist"
-      ],
-      "topic": "perf-acceptance-checklist"
-    },
-    {
-      "keywords": [
-        "load",
-        "operations",
-        "reproducibility"
-      ],
-      "path": "docs/operations/load/reproducibility.md",
-      "tags": [
-        "load",
-        "operations",
-        "reproducibility"
-      ],
-      "topic": "reproducibility"
-    },
-    {
-      "keywords": [
-        "load",
-        "operations",
-        "result-contract"
-      ],
-      "path": "docs/operations/load/result-contract.md",
-      "tags": [
-        "load",
-        "operations",
-        "result-contract"
-      ],
-      "topic": "result-contract"
-    },
-    {
-      "keywords": [
-        "load",
-        "operations",
-        "runtime-policy"
-      ],
-      "path": "docs/operations/load/runtime-policy.md",
-      "tags": [
-        "load",
-        "operations",
-        "runtime-policy"
-      ],
-      "topic": "runtime-policy"
-    },
-    {
-      "keywords": [
-        "load",
-        "operations",
         "suites"
       ],
       "path": "docs/operations/load/suites.md",
@@ -6419,72 +4701,6 @@
         "suites"
       ],
       "topic": "suites"
-    },
-    {
-      "keywords": [
-        "local-stack",
-        "operations"
-      ],
-      "path": "docs/operations/local-stack.md",
-      "tags": [
-        "local-stack",
-        "operations"
-      ],
-      "topic": "local-stack"
-    },
-    {
-      "keywords": [
-        "no-direct-path-usage",
-        "operations"
-      ],
-      "path": "docs/operations/no-direct-path-usage.md",
-      "tags": [
-        "no-direct-path-usage",
-        "operations"
-      ],
-      "topic": "no-direct-path-usage"
-    },
-    {
-      "keywords": [
-        "index",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/INDEX.md",
-      "tags": [
-        "index",
-        "observability",
-        "operations"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "acceptance-checklist",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/acceptance-checklist.md",
-      "tags": [
-        "acceptance-checklist",
-        "observability",
-        "operations"
-      ],
-      "topic": "acceptance-checklist"
-    },
-    {
-      "keywords": [
-        "acceptance-gates",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/acceptance-gates.md",
-      "tags": [
-        "acceptance-gates",
-        "observability",
-        "operations"
-      ],
-      "topic": "acceptance-gates"
     },
     {
       "keywords": [
@@ -6502,255 +4718,45 @@
     },
     {
       "keywords": [
-        "compatibility",
+        "dashboards",
         "observability",
         "operations"
       ],
-      "path": "docs/operations/observability/compatibility.md",
+      "path": "docs/operations/observability/dashboards.md",
       "tags": [
-        "compatibility",
+        "dashboards",
         "observability",
         "operations"
       ],
-      "topic": "compatibility"
+      "topic": "dashboards"
     },
     {
       "keywords": [
-        "dashboard",
+        "index",
         "observability",
         "operations"
       ],
-      "path": "docs/operations/observability/dashboard.md",
+      "path": "docs/operations/observability/index.md",
       "tags": [
-        "dashboard",
+        "index",
         "observability",
         "operations"
       ],
-      "topic": "dashboard"
-    },
-    {
-      "keywords": [
-        "debug-overload",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/debug-overload.md",
-      "tags": [
-        "debug-overload",
-        "observability",
-        "operations"
-      ],
-      "topic": "debug-overload"
-    },
-    {
-      "keywords": [
-        "debug-p99-latency",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/debug-p99-latency.md",
-      "tags": [
-        "debug-p99-latency",
-        "observability",
-        "operations"
-      ],
-      "topic": "debug-p99-latency"
-    },
-    {
-      "keywords": [
-        "drills",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/drills.md",
-      "tags": [
-        "drills",
-        "observability",
-        "operations"
-      ],
-      "topic": "drills"
-    },
-    {
-      "keywords": [
-        "error-budget-policy",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/error-budget-policy.md",
-      "tags": [
-        "error-budget-policy",
-        "observability",
-        "operations"
-      ],
-      "topic": "error-budget-policy"
-    },
-    {
-      "keywords": [
-        "metric-cardinality-guardrails",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/metric-cardinality-guardrails.md",
-      "tags": [
-        "metric-cardinality-guardrails",
-        "observability",
-        "operations"
-      ],
-      "topic": "metric-cardinality-guardrails"
-    },
-    {
-      "keywords": [
-        "metric-ownership",
-        "observability",
-        "operations"
-      ],
-      "path": "docs/operations/observability/metric-ownership.md",
-      "tags": [
-        "metric-ownership",
-        "observability",
-        "operations"
-      ],
-      "topic": "metric-ownership"
+      "topic": "index"
     },
     {
       "keywords": [
         "observability",
         "operations",
-        "otel-outage-behavior"
+        "slo-policy"
       ],
-      "path": "docs/operations/observability/otel-outage-behavior.md",
+      "path": "docs/operations/observability/slo-policy.md",
       "tags": [
         "observability",
         "operations",
-        "otel-outage-behavior"
+        "slo-policy"
       ],
-      "topic": "otel-outage-behavior"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "perf-regression-policy"
-      ],
-      "path": "docs/operations/observability/perf-regression-policy.md",
-      "tags": [
-        "observability",
-        "operations",
-        "perf-regression-policy"
-      ],
-      "topic": "perf-regression-policy"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "performance-baseline"
-      ],
-      "path": "docs/operations/observability/performance-baseline.md",
-      "tags": [
-        "observability",
-        "operations",
-        "performance-baseline"
-      ],
-      "topic": "performance-baseline"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "profiles"
-      ],
-      "path": "docs/operations/observability/profiles.md",
-      "tags": [
-        "observability",
-        "operations",
-        "profiles"
-      ],
-      "topic": "profiles"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "runbook-dashboard-alert-map"
-      ],
-      "path": "docs/operations/observability/runbook-dashboard-alert-map.md",
-      "tags": [
-        "observability",
-        "operations",
-        "runbook-dashboard-alert-map"
-      ],
-      "topic": "runbook-dashboard-alert-map"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "slo-critical-metrics"
-      ],
-      "path": "docs/operations/observability/slo-critical-metrics.md",
-      "tags": [
-        "observability",
-        "operations",
-        "slo-critical-metrics"
-      ],
-      "topic": "slo-critical-metrics"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "slo"
-      ],
-      "path": "docs/operations/observability/slo.md",
-      "tags": [
-        "observability",
-        "operations",
-        "slo"
-      ],
-      "topic": "slo"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "startup-warm-cache-strategy"
-      ],
-      "path": "docs/operations/observability/startup-warm-cache-strategy.md",
-      "tags": [
-        "observability",
-        "operations",
-        "startup-warm-cache-strategy"
-      ],
-      "topic": "startup-warm-cache-strategy"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "telemetry-compatibility"
-      ],
-      "path": "docs/operations/observability/telemetry-compatibility.md",
-      "tags": [
-        "observability",
-        "operations",
-        "telemetry-compatibility"
-      ],
-      "topic": "telemetry-compatibility"
-    },
-    {
-      "keywords": [
-        "observability",
-        "operations",
-        "trace-sampling-policy"
-      ],
-      "path": "docs/operations/observability/trace-sampling-policy.md",
-      "tags": [
-        "observability",
-        "operations",
-        "trace-sampling-policy"
-      ],
-      "topic": "trace-sampling-policy"
+      "topic": "slo-policy"
     },
     {
       "keywords": [
@@ -6769,38 +4775,14 @@
     {
       "keywords": [
         "operations",
-        "ops-acceptance-checklist"
+        "operator-faq"
       ],
-      "path": "docs/operations/ops-acceptance-checklist.md",
+      "path": "docs/operations/operator-faq.md",
       "tags": [
         "operations",
-        "ops-acceptance-checklist"
+        "operator-faq"
       ],
-      "topic": "ops-acceptance-checklist"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-docs-contract"
-      ],
-      "path": "docs/operations/ops-docs-contract.md",
-      "tags": [
-        "operations",
-        "ops-docs-contract"
-      ],
-      "topic": "ops-docs-contract"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-layout"
-      ],
-      "path": "docs/operations/ops-layout.md",
-      "tags": [
-        "operations",
-        "ops-layout"
-      ],
-      "topic": "ops-layout"
+      "topic": "operator-faq"
     },
     {
       "keywords": [
@@ -6816,196 +4798,6 @@
     },
     {
       "keywords": [
-        "index",
-        "operations",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/INDEX.md",
-      "tags": [
-        "index",
-        "operations",
-        "ops-system"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "operations",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/contracts.md",
-      "tags": [
-        "contracts",
-        "operations",
-        "ops-system"
-      ],
-      "topic": "contracts"
-    },
-    {
-      "keywords": [
-        "evidence",
-        "operations",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/evidence.md",
-      "tags": [
-        "evidence",
-        "operations",
-        "ops-system"
-      ],
-      "topic": "evidence"
-    },
-    {
-      "keywords": [
-        "gates",
-        "operations",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/gates.md",
-      "tags": [
-        "gates",
-        "operations",
-        "ops-system"
-      ],
-      "topic": "gates"
-    },
-    {
-      "keywords": [
-        "generators",
-        "operations",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/generators.md",
-      "tags": [
-        "generators",
-        "operations",
-        "ops-system"
-      ],
-      "topic": "generators"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-design-defense",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/ops-design-defense.md",
-      "tags": [
-        "operations",
-        "ops-design-defense",
-        "ops-system"
-      ],
-      "topic": "ops-design-defense"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-docs-consolidation-checklist",
-        "ops-system"
-      ],
-      "path": "docs/operations/ops-system/ops-docs-consolidation-checklist.md",
-      "tags": [
-        "operations",
-        "ops-docs-consolidation-checklist",
-        "ops-system"
-      ],
-      "topic": "ops-docs-consolidation-checklist"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-system",
-        "registry"
-      ],
-      "path": "docs/operations/ops-system/registry.md",
-      "tags": [
-        "operations",
-        "ops-system",
-        "registry"
-      ],
-      "topic": "registry"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-system",
-        "schema"
-      ],
-      "path": "docs/operations/ops-system/schema.md",
-      "tags": [
-        "operations",
-        "ops-system",
-        "schema"
-      ],
-      "topic": "schema"
-    },
-    {
-      "keywords": [
-        "index",
-        "operations",
-        "performance"
-      ],
-      "path": "docs/operations/performance/INDEX.md",
-      "tags": [
-        "index",
-        "operations",
-        "performance"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "budgets",
-        "operations",
-        "performance"
-      ],
-      "path": "docs/operations/performance/budgets.md",
-      "tags": [
-        "budgets",
-        "operations",
-        "performance"
-      ],
-      "topic": "budgets"
-    },
-    {
-      "keywords": [
-        "operations",
-        "platform-handover"
-      ],
-      "path": "docs/operations/platform-handover.md",
-      "tags": [
-        "operations",
-        "platform-handover"
-      ],
-      "topic": "platform-handover"
-    },
-    {
-      "keywords": [
-        "operations",
-        "policy-violation-triage"
-      ],
-      "path": "docs/operations/policy-violation-triage.md",
-      "tags": [
-        "operations",
-        "policy-violation-triage"
-      ],
-      "topic": "policy-violation-triage"
-    },
-    {
-      "keywords": [
-        "operations",
-        "production-readiness-checklist"
-      ],
-      "path": "docs/operations/production-readiness-checklist.md",
-      "tags": [
-        "operations",
-        "production-readiness-checklist"
-      ],
-      "topic": "production-readiness-checklist"
-    },
-    {
-      "keywords": [
         "operations",
         "promotion-record"
       ],
@@ -7018,183 +4810,29 @@
     },
     {
       "keywords": [
-        "commands",
         "operations",
-        "reference"
+        "release-workflow"
       ],
-      "path": "docs/operations/reference/commands.md",
+      "path": "docs/operations/release-workflow.md",
       "tags": [
-        "commands",
         "operations",
-        "reference"
+        "release-workflow"
       ],
-      "topic": "commands"
+      "topic": "release-workflow"
     },
     {
       "keywords": [
-        "drills",
-        "operations",
-        "reference"
-      ],
-      "path": "docs/operations/reference/drills.md",
-      "tags": [
-        "drills",
-        "operations",
-        "reference"
-      ],
-      "topic": "drills"
-    },
-    {
-      "keywords": [
-        "evidence-model",
-        "operations",
-        "reference"
-      ],
-      "path": "docs/operations/reference/evidence-model.md",
-      "tags": [
-        "evidence-model",
-        "operations",
-        "reference"
-      ],
-      "topic": "evidence-model"
-    },
-    {
-      "keywords": [
-        "gates",
-        "operations",
-        "reference"
-      ],
-      "path": "docs/operations/reference/gates.md",
-      "tags": [
-        "gates",
-        "operations",
-        "reference"
-      ],
-      "topic": "gates"
-    },
-    {
-      "keywords": [
-        "operations",
-        "ops-surface",
-        "reference"
-      ],
-      "path": "docs/operations/reference/ops-surface.md",
-      "tags": [
-        "operations",
-        "ops-surface",
-        "reference"
-      ],
-      "topic": "ops-surface"
-    },
-    {
-      "keywords": [
-        "operations",
-        "pins",
-        "reference"
-      ],
-      "path": "docs/operations/reference/pins.md",
-      "tags": [
-        "operations",
-        "pins",
-        "reference"
-      ],
-      "topic": "pins"
-    },
-    {
-      "keywords": [
-        "operations",
-        "reference",
-        "schema-index"
-      ],
-      "path": "docs/operations/reference/schema-index.md",
-      "tags": [
-        "operations",
-        "reference",
-        "schema-index"
-      ],
-      "topic": "schema-index"
-    },
-    {
-      "keywords": [
-        "operations",
-        "reference",
-        "toolchain"
-      ],
-      "path": "docs/operations/reference/toolchain.md",
-      "tags": [
-        "operations",
-        "reference",
-        "toolchain"
-      ],
-      "topic": "toolchain"
-    },
-    {
-      "keywords": [
-        "operations",
-        "reference",
-        "tools"
-      ],
-      "path": "docs/operations/reference/tools.md",
-      "tags": [
-        "operations",
-        "reference",
-        "tools"
-      ],
-      "topic": "tools"
-    },
-    {
-      "keywords": [
-        "operations",
-        "reference",
-        "what-breaks-if-removed"
-      ],
-      "path": "docs/operations/reference/what-breaks-if-removed.md",
-      "tags": [
-        "operations",
-        "reference",
-        "what-breaks-if-removed"
-      ],
-      "topic": "what-breaks-if-removed"
-    },
-    {
-      "keywords": [
-        "operations",
-        "release-workflows"
-      ],
-      "path": "docs/operations/release-workflows.md",
-      "tags": [
-        "operations",
-        "release-workflows"
-      ],
-      "topic": "release-workflows"
-    },
-    {
-      "keywords": [
-        "lane-guarantees",
+        "index",
         "operations",
         "release"
       ],
-      "path": "docs/operations/release/lane-guarantees.md",
+      "path": "docs/operations/release/index.md",
       "tags": [
-        "lane-guarantees",
+        "index",
         "operations",
         "release"
       ],
-      "topic": "lane-guarantees"
-    },
-    {
-      "keywords": [
-        "operations",
-        "quality-wall",
-        "release"
-      ],
-      "path": "docs/operations/release/quality-wall.md",
-      "tags": [
-        "operations",
-        "quality-wall",
-        "release"
-      ],
-      "topic": "quality-wall"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -7211,6 +4849,18 @@
     {
       "keywords": [
         "operations",
+        "run-locally"
+      ],
+      "path": "docs/operations/run-locally.md",
+      "tags": [
+        "operations",
+        "run-locally"
+      ],
+      "topic": "run-locally"
+    },
+    {
+      "keywords": [
+        "operations",
         "runbook-template"
       ],
       "path": "docs/operations/runbook-template.md",
@@ -7219,20 +4869,6 @@
         "runbook-template"
       ],
       "topic": "runbook-template"
-    },
-    {
-      "keywords": [
-        "index",
-        "operations",
-        "runbooks"
-      ],
-      "path": "docs/operations/runbooks/INDEX.md",
-      "tags": [
-        "index",
-        "operations",
-        "runbooks"
-      ],
-      "topic": "INDEX"
     },
     {
       "keywords": [
@@ -7278,17 +4914,17 @@
     },
     {
       "keywords": [
-        "k8s-perf-chaos",
+        "index",
         "operations",
         "runbooks"
       ],
-      "path": "docs/operations/runbooks/k8s-perf-chaos.md",
+      "path": "docs/operations/runbooks/index.md",
       "tags": [
-        "k8s-perf-chaos",
+        "index",
         "operations",
         "runbooks"
       ],
-      "topic": "k8s-perf-chaos"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -7306,20 +4942,6 @@
     },
     {
       "keywords": [
-        "memory-profile-under-load",
-        "operations",
-        "runbooks"
-      ],
-      "path": "docs/operations/runbooks/memory-profile-under-load.md",
-      "tags": [
-        "memory-profile-under-load",
-        "operations",
-        "runbooks"
-      ],
-      "topic": "memory-profile-under-load"
-    },
-    {
-      "keywords": [
         "operations",
         "pod-churn",
         "runbooks"
@@ -7331,20 +4953,6 @@
         "runbooks"
       ],
       "topic": "pod-churn"
-    },
-    {
-      "keywords": [
-        "operations",
-        "profile-under-load",
-        "runbooks"
-      ],
-      "path": "docs/operations/runbooks/profile-under-load.md",
-      "tags": [
-        "operations",
-        "profile-under-load",
-        "runbooks"
-      ],
-      "topic": "profile-under-load"
     },
     {
       "keywords": [
@@ -7373,62 +4981,6 @@
         "runbooks"
       ],
       "topic": "rollback-playbook"
-    },
-    {
-      "keywords": [
-        "operations",
-        "runbooks",
-        "slo-cheap-burn"
-      ],
-      "path": "docs/operations/runbooks/slo-cheap-burn.md",
-      "tags": [
-        "operations",
-        "runbooks",
-        "slo-cheap-burn"
-      ],
-      "topic": "slo-cheap-burn"
-    },
-    {
-      "keywords": [
-        "operations",
-        "runbooks",
-        "slo-overload-survival"
-      ],
-      "path": "docs/operations/runbooks/slo-overload-survival.md",
-      "tags": [
-        "operations",
-        "runbooks",
-        "slo-overload-survival"
-      ],
-      "topic": "slo-overload-survival"
-    },
-    {
-      "keywords": [
-        "operations",
-        "runbooks",
-        "slo-registry-refresh-stale"
-      ],
-      "path": "docs/operations/runbooks/slo-registry-refresh-stale.md",
-      "tags": [
-        "operations",
-        "runbooks",
-        "slo-registry-refresh-stale"
-      ],
-      "topic": "slo-registry-refresh-stale"
-    },
-    {
-      "keywords": [
-        "operations",
-        "runbooks",
-        "slo-standard-burn"
-      ],
-      "path": "docs/operations/runbooks/slo-standard-burn.md",
-      "tags": [
-        "operations",
-        "runbooks",
-        "slo-standard-burn"
-      ],
-      "topic": "slo-standard-burn"
     },
     {
       "keywords": [
@@ -7474,36 +5026,6 @@
     },
     {
       "keywords": [
-        "index",
-        "operations",
-        "security"
-      ],
-      "path": "docs/operations/security/INDEX.md",
-      "tags": [
-        "index",
-        "operations",
-        "security"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "advisories",
-        "index",
-        "operations",
-        "security"
-      ],
-      "path": "docs/operations/security/advisories/INDEX.md",
-      "tags": [
-        "advisories",
-        "index",
-        "operations",
-        "security"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
         "advisory-process",
         "operations",
         "security"
@@ -7518,263 +5040,27 @@
     },
     {
       "keywords": [
-        "operations",
-        "security",
-        "security-posture"
-      ],
-      "path": "docs/operations/security/security-posture.md",
-      "tags": [
-        "operations",
-        "security",
-        "security-posture"
-      ],
-      "topic": "security-posture"
-    },
-    {
-      "keywords": [
-        "baseline-update-policy",
-        "operations",
-        "slo"
-      ],
-      "path": "docs/operations/slo/BASELINE_UPDATE_POLICY.md",
-      "tags": [
-        "baseline-update-policy",
-        "operations",
-        "slo"
-      ],
-      "topic": "BASELINE_UPDATE_POLICY"
-    },
-    {
-      "keywords": [
-        "changelog",
-        "operations",
-        "slo"
-      ],
-      "path": "docs/operations/slo/CHANGELOG.md",
-      "tags": [
-        "changelog",
-        "operations",
-        "slo"
-      ],
-      "topic": "CHANGELOG"
-    },
-    {
-      "keywords": [
-        "change-policy",
-        "operations",
-        "slo"
-      ],
-      "path": "docs/operations/slo/CHANGE_POLICY.md",
-      "tags": [
-        "change-policy",
-        "operations",
-        "slo"
-      ],
-      "topic": "CHANGE_POLICY"
-    },
-    {
-      "keywords": [
-        "glossary",
-        "operations",
-        "slo"
-      ],
-      "path": "docs/operations/slo/GLOSSARY.md",
-      "tags": [
-        "glossary",
-        "operations",
-        "slo"
-      ],
-      "topic": "GLOSSARY"
-    },
-    {
-      "keywords": [
         "index",
         "operations",
-        "slo"
+        "security"
       ],
-      "path": "docs/operations/slo/INDEX.md",
+      "path": "docs/operations/security/index.md",
       "tags": [
         "index",
         "operations",
-        "slo"
+        "security"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "non-goals",
-        "operations",
-        "slo"
+        "ownership"
       ],
-      "path": "docs/operations/slo/NON_GOALS.md",
+      "path": "docs/ownership.md",
       "tags": [
-        "non-goals",
-        "operations",
-        "slo"
+        "ownership"
       ],
-      "topic": "NON_GOALS"
-    },
-    {
-      "keywords": [
-        "operations",
-        "release-gate",
-        "slo"
-      ],
-      "path": "docs/operations/slo/RELEASE_GATE.md",
-      "tags": [
-        "operations",
-        "release-gate",
-        "slo"
-      ],
-      "topic": "RELEASE_GATE"
-    },
-    {
-      "keywords": [
-        "operations",
-        "scope",
-        "slo"
-      ],
-      "path": "docs/operations/slo/SCOPE.md",
-      "tags": [
-        "operations",
-        "scope",
-        "slo"
-      ],
-      "topic": "SCOPE"
-    },
-    {
-      "keywords": [
-        "operations",
-        "sla-decision-adr-template",
-        "slo"
-      ],
-      "path": "docs/operations/slo/SLA_DECISION_ADR_TEMPLATE.md",
-      "tags": [
-        "operations",
-        "sla-decision-adr-template",
-        "slo"
-      ],
-      "topic": "SLA_DECISION_ADR_TEMPLATE"
-    },
-    {
-      "keywords": [
-        "operations",
-        "sla-exclusions-planned",
-        "slo"
-      ],
-      "path": "docs/operations/slo/SLA_EXCLUSIONS_PLANNED.md",
-      "tags": [
-        "operations",
-        "sla-exclusions-planned",
-        "slo"
-      ],
-      "topic": "SLA_EXCLUSIONS_PLANNED"
-    },
-    {
-      "keywords": [
-        "operations",
-        "sla-policy",
-        "slo"
-      ],
-      "path": "docs/operations/slo/SLA_POLICY.md",
-      "tags": [
-        "operations",
-        "sla-policy",
-        "slo"
-      ],
-      "topic": "SLA_POLICY"
-    },
-    {
-      "keywords": [
-        "operations",
-        "slis",
-        "slo"
-      ],
-      "path": "docs/operations/slo/SLIS.md",
-      "tags": [
-        "operations",
-        "slis",
-        "slo"
-      ],
-      "topic": "SLIS"
-    },
-    {
-      "keywords": [
-        "operations",
-        "slo",
-        "slos"
-      ],
-      "path": "docs/operations/slo/SLOS.md",
-      "tags": [
-        "operations",
-        "slo",
-        "slos"
-      ],
-      "topic": "SLOS"
-    },
-    {
-      "keywords": [
-        "operations",
-        "slo",
-        "what-we-dont-measure-yet"
-      ],
-      "path": "docs/operations/slo/WHAT_WE_DONT_MEASURE_YET.md",
-      "tags": [
-        "operations",
-        "slo",
-        "what-we-dont-measure-yet"
-      ],
-      "topic": "WHAT_WE_DONT_MEASURE_YET"
-    },
-    {
-      "keywords": [
-        "operations",
-        "slo",
-        "why-these-slis"
-      ],
-      "path": "docs/operations/slo/WHY_THESE_SLIS.md",
-      "tags": [
-        "operations",
-        "slo",
-        "why-these-slis"
-      ],
-      "topic": "WHY_THESE_SLIS"
-    },
-    {
-      "keywords": [
-        "operations",
-        "unified-report"
-      ],
-      "path": "docs/operations/unified-report.md",
-      "tags": [
-        "operations",
-        "unified-report"
-      ],
-      "topic": "unified-report"
-    },
-    {
-      "keywords": [
-        "checks",
-        "policies"
-      ],
-      "path": "docs/policies/checks.md",
-      "tags": [
-        "checks",
-        "policies"
-      ],
-      "topic": "checks"
-    },
-    {
-      "keywords": [
-        "index",
-        "product"
-      ],
-      "path": "docs/product/INDEX.md",
-      "tags": [
-        "index",
-        "product"
-      ],
-      "topic": "INDEX"
+      "topic": "ownership"
     },
     {
       "keywords": [
@@ -7814,6 +5100,18 @@
     },
     {
       "keywords": [
+        "index",
+        "product"
+      ],
+      "path": "docs/product/index.md",
+      "tags": [
+        "index",
+        "product"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "non-goals",
         "product"
       ],
@@ -7835,6 +5133,18 @@
         "release-contract-checklist"
       ],
       "topic": "release-contract-checklist"
+    },
+    {
+      "keywords": [
+        "product",
+        "release-model"
+      ],
+      "path": "docs/product/release-model.md",
+      "tags": [
+        "product",
+        "release-model"
+      ],
+      "topic": "release-model"
     },
     {
       "keywords": [
@@ -7910,66 +5220,6 @@
     },
     {
       "keywords": [
-        "index",
-        "quickstart"
-      ],
-      "path": "docs/quickstart/INDEX.md",
-      "tags": [
-        "index",
-        "quickstart"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "client-sdk-examples",
-        "quickstart"
-      ],
-      "path": "docs/quickstart/client-sdk-examples.md",
-      "tags": [
-        "client-sdk-examples",
-        "quickstart"
-      ],
-      "topic": "client-sdk-examples"
-    },
-    {
-      "keywords": [
-        "local-cluster-setup",
-        "quickstart"
-      ],
-      "path": "docs/quickstart/local-cluster-setup.md",
-      "tags": [
-        "local-cluster-setup",
-        "quickstart"
-      ],
-      "topic": "local-cluster-setup"
-    },
-    {
-      "keywords": [
-        "ops-local-full",
-        "quickstart"
-      ],
-      "path": "docs/quickstart/ops-local-full.md",
-      "tags": [
-        "ops-local-full",
-        "quickstart"
-      ],
-      "topic": "ops-local-full"
-    },
-    {
-      "keywords": [
-        "index",
-        "reference"
-      ],
-      "path": "docs/reference/INDEX.md",
-      "tags": [
-        "index",
-        "reference"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
         "commands",
         "reference"
       ],
@@ -7979,20 +5229,6 @@
         "reference"
       ],
       "topic": "commands"
-    },
-    {
-      "keywords": [
-        "compatibility",
-        "index",
-        "reference"
-      ],
-      "path": "docs/reference/compatibility/INDEX.md",
-      "tags": [
-        "compatibility",
-        "index",
-        "reference"
-      ],
-      "topic": "INDEX"
     },
     {
       "keywords": [
@@ -8025,16 +5261,16 @@
     {
       "keywords": [
         "compatibility",
-        "json-wire-compatibility",
+        "index",
         "reference"
       ],
-      "path": "docs/reference/compatibility/json-wire-compatibility.md",
+      "path": "docs/reference/compatibility/index.md",
       "tags": [
         "compatibility",
-        "json-wire-compatibility",
+        "index",
         "reference"
       ],
-      "topic": "json-wire-compatibility"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -8064,393 +5300,371 @@
     },
     {
       "keywords": [
-        "datasets",
+        "artifacts",
+        "contracts",
         "index",
         "reference"
       ],
-      "path": "docs/reference/datasets/INDEX.md",
+      "path": "docs/reference/contracts/artifacts/index.md",
       "tags": [
-        "datasets",
+        "artifacts",
+        "contracts",
         "index",
         "reference"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "datasets",
-        "lifecycle",
+        "chart-values",
+        "contracts",
         "reference"
       ],
-      "path": "docs/reference/datasets/lifecycle.md",
+      "path": "docs/reference/contracts/chart-values.md",
       "tags": [
-        "datasets",
-        "lifecycle",
+        "chart-values",
+        "contracts",
         "reference"
       ],
-      "topic": "lifecycle"
+      "topic": "chart-values"
     },
     {
       "keywords": [
-        "datasets",
-        "mirroring",
+        "compatibility",
+        "contracts",
         "reference"
       ],
-      "path": "docs/reference/datasets/mirroring.md",
+      "path": "docs/reference/contracts/compatibility.md",
       "tags": [
-        "datasets",
-        "mirroring",
+        "compatibility",
+        "contracts",
         "reference"
       ],
-      "topic": "mirroring"
+      "topic": "compatibility"
     },
     {
       "keywords": [
-        "datasets",
-        "offline-mode",
+        "config-keys",
+        "contracts",
         "reference"
       ],
-      "path": "docs/reference/datasets/offline-mode.md",
+      "path": "docs/reference/contracts/config-keys.md",
       "tags": [
-        "datasets",
-        "offline-mode",
+        "config-keys",
+        "contracts",
         "reference"
       ],
-      "topic": "offline-mode"
+      "topic": "config-keys"
     },
     {
       "keywords": [
-        "datasets",
-        "promotion",
+        "contract-diff",
+        "contracts",
         "reference"
       ],
-      "path": "docs/reference/datasets/promotion.md",
+      "path": "docs/reference/contracts/contract-diff.md",
       "tags": [
-        "datasets",
-        "promotion",
+        "contract-diff",
+        "contracts",
         "reference"
       ],
-      "topic": "promotion"
+      "topic": "contract-diff"
     },
     {
       "keywords": [
-        "datasets",
-        "reference",
-        "rollback"
+        "contracts",
+        "contracts-index",
+        "reference"
       ],
-      "path": "docs/reference/datasets/rollback.md",
+      "path": "docs/reference/contracts/contracts-index.md",
       "tags": [
-        "datasets",
-        "reference",
-        "rollback"
+        "contracts",
+        "contracts-index",
+        "reference"
       ],
-      "topic": "rollback"
+      "topic": "contracts-index"
     },
     {
       "keywords": [
-        "evolution",
+        "contracts",
+        "endpoints",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/endpoints.md",
+      "tags": [
+        "contracts",
+        "endpoints",
+        "reference"
+      ],
+      "topic": "endpoints"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "errors",
+        "reference"
+      ],
+      "path": "docs/reference/contracts/errors.md",
+      "tags": [
+        "contracts",
+        "errors",
+        "reference"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "examples",
         "index",
         "reference"
       ],
-      "path": "docs/reference/evolution/INDEX.md",
+      "path": "docs/reference/contracts/examples/index.md",
       "tags": [
-        "evolution",
+        "contracts",
+        "examples",
         "index",
         "reference"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "api-versioning",
-        "evolution",
-        "reference"
-      ],
-      "path": "docs/reference/evolution/api-versioning.md",
-      "tags": [
-        "api-versioning",
-        "evolution",
-        "reference"
-      ],
-      "topic": "api-versioning"
-    },
-    {
-      "keywords": [
-        "evolution",
-        "reference",
-        "release-diffs"
-      ],
-      "path": "docs/reference/evolution/release-diffs.md",
-      "tags": [
-        "evolution",
-        "reference",
-        "release-diffs"
-      ],
-      "topic": "release-diffs"
-    },
-    {
-      "keywords": [
-        "evolution",
-        "reference",
-        "roadmap"
-      ],
-      "path": "docs/reference/evolution/roadmap.md",
-      "tags": [
-        "evolution",
-        "reference",
-        "roadmap"
-      ],
-      "topic": "roadmap"
-    },
-    {
-      "keywords": [
-        "evolution",
-        "reference",
-        "sharding"
-      ],
-      "path": "docs/reference/evolution/sharding.md",
-      "tags": [
-        "evolution",
-        "reference",
-        "sharding"
-      ],
-      "topic": "sharding"
-    },
-    {
-      "keywords": [
-        "fixtures",
+        "contracts",
         "index",
         "reference"
       ],
-      "path": "docs/reference/fixtures/INDEX.md",
+      "path": "docs/reference/contracts/index.md",
       "tags": [
-        "fixtures",
+        "contracts",
         "index",
         "reference"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "fixtures",
-        "medium-fixture",
+        "contracts",
+        "normalized-format",
         "reference"
       ],
-      "path": "docs/reference/fixtures/medium-fixture.md",
+      "path": "docs/reference/contracts/normalized-format.md",
       "tags": [
-        "fixtures",
-        "medium-fixture",
+        "contracts",
+        "normalized-format",
         "reference"
       ],
-      "topic": "medium-fixture"
+      "topic": "normalized-format"
     },
     {
       "keywords": [
-        "fixtures",
-        "real-datasets",
+        "conformance-checklist",
+        "contracts",
+        "plugins",
         "reference"
       ],
-      "path": "docs/reference/fixtures/real-datasets.md",
+      "path": "docs/reference/contracts/plugins/conformance-checklist.md",
       "tags": [
-        "fixtures",
-        "real-datasets",
+        "conformance-checklist",
+        "contracts",
+        "plugins",
         "reference"
       ],
-      "topic": "real-datasets"
+      "topic": "conformance-checklist"
     },
     {
       "keywords": [
+        "contracts",
         "index",
-        "ingestion",
+        "plugins",
         "reference"
       ],
-      "path": "docs/reference/ingestion/INDEX.md",
+      "path": "docs/reference/contracts/plugins/index.md",
       "tags": [
+        "contracts",
         "index",
-        "ingestion",
+        "plugins",
         "reference"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "determinism",
-        "ingestion",
+        "contracts",
+        "mode",
+        "plugins",
         "reference"
       ],
-      "path": "docs/reference/ingestion/determinism.md",
+      "path": "docs/reference/contracts/plugins/mode.md",
       "tags": [
-        "determinism",
-        "ingestion",
+        "contracts",
+        "mode",
+        "plugins",
         "reference"
       ],
-      "topic": "determinism"
+      "topic": "mode"
     },
     {
       "keywords": [
-        "ingestion",
-        "parser-semantics",
-        "reference"
-      ],
-      "path": "docs/reference/ingestion/parser-semantics.md",
-      "tags": [
-        "ingestion",
-        "parser-semantics",
-        "reference"
-      ],
-      "topic": "parser-semantics"
-    },
-    {
-      "keywords": [
-        "ingestion",
-        "qc-report-schema",
-        "reference"
-      ],
-      "path": "docs/reference/ingestion/qc-report-schema.md",
-      "tags": [
-        "ingestion",
-        "qc-report-schema",
-        "reference"
-      ],
-      "topic": "qc-report-schema"
-    },
-    {
-      "keywords": [
-        "ingestion",
+        "contracts",
+        "plugins",
         "reference",
-        "supported-layouts"
+        "spec"
       ],
-      "path": "docs/reference/ingestion/supported-layouts.md",
+      "path": "docs/reference/contracts/plugins/spec.md",
       "tags": [
-        "ingestion",
+        "contracts",
+        "plugins",
         "reference",
-        "supported-layouts"
+        "spec"
       ],
-      "topic": "supported-layouts"
+      "topic": "spec"
     },
     {
       "keywords": [
-        "make-targets",
-        "reference"
+        "contracts",
+        "plugins",
+        "reference",
+        "umbrella-plugin-contract-v1"
       ],
-      "path": "docs/reference/make-targets.md",
+      "path": "docs/reference/contracts/plugins/umbrella-plugin-contract-v1.md",
       "tags": [
-        "make-targets",
+        "contracts",
+        "plugins",
+        "reference",
+        "umbrella-plugin-contract-v1"
+      ],
+      "topic": "umbrella-plugin-contract-v1"
+    },
+    {
+      "keywords": [
+        "contracts",
         "reference"
       ],
-      "topic": "make-targets"
+      "path": "docs/reference/contracts/qc.md",
+      "tags": [
+        "contracts",
+        "reference"
+      ],
+      "topic": "qc"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "index",
+        "reference",
+        "schemas"
+      ],
+      "path": "docs/reference/contracts/schemas/index.md",
+      "tags": [
+        "contracts",
+        "index",
+        "reference",
+        "schemas"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "contracts",
+        "reference",
+        "telemetry"
+      ],
+      "path": "docs/reference/contracts/telemetry.md",
+      "tags": [
+        "contracts",
+        "reference",
+        "telemetry"
+      ],
+      "topic": "telemetry"
+    },
+    {
+      "keywords": [
+        "dataset-operations",
+        "reference"
+      ],
+      "path": "docs/reference/dataset-operations.md",
+      "tags": [
+        "dataset-operations",
+        "reference"
+      ],
+      "topic": "dataset-operations"
+    },
+    {
+      "keywords": [
+        "errors",
+        "reference"
+      ],
+      "path": "docs/reference/errors.md",
+      "tags": [
+        "errors",
+        "reference"
+      ],
+      "topic": "errors"
+    },
+    {
+      "keywords": [
+        "catalog-example",
+        "examples",
+        "reference"
+      ],
+      "path": "docs/reference/examples/catalog-example.md",
+      "tags": [
+        "catalog-example",
+        "examples",
+        "reference"
+      ],
+      "topic": "catalog-example"
+    },
+    {
+      "keywords": [
+        "examples",
+        "index",
+        "reference"
+      ],
+      "path": "docs/reference/examples/index.md",
+      "tags": [
+        "examples",
+        "index",
+        "reference"
+      ],
+      "topic": "index"
     },
     {
       "keywords": [
         "index",
-        "performance",
         "reference"
       ],
-      "path": "docs/reference/performance/INDEX.md",
+      "path": "docs/reference/index.md",
       "tags": [
         "index",
-        "performance",
         "reference"
       ],
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
       "keywords": [
-        "bulkheads",
-        "performance",
+        "make",
         "reference"
       ],
-      "path": "docs/reference/performance/bulkheads.md",
+      "path": "docs/reference/make.md",
       "tags": [
-        "bulkheads",
-        "performance",
+        "make",
         "reference"
       ],
-      "topic": "bulkheads"
+      "topic": "make"
     },
     {
       "keywords": [
-        "caching-model",
-        "performance",
+        "ops-surface",
         "reference"
       ],
-      "path": "docs/reference/performance/caching-model.md",
+      "path": "docs/reference/ops-surface.md",
       "tags": [
-        "caching-model",
-        "performance",
+        "ops-surface",
         "reference"
       ],
-      "topic": "caching-model"
-    },
-    {
-      "keywords": [
-        "p99-strategy",
-        "performance",
-        "reference"
-      ],
-      "path": "docs/reference/performance/p99-strategy.md",
-      "tags": [
-        "p99-strategy",
-        "performance",
-        "reference"
-      ],
-      "topic": "p99-strategy"
-    },
-    {
-      "keywords": [
-        "perf-regression-policy",
-        "performance",
-        "reference"
-      ],
-      "path": "docs/reference/performance/perf-regression-policy.md",
-      "tags": [
-        "perf-regression-policy",
-        "performance",
-        "reference"
-      ],
-      "topic": "perf-regression-policy"
-    },
-    {
-      "keywords": [
-        "performance",
-        "profiling",
-        "reference"
-      ],
-      "path": "docs/reference/performance/profiling.md",
-      "tags": [
-        "performance",
-        "profiling",
-        "reference"
-      ],
-      "topic": "profiling"
-    },
-    {
-      "keywords": [
-        "performance",
-        "query-benchmarks",
-        "reference"
-      ],
-      "path": "docs/reference/performance/query-benchmarks.md",
-      "tags": [
-        "performance",
-        "query-benchmarks",
-        "reference"
-      ],
-      "topic": "query-benchmarks"
-    },
-    {
-      "keywords": [
-        "performance",
-        "redis",
-        "reference"
-      ],
-      "path": "docs/reference/performance/redis.md",
-      "tags": [
-        "performance",
-        "redis",
-        "reference"
-      ],
-      "topic": "redis"
+      "topic": "ops-surface"
     },
     {
       "keywords": [
@@ -8458,55 +5672,13 @@
         "querying",
         "reference"
       ],
-      "path": "docs/reference/querying/INDEX.md",
+      "path": "docs/reference/querying/index.md",
       "tags": [
         "index",
         "querying",
         "reference"
       ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "cost-estimator",
-        "querying",
-        "reference"
-      ],
-      "path": "docs/reference/querying/cost-estimator.md",
-      "tags": [
-        "cost-estimator",
-        "querying",
-        "reference"
-      ],
-      "topic": "cost-estimator"
-    },
-    {
-      "keywords": [
-        "filters",
-        "querying",
-        "reference"
-      ],
-      "path": "docs/reference/querying/filters.md",
-      "tags": [
-        "filters",
-        "querying",
-        "reference"
-      ],
-      "topic": "filters"
-    },
-    {
-      "keywords": [
-        "ordering",
-        "querying",
-        "reference"
-      ],
-      "path": "docs/reference/querying/ordering.md",
-      "tags": [
-        "ordering",
-        "querying",
-        "reference"
-      ],
-      "topic": "ordering"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -8521,34 +5693,6 @@
         "reference"
       ],
       "topic": "pagination"
-    },
-    {
-      "keywords": [
-        "querying",
-        "reference",
-        "sharding"
-      ],
-      "path": "docs/reference/querying/sharding.md",
-      "tags": [
-        "querying",
-        "reference",
-        "sharding"
-      ],
-      "topic": "sharding"
-    },
-    {
-      "keywords": [
-        "index",
-        "reference",
-        "registry"
-      ],
-      "path": "docs/reference/registry/INDEX.md",
-      "tags": [
-        "index",
-        "reference",
-        "registry"
-      ],
-      "topic": "INDEX"
     },
     {
       "keywords": [
@@ -8577,20 +5721,6 @@
         "registry"
       ],
       "topic": "conflict-resolution"
-    },
-    {
-      "keywords": [
-        "deprecation-policy",
-        "reference",
-        "registry"
-      ],
-      "path": "docs/reference/registry/deprecation-policy.md",
-      "tags": [
-        "deprecation-policy",
-        "reference",
-        "registry"
-      ],
-      "topic": "deprecation-policy"
     },
     {
       "keywords": [
@@ -8636,6 +5766,20 @@
     },
     {
       "keywords": [
+        "index",
+        "reference",
+        "registry"
+      ],
+      "path": "docs/reference/registry/index.md",
+      "tags": [
+        "index",
+        "reference",
+        "registry"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "latest-release-alias-policy",
         "reference",
         "registry"
@@ -8647,20 +5791,6 @@
         "registry"
       ],
       "topic": "latest-release-alias-policy"
-    },
-    {
-      "keywords": [
-        "long-term-maintenance-policy",
-        "reference",
-        "registry"
-      ],
-      "path": "docs/reference/registry/long-term-maintenance-policy.md",
-      "tags": [
-        "long-term-maintenance-policy",
-        "reference",
-        "registry"
-      ],
-      "topic": "long-term-maintenance-policy"
     },
     {
       "keywords": [
@@ -8744,188 +5874,6 @@
     },
     {
       "keywords": [
-        "index",
-        "reference",
-        "science"
-      ],
-      "path": "docs/reference/science/INDEX.md",
-      "tags": [
-        "index",
-        "reference",
-        "science"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "gene-summary-semantics",
-        "reference",
-        "science"
-      ],
-      "path": "docs/reference/science/gene-summary-semantics.md",
-      "tags": [
-        "gene-summary-semantics",
-        "reference",
-        "science"
-      ],
-      "topic": "gene-summary-semantics"
-    },
-    {
-      "keywords": [
-        "reference",
-        "science",
-        "transcript-semantics"
-      ],
-      "path": "docs/reference/science/transcript-semantics.md",
-      "tags": [
-        "reference",
-        "science",
-        "transcript-semantics"
-      ],
-      "topic": "transcript-semantics"
-    },
-    {
-      "keywords": [
-        "index",
-        "reference",
-        "security"
-      ],
-      "path": "docs/reference/security/INDEX.md",
-      "tags": [
-        "index",
-        "reference",
-        "security"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "auth-hmac",
-        "reference",
-        "security"
-      ],
-      "path": "docs/reference/security/auth-hmac.md",
-      "tags": [
-        "auth-hmac",
-        "reference",
-        "security"
-      ],
-      "topic": "auth-hmac"
-    },
-    {
-      "keywords": [
-        "limits",
-        "reference",
-        "security"
-      ],
-      "path": "docs/reference/security/limits.md",
-      "tags": [
-        "limits",
-        "reference",
-        "security"
-      ],
-      "topic": "limits"
-    },
-    {
-      "keywords": [
-        "reference",
-        "security",
-        "ssrf"
-      ],
-      "path": "docs/reference/security/ssrf.md",
-      "tags": [
-        "reference",
-        "security",
-        "ssrf"
-      ],
-      "topic": "ssrf"
-    },
-    {
-      "keywords": [
-        "reference",
-        "security",
-        "threat-model"
-      ],
-      "path": "docs/reference/security/threat-model.md",
-      "tags": [
-        "reference",
-        "security",
-        "threat-model"
-      ],
-      "topic": "threat-model"
-    },
-    {
-      "keywords": [
-        "index",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/INDEX.md",
-      "tags": [
-        "index",
-        "reference",
-        "store"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "backends",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/backends.md",
-      "tags": [
-        "backends",
-        "reference",
-        "store"
-      ],
-      "topic": "backends"
-    },
-    {
-      "keywords": [
-        "dataset-lifecycle",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/dataset-lifecycle.md",
-      "tags": [
-        "dataset-lifecycle",
-        "reference",
-        "store"
-      ],
-      "topic": "dataset-lifecycle"
-    },
-    {
-      "keywords": [
-        "etag-caching",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/etag-caching.md",
-      "tags": [
-        "etag-caching",
-        "reference",
-        "store"
-      ],
-      "topic": "etag-caching"
-    },
-    {
-      "keywords": [
-        "fixtures-policy",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/fixtures-policy.md",
-      "tags": [
-        "fixtures-policy",
-        "reference",
-        "store"
-      ],
-      "topic": "fixtures-policy"
-    },
-    {
-      "keywords": [
         "immutability-guarantee",
         "reference",
         "store"
@@ -8940,17 +5888,17 @@
     },
     {
       "keywords": [
-        "ingestion-purity-rule",
+        "index",
         "reference",
         "store"
       ],
-      "path": "docs/reference/store/ingestion-purity-rule.md",
+      "path": "docs/reference/store/index.md",
       "tags": [
-        "ingestion-purity-rule",
+        "index",
         "reference",
         "store"
       ],
-      "topic": "ingestion-purity-rule"
+      "topic": "index"
     },
     {
       "keywords": [
@@ -8968,511 +5916,23 @@
     },
     {
       "keywords": [
-        "logging-and-tracing",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/logging-and-tracing.md",
-      "tags": [
-        "logging-and-tracing",
-        "reference",
-        "store"
-      ],
-      "topic": "logging-and-tracing"
-    },
-    {
-      "keywords": [
-        "metrics-conventions",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/metrics-conventions.md",
-      "tags": [
-        "metrics-conventions",
-        "reference",
-        "store"
-      ],
-      "topic": "metrics-conventions"
-    },
-    {
-      "keywords": [
-        "no-implicit-default-dataset",
-        "reference",
-        "store"
-      ],
-      "path": "docs/reference/store/no-implicit-default-dataset.md",
-      "tags": [
-        "no-implicit-default-dataset",
-        "reference",
-        "store"
-      ],
-      "topic": "no-implicit-default-dataset"
-    },
-    {
-      "keywords": [
-        "index",
-        "release"
-      ],
-      "path": "docs/release/INDEX.md",
-      "tags": [
-        "index",
-        "release"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "architecture-overview",
-        "root"
-      ],
-      "path": "docs/root/ARCHITECTURE_OVERVIEW.md",
-      "tags": [
-        "architecture-overview",
-        "root"
-      ],
-      "topic": "ARCHITECTURE_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "build-outputs-reference",
-        "root"
-      ],
-      "path": "docs/root/BUILD_OUTPUTS_REFERENCE.md",
-      "tags": [
-        "build-outputs-reference",
-        "root"
-      ],
-      "topic": "BUILD_OUTPUTS_REFERENCE"
-    },
-    {
-      "keywords": [
-        "ci-workflow-explanation",
-        "root"
-      ],
-      "path": "docs/root/CI_WORKFLOW_EXPLANATION.md",
-      "tags": [
-        "ci-workflow-explanation",
-        "root"
-      ],
-      "topic": "CI_WORKFLOW_EXPLANATION"
-    },
-    {
-      "keywords": [
-        "commands-reference",
-        "root"
-      ],
-      "path": "docs/root/COMMANDS_REFERENCE.md",
-      "tags": [
-        "commands-reference",
-        "root"
-      ],
-      "topic": "COMMANDS_REFERENCE"
-    },
-    {
-      "keywords": [
-        "command-index",
-        "root"
-      ],
-      "path": "docs/root/COMMAND_INDEX.md",
-      "tags": [
-        "command-index",
-        "root"
-      ],
-      "topic": "COMMAND_INDEX"
-    },
-    {
-      "keywords": [
-        "compatibility-policy",
-        "root"
-      ],
-      "path": "docs/root/COMPATIBILITY_POLICY.md",
-      "tags": [
-        "compatibility-policy",
-        "root"
-      ],
-      "topic": "COMPATIBILITY_POLICY"
-    },
-    {
-      "keywords": [
-        "configs-overview",
-        "root"
-      ],
-      "path": "docs/root/CONFIGS_OVERVIEW.md",
-      "tags": [
-        "configs-overview",
-        "root"
-      ],
-      "topic": "CONFIGS_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "contribution-model",
-        "root"
-      ],
-      "path": "docs/root/CONTRIBUTION_MODEL.md",
-      "tags": [
-        "contribution-model",
-        "root"
-      ],
-      "topic": "CONTRIBUTION_MODEL"
-    },
-    {
-      "keywords": [
-        "control-plane-overview",
-        "root"
-      ],
-      "path": "docs/root/CONTROL_PLANE_OVERVIEW.md",
-      "tags": [
-        "control-plane-overview",
-        "root"
-      ],
-      "topic": "CONTROL_PLANE_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "crate-index",
-        "root"
-      ],
-      "path": "docs/root/CRATE_INDEX.md",
-      "tags": [
-        "crate-index",
-        "root"
-      ],
-      "topic": "CRATE_INDEX"
-    },
-    {
-      "keywords": [
-        "developer-workflow-quickstart",
-        "root"
-      ],
-      "path": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md",
-      "tags": [
-        "developer-workflow-quickstart",
-        "root"
-      ],
-      "topic": "DEVELOPER_WORKFLOW_QUICKSTART"
-    },
-    {
-      "keywords": [
-        "diagram-alt-text-policy",
-        "root"
-      ],
-      "path": "docs/root/DIAGRAM_ALT_TEXT_POLICY.md",
-      "tags": [
-        "diagram-alt-text-policy",
-        "root"
-      ],
-      "topic": "DIAGRAM_ALT_TEXT_POLICY"
-    },
-    {
-      "keywords": [
-        "docker-overview",
-        "root"
-      ],
-      "path": "docs/root/DOCKER_OVERVIEW.md",
-      "tags": [
-        "docker-overview",
-        "root"
-      ],
-      "topic": "DOCKER_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "docs-philosophy",
-        "root"
-      ],
-      "path": "docs/root/DOCS_PHILOSOPHY.md",
-      "tags": [
-        "docs-philosophy",
-        "root"
-      ],
-      "topic": "DOCS_PHILOSOPHY"
-    },
-    {
-      "keywords": [
-        "faq",
-        "root"
-      ],
-      "path": "docs/root/FAQ.md",
-      "tags": [
-        "faq",
-        "root"
-      ],
-      "topic": "FAQ"
-    },
-    {
-      "keywords": [
-        "glossary",
-        "root"
-      ],
-      "path": "docs/root/GLOSSARY.md",
-      "tags": [
-        "glossary",
-        "root"
-      ],
-      "topic": "GLOSSARY"
-    },
-    {
-      "keywords": [
-        "glossary-crosslinks",
-        "root"
-      ],
-      "path": "docs/root/GLOSSARY_CROSSLINKS.md",
-      "tags": [
-        "glossary-crosslinks",
-        "root"
-      ],
-      "topic": "GLOSSARY_CROSSLINKS"
-    },
-    {
-      "keywords": [
-        "index",
-        "root"
-      ],
-      "path": "docs/root/INDEX.md",
-      "tags": [
-        "index",
-        "root"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "license-explanation",
-        "root"
-      ],
-      "path": "docs/root/LICENSE_EXPLANATION.md",
-      "tags": [
-        "license-explanation",
-        "root"
-      ],
-      "topic": "LICENSE_EXPLANATION"
-    },
-    {
-      "keywords": [
-        "makefiles-overview",
-        "root"
-      ],
-      "path": "docs/root/MAKEFILES_OVERVIEW.md",
-      "tags": [
-        "makefiles-overview",
-        "root"
-      ],
-      "topic": "MAKEFILES_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "navigation-policy",
-        "root"
-      ],
-      "path": "docs/root/NAVIGATION_POLICY.md",
-      "tags": [
-        "navigation-policy",
-        "root"
-      ],
-      "topic": "NAVIGATION_POLICY"
-    },
-    {
-      "keywords": [
-        "observability-overview",
-        "root"
-      ],
-      "path": "docs/root/OBSERVABILITY_OVERVIEW.md",
-      "tags": [
-        "observability-overview",
-        "root"
-      ],
-      "topic": "OBSERVABILITY_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "ops-overview",
-        "root"
-      ],
-      "path": "docs/root/OPS_OVERVIEW.md",
-      "tags": [
-        "ops-overview",
-        "root"
-      ],
-      "topic": "OPS_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "performance-philosophy",
-        "root"
-      ],
-      "path": "docs/root/PERFORMANCE_PHILOSOPHY.md",
-      "tags": [
-        "performance-philosophy",
-        "root"
-      ],
-      "topic": "PERFORMANCE_PHILOSOPHY"
-    },
-    {
-      "keywords": [
-        "persona-developer",
-        "root"
-      ],
-      "path": "docs/root/PERSONA_DEVELOPER.md",
-      "tags": [
-        "persona-developer",
-        "root"
-      ],
-      "topic": "PERSONA_DEVELOPER"
-    },
-    {
-      "keywords": [
-        "persona-operator",
-        "root"
-      ],
-      "path": "docs/root/PERSONA_OPERATOR.md",
-      "tags": [
-        "persona-operator",
-        "root"
-      ],
-      "topic": "PERSONA_OPERATOR"
-    },
-    {
-      "keywords": [
-        "release-process-overview",
-        "root"
-      ],
-      "path": "docs/root/RELEASE_PROCESS_OVERVIEW.md",
-      "tags": [
-        "release-process-overview",
-        "root"
-      ],
-      "topic": "RELEASE_PROCESS_OVERVIEW"
-    },
-    {
-      "keywords": [
-        "repository-structure",
-        "root"
-      ],
-      "path": "docs/root/REPOSITORY_STRUCTURE.md",
-      "tags": [
-        "repository-structure",
-        "root"
-      ],
-      "topic": "REPOSITORY_STRUCTURE"
-    },
-    {
-      "keywords": [
-        "reproducibility-guarantees",
-        "root"
-      ],
-      "path": "docs/root/REPRODUCIBILITY_GUARANTEES.md",
-      "tags": [
-        "reproducibility-guarantees",
-        "root"
-      ],
-      "topic": "REPRODUCIBILITY_GUARANTEES"
-    },
-    {
-      "keywords": [
-        "root",
-        "schema-index"
-      ],
-      "path": "docs/root/SCHEMA_INDEX.md",
-      "tags": [
-        "root",
-        "schema-index"
-      ],
-      "topic": "SCHEMA_INDEX"
-    },
-    {
-      "keywords": [
-        "root",
-        "security-model"
-      ],
-      "path": "docs/root/SECURITY_MODEL.md",
-      "tags": [
-        "root",
-        "security-model"
-      ],
-      "topic": "SECURITY_MODEL"
-    },
-    {
-      "keywords": [
-        "root",
-        "stability-guarantees"
-      ],
-      "path": "docs/root/STABILITY_GUARANTEES.md",
-      "tags": [
-        "root",
-        "stability-guarantees"
-      ],
-      "topic": "STABILITY_GUARANTEES"
-    },
-    {
-      "keywords": [
-        "root",
         "start-here"
       ],
-      "path": "docs/root/START_HERE.md",
+      "path": "docs/start-here.md",
       "tags": [
-        "root",
         "start-here"
       ],
-      "topic": "START_HERE"
+      "topic": "start-here"
     },
     {
       "keywords": [
-        "root",
-        "terminology-rules"
+        "style"
       ],
-      "path": "docs/root/TERMINOLOGY_RULES.md",
+      "path": "docs/style.md",
       "tags": [
-        "root",
-        "terminology-rules"
+        "style"
       ],
-      "topic": "TERMINOLOGY_RULES"
-    },
-    {
-      "keywords": [
-        "index",
-        "science"
-      ],
-      "path": "docs/science/INDEX.md",
-      "tags": [
-        "index",
-        "science"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "index",
-        "security"
-      ],
-      "path": "docs/security/INDEX.md",
-      "tags": [
-        "index",
-        "security"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "index",
-        "start"
-      ],
-      "path": "docs/start/INDEX.md",
-      "tags": [
-        "index",
-        "start"
-      ],
-      "topic": "INDEX"
-    },
-    {
-      "keywords": [
-        "taxonomy-map"
-      ],
-      "path": "docs/taxonomy-map.md",
-      "tags": [
-        "taxonomy-map"
-      ],
-      "topic": "taxonomy-map"
+      "topic": "style"
     },
     {
       "keywords": [
@@ -9804,32 +6264,5 @@
     }
   ],
   "schema_version": 1,
-  "synonyms": [
-    {
-      "matches": [
-        "operations",
-        "runbook"
-      ],
-      "term": "ops"
-    },
-    {
-      "matches": [
-        "command",
-        "subcommand"
-      ],
-      "term": "cli"
-    },
-    {
-      "matches": [
-        "kubernetes"
-      ],
-      "term": "k8s"
-    },
-    {
-      "matches": [
-        "single source of truth"
-      ],
-      "term": "ssot"
-    }
-  ]
+  "synonyms": []
 }
