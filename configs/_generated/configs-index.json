@@ -2,7 +2,7 @@
   "exclusions": [
     {
       "pattern": "configs/docs/.vale/styles/**",
-      "reason": "legacy deep style bundles stay explicit until docs config flattening"
+      "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
     },
     {
       "pattern": "configs/ops/perf/baselines/**",
@@ -38,30 +38,23 @@
     },
     {
       "counts": {
-        "covered": 17,
+        "covered": 10,
         "generated": 0,
-        "internal": 7,
+        "internal": 0,
         "public": 10,
         "schemas": 1
       },
       "files": [
         "configs/docs/.markdownlint-cli2.jsonc",
         "configs/docs/.vale.ini",
-        "configs/docs/INDEX.md",
-        "configs/docs/README.md",
         "configs/docs/codespell-ignore-words.txt",
-        "configs/docs/config-diff.md",
-        "configs/docs/configs-lifecycle.md",
         "configs/docs/cspell.config.json",
         "configs/docs/depth-budget.json",
-        "configs/docs/environment-contract.md",
         "configs/docs/package-lock.json",
         "configs/docs/package.json",
         "configs/docs/quality-policy.json",
         "configs/docs/requirements.lock.txt",
-        "configs/docs/requirements.txt",
-        "configs/docs/schema-overview.md",
-        "configs/docs/schema-validation.md"
+        "configs/docs/requirements.txt"
       ],
       "name": "docs",
       "owner": "docs-governance",

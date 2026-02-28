@@ -15,7 +15,7 @@
     },
     {
       "id": "configuration",
-      "path": "configs/docs/INDEX.md"
+      "path": "configs/README.md"
     }
   ],
   "commands": [

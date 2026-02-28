@@ -6,6 +6,7 @@ The authoritative machine registry is `configs/inventory/configs.json`. Contract
 
 Operational rules:
 - Root markdown is limited to this file and `configs/CONTRACT.md`.
+- `configs/docs/` is a tooling-only directory for docs linters and pinned tool inputs, not narrative documentation.
 - Configuration ownership, visibility, and depth budgets are defined in the configs registry.
 - Contracts output is the primary evidence. Human docs are secondary.
 

@@ -39,14 +39,13 @@
         "bijux dev atlas docs lint"
       ],
       "public_files": [
+        "configs/docs/.markdownlint-cli2.jsonc",
         "configs/docs/.vale.ini",
         "configs/docs/*.json",
         "configs/docs/*.jsonc",
         "configs/docs/*.txt"
       ],
-      "internal_files": [
-        "configs/docs/*.md"
-      ],
+      "internal_files": [],
       "generated_files": [],
       "schemas": [
         "configs/contracts/inventory-configs.schema.json"
@@ -328,7 +327,7 @@
   "exclusions": [
     {
       "pattern": "configs/docs/.vale/styles/**",
-      "reason": "legacy deep style bundles stay explicit until docs config flattening"
+      "reason": "vale style bundles stay explicitly excluded until docs config flattening lands"
     },
     {
       "pattern": "configs/ops/perf/baselines/**",
