@@ -1,4 +1,4 @@
-# _generated
+# Generated Outputs
 
-Section entrypoint for 
-each document in this directory.
+This directory contains generated artifacts only.
+Do not manually edit files in `docs/_generated/`.
