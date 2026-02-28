@@ -9,11 +9,11 @@ pub struct SelectionFilters<'a> {
     pub tags: &'a [String],
 }
 
-fn matches_any_filter(filters: &[String], value: &str) -> bool {
+pub fn matches_any_filter(filters: &[String], value: &str) -> bool {
     filters.is_empty() || filters.iter().any(|filter| wildcard_match(filter, value))
 }
 
-fn matches_skip_filter(filters: &[String], value: &str) -> bool {
+pub fn matches_skip_filter(filters: &[String], value: &str) -> bool {
     !filters.is_empty() && filters.iter().any(|filter| wildcard_match(filter, value))
 }
 
@@ -125,7 +125,7 @@ pub fn required_effects_for_selection(
     required
 }
 
-fn wildcard_match(pattern: &str, text: &str) -> bool {
+pub fn wildcard_match(pattern: &str, text: &str) -> bool {
     let mut regex = String::from("^");
     for ch in pattern.chars() {
         match ch {
@@ -140,7 +140,7 @@ fn wildcard_match(pattern: &str, text: &str) -> bool {
         .unwrap_or(false)
 }
 
-fn matches_filter(filter: &Option<String>, value: &str) -> bool {
+pub fn matches_filter(filter: &Option<String>, value: &str) -> bool {
     filter
         .as_deref()
         .map(|f| wildcard_match(f, value))

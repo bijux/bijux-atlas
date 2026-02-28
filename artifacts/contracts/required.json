@@ -1,0 +1,65 @@
+{
+  "contracts": [
+    {
+      "contract_id": "ROOT-042",
+      "domain": "root",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "DOCKER-000",
+      "domain": "docker",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "MAKE-001",
+      "domain": "make",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "OPS-ROOT-001",
+      "domain": "ops",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "CONFIGS-001",
+      "domain": "configs",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "DOC-001",
+      "domain": "docs",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    }
+  ],
+  "schema_version": 1
+}

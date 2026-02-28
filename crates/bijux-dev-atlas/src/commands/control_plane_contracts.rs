@@ -42,12 +42,22 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
     fn apply_lane_policy(common: &mut ContractsCommonArgs) -> Result<(), String> {
         match common.lane {
             ContractsLaneArg::Local => {}
-            ContractsLaneArg::Dev => {
-                common.mode = ContractsModeArg::Effect;
-                common.allow_subprocess = true;
-                common.allow_fs_write = true;
+            ContractsLaneArg::Pr => {
+                common.mode = ContractsModeArg::Static;
+                common.profile = ContractsProfileArg::Ci;
+                common.required = true;
             }
-            ContractsLaneArg::Ci => {
+            ContractsLaneArg::Merge => {
+                common.mode = ContractsModeArg::Effect;
+                common.profile = ContractsProfileArg::Ci;
+                common.required = true;
+                common.allow_subprocess = true;
+                common.allow_network = true;
+                common.allow_k8s = true;
+                common.allow_fs_write = true;
+                common.allow_docker_daemon = true;
+            }
+            ContractsLaneArg::Release => {
                 common.mode = ContractsModeArg::Effect;
                 common.profile = ContractsProfileArg::Ci;
                 common.allow_subprocess = true;
@@ -97,6 +107,92 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     .collect()
             })
             .unwrap_or_default()
+    }
+
+    fn cli_lane(lane: ContractsLaneArg) -> contracts::ContractLane {
+        match lane {
+            ContractsLaneArg::Local => contracts::ContractLane::Local,
+            ContractsLaneArg::Pr => contracts::ContractLane::Pr,
+            ContractsLaneArg::Merge => contracts::ContractLane::Merge,
+            ContractsLaneArg::Release => contracts::ContractLane::Release,
+        }
+    }
+
+    fn required_contract_rows_json(
+        repo_root: &Path,
+        domains: &[(DomainDescriptor, Vec<contracts::Contract>)],
+    ) -> Result<serde_json::Value, String> {
+        let mut rows = Vec::new();
+        for (descriptor, registry) in domains {
+            rows.extend(
+                contracts::registry_snapshot_with_policy(repo_root, descriptor.name, registry)?
+                    .into_iter()
+                    .filter(|row| row.required)
+                    .map(|row| {
+                        serde_json::json!({
+                            "domain": row.domain,
+                            "contract_id": row.id,
+                            "required": row.required,
+                            "lanes": row.lanes,
+                        })
+                    }),
+            );
+        }
+        Ok(serde_json::json!({
+            "schema_version": 1,
+            "contracts": rows,
+        }))
+    }
+
+    fn write_required_contract_artifact(
+        repo_root: &Path,
+        domains: &[(DomainDescriptor, Vec<contracts::Contract>)],
+    ) -> Result<(), String> {
+        let path = repo_root.join("artifacts/contracts/required.json");
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("create {} failed: {e}", parent.display()))?;
+        }
+        fs::write(
+            &path,
+            serde_json::to_string_pretty(&required_contract_rows_json(repo_root, domains)?)
+                .map_err(|e| format!("encode required contracts artifact failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", path.display()))
+    }
+
+    fn forbid_skip_required(
+        repo_root: &Path,
+        domains: &[(DomainDescriptor, Vec<contracts::Contract>, String)],
+        common: &ContractsCommonArgs,
+        contract_filter_override: &Option<String>,
+    ) -> Result<(), String> {
+        if !common.deny_skip_required || common.skip_contracts.is_empty() {
+            return Ok(());
+        }
+        let lane = cli_lane(common.lane);
+        let filter = contract_filter_override
+            .clone()
+            .or_else(|| common.filter_contract.clone());
+        for (descriptor, registry, _) in domains {
+            for row in contracts::registry_snapshot_with_policy(repo_root, descriptor.name, registry)? {
+                if !row.required || !row.lanes.iter().any(|value| value == lane.as_str()) {
+                    continue;
+                }
+                if !contracts::matches_filter(&filter, &row.id)
+                    || !contracts::matches_any_filter(&common.only_contracts, &row.id)
+                {
+                    continue;
+                }
+                if contracts::matches_skip_filter(&common.skip_contracts, &row.id) {
+                    return Err(format!(
+                        "required contract `{}` cannot be skipped in lane `{}`",
+                        row.id, lane
+                    ));
+                }
+            }
+        }
+        Ok(())
     }
 
     #[derive(Clone, Copy)]
@@ -173,7 +269,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
     fn registry_lints(repo_root: &Path) -> Result<Vec<contracts::RegistryLint>, String> {
         let mut rows = Vec::new();
         for (descriptor, registry) in all_domains(repo_root)? {
-            rows.extend(contracts::registry_snapshot(descriptor.name, &registry));
+            rows.extend(contracts::registry_snapshot_with_policy(repo_root, descriptor.name, &registry)?);
         }
         Ok(contracts::lint_registry_rows(&rows))
     }
@@ -207,13 +303,14 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
     }
 
     fn render_list(
+        repo_root: &Path,
         domains: &[(DomainDescriptor, &[contracts::Contract])],
         include_tests: bool,
         format: ContractsFormatArg,
     ) -> Result<String, String> {
         let mut rows = Vec::new();
         for (descriptor, registry) in domains {
-            rows.extend(contracts::registry_snapshot(descriptor.name, registry));
+            rows.extend(contracts::registry_snapshot_with_policy(repo_root, descriptor.name, registry)?);
         }
         rows.sort_by(|a, b| a.domain.cmp(&b.domain).then(a.id.cmp(&b.id)));
         match format {
@@ -222,6 +319,8 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                 "contracts": rows.iter().map(|row| serde_json::json!({
                     "domain": row.domain,
                     "id": row.id,
+                    "required": row.required,
+                    "lanes": row.lanes,
                     "severity": row.severity,
                     "title": row.title,
                     "tests": row.test_ids.iter().map(|test_id| serde_json::json!({
@@ -235,11 +334,16 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             | ContractsFormatArg::Junit
             | ContractsFormatArg::Github => {
                 let mut out = String::new();
-                out.push_str("GROUP    CONTRACT ID        SEVERITY TITLE\n");
+                out.push_str("GROUP    CONTRACT ID        REQUIRED LANES                SEVERITY TITLE\n");
                 for row in rows {
                     out.push_str(&format!(
-                        "{:<8} {:<18} {:<8} {}\n",
-                        row.domain, row.id, row.severity, row.title
+                        "{:<8} {:<18} {:<8} {:<20} {:<8} {}\n",
+                        row.domain,
+                        row.id,
+                        if row.required { "yes" } else { "no" },
+                        row.lanes.join(","),
+                        row.severity,
+                        row.title
                     ));
                     if include_tests {
                         for test_id in row.test_ids {
@@ -383,12 +487,15 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         let previous_profile = std::env::var_os("BIJUX_CONTRACTS_PROFILE");
         std::env::set_var("BIJUX_CONTRACTS_PROFILE", profile);
         let options = contracts::RunOptions {
+            lane: cli_lane(common.lane),
             mode,
+            required_only: common.required,
             allow_subprocess: common.allow_subprocess,
             allow_network: common.allow_network,
             allow_k8s: common.allow_k8s,
             allow_fs_write: common.allow_fs_write,
             allow_docker_daemon: common.allow_docker_daemon,
+            deny_skip_required: common.deny_skip_required,
             skip_missing_tools: common.skip_missing_tools,
             timeout_seconds: common.timeout_seconds,
             fail_fast: common.fail_fast,
@@ -419,40 +526,67 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     "all",
                     domains
                         .iter()
-                        .flat_map(|(descriptor, registry)| {
-                            contracts::registry_snapshot(descriptor.name, registry)
+                        .map(|(descriptor, registry)| {
+                            contracts::registry_snapshot_with_policy(&repo_root, descriptor.name, registry)
                         })
+                        .collect::<Result<Vec<_>, _>>()?
+                        .into_iter()
+                        .flatten()
                         .collect::<Vec<_>>(),
                     PathBuf::from("artifacts/contracts/all/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Root => (
                     "root",
-                    contracts::registry_snapshot("root", domain_registry(&domains, "root")?),
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "root",
+                        domain_registry(&domains, "root")?,
+                    )?,
                     PathBuf::from("artifacts/contracts/root/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Configs => (
                     "configs",
-                    contracts::registry_snapshot("configs", domain_registry(&domains, "configs")?),
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "configs",
+                        domain_registry(&domains, "configs")?,
+                    )?,
                     PathBuf::from("artifacts/contracts/configs/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Docs => (
                     "docs",
-                    contracts::registry_snapshot("docs", domain_registry(&domains, "docs")?),
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "docs",
+                        domain_registry(&domains, "docs")?,
+                    )?,
                     PathBuf::from("artifacts/contracts/docs/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Docker => (
                     "docker",
-                    contracts::registry_snapshot("docker", domain_registry(&domains, "docker")?),
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "docker",
+                        domain_registry(&domains, "docker")?,
+                    )?,
                     PathBuf::from("artifacts/contracts/docker/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Make => (
                     "make",
-                    contracts::registry_snapshot("make", domain_registry(&domains, "make")?),
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "make",
+                        domain_registry(&domains, "make")?,
+                    )?,
                     PathBuf::from("artifacts/contracts/make/registry-snapshot.json"),
                 ),
                 ContractsSnapshotDomainArg::Ops => (
                     "ops",
-                    contracts::registry_snapshot("ops", domain_registry(&domains, "ops")?),
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "ops",
+                        domain_registry(&domains, "ops")?,
+                    )?,
                     PathBuf::from("artifacts/contracts/ops/registry-snapshot.json"),
                 ),
             };
@@ -620,13 +754,15 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         if !derived_lints.is_empty() {
             return Ok((render_registry_lints(&derived_lints, format)?, 2));
         }
+        forbid_skip_required(&repo_root, &selected_domains, &common, &contract_filter_override)?;
+        write_required_contract_artifact(&repo_root, &all_domains(&repo_root)?)?;
 
         if common.list || common.list_tests {
             let list_domains = selected_domains
                 .iter()
                 .map(|(descriptor, registry, _)| (*descriptor, registry.as_slice()))
                 .collect::<Vec<_>>();
-            return Ok((render_list(&list_domains, common.list_tests, format)?, 0));
+            return Ok((render_list(&repo_root, &list_domains, common.list_tests, format)?, 0));
         }
 
         if let Some(test_id) = &common.explain_test {

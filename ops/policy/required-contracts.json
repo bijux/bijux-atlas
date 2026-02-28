@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "contracts": [
+    {
+      "domain": "root",
+      "contract_id": "ROOT-042",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Protect registry integrity before any merge."
+    },
+    {
+      "domain": "docs",
+      "contract_id": "DOC-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Keep docs entrypoints and canonical structure valid."
+    },
+    {
+      "domain": "make",
+      "contract_id": "MAKE-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Keep public make entrypoints deterministic and documented."
+    },
+    {
+      "domain": "configs",
+      "contract_id": "CONFIGS-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Protect canonical config surface and schema inputs."
+    },
+    {
+      "domain": "docker",
+      "contract_id": "DOCKER-000",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Keep container build inputs and policy checks canonical."
+    },
+    {
+      "domain": "ops",
+      "contract_id": "OPS-ROOT-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Protect ops root inventory and pillar entrypoints."
+    }
+  ]
+}

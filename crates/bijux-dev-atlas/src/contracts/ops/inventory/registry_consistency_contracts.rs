@@ -77,6 +77,9 @@ fn test_ops_inv_pillars_003_no_extra_pillar_dirs(ctx: &RunContext) -> TestResult
         let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
+        if name == "policy" {
+            continue;
+        }
         if name == "_generated" || name == "_generated.example" {
             continue;
         }

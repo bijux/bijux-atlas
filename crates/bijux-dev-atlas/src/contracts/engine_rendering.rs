@@ -18,14 +18,25 @@ pub fn to_pretty(report: &RunReport) -> String {
 
     let mut out = String::new();
     out.push_str(&format!(
-        "Contracts: {} (mode={}, duration={}ms)\n",
-        report.domain, report.mode, 0
+        "Contracts: {} (lane={}, mode={}, duration={}ms)\n",
+        report.domain, report.lane, report.mode, 0
     ));
     for contract in &report.contracts {
+        let required_label = if contract.required {
+            let lanes = contract
+                .lanes
+                .iter()
+                .map(|lane| lane.as_str())
+                .collect::<Vec<_>>()
+                .join(",");
+            format!(" [required:{lanes}]")
+        } else {
+            String::new()
+        };
         out.push_str(&format!(
             "{}\n",
             dotted(
-                &format!("{} {}", contract.id, contract.title),
+                &format!("{} {}{}", contract.id, contract.title, required_label),
                 &status_with_timing(contract.status, contract.duration_ms, 1_000)
             )
         ));
@@ -63,6 +74,13 @@ pub fn to_pretty(report: &RunReport) -> String {
         report.skip_count(),
         report.error_count()
     ));
+    let stop_ship = report.required_failure_ids();
+    if !stop_ship.is_empty() {
+        out.push_str("Stop-ship summary:\n");
+        for contract_id in stop_ship {
+            out.push_str(&format!("- {contract_id}\n"));
+        }
+    }
     if report.mode == Mode::Static && report.skip_count() > 0 {
         out.push_str("Note: effect-only tests are skipped in static mode; use --mode effect with required allow flags.\n");
     }
@@ -71,7 +89,7 @@ pub fn to_pretty(report: &RunReport) -> String {
 
 pub fn to_table(report: &RunReport) -> String {
     let mut out = String::new();
-    out.push_str("CONTRACT_ID | STATUS | TESTS | SUMMARY\n");
+    out.push_str("CONTRACT_ID | REQUIRED | STATUS | TESTS | SUMMARY\n");
     for contract in &report.contracts {
         let tests = report
             .cases
@@ -79,8 +97,9 @@ pub fn to_table(report: &RunReport) -> String {
             .filter(|case| case.contract_id == contract.id)
             .count();
         out.push_str(&format!(
-            "{} | {} | {} | {}\n",
+            "{} | {} | {} | {} | {}\n",
             contract.id,
+            if contract.required { "yes" } else { "no" },
             contract.status.as_str(),
             tests,
             contract.title
@@ -104,6 +123,7 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
         "schema_version": 1,
         "group": report.domain.clone(),
         "domain": report.domain.clone(),
+        "lane": report.lane.as_str(),
         "mode": report.mode.to_string(),
         "run_id": report.metadata.run_id,
         "commit_sha": report.metadata.commit_sha,
@@ -116,6 +136,7 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "skip": report.skip_count(),
             "error": report.error_count(),
             "exit_code": report.exit_code(),
+            "required_failures": report.required_failure_ids(),
             "duration_ms": report.duration_ms
         },
         "maturity": maturity_score(&report.contracts),
@@ -124,6 +145,8 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
             "id": c.id,
             "contract_id": c.id,
             "title": c.title,
+            "required": c.required,
+            "lanes": c.lanes.iter().map(|lane| lane.as_str()).collect::<Vec<_>>(),
             "mode": c.mode.as_str(),
             "effects": c.effects.iter().map(|effect| effect.as_str()).collect::<Vec<_>>(),
             "status": c.status.as_str(),
@@ -146,6 +169,8 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
         "tests": report.cases.iter().map(|t| serde_json::json!({
             "contract_id": t.contract_id,
             "contract_title": t.contract_title,
+            "required": t.required,
+            "lanes": t.lanes.iter().map(|lane| lane.as_str()).collect::<Vec<_>>(),
             "test_id": t.test_id,
             "test_title": t.test_title,
             "kind": format!("{:?}", t.kind).to_ascii_lowercase(),
@@ -171,11 +196,18 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
     let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
     let skip = reports.iter().map(RunReport::skip_count).sum::<usize>();
     let error = reports.iter().map(RunReport::error_count).sum::<usize>();
-    let exit_code = if error > 0 || fail > 0 { 1 } else { 0 };
+    let exit_code = reports.iter().map(RunReport::exit_code).max().unwrap_or(0);
+    let mut stop_ship = reports
+        .iter()
+        .flat_map(RunReport::required_failure_ids)
+        .collect::<Vec<_>>();
+    stop_ship.sort();
+    stop_ship.dedup();
     serde_json::json!({
         "schema_version": 1,
         "group": "all",
         "domain": "all",
+        "lane": reports.first().map(|report| report.lane.as_str()).unwrap_or("local"),
         "run_id": reports.first().map(|report| report.metadata.run_id.clone()).unwrap_or_else(|| "local".to_string()),
         "commit_sha": reports.first().and_then(|report| report.metadata.commit_sha.clone()),
         "dirty_tree": reports.first().map(|report| report.metadata.dirty_tree).unwrap_or(false),
@@ -187,6 +219,7 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
             "skip": skip,
             "error": error,
             "exit_code": exit_code,
+            "required_failures": stop_ship,
             "duration_ms": reports.iter().map(|report| report.duration_ms).sum::<u64>()
         },
         "maturity": serde_json::json!({
@@ -217,6 +250,18 @@ pub fn to_pretty_all(reports: &[RunReport]) -> String {
         "\nSummary: {} contracts, {} tests: {} pass, {} fail, {} skip, {} error\n",
         contracts, tests, pass, fail, skip, error
     ));
+    let mut stop_ship = reports
+        .iter()
+        .flat_map(RunReport::required_failure_ids)
+        .collect::<Vec<_>>();
+    stop_ship.sort();
+    stop_ship.dedup();
+    if !stop_ship.is_empty() {
+        out.push_str("Stop-ship summary:\n");
+        for contract_id in stop_ship {
+            out.push_str(&format!("- {contract_id}\n"));
+        }
+    }
     out
 }
 

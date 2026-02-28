@@ -9,8 +9,9 @@ pub fn run(
     let run_started = Instant::now();
     let mut contracts = contracts_fn(repo_root)?;
     contracts.sort_by_key(|c| c.id.0.clone());
+    let required_map = required_contract_map(repo_root)?;
 
-    let ctx = RunContext {
+    let base_ctx = RunContext {
         repo_root: repo_root.to_path_buf(),
         artifacts_root: options.artifacts_root.clone(),
         mode: options.mode,
@@ -27,6 +28,11 @@ pub fn run(
     let mut case_rows = Vec::new();
 
     for contract in contracts {
+        let required_lanes = contract_required_lanes(&required_map, domain, &contract.id.0);
+        let is_required = required_lanes.contains(&options.lane);
+        if options.required_only && !is_required {
+            continue;
+        }
         if !matches_filter(&options.contract_filter, &contract.id.0)
             || !matches_any_filter(&options.only_contracts, &contract.id.0)
             || matches_skip_filter(&options.skip_contracts, &contract.id.0)
@@ -51,6 +57,14 @@ pub fn run(
             }
             has_case = true;
             let case_started = Instant::now();
+            let ctx = RunContext {
+                skip_missing_tools: if is_required {
+                    false
+                } else {
+                    base_ctx.skip_missing_tools
+                },
+                ..base_ctx.clone()
+            };
             let result = if options.list_only {
                 TestResult::Skip("list-only".to_string())
             } else {
@@ -89,6 +103,8 @@ pub fn run(
             case_rows.push(CaseReport {
                 contract_id: contract_id.clone(),
                 contract_title: contract_title.clone(),
+                required: is_required,
+                lanes: required_lanes.clone(),
                 test_id: case.id.0,
                 test_title: case.title.to_string(),
                 kind: case.kind,
@@ -105,6 +121,8 @@ pub fn run(
             contract_rows.push(ContractSummary {
                 id: contract_id,
                 title: contract_title,
+                required: is_required,
+                lanes: required_lanes.clone(),
                 mode: contract_mode,
                 effects: contract_effects,
                 status: contract_status,
@@ -118,6 +136,7 @@ pub fn run(
 
     let report = RunReport {
         domain: domain.to_string(),
+        lane: options.lane,
         mode: options.mode,
         metadata: run_metadata(repo_root),
         contracts: contract_rows,
@@ -145,6 +164,8 @@ pub fn run(
                 "contracts": report.contracts.iter().map(|contract| serde_json::json!({
                     "id": contract.id,
                     "title": contract.title,
+                    "required": contract.required,
+                    "lanes": contract.lanes.iter().map(|lane| lane.as_str()).collect::<Vec<_>>(),
                     "mode": contract.mode.as_str(),
                     "effects": contract.effects.iter().map(|effect| effect.as_str()).collect::<Vec<_>>(),
                 })).collect::<Vec<_>>()
@@ -158,6 +179,7 @@ pub fn run(
             serde_json::to_string_pretty(&serde_json::json!({
                 "schema_version": 1,
                 "domain": domain,
+                "lane": report.lane.as_str(),
                 "maturity": maturity_score(&report.contracts),
             }))
             .map_err(|e| format!("encode contracts maturity failed: {e}"))?,
@@ -182,10 +204,13 @@ pub fn run(
             serde_json::to_string_pretty(&serde_json::json!({
                 "schema_version": 1,
                 "domain": domain,
+                "lane": report.lane.as_str(),
                 "mode": report.mode.to_string(),
                 "run_id": report.metadata.run_id,
                 "contracts": report.contracts.iter().map(|contract| serde_json::json!({
                     "id": contract.id,
+                    "required": contract.required,
+                    "lanes": contract.lanes.iter().map(|lane| lane.as_str()).collect::<Vec<_>>(),
                     "status": contract.status.as_str(),
                     "title": contract.title,
                 })).collect::<Vec<_>>()

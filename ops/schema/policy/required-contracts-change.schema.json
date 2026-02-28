@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ops/schema/policy/required-contracts-change.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "owner", "rationale", "expiry", "approved_contract_changes"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "owner": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "expiry": {
+      "type": "string"
+    },
+    "approved_contract_changes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

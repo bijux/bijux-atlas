@@ -157,6 +157,7 @@ fn test_ops_000_allow_only_known_domain_dirs(ctx: &RunContext) -> TestResult {
     }
     allowed.insert("_generated");
     allowed.insert("_generated.example");
+    allowed.insert("policy");
     let mut violations = Vec::new();
     for entry in entries.flatten() {
         let path = entry.path();
@@ -577,6 +578,7 @@ fn is_inventory_referenced(
     }
     rel == "ops/README.md"
         || rel == "ops/CONTRACT.md"
+        || rel.starts_with("ops/policy/")
         || rel.starts_with("ops/schema/")
         || rel.starts_with("ops/_generated/")
         || rel.starts_with("ops/_generated.example/")
@@ -674,4 +676,3 @@ fn test_ops_inv_003_no_duplicate_ssot(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

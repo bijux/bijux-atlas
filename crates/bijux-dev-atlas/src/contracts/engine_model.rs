@@ -3,6 +3,9 @@ use std::fmt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+pub const CONTRACTS_NON_REQUIRED_FAIL_EXIT_CODE: i32 = 1;
+pub const CONTRACTS_REQUIRED_FAIL_EXIT_CODE: i32 = 4;
+
 pub trait ContractRegistry {
     fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String>;
 }
@@ -73,6 +76,31 @@ impl fmt::Display for Mode {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub enum ContractLane {
+    Local,
+    Pr,
+    Merge,
+    Release,
+}
+
+impl ContractLane {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Local => "local",
+            Self::Pr => "pr",
+            Self::Merge => "merge",
+            Self::Release => "release",
+        }
+    }
+}
+
+impl fmt::Display for ContractLane {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Violation {
     pub contract_id: String,
@@ -104,6 +132,7 @@ pub struct Contract {
     pub tests: Vec<TestCase>,
 }
 
+#[derive(Clone)]
 pub struct RunContext {
     pub repo_root: PathBuf,
     pub artifacts_root: Option<PathBuf>,
@@ -118,12 +147,15 @@ pub struct RunContext {
 }
 
 pub struct RunOptions {
+    pub lane: ContractLane,
     pub mode: Mode,
+    pub required_only: bool,
     pub allow_subprocess: bool,
     pub allow_network: bool,
     pub allow_k8s: bool,
     pub allow_fs_write: bool,
     pub allow_docker_daemon: bool,
+    pub deny_skip_required: bool,
     pub skip_missing_tools: bool,
     pub timeout_seconds: u64,
     pub fail_fast: bool,
@@ -168,6 +200,8 @@ impl CaseStatus {
 pub struct CaseReport {
     pub contract_id: String,
     pub contract_title: String,
+    pub required: bool,
+    pub lanes: Vec<ContractLane>,
     pub test_id: String,
     pub test_title: String,
     pub kind: TestKind,
@@ -180,6 +214,8 @@ pub struct CaseReport {
 pub struct ContractSummary {
     pub id: String,
     pub title: String,
+    pub required: bool,
+    pub lanes: Vec<ContractLane>,
     pub mode: ContractMode,
     pub effects: Vec<EffectKind>,
     pub status: CaseStatus,
@@ -194,6 +230,7 @@ pub struct RunMetadata {
 
 pub struct RunReport {
     pub domain: String,
+    pub lane: ContractLane,
     pub mode: Mode,
     pub metadata: RunMetadata,
     pub contracts: Vec<ContractSummary>,
@@ -204,6 +241,8 @@ pub struct RunReport {
 pub struct RegistrySnapshotRow {
     pub domain: String,
     pub id: String,
+    pub required: bool,
+    pub lanes: Vec<String>,
     pub severity: String,
     pub title: String,
     pub test_ids: Vec<String>,
@@ -269,9 +308,26 @@ impl RunReport {
             .count()
     }
 
+    pub fn required_failure_ids(&self) -> Vec<String> {
+        let mut ids = self
+            .contracts
+            .iter()
+            .filter(|contract| {
+                contract.required
+                    && matches!(contract.status, CaseStatus::Fail | CaseStatus::Error)
+            })
+            .map(|contract| contract.id.clone())
+            .collect::<Vec<_>>();
+        ids.sort();
+        ids.dedup();
+        ids
+    }
+
     pub fn exit_code(&self) -> i32 {
-        if self.error_count() > 0 || self.fail_count() > 0 {
-            1
+        if !self.required_failure_ids().is_empty() {
+            CONTRACTS_REQUIRED_FAIL_EXIT_CODE
+        } else if self.error_count() > 0 || self.fail_count() > 0 {
+            CONTRACTS_NON_REQUIRED_FAIL_EXIT_CODE
         } else {
             0
         }
@@ -328,6 +384,89 @@ pub fn maturity_score(contracts: &[ContractSummary]) -> serde_json::Value {
     })
 }
 
+fn parse_contract_lane(value: &str) -> Result<ContractLane, String> {
+    match value {
+        "local" => Ok(ContractLane::Local),
+        "pr" => Ok(ContractLane::Pr),
+        "merge" => Ok(ContractLane::Merge),
+        "release" => Ok(ContractLane::Release),
+        _ => Err(format!("unknown contracts lane `{value}`")),
+    }
+}
+
+pub fn required_contracts_path(repo_root: &Path) -> PathBuf {
+    repo_root.join("ops/policy/required-contracts.json")
+}
+
+pub fn required_contract_change_path(repo_root: &Path) -> PathBuf {
+    repo_root.join("ops/policy/required-contracts-change.json")
+}
+
+pub fn required_contract_map(
+    repo_root: &Path,
+) -> Result<BTreeMap<String, BTreeMap<String, Vec<ContractLane>>>, String> {
+    let path = required_contracts_path(repo_root);
+    let text =
+        std::fs::read_to_string(&path).map_err(|e| format!("read {} failed: {e}", path.display()))?;
+    let json = serde_json::from_str::<serde_json::Value>(&text)
+        .map_err(|e| format!("parse {} failed: {e}", path.display()))?;
+    let contracts = json
+        .get("contracts")
+        .and_then(|value| value.as_array())
+        .ok_or_else(|| format!("{} must contain a `contracts` array", path.display()))?;
+    let mut map = BTreeMap::<String, BTreeMap<String, Vec<ContractLane>>>::new();
+    for row in contracts {
+        let domain = row
+            .get("domain")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| format!("{} contract row missing string `domain`", path.display()))?;
+        let contract_id = row
+            .get("contract_id")
+            .and_then(|value| value.as_str())
+            .ok_or_else(|| format!("{} contract row missing string `contract_id`", path.display()))?;
+        let lanes = row
+            .get("lanes")
+            .and_then(|value| value.as_array())
+            .ok_or_else(|| format!("{} contract row missing array `lanes`", path.display()))?
+            .iter()
+            .map(|value| {
+                value
+                    .as_str()
+                    .ok_or_else(|| format!("{} lane entries must be strings", path.display()))
+                    .and_then(parse_contract_lane)
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        if lanes.is_empty() {
+            return Err(format!(
+                "{} contract row `{contract_id}` must declare at least one lane",
+                path.display()
+            ));
+        }
+        let lanes = {
+            let mut out = lanes;
+            out.sort();
+            out.dedup();
+            out
+        };
+        map.entry(domain.to_string())
+            .or_default()
+            .insert(contract_id.to_string(), lanes);
+    }
+    Ok(map)
+}
+
+pub fn contract_required_lanes(
+    required_map: &BTreeMap<String, BTreeMap<String, Vec<ContractLane>>>,
+    domain: &str,
+    contract_id: &str,
+) -> Vec<ContractLane> {
+    required_map
+        .get(domain)
+        .and_then(|domain_rows| domain_rows.get(contract_id))
+        .cloned()
+        .unwrap_or_default()
+}
+
 pub fn registry_snapshot(domain: &str, contracts: &[Contract]) -> Vec<RegistrySnapshotRow> {
     let mut rows = contracts
         .iter()
@@ -341,6 +480,8 @@ pub fn registry_snapshot(domain: &str, contracts: &[Contract]) -> Vec<RegistrySn
             RegistrySnapshotRow {
                 domain: domain.to_string(),
                 id: contract.id.0.clone(),
+                required: false,
+                lanes: Vec::new(),
                 severity: "must".to_string(),
                 title: contract.title.to_string(),
                 test_ids,
@@ -349,6 +490,21 @@ pub fn registry_snapshot(domain: &str, contracts: &[Contract]) -> Vec<RegistrySn
         .collect::<Vec<_>>();
     rows.sort_by(|a, b| a.domain.cmp(&b.domain).then(a.id.cmp(&b.id)));
     rows
+}
+
+pub fn registry_snapshot_with_policy(
+    repo_root: &Path,
+    domain: &str,
+    contracts: &[Contract],
+) -> Result<Vec<RegistrySnapshotRow>, String> {
+    let required_map = required_contract_map(repo_root)?;
+    let mut rows = registry_snapshot(domain, contracts);
+    for row in &mut rows {
+        let lanes = contract_required_lanes(&required_map, domain, &row.id);
+        row.required = !lanes.is_empty();
+        row.lanes = lanes.iter().map(|lane| lane.as_str().to_string()).collect();
+    }
+    Ok(rows)
 }
 
 pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
@@ -378,6 +534,12 @@ pub fn lint_registry_rows(rows: &[RegistrySnapshotRow]) -> Vec<RegistryLint> {
     let mut normalized_titles = BTreeMap::<String, Vec<String>>::new();
 
     for row in rows {
+        if row.required && row.lanes.is_empty() {
+            lints.push(RegistryLint {
+                code: "required-contract-lanes",
+                message: format!("{} is required but has no lanes", row.id),
+            });
+        }
         contract_ids
             .entry(row.id.clone())
             .or_default()

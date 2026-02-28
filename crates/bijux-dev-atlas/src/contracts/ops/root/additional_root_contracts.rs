@@ -20,6 +20,7 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
         "inventory",
         "k8s",
         "load",
+        "policy",
         "observe",
         "report",
         "schema",
@@ -390,4 +391,3 @@ fn test_ops_root_009_inventory_coverage_for_policy_files(ctx: &RunContext) -> Te
         TestResult::Fail(violations)
     }
 }
-

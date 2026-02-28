@@ -275,8 +275,9 @@ pub enum ContractsProfileArg {
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ContractsLaneArg {
     Local,
-    Dev,
-    Ci,
+    Pr,
+    Merge,
+    Release,
 }
 
 #[derive(Args, Debug, Clone)]
@@ -295,6 +296,10 @@ pub struct ContractsCommonArgs {
     pub profile: ContractsProfileArg,
     #[arg(long, value_enum, default_value_t = ContractsLaneArg::Local)]
     pub lane: ContractsLaneArg,
+    #[arg(long, default_value_t = false)]
+    pub required: bool,
+    #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]
+    pub deny_skip_required: bool,
     #[arg(long, default_value_t = true, action = clap::ArgAction::Set)]
     pub deny_effects: bool,
     #[arg(long, default_value_t = false)]

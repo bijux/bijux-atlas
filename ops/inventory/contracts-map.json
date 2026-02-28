@@ -173,6 +173,18 @@
       "consumer": "checks_ops_inventory_contract_integrity"
     },
     {
+      "path": "ops/policy/required-contracts-change.json",
+      "schema": "ops/schema/policy/required-contracts-change.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
+      "path": "ops/policy/required-contracts.json",
+      "schema": "ops/schema/policy/required-contracts.schema.json",
+      "generator": "manual",
+      "consumer": "checks_ops_inventory_contract_integrity"
+    },
+    {
       "path": "ops/k8s/rollout-safety-contract.json",
       "schema": "ops/schema/k8s/rollout-safety-contract.schema.json",
       "generator": "manual",

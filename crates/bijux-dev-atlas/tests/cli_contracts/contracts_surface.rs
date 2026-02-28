@@ -322,7 +322,7 @@ fn contracts_ops_supports_table_format() {
         .expect("contracts ops table");
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8 stdout");
-    assert!(text.contains("CONTRACT_ID | STATUS | TESTS | SUMMARY"));
+    assert!(text.contains("CONTRACT_ID | REQUIRED | STATUS | TESTS | SUMMARY"));
 }
 
 #[test]
@@ -334,7 +334,84 @@ fn contracts_make_supports_table_format() {
         .expect("contracts make table");
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).expect("utf8 stdout");
-    assert!(text.contains("CONTRACT_ID | STATUS | TESTS | SUMMARY"));
+    assert!(text.contains("CONTRACT_ID | REQUIRED | STATUS | TESTS | SUMMARY"));
+}
+
+#[test]
+fn contracts_all_list_reports_required_lanes() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "all", "--list", "--format", "json"])
+        .output()
+        .expect("contracts all list");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let row = payload["contracts"]
+        .as_array()
+        .expect("contracts array")
+        .iter()
+        .find(|row| row["id"].as_str() == Some("ROOT-042"))
+        .expect("required root contract row");
+    assert_eq!(row["required"].as_bool(), Some(true));
+    assert_eq!(
+        row["lanes"]
+            .as_array()
+            .expect("lanes array")
+            .iter()
+            .filter_map(|value| value.as_str())
+            .collect::<Vec<_>>(),
+        vec!["pr", "merge", "release"]
+    );
+}
+
+#[test]
+fn contracts_required_flag_filters_to_required_contracts() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "all", "--required", "--lane", "pr", "--format", "json"])
+        .output()
+        .expect("contracts required only");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    let domains = payload["domains"].as_array().expect("domains array");
+    let all_contracts = domains
+        .iter()
+        .flat_map(|domain| {
+            domain["contracts"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .cloned()
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
+    assert!(!all_contracts.is_empty());
+    assert!(all_contracts
+        .iter()
+        .all(|row| row["required"].as_bool() == Some(true)));
+}
+
+#[test]
+fn contracts_json_includes_lane_metadata_and_required_artifact() {
+    let required_artifact = repo_root().join("artifacts/contracts/required.json");
+    if required_artifact.exists() {
+        fs::remove_file(&required_artifact).expect("remove prior required artifact");
+    }
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "root", "--lane", "pr", "--format", "json"])
+        .output()
+        .expect("contracts root pr lane");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["lane"].as_str(), Some("pr"));
+    let required_payload: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(required_artifact).expect("required artifact"))
+            .expect("required artifact json");
+    assert!(required_payload["contracts"].is_array());
 }
 
 #[test]
