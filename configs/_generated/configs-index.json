@@ -420,14 +420,15 @@
     },
     {
       "counts": {
-        "covered": 33,
+        "covered": 34,
         "generated": 0,
-        "internal": 20,
+        "internal": 21,
         "public": 13,
         "schemas": 2
       },
       "files": [
         "configs/contracts/ci-run-output.schema.json",
+        "configs/contracts/configs-contracts-check-output.schema.json",
         "configs/contracts/contracts-coverage-output.schema.json",
         "configs/contracts/contracts-output.schema.json",
         "configs/contracts/dev-atlas-output.schema.json",

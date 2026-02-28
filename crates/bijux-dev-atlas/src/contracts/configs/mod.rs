@@ -1643,3 +1643,63 @@ pub fn contract_explain(contract_id: &str) -> String {
 pub fn contract_gate_command(_contract_id: &str) -> &'static str {
     "bijux dev atlas contracts configs --mode static"
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn repo_root() -> std::path::PathBuf {
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .expect("workspace")
+            .parent()
+            .expect("repo")
+            .to_path_buf()
+    }
+
+    #[test]
+    fn registry_index_parses_and_exposes_groups() {
+        let index = registry_index(&repo_root()).expect("registry");
+        assert_eq!(index.registry.schema_version, 1);
+        assert!(index
+            .registry
+            .groups
+            .iter()
+            .any(|group| group.name == "inventory"));
+        assert!(index
+            .registry
+            .groups
+            .iter()
+            .any(|group| group.name == "inventory"
+                && group
+                    .tool_entrypoints
+                    .iter()
+                    .any(|entry| entry == "bijux dev atlas configs list")));
+    }
+
+    #[test]
+    fn generated_index_render_is_stable() {
+        let root = repo_root();
+        let first = generated_index_json(&root).expect("first");
+        let second = generated_index_json(&root).expect("second");
+        assert_eq!(first, second);
+        let groups = first["groups"].as_array().expect("groups");
+        assert!(!groups.is_empty());
+    }
+
+    #[test]
+    fn wildcard_match_supports_double_star_segments() {
+        assert!(wildcard_match(
+            "configs/openapi/**/*.json",
+            "configs/openapi/v1/openapi.generated.json"
+        ));
+        assert!(wildcard_match(
+            "configs/docs/.vale/styles/**",
+            "configs/docs/.vale/styles/Bijux/terminology.yml"
+        ));
+        assert!(!wildcard_match(
+            "configs/docs/*.json",
+            "configs/docs/schema-validation.md"
+        ));
+    }
+}
