@@ -13,6 +13,7 @@ This section is contributor-facing and not part of the primary reader spine.
 - [Style Guide](style-guide.md)
 - [Docs Review Checklist](docs-review-checklist.md)
 - [Docs Removal Policy](docs-removal-policy.md)
+- [Docs Lint Rules](docs-lint-rules.md)
 - [Generated Content Policy](generated-content-policy.md)
 - [Contract SSOT Workflow](contract-ssot-workflow.md)
 - [Contract Change Checklist](contract-change-checklist.md)
