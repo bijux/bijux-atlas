@@ -17,6 +17,13 @@
 - `--ci` forces the CI profile and disables ANSI color in human output.
 - CI runs still emit machine artifacts through `--json-out`, `--junit-out`, and `artifacts/contracts/**`.
 
+## Required Contracts Lane Map
+
+- `local`: ad hoc developer runs; no merge-blocking selection is implied.
+- `pr`: all required contracts plus static coverage.
+- `merge`: required contracts plus effect coverage needed for merge readiness.
+- `release`: required contracts plus effect and slow coverage.
+
 ## Artifacts
 
 - Per-domain JSON reports: `artifacts/contracts/<domain>/<profile>/<mode>/<run_id>/<domain>.json`

@@ -201,3 +201,100 @@ fn required_contract_docs_include_lane_map_snippet() {
         violations.join("\n")
     );
 }
+
+#[test]
+fn docs_index_stays_navigation_only_and_links_the_spine() {
+    let root = repo_root();
+    let text = read(&root.join("docs/index.md"));
+    for required in [
+        "## Docs Spine",
+        "- Start: [Start Here](START_HERE.md)",
+        "- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)",
+        "- Architecture: [Architecture Index](architecture/INDEX.md)",
+        "- API: [API Surface Index](api/INDEX.md)",
+        "- Ops: [Operations Index](operations/INDEX.md)",
+        "- Dev: [Development Index](development/INDEX.md)",
+        "- Reference: [Reference Index](reference/INDEX.md)",
+    ] {
+        assert!(text.contains(required), "docs/index.md missing `{required}`");
+    }
+    for forbidden in [
+        "## What",
+        "## Why",
+        "## Scope",
+        "## Non-goals",
+        "## Failure modes",
+        "## How to verify",
+    ] {
+        assert!(
+            !text.contains(forbidden),
+            "docs/index.md must stay navigation-only and not contain `{forbidden}`"
+        );
+    }
+}
+
+#[test]
+fn start_here_is_the_only_top_level_onboarding_page() {
+    let root = repo_root();
+    let start_here = read(&root.join("docs/START_HERE.md"));
+    assert!(start_here.contains("This is the only onboarding root in `docs/`."));
+
+    let mut offenders = Vec::new();
+    for path in markdown_files(&root.join("docs")) {
+        if path == root.join("docs/START_HERE.md") {
+            continue;
+        }
+        if path.parent() != Some(root.join("docs").as_path()) {
+            continue;
+        }
+        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let text = read(&path).to_ascii_lowercase();
+        if text.contains("only onboarding root") || text.contains("this is the only onboarding root") {
+            offenders.push(rel);
+        }
+    }
+    assert!(
+        offenders.is_empty(),
+        "only docs/START_HERE.md may declare onboarding-root authority:\n{}",
+        offenders.join("\n")
+    );
+}
+
+#[test]
+fn docs_spine_pages_exist_and_index_links_every_node() {
+    let root = repo_root();
+    let index = read(&root.join("docs/index.md"));
+    for rel in [
+        "docs/START_HERE.md",
+        "docs/product/what-is-bijux-atlas.md",
+        "docs/architecture/INDEX.md",
+        "docs/api/INDEX.md",
+        "docs/operations/INDEX.md",
+        "docs/development/INDEX.md",
+        "docs/reference/INDEX.md",
+    ] {
+        let path = root.join(rel);
+        assert!(path.exists(), "docs spine page missing: {rel}");
+        let link = rel.trim_start_matches("docs/");
+        assert!(
+            index.contains(link),
+            "docs/index.md must link spine page `{rel}`"
+        );
+    }
+}
+
+#[test]
+fn concept_registry_exists_and_points_to_a_canonical_map() {
+    let root = repo_root();
+    let text = read(&root.join("docs/_style/CONCEPT_REGISTRY.md"));
+    for required in [
+        "Defines canonical concepts and their single source pages.",
+        "docs/_style/concepts.yml",
+        "Each concept has exactly one canonical page.",
+    ] {
+        assert!(
+            text.contains(required),
+            "concept registry doc missing `{required}`"
+        );
+    }
+}
