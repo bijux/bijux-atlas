@@ -1,29 +1,23 @@
-# Compatibility Policy
+# API Compatibility
 
-Owner: `api-contracts`  
-Type: `policy`  
-Surface version: `v1`  
-Reason to exist: provide one canonical compatibility contract for API consumers.
+- Owner: `api-contracts`
+- Type: `policy`
+- Audience: `user`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: define API compatibility guarantees without duplicating product policy narrative.
 
-## v1 Compatibility Guarantees
+## Compatibility guarantees
 
-- Existing documented endpoints and fields remain stable.
-- Additive changes are allowed when backward compatible.
-- Breaking behavior changes require a new major API version.
+- Existing documented API behavior remains stable for `v1`.
+- Additive changes are allowed when they do not break existing clients.
+- Breaking changes require a new major API version.
 
-## Compatibility Limits
+## Canonical promise
 
-- Undocumented behavior is not guaranteed.
-- Experimental surfaces are excluded from long-term compatibility promises.
+Product-level compatibility narrative lives in [Product Compatibility Promise](../product/compatibility-promise.md).
 
-## Example
+## Next
 
-```bash
-curl -fsS 'http://127.0.0.1:8080/v1/openapi.json' >/dev/null
-```
-
-## Related References
-
+- [Versioning](versioning.md)
 - [Product Compatibility Promise](../product/compatibility-promise.md)
-- [Errors Reference](../reference/errors.md)
-- [Schemas Reference](../reference/schemas.md)

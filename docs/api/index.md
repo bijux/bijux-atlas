@@ -4,34 +4,30 @@
 - Type: `guide`
 - Audience: `user`
 - Stability: `stable`
-- Last verified against: `main@6856280c`
-- Reason to exist: describe client-facing behavior on stable Atlas API surfaces.
+- Last verified against: `main@8641e5b0`
+- Reason to exist: provide the user-facing API entrypoint for requests, pagination, errors, and compatibility.
 
-## Purpose
+## Why you are reading this
 
-Explain how clients call Atlas APIs, handle responses, and reason about compatibility.
+Use this section to integrate clients with Atlas API surfaces safely and predictably.
 
-## What You Will Find Here
+## Start here
 
 - [Quick Reference](quick-reference.md)
-- [Versioning](versioning.md)
 - [Pagination](pagination.md)
 - [Errors](errors.md)
 - [Compatibility](compatibility.md)
+- [Versioning](versioning.md)
 
-## Next Steps
+## API troubleshooting
 
-Use [Reference](../reference/index.md) for schema-level facts and [Operations](../operations/index.md) for service-side troubleshooting.
+If the service is unhealthy or an error persists, follow [Operations Incident Response](../operations/incident-response.md).
 
-## What to Read Next
+## Where facts live
 
-- Endpoint facts: [Reference](../reference/index.md)
-- Service troubleshooting: [Operations](../operations/index.md)
-- Core terms: [Glossary](../glossary.md)
+Endpoint and schema facts live in [Reference](../reference/index.md) and [Reference Contracts](../reference/contracts/index.md).
 
-## Document Taxonomy
+## Next
 
-- Audience: `user`
-- Type: `guide`
-- Stability: `stable`
-- Owner: `api-contracts`
+- [Reference](../reference/index.md)
+- [Start Here](../start-here.md)

@@ -1,28 +1,24 @@
-# Versioning Policy
+# API Versioning
 
-Owner: `api-contracts`  
-Type: `policy`  
-Surface version: `v1`  
-Reason to exist: define stable API versioning and change constraints.
+- Owner: `api-contracts`
+- Type: `policy`
+- Audience: `user`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: define path versioning and deprecation rules clearly.
 
-## Rules
+## Versioning rules
 
-- API versioning is path-based (`/v1/...`).
-- Dataset release is data identity, not API versioning.
-- v1 changes are additive-only for existing documented behavior.
+- API major version is path-based: `/v1/...`.
+- Dataset release identifiers are data-version controls, not API-major controls.
+- Existing `v1` behavior evolves additively only.
 
-## Deprecation
+## Deprecation rules
 
-- Deprecated surfaces must be explicitly marked.
-- Grace windows are announced before removal in future major versions.
+- Deprecations must include a replacement path.
+- Removal occurs only in a future major API version.
 
-## Example
+## Next
 
-```bash
-curl -fsS 'http://127.0.0.1:8080/v1/version'
-```
-
-## Related References
-
-- [Schemas Reference](../reference/schemas.md)
-- [Errors Reference](../reference/errors.md)
+- [Compatibility](compatibility.md)
+- [Reference Contracts](../reference/contracts/index.md)

@@ -4,48 +4,24 @@
 - Type: `reference`
 - Audience: `user`
 - Stability: `stable`
-- Last verified against: `main@6856280c`
-- Reason to exist: provide factual source-of-truth surfaces for commands, configs, schemas, and errors.
+- Last verified against: `main@8641e5b0`
+- Reason to exist: provide the stable factual portal for Atlas commands, configs, schemas, and contracts.
 
-## Purpose
+## Why you are reading this
 
-Facts live here. This section centralizes stable factual surfaces so guides and runbooks stay concise and non-duplicative.
+Facts live here. Use this section for canonical definitions, keys, and stable URLs.
 
-## What You Will Find Here
+## Categories
 
-- [Commands](commands.md)
-- [Command Inventory](command-inventory.md)
-- [Make Targets](make.md)
-- [Configs](configs.md)
-- [Schemas](schemas.md)
-- [Errors](errors.md)
-- [Contracts](contracts/index.md)
+- CLI and automation: [Commands](commands.md), [Command Inventory](command-inventory.md), [Make](make.md)
+- Runtime facts: [Configs](configs.md), [Errors](errors.md), [Schemas](schemas.md)
+- Contracts and artifacts: [Contracts](contracts/index.md), [Repo Map](repo-map.md), [Dataset Operations](dataset-operations.md)
 
-## What This Page Is Not
+## Stable URL policy
 
-This page is not a tutorial and not an operations playbook.
+Reference pages are canonical surfaces. Guides should link here instead of duplicating tables.
 
-## Example
+## Next
 
-```text
-Need CLI flags -> Commands.
-Need runtime key semantics -> Configs.
-Need response code details -> Errors.
-```
-
-## Next Steps
-
-Use [API](../api/index.md) for usage guidance or [Operations](../operations/index.md) for procedures.
-
-## What to Read Next
-
-- Usage guidance: [API](../api/index.md)
-- Operator procedures: [Operations](../operations/index.md)
-- Core terms: [Glossary](../glossary.md)
-
-## Document Taxonomy
-
-- Audience: `user`
-- Type: `reference`
-- Stability: `stable`
-- Owner: `docs-governance`
+- [API](../api/index.md)
+- [Operations](../operations/index.md)

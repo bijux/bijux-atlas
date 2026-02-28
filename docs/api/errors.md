@@ -1,34 +1,33 @@
 # Errors
 
-Owner: `api-contracts`  
-Type: `guide`  
-Surface version: `v1`  
-Reason to exist: define the canonical API error envelope and usage model.
+- Owner: `api-contracts`
+- Type: `guide`
+- Audience: `user`
+- Stability: `stable`
+- Last verified against: `main@8641e5b0`
+- Reason to exist: explain user-facing error behavior and remediation flow.
 
-## Envelope
+## Error envelope
 
-All errors return an `error` object with:
+Responses return a stable `error` object with `code`, `message`, optional `details`, and `request_id`.
 
-- `code`
-- `message`
-- `details` (optional structured fields)
-- `request_id`
+## What to do when a request fails
 
-Codes and terms align with the repository glossary and reference error catalog.
+1. Inspect `error.code` and request parameters.
+2. Retry only when the code is retryable by policy.
+3. Escalate persistent service errors using [Operations Incident Response](../operations/incident-response.md).
 
-## HTTP Mapping Principles
-
-- Validation and contract violations: `4xx`.
-- Availability and upstream failures: `5xx`.
-- Response and retry expectations stay stable for existing codes.
-
-## Example
+## Examples
 
 ```bash
 curl -i -fsS 'http://127.0.0.1:8080/v1/genes?limit=0'
 ```
 
-## Related References
+## Canonical code list
 
-- [Errors Reference](../reference/errors.md)
-- [Schemas Reference](../reference/schemas.md)
+See [Reference Errors](../reference/errors.md).
+
+## Next
+
+- [Compatibility](compatibility.md)
+- [Reference Errors](../reference/errors.md)
