@@ -286,6 +286,86 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("ROOT-033".to_string()),
+            title: "release process authority stays inside docs or ops",
+            tests: vec![TestCase {
+                id: TestId("root.docs.release_process_location".to_string()),
+                title: "release process files do not reappear at the repo root",
+                kind: TestKind::Pure,
+                run: test_root_033_release_process_location,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-034".to_string()),
+            title: "repo root keeps a single contracts command interface",
+            tests: vec![TestCase {
+                id: TestId("root.contracts.single_interface".to_string()),
+                title: "root documentation references the canonical contracts entrypoint",
+                kind: TestKind::Pure,
+                run: test_root_034_single_contract_interface,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-035".to_string()),
+            title: "make contract wrappers delegate to the contracts runner",
+            tests: vec![TestCase {
+                id: TestId("root.make.contract_wrappers_delegate".to_string()),
+                title: "make/checks.mk delegates to bijux dev atlas contracts make",
+                kind: TestKind::Pure,
+                run: test_root_035_make_contract_wrappers_delegate,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-036".to_string()),
+            title: "docker make wrappers delegate to the contracts runner",
+            tests: vec![TestCase {
+                id: TestId("root.make.docker_wrappers_delegate".to_string()),
+                title: "make/makefiles/docker.mk delegates to bijux dev atlas contracts docker",
+                kind: TestKind::Pure,
+                run: test_root_036_docker_wrappers_delegate,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-037".to_string()),
+            title: "repo tree forbids editor backups and platform noise",
+            tests: vec![TestCase {
+                id: TestId("root.surface.no_editor_backup_noise".to_string()),
+                title: "no .orig, backup, or .DS_Store files exist in the repo tree",
+                kind: TestKind::Pure,
+                run: test_root_037_no_editor_backup_noise,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-038".to_string()),
+            title: "gitattributes line ending policy stays consistent when present",
+            tests: vec![TestCase {
+                id: TestId("root.gitattributes.line_endings".to_string()),
+                title: ".gitattributes keeps a canonical line ending policy if present",
+                kind: TestKind::Pure,
+                run: test_root_038_gitattributes_line_endings,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-039".to_string()),
+            title: "workspace members match the actual crate surface",
+            tests: vec![TestCase {
+                id: TestId("root.cargo.workspace_members_match".to_string()),
+                title: "workspace member declarations match crate directories and manifests",
+                kind: TestKind::Pure,
+                run: test_root_039_workspace_members_match,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-040".to_string()),
+            title: "workspace crates keep canonical naming",
+            tests: vec![TestCase {
+                id: TestId("root.cargo.crate_naming".to_string()),
+                title: "workspace crate directory names and package names stay canonical",
+                kind: TestKind::Pure,
+                run: test_root_040_crate_naming,
+            }],
+        },
+        Contract {
             id: ContractId("ROOT-021".to_string()),
             title: "editorconfig exists for shared formatting contracts",
             tests: vec![TestCase {

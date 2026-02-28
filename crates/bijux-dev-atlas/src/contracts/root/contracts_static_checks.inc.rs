@@ -1056,6 +1056,337 @@ fn test_root_032_no_nested_toolchain_pins(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_root_033_release_process_location(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for forbidden in ["RELEASE.md", "RELEASE_PROCESS.md", "RELEASES.md"] {
+        if ctx.repo_root.join(forbidden).exists() {
+            push_root_violation(
+                &mut violations,
+                "ROOT-033",
+                "root.docs.release_process_location",
+                Some(forbidden.to_string()),
+                "release process authority must live under docs/ or ops/, not at the repo root",
+            );
+        }
+    }
+    if !ctx.repo_root.join("docs/operations").is_dir() && !ctx.repo_root.join("ops").is_dir() {
+        push_root_violation(
+            &mut violations,
+            "ROOT-033",
+            "root.docs.release_process_location",
+            None,
+            "release process authority requires docs/operations/ or ops/ to exist",
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_034_single_contract_interface(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for relative in ["README.md", "CONTRIBUTING.md"] {
+        let contents = match read_root_text(ctx, relative, "ROOT-034", "root.contracts.single_interface") {
+            Ok(contents) => contents,
+            Err(result) => return result,
+        };
+        if contents.contains("cargo run -p bijux-dev-atlas -- contracts") {
+            push_root_violation(
+                &mut violations,
+                "ROOT-034",
+                "root.contracts.single_interface",
+                Some(relative.to_string()),
+                "root docs must not document direct cargo invocation for contracts",
+            );
+        }
+        for line in contents.lines() {
+            if line.contains("contracts ") && line.contains("make ") && !line.contains("bijux dev atlas contracts") {
+                push_root_violation(
+                    &mut violations,
+                    "ROOT-034",
+                    "root.contracts.single_interface",
+                    Some(relative.to_string()),
+                    "root docs must route contract command examples through `bijux dev atlas contracts`",
+                );
+                break;
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_035_make_contract_wrappers_delegate(ctx: &RunContext) -> TestResult {
+    let contents = match read_root_text(
+        ctx,
+        "make/checks.mk",
+        "ROOT-035",
+        "root.make.contract_wrappers_delegate",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    if !contents.contains("contracts make") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-035",
+            "root.make.contract_wrappers_delegate",
+            Some("make/checks.mk".to_string()),
+            "make/checks.mk must delegate through `bijux dev atlas contracts make`",
+        );
+    }
+    if contents.contains("grep ") || contents.contains("rg ") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-035",
+            "root.make.contract_wrappers_delegate",
+            Some("make/checks.mk".to_string()),
+            "make/checks.mk must not reintroduce shell grep-based contract enforcement",
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_036_docker_wrappers_delegate(ctx: &RunContext) -> TestResult {
+    let contents = match read_root_text(
+        ctx,
+        "make/makefiles/docker.mk",
+        "ROOT-036",
+        "root.make.docker_wrappers_delegate",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    if !contents.contains("contracts docker --mode static") || !contents.contains("contracts docker --mode effect") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-036",
+            "root.make.docker_wrappers_delegate",
+            Some("make/makefiles/docker.mk".to_string()),
+            "docker make wrappers must delegate both static and effect lanes to `bijux dev atlas contracts docker`",
+        );
+    }
+    if contents.lines().any(|line| line.trim_start().starts_with("@docker ")) {
+        push_root_violation(
+            &mut violations,
+            "ROOT-036",
+            "root.make.docker_wrappers_delegate",
+            Some("make/makefiles/docker.mk".to_string()),
+            "docker make wrappers must not invoke raw docker commands directly",
+        );
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
+    fn collect(dir: &std::path::Path, root: &std::path::Path, violations: &mut Vec<Violation>) {
+        let entries = match std::fs::read_dir(dir) {
+            Ok(entries) => entries,
+            Err(_) => return,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let name = entry.file_name().to_string_lossy().to_string();
+            if path.is_dir() {
+                if name == ".git" || name == ".idea" || name == "artifacts" || name == "target" {
+                    continue;
+                }
+                collect(&path, root, violations);
+                continue;
+            }
+            let forbidden = name == ".DS_Store" || name.ends_with(".orig") || name.ends_with('~');
+            if forbidden {
+                let rel = path
+                    .strip_prefix(root)
+                    .map(|value| value.display().to_string())
+                    .unwrap_or_else(|_| path.display().to_string());
+                violations.push(Violation {
+                    contract_id: "ROOT-037".to_string(),
+                    test_id: "root.surface.no_editor_backup_noise".to_string(),
+                    file: Some(rel),
+                    line: None,
+                    message: "editor backup or platform noise file is forbidden".to_string(),
+                    evidence: None,
+                });
+            }
+        }
+    }
+    let mut violations = Vec::new();
+    collect(&ctx.repo_root, &ctx.repo_root, &mut violations);
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_038_gitattributes_line_endings(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join(".gitattributes");
+    if !path.exists() {
+        return TestResult::Pass;
+    }
+    let contents = match read_root_text(
+        ctx,
+        ".gitattributes",
+        "ROOT-038",
+        "root.gitattributes.line_endings",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    if contents.contains("text=auto") || contents.contains("eol=lf") {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: "ROOT-038".to_string(),
+            test_id: "root.gitattributes.line_endings".to_string(),
+            file: Some(".gitattributes".to_string()),
+            line: None,
+            message: ".gitattributes must declare text=auto or eol=lf when present".to_string(),
+            evidence: None,
+        }])
+    }
+}
+
+fn test_root_039_workspace_members_match(ctx: &RunContext) -> TestResult {
+    let cargo = match read_root_text(
+        ctx,
+        "Cargo.toml",
+        "ROOT-039",
+        "root.cargo.workspace_members_match",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
+    let mut in_members = false;
+    let mut declared = Vec::new();
+    for line in cargo.lines() {
+        let trimmed = line.trim();
+        if !in_members && trimmed.starts_with("members = [") {
+            in_members = true;
+            continue;
+        }
+        if !in_members {
+            continue;
+        }
+        if trimmed.starts_with(']') {
+            break;
+        }
+        if let Some(stripped) = trimmed.strip_prefix('"').and_then(|value| value.strip_suffix("\",")) {
+            declared.push(stripped.to_string());
+        }
+    }
+    let mut actual = Vec::new();
+    let crates_dir = ctx.repo_root.join("crates");
+    let entries = match std::fs::read_dir(&crates_dir) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-039".to_string(),
+                test_id: "root.cargo.workspace_members_match".to_string(),
+                file: Some("crates".to_string()),
+                line: None,
+                message: format!("read crates/ failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() && path.join("Cargo.toml").is_file() {
+            actual.push(format!("crates/{}", entry.file_name().to_string_lossy()));
+        }
+    }
+    declared.sort();
+    actual.sort();
+    if declared == actual {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: "ROOT-039".to_string(),
+            test_id: "root.cargo.workspace_members_match".to_string(),
+            file: Some("Cargo.toml".to_string()),
+            line: None,
+            message: format!("workspace members drift: declared={declared:?}, actual={actual:?}"),
+            evidence: None,
+        }])
+    }
+}
+
+fn test_root_040_crate_naming(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    let crates_dir = ctx.repo_root.join("crates");
+    let entries = match std::fs::read_dir(&crates_dir) {
+        Ok(entries) => entries,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "ROOT-040".to_string(),
+                test_id: "root.cargo.crate_naming".to_string(),
+                file: Some("crates".to_string()),
+                line: None,
+                message: format!("read crates/ failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    for entry in entries.flatten() {
+        let dir = entry.file_name().to_string_lossy().to_string();
+        let cargo_path = entry.path().join("Cargo.toml");
+        if !cargo_path.is_file() {
+            continue;
+        }
+        if !dir.starts_with("bijux-") {
+            push_root_violation(
+                &mut violations,
+                "ROOT-040",
+                "root.cargo.crate_naming",
+                Some(format!("crates/{dir}")),
+                "crate directory names must start with `bijux-`",
+            );
+        }
+        let rel = format!("crates/{dir}/Cargo.toml");
+        let contents = match read_root_text(ctx, &rel, "ROOT-040", "root.cargo.crate_naming") {
+            Ok(contents) => contents,
+            Err(result) => return result,
+        };
+        let package_name = contents
+            .lines()
+            .find_map(|line| line.trim().strip_prefix("name = "))
+            .map(|value| value.trim().trim_matches('"').to_string());
+        if package_name.as_deref() != Some(&dir) {
+            push_root_violation(
+                &mut violations,
+                "ROOT-040",
+                "root.cargo.crate_naming",
+                Some(rel),
+                format!("package name {:?} must match directory name {dir}", package_name),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_root_021_editorconfig_exists(ctx: &RunContext) -> TestResult {
     if ctx.repo_root.join(".editorconfig").is_file() {
         TestResult::Pass
