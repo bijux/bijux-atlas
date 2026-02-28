@@ -8,6 +8,7 @@
     "configs/CONTRACT.md",
     "configs/CONSUMERS.json",
     "configs/OWNERS.json",
+    "configs/SCHEMAS.json",
     "configs/inventory.json"
   ],
   "groups": [
