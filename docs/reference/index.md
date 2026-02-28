@@ -14,6 +14,7 @@ Facts live here. This section centralizes stable factual surfaces so guides and 
 ## What You Will Find Here
 
 - [Commands](commands.md)
+- [Command Inventory](command-inventory.md)
 - [Make Targets](make.md)
 - [Configs](configs.md)
 - [Schemas](schemas.md)

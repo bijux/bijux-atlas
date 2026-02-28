@@ -22,6 +22,9 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Debugging Locally](debugging-locally.md)
 - [How to Add Check](how-to-add-check.md)
 - [How to Add Contract Registry](how-to-add-contract-registry.md)
+- [How to Add CLI Command](how-to-add-cli-command.md)
+- [How to Add Gate Policy](how-to-add-gate-policy.md)
+- [Update Pinned Dependencies](update-pinned-dependencies.md)
 - [Reports and CI Consumption](reports-and-ci-consumption.md)
 
 ## Next Steps
