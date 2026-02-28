@@ -4133,6 +4133,18 @@
     {
       "keywords": [
         "development",
+        "docs-site-map"
+      ],
+      "path": "docs/development/docs-site-map.md",
+      "tags": [
+        "development",
+        "docs-site-map"
+      ],
+      "topic": "docs-site-map"
+    },
+    {
+      "keywords": [
+        "development",
         "error-handling-philosophy"
       ],
       "path": "docs/development/error-handling-philosophy.md",
@@ -4297,6 +4309,18 @@
         "update-pinned-dependencies"
       ],
       "topic": "update-pinned-dependencies"
+    },
+    {
+      "keywords": [
+        "development",
+        "where-truth-lives"
+      ],
+      "path": "docs/development/where-truth-lives.md",
+      "tags": [
+        "development",
+        "where-truth-lives"
+      ],
+      "topic": "where-truth-lives"
     },
     {
       "keywords": [
@@ -4554,6 +4578,18 @@
     },
     {
       "keywords": [
+        "docs-ownership",
+        "governance"
+      ],
+      "path": "docs/governance/docs-ownership.md",
+      "tags": [
+        "docs-ownership",
+        "governance"
+      ],
+      "topic": "docs-ownership"
+    },
+    {
+      "keywords": [
         "docs-quality-policy",
         "governance"
       ],
@@ -4599,6 +4635,18 @@
         "governance"
       ],
       "topic": "docs-search-tips"
+    },
+    {
+      "keywords": [
+        "docs-style",
+        "governance"
+      ],
+      "path": "docs/governance/docs-style.md",
+      "tags": [
+        "docs-style",
+        "governance"
+      ],
+      "topic": "docs-style"
     },
     {
       "keywords": [
@@ -4899,6 +4947,30 @@
         "operations"
       ],
       "topic": "dataset-workflow"
+    },
+    {
+      "keywords": [
+        "deploy-kind",
+        "operations"
+      ],
+      "path": "docs/operations/deploy-kind.md",
+      "tags": [
+        "deploy-kind",
+        "operations"
+      ],
+      "topic": "deploy-kind"
+    },
+    {
+      "keywords": [
+        "deploy-kubernetes-minimal",
+        "operations"
+      ],
+      "path": "docs/operations/deploy-kubernetes-minimal.md",
+      "tags": [
+        "deploy-kubernetes-minimal",
+        "operations"
+      ],
+      "topic": "deploy-kubernetes-minimal"
     },
     {
       "keywords": [
@@ -5460,16 +5532,6 @@
     },
     {
       "keywords": [
-        "ownership"
-      ],
-      "path": "docs/ownership.md",
-      "tags": [
-        "ownership"
-      ],
-      "topic": "ownership"
-    },
-    {
-      "keywords": [
         "compatibility-promise",
         "product"
       ],
@@ -5527,6 +5589,18 @@
         "product"
       ],
       "topic": "non-goals"
+    },
+    {
+      "keywords": [
+        "product",
+        "reading-tracks"
+      ],
+      "path": "docs/product/reading-tracks.md",
+      "tags": [
+        "product",
+        "reading-tracks"
+      ],
+      "topic": "reading-tracks"
     },
     {
       "keywords": [
@@ -6320,16 +6394,6 @@
     },
     {
       "keywords": [
-        "site-map"
-      ],
-      "path": "docs/site-map.md",
-      "tags": [
-        "site-map"
-      ],
-      "topic": "site-map"
-    },
-    {
-      "keywords": [
         "start-here"
       ],
       "path": "docs/start-here.md",
@@ -6337,26 +6401,6 @@
         "start-here"
       ],
       "topic": "start-here"
-    },
-    {
-      "keywords": [
-        "style"
-      ],
-      "path": "docs/style.md",
-      "tags": [
-        "style"
-      ],
-      "topic": "style"
-    },
-    {
-      "keywords": [
-        "what-to-read-next"
-      ],
-      "path": "docs/what-to-read-next.md",
-      "tags": [
-        "what-to-read-next"
-      ],
-      "topic": "what-to-read-next"
     },
     {
       "keywords": [

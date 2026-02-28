@@ -2855,6 +2855,14 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
+        "docs/development/docs-site-map.md"
+      ],
+      "path": "docs/development/docs-site-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
         "docs/development/error-handling-philosophy.md"
       ],
       "path": "docs/development/error-handling-philosophy.md"
@@ -2962,6 +2970,14 @@
         "docs/development/update-pinned-dependencies.md"
       ],
       "path": "docs/development/update-pinned-dependencies.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/where-truth-lives.md"
+      ],
+      "path": "docs/development/where-truth-lives.md"
     },
     {
       "breadcrumbs": [
@@ -3134,6 +3150,14 @@
       "breadcrumbs": [
         "docs",
         "docs/governance",
+        "docs/governance/docs-ownership.md"
+      ],
+      "path": "docs/governance/docs-ownership.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
         "docs/governance/docs-quality-policy.md"
       ],
       "path": "docs/governance/docs-quality-policy.md"
@@ -3161,6 +3185,14 @@
         "docs/governance/docs-search-tips.md"
       ],
       "path": "docs/governance/docs-search-tips.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-style.md"
+      ],
+      "path": "docs/governance/docs-style.md"
     },
     {
       "breadcrumbs": [
@@ -3357,6 +3389,22 @@
         "docs/operations/dataset-workflow.md"
       ],
       "path": "docs/operations/dataset-workflow.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/deploy-kind.md"
+      ],
+      "path": "docs/operations/deploy-kind.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/deploy-kubernetes-minimal.md"
+      ],
+      "path": "docs/operations/deploy-kubernetes-minimal.md"
     },
     {
       "breadcrumbs": [
@@ -3725,13 +3773,6 @@
     {
       "breadcrumbs": [
         "docs",
-        "docs/ownership.md"
-      ],
-      "path": "docs/ownership.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
         "docs/product",
         "docs/product/compatibility-promise.md"
       ],
@@ -3768,6 +3809,14 @@
         "docs/product/non-goals.md"
       ],
       "path": "docs/product/non-goals.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/product",
+        "docs/product/reading-tracks.md"
+      ],
+      "path": "docs/product/reading-tracks.md"
     },
     {
       "breadcrumbs": [
@@ -4284,30 +4333,9 @@
     {
       "breadcrumbs": [
         "docs",
-        "docs/site-map.md"
-      ],
-      "path": "docs/site-map.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
         "docs/start-here.md"
       ],
       "path": "docs/start-here.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/style.md"
-      ],
-      "path": "docs/style.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/what-to-read-next.md"
-      ],
-      "path": "docs/what-to-read-next.md"
     },
     {
       "breadcrumbs": [

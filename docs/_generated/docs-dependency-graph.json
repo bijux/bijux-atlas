@@ -1618,6 +1618,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/development/docs-site-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/development/error-handling-philosophy.md"
     },
     {
@@ -1684,6 +1689,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/development/update-pinned-dependencies.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/where-truth-lives.md"
     },
     {
       "crate": null,
@@ -1788,6 +1798,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/governance/docs-ownership.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/governance/docs-quality-policy.md"
     },
     {
@@ -1804,6 +1819,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/governance/docs-search-tips.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/governance/docs-style.md"
     },
     {
       "crate": null,
@@ -1919,6 +1939,16 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/operations/dataset-workflow.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/deploy-kind.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/deploy-kubernetes-minimal.md"
     },
     {
       "crate": null,
@@ -2133,11 +2163,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/ownership.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/product/compatibility-promise.md"
     },
     {
@@ -2159,6 +2184,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/product/non-goals.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/product/reading-tracks.md"
     },
     {
       "crate": null,
@@ -2453,22 +2483,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/site-map.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/start-here.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/style.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
-      "from": "docs/what-to-read-next.md"
     },
     {
       "crate": null,

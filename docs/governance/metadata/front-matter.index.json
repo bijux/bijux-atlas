@@ -2587,6 +2587,14 @@
     },
     {
       "area": "development",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/development/docs-site-map.md",
+      "stability": "stable",
+      "title": "Docs site map"
+    },
+    {
+      "area": "development",
       "audience": "contributor",
       "owner": "platform",
       "path": "docs/development/error-handling-philosophy.md",
@@ -2696,6 +2704,14 @@
       "path": "docs/development/update-pinned-dependencies.md",
       "stability": "stable",
       "title": "Update Pinned Dependencies"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/development/where-truth-lives.md",
+      "stability": "stable",
+      "title": "Where truth lives"
     },
     {
       "area": "glossary.md",
@@ -2861,6 +2877,14 @@
       "area": "governance",
       "audience": "reviewers",
       "owner": "docs-governance",
+      "path": "docs/governance/docs-ownership.md",
+      "stability": "stable",
+      "title": "Documentation Ownership"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "owner": "docs-governance",
       "path": "docs/governance/docs-quality-policy.md",
       "stability": "stable",
       "title": "Docs Quality Policy"
@@ -2888,6 +2912,14 @@
       "path": "docs/governance/docs-search-tips.md",
       "stability": "stable",
       "title": "Docs Search Tips"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "owner": "docs-governance",
+      "path": "docs/governance/docs-style.md",
+      "stability": "stable",
+      "title": "Documentation Style"
     },
     {
       "area": "governance",
@@ -3072,6 +3104,22 @@
       "path": "docs/operations/dataset-workflow.md",
       "stability": "stable",
       "title": "Dataset Workflow"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/deploy-kind.md",
+      "stability": "stable",
+      "title": "Deploy to kind (10 minutes)"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/deploy-kubernetes-minimal.md",
+      "stability": "stable",
+      "title": "Deploy to Kubernetes (prod minimal)"
     },
     {
       "area": "operations",
@@ -3303,7 +3351,7 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/run-locally.md",
       "stability": "stable",
-      "title": "Run Locally"
+      "title": "Run locally (5 minutes)"
     },
     {
       "area": "operations",
@@ -3410,14 +3458,6 @@
       "title": "Security"
     },
     {
-      "area": "ownership.md",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/ownership.md",
-      "stability": "stable",
-      "title": "Documentation Ownership"
-    },
-    {
       "area": "product",
       "audience": "mixed",
       "owner": "docs-governance",
@@ -3456,6 +3496,14 @@
       "path": "docs/product/non-goals.md",
       "stability": "stable",
       "title": "Non Goals"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "owner": "docs-governance",
+      "path": "docs/product/reading-tracks.md",
+      "stability": "stable",
+      "title": "Reading tracks"
     },
     {
       "area": "product",
@@ -3922,36 +3970,12 @@
       "title": "integrity model"
     },
     {
-      "area": "site-map.md",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/site-map.md",
-      "stability": "stable",
-      "title": "Site map"
-    },
-    {
       "area": "start-here.md",
       "audience": "user",
       "owner": "docs-governance",
       "path": "docs/start-here.md",
       "stability": "stable",
       "title": "Start here"
-    },
-    {
-      "area": "style.md",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/style.md",
-      "stability": "stable",
-      "title": "Documentation Style"
-    },
-    {
-      "area": "what-to-read-next.md",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/what-to-read-next.md",
-      "stability": "stable",
-      "title": "What to read next"
     },
     {
       "area": "make",

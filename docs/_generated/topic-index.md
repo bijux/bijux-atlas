@@ -140,6 +140,8 @@
 | `decision-template` | `docs/governance/decision-template.md` |
 | `default-field-set` | `docs/api/default-field-set.md` |
 | `deploy` | `docs/operations/deploy.md` |
+| `deploy-kind` | `docs/operations/deploy-kind.md` |
+| `deploy-kubernetes-minimal` | `docs/operations/deploy-kubernetes-minimal.md` |
 | `deprecation` | `docs/api/deprecation.md` |
 | `depth-policy` | `docs/governance/style/depth-policy.md` |
 | `depth-rubric` | `docs/governance/style/depth-rubric.md` |
@@ -157,12 +159,15 @@
 | `docs-lint-rules` | `docs/governance/docs-lint-rules.md` |
 | `docs-navigation-policy` | `docs/governance/docs-navigation-policy.md` |
 | `docs-operating-model` | `docs/_meta/docs-operating-model.md, docs/governance/docs-operating-model.md` |
+| `docs-ownership` | `docs/governance/docs-ownership.md` |
 | `docs-principles` | `docs/_meta/docs-principles.md` |
 | `docs-quality-policy` | `docs/governance/docs-quality-policy.md` |
 | `docs-removal-policy` | `docs/governance/docs-removal-policy.md` |
 | `docs-review-checklist` | `docs/governance/docs-review-checklist.md` |
 | `docs-rewrite-plan` | `docs/_meta/internal/docs-rewrite-plan.md` |
 | `docs-search-tips` | `docs/governance/docs-search-tips.md` |
+| `docs-site-map` | `docs/development/docs-site-map.md` |
+| `docs-style` | `docs/governance/docs-style.md` |
 | `docs-taxonomy-quick-reference` | `docs/_meta/docs-taxonomy-quick-reference.md` |
 | `draft` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md` |
 | `drills-program` | `docs/operations/drills-program.md` |
@@ -212,7 +217,6 @@
 | `ops-e2e-boundary` | `.github/PULL_REQUEST_TEMPLATE/ops-e2e-boundary.md` |
 | `ops-map` | `docs/operations/ops-map.md` |
 | `ops-surface` | `docs/reference/ops-surface.md` |
-| `ownership` | `docs/ownership.md` |
 | `pagination` | `docs/api/pagination.md, docs/reference/querying/pagination.md` |
 | `perf-regression` | `.github/ISSUE_TEMPLATE/perf-regression.md` |
 | `performance-model` | `docs/architecture/performance-model.md` |
@@ -226,6 +230,7 @@
 | `qc` | `docs/reference/contracts/qc.md` |
 | `quick-reference` | `docs/api/quick-reference.md` |
 | `readers-guide` | `docs/governance/readers-guide.md` |
+| `reading-tracks` | `docs/product/reading-tracks.md` |
 | `redirects-policy` | `docs/governance/redirects-policy.md` |
 | `registry-federation` | `docs/operations/runbooks/registry-federation.md` |
 | `release-contract-checklist` | `docs/product/release-contract-checklist.md` |
@@ -255,7 +260,6 @@
 | `sequence-threat-model` | `docs/product/sequence-threat-model.md` |
 | `sequence-v1` | `docs/product/sequence-v1.md` |
 | `shared-core-extraction` | `docs/reference/registry/shared-core-extraction.md` |
-| `site-map` | `docs/site-map.md` |
 | `slo-policy` | `docs/operations/observability/slo-policy.md` |
 | `slo-store-backend-error-spike` | `docs/operations/runbooks/slo-store-backend-error-spike.md` |
 | `slo-targets` | `docs/product/slo-targets.md` |
@@ -265,7 +269,6 @@
 | `storage` | `docs/architecture/storage.md` |
 | `store-outage` | `docs/operations/runbooks/store-outage.md` |
 | `structure-templates` | `docs/governance/style/structure-templates.md` |
-| `style` | `docs/style.md` |
 | `style-guide` | `docs/governance/style-guide.md` |
 | `suites` | `docs/operations/load/suites.md` |
 | `taxonomy-map` | `docs/governance/metadata/taxonomy-map.md` |
@@ -284,5 +287,5 @@
 | `v1-surface` | `docs/api/v1-surface.md` |
 | `versioning` | `docs/api/versioning.md` |
 | `what-is-bijux-atlas` | `docs/product/what-is-bijux-atlas.md` |
-| `what-to-read-next` | `docs/what-to-read-next.md` |
+| `where-truth-lives` | `docs/development/where-truth-lives.md` |
 | `wire-compatibility` | `crates/bijux-atlas-api/docs/wire-compatibility.md` |

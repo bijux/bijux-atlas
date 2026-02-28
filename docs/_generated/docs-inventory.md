@@ -327,6 +327,7 @@ License: Apache-2.0
 | `docs/development/control-plane.md` | `concept` | `platform` | `stable` |
 | `docs/development/debugging-locally.md` | `concept` | `platform` | `stable` |
 | `docs/development/doc-conventions.md` | `concept` | `docs-governance` | `stable` |
+| `docs/development/docs-site-map.md` | `concept` | `docs-governance` | `stable` |
 | `docs/development/error-handling-philosophy.md` | `concept` | `platform` | `stable` |
 | `docs/development/how-to-add-check.md` | `how-to` | `platform` | `stable` |
 | `docs/development/how-to-add-cli-command.md` | `how-to` | `platform` | `stable` |
@@ -341,6 +342,7 @@ License: Apache-2.0
 | `docs/development/runtime-vs-control-plane-vs-ops.md` | `concept` | `platform` | `stable` |
 | `docs/development/toolchain.md` | `concept` | `platform` | `stable` |
 | `docs/development/update-pinned-dependencies.md` | `concept` | `platform` | `stable` |
+| `docs/development/where-truth-lives.md` | `concept` | `docs-governance` | `stable` |
 | `docs/glossary.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/adrs/adr-0001-workspace-boundaries-and-effects.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/adrs/adr-0002-sqlite-serving-store.md` | `concept` | `docs-governance` | `stable` |
@@ -361,10 +363,12 @@ License: Apache-2.0
 | `docs/governance/docs-lint-rules.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/docs-navigation-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/docs-operating-model.md` | `concept` | `docs-governance` | `stable` |
+| `docs/governance/docs-ownership.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/docs-quality-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/docs-removal-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/docs-review-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/docs-search-tips.md` | `concept` | `docs-governance` | `stable` |
+| `docs/governance/docs-style.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/generated-content-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/governance/index.md` | `concept` | `platform` | `stable` |
 | `docs/governance/metadata/index.md` | `concept` | `docs-governance` | `stable` |
@@ -388,6 +392,8 @@ License: Apache-2.0
 | `docs/index.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/config.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/dataset-workflow.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/deploy-kind.md` | `concept` | `bijux-atlas-operations` | `stable` |
+| `docs/operations/deploy-kubernetes-minimal.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/deploy.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/drills-program.md` | `concept` | `bijux-atlas-operations` | `stable` |
 | `docs/operations/e2e/fixtures.md` | `concept` | `bijux-atlas-operations` | `stable` |
@@ -430,12 +436,12 @@ License: Apache-2.0
 | `docs/operations/security-posture.md` | `concept` | `bijux-atlas-security` | `stable` |
 | `docs/operations/security/advisory-process.md` | `concept` | `docs-governance` | `stable` |
 | `docs/operations/security/index.md` | `concept` | `bijux-atlas-security` | `stable` |
-| `docs/ownership.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/compatibility-promise.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/diffs-v1.md` | `concept` | `bijux-atlas-query` | `stable` |
 | `docs/product/immutability-and-aliases.md` | `concept` | `bijux-atlas-store` + `bijux-atlas-api` | `stable` |
 | `docs/product/index.md` | `concept` | `product` | `stable` |
 | `docs/product/non-goals.md` | `concept` | `docs-governance` | `stable` |
+| `docs/product/reading-tracks.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/release-contract-checklist.md` | `concept` | `bijux-atlas-product` | `stable` |
 | `docs/product/release-model.md` | `concept` | `docs-governance` | `stable` |
 | `docs/product/sequence-threat-model.md` | `concept` | `docs-governance` | `stable` |
@@ -494,10 +500,7 @@ License: Apache-2.0
 | `docs/reference/store/immutability-guarantee.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/store/index.md` | `reference` | `docs-governance` | `stable` |
 | `docs/reference/store/integrity-model.md` | `reference` | `docs-governance` | `stable` |
-| `docs/site-map.md` | `concept` | `docs-governance` | `stable` |
 | `docs/start-here.md` | `concept` | `docs-governance` | `stable` |
-| `docs/style.md` | `concept` | `docs-governance` | `stable` |
-| `docs/what-to-read-next.md` | `concept` | `docs-governance` | `stable` |
 | `make/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
 | `make/README.md` | `concept` | `docs-governance` | `stable` |
 | `ops/CONTRACT.md` | `concept` | `docs-governance` | `stable` |

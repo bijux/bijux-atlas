@@ -575,6 +575,12 @@
     "deploy": [
       "docs/operations/deploy.md"
     ],
+    "deploy-kind": [
+      "docs/operations/deploy-kind.md"
+    ],
+    "deploy-kubernetes-minimal": [
+      "docs/operations/deploy-kubernetes-minimal.md"
+    ],
     "deprecation": [
       "docs/api/deprecation.md"
     ],
@@ -627,6 +633,9 @@
       "docs/_meta/docs-operating-model.md",
       "docs/governance/docs-operating-model.md"
     ],
+    "docs-ownership": [
+      "docs/governance/docs-ownership.md"
+    ],
     "docs-principles": [
       "docs/_meta/docs-principles.md"
     ],
@@ -644,6 +653,12 @@
     ],
     "docs-search-tips": [
       "docs/governance/docs-search-tips.md"
+    ],
+    "docs-site-map": [
+      "docs/development/docs-site-map.md"
+    ],
+    "docs-style": [
+      "docs/governance/docs-style.md"
     ],
     "docs-taxonomy-quick-reference": [
       "docs/_meta/docs-taxonomy-quick-reference.md"
@@ -847,9 +862,6 @@
     "ops-surface": [
       "docs/reference/ops-surface.md"
     ],
-    "ownership": [
-      "docs/ownership.md"
-    ],
     "pagination": [
       "docs/api/pagination.md",
       "docs/reference/querying/pagination.md"
@@ -897,6 +909,9 @@
     ],
     "readers-guide": [
       "docs/governance/readers-guide.md"
+    ],
+    "reading-tracks": [
+      "docs/product/reading-tracks.md"
     ],
     "redirects-policy": [
       "docs/governance/redirects-policy.md"
@@ -986,9 +1001,6 @@
     "shared-core-extraction": [
       "docs/reference/registry/shared-core-extraction.md"
     ],
-    "site-map": [
-      "docs/site-map.md"
-    ],
     "slo-policy": [
       "docs/operations/observability/slo-policy.md"
     ],
@@ -1015,9 +1027,6 @@
     ],
     "structure-templates": [
       "docs/governance/style/structure-templates.md"
-    ],
-    "style": [
-      "docs/style.md"
     ],
     "style-guide": [
       "docs/governance/style-guide.md"
@@ -1081,8 +1090,8 @@
     "what-is-bijux-atlas": [
       "docs/product/what-is-bijux-atlas.md"
     ],
-    "what-to-read-next": [
-      "docs/what-to-read-next.md"
+    "where-truth-lives": [
+      "docs/development/where-truth-lives.md"
     ],
     "wire-compatibility": [
       "crates/bijux-atlas-api/docs/wire-compatibility.md"

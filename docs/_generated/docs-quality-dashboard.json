@@ -203,6 +203,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/docs-navigation-policy.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/docs-operating-model.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/docs-quality-policy.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/docs-style.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/metadata/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/metadata/taxonomy-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/governance/naming.md` has no inbound doc links",
@@ -224,9 +225,9 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/operator-faq.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/ops-map.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/operations/runbook-template.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/ownership.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/diffs-v1.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/immutability-and-aliases.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/sequence-v1.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/transcripts-v1.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/product/user-stories.md` has no inbound doc links",
@@ -249,7 +250,6 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/store/immutability-guarantee.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/store/index.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/reference/store/integrity-model.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `docs/style.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `make/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `ops/datasets/CONTRACT.md` has no inbound doc links",
@@ -265,8 +265,8 @@
   ],
   "schema_version": 1,
   "summary": {
-    "errors": 118,
-    "registered": 518,
+    "errors": 32,
+    "registered": 521,
     "warnings": 305
   }
 }

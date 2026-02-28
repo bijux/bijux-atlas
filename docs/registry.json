@@ -7685,6 +7685,29 @@
     },
     {
       "area": "development",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "docs-site-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/docs-site-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "docs-site-map"
+      ],
+      "title": "Docs site map",
+      "topic": "docs-site-map"
+    },
+    {
+      "area": "development",
       "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
@@ -8004,6 +8027,29 @@
       ],
       "title": "Update Pinned Dependencies",
       "topic": "update-pinned-dependencies"
+    },
+    {
+      "area": "development",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "where-truth-lives"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/where-truth-lives.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "where-truth-lives"
+      ],
+      "title": "Where truth lives",
+      "topic": "where-truth-lives"
     },
     {
       "area": "glossary.md",
@@ -8486,6 +8532,29 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "docs-ownership",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/docs-ownership.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-ownership",
+        "governance"
+      ],
+      "title": "Documentation Ownership",
+      "topic": "docs-ownership"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
         "docs-quality-policy",
         "governance"
       ],
@@ -8570,6 +8639,29 @@
       ],
       "title": "Docs Search Tips",
       "topic": "docs-search-tips"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-style",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/docs-style.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-style",
+        "governance"
+      ],
+      "title": "Documentation Style",
+      "topic": "docs-style"
     },
     {
       "area": "governance",
@@ -9123,6 +9215,52 @@
       ],
       "title": "Dataset Workflow",
       "topic": "dataset-workflow"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "deploy-kind",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/deploy-kind.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deploy-kind",
+        "operations"
+      ],
+      "title": "Deploy to kind (10 minutes)",
+      "topic": "deploy-kind"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "deploy-kubernetes-minimal",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/deploy-kubernetes-minimal.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "deploy-kubernetes-minimal",
+        "operations"
+      ],
+      "title": "Deploy to Kubernetes (prod minimal)",
+      "topic": "deploy-kubernetes-minimal"
     },
     {
       "area": "operations",
@@ -9820,7 +9958,7 @@
         "operations",
         "run-locally"
       ],
-      "title": "Run Locally",
+      "title": "Run locally (5 minutes)",
       "topic": "run-locally"
     },
     {
@@ -10145,27 +10283,6 @@
       "topic": "index"
     },
     {
-      "area": "ownership.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ownership"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/ownership.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ownership"
-      ],
-      "title": "Documentation Ownership",
-      "topic": "ownership"
-    },
-    {
       "area": "product",
       "audience": "mixed",
       "crate": null,
@@ -10279,6 +10396,29 @@
       ],
       "title": "Non Goals",
       "topic": "non-goals"
+    },
+    {
+      "area": "product",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "product",
+        "reading-tracks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/product/reading-tracks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "product",
+        "reading-tracks"
+      ],
+      "title": "Reading tracks",
+      "topic": "reading-tracks"
     },
     {
       "area": "product",
@@ -11709,27 +11849,6 @@
       "topic": "integrity-model"
     },
     {
-      "area": "site-map.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "site-map"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/site-map.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "site-map"
-      ],
-      "title": "Site map",
-      "topic": "site-map"
-    },
-    {
       "area": "start-here.md",
       "audience": "user",
       "crate": null,
@@ -11749,48 +11868,6 @@
       ],
       "title": "Start here",
       "topic": "start-here"
-    },
-    {
-      "area": "style.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "style"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/style.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "style"
-      ],
-      "title": "Documentation Style",
-      "topic": "style"
-    },
-    {
-      "area": "what-to-read-next.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "what-to-read-next"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/what-to-read-next.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "what-to-read-next"
-      ],
-      "title": "What to read next",
-      "topic": "what-to-read-next"
     },
     {
       "area": "make",
