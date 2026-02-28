@@ -1,38 +1,100 @@
 # Make Contract
 
-- `MAKE-DIR-001`: Only `make/README.md` and `make/CONTRACT.md` may exist as markdown under `make/`. Enforced by: `make.docs.allowed_root_docs_only`.
-- `MAKE-DIR-002`: No markdown files may exist under `make/makefiles/`. Enforced by: `make.docs.no_nested_markdown`.
-- `MAKE-DIR-003`: The top-level `make/` surface is fixed to curated wrapper files only. Enforced by: `make.surface.allowed_root_files`.
-- `MAKE-ENV-001`: The make wrapper tree contains exactly one macros file and exactly one run-environment file. Enforced by: `make.env.single_macros_and_runenv`.
-- `MAKE-ENV-002`: `make/macros.mk` contains only pure macro definitions, and `make/makefiles/_runenv.mk` contains only deterministic environment defaults and exports. Enforced by: `make.env.role_boundary`.
-- `MAKE-INCLUDE-001`: The root `Makefile` includes exactly one file: `make/public.mk`. Enforced by: `make.includes.root_single_entrypoint`.
-- `MAKE-INCLUDE-002`: `make/public.mk` includes only the approved wrapper modules: vars, paths, macros, phony, `_internal`, and checks. Enforced by: `make.includes.public_surface`.
-- `MAKE-INCLUDE-003`: The include graph under `Makefile` and `make/**/*.mk` is acyclic. Enforced by: `make.includes.acyclic`.
-- `MAKE-SURFACE-001`: Public targets are curated from one source only: `make/makefiles/root.mk:CURATED_TARGETS`. Enforced by: `make.surface.single_source`.
-- `MAKE-SURFACE-002`: The curated public target count must stay within the configured budget. Enforced by: `make.surface.count_budget`.
-- `MAKE-SURFACE-003`: Public targets must match `configs/make/public-targets.json`. Enforced by: `make.surface.registry_sync`.
-- `MAKE-SURFACE-004`: Public targets that emit artifacts must write beneath `artifacts/` with run-scoped paths. Enforced by: `bijux dev atlas contracts make` review surface and wrapper targets.
-- `MAKE-SURFACE-005`: Curated public targets must remain thin delegates to `bijux dev atlas ...`, `cargo ...`, or another curated wrapper. Enforced by: `make.surface.delegate_only`.
-- `MAKE-INTERNAL-001`: Non-curated root helper targets must use the `_internal-` prefix. Enforced by: `make.internal.root_helpers_prefixed`.
-- `MAKE-INTERNAL-002`: Make recipes must not invoke `scripts/` directly. Enforced by: `make.internal.no_scripts_path`.
-- `MAKE-NET-001`: Make recipes must not use `curl` or `wget`. Enforced by: `make.network.no_curl_or_wget`.
-- `MAKE-SHELL-001`: Make recipes must not use `cd` chains. Enforced by: `make.shell.no_cd`.
-- `MAKE-SHELL-002`: Public targets must avoid multi-hop shell pipelines. Enforced by: `make.shell.no_multi_hop_pipes`.
-- `MAKE-REPRO-001`: Tool-invoking targets must route through exported deterministic run-environment defaults. Enforced by: `make.repro.runenv_exports`.
-- `MAKE-ART-001`: Make-generated artifacts must use run-scoped output roots. Enforced by: `make.artifacts.run_scoped`.
-- `MAKE-CI-001`: CI workflows may call only curated public targets. Enforced by: `make.ci.curated_workflow_usage`.
-- `MAKE-STRUCT-001`: No markdown may exist under `make/` except `README.md` and `CONTRACT.md`. Enforced by: `make.docs.allowed_root_docs_only` and `make.docs.no_nested_markdown`.
-- `MAKE-STRUCT-002`: `make/makefiles/` may contain only `.mk` files. Enforced by: `make.structure.mk_only`.
-- `MAKE-OPS-001`: Ops-related make targets must call `bijux dev atlas ops ...` only. Enforced by: `make.ops.control_plane_only`.
-- `MAKE-DOCKER-001`: Docker-related make targets must call the docker contracts runner only. Enforced by: `make.docker.contract_runner_only`.
-- `MAKE-STYLE-001`: Internal helpers must stay out of the curated help surface. Enforced by: `make.internal.root_helpers_prefixed` and `make.surface.single_source`.
-- `MAKE-DRIFT-001`: `make/target-list.json` must match the curated target source and config registry. Enforced by: `make.surface.target_list_drift`.
-- `MAKE-SSOT-001`: Make is not the authority for make contracts; Rust contracts are the SSOT. Enforced by: `make.ssot.checks_delegate_to_contracts`.
-- `MAKE-TARGETLIST-001`: `make/target-list.json` must declare an explicit committed schema and source policy. Enforced by: `make.target_list.explicit_policy`.
-- `MAKE-NAME-001`: Helper-only files under `make/makefiles/` must use `_*.mk`. Enforced by: `make.naming.helper_files_prefixed`.
-- `MAKE-NAME-002`: Files that declare curated public targets must not start with `_`. Enforced by: `make.naming.public_files_clear`.
-- `MAKE-ENGINE-001`: Make wrappers must not invoke `kubectl`, `helm`, `docker`, or `k6` directly. Enforced by: `make.engine.no_direct_tools`.
-- `MAKE-DOCS-001`: `make/README.md` and `make/CONTRACT.md` must stay within their review line budgets. Enforced by: `make.docs.line_budgets`.
-- `MAKE-GATES-001`: Every curated make target must have a target registry mapping. Enforced by: `make.gates.curated_targets_mapped`.
-- `MAKE-GATES-002`: Curated make targets must be marked public in the make target registry. Enforced by: `make.gates.curated_targets_public`.
-- `MAKE-GATES-003`: The make target registry must not expose public orphan targets outside the curated make surface. Enforced by: `make.gates.no_orphan_public_targets`.
+## Scope
+
+- Governed surface: `make/` and `make/CONTRACT.md`.
+- SSOT = bijux-dev-atlas contracts runner.
+- Effects boundary: this group runs static contracts only.
+- Non-goals:
+- This document does not replace executable contract checks.
+- This document does not grant manual exception authority.
+
+## Contract IDs
+
+| ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
+| --- | --- | --- | --- | --- | --- |
+| `MAKE-ART-001` | make run scoped artifacts | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-CI-001` | make workflow curated usage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-DIR-001` | make root docs boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-DIR-002` | make nested docs removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-DIR-003` | make root file boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-DOCKER-001` | make docker contract boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-DOCS-001` | make docs line budgets | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-DRIFT-001` | make target list drift | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-ENGINE-001` | make direct tool boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-ENV-001` | make env file singularity | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-ENV-002` | make env role boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-GATES-001` | make gate mapping coverage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-GATES-002` | make public gate visibility | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-GATES-003` | make orphan public gate removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-INCLUDE-001` | make root include entrypoint | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-INCLUDE-002` | make public include boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-INCLUDE-003` | make include graph acyclic | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-INTERNAL-001` | make internal target prefix | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-INTERNAL-002` | make scripts banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-NAME-001` | make helper file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-NAME-002` | make public file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-NET-001` | make network commands banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-OPS-001` | make ops control plane boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-REPRO-001` | make runenv exports | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SHELL-001` | make shell path stability | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SHELL-002` | make shell pipeline bound | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SSOT-001` | make contracts authority | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-STRUCT-002` | make wrapper files only | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SURFACE-001` | make curated source of truth | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SURFACE-002` | make curated target budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SURFACE-003` | make curated registry sync | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-SURFACE-005` | make delegate only wrappers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-TARGETLIST-001` | make target list policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+
+## Enforcement mapping
+
+| Contract | Command(s) |
+| --- | --- |
+| `MAKE-ART-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-CI-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DIR-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DIR-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DIR-003` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DOCKER-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DOCS-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-DRIFT-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-ENGINE-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-ENV-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-ENV-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-GATES-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-GATES-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-GATES-003` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-INCLUDE-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-INCLUDE-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-INCLUDE-003` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-INTERNAL-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-INTERNAL-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-NAME-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-NAME-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-NET-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-OPS-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-REPRO-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SHELL-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SHELL-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SSOT-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-STRUCT-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-003` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-005` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-TARGETLIST-001` | `bijux dev atlas contracts make --mode static` |
+
+## Output artifacts
+
+- `artifacts/contracts/make/report.json`
+- `artifacts/contracts/make/registry-snapshot.json`
+
+## Contract to Gate mapping
+
+- Gate: `contracts::make`
+- Aggregate gate: `contracts::all`
+
+## Exceptions policy
+
+- No exceptions are allowed by this document.

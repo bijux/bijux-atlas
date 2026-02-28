@@ -7,6 +7,7 @@
     ".github": { "kind": "dir" },
     ".gitignore": { "kind": "file" },
     "CHANGELOG.md": { "kind": "file" },
+    "CONTRACT.md": { "kind": "file" },
     "CONTRIBUTING.md": { "kind": "file" },
     "Cargo.lock": { "kind": "file" },
     "Cargo.toml": { "kind": "file" },
