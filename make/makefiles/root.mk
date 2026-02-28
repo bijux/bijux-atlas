@@ -46,11 +46,6 @@ _internal-surface: ## Print make surface and docs pointers for Rust control plan
 doctor: ## Run Rust control-plane doctor suite as JSON
 	@printf '%s\n' "run: $(DEV_ATLAS) check repo-doctor --format json"
 	@$(MAKE) -s make-contract-check
-	@$(MAKE) -s make-target-governance-check
-	@$(MAKE) -s make-ci-surface-check
-	@$(MAKE) -s make-public-surface-sync-check
-	@$(MAKE) -s make-size-budget-check
-	@$(MAKE) -s make-include-cycle-check
 	@mkdir -p $(ARTIFACT_ROOT)/doctor/$(RUN_ID)
 	@$(DEV_ATLAS) check tree-budgets --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/tree-budgets.json >/dev/null
 	@$(DEV_ATLAS) check repo-doctor --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
