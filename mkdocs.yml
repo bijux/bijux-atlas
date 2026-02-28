@@ -7,6 +7,14 @@ strict: true
 docs_dir: docs
 site_dir: artifacts/docs/site
 
+exclude_docs: |
+  _assets/**
+  _drafts/**
+  _generated/**
+  _nav/**
+  _meta/**
+  metadata/**
+
 theme:
   name: material
   features:
@@ -41,6 +49,8 @@ not_in_nav: |
   _assets/**
   _drafts/**
   _generated/**
+  _meta/**
+  _nav/**
   metadata/**
   contracts/**/*.json
 

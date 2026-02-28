@@ -1,12 +1,12 @@
-# Atlas Documentation
+# Home
 
-Atlas docs are organized by audience with one canonical start path.
+Atlas documentation is organized by audience, with one onboarding entrypoint.
 
-## Audience Paths
+## Choose your path
 
-- User: [Start Here](start-here.md) -> [API](api/index.md) -> [Reference](reference/index.md)
-- Operator: [Start Here](start-here.md) -> [Operations](operations/index.md) -> [Reference](reference/index.md)
-- Contributor: [Start Here](start-here.md) -> [Development](development/index.md) -> [Governance Readers Guide](governance/readers-guide.md)
+- API user: [Start here](start-here.md) -> [API](api/index.md) -> [Reference](reference/index.md)
+- Operator: [Start here](start-here.md) -> [Operations](operations/index.md) -> [Reference](reference/index.md)
+- Contributor: [Start here](start-here.md) -> [Development](development/index.md) -> [Docs governance](governance/index.md)
 
 ## Docs Spine
 
@@ -17,17 +17,20 @@ Atlas docs are organized by audience with one canonical start path.
 - Ops: [Operations Index](operations/index.md)
 - Dev: [Development Index](development/index.md)
 - Reference: [Reference Index](reference/index.md)
+- Control plane: [Control Plane](development/control-plane.md)
 - Glossary: [Glossary](glossary.md)
 
-## Top 10 Pages
+## Top pages
 
-- [Start Here](start-here.md)
-- [Product](product/index.md)
-- [Architecture](architecture/index.md)
-- [API Quick Reference](api/quick-reference.md)
-- [Run Locally](operations/run-locally.md)
+- [Run locally](operations/run-locally.md)
 - [Deploy](operations/deploy.md)
-- [Incident Response](operations/incident-response.md)
-- [Control Plane](development/control-plane.md)
-- [Commands Reference](reference/commands.md)
-- [Errors Reference](reference/errors.md)
+- [Incident response](operations/incident-response.md)
+- [Quick reference](api/quick-reference.md)
+- [Commands](reference/commands.md)
+
+## Next steps
+
+- Onboarding: [Start here](start-here.md)
+- Reading tracks: [What to read next](what-to-read-next.md)
+- Structure map: [Site map](site-map.md)
+- Terms: [Glossary](glossary.md)

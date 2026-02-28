@@ -1,17 +1,17 @@
-# Start Here
+# Start here
 
 - Owner: `docs-governance`
 - Type: `guide`
 - Audience: `user`
 - Stability: `stable`
-- Last verified against: `main@6856280c`
-- Reason to exist: provide the single onboarding path for Atlas documentation.
+- Last verified against: `main@699e8b0e`
+- Reason to exist: provide the only onboarding funnel for Atlas.
 
 This is the only onboarding root in `docs/`.
 
-## 5-Minute Mental Model
+## 5-minute mental model
 
-Atlas turns validated source inputs into immutable release artifacts, serves query reads through a stable API surface, and keeps operational control in `bijux dev atlas`.
+Atlas validates dataset inputs, builds immutable artifacts, and serves stable API queries through explicit operational controls.
 
 ## Quickstart
 
@@ -19,61 +19,28 @@ Atlas turns validated source inputs into immutable release artifacts, serves que
 bijux dev atlas demo quickstart --format json
 ```
 
-## What You Just Did
+## Run locally
 
-You executed the canonical onboarding flow and confirmed a runnable environment. Continue with [Architecture Dataflow](architecture/dataflow.md) for ingest -> artifact -> store -> query -> serve.
+- [ ] Check prerequisites in [Run locally](operations/run-locally.md)
+- [ ] Start stack and run smoke checks
+- [ ] Verify success and read outputs
 
-## Where the Truth Is
+## Deploy
 
-- Behavior and workflows: section indexes under `docs/`
-- Factual contracts and schemas: [Reference Contracts](reference/contracts/index.md)
-- Runtime and policy settings: [Reference Configs](reference/configs.md)
+- [ ] Read [Deploy](operations/deploy.md)
+- [ ] Apply deployment and readiness checks
+- [ ] Verify observability and rollback path
 
-## Next
+## Extend
 
-- Operator path: [Operations](operations/index.md)
-- Contributor path: [Development](development/index.md)
-- API client path: [API](api/index.md)
+- [ ] Read [Development](development/index.md)
+- [ ] Review [Control plane](development/control-plane.md)
+- [ ] Follow [Contributing](development/contributing.md)
 
-## What to Read Next
+## Next steps
 
-- Product overview: [Product](product/index.md)
-- Runtime model: [Architecture Dataflow](architecture/dataflow.md)
-- Core terms: [Glossary](glossary.md)
-
-## If You Read One Page Per Section
-
-- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
-- Architecture: [Dataflow](architecture/dataflow.md)
-- Operations: [Run Locally](operations/run-locally.md)
-- Development: [Control Plane](development/control-plane.md)
-- Reference: [Commands](reference/commands.md)
-
-## New User Onboarding (15 Minutes)
-
-1. Run the quickstart command.
-2. Read [Product](product/index.md) and [API](api/index.md).
-3. Confirm key terms in [Glossary](glossary.md).
-
-## New Operator Onboarding (30 Minutes)
-
-1. Run [Run Locally](operations/run-locally.md).
-2. Review [Deploy](operations/deploy.md) and [Incident Response](operations/incident-response.md).
-3. Verify command and schema facts in [Reference](reference/index.md).
-
-## New Engineer Onboarding (30 Minutes)
-
-1. Read [Development](development/index.md) and [Control Plane](development/control-plane.md).
-2. Read [Architecture](architecture/index.md) and [Boundaries](architecture/boundaries.md).
-3. Follow [Contributing](development/contributing.md) before opening changes.
-
-## Spine Validation
-
-If you read only the spine pages listed in [Docs Home](index.md), you should understand product scope, runtime flow, operational entrypoints, contributor workflow, and factual reference locations without exploring non-spine pages.
-
-## Document Taxonomy
-
-- Audience: `user`
-- Type: `guide`
-- Stability: `stable`
-- Owner: `docs-governance`
+- API integration: [API](api/index.md)
+- Runtime model: [Architecture dataflow](architecture/dataflow.md)
+- Operator workflows: [Operations](operations/index.md)
+- Contributor workflows: [Development](development/index.md)
+- Terms: [Glossary](glossary.md)
