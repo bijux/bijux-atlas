@@ -181,7 +181,15 @@ fn test_root_005_dockerfile_policy(ctx: &RunContext) -> TestResult {
             Some("Dockerfile".to_string()),
             "root Dockerfile is required",
         );
-    } else if path.is_symlink() {
+    } else if !path.is_symlink() {
+        push_root_violation(
+            &mut violations,
+            "ROOT-005",
+            "root.dockerfile.policy",
+            Some("Dockerfile".to_string()),
+            "root Dockerfile must be a symlink to the canonical runtime dockerfile",
+        );
+    } else {
         match std::fs::read_link(&path) {
             Ok(target) => {
                 let expected = PathBuf::from("docker/images/runtime/Dockerfile");
@@ -574,6 +582,32 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
                 Some(name),
                 "root-surface.json references a missing repo root entry",
             );
+            continue;
+        }
+        let declared_kind = entries
+            .get(&name)
+            .and_then(|value| value.get("kind"))
+            .and_then(|value| value.as_str());
+        let actual_kind = if path.is_symlink() {
+            Some("symlink")
+        } else if path.is_dir() {
+            Some("dir")
+        } else if path.is_file() {
+            Some("file")
+        } else {
+            None
+        };
+        if declared_kind != actual_kind {
+            push_root_violation(
+                &mut violations,
+                "ROOT-016",
+                "root.surface.manifest_complete",
+                Some(name),
+                format!(
+                    "root-surface.json kind drift: declared {:?}, actual {:?}",
+                    declared_kind, actual_kind
+                ),
+            );
         }
     }
     if violations.is_empty() {
@@ -666,6 +700,12 @@ fn test_root_018_no_env_files(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_019_directory_budget(ctx: &RunContext) -> TestResult {
+    let expected = ROOT_ALLOWED_VISIBLE
+        .iter()
+        .chain(ROOT_ALLOWED_VISIBLE_TAIL.iter())
+        .filter(|name| ctx.repo_root.join(name).is_dir())
+        .map(|name| (*name).to_string())
+        .collect::<std::collections::BTreeSet<_>>();
     let mut visible_directories = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {
         Ok(entries) => entries,
@@ -706,9 +746,20 @@ fn test_root_019_directory_budget(ctx: &RunContext) -> TestResult {
             ),
         );
     }
+    let actual = visible_directories.iter().cloned().collect::<std::collections::BTreeSet<_>>();
+    for name in actual.difference(&expected) {
+        push_root_violation(
+            &mut violations,
+            "ROOT-019",
+            "root.surface.directory_budget",
+            Some(name.clone()),
+            "unexpected top-level directory is outside the approved root surface",
+        );
+    }
     if violations.is_empty() {
         TestResult::Pass
     } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
         TestResult::Fail(violations)
     }
 }
