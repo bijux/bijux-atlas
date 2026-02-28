@@ -215,7 +215,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
     }
 
     fn render_list(
-        domains: &[(DomainDescriptor, Vec<contracts::Contract>)],
+        domains: &[(DomainDescriptor, &[contracts::Contract])],
         include_tests: bool,
         format: ContractsFormatArg,
     ) -> Result<String, String> {
@@ -260,42 +260,56 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
     }
 
-    fn domain_has_changes(repo_root: &Path, name: &str) -> bool {
+    fn changed_paths_since_merge_base(repo_root: &Path) -> Vec<String> {
         let repo_display = repo_root.display().to_string();
-        let output = std::process::Command::new("git")
-            .args(["-C", &repo_display, "status", "--porcelain"])
+        let target = std::env::var("CONTRACTS_CHANGED_BASE")
+            .ok()
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or_else(|| "HEAD".to_string());
+        let base = std::process::Command::new("git")
+            .args(["-C", &repo_display, "merge-base", "HEAD", &target])
             .output();
-        let Ok(output) = output else {
-            return true;
+        let Ok(base) = base else {
+            return Vec::new();
         };
-        if !output.status.success() {
-            return true;
+        if !base.status.success() {
+            return Vec::new();
         }
-        let changed = String::from_utf8_lossy(&output.stdout);
-        let prefix = match name {
-            "docs" => Some("docs/"),
-            "root" => None,
-            _ => return true,
+        let base_sha = String::from_utf8_lossy(&base.stdout).trim().to_string();
+        if base_sha.is_empty() {
+            return Vec::new();
+        }
+        let diff = std::process::Command::new("git")
+            .args(["-C", &repo_display, "diff", "--name-only", &base_sha, "HEAD"])
+            .output();
+        let Ok(diff) = diff else {
+            return Vec::new();
         };
-        for line in changed.lines() {
-            if line.len() < 4 {
-                continue;
-            }
-            let path = &line[3..];
-            match prefix {
-                Some(prefix) => {
-                    if path.starts_with(prefix) {
-                        return true;
-                    }
-                }
-                None => {
-                    if !path.contains('/') {
-                        return true;
-                    }
-                }
-            }
+        if !diff.status.success() {
+            return Vec::new();
         }
-        false
+        String::from_utf8_lossy(&diff.stdout)
+            .lines()
+            .map(str::trim)
+            .filter(|path| !path.is_empty())
+            .map(ToOwned::to_owned)
+            .collect()
+    }
+
+    fn domain_change_reason(name: &str, changed_paths: &[String]) -> Option<String> {
+        if changed_paths.is_empty() {
+            return None;
+        }
+        if name == "root" {
+            if changed_paths.iter().any(|path| !path.contains('/')) {
+                return Some("changed root-level files".to_string());
+            }
+            return None;
+        }
+        if changed_paths.iter().any(|path| path.starts_with(&format!("{name}/"))) {
+            return Some(format!("changed files under `{name}/`"));
+        }
+        None
     }
 
     fn explain_test(
@@ -556,6 +570,11 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
         require_skip_policy(&common.skip_contracts)?;
 
+        let changed_paths = if common.changed_only {
+            changed_paths_since_merge_base(&repo_root)
+        } else {
+            Vec::new()
+        };
         let selected_domains = all_domains(&repo_root)?
             .into_iter()
             .filter(|(descriptor, _)| domain_names.iter().any(|name| descriptor.name == *name))
@@ -566,11 +585,18 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                         .iter()
                         .any(|name| descriptor.name.eq_ignore_ascii_case(name))
             })
-            .filter(|(descriptor, _)| !common.changed_only || domain_has_changes(&repo_root, descriptor.name))
+            .filter_map(|(descriptor, registry)| {
+                let reason = if common.changed_only {
+                    domain_change_reason(descriptor.name, &changed_paths)?
+                } else {
+                    "selected by requested contracts domain".to_string()
+                };
+                Some((descriptor, registry, reason))
+            })
             .collect::<Vec<_>>();
         let catalogs = selected_domains
             .iter()
-            .map(|(descriptor, registry)| (descriptor.name, registry.as_slice()))
+            .map(|(descriptor, registry, _)| (descriptor.name, registry.as_slice()))
             .collect::<Vec<_>>();
         let derived_lints = contracts::lint_contracts(&catalogs);
         if !derived_lints.is_empty() {
@@ -578,11 +604,15 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
 
         if common.list || common.list_tests {
-            return Ok((render_list(&selected_domains, common.list_tests, format)?, 0));
+            let list_domains = selected_domains
+                .iter()
+                .map(|(descriptor, registry, _)| (*descriptor, registry.as_slice()))
+                .collect::<Vec<_>>();
+            return Ok((render_list(&list_domains, common.list_tests, format)?, 0));
         }
 
         if let Some(test_id) = &common.explain_test {
-            for (descriptor, registry) in &selected_domains {
+            for (descriptor, registry, _) in &selected_domains {
                 for contract in registry {
                     if let Some(test) = contract
                         .tests
@@ -597,7 +627,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
 
         if let Some(contract_id) = &common.explain {
-            for (descriptor, registry) in &selected_domains {
+            for (descriptor, registry, _) in &selected_domains {
                 if let Some(contract) = registry
                     .iter()
                     .find(|entry| entry.id.0.eq_ignore_ascii_case(contract_id))
@@ -663,7 +693,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             let mut requires_k8s = false;
             let mut requires_fs_write = false;
             let mut requires_docker_daemon = false;
-            for (_, registry) in &selected_domains {
+            for (_, registry, _) in &selected_domains {
                 let required = contracts::required_effects_for_selection(
                     registry,
                     contracts::Mode::Effect,
@@ -707,7 +737,7 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
         }
 
         let mut reports = Vec::new();
-        for (descriptor, _) in &selected_domains {
+        for (descriptor, _, _) in &selected_domains {
             let mut run_common = common.clone();
             if domain_names.len() > 1 {
                 if let Some(root) = &common.artifacts_root {
@@ -722,19 +752,51 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             )?);
         }
 
+        let selection_header = if matches!(
+            format,
+            ContractsFormatArg::Human | ContractsFormatArg::Table | ContractsFormatArg::Github
+        ) {
+            let mut lines = Vec::new();
+            if common.changed_only {
+                let base = std::env::var("CONTRACTS_CHANGED_BASE")
+                    .ok()
+                    .filter(|value| !value.trim().is_empty())
+                    .unwrap_or_else(|| "HEAD".to_string());
+                lines.push(format!(
+                    "Changed-only selection base: merge-base(HEAD, {base})"
+                ));
+                if changed_paths.is_empty() {
+                    lines.push("Changed-only selection note: no merge-base diff paths detected; no domains selected".to_string());
+                }
+            }
+            if !selected_domains.is_empty() {
+                lines.push("Selected domains:".to_string());
+                for (descriptor, _, reason) in &selected_domains {
+                    lines.push(format!("- {} ({reason})", descriptor.name));
+                }
+            }
+            if lines.is_empty() {
+                String::new()
+            } else {
+                format!("{}\n\n", lines.join("\n"))
+            }
+        } else {
+            String::new()
+        };
+
         let rendered = match format {
             ContractsFormatArg::Human => {
                 if reports.len() == 1 {
-                    contracts::to_pretty(&reports[0])
+                    format!("{selection_header}{}", contracts::to_pretty(&reports[0]))
                 } else {
-                    contracts::to_pretty_all(&reports)
+                    format!("{selection_header}{}", contracts::to_pretty_all(&reports))
                 }
             }
             ContractsFormatArg::Table => {
                 if reports.len() == 1 {
-                    contracts::to_table(&reports[0])
+                    format!("{selection_header}{}", contracts::to_table(&reports[0]))
                 } else {
-                    contracts::to_table_all(&reports)
+                    format!("{selection_header}{}", contracts::to_table_all(&reports))
                 }
             }
             ContractsFormatArg::Json => serde_json::to_string_pretty(&if reports.len() == 1 {
@@ -750,7 +812,9 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     contracts::to_junit_all(&reports)?
                 }
             }
-            ContractsFormatArg::Github => contracts::to_github(&reports),
+            ContractsFormatArg::Github => {
+                format!("{selection_header}{}", contracts::to_github(&reports))
+            }
         };
 
         if reports.len() > 1 {
