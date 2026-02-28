@@ -47,6 +47,8 @@ fn contracts_ops_list_contains_curated_contract_ids() {
         .collect::<std::collections::BTreeSet<_>>();
     for expected in [
         "OPS-ROOT-001",
+        "OPS-ROOT-002",
+        "OPS-ROOT-015",
         "OPS-INV-001",
         "OPS-SCHEMA-001",
         "OPS-STACK-001",
