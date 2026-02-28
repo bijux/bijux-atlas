@@ -475,3 +475,18 @@ fn contracts_ops_json_report_matches_schema() {
         assert!(case["violations"].as_array().is_some());
     }
 }
+
+#[test]
+fn contracts_ops_changed_only_runs_and_reports_ops_domain() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "ops", "--changed-only", "--format", "json"])
+        .output()
+        .expect("contracts ops changed-only");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["domain"].as_str(), Some("ops"));
+    assert_eq!(payload["group"].as_str(), Some("ops"));
+    assert!(payload["summary"]["contracts"].as_u64().is_some());
+}
