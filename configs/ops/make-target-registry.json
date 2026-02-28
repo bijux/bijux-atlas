@@ -28,6 +28,16 @@
       "used_in": []
     },
     {
+      "name": "contracts",
+      "defined_in": [
+        "make/public.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
       "name": "build-ci",
       "defined_in": [
         "makefiles/build.mk"

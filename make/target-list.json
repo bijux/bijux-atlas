@@ -3,6 +3,7 @@
   "source": "make/makefiles/root.mk:CURATED_TARGETS",
   "public_targets": [
     "build",
+    "contracts",
     "docker",
     "docker-contracts",
     "docker-contracts-effect",

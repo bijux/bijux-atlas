@@ -1,6 +1,6 @@
 {
   "max_public_targets": 25,
-  "target_public_targets": 20,
+  "target_public_targets": 21,
   "public_targets": [
     {
       "name": "help",
@@ -54,6 +54,15 @@
         "ci"
       ],
       "area": "make"
+    },
+    {
+      "name": "contracts",
+      "description": "Run the cross-group contracts fast lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
     },
     {
       "name": "docker",
