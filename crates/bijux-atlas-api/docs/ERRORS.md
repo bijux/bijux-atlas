@@ -9,5 +9,5 @@
 Unknown fields are rejected for serialized/deserialized API errors.
 
 Error code source of truth:
-- `docs/contracts/ERROR_CODES.json`
+- `docs/reference/contracts/schemas/ERROR_CODES.json`
 - generated runtime mapping: `src/generated/error_codes.rs`

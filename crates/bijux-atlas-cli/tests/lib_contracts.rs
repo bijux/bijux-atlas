@@ -41,7 +41,7 @@ fn command_surface_contract_json_matches_doc() {
         .and_then(|p| p.parent())
         .expect("workspace root")
         .to_path_buf();
-    let contract_path = root.join("docs/contracts/CLI_COMMANDS.json");
+    let contract_path = root.join("docs/reference/contracts/schemas/CLI_COMMANDS.json");
     let contract: serde_json::Value =
         serde_json::from_slice(&std::fs::read(contract_path).expect("read cli contract"))
             .expect("parse cli contract");

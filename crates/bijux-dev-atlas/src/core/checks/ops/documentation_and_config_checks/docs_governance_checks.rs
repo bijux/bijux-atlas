@@ -425,7 +425,7 @@ pub(super) fn check_docs_readme_index_contract_presence(
 ) -> Result<Vec<Violation>, CheckError> {
     let required = [
         "docs/INDEX.md",
-        "docs/contracts/INDEX.md",
+        "docs/reference/contracts/index.md",
         "ops/CONTRACT.md",
         "ops/INDEX.md",
     ];
@@ -481,7 +481,7 @@ pub(super) fn check_docs_command_surface_docs_exist(
 ) -> Result<Vec<Violation>, CheckError> {
     let mut violations = Vec::new();
     for rel in [
-        "docs/contracts/plugin/mode.md",
+        "docs/reference/contracts/plugins/mode.md",
         "crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md",
         "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
     ] {

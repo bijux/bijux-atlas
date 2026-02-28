@@ -4,7 +4,7 @@ QC is emitted for every ingest run.
 
 - Primary machine artifact: `qc.json`
 - Compatibility copy: `qc_report.json`
-- Schema contract: `docs/contracts/QC_SCHEMA.json`
+- Schema contract: `docs/reference/contracts/schemas/QC_SCHEMA.json`
 
 ## Severity
 

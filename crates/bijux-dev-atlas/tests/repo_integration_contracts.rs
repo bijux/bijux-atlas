@@ -228,7 +228,7 @@ fn runtime_config_docs_and_helm_env_surface_match_declared_config_keys() {
         );
     }
 
-    let config_keys = load_json(&root.join("docs/contracts/CONFIG_KEYS.json"));
+    let config_keys = load_json(&root.join("docs/reference/contracts/schemas/CONFIG_KEYS.json"));
     let declared = config_keys["env_keys"]
         .as_array()
         .expect("env_keys array")
@@ -251,7 +251,7 @@ fn runtime_config_docs_and_helm_env_surface_match_declared_config_keys() {
     for env_name in &env_names {
         assert!(
             declared.contains(env_name),
-            "helm deployment env var must exist in docs/contracts/CONFIG_KEYS.json: {env_name}"
+            "helm deployment env var must exist in docs/reference/contracts/schemas/CONFIG_KEYS.json: {env_name}"
         );
     }
 
@@ -489,7 +489,7 @@ fn contracts_makefile_is_the_only_public_contract_gate_entrypoint() {
 fn config_contract_surfaces_are_versioned_referenced_and_deterministically_formatted() {
     let root = repo_root();
     let deterministic = [
-        root.join("docs/contracts/CONFIG_KEYS.json"),
+        root.join("docs/reference/contracts/schemas/CONFIG_KEYS.json"),
         root.join("configs/contracts/env.schema.json"),
         root.join("configs/repo/symlink-allowlist.json"),
     ];
@@ -507,7 +507,7 @@ fn config_contract_surfaces_are_versioned_referenced_and_deterministically_forma
     let config_versioning = read(&root.join("docs/development/config-versioning.md"));
     let registry_versioning = read(&root.join("docs/reference/registry/config-schema-versioning.md"));
     for required in [
-        "docs/contracts/CONFIG_KEYS.json",
+        "docs/reference/contracts/schemas/CONFIG_KEYS.json",
         "configs/contracts/env.schema.json",
         "schema_version",
     ] {
@@ -570,7 +570,7 @@ fn quality_wall_doc_ties_required_contracts_lanes_and_repo_surfaces_together() {
         "docker/images/runtime/Dockerfile",
         "docs/_generated/make-targets.md",
         "configs/contracts/env.schema.json",
-        "docs/contracts/CONFIG_KEYS.json",
+        "docs/reference/contracts/schemas/CONFIG_KEYS.json",
         "local",
         "pr",
         "merge",
