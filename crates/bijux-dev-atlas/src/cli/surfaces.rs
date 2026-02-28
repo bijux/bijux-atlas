@@ -232,6 +232,7 @@ pub struct ConfigsCommonArgs {
 #[derive(Subcommand, Debug)]
 pub enum ContractsCommand {
     All(ContractsCommonArgs),
+    Configs(ContractsCommonArgs),
     Docker(ContractsDockerArgs),
     Make(ContractsMakeArgs),
     Ops(ContractsOpsArgs),
@@ -248,6 +249,7 @@ pub enum ContractsModeArg {
 pub enum ContractsFormatArg {
     #[value(alias = "pretty", alias = "text")]
     Human,
+    Table,
     Json,
     Junit,
     Github,
@@ -353,6 +355,7 @@ pub struct ContractsMakeArgs {
 #[derive(clap::ValueEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ContractsSnapshotDomainArg {
     All,
+    Configs,
     Docker,
     Make,
     Ops,

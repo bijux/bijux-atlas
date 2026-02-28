@@ -210,6 +210,16 @@ pub struct RegistryLint {
     pub message: String,
 }
 
+pub struct CoverageReport {
+    pub group: String,
+    pub contracts: usize,
+    pub tests: usize,
+    pub pass: usize,
+    pub fail: usize,
+    pub skip: usize,
+    pub error: usize,
+}
+
 pub struct EffectRequirement {
     pub allow_subprocess: bool,
     pub allow_network: bool,
@@ -475,4 +485,27 @@ pub fn lint_contracts(catalogs: &[(&str, &[Contract])]) -> Vec<RegistryLint> {
     }
     lints.sort_by(|a, b| a.code.cmp(b.code).then(a.message.cmp(&b.message)));
     lints
+}
+
+pub fn validate_registry(catalogs: &[(&str, &[Contract])]) -> Result<(), Vec<RegistryLint>> {
+    let mut rows = Vec::new();
+    for (domain, contracts) in catalogs {
+        rows.extend(registry_snapshot(domain, contracts));
+    }
+    let mut lints = lint_registry_rows(&rows);
+    lints.extend(lint_contracts(catalogs));
+    lints.sort_by(|a, b| a.code.cmp(b.code).then(a.message.cmp(&b.message)));
+    if lints.is_empty() { Ok(()) } else { Err(lints) }
+}
+
+pub fn coverage_report(report: &RunReport) -> CoverageReport {
+    CoverageReport {
+        group: report.domain.clone(),
+        contracts: report.total_contracts(),
+        tests: report.total_tests(),
+        pass: report.pass_count(),
+        fail: report.fail_count(),
+        skip: report.skip_count(),
+        error: report.error_count(),
+    }
 }

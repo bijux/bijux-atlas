@@ -4,6 +4,7 @@
 //! This module provides a domain-agnostic contracts runner with deterministic ordering,
 //! filterable execution, pretty and JSON output, and explicit effect gating.
 
+pub mod configs;
 pub mod docker;
 pub mod make;
 pub mod ops;

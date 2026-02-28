@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/contracts-coverage-output.schema.json",
+  "title": "Contracts Coverage Output",
+  "type": "object",
+  "required": [
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "group": {
+      "type": "string"
+    },
+    "groups": {
+      "type": "array"
+    },
+    "contracts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tests": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "pass": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "fail": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skip": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "coverage_pct": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "additionalProperties": true
+}

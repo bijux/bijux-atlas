@@ -143,4 +143,69 @@ mod tests {
         assert_eq!(report.error_count(), 1);
         assert_eq!(report.exit_code(), 1);
     }
+
+    #[test]
+    fn json_serialization_includes_group_and_nested_checks() {
+        let options = RunOptions {
+            mode: Mode::Static,
+            allow_subprocess: false,
+            allow_network: false,
+            allow_k8s: false,
+            allow_fs_write: false,
+            allow_docker_daemon: false,
+            skip_missing_tools: false,
+            timeout_seconds: 300,
+            fail_fast: false,
+            contract_filter: None,
+            test_filter: None,
+            only_contracts: Vec::new(),
+            only_tests: Vec::new(),
+            skip_contracts: Vec::new(),
+            tags: Vec::new(),
+            list_only: false,
+            artifacts_root: None,
+        };
+        let report = run("docker", sample_contracts, Path::new("."), &options).expect("run");
+        let payload = to_json(&report);
+        assert_eq!(payload["group"].as_str(), Some("docker"));
+        assert!(payload["contracts"][0]["checks"].is_array());
+        assert_eq!(
+            payload["contracts"][0]["contract_id"].as_str(),
+            Some("DOCKER-001")
+        );
+    }
+
+    #[test]
+    fn validate_registry_returns_lints_for_duplicate_ids() {
+        fn registry(_: &Path) -> Result<Vec<Contract>, String> {
+            fn pass_case(_: &RunContext) -> TestResult {
+                TestResult::Pass
+            }
+            Ok(vec![
+                Contract {
+                    id: ContractId("DOCKER-001".to_string()),
+                    title: "first",
+                    tests: vec![TestCase {
+                        id: TestId("docker.first.pass".to_string()),
+                        title: "first pass",
+                        kind: TestKind::Pure,
+                        run: pass_case,
+                    }],
+                },
+                Contract {
+                    id: ContractId("DOCKER-001".to_string()),
+                    title: "second",
+                    tests: vec![TestCase {
+                        id: TestId("docker.second.pass".to_string()),
+                        title: "second pass",
+                        kind: TestKind::Pure,
+                        run: pass_case,
+                    }],
+                },
+            ])
+        }
+        let contracts = registry(Path::new(".")).expect("registry");
+        let err = validate_registry(&[("docker", contracts.as_slice())]).expect_err("lints");
+        assert!(err.iter().any(|lint| lint.code == "duplicate-contract-id"));
+    }
 }

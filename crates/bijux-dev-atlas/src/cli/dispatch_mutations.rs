@@ -231,6 +231,7 @@ fn force_json_configs(command: &mut ConfigsCommand) {
 fn force_json_contracts(command: &mut ContractsCommand) {
     match command {
         ContractsCommand::All(args) => args.json = true,
+        ContractsCommand::Configs(args) => args.json = true,
         ContractsCommand::Docker(args) => args.common.json = true,
         ContractsCommand::Make(args) => args.common.json = true,
         ContractsCommand::Ops(args) => args.common.json = true,
@@ -304,6 +305,7 @@ pub(super) fn apply_fail_fast(command: &mut Command) {
         },
         Command::Contracts { command } => match command {
             ContractsCommand::All(args) => args.fail_fast = true,
+            ContractsCommand::Configs(args) => args.fail_fast = true,
             ContractsCommand::Docker(args) => args.common.fail_fast = true,
             ContractsCommand::Make(args) => args.common.fail_fast = true,
             ContractsCommand::Ops(args) => args.common.fail_fast = true,
@@ -567,6 +569,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Contracts { command } => match command {
             ContractsCommand::All(args) => args.repo_root = Some(root.clone()),
+            ContractsCommand::Configs(args) => args.repo_root = Some(root.clone()),
             ContractsCommand::Docker(args) => args.common.repo_root = Some(root.clone()),
             ContractsCommand::Make(args) => args.common.repo_root = Some(root.clone()),
             ContractsCommand::Ops(args) => args.common.repo_root = Some(root.clone()),

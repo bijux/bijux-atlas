@@ -177,6 +177,63 @@ pub fn run(
             .map_err(|e| format!("encode contracts status failed: {e}"))?,
         )
         .map_err(|e| format!("write {} failed: {e}", status_path.display()))?;
+        let coverage = coverage_report(&report);
+        let coverage_path = out_dir.join(format!("{domain}.coverage.json"));
+        std::fs::write(
+            &coverage_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "group": coverage.group,
+                "contracts": coverage.contracts,
+                "tests": coverage.tests,
+                "pass": coverage.pass,
+                "fail": coverage.fail,
+                "skip": coverage.skip,
+                "error": coverage.error,
+                "coverage_pct": if coverage.tests == 0 { 100 } else { ((coverage.pass as f64 / coverage.tests as f64) * 100.0).round() as u64 }
+            }))
+            .map_err(|e| format!("encode contracts coverage failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", coverage_path.display()))?;
+        let touched_paths_path = out_dir.join(format!("{domain}.touched-paths.json"));
+        std::fs::write(
+            &touched_paths_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "group": domain,
+                "contracts": report.contracts.iter().map(|contract| {
+                    let mut paths = report
+                        .cases
+                        .iter()
+                        .filter(|case| case.contract_id == contract.id)
+                        .flat_map(|case| case.violations.iter().filter_map(|violation| violation.file.clone()))
+                        .collect::<Vec<_>>();
+                    paths.sort();
+                    paths.dedup();
+                    serde_json::json!({
+                        "contract_id": contract.id,
+                        "paths": paths
+                    })
+                }).collect::<Vec<_>>()
+            }))
+            .map_err(|e| format!("encode contracts touched paths failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", touched_paths_path.display()))?;
+        let dependency_graph_path = out_dir.join(format!("{domain}.dependency-graph.json"));
+        std::fs::write(
+            &dependency_graph_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "group": domain,
+                "nodes": report.contracts.iter().map(|contract| serde_json::json!({
+                    "id": contract.id,
+                    "title": contract.title
+                })).collect::<Vec<_>>(),
+                "edges": Vec::<serde_json::Value>::new()
+            }))
+            .map_err(|e| format!("encode contracts dependency graph failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", dependency_graph_path.display()))?;
     }
 
     Ok(report)

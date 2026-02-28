@@ -87,9 +87,37 @@ fn contracts_all_lists_all_domains() {
         .iter()
         .filter_map(|row| row["domain"].as_str())
         .collect::<std::collections::BTreeSet<_>>();
+    assert!(domains.contains("configs"));
     assert!(domains.contains("docker"));
     assert!(domains.contains("make"));
     assert!(domains.contains("ops"));
+}
+
+#[test]
+fn contracts_configs_runs_and_reports_summary() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "configs", "--format", "json"])
+        .output()
+        .expect("contracts configs");
+    assert!(output.status.success());
+    let payload: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("valid json output");
+    assert_eq!(payload["domain"].as_str(), Some("configs"));
+    assert_eq!(payload["group"].as_str(), Some("configs"));
+    assert_eq!(payload["summary"]["fail"].as_u64(), Some(0));
+}
+
+#[test]
+fn contracts_make_supports_table_format() {
+    let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
+        .current_dir(repo_root())
+        .args(["contracts", "make", "--format", "table"])
+        .output()
+        .expect("contracts make table");
+    assert!(output.status.success());
+    let text = String::from_utf8(output.stdout).expect("utf8 stdout");
+    assert!(text.contains("CONTRACT_ID | STATUS | TESTS | SUMMARY"));
 }
 
 #[test]
@@ -413,4 +441,3 @@ fn contracts_ops_json_report_matches_schema() {
         assert!(case["violations"].as_array().is_some());
     }
 }
-

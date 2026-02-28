@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/contracts-output.schema.json",
+  "title": "Contracts Output",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "group",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "group": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "contracts": {
+      "type": "array"
+    },
+    "tests": {
+      "type": "array"
+    },
+    "domains": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

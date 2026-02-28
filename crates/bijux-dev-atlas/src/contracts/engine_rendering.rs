@@ -61,10 +61,41 @@ pub fn to_pretty(report: &RunReport) -> String {
     out
 }
 
+pub fn to_table(report: &RunReport) -> String {
+    let mut out = String::new();
+    out.push_str("CONTRACT_ID | STATUS | TESTS | SUMMARY\n");
+    for contract in &report.contracts {
+        let tests = report
+            .cases
+            .iter()
+            .filter(|case| case.contract_id == contract.id)
+            .count();
+        out.push_str(&format!(
+            "{} | {} | {} | {}\n",
+            contract.id,
+            contract.status.as_str(),
+            tests,
+            contract.title
+        ));
+    }
+    out.push_str(&format!(
+        "SUMMARY | {} | {} | {} contracts, {} pass, {} fail, {} skip, {} error\n",
+        if report.exit_code() == 0 { "PASS" } else { "FAIL" },
+        report.total_tests(),
+        report.total_contracts(),
+        report.pass_count(),
+        report.fail_count(),
+        report.skip_count(),
+        report.error_count()
+    ));
+    out
+}
+
 pub fn to_json(report: &RunReport) -> serde_json::Value {
     serde_json::json!({
         "schema_version": 1,
-        "domain": report.domain,
+        "group": report.domain.clone(),
+        "domain": report.domain.clone(),
         "mode": report.mode.to_string(),
         "run_id": report.metadata.run_id,
         "commit_sha": report.metadata.commit_sha,
@@ -80,11 +111,26 @@ pub fn to_json(report: &RunReport) -> serde_json::Value {
         },
         "maturity": maturity_score(&report.contracts),
         "contracts": report.contracts.iter().map(|c| serde_json::json!({
+            "group": report.domain.clone(),
             "id": c.id,
+            "contract_id": c.id,
             "title": c.title,
             "mode": c.mode.as_str(),
             "effects": c.effects.iter().map(|effect| effect.as_str()).collect::<Vec<_>>(),
-            "status": c.status.as_str()
+            "status": c.status.as_str(),
+            "summary": c.title,
+            "tests": report.cases.iter().filter(|t| t.contract_id == c.id).count(),
+            "checks": report.cases.iter().filter(|t| t.contract_id == c.id).map(|t| serde_json::json!({
+                "test_id": t.test_id,
+                "status": t.status.as_str(),
+                "details": t.note,
+                "violations": t.violations.iter().map(|v| serde_json::json!({
+                    "file": v.file,
+                    "line": v.line,
+                    "message": v.message,
+                    "evidence": v.evidence
+                })).collect::<Vec<_>>()
+            })).collect::<Vec<_>>()
         })).collect::<Vec<_>>(),
         "tests": report.cases.iter().map(|t| serde_json::json!({
             "contract_id": t.contract_id,
@@ -116,6 +162,7 @@ pub fn to_json_all(reports: &[RunReport]) -> serde_json::Value {
     let exit_code = if error > 0 || fail > 0 { 1 } else { 0 };
     serde_json::json!({
         "schema_version": 1,
+        "group": "all",
         "domain": "all",
         "run_id": reports.first().map(|report| report.metadata.run_id.clone()).unwrap_or_else(|| "local".to_string()),
         "commit_sha": reports.first().and_then(|report| report.metadata.commit_sha.clone()),
@@ -156,6 +203,34 @@ pub fn to_pretty_all(reports: &[RunReport]) -> String {
     out.push_str(&format!(
         "\nSummary: {} contracts, {} tests: {} pass, {} fail, {} skip, {} error\n",
         contracts, tests, pass, fail, skip, error
+    ));
+    out
+}
+
+pub fn to_table_all(reports: &[RunReport]) -> String {
+    let mut out = String::new();
+    for (index, report) in reports.iter().enumerate() {
+        if index > 0 {
+            out.push('\n');
+        }
+        out.push_str(&format!("GROUP: {}\n", report.domain));
+        out.push_str(&to_table(report));
+    }
+    let contracts = reports.iter().map(RunReport::total_contracts).sum::<usize>();
+    let tests = reports.iter().map(RunReport::total_tests).sum::<usize>();
+    let pass = reports.iter().map(RunReport::pass_count).sum::<usize>();
+    let fail = reports.iter().map(RunReport::fail_count).sum::<usize>();
+    let skip = reports.iter().map(RunReport::skip_count).sum::<usize>();
+    let error = reports.iter().map(RunReport::error_count).sum::<usize>();
+    out.push_str(&format!(
+        "\nSUMMARY | {} | {} | {} contracts, {} pass, {} fail, {} skip, {} error\n",
+        if fail == 0 && error == 0 { "PASS" } else { "FAIL" },
+        tests,
+        contracts,
+        pass,
+        fail,
+        skip,
+        error
     ));
     out
 }
