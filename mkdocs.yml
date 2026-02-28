@@ -8,11 +8,8 @@ docs_dir: docs
 site_dir: artifacts/docs/site
 
 exclude_docs: |
-  _assets/**
   _drafts/**
-  _generated/**
   _nav/**
-  _meta/**
   metadata/**
 
 theme:
@@ -60,6 +57,7 @@ nav:
   - Architecture: architecture/index.md
   - API: api/index.md
   - Operations: operations/index.md
+  - Control-plane: control-plane/index.md
   - Development:
       - Overview: development/index.md
       - Docs governance: governance/index.md

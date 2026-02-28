@@ -13,7 +13,7 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 
 ## What You Will Find Here
 
-- [Control Plane](control-plane.md)
+- [Control-plane](../control-plane/index.md)
 - [Repository Layout](repo-layout.md)
 - [CI Overview](ci-overview.md)
 - [Contributing](contributing.md)
@@ -24,7 +24,7 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Docs change process](../_meta/docs-change-process.md)
 - [Docs taxonomy quick reference](../_meta/docs-taxonomy-quick-reference.md)
 - [Where truth lives](where-truth-lives.md)
-- [Docs site map](docs-site-map.md)
+- [Site map](../site-map.md)
 
 ## Where to ask questions
 
@@ -41,6 +41,7 @@ Also review [Glossary](../glossary.md) for canonical terms.
 
 - Runtime boundaries: [Architecture](../architecture/index.md)
 - Contributor writing standards: [Doc Conventions](doc-conventions.md)
+- Control-plane workflows: [Control-plane](../control-plane/index.md)
 - Core terms: [Glossary](../glossary.md)
 
 ## Document Taxonomy

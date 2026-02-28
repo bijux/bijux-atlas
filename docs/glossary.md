@@ -22,3 +22,4 @@
 - Home: [Home](index.md)
 - Onboarding: [Start here](start-here.md)
 - Runtime model: [Architecture](architecture/index.md)
+- Control-plane: [Control-plane](control-plane/index.md)

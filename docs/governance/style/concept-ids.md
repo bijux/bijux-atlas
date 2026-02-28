@@ -4,7 +4,7 @@
 
 Use canonical concept IDs to avoid duplicate concept pages.
 
-Registry source of truth: [`docs/_style/concepts.yml`](concepts.yml).
+Registry source of truth: [`docs/_style/concepts.yml`](../../_style/concepts.yml).
 
 - `concept.crate-boundaries`
 - `concept.effects-boundary`

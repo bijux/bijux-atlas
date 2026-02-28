@@ -34,7 +34,7 @@ bijux dev atlas demo quickstart --format json
 ## Extend
 
 - [ ] Read [Development](development/index.md)
-- [ ] Review [Control plane](development/control-plane.md)
+- [ ] Review [Control-plane](control-plane/index.md)
 - [ ] Follow [Contributing](development/contributing.md)
 
 ## Next steps
@@ -43,6 +43,6 @@ bijux dev atlas demo quickstart --format json
 - Runtime model: [Architecture dataflow](architecture/dataflow.md)
 - Operator workflows: [Operations](operations/index.md)
 - Contributor workflows: [Development](development/index.md)
-- Guided tracks: [Reading tracks](product/reading-tracks.md)
+- Guided tracks: [What to read next](what-to-read-next.md)
 - Onboarding checklist: [Contributor onboarding checklist (30 minutes)](development/contributor-onboarding-checklist.md)
 - Terms: [Glossary](glossary.md)

@@ -47,4 +47,4 @@ Expected output: SLO file is parsed and perf scoring passes.
 
 - [Observability SLO Policy](../operations/observability/slo-policy.md)
 - [k6 Load Scenarios](../operations/load/k6.md)
-- [Load Overview](../operations/load/overview.md)
+- [Load testing](../operations/load/index.md)

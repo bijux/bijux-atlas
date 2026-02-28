@@ -39,6 +39,6 @@ bijux dev atlas docs check --report text
 ```
 
 See also:
-- [Depth Policy](DEPTH_POLICY.md)
+- [Depth policy](depth-policy.md)
 - [Structure Templates](structure-templates.md)
-- [Writing Rules](writing-rules.md)
+- [Docs style](../docs-style.md)

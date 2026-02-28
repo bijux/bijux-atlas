@@ -12,7 +12,7 @@
 - [ ] Read [Start here](../start-here.md) and confirm the three audience paths.
 - [ ] Run local golden path: [Run locally (5 minutes)](../operations/run-locally.md).
 - [ ] Read architecture flow: [Dataflow](../architecture/dataflow.md) and [Boundaries](../architecture/boundaries.md).
-- [ ] Read contributor workflow: [Development](index.md) and [Control plane](control-plane.md).
+- [ ] Read contributor workflow: [Development](index.md) and [Control-plane](../control-plane/index.md).
 - [ ] Run contributor checks:
 
 ```bash

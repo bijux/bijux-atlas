@@ -21,5 +21,5 @@ Depth is enforced by templates and docs lint gates; do not add ad-hoc narrative 
 ## See also
 
 - [Structure Templates](structure-templates.md)
-- [Naming Standard](naming-standard.md)
-- [Terms Glossary](terms-glossary.md)
+- [Docs style](../docs-style.md)
+- [Glossary](../../glossary.md)

@@ -44,5 +44,5 @@ Expected output: crate docs contract check passes.
 ## See also
 
 - [Structure Templates](structure-templates.md)
-- [Naming Standard](naming-standard.md)
-- [Repository Layout](../development/repo-layout.md)
+- [Docs style](../docs-style.md)
+- [Repository layout](../../development/repo-layout.md)
