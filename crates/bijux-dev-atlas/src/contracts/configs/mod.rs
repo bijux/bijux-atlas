@@ -25,7 +25,9 @@ struct ConfigsRegistry {
 struct ConfigsGroup {
     name: String,
     owner: String,
+    schema_owner: String,
     stability: String,
+    tool_entrypoints: Vec<String>,
     public_files: Vec<String>,
     internal_files: Vec<String>,
     generated_files: Vec<String>,
@@ -259,6 +261,104 @@ fn registry_index(repo_root: &Path) -> Result<RegistryIndex, String> {
         group_files,
         contract_ids,
     })
+}
+
+fn generated_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
+    let index = registry_index(repo_root)?;
+    let groups = index
+        .registry
+        .groups
+        .iter()
+        .map(|group| {
+            let files = index
+                .group_files
+                .get(&group.name)
+                .cloned()
+                .unwrap_or_default();
+            let covered_files = files.all().into_iter().collect::<Vec<_>>();
+            serde_json::json!({
+                "name": group.name,
+                "owner": group.owner,
+                "schema_owner": group.schema_owner,
+                "stability": group.stability,
+                "tool_entrypoints": group.tool_entrypoints,
+                "counts": {
+                    "public": files.public.len(),
+                    "internal": files.internal.len(),
+                    "generated": files.generated.len(),
+                    "covered": covered_files.len(),
+                    "schemas": group.schemas.len()
+                },
+                "files": covered_files,
+                "schemas": group.schemas
+            })
+        })
+        .collect::<Vec<_>>();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "configs-index",
+        "registry_path": REGISTRY_PATH,
+        "max_groups": index.registry.max_groups,
+        "max_depth": index.registry.max_depth,
+        "max_group_depth": index.registry.max_group_depth,
+        "root_files": index.registry.root_files,
+        "groups": groups,
+        "exclusions": index.registry.exclusions.iter().map(|item| serde_json::json!({
+            "pattern": item.pattern,
+            "reason": item.reason
+        })).collect::<Vec<_>>()
+    }))
+}
+
+pub fn list_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
+    let index = registry_index(repo_root)?;
+    let rows = index
+        .registry
+        .groups
+        .iter()
+        .map(|group| {
+            let files = index
+                .group_files
+                .get(&group.name)
+                .cloned()
+                .unwrap_or_default();
+            serde_json::json!({
+                "group": group.name,
+                "owner": group.owner,
+                "schema_owner": group.schema_owner,
+                "stability": group.stability,
+                "tool_entrypoints": group.tool_entrypoints,
+                "counts": {
+                    "public": files.public.len(),
+                    "internal": files.internal.len(),
+                    "generated": files.generated.len(),
+                    "schemas": group.schemas.len()
+                }
+            })
+        })
+        .collect::<Vec<_>>();
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "configs",
+        "registry_path": REGISTRY_PATH,
+        "groups": rows
+    }))
+}
+
+pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
+    let path = repo_root.join("configs/_generated/configs-index.json");
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+    }
+    let payload = generated_index_json(repo_root)?;
+    std::fs::write(
+        &path,
+        serde_json::to_string_pretty(&payload)
+            .map_err(|err| format!("encode {} failed: {err}", path.display()))?,
+    )
+    .map_err(|err| format!("write {} failed: {err}", path.display()))?;
+    Ok(path.display().to_string())
 }
 
 fn root_config_files(index: &RegistryIndex) -> BTreeSet<String> {
@@ -647,7 +747,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             )
         }
     };
-    let expected = (1..=16)
+    let expected = (1..=19)
         .map(|n| format!("CONFIGS-{n:03}"))
         .collect::<BTreeSet<_>>();
     if index.contract_ids == expected {
@@ -939,6 +1039,144 @@ fn test_configs_016_visibility_classification(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_017_tool_entrypoints(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-017",
+                "configs.registry.tool_entrypoints",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for group in &index.registry.groups {
+        if group.tool_entrypoints.is_empty() {
+            violations.push(violation(
+                "CONFIGS-017",
+                "configs.registry.tool_entrypoints",
+                REGISTRY_PATH,
+                format!(
+                    "group `{}` must declare at least one tool entrypoint",
+                    group.name
+                ),
+            ));
+        }
+        for entrypoint in &group.tool_entrypoints {
+            if !entrypoint.starts_with("bijux ")
+                && !entrypoint.starts_with("make ")
+                && !entrypoint.starts_with("cargo ")
+            {
+                violations.push(violation(
+                    "CONFIGS-017",
+                    "configs.registry.tool_entrypoints",
+                    REGISTRY_PATH,
+                    format!(
+                        "group `{}` has unsupported tool entrypoint `{entrypoint}`",
+                        group.name
+                    ),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_018_schema_owner(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-018",
+                "configs.registry.schema_owner",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for group in &index.registry.groups {
+        if group.schema_owner.trim().is_empty() {
+            violations.push(violation(
+                "CONFIGS-018",
+                "configs.registry.schema_owner",
+                REGISTRY_PATH,
+                format!("group `{}` is missing schema_owner", group.name),
+            ));
+        }
+        for schema in &group.schemas {
+            let exists = if schema.contains('*') {
+                index.files.iter().any(|file| wildcard_match(schema, file))
+            } else {
+                ctx.repo_root.join(schema).is_file()
+            };
+            if !exists {
+                violations.push(violation(
+                    "CONFIGS-018",
+                    "configs.registry.schema_owner",
+                    schema,
+                    format!(
+                        "schema owner `{}` declares missing schema for group `{}`",
+                        group.schema_owner, group.name
+                    ),
+                ));
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_019_lifecycle(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-019",
+                "configs.registry.lifecycle",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for group in &index.registry.groups {
+        if group.stability != "stable" && group.stability != "experimental" {
+            violations.push(violation(
+                "CONFIGS-019",
+                "configs.registry.lifecycle",
+                REGISTRY_PATH,
+                format!(
+                    "group `{}` has invalid stability `{}`",
+                    group.name, group.stability
+                ),
+            ));
+        }
+        if group.owner.trim().is_empty() || group.schema_owner.trim().is_empty() {
+            violations.push(violation(
+                "CONFIGS-019",
+                "configs.registry.lifecycle",
+                REGISTRY_PATH,
+                format!("group `{}` lifecycle metadata is incomplete", group.name),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -1053,6 +1291,27 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "each config file maps to public, internal, or generated",
             test_configs_016_visibility_classification,
         ),
+        contract(
+            "CONFIGS-017",
+            "configs groups declare tool entrypoints",
+            "configs.registry.tool_entrypoints",
+            "each configs group declares consuming command entrypoints",
+            test_configs_017_tool_entrypoints,
+        ),
+        contract(
+            "CONFIGS-018",
+            "configs groups declare schema ownership",
+            "configs.registry.schema_owner",
+            "schema files map to an explicit schema owner",
+            test_configs_018_schema_owner,
+        ),
+        contract(
+            "CONFIGS-019",
+            "configs groups declare lifecycle metadata",
+            "configs.registry.lifecycle",
+            "each configs group declares stability-tier lifecycle metadata",
+            test_configs_019_lifecycle,
+        ),
     ])
 }
 
@@ -1093,6 +1352,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-014" => "Configs groups stay within an explicit group-count budget.".to_string(),
         "CONFIGS-015" => "Each configs group stays within a bounded path depth budget.".to_string(),
         "CONFIGS-016" => "Each config file must map to exactly one visibility class and each group declares its stability.".to_string(),
+        "CONFIGS-017" => "Every configs group must declare the commands that consume that configuration surface.".to_string(),
+        "CONFIGS-018" => "Schema-bearing groups must declare an explicit schema owner and real schema files.".to_string(),
+        "CONFIGS-019" => "Each configs group declares stable lifecycle metadata through owner, schema owner, and stability.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }

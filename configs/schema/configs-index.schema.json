@@ -3,21 +3,25 @@
   "type": "object",
   "required": [
     "schema_version",
+    "kind",
+    "registry_path",
     "max_groups",
     "max_depth",
     "max_group_depth",
     "root_files",
-    "groups"
+    "groups",
+    "exclusions"
   ],
   "properties": {
     "schema_version": { "type": "integer", "minimum": 1 },
+    "kind": { "const": "configs-index" },
+    "registry_path": { "type": "string", "minLength": 1 },
     "max_groups": { "type": "integer", "minimum": 1 },
     "max_depth": { "type": "integer", "minimum": 1 },
     "max_group_depth": { "type": "integer", "minimum": 0 },
     "root_files": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 },
-      "minItems": 1
+      "items": { "type": "string", "minLength": 1 }
     },
     "groups": {
       "type": "array",
@@ -29,33 +33,32 @@
           "schema_owner",
           "stability",
           "tool_entrypoints",
-          "public_files",
-          "internal_files",
-          "generated_files",
+          "counts",
+          "files",
           "schemas"
         ],
         "properties": {
           "name": { "type": "string", "minLength": 1 },
           "owner": { "type": "string", "minLength": 1 },
           "schema_owner": { "type": "string", "minLength": 1 },
-          "stability": {
-            "type": "string",
-            "enum": ["stable", "experimental"]
-          },
+          "stability": { "type": "string", "enum": ["stable", "experimental"] },
           "tool_entrypoints": {
             "type": "array",
-            "items": { "type": "string", "minLength": 1 },
-            "minItems": 1
-          },
-          "public_files": {
-            "type": "array",
             "items": { "type": "string", "minLength": 1 }
           },
-          "internal_files": {
-            "type": "array",
-            "items": { "type": "string", "minLength": 1 }
+          "counts": {
+            "type": "object",
+            "required": ["public", "internal", "generated", "covered", "schemas"],
+            "properties": {
+              "public": { "type": "integer", "minimum": 0 },
+              "internal": { "type": "integer", "minimum": 0 },
+              "generated": { "type": "integer", "minimum": 0 },
+              "covered": { "type": "integer", "minimum": 0 },
+              "schemas": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
           },
-          "generated_files": {
+          "files": {
             "type": "array",
             "items": { "type": "string", "minLength": 1 }
           },
@@ -65,8 +68,7 @@
           }
         },
         "additionalProperties": false
-      },
-      "minItems": 1
+      }
     },
     "exclusions": {
       "type": "array",

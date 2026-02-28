@@ -18,7 +18,9 @@ fn repo_root() -> PathBuf {
 fn contract_rows_for_domain(domain: &str) -> Vec<bijux_dev_atlas::contracts::RegistrySnapshotRow> {
     let root = repo_root();
     let contracts = match domain {
-        "configs" => bijux_dev_atlas::contracts::configs::contracts(&root).expect("configs contracts"),
+        "configs" => {
+            bijux_dev_atlas::contracts::configs::contracts(&root).expect("configs contracts")
+        }
         "docker" => bijux_dev_atlas::contracts::docker::contracts(&root).expect("docker contracts"),
         "make" => bijux_dev_atlas::contracts::make::contracts(&root).expect("make contracts"),
         "ops" => bijux_dev_atlas::contracts::ops::contracts(&root).expect("ops contracts"),
@@ -81,7 +83,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
                 "--format",
                 "human",
             ],
-            "812293d2d92ea34250cc10b8b3807d31968f4e555988ad794fac372b2b345b8b",
+            "7ef0f83fd93da12b76b6a2c5f99c9b914424a626ef23e255ce8defd694085b84",
         ),
         (
             vec![
@@ -104,7 +106,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
         ),
         (
             vec!["contracts", "all", "--mode", "static", "--format", "human"],
-            "ff5b16f75e31fc3de83492a87481d51e7f01585c9dd01f3df5629a42cb873af8",
+            "af4f0fb5111099d67f8e86caba282e99cc67a11e2671dbfc1941923b03888602",
         ),
     ];
     for (args, expected) in cases {

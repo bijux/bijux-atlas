@@ -16,3 +16,6 @@
 - `CONFIGS-014`: The configs registry group count must stay inside the declared budget. Enforced by: `configs.registry.group_budget`.
 - `CONFIGS-015`: Included group file paths must stay inside the declared per-group depth budget. Enforced by: `configs.registry.group_depth_budget`.
 - `CONFIGS-016`: Every group must classify covered files as public, internal, generated, or schema-backed. Enforced by: `configs.registry.visibility_classification`.
+- `CONFIGS-017`: Every configs group must declare the command entrypoints that consume it. Enforced by: `configs.registry.tool_entrypoints`.
+- `CONFIGS-018`: Every schema-bearing configs group must declare a schema owner and real schema paths. Enforced by: `configs.registry.schema_owner`.
+- `CONFIGS-019`: Every configs group must declare lifecycle metadata through owner, schema owner, and stability. Enforced by: `configs.registry.lifecycle`.

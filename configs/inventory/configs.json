@@ -12,7 +12,12 @@
     {
       "name": "ci",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas configs list"
+      ],
       "public_files": [
         "configs/ci/*.json"
       ],
@@ -27,7 +32,12 @@
     {
       "name": "docs",
       "owner": "docs-governance",
+      "schema_owner": "docs-governance",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas docs build",
+        "bijux dev atlas docs lint"
+      ],
       "public_files": [
         "configs/docs/.vale.ini",
         "configs/docs/*.json",
@@ -45,7 +55,12 @@
     {
       "name": "inventory",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs list",
+        "bijux dev atlas configs inventory"
+      ],
       "public_files": [
         "configs/inventory/configs.json",
         "configs/inventory/*.json"
@@ -53,16 +68,24 @@
       "internal_files": [
         "configs/inventory/*.md"
       ],
-      "generated_files": [],
+      "generated_files": [
+        "configs/_generated/configs-index.json"
+      ],
       "schemas": [
         "configs/contracts/inventory-configs.schema.json",
-        "configs/contracts/inventory-owners.schema.json"
+        "configs/contracts/inventory-owners.schema.json",
+        "configs/schema/configs-index.schema.json"
       ]
     },
     {
       "name": "layout",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check tree-budgets",
+        "bijux dev atlas configs validate"
+      ],
       "public_files": [
         "configs/layout/*",
         "configs/repo/*.json",
@@ -82,7 +105,12 @@
     {
       "name": "make",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas contracts make",
+        "make contracts"
+      ],
       "public_files": [
         "configs/make/*.json"
       ],
@@ -97,7 +125,11 @@
     {
       "name": "meta",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs verify"
+      ],
       "public_files": [
         "configs/meta/*.json"
       ],
@@ -110,7 +142,11 @@
     {
       "name": "nextest",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "cargo nextest run"
+      ],
       "public_files": [
         "configs/nextest/*.toml"
       ],
@@ -123,7 +159,11 @@
     {
       "name": "openapi",
       "owner": "api-contracts",
+      "schema_owner": "api-contracts",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas check registry doctor"
+      ],
       "public_files": [
         "configs/openapi/**/*.json"
       ],
@@ -138,7 +178,12 @@
     {
       "name": "ops",
       "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas contracts ops",
+        "bijux dev atlas ops list"
+      ],
       "public_files": [
         "configs/ops/*.json",
         "configs/ops/*.txt",
@@ -160,7 +205,12 @@
     {
       "name": "perf",
       "owner": "bijux-atlas-performance",
+      "schema_owner": "bijux-atlas-performance",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas ops load plan",
+        "bijux dev atlas ops load report"
+      ],
       "public_files": [
         "configs/perf/*.json"
       ],
@@ -175,7 +225,12 @@
     {
       "name": "policy",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas policies validate",
+        "bijux dev atlas configs lint"
+      ],
       "public_files": [
         "configs/policy/*.json",
         "configs/policy/*.yml",
@@ -193,7 +248,12 @@
     {
       "name": "rust",
       "owner": "rust-foundation",
+      "schema_owner": "rust-foundation",
       "stability": "stable",
+      "tool_entrypoints": [
+        "cargo fmt",
+        "cargo clippy"
+      ],
       "public_files": [
         "configs/rust/*.toml",
         "configs/rust/*.json"
@@ -209,7 +269,12 @@
     {
       "name": "schema",
       "owner": "platform",
+      "schema_owner": "platform",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas configs validate",
+        "bijux dev atlas contracts configs"
+      ],
       "public_files": [
         "configs/schema/*.json"
       ],
@@ -225,7 +290,12 @@
     {
       "name": "security",
       "owner": "security",
+      "schema_owner": "security",
       "stability": "stable",
+      "tool_entrypoints": [
+        "cargo deny",
+        "cargo audit"
+      ],
       "public_files": [
         "configs/security/*.toml"
       ],
@@ -238,7 +308,11 @@
     {
       "name": "slo",
       "owner": "bijux-atlas-operations",
+      "schema_owner": "bijux-atlas-operations",
       "stability": "stable",
+      "tool_entrypoints": [
+        "bijux dev atlas ops report readiness"
+      ],
       "public_files": [
         "configs/slo/*.json"
       ],
