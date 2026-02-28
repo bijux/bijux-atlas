@@ -3,7 +3,7 @@
 - Owner: `bijux-atlas-docs`
 
 ## What
-Canonical runnable examples for API requests, policy configuration, and catalog structures.
+Canonical runnable examples for policy configuration and catalog structures.
 
 ## Why
 Examples are treated as executable interfaces and validated by docs hardening gates.
@@ -12,7 +12,7 @@ Examples are treated as executable interfaces and validated by docs hardening ga
 Covers curated examples under `docs/examples/` only.
 
 ## Non-goals
-Does not duplicate full API or schema references.
+Does not duplicate full API usage guides or schema references.
 
 ## Contracts
 - Examples must be deterministic.
@@ -30,6 +30,6 @@ $ make docs
 Expected output: example extraction, snippet execution, and schema checks pass.
 
 ## See also
-- [Contracts Index](../contracts/INDEX.md)
+- [API Quick Reference](../api/quick-reference.md)
 - [Run Locally](../operations/run-locally.md)
 - [Repo Surface](../development/repo-surface.md)
