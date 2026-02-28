@@ -38,6 +38,14 @@
       ]
     },
     {
+      "name": "contracts-configs",
+      "defined_in": [
+        "make/public.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "build-ci",
       "defined_in": [
         "makefiles/build.mk"

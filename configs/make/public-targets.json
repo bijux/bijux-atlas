@@ -1,6 +1,6 @@
 {
   "max_public_targets": 25,
-  "target_public_targets": 21,
+  "target_public_targets": 22,
   "public_targets": [
     {
       "name": "help",
@@ -58,6 +58,15 @@
     {
       "name": "contracts",
       "description": "Run the cross-group contracts fast lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-configs",
+      "description": "Run the configs contracts lane",
       "lanes": [
         "dev",
         "ci"
