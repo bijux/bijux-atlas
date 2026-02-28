@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bijux.dev/schemas/docs-metadata-index-v1.json",
+  "title": "Docs Metadata Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "documents"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "title", "owner", "area", "stability", "audience"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^(docs|crates/.+|ops|configs|docker|makefiles|\\.github)/.+\\.md$|^README\\.md$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 3
+          },
+          "area": {
+            "type": "string",
+            "minLength": 2
+          },
+          "stability": {
+            "type": "string",
+            "enum": ["stable", "evolving", "deprecated"]
+          },
+          "audience": {
+            "type": "string",
+            "enum": ["contributors", "developers", "operators", "reviewers", "mixed"]
+          }
+        }
+      }
+    }
+  }
+}

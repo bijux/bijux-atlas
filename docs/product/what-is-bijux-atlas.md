@@ -47,4 +47,4 @@ Expected output: contract checks and full test suite pass.
 
 - [Compatibility Promise](compatibility-promise.md)
 - [Non Goals](non-goals.md)
-- [Glossary](../glossary.md)
+- [Terms Glossary](../_style/terms-glossary.md)

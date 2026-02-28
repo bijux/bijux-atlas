@@ -1,0 +1,9 @@
+{
+  "schema_version": "v1",
+  "synonyms": [
+    {"term": "ops", "matches": ["operations", "runbook"]},
+    {"term": "cli", "matches": ["command", "subcommand"]},
+    {"term": "k8s", "matches": ["kubernetes"]},
+    {"term": "ssot", "matches": ["single source of truth"]}
+  ]
+}

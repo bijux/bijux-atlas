@@ -41,5 +41,5 @@ Expected output: ADR links resolve and docs checks pass.
 ## See also
 
 - [Architecture Index](../../architecture/index.md)
-- [Reference Index](../../reference/index.md)
+- [Contracts Index](../../contracts/contracts-index.md)
 - [Glossary](../../glossary.md)

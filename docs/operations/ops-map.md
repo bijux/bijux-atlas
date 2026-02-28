@@ -1,0 +1,38 @@
+# Ops Map
+
+- Owner: `bijux-atlas-operations`
+- Tier: `tier2`
+- Audience: `operators`
+- Source-of-truth: `ops/inventory/pillars.json`, `ops/inventory/surfaces.json`
+
+## What
+
+This page maps each ops pillar to its single docs entry page.
+
+## Why
+
+Operations guidance must have one stable entry point per pillar so runbooks, contracts, and tooling all resolve to the same place.
+This keeps `Release-indexed` operational flows anchored to one entry page per pillar instead of spreading them across duplicate walkthroughs.
+
+## Pillars
+
+| Pillar | Ops Surface | Docs Entry |
+|---|---|---|
+| `inventory` | `ops/inventory` | `reference/ops-surface.md` |
+| `schema` | `ops/schema` | `reference/schema-index.md` |
+| `datasets` | `ops/datasets` | `datasets.md` |
+| `e2e` | `ops/e2e` | `e2e/INDEX.md` |
+| `env` | `ops/env` | `config.md` |
+| `stack` | `ops/stack` | `local-stack.md` |
+| `k8s` | `ops/k8s` | `k8s/INDEX.md` |
+| `load` | `ops/load` | `load/INDEX.md` |
+| `observe` | `ops/observe` | `observability/INDEX.md` |
+| `report` | `ops/report` | `unified-report.md` |
+
+## How To Verify
+
+```bash
+cargo test -q -p bijux-dev-atlas --test docs_ops_coherence_contracts -- --nocapture
+```
+
+Expected output: each ops pillar resolves to exactly one docs entry page and all mapped paths exist.

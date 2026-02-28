@@ -1,14 +1,1 @@
-[
-  { "from": "control-plane/", "to": "architecture/index.md" },
-  { "from": "dev/", "to": "development/index.md" },
-  { "from": "docs/", "to": "index.md" },
-  { "from": "engineering/", "to": "development/index.md" },
-  { "from": "metadata/", "to": "governance/index.md" },
-  { "from": "policies/", "to": "governance/index.md" },
-  { "from": "release/", "to": "operations/release-workflow.md" },
-  { "from": "root/", "to": "start-here.md" },
-  { "from": "science/", "to": "product/index.md" },
-  { "from": "security/", "to": "governance/index.md" },
-  { "from": "_lint/", "to": "governance/docs-review-checklist.md" },
-  { "from": "_nav/", "to": "index.md" }
-]
+[]
