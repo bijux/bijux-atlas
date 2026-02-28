@@ -28,6 +28,6 @@ $ jq -e '.datasets[0].dataset_id.release == "110"' docs/examples/sample-catalog.
 Expected output: command exits `0`.
 
 ## See also
-- [Store Reference](../reference/store/INDEX.md)
+- [Reference Index](../reference/index.md)
 - [Artifact Directory Contract](../contracts/artifacts/directory-contract.md)
 - [Contract Examples](../contracts/examples/INDEX.md)

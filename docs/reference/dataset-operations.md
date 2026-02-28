@@ -13,6 +13,6 @@ Reason to exist: provide factual command and artifact references for dataset ing
 
 ## Core Inputs
 
-- Artifact root
-- Catalog file
-- Dataset identity (`release/species/assembly`)
+- artifact root
+- catalog file
+- dataset identity (`release/species/assembly`)

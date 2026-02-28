@@ -60,5 +60,5 @@ Expected output: boundary-condition tests pass.
 ## See also
 
 - [Sequence Threat Model](sequence-threat-model.md)
-- [Security Reference](../reference/security/INDEX.md)
-- [Querying Budgets](../reference/querying/INDEX.md)
+- [Reference Index](../reference/index.md)
+- [API Quick Reference](../api/quick-reference.md)

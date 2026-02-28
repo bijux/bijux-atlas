@@ -59,5 +59,5 @@ Expected output: transcript query plan and ordering tests pass.
 ## See also
 
 - [Science Index](../science/INDEX.md)
-- [Querying Reference](../reference/querying/INDEX.md)
-- [Ingestion Reference](../reference/ingestion/INDEX.md)
+- [Reference Index](../reference/index.md)
+- [API Quick Reference](../api/quick-reference.md)

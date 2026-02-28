@@ -13,7 +13,7 @@ Provides discoverability for domain definitions used by product and API surfaces
 
 ## Scope
 
-Links to scientific reference semantics currently maintained under `docs/reference/science/`.
+Links to scientific semantics through canonical reference and glossary pages.
 
 ## Non-goals
 
@@ -21,7 +21,7 @@ Does not duplicate full scientific source material.
 
 ## Contracts
 
-- [Reference Science Index](../reference/science/INDEX.md)
+- [Reference Index](../reference/index.md)
 
 ## Failure modes
 
@@ -35,4 +35,4 @@ make docs
 
 ## See also
 
-- [Reference Science Index](../reference/science/INDEX.md)
+- [Reference Index](../reference/index.md)

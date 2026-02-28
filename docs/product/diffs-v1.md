@@ -58,6 +58,6 @@ Expected output: diff endpoint tests and golden snapshots pass.
 
 ## See also
 
-- [Querying Reference](../reference/querying/INDEX.md)
-- [Datasets Reference](../reference/datasets/INDEX.md)
+- [Reference Index](../reference/index.md)
+- [Dataset Operations Reference](../reference/dataset-operations.md)
 - [SLO Targets](slo-targets.md)

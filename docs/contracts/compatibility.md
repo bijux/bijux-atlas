@@ -14,8 +14,7 @@ This page is the single compatibility entrypoint.
 
 ## Generated Matrix
 
-- Umbrella/Atlas matrix: [`docs/reference/compatibility/umbrella-atlas-matrix.md`](../reference/compatibility/umbrella-atlas-matrix.md)
-- bijux-dna -> bijux-atlas compatibility: [`docs/reference/compatibility/bijux-dna-atlas.md`](../reference/compatibility/bijux-dna-atlas.md)
+- Compatibility matrix references are consolidated under [`docs/reference/index.md`](../reference/index.md).
 
 Compatibility source-of-truth inputs are contract files under `docs/contracts/*.json` and generated outputs under `docs/_generated/contracts/`.
 
