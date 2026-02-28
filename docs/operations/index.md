@@ -19,9 +19,9 @@ Reason to exist: provide one operator-first entrypoint for run, deploy, observe,
 
 - [Runtime Platform](runtime-platform.md)
 - [Dataset Workflow](dataset-workflow.md)
-- [Dataset Reference](../reference/dataset-operations.md)
-- [Release Operations](release-workflow.md)
+- [Release Workflow](release-workflow.md)
 - [Retention And GC](retention-and-gc.md)
+- [Drills Program](drills-program.md)
 
 ## What To Read Next
 
