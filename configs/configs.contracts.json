@@ -616,6 +616,23 @@
         "configs/SCHEMAS.json",
         "configs/schema/*.json"
       ]
+    },
+    {
+      "contract_type": "schema",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schema.versioning_policy"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-039",
+      "rationale": "governed public schemas need a single machine-readable compatibility and versioning policy.",
+      "severity": "must",
+      "title": "governed public schemas keep a versioning policy",
+      "touched_paths": [
+        "configs/schema/versioning-policy.json",
+        "configs/schema/*.json",
+        "configs/inventory/configs.json"
+      ]
     }
   ],
   "domain": "configs",

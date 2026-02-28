@@ -396,10 +396,10 @@
     },
     {
       "counts": {
-        "covered": 40,
+        "covered": 42,
         "generated": 1,
-        "internal": 31,
-        "public": 8,
+        "internal": 32,
+        "public": 9,
         "schemas": 2
       },
       "files": [
@@ -442,7 +442,9 @@
         "configs/schema/policy-relaxations.schema.json",
         "configs/schema/public-surface.schema.json",
         "configs/schema/target-renames.schema.json",
-        "configs/schema/tool-versions.schema.json"
+        "configs/schema/tool-versions.schema.json",
+        "configs/schema/versioning-policy.json",
+        "configs/schema/versioning-policy.schema.json"
       ],
       "name": "schema",
       "owner": "platform",

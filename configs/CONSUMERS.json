@@ -141,6 +141,10 @@
       "bijux-dev-atlas",
       "ci"
     ],
+    "configs/schema/versioning-policy.json": [
+      "bijux-dev-atlas",
+      "ci"
+    ],
     "configs/security/*.toml": [
       "ci"
     ],

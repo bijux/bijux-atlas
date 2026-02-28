@@ -17,7 +17,8 @@
     "configs/schema/policy-relaxations.schema.json",
     "configs/schema/public-surface.schema.json",
     "configs/schema/target-renames.schema.json",
-    "configs/schema/tool-versions.schema.json"
+    "configs/schema/tool-versions.schema.json",
+    "configs/schema/versioning-policy.schema.json"
   ],
   "kind": "configs-schema-index",
   "mapped_file_patterns": [
@@ -49,6 +50,7 @@
     "configs/repo/*.json",
     "configs/rust/*.json",
     "configs/schema/generated/*.json",
+    "configs/schema/versioning-policy.json",
     "configs/slo/*.json"
   ],
   "orphan_input_schemas": [
@@ -103,7 +105,8 @@
     "configs/schema/configs-schema-index.schema.json",
     "configs/schema/configs-schema-map.schema.json",
     "configs/schema/meta-ownership.schema.json",
-    "configs/schema/public-surface.schema.json"
+    "configs/schema/public-surface.schema.json",
+    "configs/schema/versioning-policy.schema.json"
   ],
   "schema_map_path": "configs/SCHEMAS.json",
   "schema_version": 1

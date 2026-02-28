@@ -13,6 +13,7 @@ const CONTRACT_SURFACE_PATH: &str = "configs/configs.contracts.json";
 const OWNERS_PATH: &str = "configs/OWNERS.json";
 const CONSUMERS_PATH: &str = "configs/CONSUMERS.json";
 const SCHEMAS_PATH: &str = "configs/SCHEMAS.json";
+const SCHEMA_VERSIONING_POLICY_PATH: &str = "configs/schema/versioning-policy.json";
 const ROOT_CANONICAL_JSON_FILES: [&str; 6] = [
     "configs/OWNERS.json",
     "configs/CONSUMERS.json",
@@ -80,6 +81,20 @@ struct ConfigsConsumers {
 struct ConfigsSchemas {
     schema_version: u64,
     files: BTreeMap<String, String>,
+}
+
+#[derive(Clone, Deserialize)]
+struct SchemaVersioningPolicy {
+    schema_version: u64,
+    kind: String,
+    policies: Vec<SchemaVersioningRule>,
+}
+
+#[derive(Clone, Deserialize)]
+struct SchemaVersioningRule {
+    schema: String,
+    compatibility: String,
+    versioning: String,
 }
 
 #[derive(Clone, Deserialize)]
@@ -181,6 +196,12 @@ fn read_schemas(repo_root: &Path) -> Result<ConfigsSchemas, String> {
     let text = read_text(&repo_root.join(SCHEMAS_PATH))?;
     serde_json::from_str::<ConfigsSchemas>(&text)
         .map_err(|err| format!("parse {SCHEMAS_PATH} failed: {err}"))
+}
+
+fn read_schema_versioning_policy(repo_root: &Path) -> Result<SchemaVersioningPolicy, String> {
+    let text = read_text(&repo_root.join(SCHEMA_VERSIONING_POLICY_PATH))?;
+    serde_json::from_str::<SchemaVersioningPolicy>(&text)
+        .map_err(|err| format!("parse {SCHEMA_VERSIONING_POLICY_PATH} failed: {err}"))
 }
 
 fn read_contract_surface(repo_root: &Path) -> Result<ConfigsContractSurface, String> {
@@ -491,6 +512,8 @@ fn schema_index_json(repo_root: &Path) -> Result<serde_json::Value, String> {
                 .to_string()
                 .replace('\\', "/");
             if rel.starts_with("configs/schema/generated/") {
+                None
+            } else if !schema_like(&rel) {
                 None
             } else {
                 Some(rel)
@@ -1135,7 +1158,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=38)
+    let expected = (1..=39)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface
@@ -2476,6 +2499,121 @@ fn test_configs_034_no_orphan_input_schemas(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_035_schema_versioning_policy(ctx: &RunContext) -> TestResult {
+    let index = match registry_index(&ctx.repo_root) {
+        Ok(index) => index,
+        Err(err) => {
+            return fail(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                REGISTRY_PATH,
+                err,
+            )
+        }
+    };
+    let policy = match read_schema_versioning_policy(&ctx.repo_root) {
+        Ok(policy) => policy,
+        Err(err) => {
+            return fail(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                SCHEMA_VERSIONING_POLICY_PATH,
+                err,
+            )
+        }
+    };
+    let governed_public_schemas = index
+        .group_files
+        .get("schema")
+        .map(|files| {
+            files
+                .public
+                .iter()
+                .filter(|file| schema_like(file))
+                .cloned()
+                .collect::<BTreeSet<_>>()
+        })
+        .unwrap_or_default();
+    let mut covered = BTreeSet::new();
+    let mut violations = Vec::new();
+    if policy.schema_version != 1 {
+        violations.push(violation(
+            "CONFIGS-035",
+            "configs.schema.versioning_policy",
+            SCHEMA_VERSIONING_POLICY_PATH,
+            format!(
+                "unsupported schema versioning policy schema_version {}",
+                policy.schema_version
+            ),
+        ));
+    }
+    if policy.kind != "configs-schema-versioning-policy" {
+        violations.push(violation(
+            "CONFIGS-035",
+            "configs.schema.versioning_policy",
+            SCHEMA_VERSIONING_POLICY_PATH,
+            format!("unexpected policy kind `{}`", policy.kind),
+        ));
+    }
+    for rule in &policy.policies {
+        if rule.versioning != "locked" {
+            violations.push(violation(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                &rule.schema,
+                format!("unsupported versioning policy `{}`", rule.versioning),
+            ));
+        }
+        if rule.compatibility != "backward-compatible" {
+            violations.push(violation(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                &rule.schema,
+                format!("unsupported compatibility policy `{}`", rule.compatibility),
+            ));
+        }
+        if !governed_public_schemas.contains(&rule.schema) {
+            violations.push(violation(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                &rule.schema,
+                "schema policy entry does not belong to the governed public schema surface",
+            ));
+        }
+        if !ctx.repo_root.join(&rule.schema).is_file() {
+            violations.push(violation(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                &rule.schema,
+                "schema policy entry references a missing schema file",
+            ));
+        }
+        if !covered.insert(rule.schema.clone()) {
+            violations.push(violation(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                &rule.schema,
+                "schema policy entry is duplicated",
+            ));
+        }
+    }
+    for schema in governed_public_schemas {
+        if !covered.contains(&schema) {
+            violations.push(violation(
+                "CONFIGS-035",
+                "configs.schema.versioning_policy",
+                &schema,
+                "governed public schema file is missing from the schema versioning policy",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
     Ok(vec![
         contract(
@@ -2716,6 +2854,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "every input schema is referenced by a governed config mapping",
             test_configs_034_no_orphan_input_schemas,
         ),
+        contract(
+            "CONFIGS-035",
+            "configs schema versioning policy stays complete",
+            "configs.schema.versioning_policy",
+            "governed public schemas stay covered by the schema versioning policy",
+            test_configs_035_schema_versioning_policy,
+        ),
     ])
 }
 
@@ -2774,6 +2919,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-032" => "The root configs authority JSON files and generated configs index must stay in canonical sorted pretty JSON form.".to_string(),
         "CONFIGS-033" => "The committed configs schema index must match the canonical render from configs/SCHEMAS.json and the schema directories.".to_string(),
         "CONFIGS-034" => "Every input schema under configs/schema must be referenced by at least one governed config mapping in configs/SCHEMAS.json.".to_string(),
+        "CONFIGS-035" => "Every governed public schema file must be listed in configs/schema/versioning-policy.json with the supported compatibility and versioning rules.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
@@ -2951,7 +3097,7 @@ mod tests {
         let surface = read_contract_surface(&repo_root()).expect("contract surface");
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 38);
+        assert_eq!(surface.contracts.len(), 39);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -2962,7 +3108,7 @@ mod tests {
     #[test]
     fn cfg_contract_coverage_payload_is_stable() {
         let payload = cfg_contract_coverage_payload(&repo_root()).expect("coverage payload");
-        assert_eq!(payload["contract_count"].as_u64(), Some(38));
+        assert_eq!(payload["contract_count"].as_u64(), Some(39));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());

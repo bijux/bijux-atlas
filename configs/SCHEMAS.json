@@ -28,6 +28,7 @@
     "configs/repo/*.json": "configs/schema/public-surface.schema.json",
     "configs/rust/*.json": "configs/contracts/inventory-configs.schema.json",
     "configs/schema/generated/*.json": "configs/schema/configs-schema-index.schema.json",
+    "configs/schema/versioning-policy.json": "configs/schema/versioning-policy.schema.json",
     "configs/slo/*.json": "configs/contracts/inventory-configs.schema.json"
   },
   "schema_version": 1

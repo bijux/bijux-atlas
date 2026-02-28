@@ -267,7 +267,8 @@
         "configs/schema/configs-schema-index.schema.json",
         "configs/schema/configs-schema-map.schema.json",
         "configs/schema/meta-ownership.schema.json",
-        "configs/schema/public-surface.schema.json"
+        "configs/schema/public-surface.schema.json",
+        "configs/schema/versioning-policy.json"
       ],
       "internal_files": [
         "configs/schema/config-compiler-report.schema.json",
@@ -280,6 +281,7 @@
         "configs/schema/policy-relaxations.schema.json",
         "configs/schema/target-renames.schema.json",
         "configs/schema/tool-versions.schema.json",
+        "configs/schema/versioning-policy.schema.json",
         "configs/contracts/*.json"
       ],
       "generated_files": [

@@ -1,0 +1,46 @@
+{
+  "kind": "configs-schema-versioning-policy",
+  "policies": [
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/configs-consumer-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/configs-contracts.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/configs-index.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/configs-owner-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/configs-schema-index.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/configs-schema-map.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/meta-ownership.schema.json",
+      "versioning": "locked"
+    },
+    {
+      "compatibility": "backward-compatible",
+      "schema": "configs/schema/public-surface.schema.json",
+      "versioning": "locked"
+    }
+  ],
+  "schema_version": 1
+}
