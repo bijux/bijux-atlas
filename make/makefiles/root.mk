@@ -5,12 +5,12 @@ JOBS ?= $(shell nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)
 ARTIFACT_ROOT ?= artifacts
 RUN_ID ?= local
 
-include make/makefiles/_cargo.mk
-include make/makefiles/_configs.mk
-include make/makefiles/_docs.mk
+include make/makefiles/cargo.mk
+include make/makefiles/configs.mk
+include make/makefiles/docs.mk
 include make/makefiles/docker.mk
-include make/makefiles/_ops.mk
-include make/makefiles/_policies.mk
+include make/makefiles/ops.mk
+include make/makefiles/policies.mk
 include make/makefiles/build.mk
 include make/makefiles/ci.mk
 include make/makefiles/dev.mk

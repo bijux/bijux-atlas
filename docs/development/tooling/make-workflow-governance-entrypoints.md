@@ -17,7 +17,7 @@ the transition from `bijux dev atlas` to `bijux dev atlas`.
 ## Wrapper Files Migrated To `bijux dev atlas`
 
 - `makefiles/dev.mk`
-- `makefiles/_ops.mk`
+- `makefiles/ops.mk`
 - `makefiles/ci.mk`
 - `.github/workflows/atlas-dev-rust.yml`
 
@@ -30,4 +30,4 @@ entrypoints and must be migrated in domain-specific changes.
 ## Verification
 
 - `bijux dev atlas check run --suite deep --include-internal --include-slow`
-- `rg -n "bijux dev atlas|tooling/areas" makefiles/_ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml`
+- `rg -n "bijux dev atlas|tooling/areas" makefiles/ops.mk makefiles/dev.mk makefiles/ci.mk .github/workflows/atlas-dev-rust.yml`

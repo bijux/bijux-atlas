@@ -5,7 +5,7 @@ use super::*;
 pub(super) fn checks_ops_makefile_routes_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("make/makefiles/_ops.mk");
+    let rel = Path::new("make/makefiles/ops.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let expected_targets = ["ops-doctor:", "ops-validate:", "ops-render:", "ops-status:"];
@@ -15,7 +15,7 @@ pub(super) fn checks_ops_makefile_routes_dev_atlas(
             violations.push(violation(
                 "OPS_MAKEFILE_TARGET_MISSING",
                 format!("ops make wrapper target missing `{target}`"),
-                "add thin ops wrapper target in make/makefiles/_ops.mk",
+                "add thin ops wrapper target in make/makefiles/ops.mk",
                 Some(rel),
             ));
         }
@@ -59,15 +59,15 @@ pub(super) fn check_make_governance_wrappers_bijux_only(
 pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("make/makefiles/_ops.mk");
+    let rel = Path::new("make/makefiles/ops.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
         violations.push(violation(
             "MAKE_OPS_BIJUX_VARIABLES_MISSING",
-            "make/makefiles/_ops.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
-            "declare BIJUX and BIJUX_DEV_ATLAS wrapper variables in make/makefiles/_ops.mk",
+            "make/makefiles/ops.mk must declare BIJUX and BIJUX_DEV_ATLAS variables".to_string(),
+            "declare BIJUX and BIJUX_DEV_ATLAS wrapper variables in make/makefiles/ops.mk",
             Some(rel),
         ));
     }
@@ -75,8 +75,7 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
         if line.trim_end().ends_with('\\') {
             violations.push(violation(
                 "MAKE_OPS_SINGLE_LINE_RECIPE_REQUIRED",
-                "make/makefiles/_ops.mk wrapper recipes must be single-line delegations"
-                    .to_string(),
+                "make/makefiles/ops.mk wrapper recipes must be single-line delegations".to_string(),
                 "keep ops wrappers single-line and delegation-only",
                 Some(rel),
             ));
@@ -93,7 +92,7 @@ pub(super) fn check_make_ops_wrappers_delegate_dev_atlas(
         ) {
             violations.push(violation(
                 "MAKE_OPS_DELEGATION_ONLY_VIOLATION",
-                format!("make/makefiles/_ops.mk must be delegation-only: `{line}`"),
+                format!("make/makefiles/ops.mk must be delegation-only: `{line}`"),
                 "ops wrappers may call make or bijux dev atlas only",
                 Some(rel),
             ));

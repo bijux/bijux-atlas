@@ -43,14 +43,14 @@ pub(super) fn check_configs_schema_paths_present(
 pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("make/makefiles/_configs.mk");
+    let rel = Path::new("make/makefiles/configs.mk");
     let path = ctx.repo_root.join(rel);
     let content = fs::read_to_string(&path).map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
     if !content.contains("BIJUX ?= bijux") || !content.contains("BIJUX_DEV_ATLAS ?=") {
         violations.push(violation(
             "MAKE_CONFIGS_BIJUX_VARIABLES_MISSING",
-            "make/makefiles/_configs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables"
+            "make/makefiles/configs.mk must declare BIJUX and BIJUX_DEV_ATLAS variables"
                 .to_string(),
             "declare BIJUX ?= bijux and BIJUX_DEV_ATLAS ?= $(BIJUX) dev atlas",
             Some(rel),
@@ -60,7 +60,7 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
         if line.trim_end().ends_with('\\') {
             violations.push(violation(
                 "MAKE_CONFIGS_SINGLE_LINE_RECIPE_REQUIRED",
-                "make/makefiles/_configs.mk wrapper recipes must be single-line delegations"
+                "make/makefiles/configs.mk wrapper recipes must be single-line delegations"
                     .to_string(),
                 "keep configs wrappers single-line and delegation-only",
                 Some(rel),
@@ -78,7 +78,7 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
         }) {
             violations.push(violation(
                 "MAKE_CONFIGS_DELEGATION_ONLY_VIOLATION",
-                format!("make/makefiles/_configs.mk must remain delegation-only: `{line}`"),
+                format!("make/makefiles/configs.mk must remain delegation-only: `{line}`"),
                 "wrapper recipes may call bijux dev atlas only",
                 Some(rel),
             ));
@@ -88,8 +88,8 @@ pub(super) fn check_make_configs_wrappers_delegate_dev_atlas(
         if !content.contains(required) {
             violations.push(violation(
                 "MAKE_CONFIGS_REQUIRED_TARGET_MISSING",
-                format!("make/makefiles/_configs.mk is missing `{required}`"),
-                "keep required configs delegation targets in make/makefiles/_configs.mk",
+                format!("make/makefiles/configs.mk is missing `{required}`"),
+                "keep required configs delegation targets in make/makefiles/configs.mk",
                 Some(rel),
             ));
         }
