@@ -1393,6 +1393,66 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_assets/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/docs-build-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/docs-change-process.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/docs-operating-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/docs-principles.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/docs-taxonomy-quick-reference.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/generated-artifacts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/internal/docs-rewrite-plan.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/internal/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_meta/internal/root-legacy-mapping.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_nav/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/api/caching.md"
     },
     {
@@ -1468,6 +1528,16 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/contract-runtime-mapping.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/crates-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/dataflow.md"
     },
     {
@@ -1488,7 +1558,17 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/architecture/layering-rules.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/architecture/performance-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/architecture/runtime-data-model.md"
     },
     {
       "crate": null,
@@ -1533,6 +1613,41 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/development/doc-conventions.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/error-handling-philosophy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "how-to",
+      "from": "docs/development/how-to-add-check.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "how-to",
+      "from": "docs/development/how-to-add-cli-command.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "how-to",
+      "from": "docs/development/how-to-add-contract-registry.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "how-to",
+      "from": "docs/development/how-to-add-gate-policy.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "how-to",
+      "from": "docs/development/how-to-change-docs.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/development/index.md"
     },
     {
@@ -1543,12 +1658,32 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/development/known-limitations.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/development/repo-layout.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/development/reports-and-ci-consumption.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/runtime-vs-control-plane-vs-ops.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/development/toolchain.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/development/update-pinned-dependencies.md"
     },
     {
       "crate": null,
@@ -1618,12 +1753,22 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/governance/docs-build-publish-model.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/governance/docs-charter.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "docs/governance/docs-contract.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/governance/docs-dashboard.md"
     },
     {
       "crate": null,
@@ -1658,7 +1803,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/governance/docs-rewrite-plan.md"
+      "from": "docs/governance/docs-search-tips.md"
     },
     {
       "crate": null,
@@ -1703,7 +1848,12 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/governance/root-legacy-mapping.md"
+      "from": "docs/governance/readers-guide.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/governance/redirects-policy.md"
     },
     {
       "crate": null,
@@ -1883,7 +2033,27 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/operations/release/backup-and-restore.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/capacity-planning.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/operations/release/index.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/rollback-procedure.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/release/upgrade-procedure.md"
     },
     {
       "crate": null,
@@ -1908,11 +2078,6 @@
     {
       "crate": null,
       "doc_type": "runbook",
-      "from": "docs/operations/runbooks/high-memory.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "runbook",
       "from": "docs/operations/runbooks/incident-playbook.md"
     },
     {
@@ -1924,11 +2089,6 @@
       "crate": null,
       "doc_type": "runbook",
       "from": "docs/operations/runbooks/load-failure-triage.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "runbook",
-      "from": "docs/operations/runbooks/pod-churn.md"
     },
     {
       "crate": null,
@@ -1954,6 +2114,11 @@
       "crate": null,
       "doc_type": "runbook",
       "from": "docs/operations/runbooks/traffic-spike.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/operations/security-posture.md"
     },
     {
       "crate": null,
@@ -2038,6 +2203,11 @@
     {
       "crate": null,
       "doc_type": "reference",
+      "from": "docs/reference/command-inventory.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "reference",
       "from": "docs/reference/commands.md"
     },
     {
@@ -2089,11 +2259,6 @@
       "crate": null,
       "doc_type": "spec",
       "from": "docs/reference/contracts/contract-diff.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "spec",
-      "from": "docs/reference/contracts/contracts-index.md"
     },
     {
       "crate": null,
@@ -2288,12 +2453,22 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/site-map.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/start-here.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
       "from": "docs/style.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/what-to-read-next.md"
     },
     {
       "crate": null,

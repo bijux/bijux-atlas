@@ -160,52 +160,6 @@
       ],
       "title": "OPS_COMMAND_LIST",
       "topic": "OPS_COMMAND_LIST"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "commands-reference",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/COMMANDS_REFERENCE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "commands-reference",
-        "root"
-      ],
-      "title": "Commands Reference",
-      "topic": "COMMANDS_REFERENCE"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "command-index",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/COMMAND_INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "command-index",
-        "root"
-      ],
-      "title": "Command Index",
-      "topic": "COMMAND_INDEX"
     }
   ],
   "schema_version": 1

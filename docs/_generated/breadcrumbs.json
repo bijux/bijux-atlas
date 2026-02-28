@@ -2491,6 +2491,105 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/_assets",
+        "docs/_assets/index.md"
+      ],
+      "path": "docs/_assets/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/docs-build-model.md"
+      ],
+      "path": "docs/_meta/docs-build-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/docs-change-process.md"
+      ],
+      "path": "docs/_meta/docs-change-process.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/docs-operating-model.md"
+      ],
+      "path": "docs/_meta/docs-operating-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/docs-principles.md"
+      ],
+      "path": "docs/_meta/docs-principles.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/docs-taxonomy-quick-reference.md"
+      ],
+      "path": "docs/_meta/docs-taxonomy-quick-reference.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/generated-artifacts.md"
+      ],
+      "path": "docs/_meta/generated-artifacts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/index.md"
+      ],
+      "path": "docs/_meta/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/internal",
+        "docs/_meta/internal/docs-rewrite-plan.md"
+      ],
+      "path": "docs/_meta/internal/docs-rewrite-plan.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/internal",
+        "docs/_meta/internal/index.md"
+      ],
+      "path": "docs/_meta/internal/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_meta",
+        "docs/_meta/internal",
+        "docs/_meta/internal/root-legacy-mapping.md"
+      ],
+      "path": "docs/_meta/internal/root-legacy-mapping.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_nav",
+        "docs/_nav/index.md"
+      ],
+      "path": "docs/_nav/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/api",
         "docs/api/caching.md"
       ],
@@ -2612,6 +2711,22 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/contract-runtime-mapping.md"
+      ],
+      "path": "docs/architecture/contract-runtime-mapping.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/crates-map.md"
+      ],
+      "path": "docs/architecture/crates-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/dataflow.md"
       ],
       "path": "docs/architecture/dataflow.md"
@@ -2644,9 +2759,25 @@
       "breadcrumbs": [
         "docs",
         "docs/architecture",
+        "docs/architecture/layering-rules.md"
+      ],
+      "path": "docs/architecture/layering-rules.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
         "docs/architecture/performance-model.md"
       ],
       "path": "docs/architecture/performance-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/architecture",
+        "docs/architecture/runtime-data-model.md"
+      ],
+      "path": "docs/architecture/runtime-data-model.md"
     },
     {
       "breadcrumbs": [
@@ -2716,6 +2847,62 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
+        "docs/development/doc-conventions.md"
+      ],
+      "path": "docs/development/doc-conventions.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/error-handling-philosophy.md"
+      ],
+      "path": "docs/development/error-handling-philosophy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/how-to-add-check.md"
+      ],
+      "path": "docs/development/how-to-add-check.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/how-to-add-cli-command.md"
+      ],
+      "path": "docs/development/how-to-add-cli-command.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/how-to-add-contract-registry.md"
+      ],
+      "path": "docs/development/how-to-add-contract-registry.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/how-to-add-gate-policy.md"
+      ],
+      "path": "docs/development/how-to-add-gate-policy.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/how-to-change-docs.md"
+      ],
+      "path": "docs/development/how-to-change-docs.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
         "docs/development/index.md"
       ],
       "path": "docs/development/index.md"
@@ -2732,6 +2919,14 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
+        "docs/development/known-limitations.md"
+      ],
+      "path": "docs/development/known-limitations.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
         "docs/development/repo-layout.md"
       ],
       "path": "docs/development/repo-layout.md"
@@ -2740,9 +2935,33 @@
       "breadcrumbs": [
         "docs",
         "docs/development",
+        "docs/development/reports-and-ci-consumption.md"
+      ],
+      "path": "docs/development/reports-and-ci-consumption.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/runtime-vs-control-plane-vs-ops.md"
+      ],
+      "path": "docs/development/runtime-vs-control-plane-vs-ops.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
         "docs/development/toolchain.md"
       ],
       "path": "docs/development/toolchain.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/development",
+        "docs/development/update-pinned-dependencies.md"
+      ],
+      "path": "docs/development/update-pinned-dependencies.md"
     },
     {
       "breadcrumbs": [
@@ -2859,6 +3078,14 @@
       "breadcrumbs": [
         "docs",
         "docs/governance",
+        "docs/governance/docs-build-publish-model.md"
+      ],
+      "path": "docs/governance/docs-build-publish-model.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
         "docs/governance/docs-charter.md"
       ],
       "path": "docs/governance/docs-charter.md"
@@ -2870,6 +3097,14 @@
         "docs/governance/docs-contract.md"
       ],
       "path": "docs/governance/docs-contract.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/docs-dashboard.md"
+      ],
+      "path": "docs/governance/docs-dashboard.md"
     },
     {
       "breadcrumbs": [
@@ -2923,9 +3158,9 @@
       "breadcrumbs": [
         "docs",
         "docs/governance",
-        "docs/governance/docs-rewrite-plan.md"
+        "docs/governance/docs-search-tips.md"
       ],
-      "path": "docs/governance/docs-rewrite-plan.md"
+      "path": "docs/governance/docs-search-tips.md"
     },
     {
       "breadcrumbs": [
@@ -2999,9 +3234,17 @@
       "breadcrumbs": [
         "docs",
         "docs/governance",
-        "docs/governance/root-legacy-mapping.md"
+        "docs/governance/readers-guide.md"
       ],
-      "path": "docs/governance/root-legacy-mapping.md"
+      "path": "docs/governance/readers-guide.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/governance",
+        "docs/governance/redirects-policy.md"
+      ],
+      "path": "docs/governance/redirects-policy.md"
     },
     {
       "breadcrumbs": [
@@ -3308,9 +3551,45 @@
         "docs",
         "docs/operations",
         "docs/operations/release",
+        "docs/operations/release/backup-and-restore.md"
+      ],
+      "path": "docs/operations/release/backup-and-restore.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/capacity-planning.md"
+      ],
+      "path": "docs/operations/release/capacity-planning.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
         "docs/operations/release/index.md"
       ],
       "path": "docs/operations/release/index.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/rollback-procedure.md"
+      ],
+      "path": "docs/operations/release/rollback-procedure.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/release",
+        "docs/operations/release/upgrade-procedure.md"
+      ],
+      "path": "docs/operations/release/upgrade-procedure.md"
     },
     {
       "breadcrumbs": [
@@ -3350,15 +3629,6 @@
         "docs",
         "docs/operations",
         "docs/operations/runbooks",
-        "docs/operations/runbooks/high-memory.md"
-      ],
-      "path": "docs/operations/runbooks/high-memory.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
-        "docs/operations/runbooks",
         "docs/operations/runbooks/incident-playbook.md"
       ],
       "path": "docs/operations/runbooks/incident-playbook.md"
@@ -3380,15 +3650,6 @@
         "docs/operations/runbooks/load-failure-triage.md"
       ],
       "path": "docs/operations/runbooks/load-failure-triage.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/operations",
-        "docs/operations/runbooks",
-        "docs/operations/runbooks/pod-churn.md"
-      ],
-      "path": "docs/operations/runbooks/pod-churn.md"
     },
     {
       "breadcrumbs": [
@@ -3434,6 +3695,14 @@
         "docs/operations/runbooks/traffic-spike.md"
       ],
       "path": "docs/operations/runbooks/traffic-spike.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/operations",
+        "docs/operations/security-posture.md"
+      ],
+      "path": "docs/operations/security-posture.md"
     },
     {
       "breadcrumbs": [
@@ -3568,6 +3837,14 @@
       "breadcrumbs": [
         "docs",
         "docs/reference",
+        "docs/reference/command-inventory.md"
+      ],
+      "path": "docs/reference/command-inventory.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/reference",
         "docs/reference/commands.md"
       ],
       "path": "docs/reference/commands.md"
@@ -3661,15 +3938,6 @@
         "docs/reference/contracts/contract-diff.md"
       ],
       "path": "docs/reference/contracts/contract-diff.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
-        "docs/reference",
-        "docs/reference/contracts",
-        "docs/reference/contracts/contracts-index.md"
-      ],
-      "path": "docs/reference/contracts/contracts-index.md"
     },
     {
       "breadcrumbs": [
@@ -4016,6 +4284,13 @@
     {
       "breadcrumbs": [
         "docs",
+        "docs/site-map.md"
+      ],
+      "path": "docs/site-map.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
         "docs/start-here.md"
       ],
       "path": "docs/start-here.md"
@@ -4026,6 +4301,13 @@
         "docs/style.md"
       ],
       "path": "docs/style.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/what-to-read-next.md"
+      ],
+      "path": "docs/what-to-read-next.md"
     },
     {
       "breadcrumbs": [

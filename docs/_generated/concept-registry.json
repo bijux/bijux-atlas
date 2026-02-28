@@ -45,7 +45,7 @@
       ]
     },
     {
-      "canonical": "docs/contracts/compatibility.md",
+      "canonical": "docs/reference/contracts/compatibility.md",
       "id": "concept.compatibility-matrix",
       "pointers": [
         "docs/reference/compatibility/bijux-dna-atlas.md",
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "canonical": "docs/contracts/errors.md",
+      "canonical": "docs/reference/contracts/errors.md",
       "id": "concept.error-codes",
       "pointers": [
         "docs/reference/registry/error-code-registry.md"
@@ -79,10 +79,10 @@
       "pointers": []
     },
     {
-      "canonical": "docs/contracts/plugin/spec.md",
+      "canonical": "docs/reference/contracts/plugins/spec.md",
       "id": "concept.plugin-contract",
       "pointers": [
-        "docs/contracts/plugin/mode.md"
+        "docs/reference/contracts/plugins/mode.md"
       ]
     }
   ],

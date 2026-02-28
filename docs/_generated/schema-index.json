@@ -114,29 +114,6 @@
       ],
       "title": "Evolving Policy Schema Safely",
       "topic": "SCHEMA_EVOLUTION"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "root",
-        "schema-index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/SCHEMA_INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "root",
-        "schema-index"
-      ],
-      "title": "Schema Index",
-      "topic": "SCHEMA_INDEX"
     }
   ],
   "schema_version": 1

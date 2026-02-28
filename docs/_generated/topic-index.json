@@ -434,6 +434,9 @@
     "architecture-map": [
       "docs/architecture/architecture-map.md"
     ],
+    "backup-and-restore": [
+      "docs/operations/release/backup-and-restore.md"
+    ],
     "bijux-dna-atlas": [
       "docs/reference/compatibility/bijux-dna-atlas.md"
     ],
@@ -442,6 +445,9 @@
     ],
     "caching": [
       "docs/api/caching.md"
+    ],
+    "capacity-planning": [
+      "docs/operations/release/capacity-planning.md"
     ],
     "catalog-example": [
       "docs/reference/examples/catalog-example.md"
@@ -457,6 +463,9 @@
     ],
     "client-behavior": [
       "docs/api/client-behavior.md"
+    ],
+    "command-inventory": [
+      "docs/reference/command-inventory.md"
     ],
     "commands": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/reference/commands.md",
@@ -512,6 +521,9 @@
     "contract-diff": [
       "docs/reference/contracts/contract-diff.md"
     ],
+    "contract-runtime-mapping": [
+      "docs/architecture/contract-runtime-mapping.md"
+    ],
     "contract-ssot-workflow": [
       "docs/governance/contract-ssot-workflow.md"
     ],
@@ -521,9 +533,6 @@
       "crates/bijux-atlas-server/docs/contracts.md",
       "crates/bijux-atlas-store/docs/contracts.md"
     ],
-    "contracts-index": [
-      "docs/reference/contracts/contracts-index.md"
-    ],
     "contributing": [
       "docs/development/contributing.md"
     ],
@@ -532,6 +541,9 @@
     ],
     "crate-docs-depth-rubric": [
       "docs/governance/style/crate-docs-depth-rubric.md"
+    ],
+    "crates-map": [
+      "docs/architecture/crates-map.md"
     ],
     "cross-project-compatibility-policy": [
       "docs/reference/compatibility/cross-project-compatibility-policy.md"
@@ -578,6 +590,18 @@
     "diffs-v1": [
       "docs/product/diffs-v1.md"
     ],
+    "doc-conventions": [
+      "docs/development/doc-conventions.md"
+    ],
+    "docs-build-model": [
+      "docs/_meta/docs-build-model.md"
+    ],
+    "docs-build-publish-model": [
+      "docs/governance/docs-build-publish-model.md"
+    ],
+    "docs-change-process": [
+      "docs/_meta/docs-change-process.md"
+    ],
     "docs-charter": [
       "docs/governance/docs-charter.md"
     ],
@@ -586,6 +610,9 @@
     ],
     "docs-contract": [
       "docs/governance/docs-contract.md"
+    ],
+    "docs-dashboard": [
+      "docs/governance/docs-dashboard.md"
     ],
     "docs-governance": [
       ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
@@ -597,7 +624,11 @@
       "docs/governance/docs-navigation-policy.md"
     ],
     "docs-operating-model": [
+      "docs/_meta/docs-operating-model.md",
       "docs/governance/docs-operating-model.md"
+    ],
+    "docs-principles": [
+      "docs/_meta/docs-principles.md"
     ],
     "docs-quality-policy": [
       "docs/governance/docs-quality-policy.md"
@@ -609,7 +640,13 @@
       "docs/governance/docs-review-checklist.md"
     ],
     "docs-rewrite-plan": [
-      "docs/governance/docs-rewrite-plan.md"
+      "docs/_meta/internal/docs-rewrite-plan.md"
+    ],
+    "docs-search-tips": [
+      "docs/governance/docs-search-tips.md"
+    ],
+    "docs-taxonomy-quick-reference": [
+      "docs/_meta/docs-taxonomy-quick-reference.md"
     ],
     "draft": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md"
@@ -649,6 +686,9 @@
     "error-code-registry": [
       "docs/reference/registry/error-code-registry.md"
     ],
+    "error-handling-philosophy": [
+      "docs/development/error-handling-philosophy.md"
+    ],
     "errors": [
       "docs/api/errors.md",
       "docs/reference/contracts/errors.md",
@@ -671,14 +711,29 @@
     "fixtures": [
       "docs/operations/e2e/fixtures.md"
     ],
+    "generated-artifacts": [
+      "docs/_meta/generated-artifacts.md"
+    ],
     "generated-content-policy": [
       "docs/governance/generated-content-policy.md"
     ],
     "glossary": [
       "docs/glossary.md"
     ],
-    "high-memory": [
-      "docs/operations/runbooks/high-memory.md"
+    "how-to-add-check": [
+      "docs/development/how-to-add-check.md"
+    ],
+    "how-to-add-cli-command": [
+      "docs/development/how-to-add-cli-command.md"
+    ],
+    "how-to-add-contract-registry": [
+      "docs/development/how-to-add-contract-registry.md"
+    ],
+    "how-to-add-gate-policy": [
+      "docs/development/how-to-add-gate-policy.md"
+    ],
+    "how-to-change-docs": [
+      "docs/development/how-to-change-docs.md"
     ],
     "immutability-and-aliases": [
       "docs/product/immutability-and-aliases.md"
@@ -694,6 +749,10 @@
     ],
     "index": [
       "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/index.md",
+      "docs/_assets/index.md",
+      "docs/_meta/index.md",
+      "docs/_meta/internal/index.md",
+      "docs/_nav/index.md",
       "docs/api/index.md",
       "docs/architecture/index.md",
       "docs/development/index.md",
@@ -743,8 +802,14 @@
     "kind-profile": [
       "docs/operations/kind-profile.md"
     ],
+    "known-limitations": [
+      "docs/development/known-limitations.md"
+    ],
     "latest-release-alias-policy": [
       "docs/reference/registry/latest-release-alias-policy.md"
+    ],
+    "layering-rules": [
+      "docs/architecture/layering-rules.md"
     ],
     "load-failure-triage": [
       "docs/operations/runbooks/load-failure-triage.md"
@@ -801,9 +866,6 @@
     "plugin-versioning-and-release-independence": [
       "docs/reference/registry/plugin-versioning-and-release-independence.md"
     ],
-    "pod-churn": [
-      "docs/operations/runbooks/pod-churn.md"
-    ],
     "policy-enforcement-mapping": [
       "docs/governance/policy-enforcement-mapping.md"
     ],
@@ -833,6 +895,12 @@
     "quick-reference": [
       "docs/api/quick-reference.md"
     ],
+    "readers-guide": [
+      "docs/governance/readers-guide.md"
+    ],
+    "redirects-policy": [
+      "docs/governance/redirects-policy.md"
+    ],
     "registry-federation": [
       "docs/operations/runbooks/registry-federation.md"
     ],
@@ -854,6 +922,9 @@
     "repo-map": [
       "docs/reference/repo-map.md"
     ],
+    "reports-and-ci-consumption": [
+      "docs/development/reports-and-ci-consumption.md"
+    ],
     "required-status-checks": [
       ".github/required-status-checks.md"
     ],
@@ -863,8 +934,11 @@
     "rollback-playbook": [
       "docs/operations/runbooks/rollback-playbook.md"
     ],
+    "rollback-procedure": [
+      "docs/operations/release/rollback-procedure.md"
+    ],
     "root-legacy-mapping": [
-      "docs/governance/root-legacy-mapping.md"
+      "docs/_meta/internal/root-legacy-mapping.md"
     ],
     "run-locally": [
       "docs/operations/run-locally.md"
@@ -872,11 +946,17 @@
     "runbook-template": [
       "docs/operations/runbook-template.md"
     ],
+    "runtime-data-model": [
+      "docs/architecture/runtime-data-model.md"
+    ],
     "runtime-model": [
       "crates/bijux-atlas-server/docs/runtime-model.md"
     ],
     "runtime-startup-config": [
       "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md"
+    ],
+    "runtime-vs-control-plane-vs-ops": [
+      "docs/development/runtime-vs-control-plane-vs-ops.md"
     ],
     "schema-overview": [
       "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/schema-overview.md"
@@ -891,6 +971,9 @@
     "scripts-migration-release-note": [
       ".github/templates/scripts-migration-release-note.md"
     ],
+    "security-posture": [
+      "docs/operations/security-posture.md"
+    ],
     "security-response-coordination": [
       "docs/reference/registry/security-response-coordination.md"
     ],
@@ -902,6 +985,9 @@
     ],
     "shared-core-extraction": [
       "docs/reference/registry/shared-core-extraction.md"
+    ],
+    "site-map": [
+      "docs/site-map.md"
     ],
     "slo-policy": [
       "docs/operations/observability/slo-policy.md"
@@ -977,6 +1063,12 @@
     "umbrella-plugin-contract-v1": [
       "docs/reference/contracts/plugins/umbrella-plugin-contract-v1.md"
     ],
+    "update-pinned-dependencies": [
+      "docs/development/update-pinned-dependencies.md"
+    ],
+    "upgrade-procedure": [
+      "docs/operations/release/upgrade-procedure.md"
+    ],
     "user-stories": [
       "docs/product/user-stories.md"
     ],
@@ -988,6 +1080,9 @@
     ],
     "what-is-bijux-atlas": [
       "docs/product/what-is-bijux-atlas.md"
+    ],
+    "what-to-read-next": [
+      "docs/what-to-read-next.md"
     ],
     "wire-compatibility": [
       "crates/bijux-atlas-api/docs/wire-compatibility.md"

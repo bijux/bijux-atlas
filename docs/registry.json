@@ -586,7 +586,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-api/docs/index.md",
+      "path": "crates/bijux-atlas-api/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -1186,7 +1186,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-cli/docs/index.md",
+      "path": "crates/bijux-atlas-cli/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -1671,7 +1671,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-core/docs/index.md",
+      "path": "crates/bijux-atlas-core/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -2156,7 +2156,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-ingest/docs/index.md",
+      "path": "crates/bijux-atlas-ingest/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -2755,7 +2755,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-model/docs/index.md",
+      "path": "crates/bijux-atlas-model/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -3332,7 +3332,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-policies/docs/index.md",
+      "path": "crates/bijux-atlas-policies/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -3817,7 +3817,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-query/docs/index.md",
+      "path": "crates/bijux-atlas-query/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -4348,7 +4348,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-server/docs/index.md",
+      "path": "crates/bijux-atlas-server/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -5092,7 +5092,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-atlas-store/docs/index.md",
+      "path": "crates/bijux-atlas-store/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -5761,7 +5761,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "bijux-dev-atlas",
-      "path": "crates/bijux-dev-atlas/docs/index.md",
+      "path": "crates/bijux-dev-atlas/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -5834,7 +5834,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/index.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -5958,7 +5958,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/index.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6020,7 +6020,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/index.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6368,7 +6368,7 @@
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/start-here.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
@@ -6643,48 +6643,6 @@
       "topic": "README"
     },
     {
-      "area": "CONTRACT.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contract"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/CONTRACT.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract"
-      ],
-      "title": "Docs Contract",
-      "topic": "CONTRACT"
-    },
-    {
-      "area": "start-here.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "start-here"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/start-here.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "start-here"
-      ],
-      "title": "Start Here",
-      "topic": "START_HERE"
-    },
-    {
       "area": "_assets",
       "audience": "contributors",
       "crate": null,
@@ -6705,147 +6663,243 @@
         "index"
       ],
       "title": "Assets Index",
-      "topic": "INDEX"
+      "topic": "index"
     },
     {
-      "area": "_assets",
+      "area": "_meta",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-assets",
-        "readme"
+        "-meta",
+        "docs-build-model"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_assets/README.md",
+      "path": "docs/_meta/docs-build-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-assets",
-        "readme"
+        "-meta",
+        "docs-build-model"
       ],
-      "title": "Assets Policy",
-      "topic": "README"
+      "title": "Docs build model",
+      "topic": "docs-build-model"
     },
     {
-      "area": "_assets",
+      "area": "_meta",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-assets",
-        "diagrams",
+        "-meta",
+        "docs-change-process"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_meta/docs-change-process.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-meta",
+        "docs-change-process"
+      ],
+      "title": "Docs change process",
+      "topic": "docs-change-process"
+    },
+    {
+      "area": "_meta",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-meta",
+        "docs-operating-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_meta/docs-operating-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-meta",
+        "docs-operating-model"
+      ],
+      "title": "Docs operating model",
+      "topic": "docs-operating-model"
+    },
+    {
+      "area": "_meta",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-meta",
+        "docs-principles"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_meta/docs-principles.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-meta",
+        "docs-principles"
+      ],
+      "title": "Docs principles",
+      "topic": "docs-principles"
+    },
+    {
+      "area": "_meta",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-meta",
+        "docs-taxonomy-quick-reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_meta/docs-taxonomy-quick-reference.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-meta",
+        "docs-taxonomy-quick-reference"
+      ],
+      "title": "Docs taxonomy quick reference",
+      "topic": "docs-taxonomy-quick-reference"
+    },
+    {
+      "area": "_meta",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-meta",
+        "generated-artifacts"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_meta/generated-artifacts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-meta",
+        "generated-artifacts"
+      ],
+      "title": "Generated artifacts",
+      "topic": "generated-artifacts"
+    },
+    {
+      "area": "_meta",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-meta",
         "index"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_assets/diagrams/index.md",
+      "path": "docs/_meta/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-assets",
-        "diagrams",
+        "-meta",
         "index"
       ],
-      "title": "Diagrams",
-      "topic": "INDEX"
+      "title": "Docs internal metadata",
+      "topic": "index"
     },
     {
-      "area": "_lint",
+      "area": "_meta",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-lint",
-        "index"
+        "-meta",
+        "docs-rewrite-plan",
+        "internal"
       ],
       "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
+      "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_lint/index.md",
+      "path": "docs/_meta/internal/docs-rewrite-plan.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-lint",
-        "index"
+        "-meta",
+        "docs-rewrite-plan",
+        "internal"
       ],
-      "title": "_Lint Index",
-      "topic": "INDEX"
+      "title": "Documentation Rewrite Plan",
+      "topic": "docs-rewrite-plan"
     },
     {
-      "area": "_lint",
+      "area": "_meta",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-lint",
-        "duplicate-topics"
+        "-meta",
+        "index",
+        "internal"
       ],
       "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
+      "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_lint/duplicate-topics.md",
+      "path": "docs/_meta/internal/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-lint",
-        "duplicate-topics"
+        "-meta",
+        "index",
+        "internal"
       ],
-      "title": "Duplicate Topics Checklist",
-      "topic": "duplicate-topics"
+      "title": "Internal planning materials",
+      "topic": "index"
     },
     {
-      "area": "_lint",
+      "area": "_meta",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "-lint",
-        "observability-docs"
+        "-meta",
+        "internal",
+        "root-legacy-mapping"
       ],
       "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
+      "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/_lint/observability-docs.md",
+      "path": "docs/_meta/internal/root-legacy-mapping.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "-lint",
-        "observability-docs"
+        "-meta",
+        "internal",
+        "root-legacy-mapping"
       ],
-      "title": "Observability Docs Checklist",
-      "topic": "observability-docs"
-    },
-    {
-      "area": "_lint",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-lint",
-        "renames"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_lint/renames.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-lint",
-        "renames"
-      ],
-      "title": "Rename Ledger",
-      "topic": "renames"
+      "title": "Root Legacy Mapping",
+      "topic": "root-legacy-mapping"
     },
     {
       "area": "_nav",
@@ -6867,376 +6921,8 @@
         "-nav",
         "index"
       ],
-      "title": "Navigation",
-      "topic": "INDEX"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "concept-registry"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/CONCEPT_REGISTRY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "concept-registry"
-      ],
-      "title": "Concept Registry",
-      "topic": "CONCEPT_REGISTRY"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "depth-policy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/DEPTH_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "depth-policy"
-      ],
-      "title": "Depth Policy",
-      "topic": "DEPTH_POLICY"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "depth-rubric"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/DEPTH_RUBRIC.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "depth-rubric"
-      ],
-      "title": "Depth Rubric",
-      "topic": "DEPTH_RUBRIC"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "index"
-      ],
-      "title": "_Style Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "concept-ids"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/concept-ids.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "concept-ids"
-      ],
-      "title": "Canonical Concept IDs",
-      "topic": "concept-ids"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "crate-docs-depth-rubric"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/crate-docs-depth-rubric.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "crate-docs-depth-rubric"
-      ],
-      "title": "Crate Docs Depth Rubric",
-      "topic": "crate-docs-depth-rubric"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "docs-removal-policy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/docs-removal-policy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "docs-removal-policy"
-      ],
-      "title": "Docs Removal Policy",
-      "topic": "docs-removal-policy"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "docs-review-checklist"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/docs-review-checklist.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "docs-review-checklist"
-      ],
-      "title": "Docs Review Checklist",
-      "topic": "docs-review-checklist"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "naming-standard"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/naming-standard.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "naming-standard"
-      ],
-      "title": "Naming Standard",
-      "topic": "naming-standard"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "placement"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/placement.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "placement"
-      ],
-      "title": "Placement Decision Tree",
-      "topic": "placement"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "stability-levels"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/stability-levels.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "stability-levels"
-      ],
-      "title": "Stability Levels",
-      "topic": "stability-levels"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "structure-templates"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/structure-templates.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "structure-templates"
-      ],
-      "title": "Structure Templates",
-      "topic": "structure-templates"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "style-guide"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/style-guide.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "style-guide"
-      ],
-      "title": "Style Guide",
-      "topic": "style-guide"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "terms-glossary"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/terms-glossary.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "terms-glossary"
-      ],
-      "title": "Terms Glossary",
-      "topic": "terms-glossary"
-    },
-    {
-      "area": "_style",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "-style",
-        "writing-rules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "internal",
-      "owner": "docs-governance",
-      "path": "docs/_style/writing-rules.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "-style",
-        "writing-rules"
-      ],
-      "title": "Writing Rules",
-      "topic": "writing-rules"
-    },
-    {
-      "area": "adrs",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "adrs",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/adrs/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "adrs",
-        "index"
-      ],
-      "title": "ADRs",
-      "topic": "INDEX"
+      "title": "Navigation Contract",
+      "topic": "index"
     },
     {
       "area": "api",
@@ -7286,7 +6972,7 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7296,7 +6982,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "api-contracts",
       "path": "docs/api/compatibility.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7304,12 +6990,12 @@
         "api",
         "compatibility"
       ],
-      "title": "Compatibility Policy",
+      "title": "API Compatibility",
       "topic": "compatibility"
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7319,7 +7005,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "api-contracts",
       "path": "docs/api/default-field-set.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7355,7 +7041,7 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7365,7 +7051,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "api-contracts",
       "path": "docs/api/errors.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7378,7 +7064,7 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7388,7 +7074,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "api",
+      "owner": "api-contracts",
       "path": "docs/api/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7396,12 +7082,12 @@
         "api",
         "index"
       ],
-      "title": "API Surface Index",
+      "title": "API",
       "topic": "index"
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7411,7 +7097,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "api-contracts",
       "path": "docs/api/pagination.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7424,7 +7110,7 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7434,7 +7120,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "api-contracts",
       "path": "docs/api/quick-reference.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7493,7 +7179,7 @@
     },
     {
       "area": "api",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7503,7 +7189,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "api-contracts",
       "path": "docs/api/versioning.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7511,12 +7197,12 @@
         "api",
         "versioning"
       ],
-      "title": "Versioning Policy",
+      "title": "API Versioning",
       "topic": "versioning"
     },
     {
       "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7526,7 +7212,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/architecture-map.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7539,7 +7225,7 @@
     },
     {
       "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7549,7 +7235,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/boundaries.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7562,30 +7248,7 @@
     },
     {
       "area": "architecture",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "architecture",
-        "boundary-maps"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/architecture/boundary-maps.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "architecture",
-        "boundary-maps"
-      ],
-      "title": "Boundary Maps",
-      "topic": "boundary-maps"
-    },
-    {
-      "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7595,7 +7258,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/components.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7608,7 +7271,53 @@
     },
     {
       "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "contract-runtime-mapping"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "architecture",
+      "path": "docs/architecture/contract-runtime-mapping.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "contract-runtime-mapping"
+      ],
+      "title": "Contract Runtime Mapping",
+      "topic": "contract-runtime-mapping"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "crates-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "architecture",
+      "path": "docs/architecture/crates-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "crates-map"
+      ],
+      "title": "Crates Map",
+      "topic": "crates-map"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7618,7 +7327,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/dataflow.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7631,30 +7340,7 @@
     },
     {
       "area": "architecture",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "architecture",
-        "decision-template"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/architecture/decision-template.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "architecture",
-        "decision-template"
-      ],
-      "title": "Decision Template",
-      "topic": "decision-template"
-    },
-    {
-      "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7664,7 +7350,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/effects.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7700,7 +7386,7 @@
     },
     {
       "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7710,7 +7396,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7718,12 +7404,35 @@
         "architecture",
         "index"
       ],
-      "title": "Architecture Index",
+      "title": "Architecture",
       "topic": "index"
     },
     {
       "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "layering-rules"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "architecture",
+      "path": "docs/architecture/layering-rules.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "layering-rules"
+      ],
+      "title": "Layering Rules",
+      "topic": "layering-rules"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7733,7 +7442,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/performance-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7746,7 +7455,30 @@
     },
     {
       "area": "architecture",
-      "audience": "contributors",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "architecture",
+        "runtime-data-model"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "architecture",
+      "path": "docs/architecture/runtime-data-model.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "architecture",
+        "runtime-data-model"
+      ],
+      "title": "Runtime Data Model",
+      "topic": "runtime-data-model"
+    },
+    {
+      "area": "architecture",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -7756,7 +7488,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "architecture",
       "path": "docs/architecture/storage.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -7766,762 +7498,6 @@
       ],
       "title": "Storage",
       "topic": "storage"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "index"
-      ],
-      "title": "Contracts SSOT",
-      "topic": "INDEX"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "readme"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/README.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "readme"
-      ],
-      "title": "Contracts SSOT and Generation",
-      "topic": "README"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/artifacts/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "index"
-      ],
-      "title": "Contracts Artifacts Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "directory-contract"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/artifacts/directory-contract.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "directory-contract"
-      ],
-      "title": "Artifact Directory Contract (SSOT)",
-      "topic": "directory-contract"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "manifest-contract"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/artifacts/manifest-contract.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "manifest-contract"
-      ],
-      "title": "Artifact Manifest Contract",
-      "topic": "manifest-contract"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-contract"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-ingest",
-      "path": "docs/contracts/artifacts/sqlite-schema-contract.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-contract"
-      ],
-      "title": "SQLite Schema Contract (Ingest)",
-      "topic": "sqlite-schema-contract"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-evolution-strategy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-ingest",
-      "path": "docs/contracts/artifacts/sqlite-schema-evolution-strategy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "artifacts",
-        "contracts",
-        "sqlite-schema-evolution-strategy"
-      ],
-      "title": "SQLite Schema Evolution Strategy",
-      "topic": "sqlite-schema-evolution-strategy"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "breaking-change-examples",
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/breaking-change-examples.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "breaking-change-examples",
-        "contracts"
-      ],
-      "title": "Breaking Change Examples",
-      "topic": "breaking-change-examples"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "chart-values",
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/chart-values.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "chart-values",
-        "contracts"
-      ],
-      "title": "Chart Values Contract",
-      "topic": "chart-values"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "compatibility",
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-api",
-      "path": "docs/contracts/compatibility.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "compatibility",
-        "contracts"
-      ],
-      "title": "Compatibility Contract",
-      "topic": "compatibility"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "config-keys",
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/config-keys.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "config-keys",
-        "contracts"
-      ],
-      "title": "Config Keys Contract",
-      "topic": "config-keys"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contract-change-checklist",
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/contract-change-checklist.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract-change-checklist",
-        "contracts"
-      ],
-      "title": "Contract Change Checklist",
-      "topic": "contract-change-checklist"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contract-diff",
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/contract-diff.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contract-diff",
-        "contracts"
-      ],
-      "title": "Contract Diff Review",
-      "topic": "contract-diff"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "contracts-index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/contracts-index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "contracts-index"
-      ],
-      "title": "Contracts Index",
-      "topic": "contracts-index"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "endpoints"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/endpoints.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "endpoints"
-      ],
-      "title": "Endpoints Contract",
-      "topic": "endpoints"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "errors"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/errors.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "errors"
-      ],
-      "title": "Error Codes Contract",
-      "topic": "errors"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "examples",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/examples/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "examples",
-        "index"
-      ],
-      "title": "Contract JSON Examples",
-      "topic": "INDEX"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "fasta-derived-metrics"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-ingest",
-      "path": "docs/contracts/fasta-derived-metrics.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "fasta-derived-metrics"
-      ],
-      "title": "Fasta-Derived Metrics Contract",
-      "topic": "fasta-derived-metrics"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "gff3-acceptance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-ingest",
-      "path": "docs/contracts/gff3-acceptance.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "gff3-acceptance"
-      ],
-      "title": "GFF3 Acceptance Contract (v1)",
-      "topic": "gff3-acceptance"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "metrics"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/metrics.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "metrics"
-      ],
-      "title": "Metrics Contract",
-      "topic": "metrics"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "normalized-format"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-ingest",
-      "path": "docs/contracts/normalized-format.md",
-      "review_due": "2026-08-24",
-      "stability": "evolving",
-      "tags": [
-        "contracts",
-        "normalized-format"
-      ],
-      "title": "Normalized Ingest Format Contract",
-      "topic": "normalized-format"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "index",
-        "plugin"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/plugin/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "index",
-        "plugin"
-      ],
-      "title": "Contracts Plugin Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "conformance-checklist",
-        "contracts",
-        "plugin"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/plugin/conformance-checklist.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "conformance-checklist",
-        "contracts",
-        "plugin"
-      ],
-      "title": "Bijux Plugin Conformance Checklist",
-      "topic": "conformance-checklist"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "mode",
-        "plugin"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-cli",
-      "path": "docs/contracts/plugin/mode.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "mode",
-        "plugin"
-      ],
-      "title": "Bijux-Atlas Plugin Mode",
-      "topic": "mode"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "plugin",
-        "spec"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-cli",
-      "path": "docs/contracts/plugin/spec.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "plugin",
-        "spec"
-      ],
-      "title": "Bijux Plugin Specification v1",
-      "topic": "spec"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "plugin",
-        "umbrella-plugin-contract-v1"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/plugin/umbrella-plugin-contract-v1.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "plugin",
-        "umbrella-plugin-contract-v1"
-      ],
-      "title": "Umbrella Plugin Contract v1",
-      "topic": "umbrella-plugin-contract-v1"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-ingest",
-      "path": "docs/contracts/qc.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts"
-      ],
-      "title": "Ingest QC Contract",
-      "topic": "qc"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "ssot-workflow"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/ssot-workflow.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "ssot-workflow"
-      ],
-      "title": "SSOT Workflow",
-      "topic": "ssot-workflow"
-    },
-    {
-      "area": "contracts",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "tracing"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/contracts/tracing.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "tracing"
-      ],
-      "title": "Trace Spans Contract",
-      "topic": "tracing"
-    },
-    {
-      "area": "control-plane",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contracts",
-        "control-plane"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "atlas-maintainers",
-      "path": "docs/control-plane/contracts.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contracts",
-        "control-plane"
-      ],
-      "title": "Contracts Control Plane",
-      "topic": "contracts"
-    },
-    {
-      "area": "control-plane",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "control-plane",
-        "ops-boundary"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "ops-platform",
-      "path": "docs/control-plane/ops-boundary.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "control-plane",
-        "ops-boundary"
-      ],
-      "title": "Ops Boundary",
-      "topic": "ops-boundary"
-    },
-    {
-      "area": "dev",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "check-failures",
-        "dev"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/dev/check-failures.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "check-failures",
-        "dev"
-      ],
-      "title": "Check Failures Closure Guide",
-      "topic": "check-failures"
     },
     {
       "area": "development",
@@ -8594,7 +7570,7 @@
     },
     {
       "area": "development",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -8604,7 +7580,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "platform",
       "path": "docs/development/ci-overview.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -8617,30 +7593,7 @@
     },
     {
       "area": "development",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "config-versioning",
-        "development"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/development/config-versioning.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "config-versioning",
-        "development"
-      ],
-      "title": "Config Versioning",
-      "topic": "config-versioning"
-    },
-    {
-      "area": "development",
-      "audience": "contributors",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -8650,7 +7603,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "platform",
       "path": "docs/development/contributing.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -8663,7 +7616,30 @@
     },
     {
       "area": "development",
-      "audience": "contributors",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "control-plane",
+        "development"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/control-plane.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "control-plane",
+        "development"
+      ],
+      "title": "Control Plane",
+      "topic": "control-plane"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -8673,7 +7649,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "platform",
       "path": "docs/development/debugging-locally.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -8686,7 +7662,168 @@
     },
     {
       "area": "development",
-      "audience": "contributors",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "doc-conventions"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/doc-conventions.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "doc-conventions"
+      ],
+      "title": "Doc Conventions",
+      "topic": "doc-conventions"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "error-handling-philosophy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/error-handling-philosophy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "error-handling-philosophy"
+      ],
+      "title": "Error Handling Philosophy",
+      "topic": "error-handling-philosophy"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "how-to",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "how-to-add-check"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/how-to-add-check.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "how-to-add-check"
+      ],
+      "title": "How to Add Check",
+      "topic": "how-to-add-check"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "how-to",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "how-to-add-cli-command"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/how-to-add-cli-command.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "how-to-add-cli-command"
+      ],
+      "title": "How to Add CLI Command",
+      "topic": "how-to-add-cli-command"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "how-to",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "how-to-add-contract-registry"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/how-to-add-contract-registry.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "how-to-add-contract-registry"
+      ],
+      "title": "How to Add Contract Registry",
+      "topic": "how-to-add-contract-registry"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "how-to",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "how-to-add-gate-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/how-to-add-gate-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "how-to-add-gate-policy"
+      ],
+      "title": "How to Add Gate Policy",
+      "topic": "how-to-add-gate-policy"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "how-to",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "how-to-change-docs"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/development/how-to-change-docs.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "how-to-change-docs"
+      ],
+      "title": "How to Change Docs",
+      "topic": "how-to-change-docs"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -8696,7 +7833,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "platform",
       "path": "docs/development/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -8704,7 +7841,7 @@
         "development",
         "index"
       ],
-      "title": "Development Index",
+      "title": "Development",
       "topic": "index"
     },
     {
@@ -8715,11 +7852,57 @@
       "doc_version": "v1",
       "keywords": [
         "development",
-        "repo-layout"
+        "ingest-format-contracts"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
+      "path": "docs/development/ingest-format-contracts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "ingest-format-contracts"
+      ],
+      "title": "Ingest Format Contracts",
+      "topic": "ingest-format-contracts"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "known-limitations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/known-limitations.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "known-limitations"
+      ],
+      "title": "Known Limitations",
+      "topic": "known-limitations"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "repo-layout"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
       "path": "docs/development/repo-layout.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -8732,7 +7915,53 @@
     },
     {
       "area": "development",
-      "audience": "contributors",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "reports-and-ci-consumption"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/reports-and-ci-consumption.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "reports-and-ci-consumption"
+      ],
+      "title": "Reports and CI Consumption",
+      "topic": "reports-and-ci-consumption"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "runtime-vs-control-plane-vs-ops"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/runtime-vs-control-plane-vs-ops.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "runtime-vs-control-plane-vs-ops"
+      ],
+      "title": "Runtime vs Control Plane vs Ops",
+      "topic": "runtime-vs-control-plane-vs-ops"
+    },
+    {
+      "area": "development",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -8742,7 +7971,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "platform",
       "path": "docs/development/toolchain.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -8754,163 +7983,48 @@
       "topic": "toolchain"
     },
     {
-      "area": "docs",
+      "area": "development",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "development",
+        "update-pinned-dependencies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/development/update-pinned-dependencies.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "development",
+        "update-pinned-dependencies"
+      ],
+      "title": "Update Pinned Dependencies",
+      "topic": "update-pinned-dependencies"
+    },
+    {
+      "area": "glossary.md",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "checks"
+        "glossary"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/checks/docs-checks.md",
+      "path": "docs/glossary.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "checks"
+        "glossary"
       ],
-      "title": "Docs Checks Contract",
-      "topic": "checks"
-    },
-    {
-      "area": "engineering",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "engineering",
-        "lints"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/engineering/lints.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "engineering",
-        "lints"
-      ],
-      "title": "Lint Policy",
-      "topic": "lints"
-    },
-    {
-      "area": "examples",
-      "audience": "mixed",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "examples",
-        "index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-docs",
-      "path": "docs/examples/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "examples",
-        "index"
-      ],
-      "title": "Examples Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "examples",
-      "audience": "mixed",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "catalog-example",
-        "examples"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-store",
-      "path": "docs/examples/catalog-example.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "catalog-example",
-        "examples"
-      ],
-      "title": "Catalog Example",
-      "topic": "catalog-example"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-front-matter",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/DOCS_FRONT_MATTER.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-front-matter",
-        "governance"
-      ],
-      "title": "Docs Front Matter Contract",
-      "topic": "DOCS_FRONT_MATTER"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-ownership",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/DOCS_OWNERSHIP.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-ownership",
-        "governance"
-      ],
-      "title": "Documentation Ownership Policy",
-      "topic": "DOCS_OWNERSHIP"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-quality-policy",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/DOCS_QUALITY_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-quality-policy",
-        "governance"
-      ],
-      "title": "Docs Quality Policy",
-      "topic": "DOCS_QUALITY_POLICY"
+      "title": "Glossary",
+      "topic": "glossary"
     },
     {
       "area": "governance",
@@ -8935,7 +8049,7 @@
         "governance"
       ],
       "title": "ADR-0001: Workspace Boundaries And Effects",
-      "topic": "ADR-0001-workspace-boundaries-and-effects"
+      "topic": "adr-0001-workspace-boundaries-and-effects"
     },
     {
       "area": "governance",
@@ -8960,7 +8074,7 @@
         "governance"
       ],
       "title": "ADR-0002: SQLite As Canonical Serving Store",
-      "topic": "ADR-0002-sqlite-serving-store"
+      "topic": "adr-0002-sqlite-serving-store"
     },
     {
       "area": "governance",
@@ -8985,7 +8099,7 @@
         "governance"
       ],
       "title": "ADR-0003: Federated Registry With Deterministic Merge",
-      "topic": "ADR-0003-federated-registry-deterministic-merge"
+      "topic": "adr-0003-federated-registry-deterministic-merge"
     },
     {
       "area": "governance",
@@ -9010,7 +8124,7 @@
         "governance"
       ],
       "title": "ADR-0004: Plugin Contract And Umbrella Dispatch",
-      "topic": "ADR-0004-plugin-contract-and-umbrella-dispatch"
+      "topic": "adr-0004-plugin-contract-and-umbrella-dispatch"
     },
     {
       "area": "governance",
@@ -9035,7 +8149,7 @@
         "governance"
       ],
       "title": "ADR-0005: Security Defaults And Optional Enterprise Controls",
-      "topic": "ADR-0005-security-defaults-and-enterprise-controls"
+      "topic": "adr-0005-security-defaults-and-enterprise-controls"
     },
     {
       "area": "governance",
@@ -9059,8 +8173,8 @@
         "governance",
         "index"
       ],
-      "title": "ADR Index",
-      "topic": "INDEX"
+      "title": "Architectural Decision Records",
+      "topic": "index"
     },
     {
       "area": "governance",
@@ -9069,21 +8183,117 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "authors",
+        "checks",
+        "docs-checks",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/authors.md",
+      "path": "docs/governance/checks/docs-checks.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "authors",
+        "checks",
+        "docs-checks",
         "governance"
       ],
-      "title": "Documentation Authors",
-      "topic": "authors"
+      "title": "Docs Checks Contract",
+      "topic": "docs-checks"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "checks",
+        "governance",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/checks/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "checks",
+        "governance",
+        "index"
+      ],
+      "title": "checks",
+      "topic": "index"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/contract-breaking-change-examples.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract-breaking-change-examples",
+        "governance"
+      ],
+      "title": "Breaking Change Examples",
+      "topic": "contract-breaking-change-examples"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contract-change-checklist",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/contract-change-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract-change-checklist",
+        "governance"
+      ],
+      "title": "Contract Change Checklist",
+      "topic": "contract-change-checklist"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/contract-ssot-workflow.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract-ssot-workflow",
+        "governance"
+      ],
+      "title": "SSOT Workflow",
+      "topic": "contract-ssot-workflow"
     },
     {
       "area": "governance",
@@ -9110,26 +8320,49 @@
     },
     {
       "area": "governance",
-      "audience": "reviewers",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "docs-api-consolidation-status",
+        "docs-build-publish-model",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-api-consolidation-status.md",
+      "path": "docs/governance/docs-build-publish-model.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "docs-api-consolidation-status",
+        "docs-build-publish-model",
         "governance"
       ],
-      "title": "API Consolidation Status",
-      "topic": "docs-api-consolidation-status"
+      "title": "Docs Build Publish Model",
+      "topic": "docs-build-publish-model"
+    },
+    {
+      "area": "governance",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-charter",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-docs",
+      "path": "docs/governance/docs-charter.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-charter",
+        "governance"
+      ],
+      "title": "Docs Charter",
+      "topic": "docs-charter"
     },
     {
       "area": "governance",
@@ -9138,21 +8371,44 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "docs-baseline-checklist",
+        "docs-contract",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-baseline-checklist.md",
+      "path": "docs/governance/docs-contract.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "docs-baseline-checklist",
+        "docs-contract",
         "governance"
       ],
-      "title": "Documentation Baseline Checklist",
-      "topic": "docs-baseline-checklist"
+      "title": "Docs Contract",
+      "topic": "docs-contract"
+    },
+    {
+      "area": "governance",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "docs-dashboard",
+        "governance"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/docs-dashboard.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "docs-dashboard",
+        "governance"
+      ],
+      "title": "Docs Dashboard",
+      "topic": "docs-dashboard"
     },
     {
       "area": "governance",
@@ -9161,21 +8417,21 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "docs-development-consolidation-status",
+        "docs-lint-rules",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-development-consolidation-status.md",
+      "path": "docs/governance/docs-lint-rules.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "docs-development-consolidation-status",
+        "docs-lint-rules",
         "governance"
       ],
-      "title": "Development Consolidation Status",
-      "topic": "docs-development-consolidation-status"
+      "title": "Documentation Lint Rules",
+      "topic": "docs-lint-rules"
     },
     {
       "area": "governance",
@@ -9184,21 +8440,21 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "docs-inventory-triage-report",
+        "docs-navigation-policy",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-inventory-triage-report.md",
+      "path": "docs/governance/docs-navigation-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "docs-inventory-triage-report",
+        "docs-navigation-policy",
         "governance"
       ],
-      "title": "Documentation Inventory And Triage Report",
-      "topic": "docs-inventory-triage-report"
+      "title": "Documentation Navigation Policy",
+      "topic": "docs-navigation-policy"
     },
     {
       "area": "governance",
@@ -9230,67 +8486,21 @@
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "docs-operations-consolidation-status",
+        "docs-quality-policy",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-operations-consolidation-status.md",
+      "path": "docs/governance/docs-quality-policy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "docs-operations-consolidation-status",
+        "docs-quality-policy",
         "governance"
       ],
-      "title": "Operations Consolidation Status",
-      "topic": "docs-operations-consolidation-status"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-operations-development-consolidation-status",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/docs-operations-development-consolidation-status.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-operations-development-consolidation-status",
-        "governance"
-      ],
-      "title": "Operations And Development Consolidation Status",
-      "topic": "docs-operations-development-consolidation-status"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-philosophy",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/docs-philosophy.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-philosophy",
-        "governance"
-      ],
-      "title": "Documentation Philosophy",
-      "topic": "docs-philosophy"
+      "title": "Docs Quality Policy",
+      "topic": "docs-quality-policy"
     },
     {
       "area": "governance",
@@ -9340,95 +8550,26 @@
     },
     {
       "area": "governance",
-      "audience": "reviewers",
+      "audience": "contributor",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "docs-rewrite-plan",
+        "docs-search-tips",
         "governance"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/docs-rewrite-plan.md",
+      "path": "docs/governance/docs-search-tips.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "docs-rewrite-plan",
+        "docs-search-tips",
         "governance"
       ],
-      "title": "Documentation Rewrite Plan",
-      "topic": "docs-rewrite-plan"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-top-delete-pages",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/docs-top-delete-pages.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-top-delete-pages",
-        "governance"
-      ],
-      "title": "Documentation Removal Priority",
-      "topic": "docs-top-delete-pages"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-top-keep-pages",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/docs-top-keep-pages.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-top-keep-pages",
-        "governance"
-      ],
-      "title": "Core Documentation Pages",
-      "topic": "docs-top-keep-pages"
-    },
-    {
-      "area": "governance",
-      "audience": "reviewers",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-top-merge-clusters",
-        "governance"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/governance/docs-top-merge-clusters.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-top-merge-clusters",
-        "governance"
-      ],
-      "title": "Documentation Merge Clusters",
-      "topic": "docs-top-merge-clusters"
+      "title": "Docs Search Tips",
+      "topic": "docs-search-tips"
     },
     {
       "area": "governance",
@@ -9455,6 +8596,152 @@
     },
     {
       "area": "governance",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "index"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "platform",
+      "path": "docs/governance/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "index"
+      ],
+      "title": "Governance",
+      "topic": "index"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "index",
+        "metadata"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/metadata/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "index",
+        "metadata"
+      ],
+      "title": "Metadata",
+      "topic": "index"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "metadata",
+        "taxonomy-map"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/metadata/taxonomy-map.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "metadata",
+        "taxonomy-map"
+      ],
+      "title": "Docs Taxonomy Map",
+      "topic": "taxonomy-map"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "naming"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/naming.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "naming"
+      ],
+      "title": "Naming Standard",
+      "topic": "naming"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "checks",
+        "governance",
+        "policies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/policies/checks.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "checks",
+        "governance",
+        "policies"
+      ],
+      "title": "Policies Checks Contract",
+      "topic": "checks"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "index",
+        "policies"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/policies/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "index",
+        "policies"
+      ],
+      "title": "policies",
+      "topic": "index"
+    },
+    {
+      "area": "governance",
       "audience": "reviewers",
       "crate": null,
       "doc_type": "concept",
@@ -9475,6 +8762,52 @@
       ],
       "title": "Policy Enforcement Mapping",
       "topic": "policy-enforcement-mapping"
+    },
+    {
+      "area": "governance",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "readers-guide"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/readers-guide.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "readers-guide"
+      ],
+      "title": "Governance Readers Guide",
+      "topic": "readers-guide"
+    },
+    {
+      "area": "governance",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "redirects-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/redirects-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "redirects-policy"
+      ],
+      "title": "Redirects Policy",
+      "topic": "redirects-policy"
     },
     {
       "area": "governance",
@@ -9500,6 +8833,231 @@
       "topic": "style-guide"
     },
     {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "concept-ids",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/concept-ids.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "concept-ids",
+        "governance",
+        "style"
+      ],
+      "title": "Canonical Concept IDs",
+      "topic": "concept-ids"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "concept-registry",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/concept-registry.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "concept-registry",
+        "governance",
+        "style"
+      ],
+      "title": "Concept Registry",
+      "topic": "concept-registry"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/crate-docs-depth-rubric.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "crate-docs-depth-rubric",
+        "governance",
+        "style"
+      ],
+      "title": "Crate Docs Depth Rubric",
+      "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/depth-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "depth-policy",
+        "governance",
+        "style"
+      ],
+      "title": "Depth Policy",
+      "topic": "depth-policy"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/depth-rubric.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "depth-rubric",
+        "governance",
+        "style"
+      ],
+      "title": "Depth Rubric",
+      "topic": "depth-rubric"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "index",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "index",
+        "style"
+      ],
+      "title": "Governance Style Archive",
+      "topic": "index"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "placement",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/placement.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "placement",
+        "style"
+      ],
+      "title": "Placement Decision Tree",
+      "topic": "placement"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/stability-levels.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "stability-levels",
+        "style"
+      ],
+      "title": "Stability Levels",
+      "topic": "stability-levels"
+    },
+    {
+      "area": "governance",
+      "audience": "reviewers",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/governance/style/structure-templates.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "governance",
+        "structure-templates",
+        "style"
+      ],
+      "title": "Structure Templates",
+      "topic": "structure-templates"
+    },
+    {
       "area": "index.md",
       "audience": "contributors",
       "crate": null,
@@ -9517,31 +9075,8 @@
       "tags": [
         "index"
       ],
-      "title": "Docs",
+      "title": "Home",
       "topic": "index"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-convergence-policy",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/DOCS_CONVERGENCE_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-convergence-policy",
-        "operations"
-      ],
-      "title": "Docs Convergence Policy",
-      "topic": "DOCS_CONVERGENCE_POLICY"
     },
     {
       "area": "operations",
@@ -9568,7 +9103,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9578,7 +9113,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/dataset-workflow.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -9591,30 +9126,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "datasets",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/datasets.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "datasets",
-        "operations"
-      ],
-      "title": "Datasets",
-      "topic": "datasets"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9624,7 +9136,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/deploy.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -9637,7 +9149,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9647,7 +9159,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/drills-program.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -9660,32 +9172,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "e2e",
-        "index",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/e2e/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "e2e",
-        "index",
-        "operations"
-      ],
-      "title": "E2E",
-      "topic": "INDEX"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9705,12 +9192,37 @@
         "fixtures",
         "operations"
       ],
-      "title": "E2E Fixtures",
+      "title": "Fixture Taxonomy",
       "topic": "fixtures"
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "e2e",
+        "index",
+        "operations"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/e2e/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "e2e",
+        "index",
+        "operations"
+      ],
+      "title": "End-to-end Tests",
+      "topic": "index"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9730,37 +9242,12 @@
         "k8s-tests",
         "operations"
       ],
-      "title": "E2E Kubernetes Tests",
+      "title": "Kubernetes E2E Guarantees",
       "topic": "k8s-tests"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "e2e",
-        "operations",
-        "overview"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/e2e/overview.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "e2e",
-        "operations",
-        "overview"
-      ],
-      "title": "E2E Overview",
-      "topic": "overview"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9783,7 +9270,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9793,7 +9280,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/incident-response.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -9806,7 +9293,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9824,12 +9311,12 @@
         "index",
         "operations"
       ],
-      "title": "Operations Index",
+      "title": "Operations",
       "topic": "index"
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9840,7 +9327,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/k8s/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -9849,8 +9336,8 @@
         "k8s",
         "operations"
       ],
-      "title": "K8s",
-      "topic": "INDEX"
+      "title": "Kubernetes Operations",
+      "topic": "index"
     },
     {
       "area": "operations",
@@ -9877,7 +9364,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9888,7 +9375,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/load/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -9897,12 +9384,12 @@
         "load",
         "operations"
       ],
-      "title": "Load",
-      "topic": "INDEX"
+      "title": "Load Testing",
+      "topic": "index"
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9920,37 +9407,12 @@
         "load",
         "operations"
       ],
-      "title": "Atlas Load Harness (k6)",
+      "title": "k6 Execution",
       "topic": "k6"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "load",
-        "operations",
-        "overview"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/load/overview.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "load",
-        "operations",
-        "overview"
-      ],
-      "title": "Load Overview",
-      "topic": "overview"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -9970,60 +9432,12 @@
         "operations",
         "suites"
       ],
-      "title": "Load Suites",
+      "title": "Load Suite Catalog",
       "topic": "suites"
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "local-stack",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/local-stack.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "local-stack",
-        "operations"
-      ],
-      "title": "Local Stack",
-      "topic": "local-stack"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "index",
-        "observability",
-        "operations"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/observability/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "index",
-        "observability",
-        "operations"
-      ],
-      "title": "Observability",
-      "topic": "INDEX"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10034,7 +9448,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/observability/alerts.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -10048,7 +9462,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10059,7 +9473,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/observability/dashboards.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -10073,28 +9487,28 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "index",
         "observability",
-        "operations",
-        "overview"
+        "operations"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/observability/overview.md",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/observability/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
+        "index",
         "observability",
-        "operations",
-        "overview"
+        "operations"
       ],
-      "title": "Observability Overview",
-      "topic": "overview"
+      "title": "Observability",
+      "topic": "index"
     },
     {
       "area": "operations",
@@ -10123,7 +9537,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10134,7 +9548,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/observability/tracing.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -10177,29 +9591,6 @@
       "doc_version": "v1",
       "keywords": [
         "operations",
-        "ops-docs-contract"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/ops-docs-contract.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "operations",
-        "ops-docs-contract"
-      ],
-      "title": "Ops Docs Contract",
-      "topic": "ops-docs-contract"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "operations",
         "ops-map"
       ],
       "last_reviewed": "2026-02-25",
@@ -10217,7 +9608,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10240,57 +9631,7 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "reference",
-      "doc_version": "v1",
-      "keywords": [
-        "operations",
-        "ops-surface",
-        "reference"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/reference/ops-surface.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "operations",
-        "ops-surface",
-        "reference"
-      ],
-      "title": "Ops Surface",
-      "topic": "ops-surface"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "reference",
-      "doc_version": "v1",
-      "keywords": [
-        "operations",
-        "reference",
-        "schema-index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/reference/schema-index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "operations",
-        "reference",
-        "schema-index"
-      ],
-      "title": "Schema Index",
-      "topic": "schema-index"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10300,7 +9641,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/release-workflow.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -10313,32 +9654,132 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "backup-and-restore",
+        "operations",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/backup-and-restore.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "backup-and-restore",
+        "operations",
+        "release"
+      ],
+      "title": "Backup and Restore",
+      "topic": "backup-and-restore"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "capacity-planning",
+        "operations",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/capacity-planning.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "capacity-planning",
+        "operations",
+        "release"
+      ],
+      "title": "Capacity Planning",
+      "topic": "capacity-planning"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "operations",
+        "release"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "operations",
+        "release"
+      ],
+      "title": "Release Operations",
+      "topic": "index"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
         "operations",
-        "quality-wall",
-        "release"
+        "release",
+        "rollback-procedure"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/release/quality-wall.md",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/rollback-procedure.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
         "operations",
-        "quality-wall",
-        "release"
+        "release",
+        "rollback-procedure"
       ],
-      "title": "Quality Wall",
-      "topic": "quality-wall"
+      "title": "Rollback Procedure",
+      "topic": "rollback-procedure"
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "release",
+        "upgrade-procedure"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/release/upgrade-procedure.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "release",
+        "upgrade-procedure"
+      ],
+      "title": "Upgrade Procedure",
+      "topic": "upgrade-procedure"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10351,17 +9792,17 @@
       "owner": "bijux-atlas-operations",
       "path": "docs/operations/retention-and-gc.md",
       "review_due": "2026-08-24",
-      "stability": "evolving",
+      "stability": "stable",
       "tags": [
         "operations",
         "retention-and-gc"
       ],
-      "title": "Retention And GC",
+      "title": "Retention and garbage collection",
       "topic": "retention-and-gc"
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10371,7 +9812,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/operations/run-locally.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -10437,31 +9878,6 @@
       "doc_type": "runbook",
       "doc_version": "v1",
       "keywords": [
-        "high-memory",
-        "operations",
-        "runbooks"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/runbooks/high-memory.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "high-memory",
-        "operations",
-        "runbooks"
-      ],
-      "title": "High Memory",
-      "topic": "high-memory"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "runbook",
-      "doc_version": "v1",
-      "keywords": [
         "incident-playbook",
         "operations",
         "runbooks"
@@ -10479,6 +9895,31 @@
       ],
       "title": "Incident Playbook",
       "topic": "incident-playbook"
+    },
+    {
+      "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "runbook",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "operations",
+        "runbooks"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-operations",
+      "path": "docs/operations/runbooks/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "operations",
+        "runbooks"
+      ],
+      "title": "Runbooks",
+      "topic": "index"
     },
     {
       "area": "operations",
@@ -10504,31 +9945,6 @@
       ],
       "title": "Load Failure Triage",
       "topic": "load-failure-triage"
-    },
-    {
-      "area": "operations",
-      "audience": "operators",
-      "crate": null,
-      "doc_type": "runbook",
-      "doc_version": "v1",
-      "keywords": [
-        "operations",
-        "pod-churn",
-        "runbooks"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/runbooks/pod-churn.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "operations",
-        "pod-churn",
-        "runbooks"
-      ],
-      "title": "Pod Churn",
-      "topic": "pod-churn"
     },
     {
       "area": "operations",
@@ -10657,6 +10073,29 @@
     },
     {
       "area": "operations",
+      "audience": "operator",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "operations",
+        "security-posture"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security-posture.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "operations",
+        "security-posture"
+      ],
+      "title": "Security Posture",
+      "topic": "security-posture"
+    },
+    {
+      "area": "operations",
       "audience": "operators",
       "crate": null,
       "doc_type": "concept",
@@ -10682,49 +10121,49 @@
     },
     {
       "area": "operations",
-      "audience": "operators",
+      "audience": "operator",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
+        "index",
         "operations",
-        "unified-report"
+        "security"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/operations/unified-report.md",
+      "owner": "bijux-atlas-security",
+      "path": "docs/operations/security/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
+        "index",
         "operations",
-        "unified-report"
+        "security"
       ],
-      "title": "Unified Report",
-      "topic": "unified-report"
+      "title": "Security",
+      "topic": "index"
     },
     {
-      "area": "policies",
-      "audience": "reviewers",
+      "area": "ownership.md",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "checks",
-        "policies"
+        "ownership"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/policies/checks.md",
+      "path": "docs/ownership.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "checks",
-        "policies"
+        "ownership"
       ],
-      "title": "Policies Checks Contract",
-      "topic": "checks"
+      "title": "Documentation Ownership",
+      "topic": "ownership"
     },
     {
       "area": "product",
@@ -10797,7 +10236,7 @@
     },
     {
       "area": "product",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
@@ -10807,7 +10246,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "product",
       "path": "docs/product/index.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -10815,7 +10254,7 @@
         "index",
         "product"
       ],
-      "title": "Product Index",
+      "title": "Product",
       "topic": "index"
     },
     {
@@ -11026,31 +10465,31 @@
       "topic": "what-is-bijux-atlas"
     },
     {
-      "area": "quickstart",
-      "audience": "mixed",
+      "area": "reference",
+      "audience": "contributor",
       "crate": null,
-      "doc_type": "how-to",
+      "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
-        "index",
-        "quickstart"
+        "command-inventory",
+        "reference"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/start-here.md",
+      "path": "docs/reference/command-inventory.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "index",
-        "quickstart"
+        "command-inventory",
+        "reference"
       ],
-      "title": "Quickstart",
-      "topic": "INDEX"
+      "title": "Command Inventory",
+      "topic": "command-inventory"
     },
     {
       "area": "reference",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -11060,7 +10499,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/commands.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11123,6 +10562,31 @@
     },
     {
       "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "compatibility",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/compatibility/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "compatibility",
+        "index",
+        "reference"
+      ],
+      "title": "Compatibility Reference",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
       "audience": "mixed",
       "crate": null,
       "doc_type": "reference",
@@ -11148,7 +10612,7 @@
     },
     {
       "area": "reference",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -11158,7 +10622,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/configs.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11168,6 +10632,470 @@
       ],
       "title": "Configs Reference",
       "topic": "configs"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "artifacts",
+        "contracts",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/artifacts/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "artifacts",
+        "contracts",
+        "index",
+        "reference"
+      ],
+      "title": "Artifact Schema Contract",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "chart-values",
+        "contracts",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/chart-values.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "chart-values",
+        "contracts",
+        "reference"
+      ],
+      "title": "Chart Values Contract",
+      "topic": "chart-values"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "compatibility",
+        "contracts",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-api",
+      "path": "docs/reference/contracts/compatibility.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "compatibility",
+        "contracts",
+        "reference"
+      ],
+      "title": "Compatibility Contract",
+      "topic": "compatibility"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "config-keys",
+        "contracts",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/config-keys.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "config-keys",
+        "contracts",
+        "reference"
+      ],
+      "title": "Config Keys Contract",
+      "topic": "config-keys"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contract-diff",
+        "contracts",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/contract-diff.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contract-diff",
+        "contracts",
+        "reference"
+      ],
+      "title": "Contract Diff Review",
+      "topic": "contract-diff"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "endpoints",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/endpoints.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "endpoints",
+        "reference"
+      ],
+      "title": "Endpoints Contract",
+      "topic": "endpoints"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "errors",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/errors.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "errors",
+        "reference"
+      ],
+      "title": "Error Codes Contract",
+      "topic": "errors"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "examples",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/examples/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "examples",
+        "index",
+        "reference"
+      ],
+      "title": "Contract Examples",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "index",
+        "reference"
+      ],
+      "title": "Contracts",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "normalized-format",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "docs/reference/contracts/normalized-format.md",
+      "review_due": "2026-08-24",
+      "stability": "evolving",
+      "tags": [
+        "contracts",
+        "normalized-format",
+        "reference"
+      ],
+      "title": "Normalized Ingest Format Contract",
+      "topic": "normalized-format"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "conformance-checklist",
+        "contracts",
+        "plugins",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/plugins/conformance-checklist.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "conformance-checklist",
+        "contracts",
+        "plugins",
+        "reference"
+      ],
+      "title": "Bijux Plugin Conformance Checklist",
+      "topic": "conformance-checklist"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "index",
+        "plugins",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/plugins/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "index",
+        "plugins",
+        "reference"
+      ],
+      "title": "plugin",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "mode",
+        "plugins",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "docs/reference/contracts/plugins/mode.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "mode",
+        "plugins",
+        "reference"
+      ],
+      "title": "Bijux-Atlas Plugin Mode",
+      "topic": "mode"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "plugins",
+        "reference",
+        "spec"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-cli",
+      "path": "docs/reference/contracts/plugins/spec.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "plugins",
+        "reference",
+        "spec"
+      ],
+      "title": "Bijux Plugin Specification v1",
+      "topic": "spec"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "plugins",
+        "reference",
+        "umbrella-plugin-contract-v1"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/plugins/umbrella-plugin-contract-v1.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "plugins",
+        "reference",
+        "umbrella-plugin-contract-v1"
+      ],
+      "title": "Umbrella Plugin Contract v1",
+      "topic": "umbrella-plugin-contract-v1"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-ingest",
+      "path": "docs/reference/contracts/qc.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "reference"
+      ],
+      "title": "Ingest QC Contract",
+      "topic": "qc"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "index",
+        "reference",
+        "schemas"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/schemas/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "index",
+        "reference",
+        "schemas"
+      ],
+      "title": "Contract Schemas",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "spec",
+      "doc_version": "v1",
+      "keywords": [
+        "contracts",
+        "reference",
+        "telemetry"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/contracts/telemetry.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "contracts",
+        "reference",
+        "telemetry"
+      ],
+      "title": "Telemetry Contract",
+      "topic": "telemetry"
     },
     {
       "area": "reference",
@@ -11194,7 +11122,7 @@
     },
     {
       "area": "reference",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -11204,7 +11132,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/errors.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11222,6 +11150,56 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "catalog-example",
+        "examples",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "bijux-atlas-store",
+      "path": "docs/reference/examples/catalog-example.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "catalog-example",
+        "examples",
+        "reference"
+      ],
+      "title": "Catalog Example",
+      "topic": "catalog-example"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "examples",
+        "index",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/examples/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "examples",
+        "index",
+        "reference"
+      ],
+      "title": "Examples",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "user",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "index",
         "reference"
       ],
@@ -11235,12 +11213,12 @@
         "index",
         "reference"
       ],
-      "title": "Reference Index",
+      "title": "Reference",
       "topic": "index"
     },
     {
       "area": "reference",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -11250,7 +11228,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/make.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11260,6 +11238,54 @@
       ],
       "title": "Make Reference",
       "topic": "make"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "ops-surface",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/ops-surface.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "ops-surface",
+        "reference"
+      ],
+      "title": "Operations Surface Reference",
+      "topic": "ops-surface"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "querying",
+        "reference"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/querying/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "querying",
+        "reference"
+      ],
+      "title": "querying",
+      "topic": "index"
     },
     {
       "area": "reference",
@@ -11413,6 +11439,31 @@
     },
     {
       "area": "reference",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
+        "index",
+        "reference",
+        "registry"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/registry/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "reference",
+        "registry"
+      ],
+      "title": "Registry Reference",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
       "audience": "mixed",
       "crate": null,
       "doc_type": "reference",
@@ -11561,7 +11612,7 @@
     },
     {
       "area": "reference",
-      "audience": "mixed",
+      "audience": "user",
       "crate": null,
       "doc_type": "reference",
       "doc_version": "v1",
@@ -11571,7 +11622,7 @@
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
-      "owner": "docs-governance",
+      "owner": "bijux-atlas-operations",
       "path": "docs/reference/schemas.md",
       "review_due": "2026-08-24",
       "stability": "stable",
@@ -11614,6 +11665,31 @@
       "doc_type": "reference",
       "doc_version": "v1",
       "keywords": [
+        "index",
+        "reference",
+        "store"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/reference/store/index.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "index",
+        "reference",
+        "store"
+      ],
+      "title": "store",
+      "topic": "index"
+    },
+    {
+      "area": "reference",
+      "audience": "mixed",
+      "crate": null,
+      "doc_type": "reference",
+      "doc_version": "v1",
+      "keywords": [
         "integrity-model",
         "reference",
         "store"
@@ -11633,773 +11709,34 @@
       "topic": "integrity-model"
     },
     {
-      "area": "release",
-      "audience": "reviewers",
+      "area": "site-map.md",
+      "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "index",
-        "release"
+        "site-map"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/operations/release/index.md",
+      "path": "docs/site-map.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "index",
-        "release"
+        "site-map"
       ],
-      "title": "Release Index",
-      "topic": "INDEX"
+      "title": "Site map",
+      "topic": "site-map"
     },
     {
-      "area": "root",
-      "audience": "contributors",
+      "area": "start-here.md",
+      "audience": "user",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "architecture-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/ARCHITECTURE_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "architecture-overview",
-        "root"
-      ],
-      "title": "Architecture Overview",
-      "topic": "ARCHITECTURE_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "build-outputs-reference",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/BUILD_OUTPUTS_REFERENCE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "build-outputs-reference",
-        "root"
-      ],
-      "title": "Build Outputs Reference",
-      "topic": "BUILD_OUTPUTS_REFERENCE"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ci-workflow-explanation",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "build-and-release",
-      "path": "docs/root/CI_WORKFLOW_EXPLANATION.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ci-workflow-explanation",
-        "root"
-      ],
-      "title": "CI Workflow Explanation",
-      "topic": "CI_WORKFLOW_EXPLANATION"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "commands-reference",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/COMMANDS_REFERENCE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "commands-reference",
-        "root"
-      ],
-      "title": "Commands Reference",
-      "topic": "COMMANDS_REFERENCE"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "command-index",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/COMMAND_INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "command-index",
-        "root"
-      ],
-      "title": "Command Index",
-      "topic": "COMMAND_INDEX"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "compatibility-policy",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/COMPATIBILITY_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "compatibility-policy",
-        "root"
-      ],
-      "title": "Compatibility Policy",
-      "topic": "COMPATIBILITY_POLICY"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "configs-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/CONFIGS_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "configs-overview",
-        "root"
-      ],
-      "title": "Configs Overview",
-      "topic": "CONFIGS_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "contribution-model",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/CONTRIBUTION_MODEL.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "contribution-model",
-        "root"
-      ],
-      "title": "Contribution Model",
-      "topic": "CONTRIBUTION_MODEL"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "control-plane-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/CONTROL_PLANE_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "control-plane-overview",
-        "root"
-      ],
-      "title": "Control Plane Overview",
-      "topic": "CONTROL_PLANE_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "crate-index",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/CRATE_INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "crate-index",
-        "root"
-      ],
-      "title": "Crate Index",
-      "topic": "CRATE_INDEX"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "developer-workflow-quickstart",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/DEVELOPER_WORKFLOW_QUICKSTART.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "developer-workflow-quickstart",
-        "root"
-      ],
-      "title": "Developer Workflow Quickstart",
-      "topic": "DEVELOPER_WORKFLOW_QUICKSTART"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "diagram-alt-text-policy",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/DIAGRAM_ALT_TEXT_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "diagram-alt-text-policy",
-        "root"
-      ],
-      "title": "Diagram Alt Text Policy",
-      "topic": "DIAGRAM_ALT_TEXT_POLICY"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docker-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docker-governance",
-      "path": "docs/root/DOCKER_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docker-overview",
-        "root"
-      ],
-      "title": "Docker Overview",
-      "topic": "DOCKER_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "faq",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/faq.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "faq",
-        "root"
-      ],
-      "title": "FAQ",
-      "topic": "FAQ"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "glossary",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/glossary.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "glossary",
-        "root"
-      ],
-      "title": "Glossary",
-      "topic": "GLOSSARY"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "glossary-crosslinks",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/GLOSSARY_CROSSLINKS.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "glossary-crosslinks",
-        "root"
-      ],
-      "title": "Glossary Crosslinks",
-      "topic": "GLOSSARY_CROSSLINKS"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "index",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "index",
-        "root"
-      ],
-      "title": "Root Documentation Map",
-      "topic": "INDEX"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "license-explanation",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/LICENSE_EXPLANATION.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "license-explanation",
-        "root"
-      ],
-      "title": "License Explanation",
-      "topic": "LICENSE_EXPLANATION"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "makefiles-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "build-and-release",
-      "path": "docs/root/MAKEFILES_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "makefiles-overview",
-        "root"
-      ],
-      "title": "Makefiles Overview",
-      "topic": "MAKEFILES_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "navigation-policy",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/NAVIGATION_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "navigation-policy",
-        "root"
-      ],
-      "title": "Navigation Policy",
-      "topic": "NAVIGATION_POLICY"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "observability-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "docs/root/OBSERVABILITY_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "observability-overview",
-        "root"
-      ],
-      "title": "Observability Overview",
-      "topic": "OBSERVABILITY_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "ops-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-operations",
-      "path": "docs/root/OPS_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "ops-overview",
-        "root"
-      ],
-      "title": "Ops Overview",
-      "topic": "OPS_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "performance-philosophy",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/PERFORMANCE_PHILOSOPHY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "performance-philosophy",
-        "root"
-      ],
-      "title": "Performance Philosophy",
-      "topic": "PERFORMANCE_PHILOSOPHY"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "release-process-overview",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "build-and-release",
-      "path": "docs/root/RELEASE_PROCESS_OVERVIEW.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "release-process-overview",
-        "root"
-      ],
-      "title": "Release Process Overview",
-      "topic": "RELEASE_PROCESS_OVERVIEW"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "repository-structure",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/REPOSITORY_STRUCTURE.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "repository-structure",
-        "root"
-      ],
-      "title": "Repository Structure",
-      "topic": "REPOSITORY_STRUCTURE"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "reproducibility-guarantees",
-        "root"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/REPRODUCIBILITY_GUARANTEES.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "reproducibility-guarantees",
-        "root"
-      ],
-      "title": "Reproducibility Guarantees",
-      "topic": "REPRODUCIBILITY_GUARANTEES"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "spec",
-      "doc_version": "v1",
-      "keywords": [
-        "root",
-        "schema-index"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/SCHEMA_INDEX.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "root",
-        "schema-index"
-      ],
-      "title": "Schema Index",
-      "topic": "SCHEMA_INDEX"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "root",
-        "security-model"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "bijux-atlas-security",
-      "path": "docs/root/SECURITY_MODEL.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "root",
-        "security-model"
-      ],
-      "title": "Security Model",
-      "topic": "SECURITY_MODEL"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "root",
-        "stability-guarantees"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/STABILITY_GUARANTEES.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "root",
-        "stability-guarantees"
-      ],
-      "title": "Stability Guarantees",
-      "topic": "STABILITY_GUARANTEES"
-    },
-    {
-      "area": "root",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "root",
-        "terminology-rules"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/root/TERMINOLOGY_RULES.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "root",
-        "terminology-rules"
-      ],
-      "title": "Terminology Consistency Rules",
-      "topic": "TERMINOLOGY_RULES"
-    },
-    {
-      "area": "science",
-      "audience": "mixed",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "index",
-        "science"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/science/index.md",
-      "review_due": "2026-08-24",
-      "stability": "evolving",
-      "tags": [
-        "index",
-        "science"
-      ],
-      "title": "Science Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "security",
-      "audience": "mixed",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "index",
-        "security"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/security/index.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "index",
-        "security"
-      ],
-      "title": "Security Index",
-      "topic": "INDEX"
-    },
-    {
-      "area": "start",
-      "audience": "mixed",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "index",
-        "start"
+        "start-here"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
@@ -12408,32 +11745,52 @@
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "index",
-        "start"
+        "start-here"
       ],
-      "title": "Start",
-      "topic": "INDEX"
+      "title": "Start here",
+      "topic": "start-here"
     },
     {
-      "area": "governance/metadata/taxonomy-map.md",
+      "area": "style.md",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",
       "doc_version": "v1",
       "keywords": [
-        "taxonomy-map"
+        "style"
       ],
       "last_reviewed": "2026-02-25",
       "lifecycle": "stable",
       "owner": "docs-governance",
-      "path": "docs/governance/metadata/taxonomy-map.md",
+      "path": "docs/style.md",
       "review_due": "2026-08-24",
       "stability": "stable",
       "tags": [
-        "taxonomy-map"
+        "style"
       ],
-      "title": "Docs Taxonomy Map",
-      "topic": "taxonomy-map"
+      "title": "Documentation Style",
+      "topic": "style"
+    },
+    {
+      "area": "what-to-read-next.md",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "what-to-read-next"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/what-to-read-next.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "what-to-read-next"
+      ],
+      "title": "What to read next",
+      "topic": "what-to-read-next"
     },
     {
       "area": "make",

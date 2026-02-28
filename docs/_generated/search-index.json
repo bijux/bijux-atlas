@@ -3586,6 +3586,156 @@
     },
     {
       "keywords": [
+        "-assets",
+        "index"
+      ],
+      "path": "docs/_assets/index.md",
+      "tags": [
+        "-assets",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "docs-build-model"
+      ],
+      "path": "docs/_meta/docs-build-model.md",
+      "tags": [
+        "-meta",
+        "docs-build-model"
+      ],
+      "topic": "docs-build-model"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "docs-change-process"
+      ],
+      "path": "docs/_meta/docs-change-process.md",
+      "tags": [
+        "-meta",
+        "docs-change-process"
+      ],
+      "topic": "docs-change-process"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "docs-operating-model"
+      ],
+      "path": "docs/_meta/docs-operating-model.md",
+      "tags": [
+        "-meta",
+        "docs-operating-model"
+      ],
+      "topic": "docs-operating-model"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "docs-principles"
+      ],
+      "path": "docs/_meta/docs-principles.md",
+      "tags": [
+        "-meta",
+        "docs-principles"
+      ],
+      "topic": "docs-principles"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "docs-taxonomy-quick-reference"
+      ],
+      "path": "docs/_meta/docs-taxonomy-quick-reference.md",
+      "tags": [
+        "-meta",
+        "docs-taxonomy-quick-reference"
+      ],
+      "topic": "docs-taxonomy-quick-reference"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "generated-artifacts"
+      ],
+      "path": "docs/_meta/generated-artifacts.md",
+      "tags": [
+        "-meta",
+        "generated-artifacts"
+      ],
+      "topic": "generated-artifacts"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "index"
+      ],
+      "path": "docs/_meta/index.md",
+      "tags": [
+        "-meta",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "docs-rewrite-plan",
+        "internal"
+      ],
+      "path": "docs/_meta/internal/docs-rewrite-plan.md",
+      "tags": [
+        "-meta",
+        "docs-rewrite-plan",
+        "internal"
+      ],
+      "topic": "docs-rewrite-plan"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "index",
+        "internal"
+      ],
+      "path": "docs/_meta/internal/index.md",
+      "tags": [
+        "-meta",
+        "index",
+        "internal"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
+        "-meta",
+        "internal",
+        "root-legacy-mapping"
+      ],
+      "path": "docs/_meta/internal/root-legacy-mapping.md",
+      "tags": [
+        "-meta",
+        "internal",
+        "root-legacy-mapping"
+      ],
+      "topic": "root-legacy-mapping"
+    },
+    {
+      "keywords": [
+        "-nav",
+        "index"
+      ],
+      "path": "docs/_nav/index.md",
+      "tags": [
+        "-nav",
+        "index"
+      ],
+      "topic": "index"
+    },
+    {
+      "keywords": [
         "api",
         "caching"
       ],
@@ -3767,6 +3917,30 @@
     {
       "keywords": [
         "architecture",
+        "contract-runtime-mapping"
+      ],
+      "path": "docs/architecture/contract-runtime-mapping.md",
+      "tags": [
+        "architecture",
+        "contract-runtime-mapping"
+      ],
+      "topic": "contract-runtime-mapping"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "crates-map"
+      ],
+      "path": "docs/architecture/crates-map.md",
+      "tags": [
+        "architecture",
+        "crates-map"
+      ],
+      "topic": "crates-map"
+    },
+    {
+      "keywords": [
+        "architecture",
         "dataflow"
       ],
       "path": "docs/architecture/dataflow.md",
@@ -3815,6 +3989,18 @@
     {
       "keywords": [
         "architecture",
+        "layering-rules"
+      ],
+      "path": "docs/architecture/layering-rules.md",
+      "tags": [
+        "architecture",
+        "layering-rules"
+      ],
+      "topic": "layering-rules"
+    },
+    {
+      "keywords": [
+        "architecture",
         "performance-model"
       ],
       "path": "docs/architecture/performance-model.md",
@@ -3823,6 +4009,18 @@
         "performance-model"
       ],
       "topic": "performance-model"
+    },
+    {
+      "keywords": [
+        "architecture",
+        "runtime-data-model"
+      ],
+      "path": "docs/architecture/runtime-data-model.md",
+      "tags": [
+        "architecture",
+        "runtime-data-model"
+      ],
+      "topic": "runtime-data-model"
     },
     {
       "keywords": [
@@ -3923,6 +4121,90 @@
     {
       "keywords": [
         "development",
+        "doc-conventions"
+      ],
+      "path": "docs/development/doc-conventions.md",
+      "tags": [
+        "development",
+        "doc-conventions"
+      ],
+      "topic": "doc-conventions"
+    },
+    {
+      "keywords": [
+        "development",
+        "error-handling-philosophy"
+      ],
+      "path": "docs/development/error-handling-philosophy.md",
+      "tags": [
+        "development",
+        "error-handling-philosophy"
+      ],
+      "topic": "error-handling-philosophy"
+    },
+    {
+      "keywords": [
+        "development",
+        "how-to-add-check"
+      ],
+      "path": "docs/development/how-to-add-check.md",
+      "tags": [
+        "development",
+        "how-to-add-check"
+      ],
+      "topic": "how-to-add-check"
+    },
+    {
+      "keywords": [
+        "development",
+        "how-to-add-cli-command"
+      ],
+      "path": "docs/development/how-to-add-cli-command.md",
+      "tags": [
+        "development",
+        "how-to-add-cli-command"
+      ],
+      "topic": "how-to-add-cli-command"
+    },
+    {
+      "keywords": [
+        "development",
+        "how-to-add-contract-registry"
+      ],
+      "path": "docs/development/how-to-add-contract-registry.md",
+      "tags": [
+        "development",
+        "how-to-add-contract-registry"
+      ],
+      "topic": "how-to-add-contract-registry"
+    },
+    {
+      "keywords": [
+        "development",
+        "how-to-add-gate-policy"
+      ],
+      "path": "docs/development/how-to-add-gate-policy.md",
+      "tags": [
+        "development",
+        "how-to-add-gate-policy"
+      ],
+      "topic": "how-to-add-gate-policy"
+    },
+    {
+      "keywords": [
+        "development",
+        "how-to-change-docs"
+      ],
+      "path": "docs/development/how-to-change-docs.md",
+      "tags": [
+        "development",
+        "how-to-change-docs"
+      ],
+      "topic": "how-to-change-docs"
+    },
+    {
+      "keywords": [
+        "development",
         "index"
       ],
       "path": "docs/development/index.md",
@@ -3947,6 +4229,18 @@
     {
       "keywords": [
         "development",
+        "known-limitations"
+      ],
+      "path": "docs/development/known-limitations.md",
+      "tags": [
+        "development",
+        "known-limitations"
+      ],
+      "topic": "known-limitations"
+    },
+    {
+      "keywords": [
+        "development",
         "repo-layout"
       ],
       "path": "docs/development/repo-layout.md",
@@ -3959,6 +4253,30 @@
     {
       "keywords": [
         "development",
+        "reports-and-ci-consumption"
+      ],
+      "path": "docs/development/reports-and-ci-consumption.md",
+      "tags": [
+        "development",
+        "reports-and-ci-consumption"
+      ],
+      "topic": "reports-and-ci-consumption"
+    },
+    {
+      "keywords": [
+        "development",
+        "runtime-vs-control-plane-vs-ops"
+      ],
+      "path": "docs/development/runtime-vs-control-plane-vs-ops.md",
+      "tags": [
+        "development",
+        "runtime-vs-control-plane-vs-ops"
+      ],
+      "topic": "runtime-vs-control-plane-vs-ops"
+    },
+    {
+      "keywords": [
+        "development",
         "toolchain"
       ],
       "path": "docs/development/toolchain.md",
@@ -3967,6 +4285,18 @@
         "toolchain"
       ],
       "topic": "toolchain"
+    },
+    {
+      "keywords": [
+        "development",
+        "update-pinned-dependencies"
+      ],
+      "path": "docs/development/update-pinned-dependencies.md",
+      "tags": [
+        "development",
+        "update-pinned-dependencies"
+      ],
+      "topic": "update-pinned-dependencies"
     },
     {
       "keywords": [
@@ -4140,6 +4470,18 @@
     },
     {
       "keywords": [
+        "docs-build-publish-model",
+        "governance"
+      ],
+      "path": "docs/governance/docs-build-publish-model.md",
+      "tags": [
+        "docs-build-publish-model",
+        "governance"
+      ],
+      "topic": "docs-build-publish-model"
+    },
+    {
+      "keywords": [
         "docs-charter",
         "governance"
       ],
@@ -4161,6 +4503,18 @@
         "governance"
       ],
       "topic": "docs-contract"
+    },
+    {
+      "keywords": [
+        "docs-dashboard",
+        "governance"
+      ],
+      "path": "docs/governance/docs-dashboard.md",
+      "tags": [
+        "docs-dashboard",
+        "governance"
+      ],
+      "topic": "docs-dashboard"
     },
     {
       "keywords": [
@@ -4236,15 +4590,15 @@
     },
     {
       "keywords": [
-        "docs-rewrite-plan",
+        "docs-search-tips",
         "governance"
       ],
-      "path": "docs/governance/docs-rewrite-plan.md",
+      "path": "docs/governance/docs-search-tips.md",
       "tags": [
-        "docs-rewrite-plan",
+        "docs-search-tips",
         "governance"
       ],
-      "topic": "docs-rewrite-plan"
+      "topic": "docs-search-tips"
     },
     {
       "keywords": [
@@ -4353,14 +4707,26 @@
     {
       "keywords": [
         "governance",
-        "root-legacy-mapping"
+        "readers-guide"
       ],
-      "path": "docs/governance/root-legacy-mapping.md",
+      "path": "docs/governance/readers-guide.md",
       "tags": [
         "governance",
-        "root-legacy-mapping"
+        "readers-guide"
       ],
-      "topic": "root-legacy-mapping"
+      "topic": "readers-guide"
+    },
+    {
+      "keywords": [
+        "governance",
+        "redirects-policy"
+      ],
+      "path": "docs/governance/redirects-policy.md",
+      "tags": [
+        "governance",
+        "redirects-policy"
+      ],
+      "topic": "redirects-policy"
     },
     {
       "keywords": [
@@ -4822,6 +5188,34 @@
     },
     {
       "keywords": [
+        "backup-and-restore",
+        "operations",
+        "release"
+      ],
+      "path": "docs/operations/release/backup-and-restore.md",
+      "tags": [
+        "backup-and-restore",
+        "operations",
+        "release"
+      ],
+      "topic": "backup-and-restore"
+    },
+    {
+      "keywords": [
+        "capacity-planning",
+        "operations",
+        "release"
+      ],
+      "path": "docs/operations/release/capacity-planning.md",
+      "tags": [
+        "capacity-planning",
+        "operations",
+        "release"
+      ],
+      "topic": "capacity-planning"
+    },
+    {
+      "keywords": [
         "index",
         "operations",
         "release"
@@ -4833,6 +5227,34 @@
         "release"
       ],
       "topic": "index"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release",
+        "rollback-procedure"
+      ],
+      "path": "docs/operations/release/rollback-procedure.md",
+      "tags": [
+        "operations",
+        "release",
+        "rollback-procedure"
+      ],
+      "topic": "rollback-procedure"
+    },
+    {
+      "keywords": [
+        "operations",
+        "release",
+        "upgrade-procedure"
+      ],
+      "path": "docs/operations/release/upgrade-procedure.md",
+      "tags": [
+        "operations",
+        "release",
+        "upgrade-procedure"
+      ],
+      "topic": "upgrade-procedure"
     },
     {
       "keywords": [
@@ -4886,20 +5308,6 @@
     },
     {
       "keywords": [
-        "high-memory",
-        "operations",
-        "runbooks"
-      ],
-      "path": "docs/operations/runbooks/high-memory.md",
-      "tags": [
-        "high-memory",
-        "operations",
-        "runbooks"
-      ],
-      "topic": "high-memory"
-    },
-    {
-      "keywords": [
         "incident-playbook",
         "operations",
         "runbooks"
@@ -4939,20 +5347,6 @@
         "runbooks"
       ],
       "topic": "load-failure-triage"
-    },
-    {
-      "keywords": [
-        "operations",
-        "pod-churn",
-        "runbooks"
-      ],
-      "path": "docs/operations/runbooks/pod-churn.md",
-      "tags": [
-        "operations",
-        "pod-churn",
-        "runbooks"
-      ],
-      "topic": "pod-churn"
     },
     {
       "keywords": [
@@ -5023,6 +5417,18 @@
         "traffic-spike"
       ],
       "topic": "traffic-spike"
+    },
+    {
+      "keywords": [
+        "operations",
+        "security-posture"
+      ],
+      "path": "docs/operations/security-posture.md",
+      "tags": [
+        "operations",
+        "security-posture"
+      ],
+      "topic": "security-posture"
     },
     {
       "keywords": [
@@ -5220,6 +5626,18 @@
     },
     {
       "keywords": [
+        "command-inventory",
+        "reference"
+      ],
+      "path": "docs/reference/command-inventory.md",
+      "tags": [
+        "command-inventory",
+        "reference"
+      ],
+      "topic": "command-inventory"
+    },
+    {
+      "keywords": [
         "commands",
         "reference"
       ],
@@ -5369,20 +5787,6 @@
         "reference"
       ],
       "topic": "contract-diff"
-    },
-    {
-      "keywords": [
-        "contracts",
-        "contracts-index",
-        "reference"
-      ],
-      "path": "docs/reference/contracts/contracts-index.md",
-      "tags": [
-        "contracts",
-        "contracts-index",
-        "reference"
-      ],
-      "topic": "contracts-index"
     },
     {
       "keywords": [
@@ -5916,6 +6320,16 @@
     },
     {
       "keywords": [
+        "site-map"
+      ],
+      "path": "docs/site-map.md",
+      "tags": [
+        "site-map"
+      ],
+      "topic": "site-map"
+    },
+    {
+      "keywords": [
         "start-here"
       ],
       "path": "docs/start-here.md",
@@ -5933,6 +6347,16 @@
         "style"
       ],
       "topic": "style"
+    },
+    {
+      "keywords": [
+        "what-to-read-next"
+      ],
+      "path": "docs/what-to-read-next.md",
+      "tags": [
+        "what-to-read-next"
+      ],
+      "topic": "what-to-read-next"
     },
     {
       "keywords": [
@@ -6264,5 +6688,32 @@
     }
   ],
   "schema_version": 1,
-  "synonyms": []
+  "synonyms": [
+    {
+      "matches": [
+        "operations",
+        "runbook"
+      ],
+      "term": "ops"
+    },
+    {
+      "matches": [
+        "command",
+        "subcommand"
+      ],
+      "term": "cli"
+    },
+    {
+      "matches": [
+        "kubernetes"
+      ],
+      "term": "k8s"
+    },
+    {
+      "matches": [
+        "single source of truth"
+      ],
+      "term": "ssot"
+    }
+  ]
 }
