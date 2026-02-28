@@ -6685,27 +6685,6 @@
       "topic": "CONTRACT"
     },
     {
-      "area": "DOCS_REMOVAL_POLICY.md",
-      "audience": "contributors",
-      "crate": null,
-      "doc_type": "concept",
-      "doc_version": "v1",
-      "keywords": [
-        "docs-removal-policy"
-      ],
-      "last_reviewed": "2026-02-25",
-      "lifecycle": "stable",
-      "owner": "docs-governance",
-      "path": "docs/DOCS_REMOVAL_POLICY.md",
-      "review_due": "2026-08-24",
-      "stability": "stable",
-      "tags": [
-        "docs-removal-policy"
-      ],
-      "title": "Docs Removal Policy",
-      "topic": "DOCS_REMOVAL_POLICY"
-    },
-    {
       "area": "OWNERS.md",
       "audience": "contributors",
       "crate": null,
@@ -7110,6 +7089,29 @@
       ],
       "title": "Crate Docs Depth Rubric",
       "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "area": "_style",
+      "audience": "contributors",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-style",
+        "docs-removal-policy"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "internal",
+      "owner": "docs-governance",
+      "path": "docs/_style/docs-removal-policy.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-style",
+        "docs-removal-policy"
+      ],
+      "title": "Docs Removal Policy",
+      "topic": "docs-removal-policy"
     },
     {
       "area": "_style",

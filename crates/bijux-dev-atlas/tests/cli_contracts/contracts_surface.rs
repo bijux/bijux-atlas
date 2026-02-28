@@ -383,6 +383,16 @@ fn contracts_docs_writes_report_artifacts() {
             serde_json::from_str(&fs::read_to_string(path).expect("read report"))
                 .expect("report json");
         assert_eq!(payload["kind"].as_str(), Some(expected_kind));
+        if file_name == "duplication-report.json" {
+            assert!(
+                payload["analyzed_pairs"].as_array().is_some_and(|rows| !rows.is_empty()),
+                "duplication report must include analyzed similarity pairs"
+            );
+            assert!(
+                matches!(payload["status"].as_str(), Some("pass" | "warn")),
+                "duplication report must emit a stable status"
+            );
+        }
     }
 }
 

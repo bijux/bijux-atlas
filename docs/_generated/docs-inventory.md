@@ -284,7 +284,6 @@ License: Apache-2.0
 | `docker/README.md` | `concept` | `docs-governance` | `stable` |
 | `docs/AUTHORS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
-| `docs/DOCS_REMOVAL_POLICY.md` | `concept` | `docs-governance` | `stable` |
 | `docs/OWNERS.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_DESCRIPTION_SNIPPET.md` | `concept` | `docs-governance` | `stable` |
 | `docs/PROJECT_IDENTITY.md` | `concept` | `docs-governance` | `stable` |
@@ -303,6 +302,7 @@ License: Apache-2.0
 | `docs/_style/INDEX.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_style/concept-ids.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_style/crate-docs-depth-rubric.md` | `concept` | `docs-governance` | `stable` |
+| `docs/_style/docs-removal-policy.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_style/docs-review-checklist.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_style/naming-standard.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_style/placement.md` | `concept` | `docs-governance` | `stable` |

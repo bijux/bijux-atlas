@@ -1403,11 +1403,6 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docs/DOCS_REMOVAL_POLICY.md"
-    },
-    {
-      "crate": null,
-      "doc_type": "concept",
       "from": "docs/OWNERS.md"
     },
     {
@@ -1494,6 +1489,11 @@
       "crate": null,
       "doc_type": "concept",
       "from": "docs/_style/crate-docs-depth-rubric.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
+      "from": "docs/_style/docs-removal-policy.md"
     },
     {
       "crate": null,

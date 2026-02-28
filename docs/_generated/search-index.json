@@ -3606,16 +3606,6 @@
     },
     {
       "keywords": [
-        "docs-removal-policy"
-      ],
-      "path": "docs/DOCS_REMOVAL_POLICY.md",
-      "tags": [
-        "docs-removal-policy"
-      ],
-      "topic": "DOCS_REMOVAL_POLICY"
-    },
-    {
-      "keywords": [
         "owners"
       ],
       "path": "docs/OWNERS.md",
@@ -3821,6 +3811,18 @@
         "crate-docs-depth-rubric"
       ],
       "topic": "crate-docs-depth-rubric"
+    },
+    {
+      "keywords": [
+        "-style",
+        "docs-removal-policy"
+      ],
+      "path": "docs/_style/docs-removal-policy.md",
+      "tags": [
+        "-style",
+        "docs-removal-policy"
+      ],
+      "topic": "docs-removal-policy"
     },
     {
       "keywords": [

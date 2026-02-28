@@ -113,6 +113,8 @@ fn generated_docs_surface_is_committed_and_non_empty() {
         "docs/_generated/command-index.json",
         "docs/_generated/schema-index.json",
         "docs/_generated/docs-quality-dashboard.json",
+        "docs/_generated/concept-registry.json",
+        "docs/_generated/concept-registry.md",
         "docs/_generated/make-targets.md",
     ] {
         let path = root.join(rel);
@@ -340,6 +342,28 @@ fn concept_registry_exists_and_points_to_a_canonical_map() {
 }
 
 #[test]
+fn concept_registry_generated_outputs_match_the_canonical_yaml() {
+    let root = repo_root();
+    let generated = load_json(&root.join("docs/_generated/concept-registry.json"));
+    let rows = generated["rows"].as_array().expect("rows array");
+    assert!(!rows.is_empty(), "concept registry output must not be empty");
+    let markdown = read(&root.join("docs/_generated/concept-registry.md"));
+    for row in rows {
+        let id = row["id"].as_str().expect("concept id");
+        let canonical = row["canonical"].as_str().expect("canonical");
+        assert!(root.join(canonical).exists(), "canonical concept page must exist: {canonical}");
+        assert!(
+            markdown.contains(id) && markdown.contains(canonical),
+            "generated concept registry page must include `{id}` and `{canonical}`"
+        );
+        for pointer in row["pointers"].as_array().into_iter().flatten() {
+            let pointer = pointer.as_str().expect("pointer");
+            assert!(root.join(pointer).exists(), "concept pointer page must exist: {pointer}");
+        }
+    }
+}
+
+#[test]
 fn docs_front_matter_index_matches_registry_metadata_contract() {
     let root = repo_root();
     let index = load_json(&root.join("docs/metadata/front-matter.index.json"));
@@ -438,7 +462,7 @@ fn docs_growth_budget_and_removal_policy_are_committed() {
         count,
         max
     );
-    let removal = read(&root.join("docs/DOCS_REMOVAL_POLICY.md"));
+    let removal = read(&root.join("docs/_style/docs-removal-policy.md"));
     for required in [
         "Deleting docs is allowed",
         "Adding new stable docs requires explicit justification",
@@ -612,7 +636,7 @@ fn governance_docs_keep_tagged_code_blocks() {
     let root = repo_root();
     let mut violations = Vec::new();
     for rel in [
-        "docs/DOCS_REMOVAL_POLICY.md",
+        "docs/_style/docs-removal-policy.md",
         "docs/operations/runbook-template.md",
         "docs/architecture/decision-template.md",
     ] {

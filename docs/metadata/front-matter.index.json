@@ -2242,14 +2242,6 @@
       "title": "Docs Contract"
     },
     {
-      "area": "DOCS_REMOVAL_POLICY.md",
-      "audience": "contributors",
-      "owner": "docs-governance",
-      "path": "docs/DOCS_REMOVAL_POLICY.md",
-      "stability": "stable",
-      "title": "Docs Removal Policy"
-    },
-    {
       "area": "OWNERS.md",
       "audience": "contributors",
       "owner": "docs-governance",
@@ -2392,6 +2384,14 @@
       "path": "docs/_style/crate-docs-depth-rubric.md",
       "stability": "stable",
       "title": "Crate Docs Depth Rubric"
+    },
+    {
+      "area": "_style",
+      "audience": "contributors",
+      "owner": "docs-governance",
+      "path": "docs/_style/docs-removal-policy.md",
+      "stability": "stable",
+      "title": "Docs Removal Policy"
     },
     {
       "area": "_style",

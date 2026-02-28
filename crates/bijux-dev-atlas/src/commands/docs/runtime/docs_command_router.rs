@@ -1,5 +1,49 @@
 use std::io::{self, Write};
 
+#[derive(serde::Deserialize)]
+struct DocsConceptRegistry {
+    concepts: Vec<DocsConceptRow>,
+}
+
+#[derive(serde::Deserialize)]
+struct DocsConceptRow {
+    id: String,
+    canonical: String,
+    #[serde(default)]
+    pointers: Vec<String>,
+}
+
+fn load_docs_concepts(repo_root: &std::path::Path) -> Result<Vec<DocsConceptRow>, String> {
+    let path = repo_root.join("docs/_style/concepts.yml");
+    let text =
+        fs::read_to_string(&path).map_err(|e| format!("failed to read {}: {e}", path.display()))?;
+    let payload: DocsConceptRegistry = serde_yaml::from_str(&text)
+        .map_err(|e| format!("failed to parse {}: {e}", path.display()))?;
+    Ok(payload.concepts)
+}
+
+fn render_concept_registry_markdown(rows: &[DocsConceptRow]) -> String {
+    let mut out = String::from("# Concept Registry\n\n");
+    out.push_str("Generated from `docs/_style/concepts.yml`.\n\n");
+    out.push_str("| Concept ID | Canonical Page | Pointer Pages |\n|---|---|---|\n");
+    for row in rows {
+        let pointers = if row.pointers.is_empty() {
+            "`none`".to_string()
+        } else {
+            row.pointers
+                .iter()
+                .map(|pointer| format!("`{pointer}`"))
+                .collect::<Vec<_>>()
+                .join(", ")
+        };
+        out.push_str(&format!(
+            "| `{}` | `{}` | {} |\n",
+            row.id, row.canonical, pointers
+        ));
+    }
+    out
+}
+
 pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
     let run = (|| -> Result<(String, i32), String> {
         let started = std::time::Instant::now();
@@ -506,6 +550,26 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             .map_err(|e| format!("docs quality dashboard encode failed: {e}"))?,
                         )
                         .map_err(|e| format!("write docs quality dashboard failed: {e}"))?;
+                        let concept_rows = load_docs_concepts(&ctx.repo_root)?;
+                        fs::write(
+                            generated_dir.join("concept-registry.json"),
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "schema_version": 1,
+                                "source": "docs/_style/concepts.yml",
+                                "rows": concept_rows.iter().map(|row| serde_json::json!({
+                                    "id": row.id,
+                                    "canonical": row.canonical,
+                                    "pointers": row.pointers,
+                                })).collect::<Vec<_>>()
+                            }))
+                            .map_err(|e| format!("concept registry encode failed: {e}"))?,
+                        )
+                        .map_err(|e| format!("write concept registry failed: {e}"))?;
+                        fs::write(
+                            generated_dir.join("concept-registry.md"),
+                            render_concept_registry_markdown(&concept_rows),
+                        )
+                        .map_err(|e| format!("write concept registry page failed: {e}"))?;
                     }
                     let payload = serde_json::json!({
                         "schema_version": 1,
@@ -537,6 +601,8 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                             "command_index": "docs/_generated/command-index.json",
                             "schema_index": "docs/_generated/schema-index.json",
                             "docs_quality_dashboard": "docs/_generated/docs-quality-dashboard.json",
+                            "concept_registry": "docs/_generated/concept-registry.json",
+                            "concept_registry_page": "docs/_generated/concept-registry.md",
                             "generated_make_targets": "docs/_generated/make-targets.md"
                         },
                         "changes_summary": {

@@ -209,6 +209,7 @@ fn docs_metadata_coverage_report(ctx: &RunContext) -> serde_json::Value {
 
 fn docs_duplication_report(ctx: &RunContext) -> serde_json::Value {
     let mut by_title = std::collections::BTreeMap::<String, Vec<String>>::new();
+    let mut fingerprints = Vec::<(String, std::collections::BTreeSet<String>)>::new();
     for path in docs_markdown_files(ctx) {
         let Ok(contents) = std::fs::read_to_string(&path) else {
             continue;
@@ -224,7 +225,16 @@ fn docs_duplication_report(ctx: &RunContext) -> serde_json::Value {
         else {
             continue;
         };
-        by_title.entry(normalized).or_default().push(relative);
+        by_title
+            .entry(normalized)
+            .or_default()
+            .push(relative.clone());
+        let token_set = contents
+            .split(|ch: char| !ch.is_ascii_alphanumeric())
+            .filter(|token| token.len() >= 5)
+            .map(|token| token.to_ascii_lowercase())
+            .collect::<std::collections::BTreeSet<_>>();
+        fingerprints.push((relative, token_set));
     }
     let mut duplicates = Vec::new();
     for (title, mut files) in by_title {
@@ -237,10 +247,49 @@ fn docs_duplication_report(ctx: &RunContext) -> serde_json::Value {
             }));
         }
     }
+    fingerprints.sort_by(|a, b| a.0.cmp(&b.0));
+    let mut analyzed_pairs = Vec::new();
+    for left in 0..fingerprints.len() {
+        for right in (left + 1)..fingerprints.len() {
+            let (left_path, left_tokens) = &fingerprints[left];
+            let (right_path, right_tokens) = &fingerprints[right];
+            if left_tokens.is_empty() || right_tokens.is_empty() {
+                continue;
+            }
+            let overlap = left_tokens.intersection(right_tokens).count();
+            if overlap == 0 {
+                continue;
+            }
+            let union = left_tokens.union(right_tokens).count();
+            if union == 0 {
+                continue;
+            }
+            let similarity = overlap as f64 / union as f64;
+            if similarity < 0.35 {
+                continue;
+            }
+            analyzed_pairs.push(serde_json::json!({
+                "left": left_path,
+                "right": right_path,
+                "shared_token_count": overlap,
+                "similarity": ((similarity * 1000.0).round() / 1000.0),
+            }));
+        }
+    }
+    analyzed_pairs.sort_by(|a, b| {
+        b["similarity"]
+            .as_f64()
+            .partial_cmp(&a["similarity"].as_f64())
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then(a["left"].as_str().cmp(&b["left"].as_str()))
+            .then(a["right"].as_str().cmp(&b["right"].as_str()))
+    });
     serde_json::json!({
         "schema_version": 1,
         "kind": "docs_duplication",
-        "duplicate_titles": duplicates
+        "status": if duplicates.is_empty() { "pass" } else { "warn" },
+        "duplicate_titles": duplicates,
+        "analyzed_pairs": analyzed_pairs.into_iter().take(50).collect::<Vec<_>>()
     })
 }
 

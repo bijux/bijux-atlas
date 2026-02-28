@@ -227,9 +227,6 @@
     "DOCS_QUALITY_POLICY": [
       "docs/governance/DOCS_QUALITY_POLICY.md"
     ],
-    "DOCS_REMOVAL_POLICY": [
-      "docs/DOCS_REMOVAL_POLICY.md"
-    ],
     "DOCS_STRUCTURE_FREEZE": [
       "docs/operations/DOCS_STRUCTURE_FREEZE.md"
     ],
@@ -962,6 +959,9 @@
     ],
     "docs-governance": [
       ".github/PULL_REQUEST_TEMPLATE/docs-governance.md"
+    ],
+    "docs-removal-policy": [
+      "docs/_style/docs-removal-policy.md"
     ],
     "docs-review-checklist": [
       "docs/_style/docs-review-checklist.md"

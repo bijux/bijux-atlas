@@ -61,7 +61,6 @@
 | `DOCS_OWNERSHIP` | `docs/governance/DOCS_OWNERSHIP.md` |
 | `DOCS_PHILOSOPHY` | `docs/root/DOCS_PHILOSOPHY.md` |
 | `DOCS_QUALITY_POLICY` | `docs/governance/DOCS_QUALITY_POLICY.md` |
-| `DOCS_REMOVAL_POLICY` | `docs/DOCS_REMOVAL_POLICY.md` |
 | `DOCS_STRUCTURE_FREEZE` | `docs/operations/DOCS_STRUCTURE_FREEZE.md` |
 | `ENGINE_CONTRACT` | `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` |
 | `ENSEMBL_LAYOUT` | `crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md` |
@@ -249,6 +248,7 @@
 | `directory-contract` | `docs/contracts/artifacts/directory-contract.md` |
 | `docs-depth-contract` | `docs/development/docs-depth-contract.md` |
 | `docs-governance` | `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` |
+| `docs-removal-policy` | `docs/_style/docs-removal-policy.md` |
 | `docs-review-checklist` | `docs/_style/docs-review-checklist.md` |
 | `draft` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/_drafts/draft.md` |
 | `drills` | `docs/operations/observability/drills.md, docs/operations/reference/drills.md` |

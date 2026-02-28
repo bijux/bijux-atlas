@@ -2505,13 +2505,6 @@
     {
       "breadcrumbs": [
         "docs",
-        "docs/DOCS_REMOVAL_POLICY.md"
-      ],
-      "path": "docs/DOCS_REMOVAL_POLICY.md"
-    },
-    {
-      "breadcrumbs": [
-        "docs",
         "docs/OWNERS.md"
       ],
       "path": "docs/OWNERS.md"
@@ -2648,6 +2641,14 @@
         "docs/_style/crate-docs-depth-rubric.md"
       ],
       "path": "docs/_style/crate-docs-depth-rubric.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_style",
+        "docs/_style/docs-removal-policy.md"
+      ],
+      "path": "docs/_style/docs-removal-policy.md"
     },
     {
       "breadcrumbs": [
