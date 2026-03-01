@@ -14,9 +14,9 @@ Canonical ops schemas. Generated and validation tooling should reference this di
 
 ## Governance Policies
 
-- `ops/schema/VERSIONING_POLICY.md`: schema versioning and compatibility policy.
-- `ops/schema/BUDGET_POLICY.md`: schema count growth budget policy.
-- `ops/schema/SCHEMA_BUDGET_EXCEPTIONS.md`: approved cap exceptions with rationale.
-- `ops/schema/SCHEMA_REFERENCE_ALLOWLIST.md`: documented non-runtime schema references.
+- `docs/reference/ops-schema/versioning-policy.md`: schema versioning and compatibility policy.
+- `docs/reference/ops-schema/budget-policy.md`: schema count growth budget policy.
+- `docs/reference/ops-schema/budget-exceptions.md`: approved cap exceptions with rationale.
+- `docs/reference/ops-schema/schema-reference-allowlist.md`: documented non-runtime schema references.
 
 Placeholder extension directories tracked with `.gitkeep`: `ops/schema`, `ops/schema/generated`, `ops/schema/inventory`.

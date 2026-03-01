@@ -37,6 +37,8 @@ related:
 ## What This Page Is Not
 
 This page is not a command reference and not an architecture deep dive.
+Operational policies are enforced by contracts such as `OPS-ROOT-023` and `OPS-ROOT-017`.
+The docs surface stays in `docs/operations/**`; contract sources stay in `docs/_internal/contracts/**`.
 
 ## Verify Success
 

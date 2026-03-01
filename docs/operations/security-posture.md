@@ -15,17 +15,20 @@ Use this page to validate the security baseline before and after deployment chan
 
 - Service accounts must use least privilege roles.
 - Cluster-scoped permissions require explicit review evidence.
+- Contract reference: `OPS-K8S-005`.
 
 ## Secrets
 
 - Secrets must be provided by approved secret stores.
 - No plaintext credentials in values files or docs examples.
+- Contract reference: `OPS-ROOT-023`.
 
 ## Network policies
 
 - Ingress and egress are deny-by-default except approved service flows.
 - Observability egress endpoints must be explicitly listed.
 - Minimal privileges apply to service accounts, secrets access, and chart-provided RBAC bindings.
+- Contract reference: `OPS-K8S-004`.
 
 ## Verify success
 
