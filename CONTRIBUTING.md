@@ -26,4 +26,4 @@ Canonical source: `docs/_internal/contracts/repo-laws.json`.
 - `make check`
 
 ## Ownership
-See `.github/CODEOWNERS` and `REPO_MAP.md`.
+See `.github/CODEOWNERS` and `docs/reference/repo-map.md`.

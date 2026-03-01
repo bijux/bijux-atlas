@@ -1,4 +1,4 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
@@ -14,7 +14,6 @@ const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
     "LICENSE",
     "Makefile",
     "README.md",
-    "REPO_MAP.md",
     "SECURITY.md",
     "configs",
     "crates",
