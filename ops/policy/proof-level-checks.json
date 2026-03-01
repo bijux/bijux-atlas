@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "proof_level_checks",
+  "proof_level_check_ids": [
+    "checks_root_no_committed_artifacts",
+    "checks_root_readme_link_budget_and_repo_map_link",
+    "checks_repo_generated_content_stays_in_allowed_paths",
+    "checks_repo_law_metadata_complete_and_unique",
+    "checks_workflows_rust_toolchain_matches_repo_pin",
+    "checks_root_surface_manifest_consistency",
+    "checks_docs_markdown_link_targets_exist",
+    "checks_docs_index_links",
+    "checks_ops_inventory_contract_integrity",
+    "checks_ops_fixture_governance"
+  ]
+}

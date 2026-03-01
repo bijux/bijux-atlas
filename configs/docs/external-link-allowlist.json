@@ -5,21 +5,25 @@
     {
       "pattern": "http://127.0.0.1:",
       "reason": "local verification examples in docs",
+      "owner": "docs-governance",
       "expires_on": "2026-12-31"
     },
     {
       "pattern": "http://localhost:",
       "reason": "local verification examples in docs",
+      "owner": "docs-governance",
       "expires_on": "2026-12-31"
     },
     {
       "pattern": "https://...",
       "reason": "placeholder protocol example in docs text",
+      "owner": "docs-governance",
       "expires_on": "2026-06-30"
     },
     {
       "pattern": "http://...",
       "reason": "placeholder protocol example in docs text",
+      "owner": "docs-governance",
       "expires_on": "2026-06-30"
     }
   ]

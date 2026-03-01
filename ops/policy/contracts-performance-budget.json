@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "kind": "contracts_performance_budget",
+  "budgets_ms": {
+    "runtime": 180000,
+    "control_plane": 180000,
+    "configs": 180000,
+    "make": 180000,
+    "docker": 180000,
+    "ops": 240000,
+    "root": 120000
+  },
+  "waivers": []
+}

@@ -57,6 +57,4 @@ nav:
   - Control-plane: control-plane/index.md
   - Development:
       - Overview: development/index.md
-      - Docs governance: _internal/governance/index.md
-      - Docs Dashboard: _internal/governance/docs-dashboard.md
   - Reference: reference/index.md

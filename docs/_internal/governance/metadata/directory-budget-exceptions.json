@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "docs_directory_budget_exceptions",
+  "max_files": 10,
+  "max_subdirs": 10,
+  "exceptions": [
+    {"path": "docs/_internal/governance", "owner": "docs-governance", "expires_on": "2026-09-30", "reason": "consolidation in progress"},
+    {"path": "docs/_internal/governance/metadata", "owner": "docs-governance", "expires_on": "2026-09-30", "reason": "metadata flattening backlog"},
+    {"path": "docs/development", "owner": "platform", "expires_on": "2026-09-30", "reason": "reader track consolidation backlog"},
+    {"path": "docs/product", "owner": "product", "expires_on": "2026-09-30", "reason": "single spine merge backlog"},
+    {"path": "docs/operations", "owner": "bijux-atlas-operations", "expires_on": "2026-09-30", "reason": "ops runbook consolidation backlog"},
+    {"path": "docs/architecture", "owner": "architecture", "expires_on": "2026-09-30", "reason": "architecture page merge backlog"},
+    {"path": "docs/api", "owner": "api-contracts", "expires_on": "2026-09-30", "reason": "api guide merge backlog"},
+    {"path": "docs/reference", "owner": "docs-governance", "expires_on": "2026-09-30", "reason": "reference split cleanup backlog"},
+    {"path": "docs/reference/contracts/schemas", "owner": "docs-governance", "expires_on": "2026-09-30", "reason": "schema index extraction backlog"},
+    {"path": "docs/reference/registry", "owner": "docs-governance", "expires_on": "2026-09-30", "reason": "registry reference merge backlog"},
+    {"path": "docs/control-plane", "owner": "platform", "expires_on": "2026-09-30", "reason": "control-plane page merge backlog"}
+  ]
+}
