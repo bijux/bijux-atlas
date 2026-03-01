@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "generated_by": "manual curated policy",
+  "entries": [
+    {
+      "pattern": "http://127.0.0.1:",
+      "reason": "local verification examples in docs",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "pattern": "http://localhost:",
+      "reason": "local verification examples in docs",
+      "expires_on": "2026-12-31"
+    },
+    {
+      "pattern": "https://...",
+      "reason": "placeholder protocol example in docs text",
+      "expires_on": "2026-06-30"
+    },
+    {
+      "pattern": "http://...",
+      "reason": "placeholder protocol example in docs text",
+      "expires_on": "2026-06-30"
+    }
+  ]
+}

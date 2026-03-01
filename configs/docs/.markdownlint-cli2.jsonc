@@ -1,19 +1,19 @@
 {
   "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint-cli2/main/schema/markdownlint-cli2-config-schema.json",
-  "globs": [
-    "docs/operations/*.md",
-    "docs/operations/reference/*.md",
-    "ops/*.md"
-  ],
   "ignores": [
-    "docs/_generated/**",
-    "ops/_generated.example/**"
+    "../../docs/_generated/**",
+    "../../docs/_drafts/**",
+    "../../docs/_nav/**",
+    "../../ops/_generated.example/**"
   ],
   "config": {
+    "MD009": false,
+    "MD012": false,
     "MD013": false,
     "MD014": false,
     "MD022": false,
     "MD029": false,
+    "MD031": false,
     "MD032": false,
     "MD033": false,
     "MD041": false

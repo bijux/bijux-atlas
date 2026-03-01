@@ -12,7 +12,7 @@
 | `local` | `make ci-fast` | `check run --suite ci_fast --format json` | short feedback loop before pushing | cheap |
 | `pr` | `make ci-pr` | `check run --suite ci_pr --format json` | merge-blocking pull-request validation | medium |
 | `nightly` | `make ci-nightly` | `check run --suite ci_nightly --include-internal --include-slow --format json` | broad regression and expensive checks | expensive |
-| `release` | `cargo run -q -p bijux-dev-atlas -- contracts ops --lane release --profile ci --required --format json` | release-readiness evidence and contract enforcement | expensive |
+| `release` | `make contracts-release` | `cargo run -q -p bijux-dev-atlas -- contracts ops --lane release --profile ci --required --format json` | release-readiness evidence and contract enforcement | expensive |
 
 ## Selection rules
 

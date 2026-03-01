@@ -61,6 +61,11 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix configs/docs run -s markdownlint
+      - name: Run docs external link check
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm --prefix configs/docs run -s link-check
       - name: Run docs spelling checks
         shell: bash
         run: |

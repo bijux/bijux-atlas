@@ -5,7 +5,8 @@
   "description": "Pinned docs lint and spelling tooling for CI",
   "license": "Apache-2.0",
   "scripts": {
-    "markdownlint": "markdownlint-cli2 \"../../docs/operations/*.md\" \"../../docs/operations/reference/*.md\" \"../../ops/*.md\"",
+    "markdownlint": "markdownlint-cli2 \"../../docs/**/*.md\" \"../../ops/**/*.md\"",
+    "link-check": "python3 ../../scripts/docs/check_external_links.py --docs-root ../../docs --allowlist external-link-allowlist.json",
     "cspell": "cspell lint --config cspell.config.json \"../../docs/operations/*.md\" \"../../docs/operations/reference/*.md\" \"../../ops/*.md\""
   },
   "devDependencies": {
