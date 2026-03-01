@@ -43,6 +43,45 @@ fn test_root_029_no_nested_git(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_030_no_vendor_blobs(ctx: &RunContext) -> TestResult {
+    fn collect(
+        dir: &std::path::Path,
+        root: &std::path::Path,
+        violations: &mut Vec<Violation>,
+    ) {
+        let entries = match std::fs::read_dir(dir) {
+            Ok(entries) => entries,
+            Err(_) => return,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path.is_dir() {
+                continue;
+            }
+            let rel = path
+                .strip_prefix(root)
+                .map(|value| value.display().to_string())
+                .unwrap_or_else(|_| path.display().to_string());
+            let name = entry.file_name().to_string_lossy().to_ascii_lowercase();
+            if name == ".git" || name == ".idea" || name == "target" || name == "artifacts" {
+                continue;
+            }
+            if name == "third_party" {
+                continue;
+            }
+            if name == "vendor" {
+                push_root_violation(
+                    violations,
+                    "ROOT-030",
+                    "root.surface.no_vendor_blobs",
+                    Some(rel),
+                    "vendor directories are forbidden outside the allowlisted third_party/ tree",
+                );
+                continue;
+            }
+            collect(&path, root, violations);
+        }
+    }
+
     let mut violations = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {
         Ok(entries) => entries,
@@ -60,16 +99,17 @@ fn test_root_030_no_vendor_blobs(ctx: &RunContext) -> TestResult {
     for entry in entries.flatten() {
         let name = entry.file_name().to_string_lossy().to_string();
         let lower = name.to_ascii_lowercase();
-        if lower == "vendor" || lower.starts_with("vendor-") || lower.ends_with("-vendor") {
+        if lower == "vendor" {
             push_root_violation(
                 &mut violations,
                 "ROOT-030",
                 "root.surface.no_vendor_blobs",
                 Some(name),
-                "vendor directories and blobs are forbidden at the repo root",
+                "vendor directories are forbidden outside the allowlisted third_party/ tree",
             );
         }
     }
+    collect(&ctx.repo_root, &ctx.repo_root, &mut violations);
     if violations.is_empty() {
         TestResult::Pass
     } else {
@@ -312,13 +352,37 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
             let path = entry.path();
             let name = entry.file_name().to_string_lossy().to_string();
             if path.is_dir() {
-                if name == ".git" || name == ".idea" || name == "artifacts" || name == "target" {
+                if name == ".git" || name == ".idea" {
+                    continue;
+                }
+                if name == "node_modules" {
+                    let rel = path
+                        .strip_prefix(root)
+                        .map(|value| value.display().to_string())
+                        .unwrap_or_else(|_| path.display().to_string());
+                    violations.push(Violation {
+                        contract_id: "ROOT-037".to_string(),
+                        test_id: "root.surface.no_editor_backup_noise".to_string(),
+                        file: Some(rel),
+                        line: None,
+                        message: "node_modules directories are forbidden in the repository tree"
+                            .to_string(),
+                        evidence: None,
+                    });
                     continue;
                 }
                 collect(&path, root, violations);
                 continue;
             }
-            let forbidden = name == ".DS_Store" || name.ends_with(".orig") || name.ends_with('~');
+            let forbidden = name == ".DS_Store"
+                || name.ends_with(".orig")
+                || name.ends_with('~')
+                || (name.ends_with(".log")
+                    && !path
+                        .strip_prefix(root)
+                        .ok()
+                        .map(|value| value.to_string_lossy().starts_with("artifacts/run/"))
+                        .unwrap_or(false));
             if forbidden {
                 let rel = path
                     .strip_prefix(root)
@@ -335,8 +399,81 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
             }
         }
     }
+
     let mut violations = Vec::new();
     collect(&ctx.repo_root, &ctx.repo_root, &mut violations);
+
+    let git_output = std::process::Command::new("git")
+        .current_dir(&ctx.repo_root)
+        .args(["ls-files", "target"])
+        .output();
+    match git_output {
+        Ok(output) => {
+            if output.status.success() {
+                let tracked_output = String::from_utf8_lossy(&output.stdout).into_owned();
+                for path in tracked_output.lines().map(str::trim).filter(|line| !line.is_empty()) {
+                    violations.push(Violation {
+                        contract_id: "ROOT-037".to_string(),
+                        test_id: "root.surface.no_editor_backup_noise".to_string(),
+                        file: Some(path.to_string()),
+                        line: None,
+                        message: "tracked files under target/ are forbidden".to_string(),
+                        evidence: None,
+                    });
+                }
+            }
+        }
+        Err(err) => violations.push(Violation {
+            contract_id: "ROOT-037".to_string(),
+            test_id: "root.surface.no_editor_backup_noise".to_string(),
+            file: Some("target".to_string()),
+            line: None,
+            message: format!("git ls-files target failed: {err}"),
+            evidence: None,
+        }),
+    }
+
+    let tracked_files_output = std::process::Command::new("git")
+        .current_dir(&ctx.repo_root)
+        .args(["ls-files"])
+        .output();
+    match tracked_files_output {
+        Ok(output) => {
+            if output.status.success() {
+                let tracked_output = String::from_utf8_lossy(&output.stdout).into_owned();
+                for path in tracked_output.lines().map(str::trim).filter(|line| !line.is_empty()) {
+                    let file = ctx.repo_root.join(path);
+                    let metadata = match std::fs::metadata(&file) {
+                        Ok(metadata) => metadata,
+                        Err(_) => continue,
+                    };
+                    #[cfg(unix)]
+                    let is_executable = metadata.permissions().mode() & 0o111 != 0;
+                    #[cfg(not(unix))]
+                    let is_executable = false;
+                    if is_executable {
+                        violations.push(Violation {
+                            contract_id: "ROOT-037".to_string(),
+                            test_id: "root.surface.no_editor_backup_noise".to_string(),
+                            file: Some(path.to_string()),
+                            line: None,
+                            message: "tracked executable files (+x) are forbidden".to_string(),
+                            evidence: None,
+                        });
+                    }
+                }
+            }
+        }
+        Err(err) => violations.push(Violation {
+            contract_id: "ROOT-037".to_string(),
+            test_id: "root.surface.no_editor_backup_noise".to_string(),
+            file: Some(".git".to_string()),
+            line: None,
+            message: format!("git ls-files failed while checking executable mode: {err}"),
+            evidence: None,
+        }),
+    }
+
     if violations.is_empty() {
         TestResult::Pass
     } else {
@@ -372,4 +509,3 @@ fn test_root_038_gitattributes_line_endings(ctx: &RunContext) -> TestResult {
         }])
     }
 }
-
