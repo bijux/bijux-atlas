@@ -1448,6 +1448,11 @@
     {
       "crate": null,
       "doc_type": "concept",
+      "from": "docs/_internal/generated-artifacts.md"
+    },
+    {
+      "crate": null,
+      "doc_type": "concept",
       "from": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"
     },
     {

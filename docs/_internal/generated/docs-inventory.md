@@ -293,6 +293,7 @@ License: Apache-2.0
 | `docs/_internal/contracts/make/README.md` | `spec` | `docs-governance` | `stable` |
 | `docs/_internal/contracts/ops/README.md` | `spec` | `docs-governance` | `stable` |
 | `docs/_internal/contracts/repo-laws.md` | `spec` | `docs-governance` | `stable` |
+| `docs/_internal/generated-artifacts.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md` | `concept` | `docs-governance` | `stable` |
 | `docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md` | `concept` | `docs-governance` | `stable` |

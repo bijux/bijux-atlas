@@ -3843,6 +3843,18 @@
     {
       "keywords": [
         "-internal",
+        "generated-artifacts"
+      ],
+      "path": "docs/_internal/generated-artifacts.md",
+      "tags": [
+        "-internal",
+        "generated-artifacts"
+      ],
+      "topic": "generated-artifacts"
+    },
+    {
+      "keywords": [
+        "-internal",
         "adr-0001-workspace-boundaries-and-effects",
         "adrs",
         "governance"

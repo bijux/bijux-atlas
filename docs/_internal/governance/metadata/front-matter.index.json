@@ -2315,6 +2315,14 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "owner": "docs-governance",
+      "path": "docs/_internal/generated-artifacts.md",
+      "stability": "stable",
+      "title": "Generated artifacts"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "owner": "docs-governance",
       "path": "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",

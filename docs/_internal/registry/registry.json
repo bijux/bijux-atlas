@@ -7021,6 +7021,29 @@
     },
     {
       "area": "_internal",
+      "audience": "contributor",
+      "crate": null,
+      "doc_type": "concept",
+      "doc_version": "v1",
+      "keywords": [
+        "-internal",
+        "generated-artifacts"
+      ],
+      "last_reviewed": "2026-02-25",
+      "lifecycle": "stable",
+      "owner": "docs-governance",
+      "path": "docs/_internal/generated-artifacts.md",
+      "review_due": "2026-08-24",
+      "stability": "stable",
+      "tags": [
+        "-internal",
+        "generated-artifacts"
+      ],
+      "title": "Generated artifacts",
+      "topic": "generated-artifacts"
+    },
+    {
+      "area": "_internal",
       "audience": "contributors",
       "crate": null,
       "doc_type": "concept",

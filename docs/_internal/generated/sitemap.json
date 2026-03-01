@@ -289,6 +289,7 @@
     "docs/_internal/contracts/make/README.md",
     "docs/_internal/contracts/ops/README.md",
     "docs/_internal/contracts/repo-laws.md",
+    "docs/_internal/generated-artifacts.md",
     "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md",
     "docs/_internal/governance/adrs/adr-0002-sqlite-serving-store.md",
     "docs/_internal/governance/adrs/adr-0003-federated-registry-deterministic-merge.md",

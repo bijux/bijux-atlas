@@ -2665,6 +2665,14 @@
       "breadcrumbs": [
         "docs",
         "docs/_internal",
+        "docs/_internal/generated-artifacts.md"
+      ],
+      "path": "docs/_internal/generated-artifacts.md"
+    },
+    {
+      "breadcrumbs": [
+        "docs",
+        "docs/_internal",
         "docs/_internal/governance",
         "docs/_internal/governance/adrs",
         "docs/_internal/governance/adrs/adr-0001-workspace-boundaries-and-effects.md"

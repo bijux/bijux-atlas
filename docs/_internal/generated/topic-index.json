@@ -721,6 +721,7 @@
       "crates/bijux-atlas-core/docs/formatting.md"
     ],
     "generated-artifacts": [
+      "docs/_internal/generated-artifacts.md",
       "docs/_internal/meta/generated-artifacts.md"
     ],
     "generated-content-policy": [

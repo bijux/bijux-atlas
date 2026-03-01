@@ -32,6 +32,7 @@
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `exit-codes` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes-reference` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `failure-modes` appears 4 times",
+    "DOCS_REGISTRY_DUPLICATE_TOPIC: `generated-artifacts` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `index` appears 48 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `make` appears 2 times",
     "DOCS_REGISTRY_DUPLICATE_TOPIC: `pagination` appears 3 times",
@@ -265,8 +266,8 @@
   ],
   "schema_version": 1,
   "summary": {
-    "errors": 41,
-    "registered": 612,
-    "warnings": 303
+    "errors": 42,
+    "registered": 613,
+    "warnings": 304
   }
 }

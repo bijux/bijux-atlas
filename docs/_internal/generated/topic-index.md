@@ -183,7 +183,7 @@
 | `fixture-dataset-ingest` | `docs/operations/fixture-dataset-ingest.md` |
 | `fixtures` | `docs/operations/e2e/fixtures.md` |
 | `formatting` | `crates/bijux-atlas-core/docs/formatting.md` |
-| `generated-artifacts` | `docs/_internal/meta/generated-artifacts.md` |
+| `generated-artifacts` | `docs/_internal/generated-artifacts.md, docs/_internal/meta/generated-artifacts.md` |
 | `generated-content-policy` | `docs/_internal/governance/generated-content-policy.md` |
 | `glossary` | `docs/glossary.md` |
 | `hot-path-checklist` | `crates/bijux-atlas-server/docs/internal/hot-path-checklist.md` |
