@@ -276,6 +276,155 @@ fn test_root_042_meta_registry_integrity(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn governance_objects_or_violation(ctx: &RunContext, test_id: &str) -> Result<Vec<crate::governance_objects::GovernanceObject>, TestResult> {
+    crate::governance_objects::collect_governance_objects(&ctx.repo_root).map_err(|err| {
+        TestResult::Fail(vec![Violation {
+            contract_id: "ROOT-042".to_string(),
+            test_id: test_id.to_string(),
+            file: Some("governance/object.json".to_string()),
+            line: None,
+            message: format!("collect governance objects failed: {err}"),
+            evidence: None,
+        }])
+    })
+}
+
+fn test_root_042_governance_domain_registry_mapping(ctx: &RunContext) -> TestResult {
+    let test_id = "root.governance.domain_registry_mapping";
+    let objects = match governance_objects_or_violation(ctx, test_id) {
+        Ok(v) => v,
+        Err(r) => return r,
+    };
+    let required = ["docs", "configs", "ops", "make", "docker"];
+    let mut violations = Vec::new();
+    for domain in required {
+        if !objects.iter().any(|obj| obj.domain == domain) {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: test_id.to_string(),
+                file: Some("governance/object.json".to_string()),
+                line: None,
+                message: format!("domain `{domain}` has no governance objects"),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_root_042_governance_owner_registry_single(ctx: &RunContext) -> TestResult {
+    let test_id = "root.governance.owner_registry_single";
+    let mut violations = Vec::new();
+    for file in ["docs/owners.json", "ops/owners.json", "make/owners.json", "docker/owners.json"] {
+        if ctx.repo_root.join(file).exists() {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: test_id.to_string(),
+                file: Some(file.to_string()),
+                line: None,
+                message: "parallel owner registries are forbidden; derive ownership from governance objects"
+                    .to_string(),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_root_042_governance_lifecycle_vocab(ctx: &RunContext) -> TestResult {
+    let test_id = "root.governance.lifecycle_vocab";
+    let objects = match governance_objects_or_violation(ctx, test_id) {
+        Ok(v) => v,
+        Err(r) => return r,
+    };
+    let allowed = ["stable", "experimental", "deprecated"];
+    let mut violations = Vec::new();
+    for obj in objects {
+        if !allowed.iter().any(|value| *value == obj.lifecycle) {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: test_id.to_string(),
+                file: Some("governance/object.json".to_string()),
+                line: None,
+                message: format!("unsupported lifecycle `{}` for `{}`", obj.lifecycle, obj.id),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_root_042_governance_evidence_pattern(ctx: &RunContext) -> TestResult {
+    let test_id = "root.governance.evidence_pattern";
+    let objects = match governance_objects_or_violation(ctx, test_id) {
+        Ok(v) => v,
+        Err(r) => return r,
+    };
+    let mut violations = Vec::new();
+    for obj in objects {
+        if obj
+            .evidence
+            .iter()
+            .any(|link| !link.starts_with("artifacts/governance/"))
+        {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: test_id.to_string(),
+                file: Some("governance/object.json".to_string()),
+                line: None,
+                message: format!("evidence link pattern drift for `{}`", obj.id),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_root_042_governance_ids_unique(ctx: &RunContext) -> TestResult {
+    let test_id = "root.governance.ids_unique";
+    let objects = match governance_objects_or_violation(ctx, test_id) {
+        Ok(v) => v,
+        Err(r) => return r,
+    };
+    let mut seen = std::collections::BTreeSet::<String>::new();
+    let mut violations = Vec::new();
+    for obj in objects {
+        if !seen.insert(obj.id.clone()) {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: test_id.to_string(),
+                file: Some("governance/object.json".to_string()),
+                line: None,
+                message: format!("duplicate governance id `{}`", obj.id),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_root_042_governance_ids_domain_prefix(ctx: &RunContext) -> TestResult {
+    let test_id = "root.governance.ids_domain_prefix";
+    let objects = match governance_objects_or_violation(ctx, test_id) {
+        Ok(v) => v,
+        Err(r) => return r,
+    };
+    let mut violations = Vec::new();
+    for obj in objects {
+        if !obj.id.starts_with(&format!("{}:", obj.domain)) {
+            violations.push(Violation {
+                contract_id: "ROOT-042".to_string(),
+                test_id: test_id.to_string(),
+                file: Some("governance/object.json".to_string()),
+                line: None,
+                message: format!("id `{}` must start with domain prefix `{}`", obj.id, obj.domain),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
 fn test_root_043_meta_test_mapping_integrity(ctx: &RunContext) -> TestResult {
     let mut rows = Vec::new();
     for domain in CONTRACT_DOC_DOMAINS {

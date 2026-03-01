@@ -120,6 +120,7 @@ pub(super) fn check_root_top_level_directories_contract(
         "crates",
         "docker",
         "docs",
+        "governance",
         "make",
         "ops",
     ];

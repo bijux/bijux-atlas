@@ -58,6 +58,9 @@
     "docker": {
       "kind": "dir"
     },
+    "governance": {
+      "kind": "dir"
+    },
     "docs": {
       "kind": "dir"
     },

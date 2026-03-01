@@ -1,4 +1,4 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 20] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
@@ -18,6 +18,7 @@ const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
     "configs",
     "crates",
     "docker",
+    "governance",
 ];
 
 const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] =
@@ -448,12 +449,50 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         Contract {
             id: ContractId("ROOT-042".to_string()),
             title: "contract registries keep unique contract ids and mapped checks",
-            tests: vec![TestCase {
-                id: TestId("root.contracts.meta_registry_integrity".to_string()),
-                title: "all contract ids are unique and every registry row maps at least one check",
-                kind: TestKind::Pure,
-                run: test_root_042_meta_registry_integrity,
-            }],
+            tests: vec![
+                TestCase {
+                    id: TestId("root.contracts.meta_registry_integrity".to_string()),
+                    title: "all contract ids are unique and every registry row maps at least one check",
+                    kind: TestKind::Pure,
+                    run: test_root_042_meta_registry_integrity,
+                },
+                TestCase {
+                    id: TestId("root.governance.domain_registry_mapping".to_string()),
+                    title: "docs configs ops make and docker registries map into governance objects",
+                    kind: TestKind::Pure,
+                    run: test_root_042_governance_domain_registry_mapping,
+                },
+                TestCase {
+                    id: TestId("root.governance.owner_registry_single".to_string()),
+                    title: "owner registries stay singular and governance-derived",
+                    kind: TestKind::Pure,
+                    run: test_root_042_governance_owner_registry_single,
+                },
+                TestCase {
+                    id: TestId("root.governance.lifecycle_vocab".to_string()),
+                    title: "governance objects use a single lifecycle vocabulary",
+                    kind: TestKind::Pure,
+                    run: test_root_042_governance_lifecycle_vocab,
+                },
+                TestCase {
+                    id: TestId("root.governance.evidence_pattern".to_string()),
+                    title: "governance evidence links follow one stable artifacts pattern",
+                    kind: TestKind::Pure,
+                    run: test_root_042_governance_evidence_pattern,
+                },
+                TestCase {
+                    id: TestId("root.governance.ids_unique".to_string()),
+                    title: "governance object ids are globally unique",
+                    kind: TestKind::Pure,
+                    run: test_root_042_governance_ids_unique,
+                },
+                TestCase {
+                    id: TestId("root.governance.ids_domain_prefix".to_string()),
+                    title: "governance object ids use the domain prefix",
+                    kind: TestKind::Pure,
+                    run: test_root_042_governance_ids_domain_prefix,
+                },
+            ],
         },
         Contract {
             id: ContractId("ROOT-043".to_string()),

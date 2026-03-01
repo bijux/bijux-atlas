@@ -15,6 +15,7 @@
     "crates",
     "docker",
     "docs",
+    "governance",
     "make",
     "ops"
   ]

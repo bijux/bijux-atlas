@@ -3,7 +3,7 @@ use std::path::PathBuf;
 const ROOT_FORBIDDEN_BINARY_EXTENSIONS: [&str; 12] = [
     "bin", "dmg", "exe", "gz", "iso", "jar", "o", "so", "tar", "tgz", "war", "zip",
 ];
-const ROOT_DIRECTORY_BUDGET: usize = 8;
+const ROOT_DIRECTORY_BUDGET: usize = 9;
 const ROOT_FILE_SIZE_BUDGET_BYTES: u64 = 512 * 1024;
 
 fn test_root_001_surface_allowlist(ctx: &RunContext) -> TestResult {
