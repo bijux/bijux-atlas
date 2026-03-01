@@ -25,7 +25,7 @@ zstd = "0.13"
 [dev-dependencies]
 criterion = "0.5"
 proptest = "1"
-tempfile = "=3.13.0"
+tempfile = "=3.25.0"
 
 [lib]
 path = "src/lib.rs"
