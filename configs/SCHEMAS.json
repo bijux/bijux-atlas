@@ -16,6 +16,7 @@
     "configs/inventory/configs.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/consumers.json": "configs/schema/configs-consumer-map.schema.json",
     "configs/inventory/groups.json": "configs/contracts/inventory-configs.schema.json",
+    "configs/inventory/no-schema-justifications.json": "configs/contracts/inventory-configs.schema.json",
     "configs/inventory/owners.json": "configs/contracts/inventory-owners.schema.json",
     "configs/layout/*.json": "configs/contracts/inventory-budgets.schema.json",
     "configs/make/*.json": "configs/contracts/inventory-make.schema.json",

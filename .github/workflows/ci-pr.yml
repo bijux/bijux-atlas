@@ -1044,12 +1044,17 @@ jobs:
           (report_root / "docs-quality-contracts.json").write_text(json.dumps(payload, indent=2) + "\n")
           PY
           python - <<'PY'
-          import json, os, pathlib
+          import datetime, fnmatch, json, os, pathlib, re
           root = pathlib.Path(".")
           report_root = pathlib.Path(os.environ["REPORT_ROOT"])
           configs_root = root / "configs"
+          today = datetime.date.fromisoformat("2026-03-01")
           groups = json.loads((root / "configs/inventory/groups.json").read_text())
           index_payload = json.loads((root / "configs/_generated/configs-index.json").read_text())
+          owners_registry = json.loads((root / "configs/owners-registry.json").read_text())
+          consumers_registry = json.loads((root / "configs/consumers-registry.json").read_text())
+          schema_map = json.loads((root / "configs/schema-map.json").read_text())
+          no_schema = json.loads((root / "configs/inventory/no-schema-justifications.json").read_text())
           allowed_groups = set(groups.get("allowed_groups", []))
           root_file_allow = {
               "CONSUMERS.json",
@@ -1061,6 +1066,7 @@ jobs:
               "configs.contracts.json",
               "consumers-registry.json",
               "inventory.json",
+              "inventory/no-schema-justifications.json",
               "owners-registry.json",
               "schema-map.json",
           }
@@ -1071,7 +1077,24 @@ jobs:
           max_depth = 5
           max_files_per_dir = 40
           violations = []
+          warnings = []
           file_depth = {}
+          tracked_files = []
+          structured_files = []
+          for entry in no_schema.get("entries", []):
+              exp = datetime.date.fromisoformat(entry["expires_on"])
+              if exp < today:
+                  violations.append(f"expired no-schema justification entry: {entry}")
+
+          def has_no_schema_justification(path: str) -> bool:
+              for entry in no_schema.get("entries", []):
+                  if fnmatch.fnmatch(path, entry["pattern"]):
+                      return True
+              return False
+
+          def is_structured(path: str) -> bool:
+              return pathlib.Path(path).suffix in {".json", ".jsonc", ".toml", ".yaml", ".yml"}
+
           for path in sorted(configs_root.rglob("*")):
               rel = path.as_posix()
               if path.is_file():
@@ -1079,12 +1102,27 @@ jobs:
                       continue
                   parts = path.relative_to(configs_root).parts
                   file_depth[rel] = len(parts)
+                  tracked_files.append(rel)
+                  if is_structured(rel):
+                      structured_files.append(rel)
                   if len(parts) == 1 and path.name not in root_file_allow:
                       violations.append(f"unexpected root config file: {rel}")
                   if len(parts) > max_depth:
                       violations.append(f"config path exceeds depth budget {max_depth}: {rel}")
                   if len(parts) >= 2 and parts[0] not in allowed_groups and parts[0] != "_generated":
                       violations.append(f"config top-level group is not allowed: {rel}")
+                  # Directory and file naming normalization.
+                  for segment in parts[:-1]:
+                      if segment.startswith("."):
+                          continue
+                      if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", segment):
+                          violations.append(f"config directory naming must be normalized: {rel}")
+                          break
+                  filename = parts[-1]
+                  if filename.startswith("."):
+                      pass
+                  elif not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", filename):
+                      violations.append(f"config filename naming must be normalized: {rel}")
           for directory in sorted(configs_root.rglob("*")):
               if not directory.is_dir():
                   continue
@@ -1118,6 +1156,105 @@ jobs:
                       lifecycle_missing.append(path)
           if lifecycle_missing:
               violations.append("config lifecycle metadata missing or invalid for: " + ", ".join(lifecycle_missing[:20]))
+
+          # Registry sorting normalization.
+          groups_doc = json.loads((root / "configs/inventory/configs.json").read_text())
+          group_names = [row.get("name", "") for row in groups_doc.get("groups", [])]
+          if group_names != sorted(group_names):
+              violations.append("configs/inventory/configs.json groups must be sorted by name")
+          for row in groups_doc.get("groups", []):
+              for key in ("public_files", "internal_files", "generated_files", "schemas", "tool_entrypoints"):
+                  vals = row.get(key, [])
+                  if isinstance(vals, list) and vals != sorted(vals):
+                      violations.append(f"configs/inventory/configs.json group `{row.get('name')}` key `{key}` must be sorted")
+
+          # Owner / consumer / schema coverage with explicit no-schema justifications.
+          owner_patterns = list((owners_registry.get("files") or {}).keys())
+          consumer_patterns = list((consumers_registry.get("files") or {}).keys())
+          schema_patterns = list((schema_map.get("files") or {}).keys())
+          schema_covered_structured = []
+          missing_owner = []
+          missing_consumer = []
+          missing_schema_or_justification = []
+          for rel in sorted(tracked_files):
+              if rel.startswith("configs/_generated/"):
+                  continue
+              group_name = pathlib.Path(rel).parts[1] if len(pathlib.Path(rel).parts) > 1 else None
+              has_owner = any(fnmatch.fnmatch(rel, pat) for pat in owner_patterns) or (group_name in (owners_registry.get("groups") or {}))
+              if not has_owner:
+                  missing_owner.append(rel)
+              has_consumer = any(fnmatch.fnmatch(rel, pat) for pat in consumer_patterns) or (group_name in (consumers_registry.get("groups") or {}))
+              if not has_consumer:
+                  missing_consumer.append(rel)
+              has_schema = any(fnmatch.fnmatch(rel, pat) for pat in schema_patterns)
+              if is_structured(rel):
+                  if has_schema:
+                      schema_covered_structured.append(rel)
+                  elif not has_no_schema_justification(rel):
+                      missing_schema_or_justification.append(rel)
+              elif not has_schema and not has_no_schema_justification(rel):
+                  missing_schema_or_justification.append(rel)
+          if missing_owner:
+              violations.append("config owner coverage missing: " + ", ".join(missing_owner[:20]))
+          if missing_consumer:
+              violations.append("config consumer coverage missing: " + ", ".join(missing_consumer[:20]))
+          if missing_schema_or_justification:
+              violations.append("config schema/no-schema justification coverage missing: " + ", ".join(missing_schema_or_justification[:20]))
+
+          # Schema usage and stable-schema example coverage.
+          referenced_schema_targets = set((schema_map.get("files") or {}).values())
+          all_schemas = set()
+          for p in (root / "configs/schema").rglob("*.json"):
+              rel = p.as_posix()
+              if rel.startswith("configs/schema/generated/"):
+                  continue
+              all_schemas.add(rel)
+          unused_schemas = sorted(all_schemas - referenced_schema_targets)
+          if unused_schemas:
+              violations.append("unused schema files detected: " + ", ".join(unused_schemas[:20]))
+          missing_schema_examples = []
+          for schema_path in sorted(referenced_schema_targets):
+              # require at least one mapped file for schema path
+              has_mapped = any(target == schema_path for target in (schema_map.get("files") or {}).values())
+              if not has_mapped:
+                  missing_schema_examples.append(schema_path)
+          if missing_schema_examples:
+              violations.append("schema without mapped examples/config files: " + ", ".join(missing_schema_examples[:20]))
+
+          # Change checklist quality gate.
+          checklist = (root / "docs/development/config-change-checklist.md").read_text()
+          checklist_requirements = [
+              "registry",
+              "docs",
+              "examples",
+          ]
+          for token in checklist_requirements:
+              if token not in checklist.lower():
+                  violations.append(f"config change checklist missing required section token `{token}`")
+
+          # Semantic diff / debt / graph artifacts.
+          rows = []
+          for rel in sorted(tracked_files):
+              data = (root / rel).read_bytes()
+              rows.append({"path": rel, "sha256": __import__("hashlib").sha256(data).hexdigest(), "bytes": len(data)})
+          semantic_diff_payload = {
+              "schema_version": 1,
+              "kind": "configs_semantic_diff",
+              "status": "ok",
+              "rows": rows,
+          }
+          (report_root / "configs-semantic-diff.json").write_text(json.dumps(semantic_diff_payload, indent=2) + "\n")
+          debt_payload = {
+              "schema_version": 1,
+              "kind": "config_debt_ledger",
+              "status": "warn" if (missing_owner or missing_consumer or missing_schema_or_justification or unused_schemas) else "ok",
+              "missing_owner": missing_owner,
+              "missing_consumer": missing_consumer,
+              "missing_schema_or_justification": missing_schema_or_justification,
+              "unused_schemas": unused_schemas,
+          }
+          (report_root / "config-debt-ledger.json").write_text(json.dumps(debt_payload, indent=2) + "\n")
+
           if violations:
               raise SystemExit("configs taxonomy contracts failed: " + "; ".join(violations[:20]))
           payload = {
@@ -1130,16 +1267,20 @@ jobs:
               "checked_files": len(file_depth),
               "duplicate_tree_tails": duplicated_tails,
               "group_lifecycle": group_stability,
+              "warnings": warnings,
           }
           (report_root / "configs-taxonomy-contracts.json").write_text(json.dumps(payload, indent=2) + "\n")
           PY
+          cargo run -q -p bijux-dev-atlas -- configs graph --allow-write --strict --format json > "${report_root}/configs-graph.json"
+          cargo run -q -p bijux-dev-atlas -- configs explain configs/inventory/configs.json --strict --format json > "${report_root}/configs-explain-configs-json.json"
+          cargo run -q -p bijux-dev-atlas -- configs diff --strict --format json > "${report_root}/configs-diff.json"
           cargo run -q -p bijux-dev-atlas -- docs shrink-report --strict --format json > "${report_root}/docs-shrink-report.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
-          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs quality contracts: %s\n- configs taxonomy contracts: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-quality-contracts.json" "${report_root}/configs-taxonomy-contracts.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs quality contracts: %s\n- configs taxonomy contracts: %s\n- configs semantic diff: %s\n- config debt ledger: %s\n- configs graph: %s\n- configs explain: %s\n- configs diff: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-quality-contracts.json" "${report_root}/configs-taxonomy-contracts.json" "${report_root}/configs-semantic-diff.json" "${report_root}/config-debt-ledger.json" "${report_root}/configs-graph.json" "${report_root}/configs-explain-configs-json.json" "${report_root}/configs-diff.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"
           fi

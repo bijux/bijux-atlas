@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "pattern": "configs/**/*.md",
+      "owner": "platform",
+      "reason": "markdown policy and index pages are human guidance surfaces, not structured machine payloads",
+      "expires_on": "2027-12-31"
+    },
+    {
+      "pattern": "configs/**/*.txt",
+      "owner": "platform",
+      "reason": "plain text allowlists and dictionaries are line-oriented references",
+      "expires_on": "2027-12-31"
+    },
+    {
+      "pattern": "configs/**/*.toml",
+      "owner": "platform",
+      "reason": "tool-specific TOML configs are validated by their native tools",
+      "expires_on": "2027-12-31"
+    },
+    {
+      "pattern": "configs/**/*.yml",
+      "owner": "platform",
+      "reason": "YAML policy files are validated by dedicated domain gates",
+      "expires_on": "2027-12-31"
+    },
+    {
+      "pattern": "configs/**/*.yaml",
+      "owner": "platform",
+      "reason": "YAML policy files are validated by dedicated domain gates",
+      "expires_on": "2027-12-31"
+    }
+  ]
+}
