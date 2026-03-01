@@ -179,12 +179,23 @@ pub fn run(
         std::fs::create_dir_all(&out_dir)
             .map_err(|e| format!("create contracts artifact dir failed: {e}"))?;
         let json_path = out_dir.join(format!("{domain}.json"));
+        let json_payload = serde_json::to_string_pretty(&to_json(&report))
+            .map_err(|e| format!("encode contracts report failed: {e}"))?;
         std::fs::write(
             &json_path,
-            serde_json::to_string_pretty(&to_json(&report))
-                .map_err(|e| format!("encode contracts report failed: {e}"))?,
+            &json_payload,
         )
         .map_err(|e| format!("write {} failed: {e}", json_path.display()))?;
+        if let Some(alias_name) = match domain {
+            "docs" => Some("docs_contracts_report.json"),
+            "configs" => Some("configs_contracts_report.json"),
+            "make" => Some("make_contracts_report.json"),
+            _ => None,
+        } {
+            let alias_path = out_dir.join(alias_name);
+            std::fs::write(&alias_path, &json_payload)
+                .map_err(|e| format!("write {} failed: {e}", alias_path.display()))?;
+        }
         let inventory_path = out_dir.join(format!("{domain}.inventory.json"));
         std::fs::write(
             &inventory_path,

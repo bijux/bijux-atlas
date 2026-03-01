@@ -94,6 +94,9 @@ fn parse_selectors(
     include_internal: bool,
     include_slow: bool,
 ) -> Result<Selectors, String> {
+    if let Some(pattern) = id.as_deref() {
+        validate_id_glob_pattern(pattern)?;
+    }
     let normalized_suite = suite
         .as_deref()
         .map(normalize_suite_name)
@@ -110,6 +113,22 @@ fn parse_selectors(
         include_internal,
         include_slow,
     })
+}
+
+fn validate_id_glob_pattern(pattern: &str) -> Result<(), String> {
+    let trimmed = pattern.trim();
+    if trimmed.is_empty() {
+        return Err("invalid wildcard pattern ``: pattern cannot be empty".to_string());
+    }
+    if let Some(ch) = trimmed
+        .chars()
+        .find(|ch| !(ch.is_ascii_alphanumeric() || matches!(ch, '_' | '-' | ':' | '*' | '?')))
+    {
+        return Err(format!(
+            "invalid wildcard pattern `{trimmed}`: unsupported metacharacter `{ch}`; use `*` and `?` only"
+        ));
+    }
+    Ok(())
 }
 
 pub(crate) fn run_demo_command(quiet: bool, command: DemoCommand) -> i32 {

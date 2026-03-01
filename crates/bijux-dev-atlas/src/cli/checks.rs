@@ -13,7 +13,7 @@ pub enum CheckCommand {
     List {
         #[arg(long)]
         repo_root: Option<PathBuf>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
+        #[arg(long, value_name = "required|ci-fast|ci|local|deep|<suite_id>")]
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
@@ -60,7 +60,7 @@ pub enum CheckCommand {
         artifacts_root: Option<PathBuf>,
         #[arg(long)]
         run_id: Option<String>,
-        #[arg(long, value_name = "ci-fast|ci|local|deep|<suite_id>")]
+        #[arg(long, value_name = "required|ci-fast|ci|local|deep|<suite_id>")]
         suite: Option<String>,
         #[arg(long, value_enum)]
         domain: Option<DomainArg>,
@@ -229,7 +229,7 @@ pub enum GatesCommand {
         run_id: Option<String>,
         #[arg(
             long,
-            value_name = "ci-fast|ci|local|deep|<suite_id>",
+            value_name = "required|ci-fast|ci|local|deep|<suite_id>",
             default_value = "ci_fast"
         )]
         suite: String,
