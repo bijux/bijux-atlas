@@ -35,7 +35,7 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
 
 fn run_surface(
     common: crate::cli::MakeCommonArgs,
-    started: Instant,
+    _started: Instant,
 ) -> Result<(String, i32), String> {
     let repo_root = resolve_repo_root(common.repo_root.clone())?;
     let targets = load_curated_targets(&repo_root)?;
@@ -44,7 +44,6 @@ fn run_surface(
         "action": "surface",
         "source": "make/root.mk:CURATED_TARGETS",
         "public_targets": targets,
-        "duration_ms": started.elapsed().as_millis() as u64,
     });
     let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
     Ok((rendered, 0))

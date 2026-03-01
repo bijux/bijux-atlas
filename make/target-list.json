@@ -1,4 +1,5 @@
 {
+  "action": "surface",
   "public_targets": [
     "artifacts-clean",
     "build",

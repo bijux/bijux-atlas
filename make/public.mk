@@ -11,6 +11,7 @@ help-contract: ## Show make contract and public target documentation pointers
 	@printf '%s\n' "contract: $(MAKE_CONTRACT_PATH)" "readme: $(MAKE_HELP_PATH)" "target-list: make/target-list.json"
 
 make-target-list: ## Regenerate make public target list artifact
-	@$(DEV_ATLAS) make target-list --allow-write --format text
+	@$(DEV_ATLAS) make surface --allow-write --format json --out make/target-list.json >/dev/null
+	@printf '%s\n' "wrote: make/target-list.json"
 
 .PHONY: help-contract make-target-list make-contract-check
