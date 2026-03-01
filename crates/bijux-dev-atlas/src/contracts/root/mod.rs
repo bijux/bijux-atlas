@@ -55,6 +55,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-042" => "Contract registries are meta-validated: contract ids are globally unique and each row maps at least one executable check.".to_string(),
         "ROOT-043" => "Contract test mappings are meta-validated so no check id is orphaned or multiply claimed across contracts.".to_string(),
         "ROOT-044" => "Contracts list output and all-domain execution order are pinned to deterministic ordering.".to_string(),
+        "ROOT-045" => "The required branch-protection checks document must match the governed workflow surface and its required job names.".to_string(),
+        "ROOT-046" => "Repo law violations must be catalogued in ops/ERRORS.md with stable error codes and control-plane remediation guidance.".to_string(),
         "META-REQ-001" => "The required contracts manifest, committed artifact, and approval metadata must move together; drift without active approval is forbidden.".to_string(),
         "META-REQ-002" => "The required set must cover every governed pillar: root, docs, make, configs, docker, and ops.".to_string(),
         "META-REQ-003" => "Required contracts must point to concrete executable rules, never placeholder or stubbed checks.".to_string(),

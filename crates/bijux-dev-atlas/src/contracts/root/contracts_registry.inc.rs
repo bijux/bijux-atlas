@@ -466,6 +466,26 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("ROOT-045".to_string()),
+            title: "required status checks stay aligned with workflow governance",
+            tests: vec![TestCase {
+                id: TestId("root.required_status_checks.workflow_drift".to_string()),
+                title: "required status checks markdown matches the governed workflow surface",
+                kind: TestKind::Pure,
+                run: test_root_045_required_status_checks_workflow_drift,
+            }],
+        },
+        Contract {
+            id: ContractId("ROOT-046".to_string()),
+            title: "repo law errors stay in a stable ops taxonomy",
+            tests: vec![TestCase {
+                id: TestId("root.repo_law_errors.catalogued".to_string()),
+                title: "ops ERRORS catalog covers repo law violations with stable codes",
+                kind: TestKind::Pure,
+                run: test_root_046_repo_law_errors_catalogued,
+            }],
+        },
+        Contract {
             id: ContractId("META-REQ-001".to_string()),
             title: "required contracts stay stable and approved",
             tests: vec![TestCase {

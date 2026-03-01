@@ -350,6 +350,157 @@ fn test_root_044_meta_ordering_stable(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn markdown_list_items_under_heading(text: &str, heading: &str) -> Vec<String> {
+    let mut items = Vec::new();
+    let mut in_section = false;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed == heading {
+            in_section = true;
+            continue;
+        }
+        if in_section && (trimmed.ends_with(':') || trimmed.starts_with('#')) {
+            break;
+        }
+        if !in_section {
+            continue;
+        }
+        if let Some(rest) = trimmed.strip_prefix("- ") {
+            let value = rest.trim();
+            if let Some(stripped) = value.strip_prefix('`') {
+                if let Some((name, _)) = stripped.split_once('`') {
+                    items.push(name.to_string());
+                    continue;
+                }
+            }
+            items.push(value.trim_matches('`').to_string());
+        }
+    }
+    items
+}
+
+fn test_root_045_required_status_checks_workflow_drift(ctx: &RunContext) -> TestResult {
+    let contract_id = "ROOT-045";
+    let test_id = "root.required_status_checks.workflow_drift";
+    let path = " .github/required-status-checks.md";
+    let actual_text = match read_root_text(ctx, ".github/required-status-checks.md", contract_id, test_id) {
+        Ok(value) => value,
+        Err(result) => return result,
+    };
+    let expected_required = vec![
+        "ci-pr / minimal-root-policies".to_string(),
+        "ci-pr / validate-pr".to_string(),
+        "ci-pr / supply-chain".to_string(),
+        "ci-pr / workflow-policy".to_string(),
+        "docs-only / docs".to_string(),
+        "ops-validate / validate".to_string(),
+    ];
+    let expected_optional = vec!["ops-integration-kind / kind-integration".to_string()];
+    let expected_nightly = vec!["ci-nightly / nightly-validation".to_string()];
+    let actual_required =
+        markdown_list_items_under_heading(&actual_text, "Required branch-protection checks for `main`:");
+    let actual_optional = markdown_list_items_under_heading(&actual_text, "Optional PR checks:");
+    let actual_nightly = markdown_list_items_under_heading(&actual_text, "Nightly required checks:");
+    let mut violations = Vec::new();
+    if actual_required != expected_required {
+        violations.push(Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some(path.trim().to_string()),
+            line: None,
+            message: "required status checks drifted from the governed workflow surface".to_string(),
+            evidence: Some(format!(
+                "expected {:?}, found {:?}",
+                expected_required, actual_required
+            )),
+        });
+    }
+    if actual_optional != expected_optional {
+        violations.push(Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some(path.trim().to_string()),
+            line: None,
+            message: "optional status checks drifted from the governed workflow surface".to_string(),
+            evidence: Some(format!(
+                "expected {:?}, found {:?}",
+                expected_optional, actual_optional
+            )),
+        });
+    }
+    if actual_nightly != expected_nightly {
+        violations.push(Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some(path.trim().to_string()),
+            line: None,
+            message: "nightly status checks drifted from the governed workflow surface".to_string(),
+            evidence: Some(format!(
+                "expected {:?}, found {:?}",
+                expected_nightly, actual_nightly
+            )),
+        });
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_root_046_repo_law_errors_catalogued(ctx: &RunContext) -> TestResult {
+    let contract_id = "ROOT-046";
+    let test_id = "root.repo_law_errors.catalogued";
+    let text = match read_root_text(ctx, "ops/ERRORS.md", contract_id, test_id) {
+        Ok(value) => value,
+        Err(result) => return result,
+    };
+    let expected_codes = [
+        "REPO-LAW-001",
+        "REPO-LAW-002",
+        "REPO-LAW-003",
+        "REPO-LAW-004",
+    ];
+    let mut violations = Vec::new();
+    if !text.starts_with("# Ops Error Catalog\n") {
+        violations.push(Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("ops/ERRORS.md".to_string()),
+            line: None,
+            message: "ops error catalog must start with the canonical title".to_string(),
+            evidence: None,
+        });
+    }
+    if !text.contains("`bijux dev atlas contracts root --mode static`") {
+        violations.push(Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("ops/ERRORS.md".to_string()),
+            line: None,
+            message: "ops error catalog must point to the root contracts command".to_string(),
+            evidence: None,
+        });
+    }
+    for code in expected_codes {
+        if !text.contains(&format!("| `{code}` |")) {
+            violations.push(Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("ops/ERRORS.md".to_string()),
+                line: None,
+                message: format!("missing repo law error code `{code}`"),
+                evidence: None,
+            });
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn required_contract_rows(
     repo_root: &std::path::Path,
 ) -> Result<Vec<(String, String, Vec<String>)>, String> {

@@ -69,6 +69,8 @@
 | `ROOT-042` | contract registries keep unique contract ids and mapped checks | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-043` | contract registries keep check-to-contract mappings non-orphaned | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 | `ROOT-044` | contracts list and group execution order stay deterministic | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
+| `ROOT-045` | required status checks stay aligned with workflow governance | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
+| `ROOT-046` | repo law errors stay in a stable ops taxonomy | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/run/<run_id>/gates/contracts/root/<profile>/<mode>/root.json` |
 
 ## Enforcement mapping
 
@@ -121,6 +123,8 @@
 | `ROOT-042` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-043` | `bijux dev atlas contracts root --mode static` |
 | `ROOT-044` | `bijux dev atlas contracts root --mode static` |
+| `ROOT-045` | `bijux dev atlas contracts root --mode static` |
+| `ROOT-046` | `bijux dev atlas contracts root --mode static` |
 
 ## Output artifacts
 
