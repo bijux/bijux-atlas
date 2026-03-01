@@ -1,36 +1,9 @@
-# Testing
+# TESTING (bijux-atlas-store)
 
-- Owner: `bijux-atlas-store`
+- Owner: bijux-atlas-store
+- Stability: stable
 
-## Purpose
+This crate-level governance page points to canonical crate docs and root docs.
 
-Defines how test suites are executed and what they validate.
-
-## Invariants
-
-- Tests are deterministic and do not require network.
-- Test fixtures are pinned and reproducible.
-
-## Boundaries
-
-- Unit tests validate crate-local behavior.
-- Integration tests validate crate contracts with neighbors.
-
-## Failure modes
-
-- Flaky tests due to implicit environment dependencies.
-- Incomplete coverage around contract edges.
-
-## How to test
-
-```bash
-$ cargo nextest run -p bijux-atlas-store
-```
-
-Expected output: all tests pass for this crate.
-
-```bash
-$ cargo test -p bijux-atlas-store --doc
-```
-
-Expected output: doc tests pass.
+- Crate docs index: crates/bijux-atlas-store/docs/INDEX.md
+- Central docs index: docs/index.md
