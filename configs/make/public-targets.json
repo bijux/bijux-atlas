@@ -1,6 +1,6 @@
 {
   "max_public_targets": 41,
-  "target_public_targets": 40,
+  "target_public_targets": 37,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -218,14 +218,6 @@
       "area": "make"
     },
     {
-      "name": "fmt",
-      "description": "Run formatter checks",
-      "lanes": [
-        "dev"
-      ],
-      "area": "cargo"
-    },
-    {
       "name": "help",
       "description": "Show bounded public target surface",
       "lanes": [
@@ -251,15 +243,6 @@
         "ci"
       ],
       "area": "ops"
-    },
-    {
-      "name": "lint",
-      "description": "Run lint checks",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "cargo"
     },
     {
       "name": "lint-make",
@@ -324,6 +307,15 @@
       "area": "ops"
     },
     {
+      "name": "root-surface-explain",
+      "description": "Explain why each root file and directory exists",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "root"
+    },
+    {
       "name": "stack-down",
       "description": "Stop local stack via control plane",
       "lanes": [
@@ -340,24 +332,6 @@
         "ci"
       ],
       "area": "ops"
-    },
-    {
-      "name": "test",
-      "description": "Run test suite",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "cargo"
-    },
-    {
-      "name": "test-all",
-      "description": "Run full test suite including slow and ignored tests",
-      "lanes": [
-        "dev",
-        "ci"
-      ],
-      "area": "cargo"
     }
   ]
 }

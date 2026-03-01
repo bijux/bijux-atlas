@@ -22,7 +22,7 @@ related:
 ## Laws
 
 - Public targets come from `make/root.mk:CURATED_TARGETS`.
-- Public targets must dispatch to `bijux dev atlas` (or allowlisted direct cargo targets: `fmt`, `lint`, `test`, `test-all`).
+- Public targets must dispatch to `bijux dev atlas`.
 - Make recipes must not become an orchestration engine. Avoid shell pipelines and loops except explicit allowlisted compatibility targets.
 - Artifacts must be written under `artifacts/<area>/<run_id>/...`.
 

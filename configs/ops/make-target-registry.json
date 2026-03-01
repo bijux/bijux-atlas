@@ -651,7 +651,7 @@
       "defined_in": [
         "makefiles/cargo.mk"
       ],
-      "visibility": "public",
+      "visibility": "internal",
       "used_in": []
     },
     {
@@ -723,7 +723,7 @@
       "defined_in": [
         "makefiles/cargo.mk"
       ],
-      "visibility": "public",
+      "visibility": "internal",
       "used_in": []
     },
     {
@@ -1141,7 +1141,7 @@
       "defined_in": [
         "makefiles/cargo.mk"
       ],
-      "visibility": "public",
+      "visibility": "internal",
       "used_in": []
     },
     {
@@ -1149,7 +1149,7 @@
       "defined_in": [
         "makefiles/cargo.mk"
       ],
-      "visibility": "public",
+      "visibility": "internal",
       "used_in": []
     },
     {

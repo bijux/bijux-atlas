@@ -1,5 +1,5 @@
 # Scope: canonical Rust cargo gates delegated to cargo-native tooling.
-# Public targets: audit, check, coverage, fmt, lint, test
+# Public targets: none (internal cargo execution surface)
 SHELL := /bin/bash
 CARGO_TERM_PROGRESS_WHEN ?= always
 CARGO_TERM_PROGRESS_WIDTH ?= 120

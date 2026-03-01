@@ -707,6 +707,81 @@ fn test_make_gates_003_no_orphan_public_targets(ctx: &RunContext) -> TestResult 
     TestResult::Pass
 }
 
+fn test_make_surface_006_curated_target_budget(ctx: &RunContext) -> TestResult {
+    let curated = match curated_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-SURFACE-006",
+                "make.surface.curated_target_budget",
+                "make/root.mk",
+                err,
+            )
+        }
+    };
+    let budget = 40usize;
+    if curated.len() > budget {
+        return fail(
+            "MAKE-SURFACE-006",
+            "make.surface.curated_target_budget",
+            "make/root.mk",
+            format!(
+                "CURATED_TARGETS exceeds budget {budget} with {} entries",
+                curated.len()
+            ),
+        );
+    }
+    TestResult::Pass
+}
+
+fn test_make_wrapper_001_curated_targets_no_direct_cargo(ctx: &RunContext) -> TestResult {
+    let curated = match curated_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-WRAP-001",
+                "make.wrapper.curated_targets_no_direct_cargo",
+                "make/root.mk",
+                err,
+            )
+        }
+    };
+    let declared = match declared_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return fail(
+                "MAKE-WRAP-001",
+                "make.wrapper.curated_targets_no_direct_cargo",
+                "make",
+                err,
+            )
+        }
+    };
+    for target in curated {
+        let Some((file, recipes)) = declared.get(&target) else {
+            return fail(
+                "MAKE-WRAP-001",
+                "make.wrapper.curated_targets_no_direct_cargo",
+                "make",
+                format!("curated target {target} is not declared in make sources"),
+            );
+        };
+        if recipes
+            .iter()
+            .map(|line| line.trim_start())
+            .any(|line| line.starts_with("cargo ") || line.starts_with("@cargo "))
+        {
+            return fail(
+                "MAKE-WRAP-001",
+                "make.wrapper.curated_targets_no_direct_cargo",
+                file,
+                format!("curated target {target} must not invoke cargo directly"),
+            );
+        }
+    }
+    TestResult::Pass
+}
+
 pub(super) fn contracts() -> Vec<Contract> {
     vec![
         Contract {
@@ -839,6 +914,26 @@ pub(super) fn contracts() -> Vec<Contract> {
                 run: test_make_gates_003_no_orphan_public_targets,
             }],
         },
+        Contract {
+            id: ContractId("MAKE-SURFACE-006".to_string()),
+            title: "make curated target count budget",
+            tests: vec![TestCase {
+                id: TestId("make.surface.curated_target_budget".to_string()),
+                title: "the curated make surface stays within the strict target budget",
+                kind: TestKind::Pure,
+                run: test_make_surface_006_curated_target_budget,
+            }],
+        },
+        Contract {
+            id: ContractId("MAKE-WRAP-001".to_string()),
+            title: "make curated dispatch boundary",
+            tests: vec![TestCase {
+                id: TestId("make.wrapper.curated_targets_no_direct_cargo".to_string()),
+                title: "curated make targets do not invoke cargo directly",
+                kind: TestKind::Pure,
+                run: test_make_wrapper_001_curated_targets_no_direct_cargo,
+            }],
+        },
     ]
 }
 
@@ -867,6 +962,8 @@ pub(super) fn contract_explain(contract_id: &str) -> Option<&'static str> {
         "MAKE-GATES-003" => {
             Some("The make target registry must not expose public orphan targets outside CURATED_TARGETS.")
         }
+        "MAKE-SURFACE-006" => Some("The curated make target surface must stay inside the strict review budget."),
+        "MAKE-WRAP-001" => Some("Curated make wrappers must not execute cargo directly."),
         _ => None,
     }
 }

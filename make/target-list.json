@@ -1,5 +1,4 @@
 {
-  "action": "surface",
   "public_targets": [
     "artifacts-clean",
     "build",
@@ -25,11 +24,9 @@
     "docker-contracts-effect",
     "docker-gate",
     "doctor",
-    "fmt",
     "help",
     "k8s-render",
     "k8s-validate",
-    "lint",
     "lint-make",
     "make-target-list",
     "ops-contracts",
@@ -39,9 +36,7 @@
     "ops-pr",
     "root-surface-explain",
     "stack-down",
-    "stack-up",
-    "test",
-    "test-all"
+    "stack-up"
   ],
   "schema_version": 1,
   "source": "make/root.mk:CURATED_TARGETS"

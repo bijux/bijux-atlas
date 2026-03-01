@@ -23,13 +23,12 @@ include make/verification.mk
 CURATED_TARGETS := \
 	artifacts-clean build clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-root \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
-	fmt help \
+	help \
 	k8s-render k8s-validate \
-	lint lint-make make-target-list \
+	lint-make make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	root-surface-explain \
-	stack-down stack-up \
-	test test-all
+	stack-down stack-up
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format text
