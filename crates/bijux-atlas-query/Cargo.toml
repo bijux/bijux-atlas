@@ -25,7 +25,7 @@ unicode-normalization = "0.1"
 [dev-dependencies]
 criterion = "0.5"
 proptest = "1"
-tempfile = "=3.13.0"
+tempfile = "=3.25.0"
 
 [[bench]]
 name = "query_patterns"
