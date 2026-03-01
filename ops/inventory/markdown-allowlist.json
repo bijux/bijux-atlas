@@ -3,6 +3,7 @@
   "allowed_markdown": [
     "ops/README.md",
     "ops/CONTRACT.md",
+    "ops/ERRORS.md",
     "ops/datasets/README.md",
     "ops/datasets/CONTRACT.md",
     "ops/e2e/README.md",

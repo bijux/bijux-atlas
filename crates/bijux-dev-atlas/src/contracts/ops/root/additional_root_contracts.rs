@@ -10,7 +10,7 @@ fn test_ops_root_001_allowed_surface(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_files = BTreeSet::from(["README.md", "CONTRACT.md"]);
+    let allowed_files = BTreeSet::from(["README.md", "CONTRACT.md", "ERRORS.md"]);
     let allowed_dirs = BTreeSet::from([
         "_generated",
         "_generated.example",
@@ -71,11 +71,15 @@ fn test_ops_root_002_forbid_extra_root_markdown(ctx: &RunContext) -> TestResult 
         let Some(name) = path.file_name().and_then(|v| v.to_str()) else {
             continue;
         };
-        if name.ends_with(".md") && name != "README.md" && name != "CONTRACT.md" {
+        if name.ends_with(".md")
+            && name != "README.md"
+            && name != "CONTRACT.md"
+            && name != "ERRORS.md"
+        {
             violations.push(violation(
                 contract_id,
                 test_id,
-                "only README.md and CONTRACT.md are allowed markdown files at ops root",
+                "only README.md, CONTRACT.md, and ERRORS.md are allowed markdown files at ops root",
                 Some(format!("ops/{name}")),
             ));
         }
@@ -159,7 +163,13 @@ fn test_ops_root_005_filename_policy(ctx: &RunContext) -> TestResult {
     walk_files(&ops_root(&ctx.repo_root), &mut files);
     files.sort();
     let uppercase_allow =
-        BTreeSet::from(["README.md", "CONTRACT.md", "Chart.yaml", "ALLOWLIST.json"]);
+        BTreeSet::from([
+            "README.md",
+            "CONTRACT.md",
+            "ERRORS.md",
+            "Chart.yaml",
+            "ALLOWLIST.json",
+        ]);
     let mut violations = Vec::new();
     for path in files {
         let rel = rel_to_root(&path, &ctx.repo_root);

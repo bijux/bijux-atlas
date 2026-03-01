@@ -162,7 +162,7 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
             "static"
         };
         out.push_str(&format!(
-            "| `{}` | {} | `high` | `{}` | `bijux dev atlas contracts ops` | `artifacts/contracts/ops/report.json` |\n",
+            "| `{}` | {} | `high` | `{}` | `bijux dev atlas contracts ops` | `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json` |\n",
             contract.id.0, contract.title, mode
         ));
     }
@@ -183,8 +183,8 @@ pub fn render_contract_markdown(repo_root: &Path) -> Result<String, String> {
     }
     out.push('\n');
     out.push_str("## Output artifacts\n\n");
-    out.push_str("- `artifacts/contracts/ops/report.json`\n");
-    out.push_str("- `artifacts/contracts/ops/registry-snapshot.json`\n\n");
+    out.push_str("- `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.json`\n");
+    out.push_str("- `artifacts/run/<run_id>/gates/contracts/ops/<profile>/<mode>/ops.inventory.json`\n\n");
     out.push_str("## Contract to Gate mapping\n\n");
     out.push_str("- Gate: `contracts::ops`\n");
     out.push_str("- Aggregate gate: `contracts::all`\n\n");

@@ -2,6 +2,7 @@
   "schema_version": 1,
   "authoritative_paths": [
     "ops/CONTRACT.md",
+    "ops/ERRORS.md",
     "ops/README.md",
     "ops/datasets/fixture-policy.json",
     "ops/datasets/rollback-policy.json",

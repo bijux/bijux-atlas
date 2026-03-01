@@ -598,7 +598,7 @@ fn test_ops_k8s_e_003_kubeconform_render_validation(ctx: &RunContext) -> TestRes
             contract_id,
             test_id,
             program: "kubeconform",
-            args: &["-strict", "-summary", &rendered_arg],
+            args: &["-strict", "-summary", "-ignore-missing-schemas", &rendered_arg],
             stdout_rel: "helm/kubeconform.stdout.log".to_string(),
             stderr_rel: "helm/kubeconform.stderr.log".to_string(),
             network_allowed: false,

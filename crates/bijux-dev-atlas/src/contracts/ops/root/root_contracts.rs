@@ -1,5 +1,5 @@
 fn ops_markdown_allowed(rel: &str) -> bool {
-    if rel == "ops/README.md" || rel == "ops/CONTRACT.md" {
+    if rel == "ops/README.md" || rel == "ops/CONTRACT.md" || rel == "ops/ERRORS.md" {
         return true;
     }
     for domain in DOMAIN_DIRS {
@@ -69,7 +69,7 @@ fn test_ops_000_allowed_root_files(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_files = BTreeSet::from(["README.md", "CONTRACT.md"]);
+    let allowed_files = BTreeSet::from(["README.md", "CONTRACT.md", "ERRORS.md"]);
     let mut violations = Vec::new();
     for entry in entries.flatten() {
         let path = entry.path();
@@ -106,7 +106,7 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
             Some("ops".to_string()),
         )]);
     };
-    let allowed_markdown = BTreeSet::from(["README.md", "CONTRACT.md"]);
+    let allowed_markdown = BTreeSet::from(["README.md", "CONTRACT.md", "ERRORS.md"]);
     let mut violations = Vec::new();
     for entry in entries.flatten() {
         let path = entry.path();
@@ -127,7 +127,7 @@ fn test_ops_000_forbid_extra_markdown_root(ctx: &RunContext) -> TestResult {
             violations.push(violation(
                 contract_id,
                 test_id,
-                "only ops/README.md and ops/CONTRACT.md are allowed at ops root",
+                "only ops/README.md, ops/CONTRACT.md, and ops/ERRORS.md are allowed at ops root",
                 Some(rel_to_root(&path, &ctx.repo_root)),
             ));
         }

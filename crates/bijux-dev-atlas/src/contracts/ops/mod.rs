@@ -194,8 +194,13 @@ fn run_ops_effect_command(
 }
 
 fn normalize_major_version(raw: &str) -> Option<u64> {
-    let trimmed = raw.trim().trim_start_matches('v');
-    trimmed.split('.').next()?.parse::<u64>().ok()
+    let trimmed = raw.trim();
+    let start = trimmed.find(|ch: char| ch.is_ascii_digit())?;
+    let digits = trimmed[start..]
+        .chars()
+        .take_while(|ch| ch.is_ascii_digit())
+        .collect::<String>();
+    digits.parse::<u64>().ok()
 }
 
 fn verify_declared_tool_versions(ctx: &RunContext, tool_names: &[&str]) -> TestResult {
@@ -211,13 +216,17 @@ fn verify_declared_tool_versions(ctx: &RunContext, tool_names: &[&str]) -> TestR
     let mut rows = Vec::new();
     let mut violations = Vec::new();
     for tool in tool_names {
+        let args: &[&str] = match *tool {
+            "kubeconform" => &["-v"],
+            _ => &["version"],
+        };
         let output = match run_ops_effect_command(
             ctx,
             OpsEffectCommand {
                 contract_id: "OPS-ROOT-001",
                 test_id: "ops.effect.tools.version_policy_present",
                 program: tool,
-                args: &["version"],
+                args,
                 stdout_rel: format!("tools/{tool}.stdout.log"),
                 stderr_rel: format!("tools/{tool}.stderr.log"),
                 network_allowed: false,
