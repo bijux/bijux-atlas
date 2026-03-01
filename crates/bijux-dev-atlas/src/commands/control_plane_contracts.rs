@@ -26,6 +26,24 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
                     )?,
                     PathBuf::from("artifacts/contracts/root/registry-snapshot.json"),
                 ),
+                ContractsSnapshotDomainArg::Runtime => (
+                    "runtime",
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "runtime",
+                        domain_registry(&domains, "runtime")?,
+                    )?,
+                    PathBuf::from("artifacts/contracts/runtime/registry-snapshot.json"),
+                ),
+                ContractsSnapshotDomainArg::ControlPlane => (
+                    "control-plane",
+                    contracts::registry_snapshot_with_policy(
+                        &repo_root,
+                        "control-plane",
+                        domain_registry(&domains, "control-plane")?,
+                    )?,
+                    PathBuf::from("artifacts/contracts/control-plane/registry-snapshot.json"),
+                ),
                 ContractsSnapshotDomainArg::Configs => (
                     "configs",
                     contracts::registry_snapshot_with_policy(
@@ -129,13 +147,34 @@ pub(crate) fn run_contracts_command(quiet: bool, command: ContractsCommand) -> i
             ContractsCommand::All(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
-                vec!["root", "docker", "make", "ops", "configs", "docs"],
+                vec![
+                    "root",
+                    "runtime",
+                    "control-plane",
+                    "docker",
+                    "make",
+                    "ops",
+                    "configs",
+                    "docs",
+                ],
                 None,
             ),
             ContractsCommand::Root(args) => (
                 resolve_repo_root(args.repo_root.clone())?,
                 args.clone(),
                 vec!["root"],
+                None,
+            ),
+            ContractsCommand::Runtime(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["runtime"],
+                None,
+            ),
+            ContractsCommand::ControlPlane(args) => (
+                resolve_repo_root(args.repo_root.clone())?,
+                args.clone(),
+                vec!["control-plane"],
                 None,
             ),
             ContractsCommand::Configs(args) => (

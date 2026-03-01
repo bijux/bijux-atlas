@@ -11,6 +11,26 @@
       "required": true
     },
     {
+      "contract_id": "RUNTIME-001",
+      "domain": "runtime",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
+      "contract_id": "CONTROL-PLANE-001",
+      "domain": "control-plane",
+      "lanes": [
+        "pr",
+        "merge",
+        "release"
+      ],
+      "required": true
+    },
+    {
       "contract_id": "DOCKER-000",
       "domain": "docker",
       "lanes": [

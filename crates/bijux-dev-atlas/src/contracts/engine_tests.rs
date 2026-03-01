@@ -17,6 +17,7 @@ mod tests {
         RunOptions {
             lane: ContractLane::Local,
             mode: Mode::Static,
+            run_id: None,
             required_only: false,
             ci: false,
             color_enabled: true,

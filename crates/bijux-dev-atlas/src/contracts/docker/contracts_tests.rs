@@ -123,6 +123,7 @@
         crate::contracts::RunOptions {
             lane: crate::contracts::ContractLane::Local,
             mode: crate::contracts::Mode::Static,
+            run_id: None,
             required_only: false,
             ci: false,
             color_enabled: false,

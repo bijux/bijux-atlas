@@ -149,6 +149,7 @@ pub struct RunContext {
 pub struct RunOptions {
     pub lane: ContractLane,
     pub mode: Mode,
+    pub run_id: Option<String>,
     pub required_only: bool,
     pub ci: bool,
     pub color_enabled: bool,
@@ -347,11 +348,22 @@ impl RunReport {
     }
 }
 
-pub fn run_metadata(repo_root: &Path, ci: bool, color_enabled: bool) -> RunMetadata {
+pub fn run_metadata(
+    repo_root: &Path,
+    ci: bool,
+    color_enabled: bool,
+    run_id_override: Option<&str>,
+) -> RunMetadata {
     let repo_display = repo_root.display().to_string();
-    let run_id = std::env::var("RUN_ID")
-        .ok()
-        .filter(|value| !value.trim().is_empty())
+    let run_id = run_id_override
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(ToOwned::to_owned)
+        .or_else(|| {
+            std::env::var("RUN_ID")
+                .ok()
+                .filter(|value| !value.trim().is_empty())
+        })
         .unwrap_or_else(|| "local".to_string());
     let commit_sha = Command::new("git")
         .args(["-C", &repo_display, "rev-parse", "HEAD"])

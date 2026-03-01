@@ -9,6 +9,20 @@
       "rationale": "Protect registry integrity before any merge."
     },
     {
+      "domain": "runtime",
+      "contract_id": "RUNTIME-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Protect runtime crate layering before any merge."
+    },
+    {
+      "domain": "control-plane",
+      "contract_id": "CONTROL-PLANE-001",
+      "lanes": ["pr", "merge", "release"],
+      "owner": "atlas-maintainers",
+      "rationale": "Protect control-plane governance boundaries before any merge."
+    },
+    {
       "domain": "docs",
       "contract_id": "DOC-001",
       "lanes": ["pr", "merge", "release"],

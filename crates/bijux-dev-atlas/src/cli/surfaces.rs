@@ -295,6 +295,8 @@ pub struct ConfigsCommonArgs {
 pub enum ContractsCommand {
     All(ContractsCommonArgs),
     Root(ContractsCommonArgs),
+    Runtime(ContractsCommonArgs),
+    ControlPlane(ContractsCommonArgs),
     Configs(ContractsCommonArgs),
     Docs(ContractsCommonArgs),
     Docker(ContractsDockerArgs),
@@ -340,6 +342,8 @@ pub struct ContractsCommonArgs {
     pub repo_root: Option<PathBuf>,
     #[arg(long)]
     pub artifacts_root: Option<PathBuf>,
+    #[arg(long)]
+    pub run_id: Option<String>,
     #[arg(long, default_value_t = false)]
     pub json: bool,
     #[arg(long, value_enum, default_value_t = ContractsFormatArg::Human)]
@@ -444,6 +448,8 @@ pub struct ContractsMakeArgs {
 pub enum ContractsSnapshotDomainArg {
     All,
     Root,
+    Runtime,
+    ControlPlane,
     Configs,
     Docs,
     Docker,

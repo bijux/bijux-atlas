@@ -162,7 +162,12 @@ pub fn run(
         domain: domain.to_string(),
         lane: options.lane,
         mode: options.mode,
-        metadata: run_metadata(repo_root, options.ci, options.color_enabled),
+        metadata: run_metadata(
+            repo_root,
+            options.ci,
+            options.color_enabled,
+            options.run_id.as_deref(),
+        ),
         contracts: contract_rows,
         cases: case_rows,
         panics: panic_rows,

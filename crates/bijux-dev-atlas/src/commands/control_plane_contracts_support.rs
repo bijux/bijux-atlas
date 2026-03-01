@@ -240,6 +240,18 @@ pub(super) fn domain_descriptor(name: &str) -> Option<DomainDescriptor> {
             explain_fn: contracts::root::contract_explain,
             gate_fn: contracts::root::contract_gate_command,
         }),
+        "runtime" => Some(DomainDescriptor {
+            name: "runtime",
+            contracts_fn: contracts::runtime::contracts,
+            explain_fn: contracts::runtime::contract_explain,
+            gate_fn: contracts::runtime::contract_gate_command,
+        }),
+        "control-plane" => Some(DomainDescriptor {
+            name: "control-plane",
+            contracts_fn: contracts::control_plane::contracts,
+            explain_fn: contracts::control_plane::contract_explain,
+            gate_fn: contracts::control_plane::contract_gate_command,
+        }),
         "docker" => Some(DomainDescriptor {
             name: "docker",
             contracts_fn: contracts::docker::contracts,
@@ -278,7 +290,16 @@ pub(super) fn all_domains(
     repo_root: &Path,
 ) -> Result<Vec<(DomainDescriptor, Vec<contracts::Contract>)>, String> {
     let mut out = Vec::new();
-    for name in ["root", "docker", "make", "ops", "configs", "docs"] {
+    for name in [
+        "root",
+        "runtime",
+        "control-plane",
+        "docker",
+        "make",
+        "ops",
+        "configs",
+        "docs",
+    ] {
         let descriptor = domain_descriptor(name)
             .ok_or_else(|| format!("internal contracts domain registry is missing `{name}`"))?;
         out.push((descriptor, (descriptor.contracts_fn)(repo_root)?));
@@ -502,9 +523,17 @@ pub(super) fn run_one(
     common: &ContractsCommonArgs,
     contract_filter: Option<String>,
 ) -> Result<contracts::RunReport, String> {
-    let run_id = std::env::var("RUN_ID")
-        .ok()
-        .filter(|value| !value.trim().is_empty())
+    let run_id = common
+        .run_id
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(ToOwned::to_owned)
+        .or_else(|| {
+            std::env::var("RUN_ID")
+                .ok()
+                .filter(|value| !value.trim().is_empty())
+        })
         .unwrap_or_else(|| "local".to_string());
     let mode = match common.mode {
         ContractsModeArg::Static => contracts::Mode::Static,
@@ -529,6 +558,7 @@ pub(super) fn run_one(
     let options = contracts::RunOptions {
         lane: cli_lane(common.lane),
         mode,
+        run_id: Some(run_id.clone()),
         required_only: common.required,
         ci: ci_mode,
         color_enabled: !ci_mode,

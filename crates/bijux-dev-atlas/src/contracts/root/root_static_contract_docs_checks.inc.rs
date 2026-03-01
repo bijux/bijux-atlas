@@ -40,6 +40,8 @@ const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 6] = [
 fn contracts_for_domain(repo_root: &std::path::Path, name: &str) -> Result<Vec<Contract>, String> {
     match name {
         "root" => super::root::contracts(repo_root),
+        "runtime" => super::runtime::contracts(repo_root),
+        "control-plane" => super::control_plane::contracts(repo_root),
         "configs" => super::configs::contracts(repo_root),
         "docs" => super::docs::contracts(repo_root),
         "docker" => super::docker::contracts(repo_root),
@@ -308,7 +310,7 @@ fn test_root_043_meta_test_mapping_integrity(ctx: &RunContext) -> TestResult {
 
 fn test_root_044_meta_ordering_stable(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
-    let expected_run_order = r#"vec!["root", "docker", "make", "ops", "configs", "docs"]"#;
+    let expected_run_order = "vec![\n                    \"root\",\n                    \"runtime\",\n                    \"control-plane\",\n                    \"docker\",\n                    \"make\",\n                    \"ops\",\n                    \"configs\",\n                    \"docs\",\n                ]";
     let command_source = match std::fs::read_to_string(
         ctx.repo_root
             .join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),
@@ -498,7 +500,16 @@ fn test_meta_req_002_required_contracts_cover_every_pillar(ctx: &RunContext) -> 
         .map(|(domain, _, _)| domain)
         .collect::<std::collections::BTreeSet<_>>();
     let mut violations = Vec::new();
-    for domain in ["root", "docs", "make", "configs", "docker", "ops"] {
+    for domain in [
+        "root",
+        "runtime",
+        "control-plane",
+        "docs",
+        "make",
+        "configs",
+        "docker",
+        "ops",
+    ] {
         if !present.contains(domain) {
             violations.push(Violation {
                 contract_id: contract_id.to_string(),
