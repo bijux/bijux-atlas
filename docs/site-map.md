@@ -1,3 +1,18 @@
+---
+title: Docs site map
+audience: contributor
+type: concept
+stability: stable
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - navigation
+  - structure
+related:
+  - start-here.md
+  - what-to-read-next.md
+---
+
 # Docs site map
 
 This documentation set is organized around three audience paths and a shared reader spine.
@@ -25,10 +40,10 @@ This documentation set is organized around three audience paths and a shared rea
 
 - Section index pages are curated.
 - Reader pages should be reachable in three clicks or fewer from their section index.
-- Internal system pages (`_generated`, `_drafts`, `_nav`, `_meta`) stay out of reader navigation.
+- Internal contributor-only pages stay out of reader navigation.
 
 ## Next steps
 
 - Guided tracks: [What to read next](what-to-read-next.md)
-- Contributor docs governance: [Docs governance](_internal/governance/index.md)
+- Contributor guidance: [Development](development/index.md)
 - Terms: [Glossary](glossary.md)

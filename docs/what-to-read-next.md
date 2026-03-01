@@ -1,3 +1,18 @@
+---
+title: What to read next
+audience: contributor
+type: concept
+stability: stable
+owner: docs-governance
+last_reviewed: 2026-03-01
+tags:
+  - navigation
+  - onboarding
+related:
+  - start-here.md
+  - site-map.md
+---
+
 # What to read next
 
 Choose one guided track based on your goal.
@@ -23,7 +38,7 @@ Choose one guided track based on your goal.
 2. [Development](development/index.md)
 3. [Control-plane](control-plane/index.md)
 4. [Architecture](architecture/index.md)
-5. [Docs governance](_internal/governance/index.md)
+5. [How to change docs](development/how-to-change-docs.md)
 
 ## Next steps
 
