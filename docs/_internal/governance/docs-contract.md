@@ -2,7 +2,7 @@
 
 ## Scope
 
-- Governed surface: `docs/` and `docs/CONTRACT.md`.
+- Governed surface: `docs/` and `docs/contract.md`.
 - SSOT = bijux-dev-atlas contracts runner.
 - Effects boundary: this group runs static contracts only.
 - Non-goals:

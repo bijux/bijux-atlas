@@ -158,7 +158,7 @@
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/COMMANDS.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md` has no inbound doc links",
-    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/CONTRACT.md` has no inbound doc links",
+    "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/contract.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/EXIT_CODES.md` has no inbound doc links",
     "DOCS_REGISTRY_UNUSED_DOC_WARN: `crates/bijux-dev-atlas/docs/FAILURE_MODES.md` has no inbound doc links",

@@ -1,5 +1,5 @@
 docs/AUTHORS.md
-docs/CONTRACT.md
+docs/contract.md
 docs/OWNERS.md
 docs/PROJECT_DESCRIPTION_SNIPPET.md
 docs/PROJECT_IDENTITY.md

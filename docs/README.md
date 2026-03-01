@@ -9,7 +9,7 @@ tags:
   - governance
   - navigation
 related:
-  - docs/CONTRACT.md
+  - docs/contract.md
   - docs/site-map.md
 ---
 

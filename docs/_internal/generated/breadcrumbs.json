@@ -2104,9 +2104,9 @@
         "crates",
         "crates/bijux-dev-atlas",
         "crates/bijux-dev-atlas/docs",
-        "crates/bijux-dev-atlas/docs/CONTRACT.md"
+        "crates/bijux-dev-atlas/docs/contract.md"
       ],
-      "path": "crates/bijux-dev-atlas/docs/CONTRACT.md"
+      "path": "crates/bijux-dev-atlas/docs/contract.md"
     },
     {
       "breadcrumbs": [

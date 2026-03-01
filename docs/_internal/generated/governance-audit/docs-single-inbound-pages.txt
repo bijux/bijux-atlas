@@ -1,4 +1,4 @@
-docs/CONTRACT.md | linked_from=docs/control-plane/contracts.md
+docs/contract.md | linked_from=docs/control-plane/contracts.md
 docs/_lint/renames.md | linked_from=docs/_lint/index.md
 docs/_internal/style/concept-ids.md | linked_from=docs/_internal/style/CONCEPT_REGISTRY.md
 docs/_internal/style/docs-review-checklist.md | linked_from=docs/_internal/style/index.md

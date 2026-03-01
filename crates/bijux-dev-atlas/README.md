@@ -31,7 +31,7 @@ Control-plane binary for repository governance under `bijux dev atlas ...`.
 - Command surface: `docs/CLI_COMMAND_LIST.md`
 - Examples and behavior: `docs/COMMANDS.md`
 - Exit codes: `docs/EXIT_CODES.md`
-- Control-plane contract: `docs/CONTRACT.md`
+- Control-plane contract: `docs/contract.md`
 
 ## Crate Governance Docs
 

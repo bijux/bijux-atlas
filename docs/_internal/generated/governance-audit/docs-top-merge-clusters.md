@@ -23,7 +23,7 @@ Reason to exist: define consolidation units that collapse duplicate narratives i
 18. Reference schemas: `docs/reference/schemas.md` <= `docs/root/SCHEMA_INDEX.md`
 19. Make targets: `docs/reference/make-targets.md` <= `docs/development/make-targets.md`, `docs/_internal/generated/make-targets.md`
 20. Development toolchain: `docs/development/tooling/rust-toolchain.md` <= `docs/development/cargo.md`, `docs/development/cargo-profiles-ssot.md`
-21. Contributing: `docs/development/contributing.md` <= `docs/CONTRACT.md`, `docs/root/CONTRIBUTION_MODEL.md`
+21. Contributing: `docs/development/contributing.md` <= `docs/contract.md`, `docs/root/CONTRIBUTION_MODEL.md`
 22. Repo layout: `docs/development/repo-layout.md` <= `docs/root/REPOSITORY_STRUCTURE.md`, `docs/development/repo-surface.md`
 23. Policy placement: `docs/_internal/governance/index.md` <= policy pages currently under `_style`, `operations`, `development/ci`
 24. Ops reference tables: `docs/reference/index.md` <= `docs/operations/reference/*.md`

@@ -249,7 +249,7 @@ License: Apache-2.0
 | `crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/COMMANDS.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md` | `concept` | `docs-governance` | `stable` |
-| `crates/bijux-dev-atlas/docs/CONTRACT.md` | `concept` | `docs-governance` | `stable` |
+| `crates/bijux-dev-atlas/docs/contract.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` | `concept` | `bijux-dev-atlas` | `evolving` |
 | `crates/bijux-dev-atlas/docs/EXIT_CODES.md` | `concept` | `docs-governance` | `stable` |
 | `crates/bijux-dev-atlas/docs/FAILURE_MODES.md` | `concept` | `docs-governance` | `stable` |

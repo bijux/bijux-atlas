@@ -245,7 +245,7 @@
     "crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md",
     "crates/bijux-dev-atlas/docs/COMMANDS.md",
     "crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md",
-    "crates/bijux-dev-atlas/docs/CONTRACT.md",
+    "crates/bijux-dev-atlas/docs/contract.md",
     "crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md",
     "crates/bijux-dev-atlas/docs/EXIT_CODES.md",
     "crates/bijux-dev-atlas/docs/FAILURE_MODES.md",

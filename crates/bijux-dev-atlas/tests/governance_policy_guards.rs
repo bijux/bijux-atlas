@@ -80,7 +80,7 @@ fn architecture_contract_is_single_source_and_records_execution_policy() {
         "ARCHITECTURE.md must document bench isolation policy"
     );
 
-    let docs_contract = fs::read_to_string(root.join("crates/bijux-dev-atlas/docs/CONTRACT.md"))
+    let docs_contract = fs::read_to_string(root.join("crates/bijux-dev-atlas/docs/contract.md"))
         .expect("crate contract doc");
     assert!(
         !docs_contract.contains("## Internal Module Graph"),

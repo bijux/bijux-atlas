@@ -218,7 +218,7 @@ fn policy_docs_cite_contract_ids() {
 
     let files = [
         root.join("CONTRACT.md"),
-        root.join("docs/CONTRACT.md"),
+        root.join("docs/contract.md"),
         root.join("docs/operations/DOCS_CONVERGENCE_POLICY.md"),
         root.join("docs/operations/ops-docs-contract.md"),
     ];

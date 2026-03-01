@@ -18,7 +18,7 @@ const CONTRACT_DOC_DOMAINS: [ContractDocDomain; 6] = [
     ContractDocDomain {
         name: "docs",
         title: "Docs",
-        file: "docs/CONTRACT.md",
+        file: "docs/contract.md",
     },
     ContractDocDomain {
         name: "docker",

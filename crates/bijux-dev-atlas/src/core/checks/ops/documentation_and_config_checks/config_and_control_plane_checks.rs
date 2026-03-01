@@ -152,7 +152,7 @@ pub(super) fn check_ops_control_plane_doc_contract(
 pub(super) fn check_control_plane_naming_contract_docs(
     ctx: &CheckContext<'_>,
 ) -> Result<Vec<Violation>, CheckError> {
-    let rel = Path::new("crates/bijux-dev-atlas/docs/CONTRACT.md");
+    let rel = Path::new("crates/bijux-dev-atlas/docs/contract.md");
     let text = fs::read_to_string(ctx.repo_root.join(rel))
         .map_err(|err| CheckError::Failed(err.to_string()))?;
     let mut violations = Vec::new();
@@ -165,7 +165,7 @@ pub(super) fn check_control_plane_naming_contract_docs(
             violations.push(violation(
                 "CONTROL_PLANE_NAMING_CONTRACT_MISSING",
                 format!("dev control-plane contract is missing `{required}`"),
-                "document the frozen runtime vs control-plane naming contract in crates/bijux-dev-atlas/docs/CONTRACT.md",
+                "document the frozen runtime vs control-plane naming contract in crates/bijux-dev-atlas/docs/contract.md",
                 Some(rel),
             ));
         }

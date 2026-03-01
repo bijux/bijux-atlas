@@ -1965,7 +1965,7 @@
       "area": "bijux-dev-atlas",
       "audience": "contributors",
       "owner": "docs-governance",
-      "path": "crates/bijux-dev-atlas/docs/CONTRACT.md",
+      "path": "crates/bijux-dev-atlas/docs/contract.md",
       "stability": "stable",
       "title": "Dev Control Plane Contract"
     },

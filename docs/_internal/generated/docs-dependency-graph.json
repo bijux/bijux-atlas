@@ -1228,7 +1228,7 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/CONTRACT.md"
+      "from": "crates/bijux-dev-atlas/docs/contract.md"
     },
     {
       "crate": "bijux-dev-atlas",

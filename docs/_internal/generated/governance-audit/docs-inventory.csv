@@ -1,6 +1,6 @@
 path,title,type,audience,disposition,reason
 "docs/AUTHORS.md","Authors","unspecified","unspecified","DELETE","redundant root narrative or metadata duplication"
-"docs/CONTRACT.md","Docs Contract","unspecified","unspecified","MERGE","consolidate into canonical section pages"
+"docs/contract.md","Docs Contract","unspecified","unspecified","MERGE","consolidate into canonical section pages"
 "docs/OWNERS.md","Docs Owners","unspecified","unspecified","MERGE","consolidate into canonical section pages"
 "docs/PROJECT_DESCRIPTION_SNIPPET.md","Project Description Snippet","unspecified","unspecified","DELETE","redundant root narrative or metadata duplication"
 "docs/PROJECT_IDENTITY.md","Project Identity","unspecified","unspecified","DELETE","redundant root narrative or metadata duplication"

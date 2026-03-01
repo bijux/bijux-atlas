@@ -108,7 +108,7 @@
       "crates/bijux-atlas-server/CONTRACT.md",
       "crates/bijux-atlas-store/CONTRACT.md",
       "crates/bijux-dev-atlas/CONTRACT.md",
-      "crates/bijux-dev-atlas/docs/CONTRACT.md",
+      "crates/bijux-dev-atlas/docs/contract.md",
       "docker/CONTRACT.md",
       "make/CONTRACT.md",
       "ops/CONTRACT.md",
