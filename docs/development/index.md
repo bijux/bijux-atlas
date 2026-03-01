@@ -33,6 +33,7 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Repository Layout](repo-layout.md)
 - [CI Overview](ci-overview.md)
 - [Contributing](contributing.md)
+- [Config change checklist](config-change-checklist.md)
 - [Toolchain](toolchain.md)
 - [Add a check in 30 minutes](../control-plane/add-a-check-in-30-minutes.md)
 - [Docs governance](../_internal/governance/index.md)
