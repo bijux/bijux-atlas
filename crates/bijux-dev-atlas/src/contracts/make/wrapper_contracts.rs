@@ -369,23 +369,23 @@ fn test_make_shell_002_no_multi_hop_pipes(ctx: &RunContext) -> TestResult {
 }
 
 fn test_make_engine_001_no_direct_tool_invocation(ctx: &RunContext) -> TestResult {
-    for path in sorted_make_sources(&ctx.repo_root) {
-        let text = match read_text(&path) {
-            Ok(text) => text,
-            Err(err) => {
-                return fail(
-                    "MAKE-ENGINE-001",
-                    "make.engine.no_direct_tools",
-                    &rel(&path, &ctx.repo_root),
-                    err,
-                )
-            }
-        };
-        if text.lines().any(line_invokes_direct_tool) {
+    let declared = match declared_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
             return fail(
                 "MAKE-ENGINE-001",
                 "make.engine.no_direct_tools",
-                &rel(&path, &ctx.repo_root),
+                "make",
+                err,
+            )
+        }
+    };
+    for (_, (file, recipes)) in declared {
+        if recipes.iter().any(|line| line_invokes_direct_tool(line)) {
+            return fail(
+                "MAKE-ENGINE-001",
+                "make.engine.no_direct_tools",
+                &file,
                 "make wrappers must not invoke kubectl, helm, docker, or k6 directly",
             );
         }

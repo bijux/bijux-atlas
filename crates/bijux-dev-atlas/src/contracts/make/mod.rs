@@ -56,6 +56,38 @@ fn top_level_make_module_files(repo_root: &Path) -> Vec<PathBuf> {
         .collect()
 }
 
+fn curated_targets(repo_root: &Path) -> Result<Vec<String>, String> {
+    let text = std::fs::read_to_string(repo_root.join("make/root.mk"))
+        .map_err(|err| format!("read make/root.mk failed: {err}"))?;
+    let mut collecting = false;
+    let mut targets = Vec::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if !collecting && trimmed.starts_with("CURATED_TARGETS :=") {
+            collecting = true;
+        }
+        if !collecting {
+            continue;
+        }
+        for token in trimmed.replace('\\', " ").split_whitespace() {
+            if token
+                .chars()
+                .all(|ch| ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '-')
+            {
+                targets.push(token.to_string());
+            }
+        }
+        if !trimmed.ends_with('\\') {
+            break;
+        }
+    }
+    if targets.is_empty() {
+        Err("CURATED_TARGETS is missing or empty".to_string())
+    } else {
+        Ok(targets)
+    }
+}
+
 pub(super) fn sorted_make_sources(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
     let roots = [repo_root.join("Makefile"), repo_root.join("make")];
@@ -341,6 +373,39 @@ fn test_make_struct_004_module_headers(ctx: &RunContext) -> TestResult {
         TestResult::Pass
     } else {
         TestResult::Fail(violations)
+    }
+}
+
+fn test_make_struct_007_help_surface_sorted(ctx: &RunContext) -> TestResult {
+    let contract_id = "MAKE-STRUCT-007";
+    let test_id = "make.structure.help_surface_sorted";
+    let targets = match curated_targets(&ctx.repo_root) {
+        Ok(targets) => targets,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some("make/root.mk".to_string()),
+                line: Some(1),
+                message: err,
+                evidence: None,
+            }]);
+        }
+    };
+    let mut sorted = targets.clone();
+    sorted.sort();
+    sorted.dedup();
+    if targets == sorted {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(vec![Violation {
+            contract_id: contract_id.to_string(),
+            test_id: test_id.to_string(),
+            file: Some("make/root.mk".to_string()),
+            line: Some(1),
+            message: "CURATED_TARGETS must stay alphabetically sorted and duplicate-free so `make help` output is stable".to_string(),
+            evidence: None,
+        }])
     }
 }
 
@@ -899,6 +964,16 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             }],
         },
         Contract {
+            id: ContractId("MAKE-STRUCT-007".to_string()),
+            title: "make help surface remains sorted",
+            tests: vec![TestCase {
+                id: TestId("make.structure.help_surface_sorted".to_string()),
+                title: "CURATED_TARGETS stays alphabetically sorted",
+                kind: TestKind::Pure,
+                run: test_make_struct_007_help_surface_sorted,
+            }],
+        },
+        Contract {
             id: ContractId("MAKE-ENV-001".to_string()),
             title: "make env file singularity",
             tests: vec![TestCase {
@@ -1004,6 +1079,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         }
         "MAKE-STRUCT-004" => {
             "Every make module must declare its scope and public-target surface near the top.".to_string()
+        }
+        "MAKE-STRUCT-007" => {
+            "Keep CURATED_TARGETS alphabetically sorted so `make help` and generated target registries stay stable.".to_string()
         }
         "MAKE-ENV-001" => {
             "Keep one macros source and one run-environment source to avoid env drift.".to_string()

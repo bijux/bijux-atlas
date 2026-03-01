@@ -21,10 +21,14 @@ include make/k8s.mk
 include make/verification.mk
 
 CURATED_TARGETS := \
-	help doctor fmt lint test test-all build contracts contracts-pr contracts-merge contracts-release contracts-all contracts-fast contracts-changed contracts-json contracts-ci contracts-root contracts-configs contracts-docs contracts-docker contracts-make contracts-ops contracts-help docker docker-contracts docker-contracts-effect docker-gate \
-	ops-contracts ops-contracts-effect \
-	k8s-render k8s-validate stack-up stack-down \
-	ops-fast ops-pr ops-nightly make-target-list
+	build contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-root \
+	docker docker-contracts docker-contracts-effect docker-gate doctor \
+	fmt help \
+	k8s-render k8s-validate \
+	lint make-target-list \
+	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
+	stack-down stack-up \
+	test test-all
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@printf '%s\n' "Curated make targets (Rust control plane):"; \
