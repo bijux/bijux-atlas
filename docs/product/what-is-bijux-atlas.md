@@ -1,3 +1,20 @@
+---
+title: What is Bijux Atlas
+audience: user
+type: concept
+stability: stable
+owner: bijux-atlas-product
+last_reviewed: 2026-03-01
+tags:
+  - product
+  - narrative
+related:
+  - docs/index.md
+  - docs/product/index.md
+source:
+  - docs/product/release-model.md
+---
+
 # What is Bijux Atlas
 
 - Owner: `bijux-atlas-product`

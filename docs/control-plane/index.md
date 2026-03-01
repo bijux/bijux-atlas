@@ -56,3 +56,4 @@ A contributor can discover command surfaces, reproduce CI checks locally, and un
 
 - [Development](../development/index.md)
 - [Glossary](../glossary.md)
+- [What is Bijux Atlas](../product/what-is-bijux-atlas.md)
