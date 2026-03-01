@@ -37,7 +37,6 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Add a check in 30 minutes](../control-plane/add-a-check-in-30-minutes.md)
 - [Docs governance](../_internal/governance/index.md)
 - [Docs change process](../_internal/meta/docs-change-process.md)
-- [Docs taxonomy quick reference](../_internal/meta/docs-taxonomy-quick-reference.md)
 - [Where truth lives](where-truth-lives.md)
 
 ## Where to ask questions
