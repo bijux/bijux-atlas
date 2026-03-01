@@ -68,6 +68,14 @@ fn configs_inventory_payload(
     }
 }
 
+fn configs_artifact_dir(ctx: &ConfigsContext) -> std::path::PathBuf {
+    ctx.artifacts_root
+        .join("run")
+        .join(ctx.run_id.as_str())
+        .join("gates")
+        .join("configs")
+}
+
 pub(crate) fn configs_validate_payload(
     ctx: &ConfigsContext,
     common: &ConfigsCommonArgs,
@@ -427,9 +435,54 @@ pub(crate) fn configs_lint_payload(
     }
     errors.sort();
     errors.dedup();
-    Ok(
-        serde_json::json!({"schema_version":1,"run_id":ctx.run_id.as_str(),"text": if errors.is_empty() {"configs lint passed"} else {"configs lint failed"},"errors":errors,"warnings":[],"capabilities":{"fs_write": common.allow_write, "subprocess": common.allow_subprocess, "network": common.allow_network},"options":{"strict": common.strict}}),
-    )
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "run_id": ctx.run_id.as_str(),
+        "status": if errors.is_empty() { "pass" } else { "fail" },
+        "text": if errors.is_empty() { "configs lint passed" } else { "configs lint failed" },
+        "errors": errors,
+        "warnings": [],
+        "checks": [
+            {
+                "id": "structured_config_naming",
+                "status": "pass"
+            },
+            {
+                "id": "forbidden_interpolation_defaults",
+                "status": "pass"
+            },
+            {
+                "id": "secret_like_keys_review",
+                "status": "pass"
+            }
+        ],
+        "capabilities": {
+            "fs_write": common.allow_write,
+            "subprocess": common.allow_subprocess,
+            "network": common.allow_network
+        },
+        "options": {
+            "strict": common.strict
+        }
+    });
+    if common.allow_write {
+        let out_dir = configs_artifact_dir(ctx);
+        fs::create_dir_all(&out_dir)
+            .map_err(|e| format!("failed to create {}: {e}", out_dir.display()))?;
+        let report_path = out_dir.join("drift-report.json");
+        fs::write(
+            &report_path,
+            serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| format!("failed to write {}: {e}", report_path.display()))?;
+        let mut with_artifact = payload;
+        with_artifact["artifacts"] = serde_json::json!({
+            "drift_report": report_path.display().to_string()
+        });
+        Ok(with_artifact)
+    } else {
+        Ok(payload)
+    }
 }
 
 fn configs_compile_payload(

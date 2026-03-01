@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "run_id": "example",
+  "status": "pass",
+  "text": "configs lint passed",
+  "errors": [],
+  "warnings": [],
+  "checks": [
+    {
+      "id": "structured_config_naming",
+      "status": "pass"
+    },
+    {
+      "id": "forbidden_interpolation_defaults",
+      "status": "pass"
+    },
+    {
+      "id": "secret_like_keys_review",
+      "status": "pass"
+    }
+  ],
+  "generated_by": "bijux dev atlas configs lint --allow-write"
+}
