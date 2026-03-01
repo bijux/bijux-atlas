@@ -7,7 +7,7 @@
 - Last verified against: `main@c59da0bf`
 - Reason to exist: map every production alert to an actionable runbook URL.
 
-## Alert routing
+## What alerts mean
 
 | Alert condition | Severity | Runbook |
 | --- | --- | --- |
@@ -20,6 +20,13 @@
 | Rollback required by deploy guard | page | [Rollback Playbook](../runbooks/rollback-playbook.md) |
 | Unknown multi-surface incident | page | [Incident Playbook](../runbooks/incident-playbook.md) |
 
+## Representative query shapes
+
+- error-rate burn: rate of `5xx` responses over a short and long window
+- readiness failure: proportion of unavailable pods or failed readiness probes
+- store saturation: latency plus backend error growth on store-facing requests
+- overload: p99 latency growth paired with response rejection or timeout increase
+
 ## Alert source of truth
 
 - `ops/observe/alerts/atlas-alert-rules.yaml`
@@ -29,9 +36,14 @@
 
 ```bash
 make ops-observability-verify
+make ops-alerts-validate
 ```
 
 Expected result: each active alert resolves to one runbook URL.
+
+## Rollback
+
+If alert routing or rule semantics regress, revert the alert rule change and rerun validation before deploy.
 
 ## Next
 

@@ -1,8 +1,11 @@
-# Rollback Playbook
+# Rollback playbook
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Rollback Playbook events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: define the general rollback path used by deploy, release, and incident workflows.
 
 ## Symptoms
 
@@ -14,9 +17,11 @@ Reason to exist: provide deterministic incident response steps for Rollback Play
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-release-rollback
+make ops-readiness-scorecard
+make ops-observability-verify
+```
 
 ## Expected outputs
 
@@ -25,8 +30,12 @@ Reason to exist: provide deterministic incident response steps for Rollback Play
 
 ## Mitigations
 
-1. Apply the safest stabilization action for the identified failure mode.
-2. Reduce blast radius while preserving critical read paths.
+1. Revert to the last known good release pointer or deployment state.
+2. Preserve failure evidence before attempting a second rollout.
+
+## Verify success
+
+Serving returns to the last known good behavior, alert pressure drops, and post-rollback checks pass.
 
 ## Rollback
 
@@ -40,6 +49,7 @@ Reason to exist: provide deterministic incident response steps for Rollback Play
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Release rollback procedure](../release/rollback-procedure.md)
+- [Incident response](../incident-response.md)

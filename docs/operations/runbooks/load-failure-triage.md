@@ -1,8 +1,11 @@
-# Load Failure Triage
+# Load failure triage
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Load Failure Triage events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: explain how to diagnose a failed load suite and decide whether it blocks release.
 
 ## Symptoms
 
@@ -14,9 +17,11 @@ Reason to exist: provide deterministic incident response steps for Load Failure 
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-load-smoke
+make ops-load-nightly
+make ops-observability-verify
+```
 
 ## Expected outputs
 
@@ -25,8 +30,12 @@ Reason to exist: provide deterministic incident response steps for Load Failure 
 
 ## Mitigations
 
-1. Apply the safest stabilization action for the identified failure mode.
-2. Reduce blast radius while preserving critical read paths.
+1. Separate threshold regression from environment noise before blocking promotion.
+2. Escalate to [Traffic spike](traffic-spike.md) if the same pattern appears in live traffic.
+
+## Verify success
+
+The failing suite is either reproduced with clear evidence or downgraded to an explained non-blocker with no hidden ambiguity.
 
 ## Rollback
 
@@ -40,6 +49,7 @@ Reason to exist: provide deterministic incident response steps for Load Failure 
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Load testing](../load/index.md)
+- [Traffic spike](traffic-spike.md)

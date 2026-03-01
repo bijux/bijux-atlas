@@ -18,6 +18,10 @@
 - [Load Failure Triage](load-failure-triage.md)
 - [Rollback Playbook](rollback-playbook.md)
 
+## Runbook-to-alert mapping
+
+See [Runbooks to alerts mapping](../runbooks-to-alerts-mapping.md) for the explicit routing table used by alerts.
+
 ## Alert mapping
 
 See [Observability Alerts](../observability/alerts.md) for alert-to-runbook routing.

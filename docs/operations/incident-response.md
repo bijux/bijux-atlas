@@ -1,4 +1,4 @@
-# Incident Response
+# Incident response
 
 - Owner: `bijux-atlas-operations`
 - Audience: `operator`

@@ -1,4 +1,11 @@
-# Runbook Template
+# Runbook template
+
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: define the required structure for operator runbooks.
 
 ## Symptoms
 
@@ -6,12 +13,14 @@
 
 ## Commands
 ```bash
-bijux dev atlas contracts ops --format json
+make ops-readiness-scorecard
 ```
 
 ## Expected outputs
 
 ## Mitigations
+
+## Verify success
 
 ## Rollback
 

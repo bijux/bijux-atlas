@@ -1,8 +1,11 @@
-# Traffic Spike
+# Traffic spike
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Traffic Spike events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: stabilize the service during sustained overload or sudden traffic growth.
 
 ## Symptoms
 
@@ -14,9 +17,11 @@ Reason to exist: provide deterministic incident response steps for Traffic Spike
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-readiness-scorecard
+make ops-observability-verify
+make ops-load-smoke
+```
 
 ## Expected outputs
 
@@ -25,8 +30,12 @@ Reason to exist: provide deterministic incident response steps for Traffic Spike
 
 ## Mitigations
 
-1. Apply the safest stabilization action for the identified failure mode.
-2. Reduce blast radius while preserving critical read paths.
+1. Reduce pressure on the dominant expensive path.
+2. Roll back the latest capacity-sensitive deploy if the spike started after rollout.
+
+## Verify success
+
+Latency and timeout alerts return to target range and the service stays ready under representative smoke load.
 
 ## Rollback
 
@@ -40,6 +49,7 @@ Reason to exist: provide deterministic incident response steps for Traffic Spike
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Load failure triage](load-failure-triage.md)
+- [Store backend error spike](slo-store-backend-error-spike.md)

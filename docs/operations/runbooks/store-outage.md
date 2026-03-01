@@ -1,8 +1,11 @@
-# Store Outage
+# Store outage
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Store Outage events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: restore service when the serving store is unavailable or timing out broadly.
 
 ## Symptoms
 
@@ -14,9 +17,11 @@ Reason to exist: provide deterministic incident response steps for Store Outage 
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-readiness-scorecard
+make ops-observability-verify
+make ops-release-rollback
+```
 
 ## Expected outputs
 
@@ -25,8 +30,12 @@ Reason to exist: provide deterministic incident response steps for Store Outage 
 
 ## Mitigations
 
-1. Apply the safest stabilization action for the identified failure mode.
-2. Reduce blast radius while preserving critical read paths.
+1. Remove pressure from the failing store path by reducing rollout or traffic blast radius.
+2. Roll back the latest risky release if the outage started after deploy.
+
+## Verify success
+
+Readiness returns, store-facing alerts stop paging, and core read traffic succeeds again.
 
 ## Rollback
 
@@ -40,6 +49,7 @@ Reason to exist: provide deterministic incident response steps for Store Outage 
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Store backend error spike](slo-store-backend-error-spike.md)
+- [Rollback playbook](rollback-playbook.md)

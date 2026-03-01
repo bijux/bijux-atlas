@@ -1,8 +1,11 @@
-# Incident Playbook
+# Incident playbook
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Incident Playbook events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: provide the fallback runbook when the failing subsystem is not yet known.
 
 ## Symptoms
 
@@ -14,9 +17,10 @@ Reason to exist: provide deterministic incident response steps for Incident Play
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-readiness-scorecard
+make ops-observability-verify
+```
 
 ## Expected outputs
 
@@ -27,6 +31,10 @@ Reason to exist: provide deterministic incident response steps for Incident Play
 
 1. Apply the safest stabilization action for the identified failure mode.
 2. Reduce blast radius while preserving critical read paths.
+
+## Verify success
+
+Alerts quiet down, readiness recovers, and you can hand off to a more specific runbook if the subsystem is identified.
 
 ## Rollback
 
@@ -40,6 +48,7 @@ Reason to exist: provide deterministic incident response steps for Incident Play
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Incident response](../incident-response.md)
+- [Runbooks to alerts mapping](../runbooks-to-alerts-mapping.md)

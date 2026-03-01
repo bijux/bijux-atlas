@@ -1,8 +1,11 @@
-# Dataset Corruption
+# Dataset corruption
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Dataset Corruption events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: recover safely when a promoted dataset or artifact fails integrity checks.
 
 ## Symptoms
 
@@ -14,9 +17,10 @@ Reason to exist: provide deterministic incident response steps for Dataset Corru
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-readiness-scorecard
+make ops-release-rollback
+```
 
 ## Expected outputs
 
@@ -25,8 +29,12 @@ Reason to exist: provide deterministic incident response steps for Dataset Corru
 
 ## Mitigations
 
-1. Apply the safest stabilization action for the identified failure mode.
-2. Reduce blast radius while preserving critical read paths.
+1. Stop promotion of the corrupt dataset and move traffic back to the last known good release.
+2. Preserve evidence before any cleanup or republish action.
+
+## Verify success
+
+Integrity errors stop recurring, the previous good dataset serves successfully, and rollback evidence is captured.
 
 ## Rollback
 
@@ -40,6 +48,7 @@ Reason to exist: provide deterministic incident response steps for Dataset Corru
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Backup and restore](../release/backup-and-restore.md)
+- [Rollback playbook](rollback-playbook.md)

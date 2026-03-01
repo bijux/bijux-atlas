@@ -1,8 +1,11 @@
-# Registry Federation
+# Registry federation
 
-Owner: \'bijux-atlas-operations\'  
-Type: \'runbook\'  
-Reason to exist: provide deterministic incident response steps for Registry Federation events.
+- Owner: `bijux-atlas-operations`
+- Type: `runbook`
+- Audience: `operator`
+- Stability: `stable`
+- Last verified against: `main@2026-03-01`
+- Reason to exist: recover when release alias or registry federation fails to converge.
 
 ## Symptoms
 
@@ -14,9 +17,11 @@ Reason to exist: provide deterministic incident response steps for Registry Fede
 
 ## Commands
 
-1. Run canonical health and readiness checks for affected services.
-2. Query recent error and latency windows for the impacted surface.
-3. Verify recent config and release changes before mitigation.
+```bash
+make ops-prereqs
+make ops-release-rollback
+make ops-readiness-scorecard
+```
 
 ## Expected outputs
 
@@ -25,8 +30,12 @@ Reason to exist: provide deterministic incident response steps for Registry Fede
 
 ## Mitigations
 
-1. Apply the safest stabilization action for the identified failure mode.
-2. Reduce blast radius while preserving critical read paths.
+1. Freeze promotion while the registry state is inconsistent.
+2. Roll back the alias or release pointer to the last converged state.
+
+## Verify success
+
+Registry errors stop, aliases resolve deterministically again, and readiness checks pass.
 
 ## Rollback
 
@@ -40,6 +49,7 @@ Reason to exist: provide deterministic incident response steps for Registry Fede
 
 - Escalate to platform owner when mitigation and rollback do not restore service.
 
-## What Changed
+## Next
 
-- 2026-02-28: aligned structure with canonical runbook template headings.
+- [Release workflow](../release-workflow.md)
+- [Rollback playbook](rollback-playbook.md)
