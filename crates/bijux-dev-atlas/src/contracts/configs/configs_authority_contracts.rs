@@ -56,6 +56,17 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
                 "example config files must live under configs/examples/",
             ));
         }
+        if lower.starts_with("configs/examples/")
+            && !lower.ends_with("readme.md")
+            && !root_readme.contains(&file)
+        {
+            violations.push(violation(
+                "CONFIGS-026",
+                "configs.docs.no_nested_markdown",
+                &file,
+                "example config files must be referenced from configs/README.md",
+            ));
+        }
     }
     if violations.is_empty() {
         TestResult::Pass
@@ -800,6 +811,22 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
                     "public or generated json or jsonc config file is missing a per-file schema declaration",
                 ));
             }
+        }
+    }
+    for file in config_files_without_exclusions(&index) {
+        if !file.starts_with("configs/examples/") {
+            continue;
+        }
+        if !json_like(&file) || schema_like(&file) {
+            continue;
+        }
+        if matched_schema_path(&schemas, &file).is_none() {
+            violations.push(violation(
+                "CONFIGS-031",
+                "configs.schemas.file_coverage",
+                &file,
+                "example json or jsonc config file must declare schema coverage in configs/schema-map.json",
+            ));
         }
     }
     if violations.is_empty() {

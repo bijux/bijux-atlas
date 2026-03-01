@@ -673,6 +673,28 @@ fn test_configs_025_text_hygiene(ctx: &RunContext) -> TestResult {
                 });
                 break;
             }
+            let lower = line.to_ascii_lowercase();
+            let looks_like_secret = lower.contains("aws_secret_access_key")
+                || lower.contains("x-api-key")
+                || lower.contains("authorization: bearer ")
+                || lower.contains("-----begin private key-----")
+                || lower.contains("password=")
+                || lower.contains("token=");
+            let explicitly_example = lower.contains("example")
+                || lower.contains("dummy")
+                || lower.contains("placeholder")
+                || lower.contains("changeme");
+            if looks_like_secret && !explicitly_example {
+                violations.push(Violation {
+                    contract_id: "CONFIGS-025".to_string(),
+                    test_id: "configs.text.hygiene".to_string(),
+                    file: Some(file.clone()),
+                    line: Some(line_no + 1),
+                    message: "potential secret material detected in config surface".to_string(),
+                    evidence: None,
+                });
+                break;
+            }
         }
     }
     if violations.is_empty() {
