@@ -3,32 +3,52 @@
 - Owner: bijux-dev-atlas
 - Stability: stable
 
-## Purpose
+## Inputs
 
-`bijux-dev-atlas` is the repository governance control-plane behind `bijux dev atlas ...`.
+- Public API calls and documented configuration values.
+- Declared file inputs from crate fixtures and documented interfaces.
 
-This file captures stable behavior expectations for command orchestration. Internal structure and
-layering rules are documented in `crates/bijux-dev-atlas/docs/architecture.md`.
+## Outputs
 
-## Behavioral Contract
+- Deterministic results for identical inputs.
+- Public outputs documented in:
+- [Crate docs index](docs/index.md)
+- [Central docs index](../../docs/index.md)
 
-- `cli` parses and dispatches only; command execution is implemented in `commands`.
-- `commands` orchestrates adapters + core and must not own core validation/business rules.
-- `core` is pure and deterministic; host effects are isolated behind `ports` and `adapters`.
-- Machine-readable outputs are available on command families that support `--format json`.
-- Filesystem writes require explicit capability flags and are constrained to artifact roots.
-- Network/subprocess/git effects are opt-in and denied by default.
+## Invariants
 
-## Artifact Contract
+- Behavior is deterministic and reproducible.
+- Contract changes must remain explicit and reviewable.
+- Relative documentation links must resolve.
 
-- Default artifact root is repository `artifacts/`.
-- Dev-atlas writes under deterministic subtrees rooted at `artifacts/atlas-dev/...`.
-- Commands must not write outside approved artifact roots.
+## Effects policy
 
-## Related Contracts
+- No implicit network access.
+- Filesystem writes are explicit and bounded.
+- Subprocess execution is explicit and justified.
 
-- Architecture / layering: `crates/bijux-dev-atlas/docs/architecture.md`
-- Command surface: `crates/bijux-dev-atlas/docs/command-surface.md`
-- Error taxonomy: `crates/bijux-dev-atlas/docs/errors.md`
-- Quick error map: `crates/bijux-dev-atlas/docs/errors.md`
-- Usage examples: `crates/bijux-dev-atlas/docs/examples.md`
+## Error policy
+
+- Errors are stable at the contract layer.
+- Error messages include actionable remediation where feasible.
+
+## Versioning/stability
+
+- Public behavior changes require explicit versioning rationale.
+- Backward-incompatible changes must be documented before release.
+
+## Tests expectations
+
+- Unit tests cover core behavior and invariants.
+- Contract checks run in CI and must remain green.
+
+## Dependencies allowed
+
+- Dependencies must be justified by crate scope and interface boundaries.
+- Cross-crate coupling must follow architecture direction rules.
+
+## Anti-patterns
+
+- Hidden side effects.
+- Undocumented interface changes.
+- Non-deterministic output generation.

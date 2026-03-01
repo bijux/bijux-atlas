@@ -1,6 +1,6 @@
 # PUBLIC API: bijux-atlas-api
 
-Stability reference: [Stability Levels](../../../docs/_internal/governance/style/stability-levels.md)
+Stability reference: [Stability Levels](../../../docs/control-plane/extensibility-and-stability-levels.md)
 
 Stable public items for v1:
 

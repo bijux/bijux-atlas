@@ -1,6 +1,6 @@
 # PUBLIC API: bijux-atlas-policies
 
-Stability reference: [Stability Levels](../../../docs/_internal/governance/style/stability-levels.md)
+Stability reference: [Stability Levels](../../../docs/control-plane/extensibility-and-stability-levels.md)
 
 Stable exports:
 - `CRATE_NAME`
