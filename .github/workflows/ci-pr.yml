@@ -203,6 +203,43 @@ jobs:
           changed_file() {
             printf '%s\n' "${changed_list}" | grep -qx "$1"
           }
+          python - <<'PY'
+          import json, os, pathlib, subprocess
+          base = os.environ.get("BASE_SHA", "").strip()
+          head = os.environ.get("GITHUB_SHA", "").strip()
+          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
+          changed = []
+          if base:
+              out = subprocess.check_output(["git", "diff", "--name-only", f"{base}...HEAD"], text=True)
+              changed = [line.strip() for line in out.splitlines() if line.strip()]
+          def subset(prefixes):
+              return sorted([p for p in changed if any(p.startswith(px) for px in prefixes)])
+          reports = {
+              "schema_version": 1,
+              "kind": "semantic_drift_reports",
+              "base": base,
+              "head": head,
+              "configs": {"changed": subset(["configs/", "crates/bijux-atlas-server/docs/generated/effective-config.snapshot.json", "docs/reference/contracts/schemas/CONFIG_KEYS.json"])},
+              "docs": {"changed": subset(["docs/"])},
+              "make": {"changed": subset(["make/", "configs/ops/make-target-registry.json", "make/target-list.json"])},
+              "docker": {"changed": subset(["docker/", "docker/images.manifest.json", "docker/policy.json"])},
+              "ops_readiness": {"changed": subset(["ops/observe/readiness.json", "ops/report/evidence-levels.json", "ops/report/generated/readiness-score.json", "ops/report/generated/release-evidence-bundle.json"])},
+          }
+          for domain in ["configs", "docs", "make", "docker", "ops_readiness"]:
+              reports[domain]["status"] = "changed" if reports[domain]["changed"] else "unchanged"
+              reports[domain]["count"] = len(reports[domain]["changed"])
+              path = report_root / f"semantic-drift-{domain}.json"
+              path.write_text(json.dumps({
+                  "schema_version": 1,
+                  "kind": f"semantic_drift_{domain}",
+                  "base": base,
+                  "head": head,
+                  "status": reports[domain]["status"],
+                  "changed": reports[domain]["changed"],
+                  "count": reports[domain]["count"],
+              }, indent=2) + "\n")
+          (report_root / "semantic-drift-summary.json").write_text(json.dumps(reports, indent=2) + "\n")
+          PY
           pr_body="$(jq -r '.pull_request.body // \"\"' "${GITHUB_EVENT_PATH}")"
           if changed_file "configs/openapi/v1/openapi.snapshot.json"; then
             if ! printf '%s' "${pr_body}" | grep -Eq '\[api-compat:(non-breaking|breaking)\]'; then
@@ -234,6 +271,133 @@ jobs:
             echo "CONFIG_KEYS registry diff must match runtime effective config artifact diff" >&2
             exit 1
           fi
+          # Generated reference drift mapping from SSOT surfaces.
+          ssot_docs_pairs=0
+          if changed_file "ops/inventory/root-surface.json"; then
+            ssot_docs_pairs=1
+            changed_file "docs/reference/repo-map.md" || { echo "root surface SSOT changed but docs/reference/repo-map.md was not updated" >&2; exit 1; }
+          fi
+          if changed_file "configs/ops/make-target-registry.json"; then
+            ssot_docs_pairs=1
+            changed_file "docs/_internal/generated/make-targets.md" || { echo "make target registry changed but docs/_internal/generated/make-targets.md was not updated" >&2; exit 1; }
+          fi
+          if changed_file "docs/_internal/registry/registry.json"; then
+            ssot_docs_pairs=1
+            changed_file "docs/_internal/governance/metadata/front-matter.index.json" || { echo "docs registry changed but front-matter index was not updated" >&2; exit 1; }
+          fi
+          if [ "${ssot_docs_pairs}" -eq 1 ]; then
+            jq -n '{schema_version:1,kind:"docs_ssot_reference_drift_gate",status:"ok"}' > "${report_root}/docs-ssot-reference-drift.json"
+          else
+            jq -n '{schema_version:1,kind:"docs_ssot_reference_drift_gate",status:"not_applicable"}' > "${report_root}/docs-ssot-reference-drift.json"
+          fi
+          # Golden workflow docs must include executable command and expected output guidance.
+          rg -n "^bijux dev atlas demo quickstart --format json$" docs/start-here.md > /dev/null
+          rg -n "Expected output:" docs/start-here.md docs/control-plane/lane-matrix.md > /dev/null
+          jq -n '{schema_version:1,kind:"docs_golden_workflow_verification",status:"ok"}' > "${report_root}/docs-golden-workflow-verification.json"
+          # Make surface must derive from one source.
+          jq -r '.public_targets[]' make/target-list.json | sort > "${report_root}/make-public-targets.txt"
+          jq -r '.targets[] | select(.visibility=="public") | .name' configs/ops/make-target-registry.json | sort > "${report_root}/make-registry-public-targets.txt"
+          if ! diff -u "${report_root}/make-registry-public-targets.txt" "${report_root}/make-public-targets.txt" > "${report_root}/make-surface-drift.diff"; then
+            echo "public make target surface drift: make/target-list.json does not match configs/ops/make-target-registry.json" >&2
+            exit 1
+          fi
+          jq -n --rawfile registry "${report_root}/make-registry-public-targets.txt" --rawfile surface "${report_root}/make-public-targets.txt" '{
+            schema_version: 1,
+            kind: "make_surface_drift",
+            status: "ok",
+            registry_public_targets: ($registry | split("\n") | map(select(length>0))),
+            surfaced_public_targets: ($surface | split("\n") | map(select(length>0)))
+          }' > "${report_root}/make-surface-drift.json"
+          # Deterministic check run order report.
+          python - <<'PY'
+          import json, pathlib
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          for suite in ["docs_required", "configs_required", "make_required", "repo_required", "ci_fast"]:
+              path = report_root / f"suite-membership-{suite}.json"
+              if not path.exists():
+                  continue
+              payload = json.loads(path.read_text())
+              ids = [row["id"] for row in payload.get("checks", [])]
+              if ids != sorted(ids):
+                  raise SystemExit(f"suite membership order is not deterministic for {suite}")
+          (report_root / "deterministic-check-order.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "deterministic_check_order",
+              "status": "ok",
+          }, indent=2) + "\n")
+          PY
+          # Check metadata report for purpose/failure/fix and stable machine error code.
+          python - <<'PY'
+          import json, pathlib, re, tomllib
+          repo = pathlib.Path(".")
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          reg = tomllib.loads((repo / "ops/inventory/registry.toml").read_text())
+          checks = []
+          for row in reg.get("checks", []):
+              cid = row["id"].strip()
+              docs = row["docs"].strip()
+              title = row["title"].strip()
+              if not cid or not title or not docs:
+                  raise SystemExit(f"registry check metadata missing required fields for {cid or '<unknown>'}")
+              checks.append({
+                  "id": cid,
+                  "purpose": title,
+                  "failure_mode": f"{cid} emits violation records when invariant is broken",
+                  "fix_hint": f"follow {docs}",
+                  "error_code": cid.replace("-", "_").upper(),
+              })
+          checks.sort(key=lambda r: r["id"])
+          (report_root / "check-metadata-catalog.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "check_metadata_catalog",
+              "checks": checks,
+          }, indent=2) + "\n")
+          PY
+          # Evidence artifacts must be schema-versioned where applicable.
+          python - <<'PY'
+          import json, pathlib
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          missing = []
+          for path in sorted(report_root.glob("*.json")):
+              try:
+                  payload = json.loads(path.read_text())
+              except Exception:
+                  continue
+              if isinstance(payload, dict):
+                  if "schema_version" not in payload:
+                      missing.append(path.name)
+          if missing:
+              raise SystemExit("report JSON missing schema_version: " + ", ".join(missing))
+          (report_root / "artifact-schema-version-check.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "artifact_schema_version_check",
+              "status": "ok",
+          }, indent=2) + "\n")
+          PY
+          # Artifact naming and size budget.
+          python - <<'PY'
+          import json, os, pathlib, re
+          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
+          bad_names = []
+          bad_sizes = []
+          for path in report_root.rglob("*"):
+              if not path.is_file():
+                  continue
+              rel = path.relative_to(report_root).as_posix()
+              if not re.fullmatch(r"[a-z0-9][a-z0-9._/-]*", rel):
+                  bad_names.append(rel)
+              if path.stat().st_size > 5 * 1024 * 1024:
+                  bad_sizes.append({"path": rel, "size": path.stat().st_size})
+          if bad_names:
+              raise SystemExit("artifact naming policy violation: " + ", ".join(bad_names))
+          if bad_sizes:
+              raise SystemExit("artifact size budget exceeded: " + ", ".join(f"{row['path']}={row['size']}" for row in bad_sizes))
+          (report_root / "artifact-naming-and-size.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "artifact_naming_and_size",
+              "status": "ok",
+          }, indent=2) + "\n")
+          PY
           cargo run -q -p bijux-dev-atlas -- contracts runtime --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/runtime-static.json" 2> "${logs_root}/runtime-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts control-plane --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/control-plane-static.json" 2> "${logs_root}/control-plane-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
@@ -310,10 +474,22 @@ jobs:
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
-          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"
           fi
+          if ! git diff --quiet; then
+            git status --short > "${report_root}/repo-write-drift.txt"
+            jq -n --rawfile dirty "${report_root}/repo-write-drift.txt" '{
+              schema_version: 1,
+              kind: "repo_write_drift",
+              status: "failed",
+              dirty: ($dirty | split("\n") | map(select(length>0)))
+            }' > "${report_root}/repo-write-drift.json"
+            echo "repository changed during checks; checks must write only to artifacts" >&2
+            exit 1
+          fi
+          jq -n '{schema_version:1,kind:"repo_write_drift",status:"ok",dirty:[]}' > "${report_root}/repo-write-drift.json"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
