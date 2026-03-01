@@ -439,5 +439,35 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_041_internal_frontmatter_boundary,
             }],
         },
+        Contract {
+            id: ContractId("DOC-042".to_string()),
+            title: "stable spine pages keep review dates normalized",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.review_freshness".to_string()),
+                title: "stable spine pages use ISO review dates",
+                kind: TestKind::Pure,
+                run: test_docs_042_stable_review_freshness,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-043".to_string()),
+            title: "how-to spine pages declare verification",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.how_to_verification".to_string()),
+                title: "how-to spine pages set verification in frontmatter",
+                kind: TestKind::Pure,
+                run: test_docs_043_how_to_verification_flag,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-044".to_string()),
+            title: "docs frontmatter schema stays present",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.frontmatter_schema".to_string()),
+                title: "frontmatter schema exists and requires the shared keys",
+                kind: TestKind::Pure,
+                run: test_docs_044_frontmatter_schema_exists,
+            }],
+        },
     ])
 }

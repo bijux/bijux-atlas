@@ -372,6 +372,121 @@ fn test_docs_041_internal_frontmatter_boundary(ctx: &RunContext) -> TestResult {
     if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
 }
 
+fn test_docs_042_stable_review_freshness(ctx: &RunContext) -> TestResult {
+    let pages = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for relative in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(&mut violations, "DOC-042", "docs.metadata.review_freshness", Some(relative), format!("read failed: {err}"));
+                continue;
+            }
+        };
+        if docs_frontmatter_string(&contents, "stability").as_deref() != Some("stable") {
+            continue;
+        }
+        let Some(last_reviewed) = docs_frontmatter_string(&contents, "last_reviewed") else {
+            continue;
+        };
+        if !looks_like_iso_date(&last_reviewed) {
+            push_docs_violation(
+                &mut violations,
+                "DOC-042",
+                "docs.metadata.review_freshness",
+                Some(relative),
+                format!("last_reviewed must be ISO date, found `{last_reviewed}`"),
+            );
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_docs_043_how_to_verification_flag(ctx: &RunContext) -> TestResult {
+    let pages = match docs_spine_pages(ctx) {
+        Ok(pages) => pages,
+        Err(result) => return result,
+    };
+    let mut violations = Vec::new();
+    for relative in pages {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(&mut violations, "DOC-043", "docs.metadata.how_to_verification", Some(relative), format!("read failed: {err}"));
+                continue;
+            }
+        };
+        if docs_frontmatter_string(&contents, "type").as_deref() != Some("how-to") {
+            continue;
+        }
+        if docs_frontmatter_bool(&contents, "verification") != Some(true) {
+            push_docs_violation(
+                &mut violations,
+                "DOC-043",
+                "docs.metadata.how_to_verification",
+                Some(relative),
+                "how-to spine page must declare `verification: true`",
+            );
+        }
+    }
+    if violations.is_empty() { TestResult::Pass } else { TestResult::Fail(violations) }
+}
+
+fn test_docs_044_frontmatter_schema_exists(ctx: &RunContext) -> TestResult {
+    let path = ctx.repo_root.join("configs/docs/frontmatter.schema.json");
+    let contents = match std::fs::read_to_string(&path) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-044".to_string(),
+                test_id: "docs.metadata.frontmatter_schema".to_string(),
+                file: Some("configs/docs/frontmatter.schema.json".to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let parsed: serde_json::Value = match serde_json::from_str(&contents) {
+        Ok(parsed) => parsed,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-044".to_string(),
+                test_id: "docs.metadata.frontmatter_schema".to_string(),
+                file: Some("configs/docs/frontmatter.schema.json".to_string()),
+                line: None,
+                message: format!("invalid json: {err}"),
+                evidence: None,
+            }])
+        }
+    };
+    let required = parsed
+        .get("required")
+        .and_then(|value| value.as_array())
+        .map(|items| {
+            items.iter()
+                .filter_map(|item| item.as_str())
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_default();
+    for key in ["title", "audience", "type", "stability"] {
+        if !required.contains(&key) {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-044".to_string(),
+                test_id: "docs.metadata.frontmatter_schema".to_string(),
+                file: Some("configs/docs/frontmatter.schema.json".to_string()),
+                line: None,
+                message: format!("frontmatter schema must require `{key}`"),
+                evidence: None,
+            }]);
+        }
+    }
+    TestResult::Pass
+}
+
 fn test_docs_017_root_entrypoint_flags(ctx: &RunContext) -> TestResult {
     let payload = match docs_sections_payload(ctx, "DOC-017", "docs.sections.root_entrypoint_flags") {
         Ok(payload) => payload,

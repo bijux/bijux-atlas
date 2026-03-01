@@ -58,6 +58,17 @@ fn docs_frontmatter_list(contents: &str, key: &str) -> Option<Vec<String>> {
     )
 }
 
+fn looks_like_iso_date(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    bytes.len() == 10
+        && bytes[4] == b'-'
+        && bytes[7] == b'-'
+        && bytes
+            .iter()
+            .enumerate()
+            .all(|(idx, byte)| matches!(idx, 4 | 7) || byte.is_ascii_digit())
+}
+
 fn docs_section_owners_payload(
     ctx: &RunContext,
     contract_id: &str,

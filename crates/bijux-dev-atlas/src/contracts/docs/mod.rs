@@ -52,6 +52,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-039" => "Stable spine pages must carry owner, review date, tags, and related links in frontmatter.".to_string(),
         "DOC-040" => "Reference spine pages must declare source links in frontmatter.".to_string(),
         "DOC-041" => "Internal docs must declare internal frontmatter and stay off the user audience path.".to_string(),
+        "DOC-042" => "Stable spine pages must keep review dates normalized in frontmatter.".to_string(),
+        "DOC-043" => "How-to spine pages must declare verification in frontmatter.".to_string(),
+        "DOC-044" => "The shared docs frontmatter schema must exist and require the core metadata keys.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }
