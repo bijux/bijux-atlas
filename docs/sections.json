@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "sections": {
-    "_assets": {"requires_index": false, "root_entrypoint": false},
+    "_assets": {"requires_index": true, "root_entrypoint": false},
     "_drafts": {"requires_index": false, "root_entrypoint": false},
     "_internal": {"requires_index": true, "root_entrypoint": false},
     "api": {"requires_index": true, "root_entrypoint": true},

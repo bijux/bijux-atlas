@@ -32,13 +32,6 @@ Operator workflows are successful when each linked page reaches a concrete verif
 Use [Reference](../reference/index.md) for exact flags and schemas, and [Runbooks](runbooks/index.md) during incidents.
 Also review [Glossary](../glossary.md) for canonical terms.
 
-## What to Read Next
-
-- Exact command and schema facts: [Reference](../reference/index.md)
-- Runtime model context: [Architecture](../architecture/index.md)
-- Golden path entry: [Operations overview](overview.md)
-- Core terms: [Glossary](../glossary.md)
-
 ## Document Taxonomy
 
 - Audience: `operator`

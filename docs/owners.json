@@ -4,11 +4,11 @@
     "_assets": "docs-governance",
     "_drafts": "docs-governance",
     "_internal": "docs-governance",
-    "api": "api",
-    "architecture": "docs-governance",
+    "api": "api-contracts",
+    "architecture": "architecture",
     "development": "platform",
     "operations": "bijux-atlas-operations",
-    "product": "docs-governance",
+    "product": "product",
     "reference": "docs-governance",
     "control-plane": "platform"
   }

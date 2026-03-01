@@ -41,12 +41,6 @@ Use Operations docs to run the system.
 Continue with [Operations](../operations/index.md) for runtime workflows or [API](../api/index.md) for client behavior.
 Also review [Glossary](../glossary.md) for canonical terms.
 
-## What to Read Next
-
-- API behavior: [API](../api/index.md)
-- Runtime operations: [Operations](../operations/index.md)
-- Core terms: [Glossary](../glossary.md)
-
 ## Document Taxonomy
 
 - Audience: `user`

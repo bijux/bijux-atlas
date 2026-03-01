@@ -24,7 +24,6 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 - [Docs change process](../_internal/meta/docs-change-process.md)
 - [Docs taxonomy quick reference](../_internal/meta/docs-taxonomy-quick-reference.md)
 - [Where truth lives](where-truth-lives.md)
-- [Site map](../site-map.md)
 
 ## Where to ask questions
 
@@ -36,13 +35,6 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 
 Use [Architecture](../architecture/index.md) for runtime boundaries and [Doc Conventions](doc-conventions.md) for writing standards.
 Also review [Glossary](../glossary.md) for canonical terms.
-
-## What to Read Next
-
-- Runtime boundaries: [Architecture](../architecture/index.md)
-- Contributor writing standards: [Doc Conventions](doc-conventions.md)
-- Control-plane workflows: [Control-plane](../control-plane/index.md)
-- Core terms: [Glossary](../glossary.md)
 
 ## Document Taxonomy
 
