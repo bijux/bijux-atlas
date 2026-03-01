@@ -30,7 +30,7 @@ jobs:
       TMP: artifacts/isolates/docs-audit/tmp
       TEMP: artifacts/isolates/docs-audit/tmp
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
         with:
           toolchain: 1.84.1
@@ -42,7 +42,7 @@ jobs:
           mkdir -p "artifacts/${RUN_ID}"
       - name: Restore cargo registry cache
         id: cache-registry
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: |
             .cache/cargo/home/docs-audit/registry
@@ -50,7 +50,7 @@ jobs:
           key: cargo-registry-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Restore cargo target cache
         id: cache-target
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/restore@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/docs-audit
           key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
@@ -105,7 +105,7 @@ jobs:
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: |
             .cache/cargo/home/docs-audit/registry
@@ -113,18 +113,18 @@ jobs:
           key: cargo-registry-nightly-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
       - name: Save cargo target cache
         if: success()
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/save@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: .cache/cargo/target/docs-audit
           key: cargo-target-nightly-docs-audit-${{ runner.os }}-1.84.1-${{ hashFiles('Cargo.lock') }}
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         if: always()
         with:
           name: docs-preview-site-${{ env.RUN_ID }}
           path: artifacts/${{ env.RUN_ID }}/site-preview
           retention-days: 5
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         if: always()
         with:
           name: docs-audit-${{ env.RUN_ID }}
