@@ -216,7 +216,7 @@
       "defined_in": [
         "makefiles/root.mk"
       ],
-      "visibility": "internal",
+      "visibility": "public",
       "used_in": []
     },
     {

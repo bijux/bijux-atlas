@@ -565,7 +565,7 @@ fn quality_wall_doc_ties_required_contracts_lanes_and_repo_surfaces_together() {
     let quality_wall = read(&root.join("docs/operations/release/quality-wall.md"));
     for required in [
         "ops/policy/required-contracts.json",
-        "artifacts/contracts/required.json",
+        "ops/_generated.example/contracts-required.json",
         "make/contracts.mk",
         "docker/images/runtime/Dockerfile",
         "docs/_internal/generated/make-targets.md",

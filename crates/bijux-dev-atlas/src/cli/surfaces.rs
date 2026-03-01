@@ -7,6 +7,23 @@ use clap::{Args, Subcommand};
 use super::FormatArg;
 
 #[derive(Subcommand, Debug)]
+pub enum ArtifactsCommand {
+    Clean(ArtifactsCommonArgs),
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ArtifactsCommonArgs {
+    #[arg(long)]
+    pub repo_root: Option<PathBuf>,
+    #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+    pub format: FormatArg,
+    #[arg(long)]
+    pub out: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    pub allow_write: bool,
+}
+
+#[derive(Subcommand, Debug)]
 pub enum DemoCommand {
     Quickstart(DemoQuickstartArgs),
 }

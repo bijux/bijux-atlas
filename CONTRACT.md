@@ -15,7 +15,7 @@
 - `pr`: runs all required contracts plus static coverage.
 - `merge`: runs required contracts plus effect coverage.
 - `release`: runs the full matrix of required, effect, and slow coverage.
-- Required contracts artifact: `artifacts/contracts/required.json`.
+- Required contracts artifact: `ops/_generated.example/contracts-required.json`.
 - Lane guarantees reference: `docs/operations/release/lane-guarantees.md`.
 
 ## Contract IDs
@@ -38,7 +38,7 @@
 | `ROOT-011` | security policy keeps a reporting path | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-012` | contributing guide names the canonical control plane | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-013` | changelog keeps a versioned release header | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
-| `ROOT-014` | gitignore preserves tracked contract outputs | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
+| `ROOT-014` | artifacts stay untracked | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-015` | repo root forbids duplicate toolchain authority files | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-016` | repo root keeps a machine-readable surface manifest | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |
 | `ROOT-017` | repo root forbids undeclared binary-like artifacts | `high` | `static` | `bijux dev atlas contracts root` | `artifacts/contracts/root/report.json` |

@@ -104,7 +104,7 @@ fn render_canonical_contract_doc(
         out.push_str("- `pr`: runs all required contracts plus static coverage.\n");
         out.push_str("- `merge`: runs required contracts plus effect coverage.\n");
         out.push_str("- `release`: runs the full matrix of required, effect, and slow coverage.\n");
-        out.push_str("- Required contracts artifact: `artifacts/contracts/required.json`.\n");
+        out.push_str("- Required contracts artifact: `ops/_generated.example/contracts-required.json`.\n");
         out.push_str("- Lane guarantees reference: `docs/operations/release/lane-guarantees.md`.\n\n");
     }
     out.push_str("## Contract IDs\n\n");
@@ -405,14 +405,14 @@ fn test_meta_req_001_required_contracts_stable_and_approved(ctx: &RunContext) ->
             }]);
         }
     };
-    let artifact_path = ctx.repo_root.join("artifacts/contracts/required.json");
+    let artifact_path = ctx.repo_root.join("ops/_generated.example/contracts-required.json");
     let actual_text = match std::fs::read_to_string(&artifact_path) {
         Ok(value) => value,
         Err(err) => {
             return TestResult::Fail(vec![Violation {
                 contract_id: contract_id.to_string(),
                 test_id: test_id.to_string(),
-                file: Some("artifacts/contracts/required.json".to_string()),
+                file: Some("ops/_generated.example/contracts-required.json".to_string()),
                 line: None,
                 message: format!("read {} failed: {err}", artifact_path.display()),
                 evidence: None,
@@ -425,7 +425,7 @@ fn test_meta_req_001_required_contracts_stable_and_approved(ctx: &RunContext) ->
             return TestResult::Fail(vec![Violation {
                 contract_id: contract_id.to_string(),
                 test_id: test_id.to_string(),
-                file: Some("artifacts/contracts/required.json".to_string()),
+                file: Some("ops/_generated.example/contracts-required.json".to_string()),
                 line: None,
                 message: format!("parse required artifact failed: {err}"),
                 evidence: None,
@@ -469,10 +469,10 @@ fn test_meta_req_001_required_contracts_stable_and_approved(ctx: &RunContext) ->
         TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
             test_id: test_id.to_string(),
-            file: Some("artifacts/contracts/required.json".to_string()),
+            file: Some("ops/_generated.example/contracts-required.json".to_string()),
             line: None,
             message: "required contracts drifted from the committed artifact without active approval metadata".to_string(),
-            evidence: Some("refresh artifacts/contracts/required.json and populate ops/policy/required-contracts-change.json when the required set changes".to_string()),
+            evidence: Some("refresh ops/_generated.example/contracts-required.json and populate ops/policy/required-contracts-change.json when the required set changes".to_string()),
         }])
     }
 }

@@ -483,7 +483,7 @@ fn contracts_required_flag_filters_to_required_contracts() {
 
 #[test]
 fn contracts_json_includes_lane_metadata_and_required_artifact() {
-    let required_artifact = repo_root().join("artifacts/contracts/required.json");
+    let required_artifact = repo_root().join("ops/_generated.example/contracts-required.json");
     if required_artifact.exists() {
         fs::remove_file(&required_artifact).expect("remove prior required artifact");
     }

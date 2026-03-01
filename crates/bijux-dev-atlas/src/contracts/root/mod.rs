@@ -24,7 +24,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "ROOT-011" => "SECURITY.md must include a clear private reporting path and disclosure guidance.".to_string(),
         "ROOT-012" => "CONTRIBUTING.md must point contributors to `bijux dev atlas` as the canonical control plane.".to_string(),
         "ROOT-013" => "CHANGELOG.md must include a versioned release header.".to_string(),
-        "ROOT-014" => "The root .gitignore may not hide tracked contract outputs.".to_string(),
+        "ROOT-014" => "The artifacts directory is ephemeral workspace output and must never contain tracked files.".to_string(),
         "ROOT-015" => "The repo root must not reintroduce duplicate toolchain authority files beside rust-toolchain.toml.".to_string(),
         "ROOT-016" => "The sealed repo root must be described by a committed ops/inventory/root-surface.json manifest that matches the actual root surface.".to_string(),
         "ROOT-017" => "The repo root may not contain binary-like artifact files such as archives, executables, or compiled blobs.".to_string(),

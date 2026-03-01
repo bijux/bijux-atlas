@@ -77,6 +77,11 @@ pub enum Command {
         command: DocsCommand,
     },
     #[command(hide = true)]
+    Artifacts {
+        #[command(subcommand)]
+        command: ArtifactsCommand,
+    },
+    #[command(hide = true)]
     Make {
         #[command(subcommand)]
         command: MakeCommand,

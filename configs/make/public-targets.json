@@ -1,10 +1,19 @@
 {
   "max_public_targets": 40,
-  "target_public_targets": 37,
+  "target_public_targets": 38,
   "public_targets": [
     {
       "name": "build",
       "description": "Run workspace build lane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
+    {
+      "name": "clean",
+      "description": "Clean ephemeral artifacts through the control plane",
       "lanes": [
         "dev",
         "ci"

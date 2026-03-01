@@ -462,28 +462,76 @@ fn test_root_013_changelog_version_header(ctx: &RunContext) -> TestResult {
     }
 }
 
-fn test_root_014_gitignore_tracked_contract_outputs(ctx: &RunContext) -> TestResult {
+fn test_root_014_artifacts_untracked(ctx: &RunContext) -> TestResult {
     let contents = match read_root_text(
         ctx,
         ".gitignore",
         "ROOT-014",
-        "root.gitignore.tracked_contract_outputs",
+        "root.artifacts.untracked",
     ) {
         Ok(contents) => contents,
         Err(result) => return result,
     };
-    let forbidden = ["/artifacts/contracts/", "artifacts/contracts/"];
     let mut violations = Vec::new();
-    for pattern in forbidden {
-        if contents.lines().any(|line| line.trim() == pattern) {
+    if !contents.lines().any(|line| line.trim() == "/artifacts/") {
+        push_root_violation(
+            &mut violations,
+            "ROOT-014",
+            "root.artifacts.untracked",
+            Some(".gitignore".to_string()),
+            ".gitignore must ignore /artifacts/ at the repo root",
+        );
+    }
+    for line in contents.lines().map(str::trim) {
+        if line.starts_with("!/artifacts/") {
             push_root_violation(
                 &mut violations,
                 "ROOT-014",
-                "root.gitignore.tracked_contract_outputs",
+                "root.artifacts.untracked",
                 Some(".gitignore".to_string()),
-                format!("tracked contracts output pattern is forbidden: {pattern}"),
+                format!("artifacts exceptions are forbidden: {line}"),
             );
         }
+    }
+    let git_output = std::process::Command::new("git")
+        .current_dir(&ctx.repo_root)
+        .args(["ls-files", "artifacts"])
+        .output();
+    match git_output {
+        Ok(output) => {
+            if !output.status.success() {
+                push_root_violation(
+                    &mut violations,
+                    "ROOT-014",
+                    "root.artifacts.untracked",
+                    Some("artifacts".to_string()),
+                    "git ls-files artifacts failed",
+                );
+            } else {
+    let tracked_output = String::from_utf8_lossy(&output.stdout).into_owned();
+    let tracked = tracked_output
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>();
+                for path in tracked {
+                    push_root_violation(
+                        &mut violations,
+                        "ROOT-014",
+                        "root.artifacts.untracked",
+                        Some(path.to_string()),
+                        "tracked files under artifacts/ are forbidden",
+                    );
+                }
+            }
+        }
+        Err(err) => push_root_violation(
+            &mut violations,
+            "ROOT-014",
+            "root.artifacts.untracked",
+            Some("artifacts".to_string()),
+            format!("git ls-files artifacts failed: {err}"),
+        ),
     }
     if violations.is_empty() {
         TestResult::Pass

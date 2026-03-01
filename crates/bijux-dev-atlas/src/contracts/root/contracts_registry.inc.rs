@@ -157,12 +157,12 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
         Contract {
             id: ContractId("ROOT-014".to_string()),
-            title: "gitignore preserves tracked contract outputs",
+            title: "artifacts stay untracked",
             tests: vec![TestCase {
-                id: TestId("root.gitignore.tracked_contract_outputs".to_string()),
-                title: ".gitignore does not hide tracked contract outputs",
+                id: TestId("root.artifacts.untracked".to_string()),
+                title: "artifacts stay ignored and contain no tracked files",
                 kind: TestKind::Pure,
-                run: test_root_014_gitignore_tracked_contract_outputs,
+                run: test_root_014_artifacts_untracked,
             }],
         },
         Contract {

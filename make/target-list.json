@@ -1,6 +1,7 @@
 {
   "public_targets": [
     "build",
+    "clean",
     "contracts",
     "contracts-all",
     "contracts-changed",

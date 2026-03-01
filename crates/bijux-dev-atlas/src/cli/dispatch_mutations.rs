@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Command, ConfigsCommand, ContractsCommand, DocsCommand,
-    FormatArg, MakeCommand, PoliciesCommand, ReleaseCommand, OpsCommand,
+    ArtifactsCommand, CheckCommand, CheckRegistryCommand, Command, ConfigsCommand,
+    ContractsCommand, DocsCommand, FormatArg, MakeCommand, OpsCommand, PoliciesCommand,
+    ReleaseCommand,
 };
 
 pub(super) fn force_json_output(command: &mut Command) {
@@ -12,6 +13,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Ops { command } => force_json_ops(command),
         Command::Docs { command } => force_json_docs(command),
         Command::Make { command } => force_json_make(command),
+        Command::Artifacts { command } => force_json_artifacts(command),
         Command::Demo { command } => force_json_demo(command),
         Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
@@ -27,6 +29,12 @@ pub(super) fn force_json_output(command: &mut Command) {
         | Command::Workflows { .. }
         | Command::Gates { .. }
         | Command::Capabilities { .. } => {}
+    }
+}
+
+fn force_json_artifacts(command: &mut ArtifactsCommand) {
+    match command {
+        ArtifactsCommand::Clean(common) => common.format = FormatArg::Json,
     }
 }
 
@@ -348,6 +356,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             MakeCommand::TargetList(common) | MakeCommand::LintPolicyReport(common) => {
                 common.repo_root = Some(root.clone())
             }
+        },
+        Command::Artifacts { command } => match command {
+            ArtifactsCommand::Clean(common) => common.repo_root = Some(root.clone()),
         },
         Command::Ops { command } => match command {
             OpsCommand::List(common)
