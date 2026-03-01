@@ -1,5 +1,35 @@
 use std::io::{self, Write};
 
+fn current_unix_timestamp() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|duration| duration.as_secs())
+        .unwrap_or(0)
+}
+
+fn docs_gate_artifact_dir(ctx: &DocsContext) -> std::path::PathBuf {
+    ctx.artifacts_root
+        .join("run")
+        .join(ctx.run_id.as_str())
+        .join("gates")
+        .join("docs")
+}
+
+fn write_docs_gate_artifact(
+    path: &std::path::Path,
+    payload: &serde_json::Value,
+) -> Result<(), String> {
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("failed to create {}: {e}", parent.display()))?;
+    }
+    fs::write(
+        path,
+        serde_json::to_string_pretty(payload).map_err(|e| format!("encode failed: {e}"))?,
+    )
+    .map_err(|e| format!("write {} failed: {e}", path.display()))
+}
+
 #[derive(serde::Deserialize)]
 struct DocsConceptRegistry {
     concepts: Vec<DocsConceptRow>,
@@ -62,7 +92,7 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     + links["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + lint["errors"].as_array().map(|v| v.len()).unwrap_or(0)
                     + usize::from(build_code != 0);
-                let payload = serde_json::json!({
+                let mut payload = serde_json::json!({
                     "schema_version":1,
                     "run_id":ctx.run_id.as_str(),
                     "text": if errors == 0 { "docs check passed" } else { "docs check failed" },
@@ -79,6 +109,53 @@ pub(crate) fn run_docs_command(quiet: bool, command: DocsCommand) -> i32 {
                     "duration_ms": started.elapsed().as_millis() as u64,
                     "error_code": if errors == 0 { serde_json::Value::Null } else { serde_json::Value::String("DOCS_BUILD_ERROR".to_string()) }
                 });
+                if common.allow_write {
+                    let out_dir = docs_gate_artifact_dir(&ctx);
+                    let check_path = out_dir.join("check.json");
+                    let validate_path = out_dir.join("validate.json");
+                    let links_path = out_dir.join("links.json");
+                    let lint_path = out_dir.join("lint.json");
+                    let build_path = out_dir.join("build.json");
+                    let meta_path = out_dir.join("meta.json");
+                    let summary_path = out_dir.join("summary.json");
+                    let meta = serde_json::json!({
+                        "schema_version": 1,
+                        "gate": "docs",
+                        "command": "bijux dev atlas docs check",
+                        "run_id": ctx.run_id.as_str(),
+                        "status": if errors == 0 { "pass" } else { "fail" },
+                        "timestamp_unix": current_unix_timestamp(),
+                    });
+                    let summary = serde_json::json!({
+                        "schema_version": 1,
+                        "gate": "docs",
+                        "run_id": ctx.run_id.as_str(),
+                        "status": if errors == 0 { "pass" } else { "fail" },
+                        "counts": {
+                            "errors": errors,
+                            "validate_errors": validate["errors"].as_array().map(|v| v.len()).unwrap_or(0),
+                            "links_errors": links["errors"].as_array().map(|v| v.len()).unwrap_or(0),
+                            "lint_errors": lint["errors"].as_array().map(|v| v.len()).unwrap_or(0),
+                            "build_exit_code": build_code
+                        }
+                    });
+                    write_docs_gate_artifact(&validate_path, &validate)?;
+                    write_docs_gate_artifact(&links_path, &links)?;
+                    write_docs_gate_artifact(&lint_path, &lint)?;
+                    write_docs_gate_artifact(&build_path, &build_payload)?;
+                    write_docs_gate_artifact(&meta_path, &meta)?;
+                    write_docs_gate_artifact(&summary_path, &summary)?;
+                    write_docs_gate_artifact(&check_path, &payload)?;
+                    payload["artifacts"] = serde_json::json!({
+                        "check": check_path.display().to_string(),
+                        "validate": validate_path.display().to_string(),
+                        "links": links_path.display().to_string(),
+                        "lint": lint_path.display().to_string(),
+                        "build": build_path.display().to_string(),
+                        "meta": meta_path.display().to_string(),
+                        "summary": summary_path.display().to_string()
+                    });
+                }
                 Ok((
                     emit_payload(common.format, common.out, &payload)?,
                     if errors == 0 { 0 } else { 1 },
