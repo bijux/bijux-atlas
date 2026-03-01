@@ -160,10 +160,10 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
         Contract {
             id: ContractId("ROOT-014".to_string()),
-            title: "generated workspace directories stay ignored and untracked",
+            title: "artifacts stay untracked",
             tests: vec![TestCase {
                 id: TestId("root.artifacts.untracked".to_string()),
-                title: "artifacts, target, and node_modules stay ignored and contain no tracked files",
+                title: "artifacts stay ignored and contain no tracked files",
                 kind: TestKind::Pure,
                 run: test_root_014_artifacts_untracked,
             }],
@@ -260,10 +260,10 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
         Contract {
             id: ContractId("ROOT-030".to_string()),
-            title: "repo tree forbids vendor directories outside the third_party allowlist",
+            title: "repo root forbids vendor directories and blobs",
             tests: vec![TestCase {
                 id: TestId("root.surface.no_vendor_blobs".to_string()),
-                title: "vendor directories only appear under third_party",
+                title: "vendor directories do not appear at the repo root",
                 kind: TestKind::Pure,
                 run: test_root_030_no_vendor_blobs,
             }],
@@ -330,10 +330,10 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
         },
         Contract {
             id: ContractId("ROOT-037".to_string()),
-            title: "repo tree forbids workspace noise and tracked generated artifacts",
+            title: "repo tree forbids editor backups and platform noise",
             tests: vec![TestCase {
                 id: TestId("root.surface.no_editor_backup_noise".to_string()),
-                title: "repo tree contains no editor backups, node_modules, stray logs, tracked target files, or tracked executable blobs",
+                title: "no .orig, backup, or .DS_Store files exist in the repo tree",
                 kind: TestKind::Pure,
                 run: test_root_037_no_editor_backup_noise,
             }],

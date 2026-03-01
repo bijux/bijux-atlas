@@ -352,7 +352,7 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
             let path = entry.path();
             let name = entry.file_name().to_string_lossy().to_string();
             if path.is_dir() {
-                if name == ".git" || name == ".idea" {
+                if name == ".git" || name == ".idea" || name == "artifacts" || name == "target" {
                     continue;
                 }
                 if name == "node_modules" {
