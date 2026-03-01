@@ -152,6 +152,14 @@ fn docs_reader_utility_pages() -> Vec<String> {
     ]
 }
 
+fn docs_operator_golden_path_pages() -> Vec<String> {
+    vec![
+        "docs/operations/run-locally.md".to_string(),
+        "docs/operations/deploy-kind.md".to_string(),
+        "docs/operations/deploy-kubernetes-minimal.md".to_string(),
+    ]
+}
+
 fn docs_published_markdown_files(ctx: &RunContext) -> Vec<String> {
     let mut files = Vec::new();
     for path in docs_markdown_files(ctx) {

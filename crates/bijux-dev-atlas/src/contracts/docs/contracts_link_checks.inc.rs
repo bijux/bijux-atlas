@@ -621,3 +621,38 @@ fn test_docs_047_reader_spine_no_internal_links(ctx: &RunContext) -> TestResult 
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_050_operator_golden_paths_no_internal(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for relative in docs_operator_golden_path_pages() {
+        let path = ctx.repo_root.join(&relative);
+        let contents = match std::fs::read_to_string(&path) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-050",
+                    "docs.links.operator_golden_paths_no_internal",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        if contents.contains("docs/_internal/") || contents.contains("_generated/") {
+            push_docs_violation(
+                &mut violations,
+                "DOC-050",
+                "docs.links.operator_golden_paths_no_internal",
+                Some(relative),
+                "operator golden path may not reference internal or generated docs surfaces",
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

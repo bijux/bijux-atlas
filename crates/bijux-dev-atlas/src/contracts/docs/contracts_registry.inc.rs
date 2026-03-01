@@ -519,5 +519,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_049_published_single_h1,
             }],
         },
+        Contract {
+            id: ContractId("DOC-050".to_string()),
+            title: "operator golden paths do not reference internal docs",
+            tests: vec![TestCase {
+                id: TestId("docs.links.operator_golden_paths_no_internal".to_string()),
+                title: "operator golden path pages stay on the published docs surface",
+                kind: TestKind::Pure,
+                run: test_docs_050_operator_golden_paths_no_internal,
+            }],
+        },
     ])
 }
