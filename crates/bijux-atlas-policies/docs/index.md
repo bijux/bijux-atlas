@@ -15,9 +15,9 @@ Docs:
 - [Config schema](config-schema.md)
 - [Schema](schema.md)
 - [Effects policy](effects.md)
-- [Schema evolution guide](schema-evolution.md)
-- [Evolution](evolution.md)
-- [Policy change checklist](change-checklist.md)
+- [Schema evolution guide](internal/schema-evolution.md)
+- [Evolution](internal/evolution.md)
+- [Policy change checklist](internal/change-checklist.md)
 - [Policy authoring guide](policy-authoring-guide.md)
 
 - [How to test](testing.md)

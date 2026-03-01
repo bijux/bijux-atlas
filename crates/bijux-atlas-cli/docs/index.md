@@ -4,7 +4,7 @@
 - [Plugin Contract](plugin-contract.md)
 - [Effects](effects.md)
 - [Config Discovery](config-discovery.md)
-- [CLI Command List](cli-command-list.md)
+- [Effect boundary map](internal/effect-boundary-map.md)
 - [CLI UX Contract](cli-ux-contract.md)
 - [Exit Codes](exit-codes.md)
 - Ingest contract reference: [`../../bijux-atlas-ingest/docs/ingest-contract.md`](../../bijux-atlas-ingest/docs/ingest-contract.md)

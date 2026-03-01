@@ -8,9 +8,9 @@
 - [Patterns](patterns.md)
 - [Versioning](versioning.md)
 - [API Stability and Versioning](api-stability.md)
-- [Human vs Machine Contracts](wire-compatibility.md)
+- [Human vs Machine Contracts](internal/wire-compatibility.md)
 - [Public API](public-api.md)
-- [Public Surface Checklist](public-api-checklist.md)
+- [Public Surface Checklist](internal/public-api-checklist.md)
 - [Tests](../tests/)
 - [Benches](../benches/)
 

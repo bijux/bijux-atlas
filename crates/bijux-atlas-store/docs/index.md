@@ -17,8 +17,8 @@ Docs:
 - [Caching semantics](caching.md)
 - [Backends and guarantees](backends-and-guarantees.md)
 - [Failure modes](failure-modes.md)
-- [Rollback workflow](rollback.md)
-- [Store outage runbook snippet](runbook-snippet.md)
+- [Rollback workflow](internal/rollback.md)
+- [Store outage runbook snippet](internal/runbook-snippet.md)
 
 - [How to test](testing.md)
 - [How to extend](#how-to-extend)

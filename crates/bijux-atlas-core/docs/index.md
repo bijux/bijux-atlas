@@ -20,9 +20,9 @@ Documentation map:
 - [Error contract](errors.md)
 - [Feature flags policy](features.md)
 - [Debug/Display policy](formatting.md)
-- [Serialization policy](serde-policy.md)
+- [Serialization policy](internal/serde-policy.md)
 - [Design patterns](patterns.md)
-- [Cargo deny notes](cargo-deny-notes.md)
+- [Cargo deny notes](internal/cargo-deny-notes.md)
 - [Purity contract](purity.md)
 
 - [How to test](testing.md)

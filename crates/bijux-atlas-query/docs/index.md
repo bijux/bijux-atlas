@@ -14,8 +14,8 @@ Docs:
 - [Query language spec](query-language-spec.md)
 - [Ordering rules](ordering.md)
 - [Cost estimator calibration](cost-estimator.md)
-- [Adding filters safely](adding-filters.md)
-- [Transcript ordering](transcript-ordering.md)
+- [Adding filters safely](internal/adding-filters.md)
+- [Transcript ordering](internal/transcript-ordering.md)
 
 - [How to test](testing.md)
 - [How to extend](#how-to-extend)

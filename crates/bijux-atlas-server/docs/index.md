@@ -3,7 +3,7 @@
 - [Architecture](architecture.md)
 - [Effects](effects.md)
 - [Runtime](runtime.md)
-- [Telemetry](telemetry.md)
+- [Telemetry](internal/telemetry.md)
 - [Operations Runbook](operations-runbook.md)
 - [Caching](caching.md)
 - [Failure Modes](failure-modes.md)
