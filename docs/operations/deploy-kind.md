@@ -50,7 +50,7 @@ Expected outputs:
 
 - Control-plane artifacts: `artifacts/`
 - Kubernetes events/logs: `kubectl` logs and describe output for deployed namespace
-- Generated diagnostics: `docs/_internal/generated/` for contributor-only quality traces
+- Verification output: `make ops-readiness-scorecard` and `make ops-e2e-smoke`
 
 ## Reset and cleanup
 

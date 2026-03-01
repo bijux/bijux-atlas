@@ -56,7 +56,7 @@ make ops-clean
 
 - Control-plane artifacts: `artifacts/`
 - Runtime logs: container runtime logs for stack services
-- Generated docs diagnostics: `docs/_internal/generated/` (contributor-only)
+- Verification output: terminal output from `make ops-e2e-smoke` and `make ops-observability-verify`
 
 ## Common failures and fixes
 
