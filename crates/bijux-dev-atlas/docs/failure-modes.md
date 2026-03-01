@@ -11,7 +11,7 @@ Maps common `bijux dev atlas` failure categories to the primary places to inspec
 - `2`: usage error (invalid arguments / command shape)
 - `3`: execution or internal error (tool failure, contract failure, runtime error)
 
-See also: `EXIT_CODES.md`.
+See also: exit-codes.md`.
 
 ## Common Error Shapes
 

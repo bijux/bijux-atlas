@@ -1,16 +1,15 @@
 # Docs Index
 
 - [Architecture](architecture.md)
-- [Plugin Contract](PLUGIN_CONTRACT.md)
+- [Plugin Contract](plugin-contract.md)
 - [Effects](effects.md)
-- [Config Discovery](CONFIG_DISCOVERY.md)
-- [CLI Command List](CLI_COMMAND_LIST.md)
-- [CLI UX Contract](CLI_UX_CONTRACT.md)
-- [Exit Codes](EXIT_CODES.md)
+- [Config Discovery](config-discovery.md)
+- [CLI Command List](cli-command-list.md)
+- [CLI UX Contract](cli-ux-contract.md)
+- [Exit Codes](exit-codes.md)
 - Ingest contract reference: [`../../bijux-atlas-ingest/docs/ingest-contract.md`](../../bijux-atlas-ingest/docs/ingest-contract.md)
 - [Public API](public-api.md)
 - [Tests](../tests/)
-- [Benches](../benches/)
 
 - [How to test](testing.md)
 - [How to extend](#how-to-extend)

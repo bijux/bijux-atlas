@@ -29,5 +29,5 @@ authoritative contracts.
 
 ## Notes
 
-- `ERRORS.md` is a quick entrypoint for operators and reviewers.
-- `ERROR_TAXONOMY.md` remains the source of truth for exact classifications and mappings.
+- `errors.md` is a quick entrypoint for operators and reviewers.
+- error-taxonomy.md` remains the source of truth for exact classifications and mappings.

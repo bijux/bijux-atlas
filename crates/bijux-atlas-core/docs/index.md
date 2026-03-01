@@ -13,17 +13,17 @@ What core must never do:
 - No wall-clock dependent behavior in deterministic paths.
 
 Documentation map:
-- [Architecture](ARCHITECTURE.md)
+- [Architecture](architecture.md)
 - [Public API](public-api.md)
 - [Effects policy](effects.md)
-- [Canonicalization rules](CANONICALIZATION.md)
-- [Error contract](ERRORS.md)
-- [Feature flags policy](FEATURES.md)
-- [Debug/Display policy](FORMATTING.md)
-- [Serialization policy](SERDE_POLICY.md)
-- [Design patterns](PATTERNS.md)
-- [Cargo deny notes](CARGO_DENY_NOTES.md)
-- [Purity contract](PURITY.md)
+- [Canonicalization rules](canonicalization.md)
+- [Error contract](errors.md)
+- [Feature flags policy](features.md)
+- [Debug/Display policy](formatting.md)
+- [Serialization policy](serde-policy.md)
+- [Design patterns](patterns.md)
+- [Cargo deny notes](cargo-deny-notes.md)
+- [Purity contract](purity.md)
 
 - [How to test](testing.md)
 - [How to extend](#how-to-extend)

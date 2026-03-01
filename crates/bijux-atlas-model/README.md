@@ -34,3 +34,14 @@ Top-level models provide pure `validate()` methods. They must not perform I/O.
 - `docs/contract-compatibility.md`
 - `docs/schema-stability.md`
 - `docs/public-api.md`
+
+## Purpose
+- Describe the crate responsibility and stable boundaries.
+
+## How to use
+- Read `docs/index.md` for workflows and examples.
+- Use the crate through its documented public API only.
+
+## Where docs live
+- Crate docs index: `docs/index.md`
+- Contract: `CONTRACT.md`

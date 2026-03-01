@@ -30,3 +30,14 @@ Ingestion pipeline for converting GFF3/FASTA/FAI inputs into atlas artifacts.
 - `docs/ingest-contract.md`
 - `docs/artifact-output-contract.md`
 - `docs/determinism.md`
+
+## Purpose
+- Describe the crate responsibility and stable boundaries.
+
+## How to use
+- Read `docs/index.md` for workflows and examples.
+- Use the crate through its documented public API only.
+
+## Where docs live
+- Crate docs index: `docs/index.md`
+- Contract: `CONTRACT.md`

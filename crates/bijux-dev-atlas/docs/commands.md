@@ -29,4 +29,4 @@ Top-level command namespace is intentionally limited to these families.
 
 ## Exit Codes
 
-See `EXIT_CODES.md`.
+See exit-codes.md`.

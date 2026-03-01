@@ -2,12 +2,12 @@
 
 - [Architecture](architecture.md)
 - [Effects](effects.md)
-- [Runtime](RUNTIME.md)
-- [Telemetry](TELEMETRY.md)
-- [Operations Runbook](OPERATIONS_RUNBOOK.md)
-- [Caching](CACHING.md)
-- [Failure Modes](FAILURE_MODES.md)
-- [Kubernetes Ops](KUBERNETES.md)
+- [Runtime](runtime.md)
+- [Telemetry](telemetry.md)
+- [Operations Runbook](operations-runbook.md)
+- [Caching](caching.md)
+- [Failure Modes](failure-modes.md)
+- [Kubernetes Ops](kubernetes.md)
 - [Public API](public-api.md)
 - [Tests](../tests/)
 

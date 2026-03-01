@@ -32,7 +32,7 @@ Commands that do not support a format must reject unsupported values explicitly.
 ## Exit Behavior
 
 - `0`: success / no failing checks
-- non-zero: policy failure, usage error, contract error, or execution error (see `EXIT_CODES.md`)
+- non-zero: policy failure, usage error, contract error, or execution error (see exit-codes.md`)
 
 ## Artifact Rules
 

@@ -1,6 +1,6 @@
 # PUBLIC API: bijux-atlas-cli
 
-Stability reference: [Stability Levels](../../../docs/_internal/style/stability-levels.md)
+Stability reference: [Stability Levels](../../../docs/_internal/governance/style/stability-levels.md)
 
 Current stability:
 

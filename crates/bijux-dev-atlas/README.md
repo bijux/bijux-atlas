@@ -40,3 +40,14 @@ Control-plane binary for repository governance under `bijux dev atlas ...`.
 - `crates/bijux-dev-atlas/docs/errors.md`
 - `crates/bijux-dev-atlas/docs/testing.md`
 - `crates/bijux-dev-atlas/docs/benchmarks.md`
+
+## Purpose
+- Describe the crate responsibility and stable boundaries.
+
+## How to use
+- Read `docs/index.md` for workflows and examples.
+- Use the crate through its documented public API only.
+
+## Where docs live
+- Crate docs index: `docs/index.md`
+- Contract: `CONTRACT.md`
