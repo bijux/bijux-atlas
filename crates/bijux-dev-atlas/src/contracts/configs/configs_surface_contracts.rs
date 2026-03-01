@@ -293,6 +293,20 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "each top-level configs domain keeps exactly one landing markdown file",
             test_configs_038_domain_landing_docs,
         ),
+        contract(
+            "CONFIGS-039",
+            "configs top-level domains stay declared",
+            "configs.layout.top_level_domain_policy",
+            "configs top-level domain list matches the declared groups policy",
+            test_configs_039_top_level_domain_policy,
+        ),
+        contract(
+            "CONFIGS-040",
+            "configs domain filenames stay unique",
+            "configs.naming.unique_domain_filenames",
+            "non-landing filenames do not collide across top-level config domains",
+            test_configs_040_unique_domain_filenames,
+        ),
     ])
 }
 
@@ -355,6 +369,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-036" => "Every registry exclusion must carry explicit approver and expiry metadata so allowlists stay reviewable.".to_string(),
         "CONFIGS-037" => "Config surfaces may not embed mutable latest-tag references.".to_string(),
         "CONFIGS-038" => "Each top-level configs domain needs exactly one landing markdown file so ownership and update workflow stay discoverable.".to_string(),
+        "CONFIGS-039" => "The top-level configs domain set must match the declared groups policy and stay within its budget.".to_string(),
+        "CONFIGS-040" => "Top-level config domains may not reuse the same non-landing filename, so ownership and references stay unambiguous.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }

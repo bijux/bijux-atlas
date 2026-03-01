@@ -676,6 +676,37 @@
         "configs/*/INDEX.md",
         "configs/*/index.md"
       ]
+    },
+    {
+      "contract_type": "filelayout",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.layout.top_level_domain_policy"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-043",
+      "rationale": "the top-level configs domain set must stay governed instead of accreting ad hoc directories.",
+      "severity": "must",
+      "title": "configs top-level domains stay declared",
+      "touched_paths": [
+        "configs/inventory/groups.json",
+        "configs/*"
+      ]
+    },
+    {
+      "contract_type": "filelayout",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.naming.unique_domain_filenames"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-044",
+      "rationale": "top-level config domains should not reuse the same non-landing filename because it makes references and ownership ambiguous.",
+      "severity": "should",
+      "title": "configs domain filenames stay unique",
+      "touched_paths": [
+        "configs/*"
+      ]
     }
   ],
   "domain": "configs",

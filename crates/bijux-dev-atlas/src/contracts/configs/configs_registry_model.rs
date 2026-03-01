@@ -91,6 +91,13 @@ struct SchemaVersioningRule {
 }
 
 #[derive(Clone, Deserialize)]
+struct ConfigGroupsPolicy {
+    schema_version: u64,
+    max_top_level_dirs: usize,
+    allowed_groups: Vec<String>,
+}
+
+#[derive(Clone, Deserialize)]
 struct ConfigsContractSurface {
     schema_version: u64,
     domain: String,
@@ -206,6 +213,12 @@ fn read_schema_versioning_policy(repo_root: &Path) -> Result<SchemaVersioningPol
     let text = read_text(&repo_root.join(SCHEMA_VERSIONING_POLICY_PATH))?;
     serde_json::from_str::<SchemaVersioningPolicy>(&text)
         .map_err(|err| format!("parse {SCHEMA_VERSIONING_POLICY_PATH} failed: {err}"))
+}
+
+fn read_config_groups_policy(repo_root: &Path) -> Result<ConfigGroupsPolicy, String> {
+    let text = read_text(&repo_root.join("configs/inventory/groups.json"))?;
+    serde_json::from_str::<ConfigGroupsPolicy>(&text)
+        .map_err(|err| format!("parse configs/inventory/groups.json failed: {err}"))
 }
 
 fn read_contract_surface(repo_root: &Path) -> Result<ConfigsContractSurface, String> {

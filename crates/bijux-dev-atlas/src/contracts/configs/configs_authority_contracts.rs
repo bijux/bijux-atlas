@@ -111,6 +111,139 @@ fn test_configs_038_domain_landing_docs(ctx: &RunContext) -> TestResult {
     }
 }
 
+fn test_configs_039_top_level_domain_policy(ctx: &RunContext) -> TestResult {
+    let policy = match read_config_groups_policy(&ctx.repo_root) {
+        Ok(policy) => policy,
+        Err(err) => {
+            return fail(
+                "CONFIGS-039",
+                "configs.layout.top_level_domain_policy",
+                "configs/inventory/groups.json",
+                err,
+            )
+        }
+    };
+    if policy.schema_version != 1 {
+        return fail(
+            "CONFIGS-039",
+            "configs.layout.top_level_domain_policy",
+            "configs/inventory/groups.json",
+            format!(
+                "unsupported configs groups policy schema_version {}",
+                policy.schema_version
+            ),
+        );
+    }
+    let actual = match configs_top_level_domain_dirs(&ctx.repo_root) {
+        Ok(actual) => actual,
+        Err(err) => return fail("CONFIGS-039", "configs.layout.top_level_domain_policy", "configs", err),
+    };
+    let actual_set = actual.iter().cloned().collect::<BTreeSet<_>>();
+    let allowed_set = policy.allowed_groups.iter().cloned().collect::<BTreeSet<_>>();
+    let mut violations = Vec::new();
+    if actual.len() > policy.max_top_level_dirs {
+        violations.push(violation(
+            "CONFIGS-039",
+            "configs.layout.top_level_domain_policy",
+            "configs/inventory/groups.json",
+            format!(
+                "configs exposes {} top-level domains and exceeds max_top_level_dirs {}",
+                actual.len(),
+                policy.max_top_level_dirs
+            ),
+        ));
+    }
+    for missing in allowed_set.difference(&actual_set) {
+        violations.push(violation(
+            "CONFIGS-039",
+            "configs.layout.top_level_domain_policy",
+            "configs/inventory/groups.json",
+            format!("allowed top-level domain `{missing}` is missing from configs/"),
+        ));
+    }
+    for extra in actual_set.difference(&allowed_set) {
+        violations.push(violation(
+            "CONFIGS-039",
+            "configs.layout.top_level_domain_policy",
+            "configs/inventory/groups.json",
+            format!("configs contains undeclared top-level domain `{extra}`"),
+        ));
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_040_unique_domain_filenames(ctx: &RunContext) -> TestResult {
+    let allowed_duplicates = ["env.schema.json", "lanes.json", "owners.json"];
+    let domains = match configs_top_level_domain_dirs(&ctx.repo_root) {
+        Ok(domains) => domains,
+        Err(err) => {
+            return fail(
+                "CONFIGS-040",
+                "configs.naming.unique_domain_filenames",
+                "configs",
+                err,
+            )
+        }
+    };
+    let mut seen = BTreeMap::<String, Vec<String>>::new();
+    for domain in domains {
+        let dir = ctx.repo_root.join("configs").join(&domain);
+        let entries = match std::fs::read_dir(&dir) {
+            Ok(entries) => entries,
+            Err(err) => {
+                return fail(
+                    "CONFIGS-040",
+                    "configs.naming.unique_domain_filenames",
+                    &format!("configs/{domain}"),
+                    format!("read failed: {err}"),
+                )
+            }
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if !path.is_file() {
+                continue;
+            }
+            let Some(name) = path.file_name().and_then(|value| value.to_str()) else {
+                continue;
+            };
+            if matches!(name, "README.md" | "INDEX.md" | "index.md") {
+                continue;
+            }
+            if allowed_duplicates.contains(&name) {
+                continue;
+            }
+            seen.entry(name.to_string())
+                .or_default()
+                .push(format!("configs/{domain}/{name}"));
+        }
+    }
+    let mut violations = Vec::new();
+    for (name, mut paths) in seen {
+        if paths.len() <= 1 {
+            continue;
+        }
+        paths.sort();
+        for path in paths {
+            violations.push(violation(
+                "CONFIGS-040",
+                "configs.naming.unique_domain_filenames",
+                &path,
+                format!("config filename `{name}` is duplicated across top-level domains"),
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_configs_028_owner_map_alignment(ctx: &RunContext) -> TestResult {
     let index = match registry_index(&ctx.repo_root) {
         Ok(index) => index,
