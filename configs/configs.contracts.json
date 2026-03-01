@@ -707,6 +707,54 @@
       "touched_paths": [
         "configs/*"
       ]
+    },
+    {
+      "contract_type": "schema",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.owners.schema_validation"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-045",
+      "rationale": "the owner registry is a root authority file and must validate against its declared schema instead of relying on parse-only checks.",
+      "severity": "blocker",
+      "title": "owner registry validates against its schema",
+      "touched_paths": [
+        "configs/owners-registry.json",
+        "configs/schema/configs-owner-map.schema.json"
+      ]
+    },
+    {
+      "contract_type": "schema",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.consumers.schema_validation"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-046",
+      "rationale": "the consumer registry is a root authority file and must validate against its declared schema instead of relying on parse-only checks.",
+      "severity": "blocker",
+      "title": "consumer registry validates against its schema",
+      "touched_paths": [
+        "configs/consumers-registry.json",
+        "configs/schema/configs-consumer-map.schema.json"
+      ]
+    },
+    {
+      "contract_type": "schema",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.schemas.registry_schema_validation"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-047",
+      "rationale": "the schema map is a root authority file and must validate against its declared schema instead of relying on parse-only checks.",
+      "severity": "blocker",
+      "title": "schema map validates against its schema",
+      "touched_paths": [
+        "configs/schema-map.json",
+        "configs/schema/configs-schema-map.schema.json"
+      ]
     }
   ],
   "domain": "configs",

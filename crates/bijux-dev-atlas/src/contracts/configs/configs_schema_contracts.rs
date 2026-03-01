@@ -1,3 +1,220 @@
+fn schema_required_properties(schema: &serde_json::Value) -> BTreeSet<String> {
+    schema
+        .get("required")
+        .and_then(|value| value.as_array())
+        .into_iter()
+        .flatten()
+        .filter_map(|value| value.as_str().map(ToOwned::to_owned))
+        .collect()
+}
+
+fn validate_string_map(
+    value: &serde_json::Value,
+    file: &str,
+    property: &str,
+    contract_id: &str,
+    test_id: &str,
+) -> Vec<Violation> {
+    let mut violations = Vec::new();
+    let Some(map) = value.get(property).and_then(|value| value.as_object()) else {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            file,
+            format!("property `{property}` must be an object"),
+        ));
+        return violations;
+    };
+    if map.is_empty() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            file,
+            format!("property `{property}` must not be empty"),
+        ));
+    }
+    for (key, entry) in map {
+        if key.trim().is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                file,
+                format!("property `{property}` may not contain an empty key"),
+            ));
+        }
+        if entry.as_str().map(|value| value.trim().is_empty()).unwrap_or(true) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                file,
+                format!("property `{property}` entry `{key}` must be a non-empty string"),
+            ));
+        }
+    }
+    violations
+}
+
+fn validate_string_array_map(
+    value: &serde_json::Value,
+    file: &str,
+    property: &str,
+    contract_id: &str,
+    test_id: &str,
+) -> Vec<Violation> {
+    let mut violations = Vec::new();
+    let Some(map) = value.get(property).and_then(|value| value.as_object()) else {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            file,
+            format!("property `{property}` must be an object"),
+        ));
+        return violations;
+    };
+    if map.is_empty() {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            file,
+            format!("property `{property}` must not be empty"),
+        ));
+    }
+    for (key, entry) in map {
+        let Some(items) = entry.as_array() else {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                file,
+                format!("property `{property}` entry `{key}` must be an array"),
+            ));
+            continue;
+        };
+        if items.is_empty() {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                file,
+                format!("property `{property}` entry `{key}` must not be empty"),
+            ));
+        }
+        for item in items {
+            if item.as_str().map(|value| value.trim().is_empty()).unwrap_or(true) {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    file,
+                    format!(
+                        "property `{property}` entry `{key}` must contain only non-empty strings"
+                    ),
+                ));
+                break;
+            }
+        }
+    }
+    violations
+}
+
+fn validate_registry_file_against_schema(
+    ctx: &RunContext,
+    file: &str,
+    schema_file: &str,
+    contract_id: &str,
+    test_id: &str,
+) -> TestResult {
+    let value = match read_text(&ctx.repo_root.join(file))
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).map_err(|err| err.to_string()))
+    {
+        Ok(value) => value,
+        Err(err) => return fail(contract_id, test_id, file, format!("parse failed: {err}")),
+    };
+    let schema = match read_text(&ctx.repo_root.join(schema_file))
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).map_err(|err| err.to_string()))
+    {
+        Ok(value) => value,
+        Err(err) => {
+            return fail(
+                contract_id,
+                test_id,
+                schema_file,
+                format!("schema parse failed: {err}"),
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    let Some(object) = value.as_object() else {
+        return fail(contract_id, test_id, file, "registry file must be a JSON object");
+    };
+    let allowed_properties = schema
+        .get("properties")
+        .and_then(|value| value.as_object())
+        .map(|props| props.keys().cloned().collect::<BTreeSet<_>>())
+        .unwrap_or_default();
+    for required in schema_required_properties(&schema) {
+        if !object.contains_key(&required) {
+            violations.push(violation(
+                contract_id,
+                test_id,
+                file,
+                format!("missing required property `{required}`"),
+            ));
+        }
+    }
+    if schema
+        .get("additionalProperties")
+        .and_then(|value| value.as_bool())
+        == Some(false)
+    {
+        for key in object.keys() {
+            if !allowed_properties.contains(key) {
+                violations.push(violation(
+                    contract_id,
+                    test_id,
+                    file,
+                    format!("unexpected property `{key}`"),
+                ));
+            }
+        }
+    }
+    let schema_version_valid = object
+        .get("schema_version")
+        .and_then(|value| value.as_u64())
+        .filter(|version| *version >= 1)
+        .is_some();
+    if !schema_version_valid {
+        violations.push(violation(
+            contract_id,
+            test_id,
+            file,
+            "schema_version must be an integer >= 1",
+        ));
+    }
+    match file {
+        OWNERS_PATH => {
+            violations.extend(validate_string_map(&value, file, "groups", contract_id, test_id));
+            if object.contains_key("files") {
+                violations.extend(validate_string_map(&value, file, "files", contract_id, test_id));
+            }
+        }
+        CONSUMERS_PATH => {
+            violations.extend(validate_string_array_map(
+                &value, file, "files", contract_id, test_id,
+            ));
+            violations.extend(validate_string_array_map(
+                &value, file, "groups", contract_id, test_id,
+            ));
+        }
+        SCHEMAS_PATH => {
+            violations.extend(validate_string_map(&value, file, "files", contract_id, test_id));
+        }
+        _ => {}
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_configs_032_root_json_canonical(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
     for file in ROOT_CANONICAL_JSON_FILES {
@@ -52,6 +269,36 @@ fn test_configs_032_root_json_canonical(ctx: &RunContext) -> TestResult {
     } else {
         TestResult::Fail(violations)
     }
+}
+
+fn test_configs_041_owner_registry_schema_validation(ctx: &RunContext) -> TestResult {
+    validate_registry_file_against_schema(
+        ctx,
+        OWNERS_PATH,
+        "configs/schema/configs-owner-map.schema.json",
+        "CONFIGS-041",
+        "configs.owners.schema_validation",
+    )
+}
+
+fn test_configs_042_consumer_registry_schema_validation(ctx: &RunContext) -> TestResult {
+    validate_registry_file_against_schema(
+        ctx,
+        CONSUMERS_PATH,
+        "configs/schema/configs-consumer-map.schema.json",
+        "CONFIGS-042",
+        "configs.consumers.schema_validation",
+    )
+}
+
+fn test_configs_043_schema_map_validation(ctx: &RunContext) -> TestResult {
+    validate_registry_file_against_schema(
+        ctx,
+        SCHEMAS_PATH,
+        "configs/schema/configs-schema-map.schema.json",
+        "CONFIGS-043",
+        "configs.schemas.registry_schema_validation",
+    )
 }
 
 fn test_configs_033_schema_index_matches_committed(ctx: &RunContext) -> TestResult {
@@ -321,4 +568,3 @@ fn test_configs_036_exclusion_governance(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

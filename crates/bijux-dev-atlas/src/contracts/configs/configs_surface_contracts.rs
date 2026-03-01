@@ -307,6 +307,27 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "non-landing filenames do not collide across top-level config domains",
             test_configs_040_unique_domain_filenames,
         ),
+        contract(
+            "CONFIGS-041",
+            "configs owner registry validates against its schema",
+            "configs.owners.schema_validation",
+            "owner registry matches the declared schema",
+            test_configs_041_owner_registry_schema_validation,
+        ),
+        contract(
+            "CONFIGS-042",
+            "configs consumer registry validates against its schema",
+            "configs.consumers.schema_validation",
+            "consumer registry matches the declared schema",
+            test_configs_042_consumer_registry_schema_validation,
+        ),
+        contract(
+            "CONFIGS-043",
+            "configs schema map validates against its schema",
+            "configs.schemas.registry_schema_validation",
+            "schema map matches the declared schema",
+            test_configs_043_schema_map_validation,
+        ),
     ])
 }
 
@@ -371,6 +392,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-038" => "Each top-level configs domain needs exactly one landing markdown file so ownership and update workflow stay discoverable.".to_string(),
         "CONFIGS-039" => "The top-level configs domain set must match the declared groups policy and stay within its budget.".to_string(),
         "CONFIGS-040" => "Top-level config domains may not reuse the same non-landing filename, so ownership and references stay unambiguous.".to_string(),
+        "CONFIGS-041" => "The owner registry must validate against its declared schema, not just parse successfully.".to_string(),
+        "CONFIGS-042" => "The consumer registry must validate against its declared schema, not just parse successfully.".to_string(),
+        "CONFIGS-043" => "The schema map must validate against its declared schema and keep the authority surface strict.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }
