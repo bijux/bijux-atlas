@@ -6,7 +6,12 @@ use std::process::Command;
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
-fn violation(contract_id: &str, test_id: &str, file: Option<String>, message: impl Into<String>) -> Violation {
+fn violation(
+    contract_id: &str,
+    test_id: &str,
+    file: Option<String>,
+    message: impl Into<String>,
+) -> Violation {
     Violation {
         contract_id: contract_id.to_string(),
         test_id: test_id.to_string(),
@@ -26,9 +31,11 @@ fn rel(repo_root: &Path, path: &Path) -> String {
 
 fn collect_rs_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     fn walk(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
-        let entries = fs::read_dir(dir).map_err(|err| format!("read {} failed: {err}", dir.display()))?;
+        let entries =
+            fs::read_dir(dir).map_err(|err| format!("read {} failed: {err}", dir.display()))?;
         for entry in entries {
-            let entry = entry.map_err(|err| format!("read_dir entry in {} failed: {err}", dir.display()))?;
+            let entry = entry
+                .map_err(|err| format!("read_dir entry in {} failed: {err}", dir.display()))?;
             let path = entry.path();
             if path.is_dir() {
                 walk(&path, out)?;
@@ -85,7 +92,11 @@ fn test_control_plane_002_process_boundary(ctx: &RunContext) -> TestResult {
         "crates/bijux-dev-atlas/src/cli/dispatch.rs",
         "crates/bijux-dev-atlas/src/runtime_entry.rs",
     ];
-    let needles = ["std::process::Command", "ProcessCommand::new", "Command::new("];
+    let needles = [
+        "std::process::Command",
+        "ProcessCommand::new",
+        "Command::new(",
+    ];
     let mut violations = Vec::new();
     for file in files {
         let relative = rel(&ctx.repo_root, &file);
@@ -104,7 +115,10 @@ fn test_control_plane_002_process_boundary(ctx: &RunContext) -> TestResult {
         if !needles.iter().any(|needle| text.contains(needle)) {
             continue;
         }
-        if !allowed_prefixes.iter().any(|prefix| relative.starts_with(prefix) || relative == *prefix) {
+        if !allowed_prefixes
+            .iter()
+            .any(|prefix| relative.starts_with(prefix) || relative == *prefix)
+        {
             violations.push(violation(
                 "CONTROL-PLANE-002",
                 "control_plane.effects.process_boundary",
@@ -172,7 +186,10 @@ fn test_control_plane_003_fs_mutation_boundary(ctx: &RunContext) -> TestResult {
         if !needles.iter().any(|needle| text.contains(needle)) {
             continue;
         }
-        if !allowed_prefixes.iter().any(|prefix| relative.starts_with(prefix) || relative == *prefix) {
+        if !allowed_prefixes
+            .iter()
+            .any(|prefix| relative.starts_with(prefix) || relative == *prefix)
+        {
             violations.push(violation(
                 "CONTROL-PLANE-003",
                 "control_plane.effects.fs_mutation_boundary",
@@ -243,8 +260,12 @@ fn test_control_plane_004_help_snapshot(ctx: &RunContext) -> TestResult {
 }
 
 fn test_control_plane_005_contracts_run_id_override(ctx: &RunContext) -> TestResult {
-    let surfaces = ctx.repo_root.join("crates/bijux-dev-atlas/src/cli/surfaces.rs");
-    let engine = ctx.repo_root.join("crates/bijux-dev-atlas/src/contracts/engine_model.rs");
+    let surfaces = ctx
+        .repo_root
+        .join("crates/bijux-dev-atlas/src/cli/surfaces.rs");
+    let engine = ctx
+        .repo_root
+        .join("crates/bijux-dev-atlas/src/contracts/engine_model.rs");
     let mut violations = Vec::new();
     let surfaces_text = fs::read_to_string(&surfaces).unwrap_or_default();
     if !surfaces_text.contains("pub run_id: Option<String>") {
@@ -332,10 +353,12 @@ pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
 pub fn contract_explain(contract_id: &str) -> String {
     match contract_id {
         "CONTROL-PLANE-001" => {
-            "Legacy automation directories such as scripts, tools, and xtask are forbidden.".to_string()
+            "Legacy automation directories such as scripts, tools, and xtask are forbidden."
+                .to_string()
         }
         "CONTROL-PLANE-002" => {
-            "Direct subprocess spawning must stay inside approved control-plane surfaces.".to_string()
+            "Direct subprocess spawning must stay inside approved control-plane surfaces."
+                .to_string()
         }
         "CONTROL-PLANE-003" => {
             "Filesystem mutation must stay inside approved control-plane surfaces.".to_string()
@@ -344,9 +367,11 @@ pub fn contract_explain(contract_id: &str) -> String {
             "The bijux-dev-atlas CLI help surface is snapshot-governed.".to_string()
         }
         "CONTROL-PLANE-005" => {
-            "Contracts runs must support explicit run_id overrides for deterministic reproduction.".to_string()
+            "Contracts runs must support explicit run_id overrides for deterministic reproduction."
+                .to_string()
         }
-        _ => "Fix the listed violations and rerun `bijux dev atlas contracts control-plane`.".to_string(),
+        _ => "Fix the listed violations and rerun `bijux dev atlas contracts control-plane`."
+            .to_string(),
     }
 }
 

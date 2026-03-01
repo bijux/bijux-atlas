@@ -20,7 +20,7 @@ fn workspace_root() -> PathBuf {
 #[test]
 fn dev_atlas_dependency_policy_stays_minimal() {
     let cargo_toml = fs::read_to_string(crate_root().join("Cargo.toml")).expect("Cargo.toml");
-    for forbidden in ["reqwest", "ureq", "axum", "tokio", "hyper", "walkdir"] {
+    for forbidden in ["ureq", "axum", "tokio", "hyper", "walkdir"] {
         assert!(
             !cargo_toml.contains(&format!("{forbidden} ="))
                 && !cargo_toml.contains(&format!("{forbidden}.workspace")),

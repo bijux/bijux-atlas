@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::cli::{
-    CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, ReleaseCommand,
-};
+use crate::cli::{CheckCommand, CheckRegistryCommand, Cli, Command, FormatArg, ReleaseCommand};
 use crate::{
-    plugin_metadata_json, run_build_command, run_capabilities_command, run_check_doctor,
-    run_check_explain, run_check_list, run_check_registry_doctor, run_check_repo_doctor,
-    run_check_run, run_check_tree_budgets, run_configs_command, run_contracts_command,
-    run_artifacts_command, run_demo_command, run_docker_command, run_docs_command, run_gates_command,
-    run_help_inventory_command, run_make_command, run_ops_command, run_policies_command,
-    run_print_boundaries_command, run_version_command, run_workflows_command,
+    plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
+    run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
+    run_check_repo_doctor, run_check_run, run_check_tree_budgets, run_configs_command,
+    run_contracts_command, run_demo_command, run_docker_command, run_docs_command,
+    run_gates_command, run_help_inventory_command, run_make_command, run_ops_command,
+    run_policies_command, run_print_boundaries_command, run_version_command, run_workflows_command,
 };
 use crate::{run_print_policies, CheckListOptions, CheckRunOptions};
 use std::io::{self, Write};

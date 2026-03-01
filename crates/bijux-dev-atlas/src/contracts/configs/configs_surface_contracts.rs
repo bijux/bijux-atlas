@@ -596,7 +596,7 @@ mod tests {
             .unwrap_or_else(|err| panic!("contract surface parse failed: {err}"));
         assert_eq!(surface.schema_version, 1);
         assert_eq!(surface.domain, "configs");
-        assert_eq!(surface.contracts.len(), 41);
+        assert_eq!(surface.contracts.len(), 49);
         assert!(surface.contracts.iter().any(|row| row.id == "CFG-001"));
         assert!(surface
             .contracts
@@ -608,7 +608,7 @@ mod tests {
     fn cfg_contract_coverage_payload_is_stable() {
         let payload = cfg_contract_coverage_payload(&repo_root())
             .unwrap_or_else(|err| panic!("coverage payload failed: {err}"));
-        assert_eq!(payload["contract_count"].as_u64(), Some(41));
+        assert_eq!(payload["contract_count"].as_u64(), Some(49));
         assert!(payload["mapped_checks"].as_u64().is_some());
         assert!(payload["total_checks"].as_u64().is_some());
         assert!(payload["coverage_pct"].as_u64().is_some());

@@ -53,7 +53,11 @@ fn source_size_hard_limit_is_below_1000_lines() {
     let mut warnings = Vec::new();
     for path in tracked_rust_sources(&root) {
         let lines = count_lines(&path);
-        let rel = path.strip_prefix(&root).unwrap_or(&path).display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .unwrap_or(&path)
+            .display()
+            .to_string();
         if lines >= 1000 {
             violations.push((rel, lines));
         } else if lines >= 800 {

@@ -203,7 +203,7 @@ fn contracts_all_json_domain_order_is_stable() {
     .expect("read contracts command source");
     assert!(
         source.contains(
-            "vec![\n                    \"root\",\n                    \"runtime\",\n                    \"control-plane\",\n                    \"docker\",\n                    \"make\",\n                    \"ops\",\n                    \"configs\",\n                    \"docs\",\n                ]"
+            "vec![\n                    \"root\",\n                    \"repo\",\n                    \"crates\",\n                    \"runtime\",\n                    \"control-plane\",\n                    \"docker\",\n                    \"make\",\n                    \"ops\",\n                    \"configs\",\n                    \"docs\",\n                ]"
         ),
         "contracts all domain order changed"
     );

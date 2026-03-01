@@ -29,11 +29,7 @@ fn allowed_runtime_deps() -> BTreeMap<&'static str, BTreeSet<&'static str>> {
     BTreeMap::from([
         (
             "bijux-atlas-api",
-            BTreeSet::from([
-                "bijux-atlas-core",
-                "bijux-atlas-model",
-                "bijux-atlas-query",
-            ]),
+            BTreeSet::from(["bijux-atlas-core", "bijux-atlas-model", "bijux-atlas-query"]),
         ),
         (
             "bijux-atlas-cli",
@@ -122,9 +118,11 @@ fn push_violation(
 
 fn collect_rs_files(root: &Path) -> Result<Vec<PathBuf>, String> {
     fn walk(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
-        let entries = fs::read_dir(dir).map_err(|err| format!("read {} failed: {err}", dir.display()))?;
+        let entries =
+            fs::read_dir(dir).map_err(|err| format!("read {} failed: {err}", dir.display()))?;
         for entry in entries {
-            let entry = entry.map_err(|err| format!("read_dir entry in {} failed: {err}", dir.display()))?;
+            let entry = entry
+                .map_err(|err| format!("read_dir entry in {} failed: {err}", dir.display()))?;
             let path = entry.path();
             if path.is_dir() {
                 walk(&path, out)?;
@@ -328,7 +326,9 @@ fn test_runtime_004_pure_crates_no_host_io(ctx: &RunContext) -> TestResult {
                     "RUNTIME-004",
                     "runtime.pure_crates.no_host_io",
                     Some(relative.clone()),
-                    format!("pure runtime crate `{crate_name}` must not use host I/O marker `{hit}`"),
+                    format!(
+                        "pure runtime crate `{crate_name}` must not use host I/O marker `{hit}`"
+                    ),
                 ));
             }
         }
@@ -379,7 +379,10 @@ fn test_runtime_005_api_surface_snapshot(ctx: &RunContext) -> TestResult {
 }
 
 pub fn contracts(repo_root: &Path) -> Result<Vec<Contract>, String> {
-    if !repo_root.join("crates/bijux-atlas-core/Cargo.toml").exists() {
+    if !repo_root
+        .join("crates/bijux-atlas-core/Cargo.toml")
+        .exists()
+    {
         return Err("runtime contracts require the workspace crates surface".to_string());
     }
     Ok(vec![
@@ -448,10 +451,12 @@ pub fn contract_explain(contract_id: &str) -> String {
             "Runtime crates may not import the bijux-dev-atlas control-plane crate.".to_string()
         }
         "RUNTIME-004" => {
-            "Pure runtime crates must avoid direct filesystem, network, and subprocess usage.".to_string()
+            "Pure runtime crates must avoid direct filesystem, network, and subprocess usage."
+                .to_string()
         }
         "RUNTIME-005" => {
-            "The public bijux-atlas-api surface is snapshot-governed and must move intentionally.".to_string()
+            "The public bijux-atlas-api surface is snapshot-governed and must move intentionally."
+                .to_string()
         }
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts runtime`.".to_string(),
     }
@@ -467,13 +472,19 @@ mod tests {
 
     #[test]
     fn api_surface_snapshot_source_is_not_empty() {
-        let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .expect("workspace")
-            .parent()
-            .expect("repo")
-            .to_path_buf();
-        let lines = api_surface_lines(&repo_root).expect("surface");
+        let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let workspace = match manifest_dir.parent() {
+            Some(path) => path,
+            None => panic!("workspace parent missing"),
+        };
+        let repo_root = match workspace.parent() {
+            Some(path) => path.to_path_buf(),
+            None => panic!("repo root missing"),
+        };
+        let lines = match api_surface_lines(&repo_root) {
+            Ok(lines) => lines,
+            Err(err) => panic!("surface: {err}"),
+        };
         assert!(!lines.is_empty());
     }
 }

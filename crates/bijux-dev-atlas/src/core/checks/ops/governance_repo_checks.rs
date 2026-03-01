@@ -525,5 +525,4 @@ pub(super) fn check_docs_removed_system_references_absent(
     )
 }
 
-
 include!("governance_repo_checks_repo_laws.inc.rs");

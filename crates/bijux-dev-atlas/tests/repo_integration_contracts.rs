@@ -17,7 +17,8 @@ fn repo_root() -> PathBuf {
 }
 
 fn read(path: &Path) -> String {
-    fs::read_to_string(path).unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
+    fs::read_to_string(path)
+        .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
 }
 
 fn collect_files(root: &Path, extension: &str, out: &mut Vec<PathBuf>) {
@@ -55,7 +56,8 @@ fn assert_pretty_json_file(path: &Path) {
             .unwrap_or_else(|err| panic!("failed to render {}: {err}", path.display()))
     );
     assert_eq!(
-        text, expected,
+        text,
+        expected,
         "governed json file must use deterministic pretty formatting: {}",
         path.display()
     );
@@ -169,7 +171,9 @@ fn dockerfile_copy_sources_exist_and_stay_within_root_authority() {
         "runtime Dockerfile must COPY the root Cargo.toml"
     );
     assert!(
-        copy_sources.iter().any(|source| source.starts_with("configs/")),
+        copy_sources
+            .iter()
+            .any(|source| source.starts_with("configs/")),
         "runtime Dockerfile must COPY canonical configs inputs"
     );
     assert!(
@@ -202,7 +206,13 @@ fn root_symlinks_and_dockerignore_follow_surface_contract() {
     }
 
     let dockerignore = read(&root.join(".dockerignore"));
-    for required in [".git", ".github", "artifacts", "ops/_generated", "**/target"] {
+    for required in [
+        ".git",
+        ".github",
+        "artifacts",
+        "ops/_generated",
+        "**/target",
+    ] {
         assert!(
             dockerignore.lines().any(|line| line.trim() == required),
             ".dockerignore must include `{required}`"
@@ -277,7 +287,10 @@ fn quickstart_command_is_backed_by_cli_help() {
     let start_here = read(&root.join("docs/start-here.md"));
     let command = start_here
         .lines()
-        .find(|line| line.trim_start().starts_with("bijux dev atlas demo quickstart"))
+        .find(|line| {
+            line.trim_start()
+                .starts_with("bijux dev atlas demo quickstart")
+        })
         .map(str::trim)
         .expect("docs/start-here.md quickstart command");
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
@@ -319,7 +332,8 @@ fn ci_wrappers_and_workflows_use_the_same_named_suites() {
 #[test]
 fn public_make_targets_map_to_one_control_plane_entry_and_stay_thin() {
     let root = repo_root();
-    let public_targets = load_json(&root.join("configs/make/public-targets.json"))["public_targets"]
+    let public_targets = load_json(&root.join("configs/make/public-targets.json"))
+        ["public_targets"]
         .as_array()
         .expect("public_targets array")
         .iter()
@@ -349,7 +363,10 @@ fn public_make_targets_map_to_one_control_plane_entry_and_stay_thin() {
         let (defined_in, visibility) = registry_map
             .get(&target)
             .unwrap_or_else(|| panic!("public target missing from make target registry: {target}"));
-        assert_eq!(visibility, "public", "public target must be public in registry: {target}");
+        assert_eq!(
+            visibility, "public",
+            "public target must be public in registry: {target}"
+        );
         assert_eq!(
             defined_in.len(),
             1,
@@ -432,7 +449,10 @@ fn docs_and_automation_surfaces_do_not_reference_removed_control_plane_paths() {
 fn root_dockerfile_symlink_points_to_canonical_runtime_dockerfile() {
     let root = repo_root();
     let dockerfile = root.join("Dockerfile");
-    assert!(dockerfile.is_symlink(), "root Dockerfile must remain a symlink shim");
+    assert!(
+        dockerfile.is_symlink(),
+        "root Dockerfile must remain a symlink shim"
+    );
     let target = fs::read_link(&dockerfile).expect("Dockerfile symlink target");
     assert_eq!(
         target,
@@ -449,8 +469,7 @@ fn root_dockerfile_symlink_points_to_canonical_runtime_dockerfile() {
         .as_str()
         .expect("root Dockerfile symlink allowlist entry");
     assert_eq!(
-        declared,
-        "docker/images/runtime/Dockerfile",
+        declared, "docker/images/runtime/Dockerfile",
         "symlink allowlist must match the canonical runtime Dockerfile target"
     );
 }
@@ -478,7 +497,9 @@ fn contracts_makefile_is_the_only_public_contract_gate_entrypoint() {
 
     let public_mk = read(&root.join("make/public.mk"));
     assert!(
-        public_mk.lines().any(|line| line.trim() == "include make/contracts.mk"),
+        public_mk
+            .lines()
+            .any(|line| line.trim() == "include make/contracts.mk"),
         "make/public.mk must delegate contract gates through make/contracts.mk"
     );
 }
@@ -494,7 +515,11 @@ fn config_contract_surfaces_are_versioned_referenced_and_deterministically_forma
     ];
     for path in deterministic {
         let parsed = load_json(&path);
-        assert!(parsed.get("schema_version").is_some(), "governed config contract must declare a schema version: {}", path.display());
+        assert!(
+            parsed.get("schema_version").is_some(),
+            "governed config contract must declare a schema version: {}",
+            path.display()
+        );
         assert_pretty_json_file(&path);
     }
     let make_registry = load_json(&root.join("configs/ops/make-target-registry.json"));
@@ -504,7 +529,8 @@ fn config_contract_surfaces_are_versioned_referenced_and_deterministically_forma
     );
 
     let config_versioning = read(&root.join("docs/development/config-versioning.md"));
-    let registry_versioning = read(&root.join("docs/reference/registry/config-schema-versioning.md"));
+    let registry_versioning =
+        read(&root.join("docs/reference/registry/config-schema-versioning.md"));
     for required in [
         "docs/reference/contracts/schemas/CONFIG_KEYS.json",
         "configs/contracts/env.schema.json",
@@ -533,7 +559,9 @@ fn config_security_and_docker_contracts_stay_explicit_and_reviewable() {
 
     let dockerfile = read(&root.join("docker/images/runtime/Dockerfile"));
     assert!(
-        !dockerfile.lines().any(|line| line.trim_start().starts_with("ADD ")),
+        !dockerfile
+            .lines()
+            .any(|line| line.trim_start().starts_with("ADD ")),
         "runtime Dockerfile must not use ADD"
     );
     let lowered = dockerfile.to_ascii_lowercase();

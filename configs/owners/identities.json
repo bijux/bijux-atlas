@@ -4,6 +4,12 @@
     "api": {
       "github_handles": ["@bijan"]
     },
+    "api-contracts": {
+      "github_handles": ["@bijan"]
+    },
+    "architecture": {
+      "github_handles": ["@bijan"]
+    },
     "bijux-atlas-data": {
       "github_handles": ["@bijan"]
     },
@@ -26,6 +32,9 @@
       "github_handles": ["@bijan"]
     },
     "platform": {
+      "github_handles": ["@bijan"]
+    },
+    "product": {
       "github_handles": ["@bijan"]
     }
   }

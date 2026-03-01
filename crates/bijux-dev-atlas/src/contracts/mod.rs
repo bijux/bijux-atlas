@@ -5,8 +5,8 @@
 //! filterable execution, pretty and JSON output, and explicit effect gating.
 
 pub mod configs;
-pub mod crates;
 pub mod control_plane;
+pub mod crates;
 pub mod docker;
 pub mod docs;
 pub mod make;

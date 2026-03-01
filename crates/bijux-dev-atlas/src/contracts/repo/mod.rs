@@ -5,7 +5,12 @@ use std::path::Path;
 
 use super::{Contract, ContractId, RunContext, TestCase, TestId, TestKind, TestResult, Violation};
 
-fn violation(contract_id: &str, test_id: &str, file: Option<String>, message: impl Into<String>) -> Violation {
+fn violation(
+    contract_id: &str,
+    test_id: &str,
+    file: Option<String>,
+    message: impl Into<String>,
+) -> Violation {
     Violation {
         contract_id: contract_id.to_string(),
         test_id: test_id.to_string(),
@@ -106,8 +111,12 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
 
 pub fn contract_explain(contract_id: &str) -> String {
     match contract_id {
-        "REPO-001" => "Ensures canonical repo law registry exists and is valid JSON with required metadata.".to_string(),
-        "REPO-002" => "Ensures root allowlist authority config exists for root surface governance.".to_string(),
+        "REPO-001" => {
+            "Ensures canonical repo law registry exists and is valid JSON with required metadata."
+                .to_string()
+        }
+        "REPO-002" => "Ensures root allowlist authority config exists for root surface governance."
+            .to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts repo`.".to_string(),
     }
 }

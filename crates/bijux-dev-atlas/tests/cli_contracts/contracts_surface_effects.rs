@@ -308,19 +308,44 @@ fn contracts_ops_ci_uses_default_artifacts_root() {
 
 #[test]
 fn contracts_profile_changes_default_artifacts_root_segment() {
-    let out = repo_root().join("artifacts/contracts/docker/ci/static/local/docker.json");
-    if let Some(parent) = out.parent() {
-        fs::create_dir_all(parent).expect("mkdir");
+    fn collect_candidates(dir: &std::path::Path, out: &mut Vec<std::path::PathBuf>) {
+        let Ok(entries) = fs::read_dir(dir) else {
+            return;
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                collect_candidates(&path, out);
+                continue;
+            }
+            if path
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name == "docker.json")
+            {
+                out.push(path);
+            }
+        }
     }
-    if out.exists() {
-        fs::remove_file(&out).expect("remove prior report");
-    }
+
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
         .args(["contracts", "docker", "--profile", "ci", "--format", "json"])
         .output()
         .expect("contracts docker with profile");
     assert!(output.status.success());
+    let mut candidates = Vec::new();
+    collect_candidates(&repo_root().join("artifacts"), &mut candidates);
+    candidates.sort();
+    let out = candidates
+        .into_iter()
+        .find(|path| {
+            let rel = path.to_string_lossy();
+            rel.contains("/docker/")
+                && rel.contains("/ci/")
+                && rel.ends_with("/docker.json")
+        })
+        .expect("docker profile report path");
     let payload: serde_json::Value =
         serde_json::from_str(&fs::read_to_string(out).expect("read generated report"))
             .expect("json report");

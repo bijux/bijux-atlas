@@ -82,7 +82,8 @@ fn endpoint_params_match_openapi_registry() {
         .expect("workspace root")
         .to_path_buf();
     let contract: EndpointsContract = serde_json::from_slice(
-        &std::fs::read(root.join("docs/reference/contracts/schemas/ENDPOINTS.json")).expect("read endpoints"),
+        &std::fs::read(root.join("docs/reference/contracts/schemas/ENDPOINTS.json"))
+            .expect("read endpoints"),
     )
     .expect("parse endpoints");
     let openapi: serde_json::Value = serde_json::from_slice(

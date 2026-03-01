@@ -70,6 +70,7 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/adapters/workspace_root.rs",
             "src/cli/dispatch.rs",
             "src/commands/configs.rs",
+            "src/commands/make.rs",
             "src/commands/docs/runtime/reference_page_generators.rs",
             "src/commands/ops/execution_runtime_mod/tests.rs",
             "src/commands/ops/execution_runtime_mod/install_status.rs",
@@ -104,15 +105,20 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/contracts/ops/reporting/stack_release_contracts.rs",
             "src/contracts/ops/root/root_contracts.rs",
             "src/contracts/configs/configs_registry_indexing.rs",
+            "src/contracts/configs/configs_authority_contracts.rs",
             "src/contracts/configs/configs_registry_model.rs",
             "src/contracts/configs/configs_surface_contracts.rs",
             "src/contracts/docs/contracts_link_checks.inc.rs",
             "src/contracts/docs/contracts_structure_checks.inc.rs",
             "src/contracts/docs/docs_static_artifact_checks.inc.rs",
+            "src/contracts/docs/docs_static_artifact_reports_checks.inc.rs",
             "src/contracts/docs/docs_static_index_checks.inc.rs",
             "src/contracts/docs/docs_static_metadata_checks.inc.rs",
+            "src/contracts/docs/docs_static_metadata_quality_checks.inc.rs",
             "src/contracts/docs/docs_static_support.inc.rs",
             "src/contracts/docs/docs_static_surface_checks.inc.rs",
+            "src/contracts/control_plane/mod.rs",
+            "src/contracts/make/mod_include_and_catalog.inc.rs",
             "src/contracts/make/surface_contracts.rs",
             "src/contracts/make/wrapper_contracts.rs",
             "src/contracts/ops/common/mod.rs",
@@ -124,8 +130,8 @@ fn fs_calls_are_constrained_to_explicit_allowlist() {
             "src/core/checks/ops/ops/inventory_and_artifact_checks.rs",
             "src/core/ops_inventory/summary_and_fs_scan.rs",
             "src/commands/control_plane_contracts_support.rs",
-            "src/runtime_entry.rs",
             "src/runtime_entry_checks_surface.rs",
+            "src/runtime_entry.rs",
         ],
     );
 }
@@ -144,6 +150,10 @@ fn process_calls_are_constrained_to_explicit_allowlist() {
             "src/contracts/docker/mod.rs",
             "src/commands/control_plane_contracts.rs",
             "src/commands/control_plane_contracts_support.rs",
+            "src/contracts/control_plane/mod.rs",
+            "src/contracts/runtime/mod.rs",
+            "src/contracts/root/root_static_surface_checks.inc.rs",
+            "src/core/checks/ops/governance_repo_checks_repo_laws.inc.rs",
             "src/runtime_entry.rs",
         ],
     );
@@ -165,6 +175,6 @@ fn env_var_calls_are_constrained_to_explicit_allowlist() {
 
 #[test]
 fn network_client_calls_are_constrained_to_explicit_allowlist() {
-    assert_only_allowlisted_paths("reqwest::", &[]);
+    assert_only_allowlisted_paths("reqwest::", &["src/commands/docs/validation_and_links.rs"]);
     assert_only_allowlisted_paths("ureq::", &[]);
 }

@@ -54,10 +54,10 @@ pub(crate) fn run_policies_command(quiet: bool, command: PoliciesCommand) -> i32
     }
 }
 
-mod control_plane_docker;
 mod control_plane_contracts_support;
-pub(crate) use control_plane_docker::run_docker_command;
+mod control_plane_docker;
 use control_plane_contracts_support::*;
+pub(crate) use control_plane_docker::run_docker_command;
 use control_plane_docker::{run_policies_explain, run_policies_list, run_policies_report};
 
 include!("control_plane_contracts.rs");

@@ -178,8 +178,7 @@ fn test_make_targetlist_001_explicit_policy(ctx: &RunContext) -> TestResult {
         }
     };
     if json.get("schema_version").and_then(Value::as_u64) == Some(1)
-        && json.get("source").and_then(Value::as_str)
-            == Some("make/root.mk:CURATED_TARGETS")
+        && json.get("source").and_then(Value::as_str) == Some("make/root.mk:CURATED_TARGETS")
     {
         TestResult::Pass
     } else {
@@ -188,8 +187,13 @@ fn test_make_targetlist_001_explicit_policy(ctx: &RunContext) -> TestResult {
 }
 
 fn test_make_name_001_helper_files_prefixed(ctx: &RunContext) -> TestResult {
-    let allowed_named_helpers =
-        BTreeSet::from(["_internal.mk", "macros.mk", "paths.mk", "runenv.mk", "vars.mk"]);
+    let allowed_named_helpers = BTreeSet::from([
+        "_internal.mk",
+        "macros.mk",
+        "paths.mk",
+        "runenv.mk",
+        "vars.mk",
+    ]);
     let declared = match declared_targets(&ctx.repo_root) {
         Ok(targets) => targets,
         Err(err) => {

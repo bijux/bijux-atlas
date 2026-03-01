@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::BTreeSet;
-use std::process::Command;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 use serde_json::Value;
 use serde_yaml::Value as YamlValue;
@@ -18,7 +18,8 @@ fn repo_root() -> PathBuf {
 }
 
 fn read(path: &Path) -> String {
-    fs::read_to_string(path).unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
+    fs::read_to_string(path)
+        .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
 }
 
 fn load_json(path: &Path) -> Value {
@@ -117,7 +118,10 @@ fn deployment_template_keeps_probe_resource_and_security_policies_explicit() {
         "securityContext:",
         "imagePullPolicy: {{ .Values.image.pullPolicy }}",
     ] {
-        assert!(text.contains(required), "deployment template missing `{required}`");
+        assert!(
+            text.contains(required),
+            "deployment template missing `{required}`"
+        );
     }
 }
 
@@ -126,10 +130,7 @@ fn immutable_release_labels_are_present_in_workload_and_service_templates() {
     let root = repo_root();
     let deployment = read(&root.join("ops/k8s/charts/bijux-atlas/templates/deployment.yaml"));
     let service = read(&root.join("ops/k8s/charts/bijux-atlas/templates/service.yaml"));
-    for required in [
-        "app.kubernetes.io/name:",
-        "app.kubernetes.io/instance:",
-    ] {
+    for required in ["app.kubernetes.io/name:", "app.kubernetes.io/instance:"] {
         assert!(
             deployment.contains(required),
             "deployment template missing immutable release label `{required}`"
@@ -173,7 +174,9 @@ fn deployment_template_rejects_invalid_image_reference_shape() {
     let root = repo_root();
     let deployment = read(&root.join("ops/k8s/charts/bijux-atlas/templates/deployment.yaml"));
     assert!(
-        deployment.contains("fail \"image.repository must not include '@'; use image.digest for digests\""),
+        deployment.contains(
+            "fail \"image.repository must not include '@'; use image.digest for digests\""
+        ),
         "deployment template must reject repository values containing digests"
     );
 }

@@ -17,7 +17,8 @@ fn repo_root() -> PathBuf {
 }
 
 fn read(path: &Path) -> String {
-    fs::read_to_string(path).unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
+    fs::read_to_string(path)
+        .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
 }
 
 fn load_json(path: &Path) -> Value {
@@ -59,8 +60,8 @@ fn parse_glossary_terms(text: &str) -> BTreeSet<String> {
 }
 
 fn parse_mkdocs_top_level_nav(root: &Path) -> Vec<String> {
-    let yaml: YamlValue = serde_yaml::from_str(&read(&root.join("mkdocs.yml")))
-        .expect("mkdocs.yml must parse");
+    let yaml: YamlValue =
+        serde_yaml::from_str(&read(&root.join("mkdocs.yml"))).expect("mkdocs.yml must parse");
     yaml.get("nav")
         .and_then(YamlValue::as_sequence)
         .expect("mkdocs nav")
@@ -77,7 +78,11 @@ fn parse_nav_contract_list(text: &str, prefix: &str) -> Vec<String> {
         .find_map(|line| line.trim().strip_prefix(prefix).map(str::to_string))
         .expect("nav contract line")
         .split(',')
-        .map(|item| item.trim().trim_matches(|c| c == '`' || c == '.').to_string())
+        .map(|item| {
+            item.trim()
+                .trim_matches(|c| c == '`' || c == '.')
+                .to_string()
+        })
         .collect()
 }
 
@@ -123,7 +128,11 @@ fn operations_docs_reference_existing_canonical_ops_paths() {
     let root = repo_root();
     let mut violations = Vec::new();
     for file in markdown_files(&root.join("docs/operations")) {
-        let rel = file.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = file
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         let text = read(&file);
         for line in text.lines() {
             if !line.contains("Source-of-truth:") {
@@ -157,15 +166,7 @@ fn glossary_covers_ops_public_terms_and_every_term_is_used() {
     let glossary = read(&root.join("docs/glossary.md"));
     let terms = parse_glossary_terms(&glossary);
     for required in [
-        "Release",
-        "Dataset",
-        "Stack",
-        "K8s",
-        "Load",
-        "E2E",
-        "Fixture",
-        "Profile",
-        "Lane",
+        "Release", "Dataset", "Stack", "K8s", "Load", "E2E", "Fixture", "Profile", "Lane",
     ] {
         assert!(
             terms.contains(required),
@@ -223,14 +224,15 @@ fn docs_sections_and_ops_pillars_have_one_shared_owner_identity() {
     }
 
     let pillars_json = load_json(&root.join("ops/inventory/pillars.json"));
-    let pillars = pillars_json["pillars"]
-        .as_array()
-        .expect("ops pillars");
+    let pillars = pillars_json["pillars"].as_array().expect("ops pillars");
     let mut pillar_ids = BTreeSet::new();
     for pillar in pillars {
         let pillar_id = pillar["id"].as_str().expect("pillar id");
         let owner = pillar["owner"].as_str().expect("pillar owner");
-        assert!(pillar_ids.insert(pillar_id.to_string()), "duplicate pillar id: {pillar_id}");
+        assert!(
+            pillar_ids.insert(pillar_id.to_string()),
+            "duplicate pillar id: {pillar_id}"
+        );
         assert!(
             identities.contains(owner),
             "ops pillar owner must exist in configs/owners/identities.json: {pillar_id} -> {owner}"
@@ -238,17 +240,12 @@ fn docs_sections_and_ops_pillars_have_one_shared_owner_identity() {
     }
 
     let ops_owners_json = load_json(&root.join("ops/inventory/owners.json"));
-    let ops_owners = ops_owners_json["areas"]
-        .as_object()
-        .expect("ops areas");
+    let ops_owners = ops_owners_json["areas"].as_object().expect("ops areas");
     for (area, owner) in ops_owners {
         let owner = owner
             .as_str()
             .unwrap_or_else(|| panic!("ops owner must be a string: {area}"));
-        assert!(
-            !owner.is_empty(),
-            "ops owner must be non-empty: {area}"
-        );
+        assert!(!owner.is_empty(), "ops owner must be non-empty: {area}");
         assert!(
             identities.contains(owner),
             "ops owner must exist in configs/owners/identities.json: {area} -> {owner}"
@@ -295,17 +292,13 @@ fn mkdocs_nav_matches_docs_nav_contract() {
     let root = repo_root();
     let nav = parse_mkdocs_top_level_nav(&root);
     let nav_contract = read(&root.join("docs/_internal/nav/index.md"));
-    let declared_names = parse_nav_contract_list(
-        &nav_contract,
-        "- Top-level navigation labels are fixed: ",
-    );
-    let declared_order = parse_nav_contract_list(
-        &nav_contract,
-        "- Top-level navigation order is fixed: ",
-    )
-    .into_iter()
-    .flat_map(|item| item.split(" -> ").map(str::to_string).collect::<Vec<_>>())
-    .collect::<Vec<_>>();
+    let declared_names =
+        parse_nav_contract_list(&nav_contract, "- Top-level navigation labels are fixed: ");
+    let declared_order =
+        parse_nav_contract_list(&nav_contract, "- Top-level navigation order is fixed: ")
+            .into_iter()
+            .flat_map(|item| item.split(" -> ").map(str::to_string).collect::<Vec<_>>())
+            .collect::<Vec<_>>();
 
     assert_eq!(
         nav, declared_names,
@@ -327,9 +320,7 @@ fn ops_map_covers_every_pillar_with_one_docs_entrypoint() {
         .map(|row| row[0].clone())
         .collect::<BTreeSet<_>>();
     let pillars_json = load_json(&root.join("ops/inventory/pillars.json"));
-    let pillars = pillars_json["pillars"]
-        .as_array()
-        .expect("pillars");
+    let pillars = pillars_json["pillars"].as_array().expect("pillars");
     let expected = pillars
         .iter()
         .filter_map(|row| row["id"].as_str())
@@ -342,10 +333,17 @@ fn ops_map_covers_every_pillar_with_one_docs_entrypoint() {
     for row in rows {
         let surface = &row[1];
         let docs_entry = &row[2];
-        assert!(root.join("ops").join(surface.trim_start_matches("ops/")).exists() || root.join(surface).exists(),
-            "ops map surface path must exist: {surface}");
-        assert!(root.join("docs/operations").join(docs_entry).exists(),
-            "ops map docs entry must exist: docs/operations/{docs_entry}");
+        assert!(
+            root.join("ops")
+                .join(surface.trim_start_matches("ops/"))
+                .exists()
+                || root.join(surface).exists(),
+            "ops map surface path must exist: {surface}"
+        );
+        assert!(
+            root.join("docs/operations").join(docs_entry).exists(),
+            "ops map docs entry must exist: docs/operations/{docs_entry}"
+        );
     }
 }
 
@@ -372,7 +370,11 @@ fn runbooks_reference_known_alert_and_slo_catalog_entries() {
     let mut violations = Vec::new();
 
     for path in markdown_files(&root.join("docs/operations/runbooks")) {
-        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         if rel.ends_with("INDEX.md") {
             continue;
         }
@@ -435,7 +437,10 @@ fn operations_docs_bind_kind_fixture_and_promotion_pages_to_canonical_ops_paths(
         let text = read(&root.join(page));
         for rel in required {
             assert!(text.contains(rel), "{page} must reference `{rel}`");
-            assert!(root.join(rel).exists(), "{page} reference must exist: {rel}");
+            assert!(
+                root.join(rel).exists(),
+                "{page} reference must exist: {rel}"
+            );
         }
     }
 }
@@ -459,7 +464,11 @@ fn docs_must_not_invent_ops_steps_outside_control_plane_and_manifest_surfaces() 
         .collect::<BTreeSet<_>>();
     let mut violations = Vec::new();
     for path in markdown_files(&root.join("docs/operations")) {
-        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         let text = read(&path);
         for line in text.lines() {
             let trimmed = line.trim();

@@ -84,17 +84,23 @@ fn ops_effect_artifact_dir(ctx: &RunContext) -> Option<PathBuf> {
     Some(dir)
 }
 
-fn write_ops_effect_json(ctx: &RunContext, rel: &str, value: &serde_json::Value) -> Result<(), String> {
+fn write_ops_effect_json(
+    ctx: &RunContext,
+    rel: &str,
+    value: &serde_json::Value,
+) -> Result<(), String> {
     let Some(root) = ops_effect_artifact_dir(ctx) else {
         return Ok(());
     };
     let path = root.join(rel);
     if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent).map_err(|err| format!("create {} failed: {err}", parent.display()))?;
+        fs::create_dir_all(parent)
+            .map_err(|err| format!("create {} failed: {err}", parent.display()))?;
     }
     fs::write(
         &path,
-        serde_json::to_string_pretty(value).map_err(|err| format!("encode {} failed: {err}", path.display()))?,
+        serde_json::to_string_pretty(value)
+            .map_err(|err| format!("encode {} failed: {err}", path.display()))?,
     )
     .map_err(|err| format!("write {} failed: {err}", path.display()))
 }
@@ -104,7 +110,8 @@ fn append_ops_effect_log(ctx: &RunContext, entry: &serde_json::Value) {
         return;
     };
     let path = root.join("effects.log");
-    let mut line = serde_json::to_string(entry).unwrap_or_else(|_| "{\"status\":\"encode-error\"}".to_string());
+    let mut line = serde_json::to_string(entry)
+        .unwrap_or_else(|_| "{\"status\":\"encode-error\"}".to_string());
     line.push('\n');
     let _ = std::fs::OpenOptions::new()
         .create(true)
@@ -230,10 +237,16 @@ fn verify_declared_tool_versions(ctx: &RunContext, tool_names: &[&str]) -> TestR
         };
         let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
         let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-        let combined = if stdout.is_empty() { stderr.clone() } else { format!("{stdout}\n{stderr}") };
+        let combined = if stdout.is_empty() {
+            stderr.clone()
+        } else {
+            format!("{stdout}\n{stderr}")
+        };
         let version = combined
             .split_whitespace()
-            .find(|part| part.starts_with('v') || part.chars().next().is_some_and(|c| c.is_ascii_digit()))
+            .find(|part| {
+                part.starts_with('v') || part.chars().next().is_some_and(|c| c.is_ascii_digit())
+            })
             .unwrap_or_default()
             .to_string();
         rows.push(serde_json::json!({
@@ -245,7 +258,8 @@ fn verify_declared_tool_versions(ctx: &RunContext, tool_names: &[&str]) -> TestR
             .get("tools")
             .and_then(|value| value.get(*tool))
             .and_then(|value| value.get("allowed_major"))
-            .and_then(|value| value.as_u64()) else {
+            .and_then(|value| value.as_u64())
+        else {
             violations.push(violation(
                 "OPS-ROOT-001",
                 "ops.effect.tools.version_policy_present",

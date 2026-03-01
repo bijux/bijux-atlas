@@ -5,6 +5,8 @@
 #![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used))]
 #![deny(clippy::todo)]
 
+#[path = "commands/artifacts.rs"]
+mod artifacts_commands;
 #[path = "commands/build.rs"]
 mod build_commands;
 mod cli;
@@ -14,13 +16,11 @@ mod configs_commands;
 mod control_plane_commands;
 #[path = "commands/docs.rs"]
 mod docs_commands;
-#[path = "commands/artifacts.rs"]
-mod artifacts_commands;
-#[path = "commands/make.rs"]
-mod make_commands;
 #[cfg(test)]
 #[path = "../tests/support/main_cli_parser_tests.rs"]
 mod main_tests;
+#[path = "commands/make.rs"]
+mod make_commands;
 #[path = "commands/ops.rs"]
 mod ops_commands;
 #[path = "commands/ops/execution_runtime.rs"]

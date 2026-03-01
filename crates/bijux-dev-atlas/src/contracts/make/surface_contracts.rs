@@ -185,8 +185,18 @@ fn test_make_surface_001_single_source(ctx: &RunContext) -> TestResult {
         Ok(text) if text.contains("\"source\": \"make/root.mk:CURATED_TARGETS\"") => {
             TestResult::Pass
         }
-        Ok(_) => failure("MAKE-SURFACE-001", "make.surface.single_source", "make/target-list.json", "make/target-list.json must declare make/root.mk:CURATED_TARGETS as its single source"),
-        Err(err) => failure("MAKE-SURFACE-001", "make.surface.single_source", "make/target-list.json", err),
+        Ok(_) => failure(
+            "MAKE-SURFACE-001",
+            "make.surface.single_source",
+            "make/target-list.json",
+            "make/target-list.json must declare make/root.mk:CURATED_TARGETS as its single source",
+        ),
+        Err(err) => failure(
+            "MAKE-SURFACE-001",
+            "make.surface.single_source",
+            "make/target-list.json",
+            err,
+        ),
     }
 }
 
@@ -273,8 +283,12 @@ fn test_make_surface_003_registry_sync(ctx: &RunContext) -> TestResult {
 }
 
 fn test_make_surface_004_control_plane_parity(ctx: &RunContext) -> TestResult {
-    let surfaces_path = ctx.repo_root.join("crates/bijux-dev-atlas/src/cli/surfaces.rs");
-    let commands_path = ctx.repo_root.join("crates/bijux-dev-atlas/src/commands/make.rs");
+    let surfaces_path = ctx
+        .repo_root
+        .join("crates/bijux-dev-atlas/src/cli/surfaces.rs");
+    let commands_path = ctx
+        .repo_root
+        .join("crates/bijux-dev-atlas/src/commands/make.rs");
     let surfaces_text = match read_text(&surfaces_path) {
         Ok(text) => text,
         Err(err) => {
@@ -364,13 +378,11 @@ fn test_make_surface_005_delegate_only(ctx: &RunContext) -> TestResult {
         {
             continue;
         }
-        let has_delegate = recipes
-            .iter()
-            .any(|recipe| {
-                recipe_invokes_dev_atlas(recipe)
-                    || recipe_invokes_cargo(recipe)
-                    || recipe.contains("$(MAKE)")
-            });
+        let has_delegate = recipes.iter().any(|recipe| {
+            recipe_invokes_dev_atlas(recipe)
+                || recipe_invokes_cargo(recipe)
+                || recipe.contains("$(MAKE)")
+        });
         if has_delegate {
             continue;
         }
@@ -403,7 +415,10 @@ fn test_make_struct_010_complex_recipes_dispatch_to_atlas(ctx: &RunContext) -> T
         if nontrivial <= 10 {
             continue;
         }
-        if recipes.iter().any(|recipe| recipe_invokes_dev_atlas(recipe)) {
+        if recipes
+            .iter()
+            .any(|recipe| recipe_invokes_dev_atlas(recipe))
+        {
             continue;
         }
         return failure(
@@ -442,10 +457,7 @@ fn test_make_internal_001_root_helpers_prefixed(ctx: &RunContext) -> TestResult 
         }
     };
     for (name, (file, _)) in declared {
-        if file == "make/root.mk"
-            && !curated.contains(&name)
-            && !name.starts_with("_internal-")
-        {
+        if file == "make/root.mk" && !curated.contains(&name) && !name.starts_with("_internal-") {
             return failure(
                 "MAKE-INTERNAL-001",
                 "make.internal.root_helpers_prefixed",
@@ -577,7 +589,10 @@ fn test_make_struct_002_mk_only(ctx: &RunContext) -> TestResult {
     };
     for entry in entries.flatten() {
         let path = entry.path();
-        let name = path.file_name().and_then(|value| value.to_str()).unwrap_or_default();
+        let name = path
+            .file_name()
+            .and_then(|value| value.to_str())
+            .unwrap_or_default();
         let allowed_non_mk = ["README.md", "CONTRACT.md", "target-list.json"];
         if path.is_file()
             && path.extension().and_then(|value| value.to_str()) != Some("mk")
@@ -669,6 +684,5 @@ fn test_make_ssot_001_checks_delegate_to_contracts(ctx: &RunContext) -> TestResu
         Err(err) => failure("MAKE-SSOT-001", "make.ssot.checks_delegate_to_contracts", "make/checks.mk", err),
     }
 }
-
 
 include!("surface_contracts_catalog.inc.rs");

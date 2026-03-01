@@ -471,6 +471,357 @@
         }
       ],
       "title": "docs contract coverage report is generated deterministically"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-037",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.frontmatter_required"
+        }
+      ],
+      "title": "spine pages require frontmatter"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-038",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.frontmatter_values"
+        }
+      ],
+      "title": "spine page frontmatter values stay normalized"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-039",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.stable_spine_requirements"
+        }
+      ],
+      "title": "stable spine pages keep complete metadata"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-040",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.reference_sources"
+        }
+      ],
+      "title": "reference spine pages declare sources"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-041",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.internal_boundary"
+        }
+      ],
+      "title": "internal docs keep frontmatter boundary"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-042",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.review_freshness"
+        }
+      ],
+      "title": "stable spine pages keep review dates normalized"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-043",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.how_to_verification"
+        }
+      ],
+      "title": "how-to spine pages declare verification"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-044",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.frontmatter_schema"
+        }
+      ],
+      "title": "docs frontmatter schema stays present"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-045",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.metadata.reader_utility_frontmatter"
+        }
+      ],
+      "title": "reader utility pages keep shared metadata"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-046",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.reader_utility_no_internal_links"
+        }
+      ],
+      "title": "reader utility pages do not link into internal docs"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-047",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.reader_spine_no_internal_links"
+        }
+      ],
+      "title": "reader spine pages do not link into internal docs"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-048",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.unique_titles"
+        }
+      ],
+      "title": "published docs titles stay unique"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-049",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.single_h1_published"
+        }
+      ],
+      "title": "published docs pages keep exactly one H1"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-050",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.links.operator_golden_paths_no_internal"
+        }
+      ],
+      "title": "operator golden paths do not reference internal docs"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-051",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.home_line_budget"
+        }
+      ],
+      "title": "docs home stays within the line budget"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-052",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.single_start_here"
+        }
+      ],
+      "title": "docs keep a single start-here page"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-053",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.structure.single_glossary"
+        }
+      ],
+      "title": "docs keep a single glossary page"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-054",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.build.mkdocs_excludes_internal_and_drafts"
+        }
+      ],
+      "title": "mkdocs excludes drafts and internals from the reader build"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-055",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.index.section_link_budget"
+        }
+      ],
+      "title": "section indexes stay curated"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-056",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.nav.home_and_start_here_first"
+        }
+      ],
+      "title": "mkdocs nav starts with home and start here"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-057",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.nav.governance_nested_under_development"
+        }
+      ],
+      "title": "governance stays nested under development"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-058",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.artifacts.generated_under_internal_only"
+        }
+      ],
+      "title": "generated docs stay under the internal sink"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-059",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.artifacts.dashboard_links_required_outputs"
+        }
+      ],
+      "title": "docs dashboard links required generated artifacts"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-060",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.artifacts.redirects_integrity"
+        }
+      ],
+      "title": "docs redirects target real pages"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-061",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.schema.registry_validation"
+        }
+      ],
+      "title": "docs registry validates against its schema"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-062",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.schema.sections_validation"
+        }
+      ],
+      "title": "docs sections validate against their schema"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-063",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.navigation.site_map_reader_spine"
+        }
+      ],
+      "title": "site map links the reader spine"
     }
   ],
   "schema_version": 1

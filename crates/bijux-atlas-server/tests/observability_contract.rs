@@ -190,7 +190,8 @@ async fn metrics_endpoint_matches_metrics_contract() {
     }
 
     let endpoint_contract: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(root.join("docs/reference/contracts/schemas/ENDPOINTS.json")).expect("read endpoints"),
+        &std::fs::read(root.join("docs/reference/contracts/schemas/ENDPOINTS.json"))
+            .expect("read endpoints"),
     )
     .expect("parse endpoints");
     let server_sources = [

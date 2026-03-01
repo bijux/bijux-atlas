@@ -35,4 +35,31 @@ docs     DOC-033            no                            must     docs orphan p
 docs     DOC-034            no                            must     docs metadata coverage report is generated deterministically
 docs     DOC-035            no                            must     docs duplication report is generated deterministically
 docs     DOC-036            no                            must     docs contract coverage report is generated deterministically
+docs     DOC-037            no                            must     spine pages require frontmatter
+docs     DOC-038            no                            must     spine page frontmatter values stay normalized
+docs     DOC-039            no                            must     stable spine pages keep complete metadata
+docs     DOC-040            no                            must     reference spine pages declare sources
+docs     DOC-041            no                            must     internal docs keep frontmatter boundary
+docs     DOC-042            no                            must     stable spine pages keep review dates normalized
+docs     DOC-043            no                            must     how-to spine pages declare verification
+docs     DOC-044            no                            must     docs frontmatter schema stays present
+docs     DOC-045            no                            must     reader utility pages keep shared metadata
+docs     DOC-046            no                            must     reader utility pages do not link into internal docs
+docs     DOC-047            no                            must     reader spine pages do not link into internal docs
+docs     DOC-048            no                            must     published docs titles stay unique
+docs     DOC-049            no                            must     published docs pages keep exactly one H1
+docs     DOC-050            no                            must     operator golden paths do not reference internal docs
+docs     DOC-051            no                            must     docs home stays within the line budget
+docs     DOC-052            no                            must     docs keep a single start-here page
+docs     DOC-053            no                            must     docs keep a single glossary page
+docs     DOC-054            no                            must     mkdocs excludes drafts and internals from the reader build
+docs     DOC-055            no                            must     section indexes stay curated
+docs     DOC-056            no                            must     mkdocs nav starts with home and start here
+docs     DOC-057            no                            must     governance stays nested under development
+docs     DOC-058            no                            must     generated docs stay under the internal sink
+docs     DOC-059            no                            must     docs dashboard links required generated artifacts
+docs     DOC-060            no                            must     docs redirects target real pages
+docs     DOC-061            no                            must     docs registry validates against its schema
+docs     DOC-062            no                            must     docs sections validate against their schema
+docs     DOC-063            no                            must     site map links the reader spine
 

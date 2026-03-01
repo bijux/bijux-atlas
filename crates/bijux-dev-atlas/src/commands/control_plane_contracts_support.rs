@@ -25,7 +25,9 @@ pub(super) fn require_skip_policy(skip_contracts: &[String]) -> Result<(), Strin
         && !skip_contracts.is_empty()
         && std::env::var_os("CONTRACTS_ALLOW_SKIP").is_none()
     {
-        return Err("CI contracts runs forbid --skip unless CONTRACTS_ALLOW_SKIP is set".to_string());
+        return Err(
+            "CI contracts runs forbid --skip unless CONTRACTS_ALLOW_SKIP is set".to_string(),
+        );
     }
     Ok(())
 }
@@ -92,7 +94,11 @@ pub(super) fn apply_ci_policy(common: &mut ContractsCommonArgs) {
 }
 
 pub(super) fn validate_selection_patterns(common: &ContractsCommonArgs) -> Result<(), String> {
-    for pattern in common.filter_contract.iter().chain(common.filter_test.iter()) {
+    for pattern in common
+        .filter_contract
+        .iter()
+        .chain(common.filter_test.iter())
+    {
         contracts::validate_wildcard_pattern(pattern)?;
     }
     for pattern in common
@@ -408,7 +414,9 @@ pub(super) fn render_list(
         | ContractsFormatArg::Junit
         | ContractsFormatArg::Github => {
             let mut out = String::new();
-            out.push_str("GROUP    CONTRACT ID        REQUIRED LANES                SEVERITY TITLE\n");
+            out.push_str(
+                "GROUP    CONTRACT ID        REQUIRED LANES                SEVERITY TITLE\n",
+            );
             for row in rows {
                 out.push_str(&format!(
                     "{:<8} {:<18} {:<8} {:<20} {:<8} {}\n",
@@ -448,7 +456,14 @@ pub(super) fn changed_paths_since_merge_base(repo_root: &Path) -> Option<Vec<Str
         return None;
     }
     let diff = std::process::Command::new("git")
-        .args(["-C", &repo_display, "diff", "--name-only", &base_sha, "HEAD"])
+        .args([
+            "-C",
+            &repo_display,
+            "diff",
+            "--name-only",
+            &base_sha,
+            "HEAD",
+        ])
         .output()
         .ok()?;
     if !diff.status.success() {
@@ -591,7 +606,12 @@ pub(super) fn run_one(
         list_only: false,
         artifacts_root: Some(artifacts_root),
     };
-    let result = contracts::run(descriptor.name, descriptor.contracts_fn, repo_root, &options);
+    let result = contracts::run(
+        descriptor.name,
+        descriptor.contracts_fn,
+        repo_root,
+        &options,
+    );
     if let Some(value) = previous_profile {
         std::env::set_var("BIJUX_CONTRACTS_PROFILE", value);
     } else {

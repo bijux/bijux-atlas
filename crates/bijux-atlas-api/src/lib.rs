@@ -224,9 +224,10 @@ mod tests {
             .and_then(serde_json::Value::as_object)
             .expect("openapi paths object");
 
-        let contract: serde_json::Value =
-            serde_json::from_str(include_str!("../../../docs/reference/contracts/schemas/ENDPOINTS.json"))
-                .expect("parse endpoints contract");
+        let contract: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../docs/reference/contracts/schemas/ENDPOINTS.json"
+        ))
+        .expect("parse endpoints contract");
         let expected = contract
             .get("endpoints")
             .and_then(serde_json::Value::as_array)

@@ -229,9 +229,7 @@ fn force_json_make(command: &mut MakeCommand) {
         MakeCommand::VerifyModule(args) => args.common.format = FormatArg::Json,
         MakeCommand::Surface(common)
         | MakeCommand::TargetList(common)
-        | MakeCommand::LintPolicyReport(common) => {
-            common.format = FormatArg::Json
-        }
+        | MakeCommand::LintPolicyReport(common) => common.format = FormatArg::Json,
     }
 }
 
@@ -366,9 +364,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             MakeCommand::VerifyModule(args) => args.common.repo_root = Some(root.clone()),
             MakeCommand::Surface(common)
             | MakeCommand::TargetList(common)
-            | MakeCommand::LintPolicyReport(common) => {
-                common.repo_root = Some(root.clone())
-            }
+            | MakeCommand::LintPolicyReport(common) => common.repo_root = Some(root.clone()),
         },
         Command::Artifacts { command } => match command {
             ArtifactsCommand::Clean(common) => common.repo_root = Some(root.clone()),
