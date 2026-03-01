@@ -317,7 +317,7 @@ fn test_root_043_meta_test_mapping_integrity(ctx: &RunContext) -> TestResult {
 
 fn test_root_044_meta_ordering_stable(ctx: &RunContext) -> TestResult {
     let mut violations = Vec::new();
-    let expected_run_order = "vec![\n                    \"root\",\n                    \"runtime\",\n                    \"control-plane\",\n                    \"docker\",\n                    \"make\",\n                    \"ops\",\n                    \"configs\",\n                    \"docs\",\n                ]";
+    let expected_run_order = "vec![\n                    \"root\",\n                    \"repo\",\n                    \"crates\",\n                    \"runtime\",\n                    \"control-plane\",\n                    \"docker\",\n                    \"make\",\n                    \"ops\",\n                    \"configs\",\n                    \"docs\",\n                ]";
     let command_source = match std::fs::read_to_string(
         ctx.repo_root
             .join("crates/bijux-dev-atlas/src/commands/control_plane_contracts.rs"),

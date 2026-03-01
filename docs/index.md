@@ -21,18 +21,19 @@ Atlas has one onboarding funnel: [Start here](start-here.md).
 
 ## Choose your path
 
-- API user: begin with the [API](api/index.md)
-- Operator: begin with [Operations](operations/index.md)
-- Contributor: begin with [Development](development/index.md)
+- API user: begin with API
+- Operator: begin with Operations
+- Contributor: begin with Development
 
 ## Docs Spine
 
-- Start: [Start Here](start-here.md)
-- Product: [What Is Bijux Atlas](product/what-is-bijux-atlas.md)
+- Start: Start here
+- Control plane: [Control Plane Index](control-plane/index.md)
+- Product: [Product Index](product/index.md)
 - Architecture: [Architecture Index](architecture/index.md)
-- API: [API Surface Index](api/index.md)
-- Ops: [Operations Index](operations/index.md)
-- Dev: [Development Index](development/index.md)
+- API: [API Index](api/index.md)
+- Operations: [Operations Index](operations/index.md)
+- Development: [Development Index](development/index.md)
 - Reference: [Reference Index](reference/index.md)
 
 ## Next steps

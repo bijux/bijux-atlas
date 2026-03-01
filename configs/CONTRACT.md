@@ -53,6 +53,11 @@
 | `CONFIGS-038` | configs domains keep one landing doc | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
 | `CONFIGS-039` | configs top-level domains stay declared | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
 | `CONFIGS-040` | configs domain filenames stay unique | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
+| `CONFIGS-041` | configs owner registry validates against its schema | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
+| `CONFIGS-042` | configs consumer registry validates against its schema | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
+| `CONFIGS-043` | configs schema map validates against its schema | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
+| `CONFIGS-044` | configs root authority files declare owners | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
+| `CONFIGS-045` | configs root authority files declare consumers | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/run/<run_id>/gates/contracts/configs/<profile>/<mode>/configs.json` |
 
 ## Enforcement mapping
 
@@ -98,6 +103,11 @@
 | `CONFIGS-038` | `bijux dev atlas contracts configs --mode static` |
 | `CONFIGS-039` | `bijux dev atlas contracts configs --mode static` |
 | `CONFIGS-040` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-041` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-042` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-043` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-044` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-045` | `bijux dev atlas contracts configs --mode static` |
 
 ## Output artifacts
 
