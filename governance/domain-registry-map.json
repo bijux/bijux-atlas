@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "approved_registry_json_paths": [
+    "docs/_internal/registry/registry.json"
+  ],
+  "domains": {
+    "configs": {
+      "registries": [
+        "configs/inventory/configs.json",
+        "configs/owners/identities.json"
+      ]
+    },
+    "docker": {
+      "registries": [
+        "docker/images.manifest.json",
+        "docker/policy.json"
+      ]
+    },
+    "docs": {
+      "registries": [
+        "docs/_internal/registry/registry.json",
+        "docs/_internal/registry/owners.json"
+      ]
+    },
+    "make": {
+      "registries": [
+        "configs/ops/make-target-registry.json"
+      ]
+    },
+    "ops": {
+      "registries": [
+        "ops/inventory/contracts.json",
+        "ops/inventory/registry.toml"
+      ]
+    }
+  }
+}

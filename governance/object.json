@@ -9,7 +9,8 @@
     "lifecycle",
     "evidence",
     "links",
-    "authority_source"
+    "authority_source",
+    "reviewed_on"
   ],
   "fields": {
     "id": "{domain}:{kind}:{name}",
@@ -19,6 +20,7 @@
     "lifecycle": "stable|experimental|deprecated",
     "evidence": "artifacts/governance/<domain>/...",
     "links": "repository links to authority surfaces",
-    "authority_source": "single source file path"
+    "authority_source": "single source file path",
+    "reviewed_on": "YYYY-MM-DD required for stable objects"
   }
 }

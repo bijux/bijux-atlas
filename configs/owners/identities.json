@@ -13,7 +13,16 @@
     "bijux-atlas-data": {
       "github_handles": ["@bijan"]
     },
+    "bijux-atlas-api": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-cli": {
+      "github_handles": ["@bijan"]
+    },
     "bijux-atlas-docs": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-ingest": {
       "github_handles": ["@bijan"]
     },
     "bijux-atlas-observability": {
@@ -28,6 +37,18 @@
     "bijux-atlas-platform": {
       "github_handles": ["@bijan"]
     },
+    "bijux-atlas-product": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-query": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-security": {
+      "github_handles": ["@bijan"]
+    },
+    "bijux-atlas-store": {
+      "github_handles": ["@bijan"]
+    },
     "docs-governance": {
       "github_handles": ["@bijan"]
     },
@@ -35,6 +56,12 @@
       "github_handles": ["@bijan"]
     },
     "product": {
+      "github_handles": ["@bijan"]
+    },
+    "rust-foundation": {
+      "github_handles": ["@bijan"]
+    },
+    "security": {
       "github_handles": ["@bijan"]
     }
   }

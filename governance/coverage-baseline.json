@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "kind": "governance_coverage_baseline",
+  "coverage_percent_min": 100.0
+}
