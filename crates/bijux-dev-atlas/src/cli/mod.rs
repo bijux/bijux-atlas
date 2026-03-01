@@ -100,6 +100,10 @@ pub enum Command {
         #[command(subcommand)]
         command: ConfigsCommand,
     },
+    Governance {
+        #[command(subcommand)]
+        command: GovernanceCommand,
+    },
     #[command(hide = true)]
     Docker {
         #[command(subcommand)]
@@ -159,6 +163,35 @@ pub enum Command {
 #[derive(Subcommand, Debug)]
 pub enum ReleaseCommand {
     Check(ReleaseCheckArgs),
+}
+
+#[derive(Subcommand, Debug)]
+pub enum GovernanceCommand {
+    List {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Explain {
+        id: String,
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
+    Validate {
+        #[arg(long)]
+        repo_root: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
 }
 
 #[derive(Args, Debug, Clone)]

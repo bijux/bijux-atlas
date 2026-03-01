@@ -5,7 +5,7 @@ use crate::{
     plugin_metadata_json, run_artifacts_command, run_build_command, run_capabilities_command,
     run_check_doctor, run_check_explain, run_check_list, run_check_registry_doctor,
     run_check_repo_doctor, run_check_root_surface_explain, run_check_run, run_check_tree_budgets, run_configs_command,
-    run_contracts_command, run_demo_command, run_docker_command, run_docs_command,
+    run_contracts_command, run_demo_command, run_docker_command, run_docs_command, run_governance_command,
     run_gates_command, run_help_inventory_command, run_make_command, run_ops_command,
     run_policies_command, run_print_boundaries_command, run_version_command, run_workflows_command,
 };
@@ -103,6 +103,22 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
         Command::Contracts { command } => run_contracts_command(cli.quiet, command),
         Command::Demo { command } => run_demo_command(cli.quiet, command),
         Command::Configs { command } => run_configs_command(cli.quiet, command),
+        Command::Governance { command } => match run_governance_command(cli.quiet, command) {
+            Ok((rendered, code)) => {
+                if !cli.quiet && !rendered.is_empty() {
+                    if code == 0 {
+                        let _ = writeln!(io::stdout(), "{rendered}");
+                    } else {
+                        let _ = writeln!(io::stderr(), "{rendered}");
+                    }
+                }
+                code
+            }
+            Err(err) => {
+                let _ = writeln!(io::stderr(), "bijux-dev-atlas governance failed: {err}");
+                1
+            }
+        },
         Command::Docker { command } => run_docker_command(cli.quiet, command),
         Command::Build { command } => run_build_command(cli.quiet, command),
         Command::Policies { command } => run_policies_command(cli.quiet, command),
@@ -411,8 +427,15 @@ pub(crate) fn run_cli(cli: Cli) -> i32 {
                 CheckCommand::RepoDoctor {
                     repo_root,
                     format,
+                    json,
+                    explain,
                     out,
-                } => run_check_repo_doctor(repo_root, format, out),
+                } => run_check_repo_doctor(
+                    repo_root,
+                    if json { FormatArg::Json } else { format },
+                    explain,
+                    out,
+                ),
                 CheckCommand::RootSurfaceExplain {
                     repo_root,
                     format,

@@ -363,6 +363,7 @@ pub(crate) fn run_check_tree_budgets(
 pub(crate) fn run_check_repo_doctor(
     repo_root: Option<PathBuf>,
     format: FormatArg,
+    explain: bool,
     out: Option<PathBuf>,
 ) -> Result<(String, i32), String> {
     let root = resolve_repo_root(repo_root)?;
@@ -501,6 +502,16 @@ pub(crate) fn run_check_repo_doctor(
     let payload = serde_json::json!({
         "schema_version": 1,
         "text": if tree_code == 0 && docs_code == 0 && configs_code == 0 && snapshot_drift_error.is_null() { "repo doctor passed" } else { "repo doctor failed" },
+        "explain": if explain {
+            serde_json::json!({
+                "tree_budgets": "validates depth and breadth budgets across docs/configs/ops",
+                "docs_validate": "validates docs links, nav shape, and docs contracts",
+                "configs_validate": "validates config schema and inventory integrity",
+                "surface_snapshot": "validates committed snapshot parity for root-level governed surfaces"
+            })
+        } else {
+            serde_json::Value::Null
+        },
         "checks": {
             "tree_budgets": tree_payload,
             "docs_validate": docs_payload,
@@ -510,7 +521,19 @@ pub(crate) fn run_check_repo_doctor(
         "surface_snapshot_contract": snapshot_rel.display().to_string(),
         "surface_snapshot_drift_error": snapshot_drift_error
     });
-    let rendered = emit_payload(format, out, &payload)?;
+    let rendered = if explain && matches!(format, FormatArg::Text) {
+        let mut lines = vec![payload["text"].as_str().unwrap_or("repo doctor").to_string()];
+        lines.push("explain:".to_string());
+        lines.push("- tree_budgets: validates depth and breadth budgets".to_string());
+        lines.push("- docs_validate: validates docs links and publication structure".to_string());
+        lines.push("- configs_validate: validates config schemas and inventories".to_string());
+        lines.push("- surface_snapshot: validates committed root surface snapshot parity".to_string());
+        let text = lines.join("\n");
+        write_output_if_requested(out, &text)?;
+        text
+    } else {
+        emit_payload(format, out, &payload)?
+    };
     let code = if tree_code == 0
         && docs_code == 0
         && configs_code == 0

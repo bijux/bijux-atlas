@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "governance_object_schema",
+  "required": [
+    "id",
+    "domain",
+    "owner",
+    "consumers",
+    "lifecycle",
+    "evidence",
+    "links",
+    "authority_source"
+  ],
+  "fields": {
+    "id": "{domain}:{kind}:{name}",
+    "domain": "docs|configs|ops|make|docker|...",
+    "owner": "stable owner identifier",
+    "consumers": "real commands, paths, or services",
+    "lifecycle": "stable|experimental|deprecated",
+    "evidence": "artifacts/governance/<domain>/...",
+    "links": "repository links to authority surfaces",
+    "authority_source": "single source file path"
+  }
+}

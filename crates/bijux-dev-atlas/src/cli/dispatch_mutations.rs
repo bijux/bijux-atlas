@@ -17,6 +17,7 @@ pub(super) fn force_json_output(command: &mut Command) {
         Command::Demo { command } => force_json_demo(command),
         Command::Contracts { command } => force_json_contracts(command),
         Command::Configs { command } => force_json_configs(command),
+        Command::Governance { command } => force_json_governance(command),
         Command::Policies { command } => force_json_policies(command),
         Command::Check { command } => force_json_check(command),
         Command::Validate { format, .. } => *format = FormatArg::Json,
@@ -248,6 +249,14 @@ fn force_json_configs(command: &mut ConfigsCommand) {
         | ConfigsCommand::Compile(common)
         | ConfigsCommand::Diff(common) => common.format = FormatArg::Json,
         ConfigsCommand::Fmt { common, .. } => common.format = FormatArg::Json,
+    }
+}
+
+fn force_json_governance(command: &mut crate::cli::GovernanceCommand) {
+    match command {
+        crate::cli::GovernanceCommand::List { format, .. }
+        | crate::cli::GovernanceCommand::Explain { format, .. }
+        | crate::cli::GovernanceCommand::Validate { format, .. } => *format = FormatArg::Json,
     }
 }
 
@@ -606,6 +615,13 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
             | ConfigsCommand::Compile(common)
             | ConfigsCommand::Diff(common) => common.repo_root = Some(root.clone()),
             ConfigsCommand::Fmt { common, .. } => common.repo_root = Some(root.clone()),
+        },
+        Command::Governance { command } => match command {
+            crate::cli::GovernanceCommand::List { repo_root, .. }
+            | crate::cli::GovernanceCommand::Explain { repo_root, .. }
+            | crate::cli::GovernanceCommand::Validate { repo_root, .. } => {
+                *repo_root = Some(root.clone())
+            }
         },
         Command::Policies { command } => match command {
             PoliciesCommand::List { repo_root, .. }

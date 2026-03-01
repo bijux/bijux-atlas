@@ -12,6 +12,7 @@ pub mod adapters;
 pub(crate) mod commands;
 pub mod contracts;
 pub mod core;
+pub mod governance_objects;
 pub mod model;
 pub mod policies;
 pub(crate) mod ports;

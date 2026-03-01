@@ -104,6 +104,10 @@ pub enum CheckCommand {
         repo_root: Option<PathBuf>,
         #[arg(long, value_enum, default_value_t = FormatArg::Text)]
         format: FormatArg,
+        #[arg(long, default_value_t = false)]
+        json: bool,
+        #[arg(long, default_value_t = false)]
+        explain: bool,
         #[arg(long)]
         out: Option<PathBuf>,
     },
