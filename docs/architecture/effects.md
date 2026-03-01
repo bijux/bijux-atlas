@@ -19,6 +19,12 @@
 - Adapters isolate filesystem, network, and subprocess effects.
 - Port contracts constrain adapter behavior and are validated by tests.
 
+## Effect-gating examples
+
+- Docs build and link checking require explicit subprocess capability in control-plane commands.
+- Docker build and scan flows require explicit subprocess and optional network capability.
+- Helm template and kube validation remain effect-lane only and cannot run in pure static mode.
+
 ## Operational Relevance
 
 Effect boundaries keep incident diagnostics explainable and prevent hidden runtime writes.

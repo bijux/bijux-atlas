@@ -9,6 +9,10 @@
 
 ## Core entities
 
+## Plain English summary
+
+At runtime, Atlas moves from validated ingest output to immutable artifacts, then resolves release metadata through the registry, and finally serves query/API reads from a deterministic serving store.
+
 - Artifact: immutable output from validated ingest inputs.
 - Registry Record: release metadata mapping release IDs and aliases to artifact locations.
 - Serving Store: query-time indexed store over immutable release data.

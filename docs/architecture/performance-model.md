@@ -31,7 +31,13 @@
 - Degradation paths are explicit, measurable, and contract-checked.
 - Observability stays available under degradation for operator triage.
 
-## Latency targets
+## Budgets
+
+- Query and API latency budgets are tracked at p50, p95, and p99.
+- Memory and cache-size budgets are bounded to prevent untracked growth.
+- I/O budgets are validated through load and observability surfaces.
+
+## Degradation modes
 
 - p50 targets are optimized for common filtered query paths.
 - p95 targets are maintained under sustained expected concurrency.

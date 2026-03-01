@@ -13,6 +13,12 @@
 - Registry pointers resolve release IDs to immutable storage locations.
 - Query surfaces read from serving-store structures without mutating published releases.
 
+## Invariants
+
+- Published artifacts are immutable once released.
+- Release aliases must resolve to an unambiguous artifact identity.
+- Serving-store reads must preserve deterministic query semantics.
+
 ## Schema and Index Philosophy
 
 - Schema changes are additive unless an explicit compatibility break is declared.
@@ -27,7 +33,7 @@
 | serving indexes | accelerate filter/sort/cursor query paths |
 | integrity metadata | preserve hash and compatibility checks |
 
-## Migration Philosophy
+## Migration story
 
 - Forward-only migrations are preferred for deterministic release upgrades.
 - Migration failures fail closed before runtime serving proceeds.

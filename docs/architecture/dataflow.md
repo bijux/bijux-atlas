@@ -39,13 +39,13 @@ flowchart LR
 
 See: [API](../api/index.md) and [Reference](../reference/index.md).
 
-## Determinism Guardrails
+## Where determinism is enforced
 
 - Artifact generation canonicalizes and hashes outputs before publication.
 - Registry merges are deterministic across equivalent release inputs.
 - Query and API contracts pin ordering, filtering, and pagination behavior.
 
-## Failure Modes
+## Failure modes and runbook links
 
 - Ingest validation failure blocks publication. See [Dataset corruption runbook](../operations/runbooks/dataset-corruption.md).
 - Registry conflict blocks release alias progression. See [Registry federation runbook](../operations/runbooks/registry-federation.md).

@@ -7,7 +7,7 @@
 - Last verified against: `main@bdd91bc0`
 - Reason to exist: provide one-page crate topology with ownership, stability, inputs, and outputs.
 
-## Dependency graph
+## Crate dependency direction rules
 
 ```mermaid
 flowchart LR
