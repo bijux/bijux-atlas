@@ -3,9 +3,15 @@
   "allow_runtime_compat": [
     "ops/_generated.example/ALLOWLIST.json",
     "ops/_generated.example/INDEX.example.md",
+    "ops/_generated.example/OWNER.md",
+    "ops/_generated.example/README.md",
+    "ops/_generated.example/REQUIRED_FILES.md",
+    "ops/_generated.example/configs-drift-report.json",
     "ops/_generated.example/contract-audit-report.json",
     "ops/_generated.example/contract-coverage-report.json",
     "ops/_generated.example/contract-dependency-graph.json",
+    "ops/_generated.example/contracts-registry-snapshot.json",
+    "ops/_generated.example/contracts-required.json",
     "ops/_generated.example/control-graph-coverage-map.json",
     "ops/_generated.example/control-graph-diff-report.json",
     "ops/_generated.example/control-plane-drift-report.json",
@@ -29,18 +35,28 @@
     "ops/_generated.example/ops-index.json",
     "ops/_generated.example/ops-ledger.json",
     "ops/_generated.example/ops-ledger.md",
+    "ops/_generated.example/ops.coverage.json",
+    "ops/_generated.example/ops.dependency-graph.json",
+    "ops/_generated.example/ops.inventory.json",
+    "ops/_generated.example/ops.json",
+    "ops/_generated.example/ops.maturity.json",
+    "ops/_generated.example/ops.touched-paths.json",
     "ops/_generated.example/orphan-files-report.json",
+    "ops/_generated.example/panics.json",
     "ops/_generated.example/pins.index.example.json",
     "ops/_generated.example/placeholder-dirs-report.json",
     "ops/_generated.example/registry-drift-report.json",
     "ops/_generated.example/registry-graph.json",
+    "ops/_generated.example/repo-integrity-summary.json",
     "ops/_generated.example/report.example.json",
     "ops/_generated.example/report.unified.example.json",
+    "ops/_generated.example/required-files-contract.example.json",
     "ops/_generated.example/schema-coverage-report.json",
     "ops/_generated.example/schema-drift-report.json",
     "ops/_generated.example/scorecard.json",
     "ops/_generated.example/stack-drift-report.json",
     "ops/_generated.example/stack-health-report.example.json",
+    "ops/_generated.example/status.json",
     "ops/_generated.example/what-breaks-if-removed-report.json"
   ],
   "mirrors": [
@@ -133,6 +149,30 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
+      "committed": "ops/_generated.example/OWNER.md",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/README.md",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/REQUIRED_FILES.md",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/configs-drift-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
       "committed": "ops/_generated.example/contract-audit-report.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
@@ -146,6 +186,18 @@
     },
     {
       "committed": "ops/_generated.example/contract-dependency-graph.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/contracts-registry-snapshot.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/contracts-required.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh"
@@ -289,7 +341,49 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
+      "committed": "ops/_generated.example/ops.coverage.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/ops.dependency-graph.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/ops.inventory.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/ops.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/ops.maturity.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/ops.touched-paths.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
       "committed": "ops/_generated.example/orphan-files-report.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/panics.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh"
@@ -319,6 +413,12 @@
       "regenerate": "make ops-generated-example-refresh"
     },
     {
+      "committed": "ops/_generated.example/repo-integrity-summary.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
       "committed": "ops/_generated.example/report.example.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
@@ -326,6 +426,12 @@
     },
     {
       "committed": "ops/_generated.example/report.unified.example.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/required-files-contract.example.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh"
@@ -356,6 +462,12 @@
     },
     {
       "committed": "ops/_generated.example/stack-health-report.example.json",
+      "lifecycle": "curated_evidence",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh"
+    },
+    {
+      "committed": "ops/_generated.example/status.json",
       "lifecycle": "curated_evidence",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh"

@@ -18,6 +18,34 @@
       "generator_version": "schema-v1"
     },
     {
+      "artifact": "ops/_generated.example/OWNER.md",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/README.md",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/REQUIRED_FILES.md",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/configs-drift-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
       "artifact": "ops/_generated.example/contract-audit-report.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
@@ -33,6 +61,20 @@
     },
     {
       "artifact": "ops/_generated.example/contract-dependency-graph.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/contracts-registry-snapshot.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/contracts-required.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
       "lifecycle": "curated_evidence",
@@ -165,6 +207,13 @@
       "generator_version": "schema-v1"
     },
     {
+      "artifact": "ops/_generated.example/ops-contract-index.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
       "artifact": "ops/_generated.example/ops-evidence-bundle.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
@@ -193,7 +242,56 @@
       "generator_version": "schema-v1"
     },
     {
+      "artifact": "ops/_generated.example/ops.coverage.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops.dependency-graph.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops.inventory.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops.maturity.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/ops.touched-paths.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
       "artifact": "ops/_generated.example/orphan-files-report.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/panics.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
       "lifecycle": "curated_evidence",
@@ -228,6 +326,13 @@
       "generator_version": "schema-v1"
     },
     {
+      "artifact": "ops/_generated.example/repo-integrity-summary.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
       "artifact": "ops/_generated.example/report.example.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
@@ -236,6 +341,13 @@
     },
     {
       "artifact": "ops/_generated.example/report.unified.example.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/required-files-contract.example.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
       "lifecycle": "curated_evidence",
@@ -271,6 +383,13 @@
     },
     {
       "artifact": "ops/_generated.example/stack-health-report.example.json",
+      "producer": "bijux dev atlas ops generate",
+      "regenerate": "make ops-generated-example-refresh",
+      "lifecycle": "curated_evidence",
+      "generator_version": "schema-v1"
+    },
+    {
+      "artifact": "ops/_generated.example/status.json",
       "producer": "bijux dev atlas ops generate",
       "regenerate": "make ops-generated-example-refresh",
       "lifecycle": "curated_evidence",

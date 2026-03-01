@@ -11,5 +11,27 @@
     "subprocess",
     "network"
   ],
+  "values": {
+    "base": {
+      "filesystem": "local",
+      "subprocess": "allowed",
+      "network": "restricted"
+    },
+    "ci": {
+      "filesystem": "isolated",
+      "subprocess": "allowed",
+      "network": "restricted"
+    },
+    "dev": {
+      "filesystem": "local",
+      "subprocess": "allowed",
+      "network": "restricted"
+    },
+    "prod": {
+      "filesystem": "read-only-runtime",
+      "subprocess": "restricted",
+      "network": "allowlisted"
+    }
+  },
   "generated_by": "bijux dev atlas ops env"
 }
