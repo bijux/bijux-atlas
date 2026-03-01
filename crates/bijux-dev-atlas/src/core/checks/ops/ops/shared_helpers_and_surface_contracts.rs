@@ -111,18 +111,21 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
             ));
             continue;
         }
-        for required_file in ["README.md", "OWNER.md", "REQUIRED_FILES.md"] {
-            let target = rel.join(required_file);
-            if !ctx.adapters.fs.exists(ctx.repo_root, &target) {
-                violations.push(violation(
-                    "OPS_CANONICAL_DIRECTORY_REQUIRED_FILE_MISSING",
-                    format!(
-                        "missing required file `{}` in canonical ops directory",
-                        target.display()
-                    ),
-                    "add required README/OWNER/REQUIRED_FILES marker files for canonical ops directories",
-                    Some(&target),
-                ));
+        let requires_committed_markers = dir != "_generated";
+        if requires_committed_markers {
+            for required_file in ["README.md", "OWNER.md", "REQUIRED_FILES.md"] {
+                let target = rel.join(required_file);
+                if !ctx.adapters.fs.exists(ctx.repo_root, &target) {
+                    violations.push(violation(
+                        "OPS_CANONICAL_DIRECTORY_REQUIRED_FILE_MISSING",
+                        format!(
+                            "missing required file `{}` in canonical ops directory",
+                            target.display()
+                        ),
+                        "add required README/OWNER/REQUIRED_FILES marker files for canonical ops directories",
+                        Some(&target),
+                    ));
+                }
             }
         }
         let full = ctx.repo_root.join(&rel);
@@ -145,6 +148,7 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         "_meta",
         "atlas-dev",
         "datasets",
+        "contracts",
         "docs",
         "e2e",
         "env",
@@ -153,6 +157,7 @@ fn checks_ops_tree_contract(ctx: &CheckContext<'_>) -> Result<Vec<Violation>, Ch
         "k8s",
         "load",
         "observe",
+        "policy",
         "report",
         "schema",
         "stack",

@@ -143,6 +143,7 @@ fn checks_ops_retired_artifact_path_references_absent(
         "ops/ARTIFACTS.md",
         "ops/CONTRACT.md",
         "ops/_generated.example/control-plane.snapshot.md",
+        "crates/bijux-dev-atlas/src/core/checks/ops/ops/inventory_and_artifact_checks.rs",
     ];
     let scan_roots = [
         Path::new("ops"),

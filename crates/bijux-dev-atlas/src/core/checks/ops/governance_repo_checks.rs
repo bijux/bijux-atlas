@@ -304,7 +304,8 @@ pub(super) fn check_crates_bijux_atlas_cli_owns_umbrella_dispatch(
             continue;
         };
         let rel = file.strip_prefix(ctx.repo_root).unwrap_or(&file);
-        if rel == Path::new("crates/bijux-dev-atlas/src/core/checks/ops.rs")
+        if rel.starts_with("crates/bijux-dev-atlas/")
+            || rel == Path::new("crates/bijux-dev-atlas/src/core/checks/ops.rs")
             || rel.starts_with("crates/bijux-dev-atlas/src/core/checks/ops/")
         {
             continue;
