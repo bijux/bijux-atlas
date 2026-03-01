@@ -1,3 +1,4 @@
+#[test]
 fn contracts_ops_supports_table_format() {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())

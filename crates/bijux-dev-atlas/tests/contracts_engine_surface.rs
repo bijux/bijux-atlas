@@ -4,8 +4,8 @@ use std::path::Path;
 use std::path::PathBuf;
 
 use bijux_dev_atlas::contracts::{
-    lint_contracts, lint_registry_rows, run, Contract, ContractId, Mode, RegistrySnapshotRow, RunContext,
-    RunOptions, TestCase, TestId, TestKind, TestResult,
+    lint_contracts, lint_registry_rows, run, Contract, ContractId, Mode, RegistrySnapshotRow,
+    RunContext, RunOptions, TestCase, TestId, TestKind, TestResult,
 };
 
 fn pass_case(_: &RunContext) -> TestResult {
@@ -25,6 +25,7 @@ fn sample_options() -> RunOptions {
     RunOptions {
         lane: bijux_dev_atlas::contracts::ContractLane::Local,
         mode: Mode::Static,
+        run_id: None,
         required_only: false,
         ci: false,
         color_enabled: true,

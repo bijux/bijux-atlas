@@ -10,7 +10,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
-    let run = (|| -> Result<(String, i32), String> {
+    let run: Result<(String, i32), String> = {
         let started = Instant::now();
         match command {
             MakeCommand::VerifyModule(args) => run_verify_module(args, started),
@@ -18,7 +18,7 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
             MakeCommand::TargetList(common) => run_target_list(common, started),
             MakeCommand::LintPolicyReport(common) => run_lint_policy_report(common, started),
         }
-    })();
+    };
     match run {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
@@ -132,10 +132,7 @@ fn run_lint_policy_report(
     Ok((rendered, 0))
 }
 
-fn run_verify_module(
-    args: MakeVerifyArgs,
-    started: Instant,
-) -> Result<(String, i32), String> {
+fn run_verify_module(args: MakeVerifyArgs, started: Instant) -> Result<(String, i32), String> {
     if !args.common.allow_subprocess {
         return Err("make verify-module requires --allow-subprocess".to_string());
     }
@@ -257,7 +254,8 @@ fn extract_workspace_lints(cargo_toml: &str) -> String {
             in_section = true;
         }
         if in_section {
-            if trimmed.starts_with('[') && trimmed != "[workspace.lints.rust]" && !lines.is_empty() {
+            if trimmed.starts_with('[') && trimmed != "[workspace.lints.rust]" && !lines.is_empty()
+            {
                 break;
             }
             lines.push(line.to_string());
@@ -327,7 +325,11 @@ struct TargetResult {
     log_path: Option<PathBuf>,
 }
 
-fn run_target(repo_root: &Path, target: &str, accept_codes: &[i32]) -> Result<TargetResult, String> {
+fn run_target(
+    repo_root: &Path,
+    target: &str,
+    accept_codes: &[i32],
+) -> Result<TargetResult, String> {
     let status = ProcessCommand::new("make")
         .current_dir(repo_root)
         .args(["--no-print-directory", "-s", target])

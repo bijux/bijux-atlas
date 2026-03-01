@@ -110,6 +110,7 @@ fn run_for_single_test(repo_root: &Path, contract_id: &str, test_id: &str) -> se
         &bijux_dev_atlas::contracts::RunOptions {
             lane: bijux_dev_atlas::contracts::ContractLane::Local,
             mode: bijux_dev_atlas::contracts::Mode::Static,
+            run_id: None,
             required_only: false,
             ci: false,
             color_enabled: false,

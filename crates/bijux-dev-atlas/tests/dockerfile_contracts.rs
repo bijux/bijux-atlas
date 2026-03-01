@@ -173,6 +173,7 @@ fn static_contract_runner_reports_runtime_dockerfile_path_on_failure() {
         &bijux_dev_atlas::contracts::RunOptions {
             lane: bijux_dev_atlas::contracts::ContractLane::Local,
             mode: bijux_dev_atlas::contracts::Mode::Static,
+            run_id: None,
             required_only: false,
             ci: false,
             color_enabled: false,

@@ -113,6 +113,7 @@ fn run_contracts(
         &bijux_dev_atlas::contracts::RunOptions {
             lane: bijux_dev_atlas::contracts::ContractLane::Local,
             mode: bijux_dev_atlas::contracts::Mode::Static,
+            run_id: None,
             required_only: false,
             ci: false,
             color_enabled: false,

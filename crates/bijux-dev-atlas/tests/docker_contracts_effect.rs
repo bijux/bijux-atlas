@@ -14,6 +14,7 @@ fn run_options() -> bijux_dev_atlas::contracts::RunOptions {
     bijux_dev_atlas::contracts::RunOptions {
         lane: bijux_dev_atlas::contracts::ContractLane::Local,
         mode: bijux_dev_atlas::contracts::Mode::Effect,
+        run_id: None,
         required_only: false,
         ci: false,
         color_enabled: true,

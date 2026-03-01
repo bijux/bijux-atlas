@@ -12,12 +12,12 @@ const RUNS_DIR_NAME: &str = "run";
 const RUN_PIN_FILE: &str = ".pin";
 
 pub(crate) fn run_artifacts_command(quiet: bool, command: ArtifactsCommand) -> i32 {
-    let result = (|| -> Result<(String, i32), String> {
+    let result: Result<(String, i32), String> = {
         match command {
             ArtifactsCommand::Clean(common) => run_artifacts_clean(common),
             ArtifactsCommand::Gc(args) => run_artifacts_gc(args),
         }
-    })();
+    };
     match result {
         Ok((rendered, code)) => {
             if !quiet && !rendered.is_empty() {
@@ -119,16 +119,16 @@ fn gc_artifact_runs(runs_root: &Path, keep_last: usize) -> Result<ArtifactGcSumm
         });
     }
     let mut runs = Vec::new();
-    let entries =
-        fs::read_dir(runs_root).map_err(|err| format!("read {} failed: {err}", runs_root.display()))?;
+    let entries = fs::read_dir(runs_root)
+        .map_err(|err| format!("read {} failed: {err}", runs_root.display()))?;
     for entry in entries.flatten() {
         let path = entry.path();
         if !path.is_dir() {
             continue;
         }
         let name = entry.file_name().to_string_lossy().to_string();
-        let metadata = fs::metadata(&path)
-            .map_err(|err| format!("stat {} failed: {err}", path.display()))?;
+        let metadata =
+            fs::metadata(&path).map_err(|err| format!("stat {} failed: {err}", path.display()))?;
         let modified = metadata
             .modified()
             .ok()
@@ -157,7 +157,8 @@ fn gc_artifact_runs(runs_root: &Path, keep_last: usize) -> Result<ArtifactGcSumm
             kept_unpinned += 1;
             continue;
         }
-        fs::remove_dir_all(&path).map_err(|err| format!("remove {} failed: {err}", path.display()))?;
+        fs::remove_dir_all(&path)
+            .map_err(|err| format!("remove {} failed: {err}", path.display()))?;
         summary.deleted_runs.push(name);
     }
 

@@ -470,7 +470,4 @@ fn contracts_docs_writes_report_artifacts() {
     }
 }
 
-#[test]
-#[ignore = "legacy docs contracts topology"]
-
 include!("contracts_surface_effects.rs");

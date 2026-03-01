@@ -16,7 +16,8 @@ fn repo_root() -> PathBuf {
 }
 
 fn read(path: &Path) -> String {
-    fs::read_to_string(path).unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
+    fs::read_to_string(path)
+        .unwrap_or_else(|err| panic!("failed to read {}: {err}", path.display()))
 }
 
 fn load_json(path: &Path) -> Value {
@@ -138,7 +139,10 @@ fn generated_docs_surface_is_committed_and_non_empty() {
         "docs/_internal/generated/make-targets.md",
     ] {
         let path = root.join(rel);
-        assert!(path.is_file(), "missing committed generated docs artifact: {rel}");
+        assert!(
+            path.is_file(),
+            "missing committed generated docs artifact: {rel}"
+        );
         let text = read(&path);
         assert!(
             !text.trim().is_empty(),
@@ -212,8 +216,9 @@ fn deprecated_docs_entries_name_existing_replacements() {
 #[ignore = "legacy docs registry contract pending rewrite"]
 fn policy_docs_cite_contract_ids() {
     let root = repo_root();
-    let contract_id = regex::Regex::new(r"\b(?:ROOT|DOC|CONFIGS|MAKE|OPS|META-REQ)-[A-Z0-9-]*\d{3}\b")
-        .expect("contract id regex");
+    let contract_id =
+        regex::Regex::new(r"\b(?:ROOT|DOC|CONFIGS|MAKE|OPS|META-REQ)-[A-Z0-9-]*\d{3}\b")
+            .expect("contract id regex");
     let mut violations = Vec::new();
 
     let files = [
@@ -224,7 +229,11 @@ fn policy_docs_cite_contract_ids() {
     ];
 
     for path in files {
-        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         let text = read(&path);
         if !contract_id.is_match(&text) {
             violations.push(rel);
@@ -241,15 +250,14 @@ fn policy_docs_cite_contract_ids() {
 #[test]
 fn required_contract_docs_include_lane_map_snippet() {
     let root = repo_root();
-    let lane_snippet = [
-        "- `local`:",
-        "- `pr`:",
-        "- `merge`:",
-        "- `release`:",
-    ];
+    let lane_snippet = ["- `local`:", "- `pr`:", "- `merge`:", "- `release`:"];
     let mut violations = Vec::new();
     for path in markdown_files(&root.join("docs")) {
-        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         let text = read(&path);
         if !text.to_ascii_lowercase().contains("required contracts") {
             continue;
@@ -280,7 +288,10 @@ fn docs_index_stays_navigation_only_and_links_the_spine() {
         "- Dev: [Development Index](development/index.md)",
         "- Reference: [Reference Index](reference/index.md)",
     ] {
-        assert!(text.contains(required), "docs/index.md missing `{required}`");
+        assert!(
+            text.contains(required),
+            "docs/index.md missing `{required}`"
+        );
     }
     for forbidden in [
         "## What",
@@ -311,9 +322,15 @@ fn start_here_is_the_only_top_level_onboarding_page() {
         if path.parent() != Some(root.join("docs").as_path()) {
             continue;
         }
-        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         let text = read(&path).to_ascii_lowercase();
-        if text.contains("only onboarding root") || text.contains("this is the only onboarding root") {
+        if text.contains("only onboarding root")
+            || text.contains("this is the only onboarding root")
+        {
             offenders.push(rel);
         }
     }
@@ -369,19 +386,28 @@ fn concept_registry_generated_outputs_match_the_canonical_yaml() {
     let root = repo_root();
     let generated = load_json(&root.join("docs/_internal/generated/concept-registry.json"));
     let rows = generated["rows"].as_array().expect("rows array");
-    assert!(!rows.is_empty(), "concept registry output must not be empty");
+    assert!(
+        !rows.is_empty(),
+        "concept registry output must not be empty"
+    );
     let markdown = read(&root.join("docs/_internal/generated/concept-registry.md"));
     for row in rows {
         let id = row["id"].as_str().expect("concept id");
         let canonical = row["canonical"].as_str().expect("canonical");
-        assert!(root.join(canonical).exists(), "canonical concept page must exist: {canonical}");
+        assert!(
+            root.join(canonical).exists(),
+            "canonical concept page must exist: {canonical}"
+        );
         assert!(
             markdown.contains(id) && markdown.contains(canonical),
             "generated concept registry page must include `{id}` and `{canonical}`"
         );
         for pointer in row["pointers"].as_array().into_iter().flatten() {
             let pointer = pointer.as_str().expect("pointer");
-            assert!(root.join(pointer).exists(), "concept pointer page must exist: {pointer}");
+            assert!(
+                root.join(pointer).exists(),
+                "concept pointer page must exist: {pointer}"
+            );
         }
     }
 }
@@ -392,13 +418,21 @@ fn docs_front_matter_index_matches_registry_metadata_contract() {
     let root = repo_root();
     let index = load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     let documents = index["documents"].as_array().expect("documents array");
-    assert!(!documents.is_empty(), "front matter index must not be empty");
+    assert!(
+        !documents.is_empty(),
+        "front matter index must not be empty"
+    );
     for row in documents {
         let path = row["path"].as_str().expect("path");
-        assert!(root.join(path).exists(), "front matter path must exist: {path}");
+        assert!(
+            root.join(path).exists(),
+            "front matter path must exist: {path}"
+        );
         for field in ["title", "owner", "area", "stability", "audience"] {
             assert!(
-                row[field].as_str().is_some_and(|value| !value.trim().is_empty()),
+                row[field]
+                    .as_str()
+                    .is_some_and(|value| !value.trim().is_empty()),
                 "front matter index field `{field}` must be non-empty for {path}"
             );
         }
@@ -451,7 +485,11 @@ fn canonical_front_matter_index_covers_every_docs_page() {
         .collect::<BTreeSet<_>>();
     let mut missing = Vec::new();
     for path in markdown_files(&root.join("docs")) {
-        let rel = path.strip_prefix(&root).expect("repo relative").display().to_string();
+        let rel = path
+            .strip_prefix(&root)
+            .expect("repo relative")
+            .display()
+            .to_string();
         if rel.starts_with("docs/_internal/generated/") || rel.starts_with("docs/_drafts/") {
             continue;
         }
@@ -538,17 +576,17 @@ fn docs_schema_index_contract_coverage_points_to_registry_ssot() {
         Some("docs/owners.json"),
         "docs contract coverage must reference docs/owners.json as owners ssot"
     );
-    assert_eq!(
+    assert!(
         coverage["generated_artifacts"]
             .as_array()
             .expect("generated_artifacts")
             .iter()
             .filter_map(|v| v.as_str())
             .any(|p| p == "docs/_internal/governance/metadata/front-matter.index.json"),
-        true,
         "docs contract coverage must include generated front-matter inventory"
     );
-    let front_matter = load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
+    let front_matter =
+        load_json(&root.join("docs/_internal/governance/metadata/front-matter.index.json"));
     assert_eq!(
         front_matter["source"].as_str(),
         Some("docs/registry.json"),
@@ -565,6 +603,5 @@ fn drafts_stay_out_of_main_index_and_nav() {
         "docs/index.md must not link draft pages"
     );
 }
-
 
 include!("support/docs_registry_contracts_governance.inc.rs");
