@@ -33,7 +33,7 @@ In this documentation set, the `Control plane` is the `bijux dev atlas` surface 
 - [How suites work](how-suites-work.md)
 - [Static and effect mode](static-and-effect-mode.md)
 - [Capabilities model](capabilities-model.md)
-- [Reports contract](reports-contract.md)
+- [Reports schema](reports-schema.md)
 - [CI report consumption](ci-report-consumption.md)
 - [Add a check in 30 minutes](add-a-check-in-30-minutes.md)
 - [Add a contract registry in 30 minutes](add-a-contract-registry-in-30-minutes.md)
