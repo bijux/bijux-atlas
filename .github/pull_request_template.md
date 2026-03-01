@@ -32,3 +32,4 @@
 
 ## Docs Checklist (required if touching `docs/**`, `mkdocs.yml`, or command docs output)
 - [ ] Completed `.github/PULL_REQUEST_TEMPLATE/docs-governance.md` checklist items in PR description.
+- [ ] Crate docs rule respected (`README.md` + `CONTRACT.md` in crate root; crate docs checks pass).

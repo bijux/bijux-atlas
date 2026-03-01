@@ -13,3 +13,4 @@ Reason to exist: define merge gates for documentation updates.
 - Links resolve and point to canonical section entrypoints.
 - Change is clearer and more actionable than the previous version.
 - Examples are executable and failure behavior is explicit.
+- Crate docs budget is respected (max 15 markdown files per crate docs/ directory) or an approved exception is linked.

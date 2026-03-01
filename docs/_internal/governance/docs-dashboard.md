@@ -20,6 +20,7 @@
 - [Docs Quality Dashboard](../generated/docs-quality-dashboard.json)
 - [Docs Dependency Graph](../generated/docs-dependency-graph.json)
 - [Docs Contract Coverage](../generated/docs-contract-coverage.json)
+- [Crate docs budgets and violations](../generated/crate-docs-slice.json)
 - [Sitemap](../generated/sitemap.json)
 - [Search Index](../generated/search-index.json)
 
