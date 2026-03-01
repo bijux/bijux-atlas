@@ -33,6 +33,8 @@ Generated from `cargo run -q -p bijux-dev-atlas -- --help`.
 | `docs reference generate` | `cargo run -q -p bijux-dev-atlas -- docs reference generate --allow-subprocess --allow-write --format json` | regenerate reference pages from SSOT inputs |
 | `ci validate` | `cargo run -q -p bijux-dev-atlas -- ci validate --format json` | run CI validation surface locally |
 | `contracts ops` | `cargo run -q -p bijux-dev-atlas -- contracts ops --mode static --format json` | inspect ops contract status |
+| `contracts pr` | `cargo run -q -p bijux-dev-atlas -- contracts pr --format json` | run path-sensitive PR contract selection across domains |
+| `contracts doctor` | `cargo run -q -p bijux-dev-atlas -- contracts doctor --format json` | emit coverage-by-domain and constitution drift report |
 
 ## Output and flags
 

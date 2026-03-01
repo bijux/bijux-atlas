@@ -385,7 +385,7 @@ fn markdown_list_items_under_heading(text: &str, heading: &str) -> Vec<String> {
 fn test_root_045_required_status_checks_workflow_drift(ctx: &RunContext) -> TestResult {
     let contract_id = "ROOT-045";
     let test_id = "root.required_status_checks.workflow_drift";
-    let path = " .github/required-status-checks.md";
+    let path = ".github/required-status-checks.md";
     let actual_text = match read_root_text(ctx, ".github/required-status-checks.md", contract_id, test_id) {
         Ok(value) => value,
         Err(result) => return result,
