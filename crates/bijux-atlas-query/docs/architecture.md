@@ -1,10 +1,16 @@
-# Architecture
+# bijux-atlas-query Architecture
 
-## Architecture
+## Responsibility
 
-Modules:
-- `filters`: request/response/filter types + projection compiler.
-- `cursor`: cursor payload encoding/decoding + signature checks.
-- `planner`: classification, limits validation, work estimation.
-- `db`: SQL generation, row decode bridge, explain/index checks.
-- `limits`: policy-driven query limit settings.
+Pure query planning/execution contract over SQLite-backed datasets.
+
+## Boundaries
+
+- No runtime server orchestration.
+- No ingest pipeline logic.
+- No async/network runtime dependencies (`tokio/reqwest/axum/hyper`).
+
+## Effects
+
+- Deterministic SQL building and cursor/filter semantics.
+- SQLite query execution through passed connections.

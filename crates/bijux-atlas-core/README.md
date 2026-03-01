@@ -24,4 +24,4 @@ This crate defines low-level contracts. Public API changes require deliberate ve
 
 ## Architecture
 
-See `docs/ARCHITECTURE.md`.
+See `docs/architecture.md`.

@@ -10,11 +10,11 @@ Primary domain objects:
 Docs:
 - [Architecture](architecture.md)
 - [Public API](public-api.md)
-- Ingest contract reference: [`../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md`](../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md)
+- Ingest contract reference: [`../../bijux-atlas-ingest/docs/ingest-contract.md`](../../bijux-atlas-ingest/docs/ingest-contract.md)
 - [Schema stability rules](SCHEMA_STABILITY.md)
 - [Contract compatibility](CONTRACT_COMPATIBILITY.md)
 - [Schema evolution notes](SCHEMA_EVOLUTION_NOTES.md)
-- [Purity policy](PURITY.md)
+- [Purity policy](purity.md)
 - [Effects policy](effects.md)
 - [Strict ordering rules](ORDERING_RULES.md)
 - [Optional fields policy](OPTIONAL_FIELDS.md)

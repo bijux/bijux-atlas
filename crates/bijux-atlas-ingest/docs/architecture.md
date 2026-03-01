@@ -1,10 +1,9 @@
-# Architecture
+# ARCHITECTURE (bijux-atlas-ingest)
 
-## Architecture
+- Owner: bijux-atlas-ingest
+- Stability: stable
 
-Modules:
-- `gff3`: streaming parse and strict attribute decoding.
-- `fai`: contig length loading and validation.
-- `extract`: gene/transcript extraction and anomaly classification.
-- `sqlite`: deterministic DB materialization and indexes.
-- `manifest`: manifest/QC report construction.
+This crate-level governance page points to canonical crate docs and root docs.
+
+- Crate docs index: crates/bijux-atlas-ingest/docs/index.md
+- Central docs index: docs/index.md

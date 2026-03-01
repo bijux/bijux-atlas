@@ -11,7 +11,7 @@ Deterministic API contract crate for `bijux-atlas`.
 
 ## Stability
 - Public entrypoints: `openapi_v1_spec`, request parsers, wire helpers.
-- Compatibility and policy promises: [docs/API_STABILITY.md](docs/API_STABILITY.md).
+- Compatibility and policy promises: [docs/api-stability.md](docs/api-stability.md).
 
 ## OpenAPI Workflow
 - Generator: `cargo run -p bijux-atlas-api --bin atlas-openapi -- --out <path>`.
@@ -24,4 +24,4 @@ Deterministic API contract crate for `bijux-atlas`.
 - Do not emit non-deterministic OpenAPI output.
 
 ## Documentation
-- [docs/INDEX.md](docs/INDEX.md)
+- [docs/index.md](docs/index.md)

@@ -1,10 +1,9 @@
-# Architecture
+# ARCHITECTURE (bijux-atlas-policies)
 
-## Architecture
+- Owner: bijux-atlas-policies
+- Stability: stable
 
-`bijux-atlas-policies` provides policy schema types, validation, and structural limits.
+This crate-level governance page points to canonical crate docs and root docs.
 
-Modules:
-- `schema`: typed policy config model.
-- `validate`: loading, strict checks, schema transition rules.
-- `limits`: structural constants and schema bump limits.
+- Crate docs index: crates/bijux-atlas-policies/docs/index.md
+- Central docs index: docs/index.md

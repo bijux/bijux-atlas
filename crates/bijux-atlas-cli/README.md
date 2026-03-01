@@ -12,9 +12,9 @@ End-user Atlas CLI for dataset/catalog/ingest/query contract workflows.
   - `bijux-atlas openapi generate --out configs/openapi/v1/openapi.generated.json`
 
 ## Command Surface
-- Stable command map: [docs/CLI_COMMAND_LIST.md](docs/CLI_COMMAND_LIST.md)
-- UX and output contract: [docs/CLI_UX_CONTRACT.md](docs/CLI_UX_CONTRACT.md)
-- Exit codes: [docs/EXIT_CODES.md](docs/EXIT_CODES.md)
+- Stable command map: [docs/cli-command-list.md](docs/cli-command-list.md)
+- UX and output contract: [docs/cli-ux-contract.md](docs/cli-ux-contract.md)
+- Exit codes: [docs/exit-codes.md](docs/exit-codes.md)
 
 ## Stability Guarantees
 - Global flags and noun-first product commands are stable.
@@ -22,4 +22,4 @@ End-user Atlas CLI for dataset/catalog/ingest/query contract workflows.
 - Error payloads and exit code classes are stable contracts.
 
 ## Docs
-- [docs/INDEX.md](docs/INDEX.md)
+- [docs/index.md](docs/index.md)

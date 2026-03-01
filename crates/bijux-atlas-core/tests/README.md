@@ -5,7 +5,7 @@ What belongs here:
 - Integration tests for public behavior of this crate.
 - Policy/guardrail tests relevant to this crate boundary.
 - Determinism tests for canonical bytes, hashes, and stable ordering.
-- Export-surface contract checks against `docs/PUBLIC_API.md`.
+- Export-surface contract checks against `docs/public-api.md`.
 
 What does not belong here:
 

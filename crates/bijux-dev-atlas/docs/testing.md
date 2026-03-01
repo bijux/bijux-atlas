@@ -34,5 +34,5 @@ Reference for running dev-atlas tests and interpreting the main test lanes.
 
 ## Related
 
-- Bench commands and expectations: `crates/bijux-dev-atlas/BENCHMARKS.md`
+- Bench commands and expectations: `crates/bijux-dev-atlas/docs/benchmarks.md`
 - Behavior contract: `crates/bijux-dev-atlas/CONTRACT.md`

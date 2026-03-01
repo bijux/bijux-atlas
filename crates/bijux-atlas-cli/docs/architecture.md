@@ -1,6 +1,9 @@
-# Architecture
+# ARCHITECTURE (bijux-atlas-cli)
 
-## Architecture
+- Owner: bijux-atlas-cli
+- Stability: stable
 
-- This crate is part of the Atlas boundary-controlled workspace.
-- Surface is intentionally minimal and internal modules remain internal-only unless promoted in `public-api.md`.
+This crate-level governance page points to canonical crate docs and root docs.
+
+- Crate docs index: crates/bijux-atlas-cli/docs/index.md
+- Central docs index: docs/index.md

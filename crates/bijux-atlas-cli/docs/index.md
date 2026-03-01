@@ -7,7 +7,7 @@
 - [CLI Command List](CLI_COMMAND_LIST.md)
 - [CLI UX Contract](CLI_UX_CONTRACT.md)
 - [Exit Codes](EXIT_CODES.md)
-- Ingest contract reference: [`../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md`](../../bijux-atlas-ingest/docs/INGEST_CONTRACT.md)
+- Ingest contract reference: [`../../bijux-atlas-ingest/docs/ingest-contract.md`](../../bijux-atlas-ingest/docs/ingest-contract.md)
 - [Public API](public-api.md)
 - [Tests](../tests/)
 - [Benches](../benches/)

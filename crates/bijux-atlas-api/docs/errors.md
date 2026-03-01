@@ -1,13 +1,9 @@
-# API Errors
+# ERROR_TAXONOMY (bijux-atlas-api)
 
-`ApiError` schema is fixed:
+- Owner: bijux-atlas-api
+- Stability: stable
 
-- `code`: stable machine code from SSOT error registry.
-- `message`: human-readable summary.
-- `details`: stable object payload for diagnostics.
+Error classes and stable identifiers for this crate are documented in crate docs and source error modules.
 
-Unknown fields are rejected for serialized/deserialized API errors.
-
-Error code source of truth:
-- `docs/reference/contracts/schemas/ERROR_CODES.json`
-- generated runtime mapping: `src/generated/error_codes.rs`
+- Crate docs index: crates/bijux-atlas-api/docs/index.md
+- Central docs index: docs/index.md

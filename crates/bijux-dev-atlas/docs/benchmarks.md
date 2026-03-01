@@ -32,5 +32,5 @@ Reference for benchmark execution and isolation expectations for the dev control
 
 ## Related
 
-- Architecture invariants: `crates/bijux-dev-atlas/ARCHITECTURE.md`
-- Test lanes and nextest usage: `crates/bijux-dev-atlas/TESTING.md`
+- Architecture invariants: `crates/bijux-dev-atlas/docs/architecture.md`
+- Test lanes and nextest usage: `crates/bijux-dev-atlas/docs/testing.md`

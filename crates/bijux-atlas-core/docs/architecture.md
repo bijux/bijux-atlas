@@ -1,35 +1,15 @@
-# bijux-atlas-core Architecture
+# ARCHITECTURE (bijux-atlas-core)
 
-## Purpose
+- Owner: bijux-atlas-core
+- Stability: stable
 
-`bijux-atlas-core` is the deterministic base crate for cross-crate contracts and pure transforms.
+This crate-level governance page points to canonical crate docs and root docs.
 
-## Pure domain surface
+- Crate docs index: crates/bijux-atlas-core/docs/index.md
+- Central docs index: docs/index.md
 
-Pure logic lives under `src/domain` and `src/types`.
+## Invariants
 
-- `domain::canonical`: stable hash and canonical JSON normalization.
-- `domain::config`: deterministic config/cache path resolution from environment.
-- `types`: invariant value objects (`DatasetId`, `ShardId`, `RunId`).
-
-Pure domain code must not perform filesystem, network, process, or wall-clock operations.
-
-## Port surface
-
-Effect contracts live in `src/ports`.
-
-- `FsPort`
-- `ClockPort`
-- `NetPort`
-- `ProcessPort`
-
-Ports define capability boundaries only. Runtime adapters belong in other crates.
-
-## Stable public API
-
-Stable exports are listed in `docs/public-api.md`.
-
-Guidelines:
-- Add public items only with matching docs and tests.
-- Keep `Error` and `Result<T>` as the canonical fallible surface.
-- Use invariant newtypes instead of unconstrained primitive strings.
+- Domain identifiers are typed and deterministic.
+- Canonical hashing and serialization preserve stable output.
+- Public error and result contracts remain explicit and machine-readable.

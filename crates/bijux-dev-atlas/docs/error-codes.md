@@ -23,8 +23,8 @@ authoritative contracts.
 
 ## Exit Code Authority
 
-- Canonical exit code behavior and taxonomy: `crates/bijux-dev-atlas/ERROR_TAXONOMY.md`
-- Human-facing examples: `crates/bijux-dev-atlas/EXAMPLES.md`
+- Canonical exit code behavior and taxonomy: `crates/bijux-dev-atlas/docs/errors.md`
+- Human-facing examples: `crates/bijux-dev-atlas/docs/examples.md`
 - Command contract reference: `crates/bijux-dev-atlas/CONTRACT.md`
 
 ## Notes

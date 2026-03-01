@@ -31,6 +31,6 @@ Top-level models provide pure `validate()` methods. They must not perform I/O.
 
 ## Docs
 
-- `docs/CONTRACT_COMPATIBILITY.md`
-- `docs/SCHEMA_STABILITY.md`
+- `docs/contract-compatibility.md`
+- `docs/schema-stability.md`
 - `docs/public-api.md`

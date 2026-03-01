@@ -27,7 +27,7 @@ Deterministic query parsing, planning, and execution for atlas gene/transcript r
 
 ## Docs
 
-- `docs/QUERY_LANGUAGE_SPEC.md`
-- `docs/ORDERING.md`
-- `docs/PAGINATION.md`
-- `docs/COST_ESTIMATOR.md`
+- `docs/query-language-spec.md`
+- `docs/ordering.md`
+- `docs/pagination.md`
+- `docs/cost-estimator.md`

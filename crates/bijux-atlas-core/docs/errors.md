@@ -1,18 +1,9 @@
-# Error Contract
+# ERROR_TAXONOMY (bijux-atlas-core)
 
-Shared machine error schema:
-- `code`: stable machine error code string.
-- `message`: human-readable summary.
-- `details`: deterministic key-value map (`BTreeMap`).
+- Owner: bijux-atlas-core
+- Stability: stable
 
-Exit-code mapping:
-- `0` success
-- `2` usage
-- `3` validation
-- `4` dependency failure
-- `10` internal
+Error classes and stable identifiers for this crate are documented in crate docs and source error modules.
 
-Rules:
-- Error `code` values are stable API once released.
-- `Display` output must remain concise and deterministic.
-- Unknown fields are rejected during deserialization (`deny_unknown_fields`).
+- Crate docs index: crates/bijux-atlas-core/docs/index.md
+- Central docs index: docs/index.md

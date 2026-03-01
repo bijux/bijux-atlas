@@ -46,5 +46,5 @@ Forbidden dependency examples:
 
 ## References
 
-- Crate docs index: `crates/bijux-dev-atlas/docs/INDEX.md`
+- Crate docs index: `crates/bijux-dev-atlas/docs/index.md`
 - Repository docs index: `docs/index.md`

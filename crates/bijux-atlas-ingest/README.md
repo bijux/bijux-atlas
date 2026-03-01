@@ -27,6 +27,6 @@ Ingestion pipeline for converting GFF3/FASTA/FAI inputs into atlas artifacts.
 
 ## Reference Docs
 
-- `docs/INGEST_CONTRACT.md`
-- `docs/ARTIFACT_OUTPUT_CONTRACT.md`
-- `docs/DETERMINISM.md`
+- `docs/ingest-contract.md`
+- `docs/artifact-output-contract.md`
+- `docs/determinism.md`

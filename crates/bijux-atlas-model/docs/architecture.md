@@ -1,11 +1,9 @@
-# Architecture
+# ARCHITECTURE (bijux-atlas-model)
 
-## Architecture
+- Owner: bijux-atlas-model
+- Stability: stable
 
-`bijux-atlas-model` defines domain and contract types used by ingest/store/query/api layers.
+This crate-level governance page points to canonical crate docs and root docs.
 
-Module responsibilities:
-- `dataset`: dataset identifiers and strict canonicalization.
-- `gene`: gene identifiers and gene-level policies.
-- `manifest`: artifact manifest/catalog contracts.
-- `policy`: cross-domain strictness and identifier selection policy.
+- Crate docs index: crates/bijux-atlas-model/docs/index.md
+- Central docs index: docs/index.md

@@ -219,7 +219,7 @@ pub(super) fn check_docs_index_reachability_ledger(
             violations.push(violation(
                 "DOCS_INDEX_REACHABILITY_MISSING",
                 format!("docs markdown `{rel}` is not linked from any docs/**/INDEX.md"),
-                "link the page from a canonical INDEX.md or remove it",
+                "link the page from a canonical docs index page or remove it",
                 Some(Path::new(&rel)),
             ));
         }

@@ -1,6 +1,9 @@
-# Versioning
+# VERSIONING (bijux-atlas-api)
 
-- `v1` is additive-only for fields and endpoints.
-- Existing response fields are stable and must not change semantics.
-- Error `code` values are stable machine contracts.
-- Breaking changes require introducing `v2` path namespace.
+- Owner: bijux-atlas-api
+- Stability: stable
+
+This crate-level governance page points to canonical crate docs and root docs.
+
+- Crate docs index: crates/bijux-atlas-api/docs/index.md
+- Central docs index: docs/index.md

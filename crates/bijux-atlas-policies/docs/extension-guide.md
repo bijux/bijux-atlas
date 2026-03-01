@@ -5,5 +5,5 @@
 
 Extension guidance for adding policies, identifiers, and validation rules.
 
-- Crate docs index: crates/bijux-atlas-policies/docs/INDEX.md
+- Crate docs index: crates/bijux-atlas-policies/docs/index.md
 - Central docs index: docs/index.md

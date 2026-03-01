@@ -28,7 +28,7 @@ Every violation includes:
 
 ## Docs
 
-- `docs/POLICY_AUTHORING_GUIDE.md`
-- `docs/SCHEMA.md`
-- `docs/CONFIG_SCHEMA.md`
+- `docs/policy-authoring-guide.md`
+- `docs/schema.md`
+- `docs/config-schema.md`
 - `docs/public-api.md`

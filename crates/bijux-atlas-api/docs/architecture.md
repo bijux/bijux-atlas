@@ -1,7 +1,9 @@
-# Architecture
+# ARCHITECTURE (bijux-atlas-api)
 
-## Architecture
+- Owner: bijux-atlas-api
+- Stability: stable
 
-`bijux-atlas-api` is the wire-contract crate for Atlas v1. It defines request parsing, response envelope types, error contracts, and OpenAPI schema generation.
+This crate-level governance page points to canonical crate docs and root docs.
 
-Business logic, storage access, query execution, and networking runtime concerns are outside this crate.
+- Crate docs index: crates/bijux-atlas-api/docs/index.md
+- Central docs index: docs/index.md

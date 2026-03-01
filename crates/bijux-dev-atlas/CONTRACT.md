@@ -8,7 +8,7 @@
 `bijux-dev-atlas` is the repository governance control-plane behind `bijux dev atlas ...`.
 
 This file captures stable behavior expectations for command orchestration. Internal structure and
-layering rules are documented in `crates/bijux-dev-atlas/ARCHITECTURE.md`.
+layering rules are documented in `crates/bijux-dev-atlas/docs/architecture.md`.
 
 ## Behavioral Contract
 
@@ -27,8 +27,8 @@ layering rules are documented in `crates/bijux-dev-atlas/ARCHITECTURE.md`.
 
 ## Related Contracts
 
-- Architecture / layering: `crates/bijux-dev-atlas/ARCHITECTURE.md`
-- Command surface: `crates/bijux-dev-atlas/COMMAND_SURFACE.md`
-- Error taxonomy: `crates/bijux-dev-atlas/ERROR_TAXONOMY.md`
-- Quick error map: `crates/bijux-dev-atlas/ERRORS.md`
-- Usage examples: `crates/bijux-dev-atlas/EXAMPLES.md`
+- Architecture / layering: `crates/bijux-dev-atlas/docs/architecture.md`
+- Command surface: `crates/bijux-dev-atlas/docs/command-surface.md`
+- Error taxonomy: `crates/bijux-dev-atlas/docs/errors.md`
+- Quick error map: `crates/bijux-dev-atlas/docs/errors.md`
+- Usage examples: `crates/bijux-dev-atlas/docs/examples.md`

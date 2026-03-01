@@ -52,7 +52,7 @@ Plugins support shared top-level flags:
 ## Determinism
 
 - Completion output must be deterministic.
-- Command-surface drift is gated by CI using `docs/CLI_COMMAND_LIST.md`.
+- Command-surface drift is gated by CI using `docs/cli-command-list.md`.
 
 ## What
 

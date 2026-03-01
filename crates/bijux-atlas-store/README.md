@@ -35,5 +35,5 @@ Internal implementation details in backend modules may evolve.
 
 ## References
 
-- Backend feature matrix: `docs/BACKEND_FEATURE_MATRIX.md`
-- Attack surface budget: `docs/ATTACK_SURFACE_BUDGET.md`
+- Backend feature matrix: `docs/backend-feature-matrix.md`
+- Attack surface budget: `docs/attack-surface-budget.md`

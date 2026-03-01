@@ -1,14 +1,15 @@
-# Architecture
+# bijux-atlas-store Architecture
 
-## Architecture
+## Responsibility
 
-Modules:
-- `paths`: deterministic artifact and lock paths.
-- `manifest`: lock/checksum verification primitives.
-- `catalog`: strict catalog validation + canonicalization.
-- `backend`: trait and backend implementations.
+Artifact/store contract surface: catalog/manifests/artifact path and integrity primitives.
 
-Backends:
-- `LocalFsStore`
-- `HttpReadonlyStore`
-- `S3LikeStore`
+## Boundaries
+
+- No HTTP runtime orchestration.
+- No ingest parsing/transformation logic.
+
+## Effects
+
+- IO/FS/Net only through explicit backend interfaces.
+- No hidden global runtime behavior.

@@ -5,5 +5,5 @@
 
 Command surface contract and stable subcommand map.
 
-- Crate docs index: crates/bijux-atlas-cli/docs/INDEX.md
+- Crate docs index: crates/bijux-atlas-cli/docs/index.md
 - Central docs index: docs/index.md
