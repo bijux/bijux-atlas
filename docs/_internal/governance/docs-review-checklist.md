@@ -14,3 +14,11 @@ Reason to exist: define merge gates for documentation updates.
 - Change is clearer and more actionable than the previous version.
 - Examples are executable and failure behavior is explicit.
 - Crate docs budget is respected (max 15 markdown files per crate docs/ directory) or an approved exception is linked.
+
+## Stable Page Promotion Checklist
+
+- Frontmatter includes `stability: stable`, `owner`, `audience`, and `last_reviewed`.
+- The page has at least one concrete example (`Example` section or runnable command block).
+- Diagram-heavy pages include an explicit text explanation section next to each diagram.
+- External links are allowlisted with owner and expiry metadata.
+- Reader pages do not expose internal tooling paths such as `docs/_internal`, `docs/_generated`, or `ops/_generated`.

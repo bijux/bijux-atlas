@@ -33,6 +33,7 @@
 - Urgent factual corrections: within `24h`.
 - Normal corrections: within `72h`.
 - Stable page freshness review: within `180` days.
+- Quarterly prune budget review: each quarter must produce a docs shrink report and duplicate-topic report with explicit follow-up owners.
 
 ## Next steps
 
