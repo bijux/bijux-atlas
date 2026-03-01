@@ -83,7 +83,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/INDEX.md",
+        "path": "crates/bijux-atlas-api/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -106,7 +106,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/OPENAPI.md",
+        "path": "crates/bijux-atlas-api/docs/openapi.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -129,7 +129,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-api/docs/PATTERNS.md",
+        "path": "crates/bijux-atlas-api/docs/patterns.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -453,7 +453,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-cli/docs/INDEX.md",
+        "path": "crates/bijux-atlas-cli/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -616,7 +616,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/CANONICALIZATION.md",
+        "path": "crates/bijux-atlas-core/docs/canonicalization.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -685,7 +685,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/FEATURES.md",
+        "path": "crates/bijux-atlas-core/docs/features.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -708,7 +708,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/FORMATTING.md",
+        "path": "crates/bijux-atlas-core/docs/formatting.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -731,7 +731,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/INDEX.md",
+        "path": "crates/bijux-atlas-core/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -754,7 +754,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/PATTERNS.md",
+        "path": "crates/bijux-atlas-core/docs/patterns.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -777,7 +777,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-core/docs/PURITY.md",
+        "path": "crates/bijux-atlas-core/docs/purity.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -963,7 +963,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/DETERMINISM.md",
+        "path": "crates/bijux-atlas-ingest/docs/determinism.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1009,7 +1009,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/INDEX.md",
+        "path": "crates/bijux-atlas-ingest/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1054,7 +1054,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-ingest/docs/QC.md",
+        "path": "crates/bijux-atlas-ingest/docs/qc.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1262,7 +1262,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/INDEX.md",
+        "path": "crates/bijux-atlas-model/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1354,7 +1354,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-model/docs/PURITY.md",
+        "path": "crates/bijux-atlas-model/docs/purity.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1586,7 +1586,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/EVOLUTION.md",
+        "path": "crates/bijux-atlas-policies/docs/evolution.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1609,7 +1609,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-policies/docs/INDEX.md",
+        "path": "crates/bijux-atlas-policies/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1887,7 +1887,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/INDEX.md",
+        "path": "crates/bijux-atlas-query/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1910,7 +1910,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/ORDERING.md",
+        "path": "crates/bijux-atlas-query/docs/ordering.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1933,7 +1933,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/PAGINATION.md",
+        "path": "crates/bijux-atlas-query/docs/pagination.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -1956,7 +1956,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-query/docs/PERF.md",
+        "path": "crates/bijux-atlas-query/docs/perf.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2142,7 +2142,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/CACHING.md",
+        "path": "crates/bijux-atlas-server/docs/caching.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2211,7 +2211,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/INDEX.md",
+        "path": "crates/bijux-atlas-server/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2234,7 +2234,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/KUBERNETES.md",
+        "path": "crates/bijux-atlas-server/docs/kubernetes.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2326,7 +2326,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/RUNTIME.md",
+        "path": "crates/bijux-atlas-server/docs/runtime.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2349,7 +2349,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-server/docs/TELEMETRY.md",
+        "path": "crates/bijux-atlas-server/docs/telemetry.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2675,7 +2675,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/CACHING.md",
+        "path": "crates/bijux-atlas-store/docs/caching.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2721,7 +2721,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/INDEX.md",
+        "path": "crates/bijux-atlas-store/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2744,7 +2744,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-atlas-store/docs/ROLLBACK.md",
+        "path": "crates/bijux-atlas-store/docs/rollback.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2953,7 +2953,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/ARTIFACTS.md",
+        "path": "crates/bijux-dev-atlas/docs/artifacts.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -2999,7 +2999,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "docs-governance",
-        "path": "crates/bijux-dev-atlas/docs/COMMANDS.md",
+        "path": "crates/bijux-dev-atlas/docs/commands.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [
@@ -3137,7 +3137,7 @@
         "last_reviewed": "2026-02-25",
         "lifecycle": "stable",
         "owner": "bijux-dev-atlas",
-        "path": "crates/bijux-dev-atlas/docs/INDEX.md",
+        "path": "crates/bijux-dev-atlas/docs/index.md",
         "review_due": "2026-08-24",
         "stability": "stable",
         "tags": [

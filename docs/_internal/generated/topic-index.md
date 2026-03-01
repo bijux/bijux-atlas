@@ -6,72 +6,72 @@
 | `API_CONTRACT` | `crates/bijux-atlas-api/docs/API_CONTRACT.md` |
 | `API_STABILITY` | `crates/bijux-atlas-api/docs/API_STABILITY.md` |
 | `ARCHITECTURE` | `crates/bijux-atlas-api/ARCHITECTURE.md, crates/bijux-atlas-cli/ARCHITECTURE.md, crates/bijux-atlas-core/ARCHITECTURE.md, crates/bijux-atlas-ingest/ARCHITECTURE.md, crates/bijux-atlas-model/ARCHITECTURE.md, crates/bijux-atlas-policies/ARCHITECTURE.md, crates/bijux-atlas-query/ARCHITECTURE.md, crates/bijux-atlas-server/ARCHITECTURE.md, crates/bijux-atlas-server/src/cache/ARCHITECTURE.md, crates/bijux-atlas-store/ARCHITECTURE.md, crates/bijux-dev-atlas/ARCHITECTURE.md` |
-| `ARTIFACTS` | `crates/bijux-dev-atlas/docs/ARTIFACTS.md` |
+| `ARTIFACTS` | `crates/bijux-dev-atlas/docs/artifacts.md` |
 | `ARTIFACT_CONTRACT` | `crates/bijux-atlas-store/docs/ARTIFACT_CONTRACT.md` |
 | `ARTIFACT_OUTPUT_CONTRACT` | `crates/bijux-atlas-ingest/docs/ARTIFACT_OUTPUT_CONTRACT.md` |
 | `ATTACK_SURFACE_BUDGET` | `crates/bijux-atlas-store/docs/ATTACK_SURFACE_BUDGET.md` |
 | `BACKENDS_AND_GUARANTEES` | `crates/bijux-atlas-store/docs/BACKENDS_AND_GUARANTEES.md` |
 | `BACKEND_FEATURE_MATRIX` | `crates/bijux-atlas-store/docs/BACKEND_FEATURE_MATRIX.md` |
 | `BENCHMARKS` | `crates/bijux-atlas-api/BENCHMARKS.md, crates/bijux-atlas-cli/BENCHMARKS.md, crates/bijux-atlas-core/BENCHMARKS.md, crates/bijux-atlas-ingest/BENCHMARKS.md, crates/bijux-atlas-model/BENCHMARKS.md, crates/bijux-atlas-policies/BENCHMARKS.md, crates/bijux-atlas-query/BENCHMARKS.md, crates/bijux-atlas-server/BENCHMARKS.md, crates/bijux-atlas-store/BENCHMARKS.md, crates/bijux-dev-atlas/BENCHMARKS.md` |
-| `CACHING` | `crates/bijux-atlas-server/docs/CACHING.md, crates/bijux-atlas-store/docs/CACHING.md` |
-| `CANONICALIZATION` | `crates/bijux-atlas-core/docs/CANONICALIZATION.md` |
+| `CACHING` | `crates/bijux-atlas-server/docs/caching.md, crates/bijux-atlas-store/docs/caching.md` |
+| `CANONICALIZATION` | `crates/bijux-atlas-core/docs/canonicalization.md` |
 | `CARGO_DENY_NOTES` | `crates/bijux-atlas-core/docs/CARGO_DENY_NOTES.md` |
 | `CHANGELOG` | `CHANGELOG.md` |
 | `CHANGE_CHECKLIST` | `crates/bijux-atlas-policies/docs/CHANGE_CHECKLIST.md` |
 | `CLI_COMMAND_LIST` | `crates/bijux-atlas-cli/docs/CLI_COMMAND_LIST.md, crates/bijux-dev-atlas/docs/CLI_COMMAND_LIST.md` |
 | `CLI_UX_CONTRACT` | `crates/bijux-atlas-cli/docs/CLI_UX_CONTRACT.md` |
-| `COMMANDS` | `crates/bijux-dev-atlas/docs/COMMANDS.md` |
+| `COMMANDS` | `crates/bijux-dev-atlas/docs/commands.md` |
 | `COMMAND_SURFACE` | `crates/bijux-atlas-cli/COMMAND_SURFACE.md, crates/bijux-dev-atlas/COMMAND_SURFACE.md` |
 | `COMPAT_BIJUX_DNA` | `crates/bijux-atlas-model/docs/COMPAT_BIJUX_DNA.md` |
 | `CONFIGS_COMMAND_LIST` | `crates/bijux-dev-atlas/docs/CONFIGS_COMMAND_LIST.md` |
 | `CONFIG_DISCOVERY` | `crates/bijux-atlas-cli/docs/CONFIG_DISCOVERY.md` |
 | `CONFIG_SCHEMA` | `crates/bijux-atlas-policies/docs/CONFIG_SCHEMA.md` |
-| `CONTRACT` | `CONTRACT.md, configs/CONTRACT.md, crates/bijux-atlas-api/CONTRACT.md, crates/bijux-atlas-cli/CONTRACT.md, crates/bijux-atlas-core/CONTRACT.md, crates/bijux-atlas-ingest/CONTRACT.md, crates/bijux-atlas-model/CONTRACT.md, crates/bijux-atlas-policies/CONTRACT.md, crates/bijux-atlas-query/CONTRACT.md, crates/bijux-atlas-server/CONTRACT.md, crates/bijux-atlas-store/CONTRACT.md, crates/bijux-dev-atlas/CONTRACT.md, crates/bijux-dev-atlas/docs/contract.md, docker/CONTRACT.md, make/CONTRACT.md, ops/CONTRACT.md, ops/datasets/CONTRACT.md, ops/e2e/CONTRACT.md, ops/env/CONTRACT.md, ops/inventory/CONTRACT.md, ops/k8s/CONTRACT.md, ops/load/CONTRACT.md, ops/observe/CONTRACT.md, ops/report/CONTRACT.md, ops/schema/CONTRACT.md, ops/stack/CONTRACT.md` |
+| `CONTRACT` | `CONTRACT.md, configs/contract.md, crates/bijux-atlas-api/contract.md, crates/bijux-atlas-cli/contract.md, crates/bijux-atlas-core/contract.md, crates/bijux-atlas-ingest/contract.md, crates/bijux-atlas-model/contract.md, crates/bijux-atlas-policies/contract.md, crates/bijux-atlas-query/contract.md, crates/bijux-atlas-server/contract.md, crates/bijux-atlas-store/contract.md, crates/bijux-dev-atlas/contract.md, crates/bijux-dev-atlas/docs/contract.md, docker/contract.md, make/contract.md, ops/contract.md, ops/datasets/contract.md, ops/e2e/contract.md, ops/env/contract.md, ops/inventory/contract.md, ops/k8s/contract.md, ops/load/contract.md, ops/observe/contract.md, ops/report/contract.md, ops/schema/contract.md, ops/stack/contract.md` |
 | `CONTRACT_COMPATIBILITY` | `crates/bijux-atlas-model/docs/CONTRACT_COMPATIBILITY.md` |
 | `CONTRIBUTING` | `CONTRIBUTING.md` |
 | `COST_ESTIMATOR` | `crates/bijux-atlas-query/docs/COST_ESTIMATOR.md` |
 | `DATA_MODEL` | `crates/bijux-atlas-model/DATA_MODEL.md` |
-| `DETERMINISM` | `crates/bijux-atlas-ingest/docs/DETERMINISM.md` |
+| `DETERMINISM` | `crates/bijux-atlas-ingest/docs/determinism.md` |
 | `ENGINE_CONTRACT` | `crates/bijux-dev-atlas/docs/ENGINE_CONTRACT.md` |
 | `ENSEMBL_LAYOUT` | `crates/bijux-atlas-ingest/docs/ENSEMBL_LAYOUT.md` |
 | `ERRORS` | `crates/bijux-atlas-api/docs/ERRORS.md, crates/bijux-atlas-core/docs/ERRORS.md, crates/bijux-dev-atlas/ERRORS.md` |
 | `ERROR_TAXONOMY` | `crates/bijux-atlas-api/ERROR_TAXONOMY.md, crates/bijux-atlas-cli/ERROR_TAXONOMY.md, crates/bijux-atlas-core/ERROR_TAXONOMY.md, crates/bijux-atlas-ingest/ERROR_TAXONOMY.md, crates/bijux-atlas-model/ERROR_TAXONOMY.md, crates/bijux-atlas-policies/ERROR_TAXONOMY.md, crates/bijux-atlas-query/ERROR_TAXONOMY.md, crates/bijux-atlas-server/ERROR_TAXONOMY.md, crates/bijux-atlas-store/ERROR_TAXONOMY.md, crates/bijux-dev-atlas/ERROR_TAXONOMY.md` |
-| `EVOLUTION` | `crates/bijux-atlas-policies/docs/EVOLUTION.md` |
+| `EVOLUTION` | `crates/bijux-atlas-policies/docs/evolution.md` |
 | `EXAMPLES` | `crates/bijux-atlas-api/EXAMPLES.md, crates/bijux-atlas-cli/EXAMPLES.md, crates/bijux-atlas-core/EXAMPLES.md, crates/bijux-atlas-ingest/EXAMPLES.md, crates/bijux-atlas-model/EXAMPLES.md, crates/bijux-atlas-policies/EXAMPLES.md, crates/bijux-atlas-query/EXAMPLES.md, crates/bijux-atlas-server/EXAMPLES.md, crates/bijux-atlas-store/EXAMPLES.md, crates/bijux-dev-atlas/EXAMPLES.md` |
 | `EXIT_CODES` | `crates/bijux-atlas-cli/docs/EXIT_CODES.md, crates/bijux-dev-atlas/docs/EXIT_CODES.md` |
 | `EXTENSION_GUIDE` | `crates/bijux-atlas-policies/EXTENSION_GUIDE.md` |
 | `FAILURE_MODES` | `crates/bijux-atlas-server/docs/FAILURE_MODES.md, crates/bijux-atlas-store/docs/FAILURE_MODES.md, crates/bijux-dev-atlas/docs/FAILURE_MODES.md` |
-| `FEATURES` | `crates/bijux-atlas-core/docs/FEATURES.md` |
-| `FORMATTING` | `crates/bijux-atlas-core/docs/FORMATTING.md` |
+| `FEATURES` | `crates/bijux-atlas-core/docs/features.md` |
+| `FORMATTING` | `crates/bijux-atlas-core/docs/formatting.md` |
 | `HOT_PATH_CHECKLIST` | `crates/bijux-atlas-server/docs/HOT_PATH_CHECKLIST.md` |
-| `INDEX` | `configs/INDEX.md, crates/bijux-atlas-api/docs/INDEX.md, crates/bijux-atlas-cli/docs/INDEX.md, crates/bijux-atlas-core/docs/INDEX.md, crates/bijux-atlas-ingest/docs/INDEX.md, crates/bijux-atlas-model/docs/INDEX.md, crates/bijux-atlas-policies/docs/INDEX.md, crates/bijux-atlas-query/docs/INDEX.md, crates/bijux-atlas-server/docs/INDEX.md, crates/bijux-atlas-store/docs/INDEX.md, crates/bijux-dev-atlas/docs/INDEX.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md` |
+| `INDEX` | `configs/index.md, crates/bijux-atlas-api/docs/index.md, crates/bijux-atlas-cli/docs/index.md, crates/bijux-atlas-core/docs/index.md, crates/bijux-atlas-ingest/docs/index.md, crates/bijux-atlas-model/docs/index.md, crates/bijux-atlas-policies/docs/index.md, crates/bijux-atlas-query/docs/index.md, crates/bijux-atlas-server/docs/index.md, crates/bijux-atlas-store/docs/index.md, crates/bijux-dev-atlas/docs/index.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/index.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/index.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/index.md` |
 | `INGEST_CONTRACT` | `crates/bijux-atlas-ingest/docs/INGEST_CONTRACT.md` |
-| `KUBERNETES` | `crates/bijux-atlas-server/docs/KUBERNETES.md` |
+| `KUBERNETES` | `crates/bijux-atlas-server/docs/kubernetes.md` |
 | `LINT_POLICY` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/rust/LINT_POLICY.md` |
 | `NAMING` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/NAMING.md` |
 | `NOT_IN_MODEL` | `crates/bijux-atlas-model/docs/NOT_IN_MODEL.md` |
-| `OPENAPI` | `crates/bijux-atlas-api/docs/OPENAPI.md` |
+| `OPENAPI` | `crates/bijux-atlas-api/docs/openapi.md` |
 | `OPERATIONS_RUNBOOK` | `crates/bijux-atlas-server/docs/OPERATIONS_RUNBOOK.md` |
 | `OPS_COMMAND_LIST` | `crates/bijux-dev-atlas/docs/OPS_COMMAND_LIST.md` |
 | `OPTIONAL_FIELDS` | `crates/bijux-atlas-model/docs/OPTIONAL_FIELDS.md` |
-| `ORDERING` | `crates/bijux-atlas-query/docs/ORDERING.md` |
+| `ORDERING` | `crates/bijux-atlas-query/docs/ordering.md` |
 | `ORDERING_RULES` | `crates/bijux-atlas-model/docs/ORDERING_RULES.md` |
 | `OWNERS` | `crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/OWNERS.md` |
-| `PAGINATION` | `crates/bijux-atlas-query/docs/PAGINATION.md` |
-| `PATTERNS` | `crates/bijux-atlas-api/docs/PATTERNS.md, crates/bijux-atlas-core/docs/PATTERNS.md` |
-| `PERF` | `crates/bijux-atlas-query/docs/PERF.md` |
+| `PAGINATION` | `crates/bijux-atlas-query/docs/pagination.md` |
+| `PATTERNS` | `crates/bijux-atlas-api/docs/patterns.md, crates/bijux-atlas-core/docs/patterns.md` |
+| `PERF` | `crates/bijux-atlas-query/docs/perf.md` |
 | `PERF_BASELINE` | `crates/bijux-atlas-server/docs/PERF_BASELINE.md` |
 | `PERF_PROFILING` | `crates/bijux-atlas-server/docs/PERF_PROFILING.md` |
 | `PLUGIN_CONTRACT` | `crates/bijux-atlas-cli/docs/PLUGIN_CONTRACT.md` |
 | `POLICY_AUTHORING_GUIDE` | `crates/bijux-atlas-policies/docs/POLICY_AUTHORING_GUIDE.md` |
-| `PURITY` | `crates/bijux-atlas-core/docs/PURITY.md, crates/bijux-atlas-model/docs/PURITY.md` |
-| `QC` | `crates/bijux-atlas-ingest/docs/QC.md` |
+| `PURITY` | `crates/bijux-atlas-core/docs/purity.md, crates/bijux-atlas-model/docs/purity.md` |
+| `QC` | `crates/bijux-atlas-ingest/docs/qc.md` |
 | `QUERY_LANGUAGE_SPEC` | `crates/bijux-atlas-query/docs/QUERY_LANGUAGE_SPEC.md` |
 | `README` | `README.md, configs/README.md, crates/bijux-atlas-api/README.md, crates/bijux-atlas-api/tests/README.md, crates/bijux-atlas-cli/README.md, crates/bijux-atlas-cli/tests/README.md, crates/bijux-atlas-core/README.md, crates/bijux-atlas-core/tests/README.md, crates/bijux-atlas-ingest/README.md, crates/bijux-atlas-ingest/tests/README.md, crates/bijux-atlas-ingest/tests/fixtures/edgecases/README.md, crates/bijux-atlas-ingest/tests/fixtures/minimal/README.md, crates/bijux-atlas-ingest/tests/fixtures/policies/README.md, crates/bijux-atlas-ingest/tests/fixtures/realistic/README.md, crates/bijux-atlas-model/README.md, crates/bijux-atlas-model/tests/README.md, crates/bijux-atlas-policies/README.md, crates/bijux-atlas-policies/tests/README.md, crates/bijux-atlas-query/README.md, crates/bijux-atlas-query/tests/README.md, crates/bijux-atlas-server/README.md, crates/bijux-atlas-server/tests/README.md, crates/bijux-atlas-store/README.md, crates/bijux-atlas-store/tests/README.md, crates/bijux-dev-atlas/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/README.md, crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_latest/docker/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/fail_patterns/docker/README.md, crates/bijux-dev-atlas/tests/fixtures/docker_contracts/pass/docker/README.md, docker/README.md, make/README.md, ops/README.md, ops/datasets/README.md, ops/e2e/README.md, ops/env/README.md, ops/inventory/README.md, ops/k8s/README.md, ops/load/README.md, ops/observe/README.md, ops/report/README.md, ops/schema/README.md, ops/stack/README.md` |
 | `REGISTRY_CONTRACT` | `crates/bijux-dev-atlas/docs/REGISTRY_CONTRACT.md` |
-| `ROLLBACK` | `crates/bijux-atlas-store/docs/ROLLBACK.md` |
+| `ROLLBACK` | `crates/bijux-atlas-store/docs/rollback.md` |
 | `RUNBOOK_SNIPPET` | `crates/bijux-atlas-store/docs/RUNBOOK_SNIPPET.md` |
-| `RUNTIME` | `crates/bijux-atlas-server/docs/RUNTIME.md` |
+| `RUNTIME` | `crates/bijux-atlas-server/docs/runtime.md` |
 | `SCHEMA` | `crates/bijux-atlas-policies/docs/SCHEMA.md` |
 | `SCHEMA_EVOLUTION` | `crates/bijux-atlas-policies/docs/SCHEMA_EVOLUTION.md` |
 | `SCHEMA_EVOLUTION_NOTES` | `crates/bijux-atlas-model/docs/SCHEMA_EVOLUTION_NOTES.md` |
@@ -79,7 +79,7 @@
 | `SECURITY` | `SECURITY.md` |
 | `SERDE_POLICY` | `crates/bijux-atlas-core/docs/SERDE_POLICY.md` |
 | `START_HERE` | `crates/bijux-dev-atlas/tests/fixtures/docs-mini/docs/START_HERE.md` |
-| `TELEMETRY` | `crates/bijux-atlas-server/docs/TELEMETRY.md` |
+| `TELEMETRY` | `crates/bijux-atlas-server/docs/telemetry.md` |
 | `TESTING` | `crates/bijux-atlas-api/TESTING.md, crates/bijux-atlas-cli/TESTING.md, crates/bijux-atlas-core/TESTING.md, crates/bijux-atlas-ingest/TESTING.md, crates/bijux-atlas-model/TESTING.md, crates/bijux-atlas-policies/TESTING.md, crates/bijux-atlas-query/TESTING.md, crates/bijux-atlas-server/TESTING.md, crates/bijux-atlas-store/TESTING.md, crates/bijux-dev-atlas/TESTING.md` |
 | `TRANSCRIPT_ORDERING` | `crates/bijux-atlas-query/docs/TRANSCRIPT_ORDERING.md` |
 | `VERSIONING` | `crates/bijux-atlas-api/VERSIONING.md, crates/bijux-atlas-api/docs/VERSIONING.md, crates/bijux-atlas-cli/VERSIONING.md, crates/bijux-atlas-core/VERSIONING.md, crates/bijux-atlas-ingest/VERSIONING.md, crates/bijux-atlas-model/VERSIONING.md, crates/bijux-atlas-policies/VERSIONING.md, crates/bijux-atlas-query/VERSIONING.md, crates/bijux-atlas-server/VERSIONING.md, crates/bijux-atlas-store/VERSIONING.md, crates/bijux-dev-atlas/VERSIONING.md` |

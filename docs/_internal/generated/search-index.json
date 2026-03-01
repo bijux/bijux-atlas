@@ -147,7 +147,7 @@
         "configs",
         "contract"
       ],
-      "path": "configs/CONTRACT.md",
+      "path": "configs/contract.md",
       "tags": [
         "configs",
         "contract"
@@ -159,7 +159,7 @@
         "configs",
         "index"
       ],
-      "path": "configs/INDEX.md",
+      "path": "configs/index.md",
       "tags": [
         "configs",
         "index"
@@ -207,7 +207,7 @@
         "bijux-atlas-api",
         "contract"
       ],
-      "path": "crates/bijux-atlas-api/CONTRACT.md",
+      "path": "crates/bijux-atlas-api/contract.md",
       "tags": [
         "bijux-atlas-api",
         "contract"
@@ -315,7 +315,7 @@
         "bijux-atlas-api",
         "index"
       ],
-      "path": "crates/bijux-atlas-api/docs/INDEX.md",
+      "path": "crates/bijux-atlas-api/docs/index.md",
       "tags": [
         "bijux-atlas-api",
         "index"
@@ -327,7 +327,7 @@
         "bijux-atlas-api",
         "openapi"
       ],
-      "path": "crates/bijux-atlas-api/docs/OPENAPI.md",
+      "path": "crates/bijux-atlas-api/docs/openapi.md",
       "tags": [
         "bijux-atlas-api",
         "openapi"
@@ -339,7 +339,7 @@
         "bijux-atlas-api",
         "patterns"
       ],
-      "path": "crates/bijux-atlas-api/docs/PATTERNS.md",
+      "path": "crates/bijux-atlas-api/docs/patterns.md",
       "tags": [
         "bijux-atlas-api",
         "patterns"
@@ -509,7 +509,7 @@
         "bijux-atlas-cli",
         "contract"
       ],
-      "path": "crates/bijux-atlas-cli/CONTRACT.md",
+      "path": "crates/bijux-atlas-cli/contract.md",
       "tags": [
         "bijux-atlas-cli",
         "contract"
@@ -629,7 +629,7 @@
         "bijux-atlas-cli",
         "index"
       ],
-      "path": "crates/bijux-atlas-cli/docs/INDEX.md",
+      "path": "crates/bijux-atlas-cli/docs/index.md",
       "tags": [
         "bijux-atlas-cli",
         "index"
@@ -751,7 +751,7 @@
         "bijux-atlas-core",
         "contract"
       ],
-      "path": "crates/bijux-atlas-core/CONTRACT.md",
+      "path": "crates/bijux-atlas-core/contract.md",
       "tags": [
         "bijux-atlas-core",
         "contract"
@@ -823,7 +823,7 @@
         "bijux-atlas-core",
         "canonicalization"
       ],
-      "path": "crates/bijux-atlas-core/docs/CANONICALIZATION.md",
+      "path": "crates/bijux-atlas-core/docs/canonicalization.md",
       "tags": [
         "bijux-atlas-core",
         "canonicalization"
@@ -859,7 +859,7 @@
         "bijux-atlas-core",
         "features"
       ],
-      "path": "crates/bijux-atlas-core/docs/FEATURES.md",
+      "path": "crates/bijux-atlas-core/docs/features.md",
       "tags": [
         "bijux-atlas-core",
         "features"
@@ -871,7 +871,7 @@
         "bijux-atlas-core",
         "formatting"
       ],
-      "path": "crates/bijux-atlas-core/docs/FORMATTING.md",
+      "path": "crates/bijux-atlas-core/docs/formatting.md",
       "tags": [
         "bijux-atlas-core",
         "formatting"
@@ -883,7 +883,7 @@
         "bijux-atlas-core",
         "index"
       ],
-      "path": "crates/bijux-atlas-core/docs/INDEX.md",
+      "path": "crates/bijux-atlas-core/docs/index.md",
       "tags": [
         "bijux-atlas-core",
         "index"
@@ -895,7 +895,7 @@
         "bijux-atlas-core",
         "patterns"
       ],
-      "path": "crates/bijux-atlas-core/docs/PATTERNS.md",
+      "path": "crates/bijux-atlas-core/docs/patterns.md",
       "tags": [
         "bijux-atlas-core",
         "patterns"
@@ -907,7 +907,7 @@
         "bijux-atlas-core",
         "purity"
       ],
-      "path": "crates/bijux-atlas-core/docs/PURITY.md",
+      "path": "crates/bijux-atlas-core/docs/purity.md",
       "tags": [
         "bijux-atlas-core",
         "purity"
@@ -1029,7 +1029,7 @@
         "bijux-atlas-ingest",
         "contract"
       ],
-      "path": "crates/bijux-atlas-ingest/CONTRACT.md",
+      "path": "crates/bijux-atlas-ingest/contract.md",
       "tags": [
         "bijux-atlas-ingest",
         "contract"
@@ -1113,7 +1113,7 @@
         "bijux-atlas-ingest",
         "determinism"
       ],
-      "path": "crates/bijux-atlas-ingest/docs/DETERMINISM.md",
+      "path": "crates/bijux-atlas-ingest/docs/determinism.md",
       "tags": [
         "bijux-atlas-ingest",
         "determinism"
@@ -1137,7 +1137,7 @@
         "bijux-atlas-ingest",
         "index"
       ],
-      "path": "crates/bijux-atlas-ingest/docs/INDEX.md",
+      "path": "crates/bijux-atlas-ingest/docs/index.md",
       "tags": [
         "bijux-atlas-ingest",
         "index"
@@ -1160,7 +1160,7 @@
       "keywords": [
         "bijux-atlas-ingest"
       ],
-      "path": "crates/bijux-atlas-ingest/docs/QC.md",
+      "path": "crates/bijux-atlas-ingest/docs/qc.md",
       "tags": [
         "bijux-atlas-ingest"
       ],
@@ -1353,7 +1353,7 @@
         "bijux-atlas-model",
         "contract"
       ],
-      "path": "crates/bijux-atlas-model/CONTRACT.md",
+      "path": "crates/bijux-atlas-model/contract.md",
       "tags": [
         "bijux-atlas-model",
         "contract"
@@ -1461,7 +1461,7 @@
         "bijux-atlas-model",
         "index"
       ],
-      "path": "crates/bijux-atlas-model/docs/INDEX.md",
+      "path": "crates/bijux-atlas-model/docs/index.md",
       "tags": [
         "bijux-atlas-model",
         "index"
@@ -1509,7 +1509,7 @@
         "bijux-atlas-model",
         "purity"
       ],
-      "path": "crates/bijux-atlas-model/docs/PURITY.md",
+      "path": "crates/bijux-atlas-model/docs/purity.md",
       "tags": [
         "bijux-atlas-model",
         "purity"
@@ -1643,7 +1643,7 @@
         "bijux-atlas-policies",
         "contract"
       ],
-      "path": "crates/bijux-atlas-policies/CONTRACT.md",
+      "path": "crates/bijux-atlas-policies/contract.md",
       "tags": [
         "bijux-atlas-policies",
         "contract"
@@ -1751,7 +1751,7 @@
         "bijux-atlas-policies",
         "evolution"
       ],
-      "path": "crates/bijux-atlas-policies/docs/EVOLUTION.md",
+      "path": "crates/bijux-atlas-policies/docs/evolution.md",
       "tags": [
         "bijux-atlas-policies",
         "evolution"
@@ -1763,7 +1763,7 @@
         "bijux-atlas-policies",
         "index"
       ],
-      "path": "crates/bijux-atlas-policies/docs/INDEX.md",
+      "path": "crates/bijux-atlas-policies/docs/index.md",
       "tags": [
         "bijux-atlas-policies",
         "index"
@@ -1921,7 +1921,7 @@
         "bijux-atlas-query",
         "contract"
       ],
-      "path": "crates/bijux-atlas-query/CONTRACT.md",
+      "path": "crates/bijux-atlas-query/contract.md",
       "tags": [
         "bijux-atlas-query",
         "contract"
@@ -2017,7 +2017,7 @@
         "bijux-atlas-query",
         "index"
       ],
-      "path": "crates/bijux-atlas-query/docs/INDEX.md",
+      "path": "crates/bijux-atlas-query/docs/index.md",
       "tags": [
         "bijux-atlas-query",
         "index"
@@ -2029,7 +2029,7 @@
         "bijux-atlas-query",
         "ordering"
       ],
-      "path": "crates/bijux-atlas-query/docs/ORDERING.md",
+      "path": "crates/bijux-atlas-query/docs/ordering.md",
       "tags": [
         "bijux-atlas-query",
         "ordering"
@@ -2041,7 +2041,7 @@
         "bijux-atlas-query",
         "pagination"
       ],
-      "path": "crates/bijux-atlas-query/docs/PAGINATION.md",
+      "path": "crates/bijux-atlas-query/docs/pagination.md",
       "tags": [
         "bijux-atlas-query",
         "pagination"
@@ -2053,7 +2053,7 @@
         "bijux-atlas-query",
         "perf"
       ],
-      "path": "crates/bijux-atlas-query/docs/PERF.md",
+      "path": "crates/bijux-atlas-query/docs/perf.md",
       "tags": [
         "bijux-atlas-query",
         "perf"
@@ -2187,7 +2187,7 @@
         "bijux-atlas-server",
         "contract"
       ],
-      "path": "crates/bijux-atlas-server/CONTRACT.md",
+      "path": "crates/bijux-atlas-server/contract.md",
       "tags": [
         "bijux-atlas-server",
         "contract"
@@ -2259,7 +2259,7 @@
         "bijux-atlas-server",
         "caching"
       ],
-      "path": "crates/bijux-atlas-server/docs/CACHING.md",
+      "path": "crates/bijux-atlas-server/docs/caching.md",
       "tags": [
         "bijux-atlas-server",
         "caching"
@@ -2295,7 +2295,7 @@
         "bijux-atlas-server",
         "index"
       ],
-      "path": "crates/bijux-atlas-server/docs/INDEX.md",
+      "path": "crates/bijux-atlas-server/docs/index.md",
       "tags": [
         "bijux-atlas-server",
         "index"
@@ -2307,7 +2307,7 @@
         "bijux-atlas-server",
         "kubernetes"
       ],
-      "path": "crates/bijux-atlas-server/docs/KUBERNETES.md",
+      "path": "crates/bijux-atlas-server/docs/kubernetes.md",
       "tags": [
         "bijux-atlas-server",
         "kubernetes"
@@ -2355,7 +2355,7 @@
         "bijux-atlas-server",
         "runtime"
       ],
-      "path": "crates/bijux-atlas-server/docs/RUNTIME.md",
+      "path": "crates/bijux-atlas-server/docs/runtime.md",
       "tags": [
         "bijux-atlas-server",
         "runtime"
@@ -2367,7 +2367,7 @@
         "bijux-atlas-server",
         "telemetry"
       ],
-      "path": "crates/bijux-atlas-server/docs/TELEMETRY.md",
+      "path": "crates/bijux-atlas-server/docs/telemetry.md",
       "tags": [
         "bijux-atlas-server",
         "telemetry"
@@ -2543,7 +2543,7 @@
         "bijux-atlas-store",
         "contract"
       ],
-      "path": "crates/bijux-atlas-store/CONTRACT.md",
+      "path": "crates/bijux-atlas-store/contract.md",
       "tags": [
         "bijux-atlas-store",
         "contract"
@@ -2663,7 +2663,7 @@
         "bijux-atlas-store",
         "caching"
       ],
-      "path": "crates/bijux-atlas-store/docs/CACHING.md",
+      "path": "crates/bijux-atlas-store/docs/caching.md",
       "tags": [
         "bijux-atlas-store",
         "caching"
@@ -2687,7 +2687,7 @@
         "bijux-atlas-store",
         "index"
       ],
-      "path": "crates/bijux-atlas-store/docs/INDEX.md",
+      "path": "crates/bijux-atlas-store/docs/index.md",
       "tags": [
         "bijux-atlas-store",
         "index"
@@ -2699,7 +2699,7 @@
         "bijux-atlas-store",
         "rollback"
       ],
-      "path": "crates/bijux-atlas-store/docs/ROLLBACK.md",
+      "path": "crates/bijux-atlas-store/docs/rollback.md",
       "tags": [
         "bijux-atlas-store",
         "rollback"
@@ -2857,7 +2857,7 @@
         "bijux-dev-atlas",
         "contract"
       ],
-      "path": "crates/bijux-dev-atlas/CONTRACT.md",
+      "path": "crates/bijux-dev-atlas/contract.md",
       "tags": [
         "bijux-dev-atlas",
         "contract"
@@ -2941,7 +2941,7 @@
         "artifacts",
         "bijux-dev-atlas"
       ],
-      "path": "crates/bijux-dev-atlas/docs/ARTIFACTS.md",
+      "path": "crates/bijux-dev-atlas/docs/artifacts.md",
       "tags": [
         "artifacts",
         "bijux-dev-atlas"
@@ -2965,7 +2965,7 @@
         "bijux-dev-atlas",
         "commands"
       ],
-      "path": "crates/bijux-dev-atlas/docs/COMMANDS.md",
+      "path": "crates/bijux-dev-atlas/docs/commands.md",
       "tags": [
         "bijux-dev-atlas",
         "commands"
@@ -3037,7 +3037,7 @@
         "bijux-dev-atlas",
         "index"
       ],
-      "path": "crates/bijux-dev-atlas/docs/INDEX.md",
+      "path": "crates/bijux-dev-atlas/docs/index.md",
       "tags": [
         "bijux-dev-atlas",
         "index"
@@ -3077,7 +3077,7 @@
         "index",
         "tests"
       ],
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/index.md",
       "tags": [
         "bijux-dev-atlas",
         "configs",
@@ -3157,7 +3157,7 @@
         "index",
         "tests"
       ],
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/index.md",
       "tags": [
         "bijux-dev-atlas",
         "configs",
@@ -3197,7 +3197,7 @@
         "index",
         "tests"
       ],
-      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md",
+      "path": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/index.md",
       "tags": [
         "bijux-dev-atlas",
         "configs",
@@ -3577,7 +3577,7 @@
         "contract",
         "docker"
       ],
-      "path": "docker/CONTRACT.md",
+      "path": "docker/contract.md",
       "tags": [
         "contract",
         "docker"
@@ -7207,7 +7207,7 @@
         "contract",
         "make"
       ],
-      "path": "make/CONTRACT.md",
+      "path": "make/contract.md",
       "tags": [
         "contract",
         "make"
@@ -7231,7 +7231,7 @@
         "contract",
         "ops"
       ],
-      "path": "ops/CONTRACT.md",
+      "path": "ops/contract.md",
       "tags": [
         "contract",
         "ops"
@@ -7256,7 +7256,7 @@
         "datasets",
         "ops"
       ],
-      "path": "ops/datasets/CONTRACT.md",
+      "path": "ops/datasets/contract.md",
       "tags": [
         "contract",
         "datasets",
@@ -7284,7 +7284,7 @@
         "e2e",
         "ops"
       ],
-      "path": "ops/e2e/CONTRACT.md",
+      "path": "ops/e2e/contract.md",
       "tags": [
         "contract",
         "e2e",
@@ -7312,7 +7312,7 @@
         "env",
         "ops"
       ],
-      "path": "ops/env/CONTRACT.md",
+      "path": "ops/env/contract.md",
       "tags": [
         "contract",
         "env",
@@ -7340,7 +7340,7 @@
         "inventory",
         "ops"
       ],
-      "path": "ops/inventory/CONTRACT.md",
+      "path": "ops/inventory/contract.md",
       "tags": [
         "contract",
         "inventory",
@@ -7368,7 +7368,7 @@
         "k8s",
         "ops"
       ],
-      "path": "ops/k8s/CONTRACT.md",
+      "path": "ops/k8s/contract.md",
       "tags": [
         "contract",
         "k8s",
@@ -7396,7 +7396,7 @@
         "load",
         "ops"
       ],
-      "path": "ops/load/CONTRACT.md",
+      "path": "ops/load/contract.md",
       "tags": [
         "contract",
         "load",
@@ -7424,7 +7424,7 @@
         "observe",
         "ops"
       ],
-      "path": "ops/observe/CONTRACT.md",
+      "path": "ops/observe/contract.md",
       "tags": [
         "contract",
         "observe",
@@ -7452,7 +7452,7 @@
         "ops",
         "report"
       ],
-      "path": "ops/report/CONTRACT.md",
+      "path": "ops/report/contract.md",
       "tags": [
         "contract",
         "ops",
@@ -7480,7 +7480,7 @@
         "ops",
         "schema"
       ],
-      "path": "ops/schema/CONTRACT.md",
+      "path": "ops/schema/contract.md",
       "tags": [
         "contract",
         "ops",
@@ -7508,7 +7508,7 @@
         "ops",
         "stack"
       ],
-      "path": "ops/stack/CONTRACT.md",
+      "path": "ops/stack/contract.md",
       "tags": [
         "contract",
         "ops",

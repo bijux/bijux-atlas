@@ -63,12 +63,12 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "configs/CONTRACT.md"
+      "from": "configs/contract.md"
     },
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "configs/INDEX.md"
+      "from": "configs/index.md"
     },
     {
       "crate": null,
@@ -88,7 +88,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-api/CONTRACT.md"
+      "from": "crates/bijux-atlas-api/contract.md"
     },
     {
       "crate": null,
@@ -133,17 +133,17 @@
     {
       "crate": "bijux-atlas-api",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-api/docs/INDEX.md"
+      "from": "crates/bijux-atlas-api/docs/index.md"
     },
     {
       "crate": "bijux-atlas-api",
       "doc_type": "spec",
-      "from": "crates/bijux-atlas-api/docs/OPENAPI.md"
+      "from": "crates/bijux-atlas-api/docs/openapi.md"
     },
     {
       "crate": "bijux-atlas-api",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-api/docs/PATTERNS.md"
+      "from": "crates/bijux-atlas-api/docs/patterns.md"
     },
     {
       "crate": "bijux-atlas-api",
@@ -213,7 +213,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/CONTRACT.md"
+      "from": "crates/bijux-atlas-cli/contract.md"
     },
     {
       "crate": null,
@@ -263,7 +263,7 @@
     {
       "crate": "bijux-atlas-cli",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-cli/docs/INDEX.md"
+      "from": "crates/bijux-atlas-cli/docs/index.md"
     },
     {
       "crate": "bijux-atlas-cli",
@@ -313,7 +313,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/CONTRACT.md"
+      "from": "crates/bijux-atlas-core/contract.md"
     },
     {
       "crate": null,
@@ -343,7 +343,7 @@
     {
       "crate": "bijux-atlas-core",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/docs/CANONICALIZATION.md"
+      "from": "crates/bijux-atlas-core/docs/canonicalization.md"
     },
     {
       "crate": "bijux-atlas-core",
@@ -358,27 +358,27 @@
     {
       "crate": "bijux-atlas-core",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/docs/FEATURES.md"
+      "from": "crates/bijux-atlas-core/docs/features.md"
     },
     {
       "crate": "bijux-atlas-core",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/docs/FORMATTING.md"
+      "from": "crates/bijux-atlas-core/docs/formatting.md"
     },
     {
       "crate": "bijux-atlas-core",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/docs/INDEX.md"
+      "from": "crates/bijux-atlas-core/docs/index.md"
     },
     {
       "crate": "bijux-atlas-core",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/docs/PATTERNS.md"
+      "from": "crates/bijux-atlas-core/docs/patterns.md"
     },
     {
       "crate": "bijux-atlas-core",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-core/docs/PURITY.md"
+      "from": "crates/bijux-atlas-core/docs/purity.md"
     },
     {
       "crate": "bijux-atlas-core",
@@ -428,7 +428,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-ingest/CONTRACT.md"
+      "from": "crates/bijux-atlas-ingest/contract.md"
     },
     {
       "crate": null,
@@ -463,7 +463,7 @@
     {
       "crate": "bijux-atlas-ingest",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-ingest/docs/DETERMINISM.md"
+      "from": "crates/bijux-atlas-ingest/docs/determinism.md"
     },
     {
       "crate": "bijux-atlas-ingest",
@@ -473,7 +473,7 @@
     {
       "crate": "bijux-atlas-ingest",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-ingest/docs/INDEX.md"
+      "from": "crates/bijux-atlas-ingest/docs/index.md"
     },
     {
       "crate": "bijux-atlas-ingest",
@@ -483,7 +483,7 @@
     {
       "crate": "bijux-atlas-ingest",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-ingest/docs/QC.md"
+      "from": "crates/bijux-atlas-ingest/docs/qc.md"
     },
     {
       "crate": "bijux-atlas-ingest",
@@ -553,7 +553,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-model/CONTRACT.md"
+      "from": "crates/bijux-atlas-model/contract.md"
     },
     {
       "crate": null,
@@ -598,7 +598,7 @@
     {
       "crate": "bijux-atlas-model",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-model/docs/INDEX.md"
+      "from": "crates/bijux-atlas-model/docs/index.md"
     },
     {
       "crate": "bijux-atlas-model",
@@ -618,7 +618,7 @@
     {
       "crate": "bijux-atlas-model",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-model/docs/PURITY.md"
+      "from": "crates/bijux-atlas-model/docs/purity.md"
     },
     {
       "crate": "bijux-atlas-model",
@@ -673,7 +673,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-policies/CONTRACT.md"
+      "from": "crates/bijux-atlas-policies/contract.md"
     },
     {
       "crate": null,
@@ -718,12 +718,12 @@
     {
       "crate": "bijux-atlas-policies",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-policies/docs/EVOLUTION.md"
+      "from": "crates/bijux-atlas-policies/docs/evolution.md"
     },
     {
       "crate": "bijux-atlas-policies",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-policies/docs/INDEX.md"
+      "from": "crates/bijux-atlas-policies/docs/index.md"
     },
     {
       "crate": "bijux-atlas-policies",
@@ -788,7 +788,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-query/CONTRACT.md"
+      "from": "crates/bijux-atlas-query/contract.md"
     },
     {
       "crate": null,
@@ -828,22 +828,22 @@
     {
       "crate": "bijux-atlas-query",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-query/docs/INDEX.md"
+      "from": "crates/bijux-atlas-query/docs/index.md"
     },
     {
       "crate": "bijux-atlas-query",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-query/docs/ORDERING.md"
+      "from": "crates/bijux-atlas-query/docs/ordering.md"
     },
     {
       "crate": "bijux-atlas-query",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-query/docs/PAGINATION.md"
+      "from": "crates/bijux-atlas-query/docs/pagination.md"
     },
     {
       "crate": "bijux-atlas-query",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-query/docs/PERF.md"
+      "from": "crates/bijux-atlas-query/docs/perf.md"
     },
     {
       "crate": "bijux-atlas-query",
@@ -898,7 +898,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-server/CONTRACT.md"
+      "from": "crates/bijux-atlas-server/contract.md"
     },
     {
       "crate": null,
@@ -928,7 +928,7 @@
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-server/docs/CACHING.md"
+      "from": "crates/bijux-atlas-server/docs/caching.md"
     },
     {
       "crate": "bijux-atlas-server",
@@ -943,12 +943,12 @@
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-server/docs/INDEX.md"
+      "from": "crates/bijux-atlas-server/docs/index.md"
     },
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-server/docs/KUBERNETES.md"
+      "from": "crates/bijux-atlas-server/docs/kubernetes.md"
     },
     {
       "crate": "bijux-atlas-server",
@@ -968,12 +968,12 @@
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-server/docs/RUNTIME.md"
+      "from": "crates/bijux-atlas-server/docs/runtime.md"
     },
     {
       "crate": "bijux-atlas-server",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-server/docs/TELEMETRY.md"
+      "from": "crates/bijux-atlas-server/docs/telemetry.md"
     },
     {
       "crate": "bijux-atlas-server",
@@ -1043,7 +1043,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-store/CONTRACT.md"
+      "from": "crates/bijux-atlas-store/contract.md"
     },
     {
       "crate": null,
@@ -1093,7 +1093,7 @@
     {
       "crate": "bijux-atlas-store",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-store/docs/CACHING.md"
+      "from": "crates/bijux-atlas-store/docs/caching.md"
     },
     {
       "crate": "bijux-atlas-store",
@@ -1103,12 +1103,12 @@
     {
       "crate": "bijux-atlas-store",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-store/docs/INDEX.md"
+      "from": "crates/bijux-atlas-store/docs/index.md"
     },
     {
       "crate": "bijux-atlas-store",
       "doc_type": "concept",
-      "from": "crates/bijux-atlas-store/docs/ROLLBACK.md"
+      "from": "crates/bijux-atlas-store/docs/rollback.md"
     },
     {
       "crate": "bijux-atlas-store",
@@ -1173,7 +1173,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/CONTRACT.md"
+      "from": "crates/bijux-dev-atlas/contract.md"
     },
     {
       "crate": null,
@@ -1208,7 +1208,7 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/ARTIFACTS.md"
+      "from": "crates/bijux-dev-atlas/docs/artifacts.md"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -1218,7 +1218,7 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/COMMANDS.md"
+      "from": "crates/bijux-dev-atlas/docs/commands.md"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -1248,7 +1248,7 @@
     {
       "crate": "bijux-dev-atlas",
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/docs/INDEX.md"
+      "from": "crates/bijux-dev-atlas/docs/index.md"
     },
     {
       "crate": "bijux-dev-atlas",
@@ -1263,7 +1263,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/INDEX.md"
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/index.md"
     },
     {
       "crate": null,
@@ -1283,7 +1283,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/INDEX.md"
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/ci/index.md"
     },
     {
       "crate": null,
@@ -1293,7 +1293,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/INDEX.md"
+      "from": "crates/bijux-dev-atlas/tests/fixtures/configs-mini/configs/docs/index.md"
     },
     {
       "crate": null,
@@ -1388,7 +1388,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "docker/CONTRACT.md"
+      "from": "docker/contract.md"
     },
     {
       "crate": null,
@@ -2773,7 +2773,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "make/CONTRACT.md"
+      "from": "make/contract.md"
     },
     {
       "crate": null,
@@ -2783,7 +2783,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/CONTRACT.md"
+      "from": "ops/contract.md"
     },
     {
       "crate": null,
@@ -2793,7 +2793,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/datasets/CONTRACT.md"
+      "from": "ops/datasets/contract.md"
     },
     {
       "crate": null,
@@ -2803,7 +2803,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/e2e/CONTRACT.md"
+      "from": "ops/e2e/contract.md"
     },
     {
       "crate": null,
@@ -2813,7 +2813,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/env/CONTRACT.md"
+      "from": "ops/env/contract.md"
     },
     {
       "crate": null,
@@ -2823,7 +2823,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/inventory/CONTRACT.md"
+      "from": "ops/inventory/contract.md"
     },
     {
       "crate": null,
@@ -2833,7 +2833,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/k8s/CONTRACT.md"
+      "from": "ops/k8s/contract.md"
     },
     {
       "crate": null,
@@ -2843,7 +2843,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/load/CONTRACT.md"
+      "from": "ops/load/contract.md"
     },
     {
       "crate": null,
@@ -2853,7 +2853,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/observe/CONTRACT.md"
+      "from": "ops/observe/contract.md"
     },
     {
       "crate": null,
@@ -2863,7 +2863,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/report/CONTRACT.md"
+      "from": "ops/report/contract.md"
     },
     {
       "crate": null,
@@ -2873,7 +2873,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/schema/CONTRACT.md"
+      "from": "ops/schema/contract.md"
     },
     {
       "crate": null,
@@ -2883,7 +2883,7 @@
     {
       "crate": null,
       "doc_type": "concept",
-      "from": "ops/stack/CONTRACT.md"
+      "from": "ops/stack/contract.md"
     },
     {
       "crate": null,
