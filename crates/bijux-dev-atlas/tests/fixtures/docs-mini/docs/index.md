@@ -1,6 +1,6 @@
 # Index
 
-- [Start Here](START_HERE.md#start-here)
+- [Start Here](start-here.md#start-here)
 - [Intro](sub/intro.md#intro)
 - [Commands Reference](reference/commands.md#commands-reference)
 - [Schemas Reference](reference/schemas.md#schemas-reference)

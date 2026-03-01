@@ -1,3 +1,3 @@
 # Intro
 
-Return to [Start Here](../START_HERE.md#start-here).
+Return to [Start Here](../start-here.md#start-here).

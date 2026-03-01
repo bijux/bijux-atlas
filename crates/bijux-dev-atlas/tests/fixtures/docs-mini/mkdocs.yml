@@ -2,7 +2,7 @@ site_name: docs-mini
 docs_dir: docs
 nav:
   - Home: index.md
-  - Start Here: START_HERE.md
+  - Start Here: start-here.md
   - Reference:
       - Commands: reference/commands.md
       - Schemas: reference/schemas.md

@@ -33,7 +33,7 @@ pub(crate) fn docs_validate_payload(
             "DOCS_NAV_ERROR: mkdocs.yml docs_dir must be `docs`, got `{docs_dir}`"
         ));
     }
-    for required in ["INDEX.md", "START_HERE.md"] {
+    for required in ["index.md", "start-here.md"] {
         if !ctx.docs_root.join(required).exists() {
             issues.errors.push(format!(
                 "DOCS_STRUCTURE_ERROR: missing required docs entrypoint `docs/{required}`"
