@@ -18,10 +18,14 @@ jobs:
       CARGO_TARGET_DIR: ${{ github.workspace }}/.cache/cargo/target/docker-gate
       RUSTUP_HOME: ${{ github.workspace }}/.cache/rustup/docker-gate
       RUN_ID: docker-gate-${{ github.run_id }}-${{ github.run_attempt }}
+      ISO_ROOT: artifacts/isolates/docker-gate
+      TMPDIR: artifacts/isolates/docker-gate/tmp
+      TMP: artifacts/isolates/docker-gate/tmp
+      TEMP: artifacts/isolates/docker-gate/tmp
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       - name: Install rust toolchain
-        uses: dtolnay/rust-toolchain@1.84.1
+        uses: dtolnay/rust-toolchain@631a55b12751854ce901bb631d5902ceb48146f7
       - name: Restore cargo registry cache
         id: cache-registry
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
@@ -40,7 +44,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          rm -rf "artifacts/${RUN_ID}"
           mkdir -p "artifacts/${RUN_ID}"
+          mkdir -p "${ISO_ROOT}" "${TMPDIR}"
           cargo run -q -p bijux-dev-atlas -- contracts self-check --format json > "artifacts/${RUN_ID}/contracts-self-check.json" 2> "artifacts/${RUN_ID}/contracts-self-check.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts docker --mode static --format human > "artifacts/${RUN_ID}/docker-contracts.stdout.log" 2> "artifacts/${RUN_ID}/docker-contracts.stderr.log"
       - name: Save cargo registry cache
