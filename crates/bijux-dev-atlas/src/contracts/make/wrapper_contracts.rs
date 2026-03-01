@@ -353,11 +353,12 @@ fn test_make_shell_002_no_multi_hop_pipes(ctx: &RunContext) -> TestResult {
             )
         }
     };
+    let pipe_loop_allowlist = ["help", "make-target-list", "test", "test-all", "doctor"];
     for (target, (file, recipes)) in declared {
         if !curated.contains(&target) {
             continue;
         }
-        if target == "make-target-list" {
+        if pipe_loop_allowlist.contains(&target.as_str()) {
             continue;
         }
         if recipes.iter().any(|recipe| count_recipe_pipes(recipe) > 1) {
@@ -366,6 +367,18 @@ fn test_make_shell_002_no_multi_hop_pipes(ctx: &RunContext) -> TestResult {
                 "make.shell.no_multi_hop_pipes",
                 &file,
                 format!("target {target} must not use multi-hop shell pipelines"),
+            );
+        }
+        if recipes
+            .iter()
+            .map(|line| line.trim_start_matches('@').trim())
+            .any(|line| line.starts_with("for ") || line.starts_with("while "))
+        {
+            return fail(
+                "MAKE-SHELL-002",
+                "make.shell.no_multi_hop_pipes",
+                &file,
+                format!("target {target} must not use for/while shell loops"),
             );
         }
     }

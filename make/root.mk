@@ -32,6 +32,7 @@ CURATED_TARGETS := \
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
 	@$(DEV_ATLAS) make surface --format text
+	@printf '%s\n' "docs: docs/development/tooling/make.md" "contracts: make/CONTRACT.md"
 
 _internal-list: ## Print curated make target names
 	@$(DEV_ATLAS) make surface --format text
@@ -48,11 +49,15 @@ _internal-surface: ## Print make surface and docs pointers for Rust control plan
 	@printf '%s\n' "Docs: docs/development/tooling/dev-atlas-ops.md docs/development/tooling/dev-atlas-docs.md"
 
 doctor: ## Run Rust control-plane doctor suite as JSON
-	@printf '%s\n' "run: $(DEV_ATLAS) check repo-doctor --format json"
+	@printf '%s\n' "run: $(DEV_ATLAS) check run --suite repo_required --include-internal --include-slow --allow-git --format json"
 	@$(MAKE) -s make-contract-check
 	@mkdir -p $(ARTIFACT_ROOT)/doctor/$(RUN_ID)
+	@$(DEV_ATLAS) check run --suite repo_required --include-internal --include-slow --allow-git --format json --out $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/repo-hygiene-report.json >/dev/null
 	@$(DEV_ATLAS) check tree-budgets --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/tree-budgets.json >/dev/null
 	@$(DEV_ATLAS) check repo-doctor --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
+	@printf '{\n  "schema_version": 1,\n  "text": "repo touched paths report",\n  "touched_paths": [\n' > $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/touched-paths-report.json
+	@git status --porcelain | awk '{print $$2}' | LC_ALL=C sort -u | awk 'BEGIN{first=1} { if (!first) printf(",\\n"); first=0; printf("    \"%s\"", $$0)} END{printf("\\n") }' >> $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/touched-paths-report.json
+	@printf '  ]\n}\n' >> $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/touched-paths-report.json
 
 clean: ## Clean ephemeral artifacts through the control plane
 	@$(DEV_ATLAS) artifacts clean --allow-write --format text

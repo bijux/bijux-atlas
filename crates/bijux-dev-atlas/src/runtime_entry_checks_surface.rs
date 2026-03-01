@@ -6,6 +6,7 @@ fn normalize_suite_name(raw: &str) -> Result<&str, String> {
         "deep" => Ok("deep"),
         "required" => Ok("ci_pr"),
         "repo:required" => Ok("repo_required"),
+        "repo:doctor" => Ok("repo_required"),
         "docs:required" => Ok("docs_required"),
         "configs:required" => Ok("configs_required"),
         "make:required" => Ok("make_required"),

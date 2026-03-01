@@ -384,6 +384,20 @@ fn test_make_surface_005_delegate_only(ctx: &RunContext) -> TestResult {
                 || recipe.contains("$(MAKE)")
         });
         if has_delegate {
+            let cargo_allowed = ["fmt", "lint", "test", "test-all"];
+            if recipes.iter().any(|recipe| recipe_invokes_cargo(recipe))
+                && !cargo_allowed.contains(&target.as_str())
+            {
+                return failure(
+                    "MAKE-SURFACE-005",
+                    "make.surface.delegate_only",
+                    file,
+                    format!(
+                        "curated target {target} must not invoke cargo directly; route through $(DEV_ATLAS) (allowed direct cargo targets: {})",
+                        cargo_allowed.join(", ")
+                    ),
+                );
+            }
             continue;
         }
         return failure(
