@@ -38,4 +38,11 @@ related:
 
 - `bijux dev atlas make list --format json`
 - `bijux dev atlas make explain <target> --format json`
+- `make make-fast`
 - `make help`
+
+## Failure triage
+
+1. Run `make make-fast`.
+2. Run `make explain TARGET=<failing-target>`.
+3. If still failing, run `make lint-make` then `make doctor`.

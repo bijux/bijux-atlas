@@ -25,7 +25,7 @@ CURATED_TARGETS := \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	help \
 	k8s-render k8s-validate \
-	lint-make make-target-list \
+	lint-make make-fast make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	root-surface-explain \
 	stack-down stack-up
@@ -67,6 +67,11 @@ artifacts-clean: ## Clean ephemeral artifacts through the control plane
 
 lint-make: ## Run make contracts through the control plane
 	@$(DEV_ATLAS) contracts make --mode static --format text
+
+make-fast: ## Run the fastest make-focused contract lane
+	@printf '%s\n' "run: $(DEV_ATLAS) contracts make --mode static --profile ci --format json"
+	@mkdir -p $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)
+	@$(DEV_ATLAS) contracts make --mode static --profile ci --format json --out $(ARTIFACT_ROOT)/make-fast/$(RUN_ID)/report.json >/dev/null
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
 	@$(DEV_ATLAS) check run --domain make --format json
@@ -110,4 +115,4 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json --out $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor root-surface-explain k8s-render k8s-validate lint-make stack-up stack-down ops-fast ops-pr ops-nightly
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor root-surface-explain k8s-render k8s-validate lint-make make-fast stack-up stack-down ops-fast ops-pr ops-nightly

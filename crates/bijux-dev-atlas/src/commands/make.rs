@@ -2,6 +2,7 @@
 
 use crate::cli::{MakeCommand, MakeExplainArgs, MakeVerifyArgs};
 use crate::{emit_payload, resolve_repo_root};
+use std::collections::BTreeMap;
 use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -74,6 +75,12 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
     }
     let targets = load_curated_targets(&repo_root)?;
     let known = targets.iter().any(|row| row == target);
+    let metadata = load_target_metadata(&repo_root, target).unwrap_or_default();
+    let recipe_lines = load_target_recipe_lines(&repo_root, target).unwrap_or_default();
+    let artifact_paths = recipe_lines
+        .iter()
+        .filter_map(|line| extract_artifact_path(line))
+        .collect::<Vec<_>>();
     let payload = if known {
         serde_json::json!({
             "schema_version": 1,
@@ -82,6 +89,14 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
             "known": true,
             "text": format!("{target} is a curated make wrapper target"),
             "guidance": "This target is a thin dispatcher. Keep orchestration in bijux dev atlas commands.",
+            "what_it_runs": recipe_lines,
+            "artifacts": artifact_paths,
+            "where_to_read": [
+                "docs/development/tooling/make.md",
+                "make/CONTRACT.md",
+            ],
+            "defined_in": metadata.get("defined_in").cloned().unwrap_or_default(),
+            "visibility": metadata.get("visibility").cloned().unwrap_or_default(),
             "source": "make/root.mk:CURATED_TARGETS",
             "duration_ms": started.elapsed().as_millis() as u64,
         })
@@ -93,6 +108,10 @@ fn run_explain(args: MakeExplainArgs, started: Instant) -> Result<(String, i32),
             "known": false,
             "text": format!("{target} is not part of the curated make surface"),
             "hint": "Use `bijux dev atlas make list --format json` to inspect supported targets.",
+            "where_to_read": [
+                "docs/development/tooling/make.md",
+                "make/CONTRACT.md",
+            ],
             "source": "make/root.mk:CURATED_TARGETS",
             "duration_ms": started.elapsed().as_millis() as u64,
         })
@@ -294,6 +313,82 @@ fn load_curated_targets(repo_root: &Path) -> Result<Vec<String>, String> {
         return Err("CURATED_TARGETS is missing or empty".to_string());
     }
     Ok(targets)
+}
+
+fn load_target_metadata(repo_root: &Path, target: &str) -> Result<BTreeMap<String, Vec<String>>, String> {
+    let registry_path = repo_root.join("configs/ops/make-target-registry.json");
+    let text = fs::read_to_string(&registry_path)
+        .map_err(|err| format!("read {} failed: {err}", registry_path.display()))?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|err| format!("parse {} failed: {err}", registry_path.display()))?;
+    let mut output = BTreeMap::new();
+    let Some(rows) = value.get("targets").and_then(|v| v.as_array()) else {
+        return Ok(output);
+    };
+    for row in rows {
+        if row.get("name").and_then(|v| v.as_str()) != Some(target) {
+            continue;
+        }
+        let defined_in = row
+            .get("defined_in")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_str().map(ToString::to_string))
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        let visibility = row
+            .get("visibility")
+            .and_then(|v| v.as_str())
+            .map(|v| vec![v.to_string()])
+            .unwrap_or_default();
+        output.insert("defined_in".to_string(), defined_in);
+        output.insert("visibility".to_string(), visibility);
+        break;
+    }
+    Ok(output)
+}
+
+fn load_target_recipe_lines(repo_root: &Path, target: &str) -> Result<Vec<String>, String> {
+    let root_mk = repo_root.join("make/root.mk");
+    let text =
+        fs::read_to_string(&root_mk).map_err(|err| format!("read {} failed: {err}", root_mk.display()))?;
+    let mut recipes: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    let mut current: Option<String> = None;
+    for line in text.lines() {
+        let trimmed = line.trim_end();
+        if trimmed.starts_with('\t') {
+            if let Some(name) = current.as_ref() {
+                recipes
+                    .entry(name.clone())
+                    .or_default()
+                    .push(trimmed.trim_start().to_string());
+            }
+            continue;
+        }
+        if trimmed.trim().is_empty() || trimmed.trim_start().starts_with('#') {
+            continue;
+        }
+        let token = trimmed.trim_start();
+        if let Some((head, tail)) = token.split_once(':') {
+            if !head.trim().is_empty() && !tail.starts_with('=') {
+                current = Some(head.trim().to_string());
+            }
+        }
+    }
+    Ok(recipes.get(target).cloned().unwrap_or_default())
+}
+
+fn extract_artifact_path(recipe_line: &str) -> Option<String> {
+    if let Some(start) = recipe_line.find("$(ARTIFACT_ROOT)/") {
+        let rest = &recipe_line[start..];
+        let end = rest
+            .find(char::is_whitespace)
+            .unwrap_or(rest.len());
+        return Some(rest[..end].trim_matches('"').to_string());
+    }
+    None
 }
 
 fn extract_workspace_lints(cargo_toml: &str) -> String {

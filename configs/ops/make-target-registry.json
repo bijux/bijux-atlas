@@ -815,6 +815,14 @@
       "used_in": []
     },
     {
+      "name": "make-fast",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "make-target-list",
       "defined_in": [
         "make/public.mk"

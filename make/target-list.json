@@ -28,6 +28,7 @@
     "k8s-render",
     "k8s-validate",
     "lint-make",
+    "make-fast",
     "make-target-list",
     "ops-contracts",
     "ops-contracts-effect",
