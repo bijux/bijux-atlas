@@ -178,6 +178,19 @@ mod tests {
             panic_artifact["panics"][0]["payload"].as_str(),
             Some("artifact boom")
         );
+        let meta_artifact: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(artifacts_root.join("meta.json")).expect("read meta artifact"),
+        )
+        .expect("parse meta artifact");
+        assert_eq!(meta_artifact["gate"].as_str(), Some("contracts"));
+        assert_eq!(meta_artifact["domain"].as_str(), Some("docker"));
+        let summary_artifact: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(artifacts_root.join("summary.json"))
+                .expect("read summary artifact"),
+        )
+        .expect("parse summary artifact");
+        assert_eq!(summary_artifact["gate"].as_str(), Some("contracts"));
+        assert_eq!(summary_artifact["panic_count"].as_u64(), Some(1));
         let _ = fs::remove_dir_all(&artifacts_root);
     }
 

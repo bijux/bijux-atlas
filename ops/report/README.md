@@ -25,3 +25,12 @@ Report assembly and evidence publishing across stack, observe, load, datasets, a
 - `make ops-report`
 - `make ops-readiness-scorecard`
 - `make ops-incident-repro-kit`
+
+## Run Evidence
+
+Operational and contract evidence is ephemeral and lives under `artifacts/run/<run_id>/`.
+
+- Gate outputs: `artifacts/run/<run_id>/gates/<gate_name>/`
+- Gate metadata: `meta.json`
+- Gate counts and outcome summary: `summary.json`
+- Local retention: `bijux dev atlas artifacts gc --allow-write`

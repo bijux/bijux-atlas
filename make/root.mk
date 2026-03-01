@@ -21,7 +21,7 @@ include make/k8s.mk
 include make/verification.mk
 
 CURATED_TARGETS := \
-	build clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-root \
+	artifacts-clean build clean contracts contracts-all contracts-changed contracts-ci contracts-configs contracts-docker contracts-docs contracts-fast contracts-help contracts-json contracts-make contracts-merge contracts-ops contracts-pr contracts-release contracts-root \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	fmt help \
 	k8s-render k8s-validate \
@@ -56,6 +56,9 @@ doctor: ## Run Rust control-plane doctor suite as JSON
 	@$(DEV_ATLAS) check repo-doctor --format json | tee $(ARTIFACT_ROOT)/doctor/$(RUN_ID)/report.json >/dev/null
 
 clean: ## Clean ephemeral artifacts through the control plane
+	@$(DEV_ATLAS) artifacts clean --allow-write --format text
+
+artifacts-clean: ## Clean ephemeral artifacts through the control plane
 	@$(DEV_ATLAS) artifacts clean --allow-write --format text
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
@@ -100,4 +103,4 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json | tee $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report clean doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly

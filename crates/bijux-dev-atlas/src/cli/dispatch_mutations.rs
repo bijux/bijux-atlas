@@ -35,6 +35,7 @@ pub(super) fn force_json_output(command: &mut Command) {
 fn force_json_artifacts(command: &mut ArtifactsCommand) {
     match command {
         ArtifactsCommand::Clean(common) => common.format = FormatArg::Json,
+        ArtifactsCommand::Gc(args) => args.common.format = FormatArg::Json,
     }
 }
 
@@ -363,6 +364,7 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
         },
         Command::Artifacts { command } => match command {
             ArtifactsCommand::Clean(common) => common.repo_root = Some(root.clone()),
+            ArtifactsCommand::Gc(args) => args.common.repo_root = Some(root.clone()),
         },
         Command::Ops { command } => match command {
             OpsCommand::List(common)

@@ -9,6 +9,7 @@ use super::FormatArg;
 #[derive(Subcommand, Debug)]
 pub enum ArtifactsCommand {
     Clean(ArtifactsCommonArgs),
+    Gc(ArtifactsGcArgs),
 }
 
 #[derive(Args, Debug, Clone)]
@@ -21,6 +22,14 @@ pub struct ArtifactsCommonArgs {
     pub out: Option<PathBuf>,
     #[arg(long, default_value_t = false)]
     pub allow_write: bool,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ArtifactsGcArgs {
+    #[command(flatten)]
+    pub common: ArtifactsCommonArgs,
+    #[arg(long, default_value_t = 5)]
+    pub keep_last: usize,
 }
 
 #[derive(Subcommand, Debug)]

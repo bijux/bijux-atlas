@@ -248,6 +248,44 @@ pub fn run(
             .map_err(|e| format!("encode contracts status failed: {e}"))?,
         )
         .map_err(|e| format!("write {} failed: {e}", status_path.display()))?;
+        let meta_path = out_dir.join("meta.json");
+        std::fs::write(
+            &meta_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "gate": "contracts",
+                "domain": domain,
+                "lane": report.lane.as_str(),
+                "mode": report.mode.to_string(),
+                "run_id": report.metadata.run_id,
+                "commit_sha": report.metadata.commit_sha,
+                "dirty_tree": report.metadata.dirty_tree,
+                "ci": report.metadata.ci,
+                "success": report.exit_code() == 0,
+                "duration_ms": report.duration_ms,
+            }))
+            .map_err(|e| format!("encode contracts meta failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", meta_path.display()))?;
+        let summary_path = out_dir.join("summary.json");
+        std::fs::write(
+            &summary_path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "schema_version": 1,
+                "gate": "contracts",
+                "domain": domain,
+                "contracts": report.total_contracts(),
+                "tests": report.total_tests(),
+                "pass": report.pass_count(),
+                "fail": report.fail_count(),
+                "skip": report.skip_count(),
+                "error": report.error_count(),
+                "panic_count": report.panics.len(),
+                "success": report.exit_code() == 0,
+            }))
+            .map_err(|e| format!("encode contracts summary failed: {e}"))?,
+        )
+        .map_err(|e| format!("write {} failed: {e}", summary_path.display()))?;
         let panics_path = out_dir.join("panics.json");
         std::fs::write(
             &panics_path,

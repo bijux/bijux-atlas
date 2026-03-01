@@ -544,13 +544,10 @@ pub(super) fn run_one(
         ContractsProfileArg::Ci => "ci",
     };
     let artifacts_root = common.artifacts_root.clone().unwrap_or_else(|| {
-        repo_root
-            .join("artifacts")
-            .join("contracts")
+        canonical_contracts_gate_root(repo_root, &run_id)
             .join(descriptor.name)
             .join(profile)
             .join(mode.to_string())
-            .join(&run_id)
     });
     let previous_profile = std::env::var_os("BIJUX_CONTRACTS_PROFILE");
     std::env::set_var("BIJUX_CONTRACTS_PROFILE", profile);
@@ -587,4 +584,13 @@ pub(super) fn run_one(
         std::env::remove_var("BIJUX_CONTRACTS_PROFILE");
     }
     result
+}
+
+fn canonical_contracts_gate_root(repo_root: &Path, run_id: &str) -> std::path::PathBuf {
+    repo_root
+        .join("artifacts")
+        .join("run")
+        .join(run_id)
+        .join("gates")
+        .join("contracts")
 }
