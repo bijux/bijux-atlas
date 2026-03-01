@@ -1,6 +1,8 @@
-# Contracts schemas
+# Config Contracts
 
-- Owner: `platform`
-- Purpose: hold canonical JSON schemas for control-plane outputs and contract reports.
-- Consumers: `bijux-dev-atlas`, CI artifact validation, and generated report checks.
-- Update workflow: update schema files with the producing command change, then rerun schema and contract validation.
+`configs/contracts/` is the canonical SSOT location for repository configuration schemas and contract output schemas.
+
+Rules:
+- Add or update schemas here, not in feature subtrees.
+- Keep schema IDs stable and versioned.
+- Keep JSON deterministic (pretty, sorted where required by contract).

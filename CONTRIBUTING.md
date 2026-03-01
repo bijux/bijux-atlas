@@ -1,28 +1,29 @@
 # Contributing
 
 ## Scope
-Bijux Atlas is shipped as a Rust workspace with two primary surfaces:
-- `bijux-atlas`: runtime product crates (core, model, query, store, ingest, api, server, cli)
-- `bijux-dev-atlas`: control-plane crates for checks, docs/config governance, and ops orchestration
+Bijux Atlas ships two command surfaces:
+- `bijux atlas` for runtime product actions
+- `bijux dev atlas` for repo checks, contracts, docs, configs, and ops governance
 
-## Development Contract
-- Use only `make` targets or `bijux dev atlas ...` commands.
-- Keep outputs deterministic and write artifacts only under `artifacts/`.
-- Update docs/contracts when command, schema, policy, API, or output surfaces change.
-- Keep commit messages in Conventional/Commitizen format with clear intent.
+## Repo Laws
+- RL-001: Executable script sources are forbidden unless allowlisted fixtures.
+- RL-002: Make is a thin dispatcher; orchestration belongs in Rust control-plane code.
+- RL-003: `artifacts/` is runtime output and never tracked.
+- RL-004: Root directories and root markdown files are explicit allowlists.
+- RL-005: Duplicate SSOT registries are forbidden.
+- RL-006: Generated outputs must be deterministic.
+- RL-007: Repo-law records require `id`, `severity`, and `owner`.
+- RL-008: PR required suite must include all defined P0 checks.
+- RL-009: Defaults for build/docs/helm-template flows must work.
+- RL-010: New root files require explicit allowlist approval.
+
+Canonical source: `docs/_internal/contracts/repo-laws.json`.
 
 ## Local Validation
-Run before opening a pull request:
 - `make fmt`
 - `make lint`
 - `make test`
-- `make audit`
 - `make check`
 
-## Pull Request Requirements
-- Include focused, logical commits.
-- Include validation evidence in PR description.
-- Keep documentation and registry in lockstep.
-
 ## Ownership
-See `.github/CODEOWNERS` and `docs/governance/DOCS_OWNERSHIP.md`.
+See `.github/CODEOWNERS` and `REPO_MAP.md`.

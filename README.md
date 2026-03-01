@@ -1,37 +1,14 @@
 # bijux-atlas
 
-Deterministic genomics data platform and Rust-native control plane.
+Deterministic genomics platform with a Rust-native control plane.
 
-## Product Narrative
-
-`bijux-atlas` provides stable data contracts, query/runtime crates, and an operational control plane designed for repeatable builds, deterministic outputs, and policy-driven governance.
-
-## What You Get
-
-- Atlas core crates for model, ingest, query, store, API, server, and CLI surfaces.
-- Development control plane via `bijux dev atlas ...` for checks, docs, configs, and ops contracts.
-- Deterministic artifact and report workflows with explicit schema versions.
-
-## Quick Start
-
-Start with the canonical onboarding page: `docs/start-here.md`
-
-## Documentation Entrypoints
-
-- Product docs: `docs/index.md`
-- Getting started: `docs/start-here.md`
+## Golden Paths
+- Start here: `docs/start-here.md`
+- Runtime docs: `docs/index.md`
 - Operations docs: `docs/operations/index.md`
 - Reference docs: `docs/reference/index.md`
+- Contribution rules: `CONTRIBUTING.md`
+- Repository ownership map: `REPO_MAP.md`
 
-## Repository Surfaces
-
-- `crates/` Rust workspace crates
-- `configs/` configuration and schema SSOT
-- `ops/` operational manifests and contracts
-- `docs/` canonical documentation tree
-- `makefiles/` curated make target implementations
-- `docker/` container contracts
-
-## License
-
-Apache License 2.0. See `LICENSE` and `docs/root/LICENSE_EXPLANATION.md`.
+## Rule
+Keep this README short: links and golden paths only.

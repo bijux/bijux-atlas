@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "repo_laws",
+  "laws": [
+    {"id": "RL-001", "severity": "must", "owner": "@bijan", "title": "no executable script sources outside allowlist"},
+    {"id": "RL-002", "severity": "must", "owner": "@bijan", "title": "make remains a thin dispatcher"},
+    {"id": "RL-003", "severity": "must", "owner": "@bijan", "title": "artifacts directory is never tracked"},
+    {"id": "RL-004", "severity": "must", "owner": "@bijan", "title": "root topology remains allowlisted"},
+    {"id": "RL-005", "severity": "must", "owner": "@bijan", "title": "no duplicate ssot registries"},
+    {"id": "RL-006", "severity": "must", "owner": "@bijan", "title": "generated outputs are deterministic"},
+    {"id": "RL-007", "severity": "must", "owner": "@bijan", "title": "law metadata completeness"},
+    {"id": "RL-008", "severity": "must", "owner": "@bijan", "title": "pr suite contains p0 checks"},
+    {"id": "RL-009", "severity": "must", "owner": "@bijan", "title": "defaults for build docs helm are valid"},
+    {"id": "RL-010", "severity": "must", "owner": "@bijan", "title": "root file creation requires allowlist"}
+  ]
+}
