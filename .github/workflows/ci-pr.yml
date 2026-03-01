@@ -725,12 +725,172 @@ jobs:
               "directory_exception_count": len(exceptions)
           }, indent=2) + "\n")
           PY
+          python - <<'PY'
+          import json, os, pathlib, re
+          root = pathlib.Path(".")
+          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
+          docs_root = root / "docs"
+          spine_pages = [
+              "docs/index.md",
+              "docs/start-here.md",
+              "docs/product/what-is-bijux-atlas.md",
+              "docs/architecture/index.md",
+              "docs/operations/index.md",
+              "docs/control-plane/index.md",
+              "docs/api/index.md",
+              "docs/development/index.md",
+              "docs/reference/index.md",
+          ]
+          required_glossary_terms = [
+              "Atlas",
+              "Contract",
+              "Reader spine",
+              "Runbook",
+              "Reference",
+              "Control plane",
+              "Reproducibility",
+              "Release",
+              "Dataset",
+          ]
+          # 1) Every published docs directory must expose index.md.
+          index_violations = []
+          for d in sorted(docs_root.rglob("*")):
+              if not d.is_dir():
+                  continue
+              rel = d.as_posix()
+              if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
+                  continue
+              entries = [p for p in d.iterdir() if not p.name.startswith(".")]
+              if not entries:
+                  continue
+              if not (d / "index.md").exists():
+                  index_violations.append(rel)
+          if index_violations:
+              raise SystemExit("docs directory index contract failed; missing index.md in: " + ", ".join(index_violations[:20]))
+          # 2) Home page keeps exactly three curated reader tracks.
+          home = (root / "docs/index.md").read_text()
+          m = re.search(r"## Choose your path\\n\\n(?P<body>.*?)(\\n## |\\Z)", home, flags=re.S)
+          if not m:
+              raise SystemExit("docs/index.md must include a `## Choose your path` section")
+          track_lines = [ln.strip()[2:].strip() for ln in m.group("body").splitlines() if ln.strip().startswith("- ")]
+          expected_tracks = [
+              "API user: begin with API",
+              "Operator: begin with Operations",
+              "Contributor: begin with Development",
+          ]
+          if track_lines != expected_tracks:
+              raise SystemExit(f"docs/index.md choose-your-path contract failed: expected {expected_tracks}, got {track_lines}")
+          # 3) Architecture / Operations / Control-plane must reference the product narrative spine.
+          expected_spine_link = "../product/what-is-bijux-atlas.md"
+          spine_link_violations = []
+          for rel in ("docs/architecture/index.md", "docs/operations/index.md", "docs/control-plane/index.md"):
+              txt = (root / rel).read_text()
+              if expected_spine_link not in txt:
+                  spine_link_violations.append(rel)
+          if spine_link_violations:
+              raise SystemExit("spine reference contract failed; missing product narrative link in: " + ", ".join(spine_link_violations))
+          # 4) Glossary must define required terms and spine pages must link glossary.
+          glossary_text = (root / "docs/glossary.md").read_text()
+          defined = set(re.findall(r"^- `([^`]+)`:", glossary_text, flags=re.M))
+          missing_terms = [t for t in required_glossary_terms if t not in defined]
+          if missing_terms:
+              raise SystemExit("glossary contract failed; missing required terms: " + ", ".join(missing_terms))
+          glossary_link_violations = []
+          for rel in spine_pages:
+              txt = (root / rel).read_text()
+              if "glossary.md" not in txt:
+                  glossary_link_violations.append(rel)
+          if glossary_link_violations:
+              raise SystemExit("spine glossary-link contract failed: " + ", ".join(glossary_link_violations))
+          # 5) Orphan report with where-to-link hints.
+          all_docs = []
+          for path in docs_root.rglob("*.md"):
+              rel = path.as_posix()
+              if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
+                  continue
+              all_docs.append(rel)
+          all_set = set(all_docs)
+          links = {rel: set() for rel in all_docs}
+          md_link_re = re.compile(r"\\[[^\\]]+\\]\\(([^)]+)\\)")
+          for rel in all_docs:
+              src_path = root / rel
+              text = src_path.read_text()
+              for target in md_link_re.findall(text):
+                  target = target.split("#")[0].strip()
+                  if not target or target.startswith("http://") or target.startswith("https://") or target.startswith("mailto:"):
+                      continue
+                  cand = (src_path.parent / target).resolve()
+                  try:
+                      rel_target = cand.relative_to(root).as_posix()
+                  except Exception:
+                      continue
+                  if rel_target in all_set:
+                      links[rel].add(rel_target)
+          reachable = set()
+          queue = ["docs/index.md", "docs/start-here.md"]
+          while queue:
+              cur = queue.pop(0)
+              if cur in reachable:
+                  continue
+              reachable.add(cur)
+              for nxt in sorted(links.get(cur, [])):
+                  if nxt not in reachable:
+                      queue.append(nxt)
+          orphans = sorted([p for p in all_docs if p not in reachable])
+          orphan_hints = []
+          for orphan in orphans:
+              parent = pathlib.Path(orphan).parent.as_posix()
+              parent_index = f"{parent}/index.md" if parent != "docs" else "docs/index.md"
+              if parent_index == orphan:
+                  parent_index = "docs/index.md"
+              orphan_hints.append({
+                  "path": orphan,
+                  "suggested_link_source": parent_index,
+                  "reason": "orphan page is unreachable from docs/index.md or docs/start-here.md",
+              })
+          # 6) Duplicate topic collisions (top 20 by Jaccard similarity).
+          tokens = {}
+          for rel in all_docs:
+              text = (root / rel).read_text()
+              words = re.findall(r"[A-Za-z0-9]{5,}", text.lower())
+              tokens[rel] = set(words)
+          collisions = []
+          docs_list = sorted(all_docs)
+          for i, left in enumerate(docs_list):
+              for right in docs_list[i + 1:]:
+                  lt = tokens[left]
+                  rt = tokens[right]
+                  if not lt or not rt:
+                      continue
+                  inter = len(lt & rt)
+                  if inter == 0:
+                      continue
+                  union = len(lt | rt)
+                  score = inter / union
+                  if score >= 0.35:
+                      collisions.append({"left": left, "right": right, "similarity": round(score, 3), "shared_token_count": inter})
+          collisions.sort(key=lambda row: (-row["similarity"], row["left"], row["right"]))
+          top_collisions = collisions[:20]
+          payload = {
+              "schema_version": 1,
+              "kind": "docs_navigation_and_semantics_contracts",
+              "status": "ok",
+              "directory_index_missing": [],
+              "orphan_hints": orphan_hints,
+              "duplicate_topic_collisions_top20": top_collisions,
+              "three_reader_tracks": expected_tracks,
+              "spine_pages_checked": spine_pages,
+              "required_glossary_terms": required_glossary_terms,
+          }
+          (report_root / "docs-navigation-and-semantics-contracts.json").write_text(json.dumps(payload, indent=2) + "\\n")
+          PY
+          cargo run -q -p bijux-dev-atlas -- docs shrink-report --strict --format json > "${report_root}/docs-shrink-report.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
-          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n- docs navigation and semantics contracts: %s\n- docs shrink report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" "${report_root}/docs-navigation-and-semantics-contracts.json" "${report_root}/docs-shrink-report.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"
           fi
