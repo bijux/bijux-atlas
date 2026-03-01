@@ -3,7 +3,7 @@
   "generated_by": "bijux dev atlas ops docs links-report --write-example",
   "links": [
     {
-      "doc": "docs/_generated/docs-inventory.md",
+      "doc": "docs/_internal/generated/docs-inventory.md",
       "ops_paths": [
         "ops/CONTRACT.md",
         "ops/CONTROL_PLANE.md",
@@ -101,7 +101,7 @@
       ]
     },
     {
-      "doc": "docs/_generated/topic-index.md",
+      "doc": "docs/_internal/generated/topic-index.md",
       "ops_paths": [
         "ops/CONTRACT.md",
         "ops/CONTROL_PLANE.md",
