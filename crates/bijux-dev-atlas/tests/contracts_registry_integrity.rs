@@ -64,6 +64,10 @@ fn explain_json(domain: &str, contract_id: &str) -> serde_json::Value {
 fn output_sha256(args: &[&str]) -> String {
     let output = Command::new(env!("CARGO_BIN_EXE_bijux-dev-atlas"))
         .current_dir(repo_root())
+        .env("NO_COLOR", "1")
+        .env_remove("FORCE_COLOR")
+        .env_remove("CLICOLOR_FORCE")
+        .env_remove("CARGO_TERM_COLOR")
         .args(args)
         .output()
         .expect("contracts command");
@@ -86,7 +90,7 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
                 "--format",
                 "human",
             ],
-            "35a543af521212d09225eb50e483cfb691c37bc943721ee7b23d2add9c4d5149",
+            "f2bf1766b79fe9f8db7bba92415e16a8f13c3deaae40fd64e74ed0616191e37d",
         ),
         (
             vec![
@@ -97,15 +101,15 @@ fn human_output_hashes_are_stable_for_static_contract_runs() {
                 "--format",
                 "human",
             ],
-            "48486fb8f45d5f49e00870f408034070d06aaebf984a1b82ab9d8c290b51395b",
+            "05a5055643de148454663c52fffe7587bb3fd4635be5330b02024c25f9d048a3",
         ),
         (
             vec!["contracts", "ops", "--mode", "static", "--format", "human"],
-            "fcbb4914203ecf843fe4a9f1ad4ec7e7a7359f0c10f24e8b2dfa763db427ee1d",
+            "84c1d5264acd9eff032f87e1b3abe373e2c7f122a07aa1d7c30f52a785376e39",
         ),
         (
             vec!["contracts", "make", "--mode", "static", "--format", "human"],
-            "cfad0207cf2c681aa0f23e55e2aac0aa998c5d12ab6a6d0d0407d146bc6c74e5",
+            "77577acf116010abcc62f6b46ec55b006ec151194668a46ed5799c5019214cdd",
         ),
     ];
     for (args, expected) in cases {
