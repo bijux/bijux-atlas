@@ -294,6 +294,99 @@ jobs:
           rg -n "^bijux dev atlas demo quickstart --format json$" docs/start-here.md > /dev/null
           rg -n "Expected output:" docs/start-here.md docs/control-plane/lane-matrix.md > /dev/null
           jq -n '{schema_version:1,kind:"docs_golden_workflow_verification",status:"ok"}' > "${report_root}/docs-golden-workflow-verification.json"
+          # Docs external link allowlist requires expiry and owner for each entry.
+          python - <<'PY'
+          import json, pathlib
+          allow = json.loads(pathlib.Path("configs/docs/external-link-allowlist.json").read_text())
+          entries = allow.get("entries", [])
+          errors = []
+          for i, row in enumerate(entries):
+              if not row.get("pattern"):
+                  errors.append(f"entries[{i}] missing pattern")
+              if not row.get("owner"):
+                  errors.append(f"entries[{i}] missing owner")
+              if not row.get("expires_on"):
+                  errors.append(f"entries[{i}] missing expires_on")
+          if errors:
+              raise SystemExit("docs external-link allowlist contract failed: " + "; ".join(errors))
+          pathlib.Path(__import__("os").environ["REPORT_ROOT"], "docs-link-allowlist-policy.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "docs_link_allowlist_policy",
+              "status": "ok",
+              "entries": len(entries)
+          }, indent=2) + "\n")
+          PY
+          # Alert/runbook and SLO/load/e2e mapping contracts.
+          python - <<'PY'
+          import json, pathlib, re
+          root = pathlib.Path(".")
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          alerts = json.loads((root / "ops/observe/contracts/alerts-contract.json").read_text())["alert_specs"]
+          alert_catalog = {r["id"] for r in json.loads((root / "ops/observe/alert-catalog.json").read_text())["alerts"]}
+          runbook_dir = root / "docs/operations/runbooks"
+          runbook_ids = {p.stem for p in runbook_dir.glob("*.md")}
+          missing_alerts = sorted([k for k in alerts.keys() if k not in alert_catalog])
+          missing_runbooks = sorted([k for k,v in alerts.items() if v.get("runbook_id","") not in runbook_ids])
+          if missing_alerts or missing_runbooks:
+              raise SystemExit(f"alerts/runbooks mapping failed missing_alerts={missing_alerts} missing_runbooks={missing_runbooks}")
+          slo = json.loads((root / "configs/slo/slo.json").read_text())
+          slis = {r["id"] for r in slo["slis"]}
+          slos = slo["slos"]
+          bad_slos = [row["id"] for row in slos if row.get("sli") not in slis]
+          if bad_slos:
+              raise SystemExit("slo mapping failed: unknown sli in " + ", ".join(sorted(bad_slos)))
+          dashboards = list((root / "ops/observe/dashboards").glob("*.json"))
+          if not dashboards:
+              raise SystemExit("slo mapping failed: no dashboards found under ops/observe/dashboards")
+          load_suites = json.loads((root / "ops/load/generated/suites.manifest.json").read_text())["suites"]
+          capacity_doc = root / "docs/operations/load/suites.md"
+          if not capacity_doc.exists():
+              raise SystemExit("load suite mapping failed: docs/operations/load/suites.md missing")
+          no_purpose = [row["name"] for row in load_suites if not row.get("purpose")]
+          if no_purpose:
+              raise SystemExit("load suites missing purpose: " + ", ".join(sorted(no_purpose)))
+          e2e_scenarios = json.loads((root / "ops/e2e/scenarios/scenarios.json").read_text())["scenarios"]
+          triage_doc = root / "docs/operations/runbooks/load-failure-triage.md"
+          if not triage_doc.exists():
+              raise SystemExit("e2e mapping failed: load-failure-triage runbook missing")
+          bad_e2e = [row["id"] for row in e2e_scenarios if not row.get("entrypoint")]
+          if bad_e2e:
+              raise SystemExit("e2e scenarios missing entrypoint: " + ", ".join(sorted(bad_e2e)))
+          (report_root / "ops-alert-runbook-slo-load-e2e-map.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "ops_alert_runbook_slo_load_e2e_map",
+              "status": "ok",
+              "alert_count": len(alerts),
+              "runbook_count": len(runbook_ids),
+              "slo_count": len(slos),
+              "sli_count": len(slis),
+              "load_suite_count": len(load_suites),
+              "e2e_scenario_count": len(e2e_scenarios)
+          }, indent=2) + "\n")
+          PY
+          # Registry contract groups must not be empty (domain and suite).
+          python - <<'PY'
+          import pathlib, tomllib, json
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          reg = tomllib.loads(pathlib.Path("ops/inventory/registry.toml").read_text())
+          checks = reg.get("checks", [])
+          suites = reg.get("suites", [])
+          domain_counts = {}
+          for row in checks:
+              d = row.get("domain","").strip()
+              domain_counts[d] = domain_counts.get(d,0)+1
+          empty_domains = sorted([d for d,c in domain_counts.items() if d and c == 0])
+          empty_suite_refs = sorted([s.get("id","") for s in suites if not s.get("checks")])
+          if empty_domains or empty_suite_refs:
+              raise SystemExit(f"registry empty groups found domains={empty_domains} suites={empty_suite_refs}")
+          (report_root / "registry-group-coverage.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "registry_group_coverage",
+              "status": "ok",
+              "domains": domain_counts,
+              "suite_count": len(suites)
+          }, indent=2) + "\n")
+          PY
           # Make surface must derive from one source.
           jq -r '.public_targets[]' make/target-list.json | sort > "${report_root}/make-public-targets.txt"
           jq -r '.targets[] | select(.visibility=="public") | .name' configs/ops/make-target-registry.json | sort > "${report_root}/make-registry-public-targets.txt"
@@ -456,6 +549,110 @@ jobs:
               pillar_coverage: $pillar
             }
           ' > "${contracts_root}/coverage-summary.json"
+          # Coverage heatmap + missing proof + proof debt ledger + proof-level guardrails.
+          python - <<'PY'
+          import json, pathlib, tomllib
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          contracts_root = report_root / "contracts"
+          reg = tomllib.loads(pathlib.Path("ops/inventory/registry.toml").read_text())
+          checks = reg.get("checks", [])
+          def classify(title: str) -> str:
+              t = title.lower()
+              shape_tokens = ["exists", "present", "path", "naming", "sorted", "format", "size", "budget", "allowlist"]
+              return "shape" if any(tok in t for tok in shape_tokens) else "proof"
+          rows = []
+          by_domain = {}
+          for row in checks:
+              dom = row["domain"]
+              kind = classify(row["title"])
+              rows.append({"id": row["id"], "domain": dom, "title": row["title"], "classification": kind})
+              by_domain.setdefault(dom, {"shape": 0, "proof": 0})
+              by_domain[dom][kind] += 1
+          heatmap = {
+              "schema_version": 1,
+              "kind": "contract_coverage_heatmap",
+              "domains": by_domain
+          }
+          (report_root / "contract-coverage-heatmap.json").write_text(json.dumps(heatmap, indent=2) + "\n")
+          missing_proof = [r for r in rows if r["classification"] == "shape"]
+          (report_root / "missing-proof-report.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "missing_proof_report",
+              "shape_only_checks": missing_proof
+          }, indent=2) + "\n")
+          (report_root / "proof-debt-ledger.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "proof_debt_ledger",
+              "count": len(missing_proof),
+              "items": missing_proof
+          }, indent=2) + "\n")
+          policy = json.loads(pathlib.Path("ops/policy/proof-level-checks.json").read_text())
+          required = set(policy.get("proof_level_check_ids", []))
+          known = {r["id"] for r in rows}
+          missing = sorted(required - known)
+          if len(required) < 10 or missing:
+              raise SystemExit(f"proof-level checks policy invalid len={len(required)} missing={missing}")
+          (report_root / "proof-level-policy-check.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "proof_level_policy_check",
+              "status": "ok",
+              "required_count": len(required)
+          }, indent=2) + "\n")
+          PY
+          # Flake detector: rerun root static contracts and compare normalized result.
+          cargo run -q -p bijux-dev-atlas -- contracts root --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/root-static-first.json" 2> "${logs_root}/root-static-first.stderr.log"
+          cargo run -q -p bijux-dev-atlas -- contracts root --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/root-static-rerun.json" 2> "${logs_root}/root-static-rerun.stderr.log"
+          jq 'del(.summary.duration_ms) | .tests |= map(del(.duration_ms))' "${contracts_root}/root-static-first.json" > "${contracts_root}/root-static-first.normalized.json"
+          jq 'del(.summary.duration_ms) | .tests |= map(del(.duration_ms))' "${contracts_root}/root-static-rerun.json" > "${contracts_root}/root-static-rerun.normalized.json"
+          if ! diff -u "${contracts_root}/root-static-first.normalized.json" "${contracts_root}/root-static-rerun.normalized.json" > "${report_root}/contract-flake-detector.diff"; then
+            echo "contract flake detector failed: root static rerun produced different normalized results" >&2
+            exit 1
+          fi
+          jq -n '{schema_version:1,kind:"contract_flake_detector",status:"ok"}' > "${report_root}/contract-flake-detector.json"
+          # Contract performance budgets with expiring waivers.
+          python - <<'PY'
+          import json, pathlib, datetime
+          root = pathlib.Path(".")
+          report_root = pathlib.Path(__import__("os").environ["REPORT_ROOT"])
+          contracts_root = report_root / "contracts"
+          policy = json.loads((root / "ops/policy/contracts-performance-budget.json").read_text())
+          budgets = policy.get("budgets_ms", {})
+          waivers = policy.get("waivers", [])
+          today = datetime.date.fromisoformat("2026-03-01")
+          active_waivers = {}
+          for row in waivers:
+              exp = datetime.date.fromisoformat(row["expires_on"])
+              if exp < today:
+                  raise SystemExit(f"expired contract performance waiver: {row}")
+              active_waivers[row["domain"]] = row
+          files = {
+              "runtime": contracts_root / "runtime-static.json",
+              "control_plane": contracts_root / "control-plane-static.json",
+              "configs": contracts_root / "configs-static.json",
+              "docker": contracts_root / "docker-static.json",
+              "ops": contracts_root / "ops-static.json",
+              "root": contracts_root / "root-static-first.json",
+          }
+          measured = {}
+          over = []
+          for domain, path in files.items():
+              payload = json.loads(path.read_text())
+              dur = int(payload.get("summary", {}).get("duration_ms", 0))
+              measured[domain] = dur
+              budget = int(budgets.get(domain, 0))
+              if budget and dur > budget and domain not in active_waivers:
+                  over.append((domain, dur, budget))
+          if over:
+              raise SystemExit("contract performance budget exceeded: " + "; ".join(f"{d} {m}>{b}" for d,m,b in over))
+          (report_root / "contract-performance-budget.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "contract_performance_budget",
+              "status": "ok",
+              "measured_ms": measured,
+              "budgets_ms": budgets,
+              "active_waivers": active_waivers
+          }, indent=2) + "\n")
+          PY
           make ops-fast > "${report_root}/ci-fast.json" 2> "${logs_root}/ci-fast.stderr.log"
           cargo run -q -p bijux-dev-atlas -- check list --suite ci_fast --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_fast.json"
           cargo run -q -p bijux-dev-atlas -- demo quickstart --format json > "${report_root}/demo-quickstart.json"
@@ -469,12 +666,71 @@ jobs:
           assert payload["duration_budget_minutes"] <= 3
           assert len(payload["steps"]) <= payload["steps_budget"]
           PY
+          # Docs entrypoints/nav/metadata/directory-budget contracts.
+          python - <<'PY'
+          import json, pathlib, yaml, os
+          root = pathlib.Path(".")
+          report_root = pathlib.Path(os.environ["REPORT_ROOT"])
+          mkdocs = yaml.safe_load((root / "mkdocs.yml").read_text())
+          nav = mkdocs.get("nav", [])
+          top_names = []
+          def top_label(item):
+              if isinstance(item, dict):
+                  return next(iter(item.keys()))
+              return str(item)
+          top_names = [top_label(x) for x in nav]
+          if top_names[:2] != ["Home", "Start Here"]:
+              raise SystemExit(f"docs entrypoint contract failed: first two nav items must be Home/Start Here, got {top_names[:2]}")
+          nav_text = (root / "mkdocs.yml").read_text()
+          if "_internal/" in nav_text:
+              raise SystemExit("published nav must not include docs/_internal pages")
+          registry = json.loads((root / "docs/_internal/registry/registry.json").read_text())
+          missing_meta = []
+          for row in registry.get("documents", []):
+              path = row.get("path", "")
+              if not path.startswith("docs/") or path.startswith("docs/_internal/"):
+                  continue
+              required = ["audience", "title", "stability", "owner", "last_reviewed"]
+              for key in required:
+                  if not row.get(key):
+                      missing_meta.append(f"{path}:{key}")
+          if missing_meta:
+              raise SystemExit("published docs metadata missing required fields: " + ", ".join(missing_meta[:20]))
+          limits = json.loads((root / "docs/_internal/governance/metadata/directory-budget-exceptions.json").read_text())
+          max_files = int(limits["max_files"])
+          max_subdirs = int(limits["max_subdirs"])
+          exceptions = {row["path"]: row for row in limits.get("exceptions", [])}
+          violations = []
+          for d in sorted((root / "docs").rglob("*")):
+              if not d.is_dir():
+                  continue
+              rel = d.as_posix()
+              if "/_internal/generated" in rel:
+                  continue
+              files = [p for p in d.iterdir() if p.is_file() and not p.name.startswith(".")]
+              dirs = [p for p in d.iterdir() if p.is_dir() and not p.name.startswith(".")]
+              if len(files) <= max_files and len(dirs) <= max_subdirs:
+                  continue
+              if rel in exceptions:
+                  continue
+              violations.append({"path": rel, "files": len(files), "subdirs": len(dirs)})
+          if violations:
+              raise SystemExit("docs directory budget exceeded without exception proof: " + json.dumps(violations[:20]))
+          (report_root / "docs-entrypoint-and-budget-contracts.json").write_text(json.dumps({
+              "schema_version": 1,
+              "kind": "docs_entrypoint_and_budget_contracts",
+              "status": "ok",
+              "top_nav": top_names,
+              "published_docs_count": len([r for r in registry.get("documents", []) if str(r.get("path","")).startswith("docs/") and not str(r.get("path","")).startswith("docs/_internal/")]),
+              "directory_exception_count": len(exceptions)
+          }, indent=2) + "\n")
+          PY
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-fast.json"
           printf "- lane: ci-fast\n- report: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
-          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n- semantic drift summary: %s\n- make surface drift: %s\n- deterministic check order: %s\n- check metadata catalog: %s\n- artifact schema check: %s\n- artifact naming and size: %s\n- docs golden workflow verification: %s\n- docs link allowlist policy: %s\n- alert runbook slo load e2e mapping: %s\n- registry group coverage: %s\n- contract coverage heatmap: %s\n- missing proof report: %s\n- proof debt ledger: %s\n- contract flake detector: %s\n- contract performance budget: %s\n- docs entrypoint and budget contracts: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" "${report_root}/semantic-drift-summary.json" "${report_root}/make-surface-drift.json" "${report_root}/deterministic-check-order.json" "${report_root}/check-metadata-catalog.json" "${report_root}/artifact-schema-version-check.json" "${report_root}/artifact-naming-and-size.json" "${report_root}/docs-golden-workflow-verification.json" "${report_root}/docs-link-allowlist-policy.json" "${report_root}/ops-alert-runbook-slo-load-e2e-map.json" "${report_root}/registry-group-coverage.json" "${report_root}/contract-coverage-heatmap.json" "${report_root}/missing-proof-report.json" "${report_root}/proof-debt-ledger.json" "${report_root}/contract-flake-detector.json" "${report_root}/contract-performance-budget.json" "${report_root}/docs-entrypoint-and-budget-contracts.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"
           fi
