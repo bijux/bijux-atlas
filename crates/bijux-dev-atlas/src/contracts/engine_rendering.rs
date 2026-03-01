@@ -21,12 +21,35 @@ pub fn to_pretty(report: &RunReport) -> String {
         };
         format!("{left} {status}")
     }
-    fn dotted(label: &str, status: &str) -> String {
-        const WIDTH: usize = 72;
-        dotted_with_width(label, status, WIDTH)
-    }
-
     let mut out = String::new();
+    let contract_label_width = report
+        .contracts
+        .iter()
+        .map(|contract| {
+            let required_label = if contract.required {
+                let lanes = contract
+                    .lanes
+                    .iter()
+                    .map(|lane| lane.as_str())
+                    .collect::<Vec<_>>()
+                    .join(",");
+                format!(" [required:{lanes}]")
+            } else {
+                String::new()
+            };
+            format!("{} {}{}", contract.id, contract.title, required_label).len()
+        })
+        .max()
+        .unwrap_or(0)
+        + 10;
+    let case_label_width = report
+        .cases
+        .iter()
+        .map(|case| case.test_id.len())
+        .max()
+        .unwrap_or(0)
+        + 10;
+
     out.push_str(&format!(
         "Contracts: {} (lane={}, mode={}, duration={}ms)\n",
         report.domain, report.lane, report.mode, 0
@@ -45,14 +68,15 @@ pub fn to_pretty(report: &RunReport) -> String {
         };
         out.push_str(&format!(
             "{}\n",
-            dotted(
+            dotted_with_width(
                 &format!("{} {}{}", contract.id, contract.title, required_label),
                 &status_with_timing(
                     contract.status,
                     contract.duration_ms,
                     1_000,
                     report.metadata.color_enabled,
-                )
+                ),
+                contract_label_width,
             )
         ));
         for case in report.cases.iter().filter(|c| c.contract_id == contract.id) {
@@ -66,7 +90,7 @@ pub fn to_pretty(report: &RunReport) -> String {
                         1_000,
                         report.metadata.color_enabled,
                     ),
-                    70,
+                    case_label_width,
                 )
             ));
             for violation in &case.violations {
