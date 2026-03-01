@@ -139,6 +139,7 @@ pub struct DocsExternalLinksArgs {
 pub enum ConfigsCommand {
     Print(ConfigsCommonArgs),
     List(ConfigsCommonArgs),
+    Graph(ConfigsCommonArgs),
     Explain(ConfigsExplainArgs),
     Verify(ConfigsCommonArgs),
     Doctor(ConfigsCommonArgs),

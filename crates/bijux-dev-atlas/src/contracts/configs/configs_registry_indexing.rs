@@ -144,6 +144,131 @@ pub fn list_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
     }))
 }
 
+pub fn graph_payload(repo_root: &Path) -> Result<serde_json::Value, String> {
+    let index = registry_index(repo_root)?;
+    let owners = read_owners(repo_root)?;
+    let consumers = read_consumers(repo_root)?;
+    let schemas = read_schemas(repo_root)?;
+
+    let mut nodes = Vec::<serde_json::Value>::new();
+    let mut edges = Vec::<serde_json::Value>::new();
+    let mut all_covered = BTreeSet::<String>::new();
+    let mut orphan_nodes = Vec::<String>::new();
+
+    let is_governed_structured = |path: &str| {
+        Path::new(path)
+            .extension()
+            .and_then(|v| v.to_str())
+            .map(|ext| matches!(ext, "json" | "jsonc" | "toml" | "yaml" | "yml"))
+            .unwrap_or(false)
+    };
+
+    for file in &index.root_files {
+        all_covered.insert(file.clone());
+        let owner = owners.files.get(file).cloned().unwrap_or_else(|| "platform".to_string());
+        let file_consumers = matching_file_consumers(&consumers, file);
+        let schema = matched_schema_path(&schemas, file);
+        if file_consumers.is_empty() && is_governed_structured(file) {
+            orphan_nodes.push(file.clone());
+        }
+        nodes.push(serde_json::json!({
+            "id": file,
+            "kind": "config_file",
+            "group": serde_json::Value::Null,
+            "owner": owner,
+            "consumers": file_consumers,
+            "schema": schema,
+            "visibility": "root",
+        }));
+    }
+
+    for group in &index.registry.groups {
+        let files = index
+            .group_files
+            .get(&group.name)
+            .cloned()
+            .unwrap_or_default()
+            .all();
+        for file in files {
+            all_covered.insert(file.clone());
+            let file_consumers = matching_file_consumers(&consumers, &file);
+            let effective_consumers = if file_consumers.is_empty() {
+                consumers
+                    .groups
+                    .get(&group.name)
+                    .cloned()
+                    .unwrap_or_default()
+            } else {
+                file_consumers
+            };
+            if effective_consumers.is_empty() && is_governed_structured(&file) {
+                orphan_nodes.push(file.clone());
+            }
+            let visibility = if index
+                .group_files
+                .get(&group.name)
+                .is_some_and(|bucket| bucket.public.contains(&file))
+            {
+                "public"
+            } else if index
+                .group_files
+                .get(&group.name)
+                .is_some_and(|bucket| bucket.internal.contains(&file))
+            {
+                "internal"
+            } else {
+                "generated"
+            };
+            let schema = matched_schema_path(&schemas, &file);
+            nodes.push(serde_json::json!({
+                "id": file,
+                "kind": "config_file",
+                "group": group.name,
+                "owner": owners.groups.get(&group.name).cloned().unwrap_or_else(|| group.owner.clone()),
+                "consumers": effective_consumers,
+                "schema": schema,
+                "visibility": visibility,
+                "lifecycle": group.stability
+            }));
+        }
+        edges.push(serde_json::json!({
+            "from": format!("group:{}", group.name),
+            "to": format!("owner:{}", group.owner),
+            "kind": "group_owner"
+        }));
+        edges.push(serde_json::json!({
+            "from": format!("group:{}", group.name),
+            "to": format!("schema_owner:{}", group.schema_owner),
+            "kind": "group_schema_owner"
+        }));
+    }
+
+    nodes.sort_by(|a, b| a["id"].as_str().cmp(&b["id"].as_str()));
+    edges.sort_by(|a, b| {
+        a["from"]
+            .as_str()
+            .cmp(&b["from"].as_str())
+            .then(a["to"].as_str().cmp(&b["to"].as_str()))
+            .then(a["kind"].as_str().cmp(&b["kind"].as_str()))
+    });
+    orphan_nodes.sort();
+    orphan_nodes.dedup();
+
+    Ok(serde_json::json!({
+        "schema_version": 1,
+        "kind": "configs_graph",
+        "registry_path": REGISTRY_PATH,
+        "nodes": nodes,
+        "edges": edges,
+        "orphans": orphan_nodes,
+        "counts": {
+            "files": all_covered.len(),
+            "nodes": nodes.len(),
+            "edges": edges.len()
+        }
+    }))
+}
+
 pub fn ensure_generated_index(repo_root: &Path) -> Result<String, String> {
     let path = repo_root.join("configs/_generated/configs-index.json");
     if let Some(parent) = path.parent() {

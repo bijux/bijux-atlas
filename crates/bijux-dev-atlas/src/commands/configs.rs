@@ -640,6 +640,41 @@ pub(crate) fn run_configs_command(quiet: bool, command: ConfigsCommand) -> i32 {
                 payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
                 Ok((emit_payload(common.format, common.out, &payload)?, 0))
             }
+            ConfigsCommand::Graph(common) => {
+                let ctx = configs_context(&common)?;
+                let mut payload = contracts::configs::graph_payload(&ctx.repo_root)?;
+                if common.allow_write {
+                    let out_dir = configs_artifact_dir(&ctx);
+                    fs::create_dir_all(&out_dir)
+                        .map_err(|e| format!("failed to create {}: {e}", out_dir.display()))?;
+                    let graph_path = out_dir.join("graph.json");
+                    fs::write(
+                        &graph_path,
+                        serde_json::to_string_pretty(&payload).map_err(|e| e.to_string())?,
+                    )
+                    .map_err(|e| format!("failed to write {}: {e}", graph_path.display()))?;
+                    payload["artifacts"] = serde_json::json!({
+                        "graph": graph_path.display().to_string()
+                    });
+                }
+                payload["run_id"] = serde_json::json!(ctx.run_id.as_str());
+                payload["text"] = serde_json::json!("configs graph");
+                payload["capabilities"] = serde_json::json!({
+                    "fs_write": common.allow_write,
+                    "subprocess": common.allow_subprocess,
+                    "network": common.allow_network
+                });
+                payload["options"] = serde_json::json!({
+                    "strict": common.strict
+                });
+                payload["duration_ms"] = serde_json::json!(started.elapsed().as_millis() as u64);
+                let code = if payload["orphans"].as_array().is_some_and(|v| !v.is_empty()) {
+                    1
+                } else {
+                    0
+                };
+                Ok((emit_payload(common.format, common.out, &payload)?, code))
+            }
             ConfigsCommand::Explain(args) => {
                 let ctx = configs_context(&args.common)?;
                 let mut payload = contracts::configs::explain_payload(&ctx.repo_root, &args.file)?;
