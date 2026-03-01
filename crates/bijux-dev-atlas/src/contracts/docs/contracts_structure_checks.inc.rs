@@ -148,3 +148,38 @@ fn test_docs_048_published_titles_unique(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_049_published_single_h1(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for relative in docs_published_markdown_files(ctx) {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-049",
+                    "docs.structure.single_h1_published",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let count = docs_h1_count(&contents);
+        if count != 1 {
+            push_docs_violation(
+                &mut violations,
+                "DOC-049",
+                "docs.structure.single_h1_published",
+                Some(relative),
+                format!("published page must contain exactly one H1 heading, found {count}"),
+            );
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

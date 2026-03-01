@@ -59,6 +59,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-046" => "Reader utility pages must stay on the published surface and may not link directly into docs/_internal.".to_string(),
         "DOC-047" => "Reader spine pages must stay on the published surface and may not link directly into docs/_internal.".to_string(),
         "DOC-048" => "Published markdown pages must keep unique H1 titles so search and navigation stay unambiguous.".to_string(),
+        "DOC-049" => "Published markdown pages must keep exactly one top-level heading outside fenced code blocks.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

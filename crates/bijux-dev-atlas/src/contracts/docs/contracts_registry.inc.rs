@@ -509,5 +509,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_048_published_titles_unique,
             }],
         },
+        Contract {
+            id: ContractId("DOC-049".to_string()),
+            title: "published docs pages keep exactly one H1",
+            tests: vec![TestCase {
+                id: TestId("docs.structure.single_h1_published".to_string()),
+                title: "published markdown pages keep exactly one top-level heading",
+                kind: TestKind::Pure,
+                run: test_docs_049_published_single_h1,
+            }],
+        },
     ])
 }

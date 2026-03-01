@@ -169,9 +169,38 @@ fn docs_published_markdown_files(ctx: &RunContext) -> Vec<String> {
 }
 
 fn docs_first_h1(contents: &str) -> Option<String> {
-    contents
-        .lines()
-        .find_map(|line| line.strip_prefix("# ").map(|title| title.trim().to_string()))
+    let mut in_fence = false;
+    for line in contents.lines() {
+        if line.trim_start().starts_with("```") {
+            in_fence = !in_fence;
+            continue;
+        }
+        if in_fence {
+            continue;
+        }
+        if let Some(title) = line.strip_prefix("# ") {
+            return Some(title.trim().to_string());
+        }
+    }
+    None
+}
+
+fn docs_h1_count(contents: &str) -> usize {
+    let mut in_fence = false;
+    let mut count = 0usize;
+    for line in contents.lines() {
+        if line.trim_start().starts_with("```") {
+            in_fence = !in_fence;
+            continue;
+        }
+        if in_fence {
+            continue;
+        }
+        if line.starts_with("# ") {
+            count += 1;
+        }
+    }
+    count
 }
 
 fn docs_root_index_targets(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<Vec<String>, TestResult> {
