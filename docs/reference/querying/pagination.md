@@ -1,4 +1,4 @@
-# Pagination
+# Pagination semantics
 
 Owner: `bijux-atlas-api`
 Type: `reference`
