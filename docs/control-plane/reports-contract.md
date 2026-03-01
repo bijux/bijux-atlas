@@ -33,6 +33,12 @@
 - Consumers must key off report fields, never free-form terminal text.
 - Version changes require an explicit compatibility review and coordinated consumer update.
 
+## Schema versioning policy
+
+- Increment `schema_version` only when consumers need an explicit compatibility signal.
+- Additive fields keep backward compatibility when existing required fields remain stable.
+- Breaking field removals or type changes require coordinated CI consumer updates before merge.
+
 ## Verify success
 
 Run a report-producing command and inspect JSON output.

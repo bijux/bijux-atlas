@@ -38,6 +38,7 @@ The control-plane replaces ad-hoc scripts with explicit, contract-governed comma
 - [Add a contract registry in 30 minutes](add-a-contract-registry-in-30-minutes.md)
 - [Debug failing checks](debug-failing-checks.md)
 - [CLI reference](cli-reference.md)
+- [Contributor control-plane guide](../development/control-plane.md)
 
 ## Stable entrypoints
 

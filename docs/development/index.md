@@ -29,6 +29,7 @@ Guide contributors through repository structure, CI behavior, control-plane oper
 ## What You Will Find Here
 
 - [Control-plane](../control-plane/index.md)
+- [Control-plane for contributors](control-plane.md)
 - [Repository Layout](repo-layout.md)
 - [CI Overview](ci-overview.md)
 - [Contributing](contributing.md)

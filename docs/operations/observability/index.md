@@ -18,6 +18,7 @@ Detect service regression quickly, route alerts to actionable runbooks, and conf
 - [Observability setup](../observability-setup.md): minimum metrics, logs, and trace wiring
 - [Tracing](tracing.md): trace-first diagnosis flow
 - [SLO policy](slo-policy.md): target objectives and burn policy
+- [SLOs with PromQL](slos-with-promql.md): practical query patterns for burn analysis
 - Alert rule source: `ops/observe/alerts/atlas-alert-rules.yaml`
 
 ## Verify success
