@@ -1,29 +1,75 @@
 {
   "schema_version": 1,
   "entries": {
-    ".cargo": { "kind": "dir" },
-    ".dockerignore": { "kind": "file" },
-    ".editorconfig": { "kind": "file" },
-    ".github": { "kind": "dir" },
-    ".gitignore": { "kind": "file" },
-    "CHANGELOG.md": { "kind": "file" },
-    "CONTRACT.md": { "kind": "file" },
-    "CONTRIBUTING.md": { "kind": "file" },
-    "Cargo.lock": { "kind": "file" },
-    "Cargo.toml": { "kind": "file" },
-    "Dockerfile": { "kind": "symlink" },
-    "LICENSE": { "kind": "file" },
-    "Makefile": { "kind": "file" },
-    "README.md": { "kind": "file" },
-    "SECURITY.md": { "kind": "file" },
-    "configs": { "kind": "dir" },
-    "crates": { "kind": "dir" },
-    "docker": { "kind": "dir" },
-    "docs": { "kind": "dir" },
-    "make": { "kind": "dir" },
-    "mkdocs.yml": { "kind": "file" },
-    "ops": { "kind": "dir" },
-    "rust-toolchain.toml": { "kind": "file" }
+    ".cargo": {
+      "kind": "dir"
+    },
+    ".dockerignore": {
+      "kind": "file"
+    },
+    ".editorconfig": {
+      "kind": "file"
+    },
+    ".github": {
+      "kind": "dir"
+    },
+    ".gitignore": {
+      "kind": "file"
+    },
+    "CHANGELOG.md": {
+      "kind": "file"
+    },
+    "CONTRACT.md": {
+      "kind": "file"
+    },
+    "CONTRIBUTING.md": {
+      "kind": "file"
+    },
+    "Cargo.lock": {
+      "kind": "file"
+    },
+    "Cargo.toml": {
+      "kind": "file"
+    },
+    "Dockerfile": {
+      "kind": "symlink"
+    },
+    "LICENSE": {
+      "kind": "file"
+    },
+    "Makefile": {
+      "kind": "file"
+    },
+    "README.md": {
+      "kind": "file"
+    },
+    "SECURITY.md": {
+      "kind": "file"
+    },
+    "configs": {
+      "kind": "dir"
+    },
+    "crates": {
+      "kind": "dir"
+    },
+    "docker": {
+      "kind": "dir"
+    },
+    "docs": {
+      "kind": "dir"
+    },
+    "make": {
+      "kind": "dir"
+    },
+    "mkdocs.yml": {
+      "kind": "file"
+    },
+    "ops": {
+      "kind": "dir"
+    },
+    "rust-toolchain.toml": {
+      "kind": "file"
+    }
   },
   "ssot_roots": [
     "configs",

@@ -121,11 +121,12 @@ fn render_canonical_contract_doc(
             .get(&contract.id.0)
             .map_or("low", |value| severity_label(value));
         out.push_str(&format!(
-            "| `{}` | {} | `{}` | `{}` | `bijux dev atlas contracts {}` | `artifacts/contracts/{}/report.json` |\n",
+            "| `{}` | {} | `{}` | `{}` | `bijux dev atlas contracts {}` | `artifacts/run/<run_id>/gates/contracts/{}/<profile>/<mode>/{}.json` |\n",
             contract.id.0,
             contract.title,
             severity,
             contract_type_label(&contract.id.0),
+            domain.name,
             domain.name,
             domain.name
         ));
@@ -147,10 +148,13 @@ fn render_canonical_contract_doc(
     }
     out.push('\n');
     out.push_str("## Output artifacts\n\n");
-    out.push_str(&format!("- `artifacts/contracts/{}/report.json`\n", domain.name));
     out.push_str(&format!(
-        "- `artifacts/contracts/{}/registry-snapshot.json`\n\n",
-        domain.name
+        "- `artifacts/run/<run_id>/gates/contracts/{}/<profile>/<mode>/{}.json`\n",
+        domain.name, domain.name
+    ));
+    out.push_str(&format!(
+        "- `artifacts/run/<run_id>/gates/contracts/{}/<profile>/<mode>/{}.inventory.json`\n\n",
+        domain.name, domain.name
     ));
     out.push_str("## Contract to Gate mapping\n\n");
     out.push_str(&format!("- Gate: `contracts::{}`\n", domain.name));

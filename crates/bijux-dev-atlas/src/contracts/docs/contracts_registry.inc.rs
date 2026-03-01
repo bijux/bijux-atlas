@@ -13,7 +13,8 @@ const DOCS_ALLOWED_ROOT_DIRS: [&str; 10] = [
 
 const DOCS_ALLOWED_ROOT_DIRS_TAIL: [&str; 0] = [];
 
-const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 6] = [
+const DOCS_ALLOWED_ROOT_MARKDOWN: [&str; 7] = [
+    "CONTRACT.md",
     "glossary.md",
     "index.md",
     "start-here.md",

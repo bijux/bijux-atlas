@@ -13,66 +13,66 @@
 
 | ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
 | --- | --- | --- | --- | --- | --- |
-| `DOC-001` | docs top-level sections stay curated | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-002` | docs root markdown stays on the curated surface | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-003` | docs paths stay within the depth budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-004` | docs directories stay within the sibling budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-005` | docs filenames avoid whitespace drift | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-006` | docs canonical entrypoint exists | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-007` | docs root files stay on the declared non-markdown surface | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-008` | docs top-level sections keep declared owners | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-009` | docs section manifest stays complete | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-010` | docs section entrypoints follow the declared manifest | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-011` | docs section index links resolve | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-012` | docs root entrypoint links resolve | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-013` | docs entrypoint pages declare owner metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-014` | docs entrypoint page stability values stay normalized | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-015` | deprecated docs entrypoints name a replacement path | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-016` | docs section entrypoint owners align with the owner registry | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-017` | docs section manifest declares root entrypoint coverage | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-018` | docs root entrypoint links every declared root section | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-019` | docs entrypoint pages stay within the word budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-020` | stable docs entrypoint pages avoid placeholder markers | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-021` | docs entrypoint pages avoid raw tabs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-022` | docs entrypoint pages avoid trailing whitespace | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-023` | docs entrypoint pages keep a single top-level heading | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-024` | docs entrypoint pages avoid absolute local file links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-025` | docs entrypoint pages avoid raw http links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-026` | docs root entrypoint avoids duplicate section index links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-027` | docs section indexes link at least one local page | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-028` | docs section indexes avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-029` | docs root entrypoint pages avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-030` | docs index correctness report stays derivable | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-031` | docs root keeps a single canonical entrypoint | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-032` | docs broken links report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-033` | docs orphan pages report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-034` | docs metadata coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-035` | docs duplication report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-036` | docs contract coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-037` | spine pages require frontmatter | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-038` | spine page frontmatter values stay normalized | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-039` | stable spine pages keep complete metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-040` | reference spine pages declare sources | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-041` | internal docs keep frontmatter boundary | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-042` | stable spine pages keep review dates normalized | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-043` | how-to spine pages declare verification | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-044` | docs frontmatter schema stays present | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-045` | reader utility pages keep shared metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-046` | reader utility pages do not link into internal docs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-047` | reader spine pages do not link into internal docs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-048` | published docs titles stay unique | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-049` | published docs pages keep exactly one H1 | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-050` | operator golden paths do not reference internal docs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-051` | docs home stays within the line budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-052` | docs keep a single start-here page | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-053` | docs keep a single glossary page | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-054` | mkdocs excludes drafts and internals from the reader build | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-055` | section indexes stay curated | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-056` | mkdocs nav starts with home and start here | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-057` | governance stays nested under development | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-058` | generated docs stay under the internal sink | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-059` | docs dashboard links required generated artifacts | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
-| `DOC-060` | docs redirects target real pages | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/contracts/docs/report.json` |
+| `DOC-001` | docs top-level sections stay curated | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-002` | docs root markdown stays on the curated surface | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-003` | docs paths stay within the depth budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-004` | docs directories stay within the sibling budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-005` | docs filenames avoid whitespace drift | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-006` | docs canonical entrypoint exists | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-007` | docs root files stay on the declared non-markdown surface | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-008` | docs top-level sections keep declared owners | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-009` | docs section manifest stays complete | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-010` | docs section entrypoints follow the declared manifest | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-011` | docs section index links resolve | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-012` | docs root entrypoint links resolve | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-013` | docs entrypoint pages declare owner metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-014` | docs entrypoint page stability values stay normalized | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-015` | deprecated docs entrypoints name a replacement path | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-016` | docs section entrypoint owners align with the owner registry | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-017` | docs section manifest declares root entrypoint coverage | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-018` | docs root entrypoint links every declared root section | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-019` | docs entrypoint pages stay within the word budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-020` | stable docs entrypoint pages avoid placeholder markers | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-021` | docs entrypoint pages avoid raw tabs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-022` | docs entrypoint pages avoid trailing whitespace | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-023` | docs entrypoint pages keep a single top-level heading | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-024` | docs entrypoint pages avoid absolute local file links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-025` | docs entrypoint pages avoid raw http links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-026` | docs root entrypoint avoids duplicate section index links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-027` | docs section indexes link at least one local page | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-028` | docs section indexes avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-029` | docs root entrypoint pages avoid duplicate local page links | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-030` | docs index correctness report stays derivable | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-031` | docs root keeps a single canonical entrypoint | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-032` | docs broken links report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-033` | docs orphan pages report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-034` | docs metadata coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-035` | docs duplication report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-036` | docs contract coverage report is generated deterministically | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-037` | spine pages require frontmatter | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-038` | spine page frontmatter values stay normalized | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-039` | stable spine pages keep complete metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-040` | reference spine pages declare sources | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-041` | internal docs keep frontmatter boundary | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-042` | stable spine pages keep review dates normalized | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-043` | how-to spine pages declare verification | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-044` | docs frontmatter schema stays present | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-045` | reader utility pages keep shared metadata | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-046` | reader utility pages do not link into internal docs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-047` | reader spine pages do not link into internal docs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-048` | published docs titles stay unique | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-049` | published docs pages keep exactly one H1 | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-050` | operator golden paths do not reference internal docs | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-051` | docs home stays within the line budget | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-052` | docs keep a single start-here page | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-053` | docs keep a single glossary page | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-054` | mkdocs excludes drafts and internals from the reader build | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-055` | section indexes stay curated | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-056` | mkdocs nav starts with home and start here | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-057` | governance stays nested under development | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-058` | generated docs stay under the internal sink | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-059` | docs dashboard links required generated artifacts | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
+| `DOC-060` | docs redirects target real pages | `high` | `static` | `bijux dev atlas contracts docs` | `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json` |
 
 ## Enforcement mapping
 
@@ -141,8 +141,8 @@
 
 ## Output artifacts
 
-- `artifacts/contracts/docs/report.json`
-- `artifacts/contracts/docs/registry-snapshot.json`
+- `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.json`
+- `artifacts/run/<run_id>/gates/contracts/docs/<profile>/<mode>/docs.inventory.json`
 
 ## Contract to Gate mapping
 

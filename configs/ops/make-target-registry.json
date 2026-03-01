@@ -10,6 +10,14 @@
       "used_in": []
     },
     {
+      "name": "artifacts-clean",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "audit",
       "defined_in": [
         "makefiles/cargo.mk"
@@ -23,54 +31,6 @@
       "name": "build",
       "defined_in": [
         "makefiles/build.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": [
-        ".github/workflows/ci-pr.yml"
-      ]
-    },
-    {
-      "name": "contracts-merge",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": [
-        ".github/workflows/ci-pr.yml"
-      ]
-    },
-    {
-      "name": "contracts-pr",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": [
-        ".github/workflows/ci-pr.yml"
-      ]
-    },
-    {
-      "name": "contracts-release",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": [
-        ".github/workflows/release-candidate.yml"
-      ]
-    },
-    {
-      "name": "contracts-configs",
-      "defined_in": [
-        "make/contracts.mk"
       ],
       "visibility": "public",
       "used_in": []
@@ -281,6 +241,142 @@
         "makefiles/configs.mk"
       ],
       "visibility": "internal",
+      "used_in": []
+    },
+    {
+      "name": "contracts",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "contracts-all",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-changed",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-ci",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-configs",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-docker",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-docs",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-fast",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-help",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-json",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-make",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-merge",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "contracts-ops",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
+      "name": "contracts-pr",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/ci-pr.yml"
+      ]
+    },
+    {
+      "name": "contracts-release",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
+      "used_in": [
+        ".github/workflows/release-candidate.yml"
+      ]
+    },
+    {
+      "name": "contracts-root",
+      "defined_in": [
+        "make/contracts.mk"
+      ],
+      "visibility": "public",
       "used_in": []
     },
     {
@@ -1062,94 +1158,6 @@
         "makefiles/root.mk"
       ],
       "visibility": "internal",
-      "used_in": []
-    },
-    {
-      "name": "contracts-fast",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-all",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-changed",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-json",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-ci",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-root",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-docs",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-docker",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-make",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-ops",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
-      "used_in": []
-    },
-    {
-      "name": "contracts-help",
-      "defined_in": [
-        "make/contracts.mk"
-      ],
-      "visibility": "public",
       "used_in": []
     }
   ]

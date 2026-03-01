@@ -1,7 +1,16 @@
 {
   "max_public_targets": 40,
-  "target_public_targets": 38,
+  "target_public_targets": 39,
   "public_targets": [
+    {
+      "name": "artifacts-clean",
+      "description": "Clean ephemeral artifacts through the control plane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
+    },
     {
       "name": "build",
       "description": "Run workspace build lane",
@@ -35,15 +44,6 @@
       "lanes": [
         "dev",
         "ci"
-      ],
-      "area": "contracts"
-    },
-    {
-      "name": "contracts-merge",
-      "description": "Run merge contracts lane",
-      "lanes": [
-        "merge",
-        "release"
       ],
       "area": "contracts"
     },
@@ -120,20 +120,20 @@
       "area": "contracts"
     },
     {
-      "name": "contracts-pr",
-      "description": "Run pull request contracts lane",
-      "lanes": [
-        "pr",
-        "merge"
-      ],
-      "area": "contracts"
-    },
-    {
       "name": "contracts-make",
       "description": "Run contracts gate target",
       "lanes": [
         "dev",
         "ci"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-merge",
+      "description": "Run merge contracts lane",
+      "lanes": [
+        "merge",
+        "release"
       ],
       "area": "contracts"
     },
@@ -147,11 +147,11 @@
       "area": "contracts"
     },
     {
-      "name": "contracts-root",
-      "description": "Run contracts gate target",
+      "name": "contracts-pr",
+      "description": "Run pull request contracts lane",
       "lanes": [
-        "dev",
-        "ci"
+        "pr",
+        "merge"
       ],
       "area": "contracts"
     },
@@ -160,6 +160,15 @@
       "description": "Run release contracts lane",
       "lanes": [
         "release"
+      ],
+      "area": "contracts"
+    },
+    {
+      "name": "contracts-root",
+      "description": "Run contracts gate target",
+      "lanes": [
+        "dev",
+        "ci"
       ],
       "area": "contracts"
     },

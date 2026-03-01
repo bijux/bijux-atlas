@@ -384,6 +384,18 @@ fn write_docs_report_artifact(
         return TestResult::Pass;
     };
     let path = root.join(artifact_name);
+    if let Some(parent) = path.parent() {
+        if let Err(err) = std::fs::create_dir_all(parent) {
+            return TestResult::Fail(vec![Violation {
+                contract_id: contract_id.to_string(),
+                test_id: test_id.to_string(),
+                file: Some(parent.display().to_string()),
+                line: None,
+                message: format!("create artifact dir failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    }
     let encoded = match serde_json::to_string_pretty(payload) {
         Ok(encoded) => encoded,
         Err(err) => {

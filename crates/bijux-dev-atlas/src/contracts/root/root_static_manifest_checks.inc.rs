@@ -234,6 +234,15 @@ fn test_root_019_directory_budget(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_020_single_segment_entries(ctx: &RunContext) -> TestResult {
+    let raw = match read_root_text(
+        ctx,
+        "ops/inventory/root-surface.json",
+        "ROOT-020",
+        "root.surface.single_segment_entries",
+    ) {
+        Ok(contents) => contents,
+        Err(result) => return result,
+    };
     let payload = match root_surface_manifest(ctx, "ROOT-020", "root.surface.single_segment_entries") {
         Ok(payload) => payload,
         Err(result) => return result,
@@ -260,6 +269,55 @@ fn test_root_020_single_segment_entries(ctx: &RunContext) -> TestResult {
                 "root.surface.single_segment_entries",
                 Some(name.clone()),
                 "root manifest entries must be single-segment repo root names",
+            );
+        }
+    }
+    let mut in_entries = false;
+    let mut manifest_entry_rows = Vec::new();
+    for line in raw.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.starts_with("\"entries\"") {
+            in_entries = true;
+            continue;
+        }
+        if in_entries && trimmed == "}," {
+            in_entries = false;
+            continue;
+        }
+        if !in_entries || !trimmed.starts_with('"') {
+            continue;
+        }
+        if let Some(key) = trimmed.split('"').nth(1).map(str::to_string) {
+            if entries.contains_key(&key) {
+                manifest_entry_rows.push(key);
+            }
+        }
+    }
+    let mut sorted_entry_rows = manifest_entry_rows.clone();
+    sorted_entry_rows.sort();
+    if manifest_entry_rows != sorted_entry_rows {
+        push_root_violation(
+            &mut violations,
+            "ROOT-020",
+            "root.surface.single_segment_entries",
+            Some("ops/inventory/root-surface.json".to_string()),
+            "root manifest entries must be sorted lexicographically",
+        );
+    }
+    if let Some(values) = payload["ssot_roots"].as_array() {
+        let roots = values
+            .iter()
+            .filter_map(|value| value.as_str().map(ToOwned::to_owned))
+            .collect::<Vec<_>>();
+        let mut sorted_roots = roots.clone();
+        sorted_roots.sort();
+        if roots != sorted_roots {
+            push_root_violation(
+                &mut violations,
+                "ROOT-020",
+                "root.surface.single_segment_entries",
+                Some("ops/inventory/root-surface.json".to_string()),
+                "`ssot_roots` must be sorted lexicographically",
             );
         }
     }
@@ -357,4 +415,3 @@ fn test_root_028_manifest_docs_governed(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

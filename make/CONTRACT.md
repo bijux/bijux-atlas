@@ -13,47 +13,47 @@
 
 | ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
 | --- | --- | --- | --- | --- | --- |
-| `MAKE-001` | contracts gate uses make/contracts.mk as single entrypoint | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-002` | contracts gate public targets are explicit and stable | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-003` | contracts gate targets are thin delegates to the contracts runner | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-ART-001` | make run scoped artifacts | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-CI-001` | make workflow curated usage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-DIR-001` | make root docs boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-DIR-002` | make nested docs removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-DIR-003` | make root file boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-DOCKER-001` | make docker contract boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-DOCS-001` | make docs line budgets | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-DRIFT-001` | make target list drift | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-ENGINE-001` | make direct tool boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-ENV-001` | make env file singularity | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-ENV-002` | make env role boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-GATES-001` | make gate mapping coverage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-GATES-002` | make public gate visibility | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-GATES-003` | make orphan public gate removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-INCLUDE-001` | make root include entrypoint | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-INCLUDE-002` | make public include boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-INCLUDE-003` | make include graph acyclic | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-INTERNAL-001` | make internal target prefix | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-INTERNAL-002` | make scripts banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-NAME-001` | make helper file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-NAME-002` | make public file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-NET-001` | make network commands banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-OPS-001` | make ops control plane boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-REPRO-001` | make runenv exports | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SHELL-001` | make shell path stability | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SHELL-002` | make shell pipeline bound | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SSOT-001` | make contracts authority | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-STRUCT-001` | root Makefile stays minimal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-STRUCT-002` | make wrapper files only | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-STRUCT-003` | make modules stay on the approved whitelist | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-STRUCT-004` | make modules declare headers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-STRUCT-007` | make help surface remains sorted | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-STRUCT-010` | make complex recipes dispatch to atlas | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SURFACE-001` | make curated source of truth | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SURFACE-002` | make curated target budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SURFACE-003` | make curated registry sync | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-SURFACE-005` | make delegate only wrappers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
-| `MAKE-TARGETLIST-001` | make target list policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-001` | contracts gate uses make/contracts.mk as single entrypoint | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-002` | contracts gate public targets are explicit and stable | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-003` | contracts gate targets are thin delegates to the contracts runner | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-ART-001` | make run scoped artifacts | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-CI-001` | make workflow curated usage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DIR-001` | make root docs boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DIR-002` | make nested docs removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DIR-003` | make root file boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DOCKER-001` | make docker contract boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DOCS-001` | make docs line budgets | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-DRIFT-001` | make target list drift | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-ENGINE-001` | make direct tool boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-ENV-001` | make env file singularity | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-ENV-002` | make env role boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-GATES-001` | make gate mapping coverage | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-GATES-002` | make public gate visibility | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-GATES-003` | make orphan public gate removal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-INCLUDE-001` | make root include entrypoint | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-INCLUDE-002` | make public include boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-INCLUDE-003` | make include graph acyclic | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-INTERNAL-001` | make internal target prefix | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-INTERNAL-002` | make scripts banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-NAME-001` | make helper file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-NAME-002` | make public file naming | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-NET-001` | make network commands banned | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-OPS-001` | make ops control plane boundary | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-REPRO-001` | make runenv exports | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SHELL-001` | make shell path stability | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SHELL-002` | make shell pipeline bound | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SSOT-001` | make contracts authority | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-STRUCT-001` | root Makefile stays minimal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-STRUCT-002` | make wrapper files only | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-STRUCT-003` | make modules stay on the approved whitelist | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-STRUCT-004` | make modules declare headers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-STRUCT-007` | make help surface remains sorted | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-STRUCT-010` | make complex recipes dispatch to atlas | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-001` | make curated source of truth | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-002` | make curated target budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-003` | make curated registry sync | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-005` | make delegate only wrappers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-TARGETLIST-001` | make target list policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 
 ## Enforcement mapping
 
@@ -103,8 +103,8 @@
 
 ## Output artifacts
 
-- `artifacts/contracts/make/report.json`
-- `artifacts/contracts/make/registry-snapshot.json`
+- `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json`
+- `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.inventory.json`
 
 ## Contract to Gate mapping
 
