@@ -296,6 +296,21 @@ fn test_root_025_support_routing(ctx: &RunContext) -> TestResult {
             "support matrix references in README.md must route into docs/ or ops/",
         );
     }
+    for relative in ["README.md", "CONTRIBUTING.md", "SECURITY.md", "CHANGELOG.md"] {
+        let contents = match read_root_text(ctx, relative, "ROOT-025", "root.docs.support_routing") {
+            Ok(contents) => contents,
+            Err(result) => return result,
+        };
+        if contents.contains("RL-00") || contents.contains("Repo Laws") {
+            push_root_violation(
+                &mut violations,
+                "ROOT-025",
+                "root.docs.support_routing",
+                Some(relative.to_string()),
+                "repo laws text must not be duplicated in root docs; reference docs/_internal/contracts/repo-laws.md",
+            );
+        }
+    }
     if violations.is_empty() {
         TestResult::Pass
     } else {

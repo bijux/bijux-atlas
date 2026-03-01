@@ -112,6 +112,27 @@ fn test_root_002_allowed_markdown(ctx: &RunContext) -> TestResult {
         if !name.ends_with(".md") {
             continue;
         }
+        if name.ends_with("_MAP.md") {
+            push_root_violation(
+                &mut violations,
+                "ROOT-002",
+                "root.docs.allowed_markdown",
+                Some(name.clone()),
+                "root *_MAP markdown files are forbidden; use docs/reference generated pages",
+            );
+            continue;
+        }
+        let lowered = name.to_ascii_lowercase();
+        if lowered.contains("checkpoint") || lowered.contains("progress") || lowered.contains("status") {
+            push_root_violation(
+                &mut violations,
+                "ROOT-002",
+                "root.docs.allowed_markdown",
+                Some(name.clone()),
+                "root checkpoint/progress/status markdown files are forbidden",
+            );
+            continue;
+        }
         if !allowed.iter().any(|candidate| *candidate == name) {
             push_root_violation(
                 &mut violations,

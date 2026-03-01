@@ -16,7 +16,6 @@ Deterministic genomics platform with a Rust-native control plane.
 - Documentation index: `docs/index.md`
 - Contributing policy: `CONTRIBUTING.md`
 - Security policy: `SECURITY.md`
-- Repository constitution: `docs/_internal/repo-constitution.md`
 - Root contract: `CONTRACT.md`
 - Repository map reference: `docs/reference/repo-map.md`
 

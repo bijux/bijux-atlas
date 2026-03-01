@@ -118,6 +118,12 @@ fn test_root_030_no_vendor_blobs(ctx: &RunContext) -> TestResult {
 }
 
 fn test_root_031_root_file_size_budget(ctx: &RunContext) -> TestResult {
+    let pinned_budget = [
+        ("README.md", 24_u64 * 1024),
+        ("CONTRACT.md", 160_u64 * 1024),
+    ]
+    .into_iter()
+    .collect::<std::collections::BTreeMap<_, _>>();
     let mut violations = Vec::new();
     let entries = match std::fs::read_dir(&ctx.repo_root) {
         Ok(entries) => entries,
@@ -156,13 +162,24 @@ fn test_root_031_root_file_size_budget(ctx: &RunContext) -> TestResult {
                 &mut violations,
                 "ROOT-031",
                 "root.surface.root_file_size_budget",
-                Some(name),
+                Some(name.clone()),
                 format!(
                     "root file exceeds size budget: {} > {} bytes",
                     metadata.len(),
                     ROOT_FILE_SIZE_BUDGET_BYTES
                 ),
             );
+        }
+        if let Some(limit) = pinned_budget.get(name.as_str()) {
+            if metadata.len() > *limit {
+                push_root_violation(
+                    &mut violations,
+                    "ROOT-031",
+                    "root.surface.root_file_size_budget",
+                    Some(name.clone()),
+                    format!("root file exceeds pinned size budget: {} > {} bytes", metadata.len(), limit),
+                );
+            }
         }
     }
     if violations.is_empty() {
@@ -374,6 +391,10 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
                 collect(&path, root, violations);
                 continue;
             }
+            let rel = path
+                .strip_prefix(root)
+                .map(|value| value.display().to_string())
+                .unwrap_or_else(|_| path.display().to_string());
             let forbidden = name == ".DS_Store"
                 || name.ends_with(".orig")
                 || name.ends_with('~')
@@ -382,18 +403,20 @@ fn test_root_037_no_editor_backup_noise(ctx: &RunContext) -> TestResult {
                         .strip_prefix(root)
                         .ok()
                         .map(|value| value.to_string_lossy().starts_with("artifacts/run/"))
-                        .unwrap_or(false));
+                        .unwrap_or(false))
+                || (name == "notes.md"
+                    || name == "note.md"
+                    || name == "scratch.md"
+                    || name == "random-notes.md")
+                    && !rel.starts_with("docs/_internal/");
             if forbidden {
-                let rel = path
-                    .strip_prefix(root)
-                    .map(|value| value.display().to_string())
-                    .unwrap_or_else(|_| path.display().to_string());
                 violations.push(Violation {
                     contract_id: "ROOT-037".to_string(),
                     test_id: "root.surface.no_editor_backup_noise".to_string(),
                     file: Some(rel),
                     line: None,
-                    message: "editor backup or platform noise file is forbidden".to_string(),
+                    message: "editor noise or ad hoc note markdown outside docs/_internal is forbidden"
+                        .to_string(),
                     evidence: None,
                 });
             }
