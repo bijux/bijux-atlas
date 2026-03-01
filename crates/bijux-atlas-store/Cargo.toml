@@ -22,7 +22,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json.workspace = true
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.8"
 tempfile = "3.13.0"
 serde_json.workspace = true
 tiny_http = "0.12"

@@ -23,7 +23,7 @@ unicode-normalization = "0.1"
 zstd = "0.13"
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.8"
 proptest = "1"
 tempfile = "=3.13.0"
 
