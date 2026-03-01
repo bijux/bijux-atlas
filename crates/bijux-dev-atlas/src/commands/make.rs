@@ -468,12 +468,15 @@ mod tests {
     use std::time::Instant;
 
     fn write_minimal_root_mk(root: &std::path::Path) {
-        fs::create_dir_all(root.join("make")).expect("create make dir");
-        fs::write(
+        if let Err(err) = fs::create_dir_all(root.join("make")) {
+            panic!("create make dir failed: {err}");
+        }
+        if let Err(err) = fs::write(
             root.join("make/root.mk"),
             "CURATED_TARGETS := \\\n\tfmt help test\n",
-        )
-        .expect("write root.mk");
+        ) {
+            panic!("write root.mk failed: {err}");
+        }
     }
 
     fn common(repo_root: &std::path::Path) -> MakeCommonArgs {
@@ -488,11 +491,20 @@ mod tests {
 
     #[test]
     fn make_list_is_sorted_and_stable() {
-        let temp = tempfile::tempdir().expect("tempdir");
+        let temp = match tempfile::tempdir() {
+            Ok(value) => value,
+            Err(err) => panic!("tempdir failed: {err}"),
+        };
         write_minimal_root_mk(temp.path());
-        let (rendered, code) = run_list(common(temp.path()), Instant::now()).expect("run list");
+        let (rendered, code) = match run_list(common(temp.path()), Instant::now()) {
+            Ok(value) => value,
+            Err(err) => panic!("run list failed: {err}"),
+        };
         assert_eq!(code, 0);
-        let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
+        let payload: Value = match serde_json::from_str(&rendered) {
+            Ok(value) => value,
+            Err(err) => panic!("parse payload failed: {err}"),
+        };
         assert_eq!(payload["action"], "list");
         assert_eq!(
             payload["public_targets"],
@@ -502,15 +514,24 @@ mod tests {
 
     #[test]
     fn make_explain_unknown_target_is_stable() {
-        let temp = tempfile::tempdir().expect("tempdir");
+        let temp = match tempfile::tempdir() {
+            Ok(value) => value,
+            Err(err) => panic!("tempdir failed: {err}"),
+        };
         write_minimal_root_mk(temp.path());
         let args = MakeExplainArgs {
             common: common(temp.path()),
             target: "unknown-target".to_string(),
         };
-        let (rendered, code) = run_explain(args, Instant::now()).expect("run explain");
+        let (rendered, code) = match run_explain(args, Instant::now()) {
+            Ok(value) => value,
+            Err(err) => panic!("run explain failed: {err}"),
+        };
         assert_eq!(code, 2);
-        let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
+        let payload: Value = match serde_json::from_str(&rendered) {
+            Ok(value) => value,
+            Err(err) => panic!("parse payload failed: {err}"),
+        };
         assert_eq!(payload["action"], "explain");
         assert_eq!(payload["known"], false);
         assert_eq!(
@@ -521,16 +542,28 @@ mod tests {
 
     #[test]
     fn make_list_excludes_hidden_and_invalid_tokens() {
-        let temp = tempfile::tempdir().expect("tempdir");
-        fs::create_dir_all(temp.path().join("make")).expect("create make dir");
-        fs::write(
+        let temp = match tempfile::tempdir() {
+            Ok(value) => value,
+            Err(err) => panic!("tempdir failed: {err}"),
+        };
+        if let Err(err) = fs::create_dir_all(temp.path().join("make")) {
+            panic!("create make dir failed: {err}");
+        }
+        if let Err(err) = fs::write(
             temp.path().join("make/root.mk"),
             "CURATED_TARGETS := \\\n\tfmt _hidden help invalid$name test-all\n",
-        )
-        .expect("write root.mk");
-        let (rendered, code) = run_list(common(temp.path()), Instant::now()).expect("run list");
+        ) {
+            panic!("write root.mk failed: {err}");
+        }
+        let (rendered, code) = match run_list(common(temp.path()), Instant::now()) {
+            Ok(value) => value,
+            Err(err) => panic!("run list failed: {err}"),
+        };
         assert_eq!(code, 0);
-        let payload: Value = serde_json::from_str(&rendered).expect("parse payload");
+        let payload: Value = match serde_json::from_str(&rendered) {
+            Ok(value) => value,
+            Err(err) => panic!("parse payload failed: {err}"),
+        };
         assert_eq!(
             payload["public_targets"],
             serde_json::json!(["fmt", "help", "test-all"])
