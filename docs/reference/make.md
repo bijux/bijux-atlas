@@ -1,4 +1,4 @@
-# Make Reference
+# Make reference
 
 - Owner: `bijux-atlas-operations`
 - Type: `reference`
@@ -11,7 +11,7 @@
 
 `make` targets are wrappers over canonical control-plane commands.
 
-## Target groups
+## Published target groups
 
 - Ops targets: deploy, readiness, observability, load, release.
 - Docs targets: docs checks and inventory generation.
@@ -22,8 +22,9 @@
 - Prefer published targets only.
 - Do not depend on ad-hoc local aliases in docs.
 - Use command references for underlying CLI details.
+- Human explanations live here; generated target inventories belong behind the docs dashboard.
 
-## Next
+## Next steps
 
-- [Commands Reference](commands.md)
-- [Operations Surface Reference](ops-surface.md)
+- [Commands reference](commands.md)
+- [Operations surface reference](ops-surface.md)

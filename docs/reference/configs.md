@@ -1,4 +1,4 @@
-# Configs Reference
+# Configs reference
 
 - Owner: `bijux-atlas-operations`
 - Type: `reference`
@@ -7,24 +7,25 @@
 - Last updated for release: `v1`
 - Reason to exist: define canonical runtime configuration keys, defaults, and setting surfaces.
 
-## Configuration sources
+## Canonical sources
 
 - Runtime config inventory: `configs/inventory/configs.json`
 - Runtime config guide: `configs/README.md`
 - Config governance contract: `configs/CONTRACT.md`
 
-## How to set config
+## What this page defines
 
-- Local/dev workflows: use documented control-plane commands.
-- Kubernetes deploys: set chart values mapped to runtime keys.
+- Runtime key names and semantics live in [Config keys contract](contracts/config-keys.md).
+- Helm chart names and defaults live in [Chart values contract](contracts/chart-values.md).
+- Procedures for setting values live outside reference docs.
 
-## Canonical mappings
+## Usage boundaries
 
-- Runtime keys and semantics: [Config Keys Contract](contracts/config-keys.md)
-- Helm values mapping: [Chart Values Contract](contracts/chart-values.md)
-- Operator procedures: [Deploy](../operations/deploy.md)
+- API consumers should treat runtime keys as operator-owned implementation facts.
+- Operators should use [Deploy](../operations/deploy.md) and [Values mapping to config keys](../operations/values-mapping-to-config-keys.md) for procedures.
+- Contributors should use control-plane guides when generating or validating config inventories.
 
-## Next
+## Next steps
 
-- [Schemas Reference](schemas.md)
-- [Operations Config](../operations/config.md)
+- [Schemas reference](schemas.md)
+- [Operations config](../operations/config.md)

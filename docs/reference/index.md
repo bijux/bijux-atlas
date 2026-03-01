@@ -9,17 +9,19 @@
 
 ## Why you are reading this
 
-Facts live here. Use this section for canonical definitions, keys, and stable URLs.
+Facts live here. Procedures do not. Use this section for stable names, keys, schemas, contracts, and inventories that other guides link to.
 
 ## Categories
 
-- CLI and automation: [Commands](commands.md), [Command Inventory](command-inventory.md), [Make](make.md)
-- Runtime facts: [Configs](configs.md), [Errors](errors.md), [Schemas](schemas.md)
-- Contracts and artifacts: [Contracts](contracts/index.md), [Repo Map](repo-map.md), [Dataset Operations](dataset-operations.md)
+- Commands and automation: [Commands](commands.md), [Command inventory](command-inventory.md), [Make reference](make.md)
+- Runtime definitions: [Configs reference](configs.md), [Errors reference](errors.md), [Schemas reference](schemas.md)
+- Contracts and registries: [Contracts](contracts/index.md), [Dataset operations](dataset-operations.md), [Repo map](repo-map.md)
 
-## Stable URL policy
+## Reading rule
 
-Reference pages are canonical surfaces. Guides should link here instead of duplicating tables.
+- If you need a procedure, use [API](../api/index.md), [Operations](../operations/index.md), or [Development](../development/index.md).
+- If you need a stable definition, link here instead of duplicating prose.
+- Machine-readable JSON stays in contract registries and generated artifacts, not in narrative guides.
 
 ## Next steps
 

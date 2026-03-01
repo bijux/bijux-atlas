@@ -1,4 +1,4 @@
-# Command Inventory
+# Command inventory
 
 - Owner: `docs-governance`
 - Type: `reference`
@@ -7,18 +7,24 @@
 - Last updated for release: `v1`
 - Reason to exist: provide the canonical inventory entrypoint for command surfaces.
 
-## Command surfaces
+## Inventory model
 
-- `bijux atlas ...`
-- `bijux dev atlas ...`
-- `make <target>` wrappers
+- This page is the human-readable inventory of published command families.
+- Generated command JSON belongs in docs artifacts and the docs dashboard, not in reader navigation.
 
-## Where to read commands
+## Published command families
 
-- Human-oriented command guidance: [Commands Reference](commands.md)
-- Ops-focused commands: [Operations Surface Reference](ops-surface.md)
+- `bijux atlas ...`: product CLI surface for querying, validating, and inspecting Atlas.
+- `bijux dev atlas ...`: control-plane surface for contributors, CI, and contract enforcement.
+- `make <target>`: stable wrapper layer for documented local, ops, and docs workflows.
 
-## Next
+## Canonical references
 
-- [Commands Reference](commands.md)
-- [Make Reference](make.md)
+- Command boundaries: [Commands reference](commands.md)
+- Make targets: [Make reference](make.md)
+- Operator entrypoints: [Operations surface reference](ops-surface.md)
+
+## Next steps
+
+- [Commands reference](commands.md)
+- [Control-plane](../control-plane/index.md)

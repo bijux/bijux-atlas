@@ -1,4 +1,4 @@
-# Errors Reference
+# Errors reference
 
 - Owner: `bijux-atlas-operations`
 - Type: `reference`
@@ -19,12 +19,13 @@
 - Envelope schema: `docs/reference/contracts/schemas/ERROR_SCHEMA.json`
 - Status mapping: `docs/reference/contracts/schemas/ERROR_STATUS_MAP.json`
 
-## Troubleshooting links
+## Usage boundaries
 
-- API usage and handling: [API Errors](../api/errors.md)
-- Service incidents: [Operations Incident Response](../operations/incident-response.md)
+- API docs explain how clients should interpret and handle these codes: [API errors](../api/errors.md).
+- Operations docs explain what to do when a service incident is ongoing: [Operations incident response](../operations/incident-response.md).
+- This page stays descriptive: taxonomy, envelope, and status mapping only.
 
-## Next
+## Next steps
 
-- [API Errors](../api/errors.md)
-- [Schemas Reference](schemas.md)
+- [API errors](../api/errors.md)
+- [Schemas reference](schemas.md)

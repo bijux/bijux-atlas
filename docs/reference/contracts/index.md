@@ -21,8 +21,9 @@
 
 - Contract facts live in `contracts/schemas/*.json`.
 - Narrative guides must link here instead of embedding full schema content.
+- This index is the only reader-facing contract portal.
 
-## Next
+## Next steps
 
 - [Reference Index](../index.md)
-- [Governance Contract Workflow](../../governance/contract-ssot-workflow.md)
+- [API](../../api/index.md)

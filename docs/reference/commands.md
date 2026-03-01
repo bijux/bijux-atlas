@@ -1,4 +1,4 @@
-# Commands Reference
+# Commands reference
 
 - Owner: `bijux-atlas-operations`
 - Type: `reference`
@@ -10,20 +10,28 @@
 ## Command families
 
 - Product CLI: `bijux atlas ...`
-- Development control plane: `bijux dev atlas ...`
+- Control-plane CLI: `bijux dev atlas ...`
 - Wrapper entrypoints: `make <target>`
 
-## Canonical command docs
+## Canonical command documents
 
-- Product and control-plane commands: [Command Inventory](command-inventory.md)
-- Make entrypoints: [Make Reference](make.md)
-- Operator-only procedures: [Operations](../operations/index.md)
+- Surface inventory: [Command inventory](command-inventory.md)
+- Make wrappers: [Make reference](make.md)
+- Operator procedures: [Operations](../operations/index.md)
+- Contributor procedures: [Control-plane](../control-plane/index.md)
 
-## Usage boundaries
+## Boundaries
 
-This page lists command surfaces only. Procedures belong in operations or development guides.
+This page names stable command families and their intended audiences. It does not define runbooks or onboarding flows.
 
-## Next
+## Command ownership
 
-- [Make Reference](make.md)
-- [Operations Surface Reference](ops-surface.md)
+- `bijux atlas ...` serves API users and operators.
+- `bijux dev atlas ...` serves contributors and CI lanes.
+- `make <target>` is the supported wrapper layer for published workflows.
+
+## Next steps
+
+- [Command inventory](command-inventory.md)
+- [Make reference](make.md)
+- [Operations surface reference](ops-surface.md)
