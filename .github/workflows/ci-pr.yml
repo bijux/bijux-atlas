@@ -176,6 +176,64 @@ jobs:
               exit 1
             fi
           fi
+          cargo run -q -p bijux-dev-atlas -- governance validate --format json > "${report_root}/governance-validate.json" 2> "${logs_root}/governance-validate.stderr.log"
+          coverage_current="$(jq -r '.coverage_percent' artifacts/governance/governance-coverage.json)"
+          coverage_baseline="$(jq -r '.coverage_percent_min' governance/coverage-baseline.json)"
+          delta="$(awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { printf \"%.2f\", c-b }')"
+          status="ok"
+          if awk -v c="${coverage_current}" -v b="${coverage_baseline}" 'BEGIN { exit !(c < b) }'; then
+            status="failed"
+            echo "governance coverage dropped below baseline: current=${coverage_current} baseline=${coverage_baseline}" >&2
+            exit 1
+          fi
+          jq -n \
+            --arg status "${status}" \
+            --argjson current "${coverage_current}" \
+            --argjson baseline "${coverage_baseline}" \
+            --arg delta "${delta}" \
+            '{
+              schema_version: 1,
+              kind: "governance_coverage_diff",
+              status: $status,
+              baseline_percent: $baseline,
+              current_percent: $current,
+              delta_percent: ($delta | tonumber)
+            }' > "${report_root}/governance-coverage-diff.json"
+          changed_list="$(git diff --name-only "${base_sha}...HEAD")"
+          changed_file() {
+            printf '%s\n' "${changed_list}" | grep -qx "$1"
+          }
+          pr_body="$(jq -r '.pull_request.body // \"\"' "${GITHUB_EVENT_PATH}")"
+          if changed_file "configs/openapi/v1/openapi.snapshot.json"; then
+            if ! printf '%s' "${pr_body}" | grep -Eq '\[api-compat:(non-breaking|breaking)\]'; then
+              echo "OpenAPI snapshot changed but compatibility marker is missing; add [api-compat:non-breaking] or [api-compat:breaking] in PR body" >&2
+              exit 1
+            fi
+          fi
+          endpoints_changed=0
+          openapi_changed=0
+          if changed_file "docs/reference/contracts/schemas/ENDPOINTS.json"; then endpoints_changed=1; fi
+          if changed_file "configs/openapi/v1/openapi.snapshot.json"; then openapi_changed=1; fi
+          if [ "${endpoints_changed}" -ne "${openapi_changed}" ]; then
+            echo "ENDPOINTS registry diff must match OpenAPI snapshot diff" >&2
+            exit 1
+          fi
+          error_registry_changed=0
+          error_runtime_changed=0
+          if changed_file "docs/reference/contracts/schemas/ERROR_CODES.json"; then error_registry_changed=1; fi
+          if changed_file "crates/bijux-atlas-api/src/generated/error_codes.rs" || changed_file "crates/bijux-atlas-core/src/generated/error_codes.rs" || changed_file "ops/inventory/meta/error-registry.json"; then error_runtime_changed=1; fi
+          if [ "${error_registry_changed}" -ne "${error_runtime_changed}" ]; then
+            echo "ERROR_CODES registry diff must match runtime error map diff" >&2
+            exit 1
+          fi
+          config_registry_changed=0
+          config_runtime_changed=0
+          if changed_file "docs/reference/contracts/schemas/CONFIG_KEYS.json"; then config_registry_changed=1; fi
+          if changed_file "crates/bijux-atlas-server/docs/generated/effective-config.snapshot.json" || changed_file "crates/bijux-atlas-server/docs/generated/runtime-startup-config.md" || changed_file "crates/bijux-atlas-server/docs/generated/runtime-startup-config.schema.json"; then config_runtime_changed=1; fi
+          if [ "${config_registry_changed}" -ne "${config_runtime_changed}" ]; then
+            echo "CONFIG_KEYS registry diff must match runtime effective config artifact diff" >&2
+            exit 1
+          fi
           cargo run -q -p bijux-dev-atlas -- contracts runtime --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/runtime-static.json" 2> "${logs_root}/runtime-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts control-plane --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/control-plane-static.json" 2> "${logs_root}/control-plane-contracts-static.stderr.log"
           cargo run -q -p bijux-dev-atlas -- contracts configs --mode static --format json --artifacts-root "${contracts_root}" > "${contracts_root}/configs-static.json" 2> "${logs_root}/configs-contracts-static.stderr.log"
@@ -252,7 +310,7 @@ jobs:
             "${report_root}/ci-fast.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           printf "\n- contracts all: %s\n- docs required: %s\n- docs required membership: %s\n- configs required: %s\n- configs required membership: %s\n- make required: %s\n- make required membership: %s\n- repo required: %s\n- repo required membership: %s\n- repo integrity summary: %s\n- contracts runtime static: %s\n- contracts control-plane static: %s\n- contracts configs static: %s\n- contracts make static: %s\n- contracts ops static: %s\n- contracts docker static: %s\n- coverage: %s\n" \
             "${contracts_root}/all.json" "${contracts_root}/docs-required.json" "${report_root}/suite-membership-docs_required.json" "${contracts_root}/configs-required.json" "${report_root}/suite-membership-configs_required.json" "${contracts_root}/make-required.json" "${report_root}/suite-membership-make_required.json" "${contracts_root}/repo-required.json" "${report_root}/suite-membership-repo_required.json" "${report_root}/repo-integrity-summary.json" "${contracts_root}/runtime-static.json" "${contracts_root}/control-plane-static.json" "${contracts_root}/configs-static.json" "${contracts_root}/make-static.txt" "${contracts_root}/ops-static.json" "${contracts_root}/docker-static.json" "${contracts_root}/coverage-summary.json" >> "artifacts/${RUN_ID}/summary.md"
-          printf "- repo surface diff: %s\n- root change report: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" >> "artifacts/${RUN_ID}/summary.md"
+          printf "- repo surface diff: %s\n- root change report: %s\n- governance validate: %s\n- governance coverage diff: %s\n" "${report_root}/repo-surface-diff.json" "${report_root}/root-change-report.json" "${report_root}/governance-validate.json" "${report_root}/governance-coverage-diff.json" >> "artifacts/${RUN_ID}/summary.md"
           if [ -f "${contracts_root}/root-strict.json" ]; then
             printf -- "- root strict: %s\n" "${contracts_root}/root-strict.json" >> "artifacts/${RUN_ID}/summary.md"
           fi
