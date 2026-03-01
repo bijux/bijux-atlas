@@ -44,6 +44,4 @@ Facts live here. Procedures do not. Use this section for stable names, keys, sch
 
 ## Next steps
 
-- [API](../api/index.md)
-- [Operations](../operations/index.md)
 - [Glossary](../glossary.md)
