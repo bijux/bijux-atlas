@@ -727,6 +727,14 @@
       "used_in": []
     },
     {
+      "name": "lint-make",
+      "defined_in": [
+        "make/root.mk"
+      ],
+      "visibility": "public",
+      "used_in": []
+    },
+    {
       "name": "lint-configs",
       "defined_in": [
         "makefiles/root.mk"

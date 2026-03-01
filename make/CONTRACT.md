@@ -9,6 +9,8 @@
 - This document does not replace executable contract checks.
 - This document does not grant manual exception authority.
 
+- Make is not a control plane; it is a thin wrapper over `bijux dev atlas`.
+
 ## Contract IDs
 
 | ID | Title | Severity | Type(static/effect) | Enforced by | Artifacts |
@@ -52,6 +54,7 @@
 | `MAKE-SURFACE-001` | make curated source of truth | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SURFACE-002` | make curated target budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SURFACE-003` | make curated registry sync | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
+| `MAKE-SURFACE-004` | make control-plane surface parity | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-SURFACE-005` | make delegate only wrappers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 | `MAKE-TARGETLIST-001` | make target list policy | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/run/<run_id>/gates/contracts/make/<profile>/<mode>/make.json` |
 
@@ -98,6 +101,7 @@
 | `MAKE-SURFACE-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-002` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-003` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-SURFACE-004` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-005` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-TARGETLIST-001` | `bijux dev atlas contracts make --mode static` |
 

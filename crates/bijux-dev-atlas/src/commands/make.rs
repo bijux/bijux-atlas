@@ -14,6 +14,7 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
         let started = Instant::now();
         match command {
             MakeCommand::VerifyModule(args) => run_verify_module(args, started),
+            MakeCommand::Surface(common) => run_surface(common, started),
             MakeCommand::TargetList(common) => run_target_list(common, started),
             MakeCommand::LintPolicyReport(common) => run_lint_policy_report(common, started),
         }
@@ -30,6 +31,23 @@ pub(crate) fn run_make_command(quiet: bool, command: MakeCommand) -> i32 {
             1
         }
     }
+}
+
+fn run_surface(
+    common: crate::cli::MakeCommonArgs,
+    started: Instant,
+) -> Result<(String, i32), String> {
+    let repo_root = resolve_repo_root(common.repo_root.clone())?;
+    let targets = load_curated_targets(&repo_root)?;
+    let payload = serde_json::json!({
+        "schema_version": 1,
+        "action": "surface",
+        "source": "make/root.mk:CURATED_TARGETS",
+        "public_targets": targets,
+        "duration_ms": started.elapsed().as_millis() as u64,
+    });
+    let rendered = emit_payload(common.format, common.out.clone(), &payload)?;
+    Ok((rendered, 0))
 }
 
 fn run_target_list(

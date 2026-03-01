@@ -29,6 +29,7 @@
     "k8s-render",
     "k8s-validate",
     "lint",
+    "lint-make",
     "make-target-list",
     "ops-contracts",
     "ops-contracts-effect",

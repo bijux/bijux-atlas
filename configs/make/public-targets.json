@@ -1,6 +1,6 @@
 {
-  "max_public_targets": 40,
-  "target_public_targets": 39,
+  "max_public_targets": 41,
+  "target_public_targets": 40,
   "public_targets": [
     {
       "name": "artifacts-clean",
@@ -260,6 +260,15 @@
         "ci"
       ],
       "area": "cargo"
+    },
+    {
+      "name": "lint-make",
+      "description": "Run make contracts through the control plane",
+      "lanes": [
+        "dev",
+        "ci"
+      ],
+      "area": "make"
     },
     {
       "name": "make-target-list",

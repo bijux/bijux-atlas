@@ -158,6 +158,7 @@ pub enum ConfigsCommand {
 #[derive(Subcommand, Debug)]
 pub enum MakeCommand {
     VerifyModule(MakeVerifyArgs),
+    Surface(MakeCommonArgs),
     TargetList(MakeCommonArgs),
     LintPolicyReport(MakeCommonArgs),
 }

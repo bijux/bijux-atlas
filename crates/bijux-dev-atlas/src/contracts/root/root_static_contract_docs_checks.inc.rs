@@ -95,11 +95,14 @@ fn render_canonical_contract_doc(
     {
         out.push_str("- Effects boundary: effect contracts require explicit runtime opt-in flags.\n");
     } else {
-        out.push_str("- Effects boundary: this group runs static contracts only.\n");
+    out.push_str("- Effects boundary: this group runs static contracts only.\n");
     }
     out.push_str("- Non-goals:\n");
     out.push_str("- This document does not replace executable contract checks.\n");
     out.push_str("- This document does not grant manual exception authority.\n\n");
+    if domain.name == "make" {
+        out.push_str("- Make is not a control plane; it is a thin wrapper over `bijux dev atlas`.\n\n");
+    }
     if domain.name == "root" {
         out.push_str("## Lane policy\n\n");
         out.push_str("- `local`: ad hoc developer runs; no merge-blocking selection is implied.\n");

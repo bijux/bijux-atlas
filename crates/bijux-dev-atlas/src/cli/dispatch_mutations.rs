@@ -227,7 +227,9 @@ fn force_json_docs(command: &mut DocsCommand) {
 fn force_json_make(command: &mut MakeCommand) {
     match command {
         MakeCommand::VerifyModule(args) => args.common.format = FormatArg::Json,
-        MakeCommand::TargetList(common) | MakeCommand::LintPolicyReport(common) => {
+        MakeCommand::Surface(common)
+        | MakeCommand::TargetList(common)
+        | MakeCommand::LintPolicyReport(common) => {
             common.format = FormatArg::Json
         }
     }
@@ -358,7 +360,9 @@ pub(super) fn propagate_repo_root(command: &mut Command, repo_root: Option<std::
     match command {
         Command::Make { command } => match command {
             MakeCommand::VerifyModule(args) => args.common.repo_root = Some(root.clone()),
-            MakeCommand::TargetList(common) | MakeCommand::LintPolicyReport(common) => {
+            MakeCommand::Surface(common)
+            | MakeCommand::TargetList(common)
+            | MakeCommand::LintPolicyReport(common) => {
                 common.repo_root = Some(root.clone())
             }
         },

@@ -25,17 +25,16 @@ CURATED_TARGETS := \
 	docker docker-contracts docker-contracts-effect docker-gate doctor \
 	fmt help \
 	k8s-render k8s-validate \
-	lint make-target-list \
+	lint lint-make make-target-list \
 	ops-contracts ops-contracts-effect ops-fast ops-nightly ops-pr \
 	stack-down stack-up \
 	test test-all
 
 help: ## Show curated make targets owned by Rust control-plane wrappers
-	@printf '%s\n' "Curated make targets (Rust control plane):"; \
-	for t in $(CURATED_TARGETS); do printf '  %s\n' "$$t"; done
+	@$(DEV_ATLAS) make surface --format text
 
 _internal-list: ## Print curated make target names
-	@for t in $(CURATED_TARGETS); do printf '%s\n' "$$t"; done
+	@$(DEV_ATLAS) make surface --format text
 
 _internal-explain: ## Explain curated target ownership (TARGET=<name>)
 	@[ -n "$${TARGET:-}" ] || { echo "usage: make explain TARGET=<name>" >&2; exit 2; }
@@ -60,6 +59,9 @@ clean: ## Clean ephemeral artifacts through the control plane
 
 artifacts-clean: ## Clean ephemeral artifacts through the control plane
 	@$(DEV_ATLAS) artifacts clean --allow-write --format text
+
+lint-make: ## Run make contracts through the control plane
+	@$(DEV_ATLAS) contracts make --mode static --format text
 
 _internal-lint-make: ## Run make domain checks via control-plane registry
 	@$(DEV_ATLAS) check run --domain make --format json
@@ -103,4 +105,4 @@ ops-nightly: ## Run nightly ops check suite through dev-atlas
 	@mkdir -p $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)
 	@$(DEV_ATLAS) check run --suite ci_nightly --include-internal --include-slow --format json | tee $(ARTIFACT_ROOT)/ops-nightly/$(RUN_ID)/report.json >/dev/null
 
-.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor k8s-render k8s-validate stack-up stack-down ops-fast ops-pr ops-nightly
+.PHONY: help _internal-list _internal-explain _internal-surface _internal-lint-make _internal-make-drift-report artifacts-clean clean doctor k8s-render k8s-validate lint-make stack-up stack-down ops-fast ops-pr ops-nightly

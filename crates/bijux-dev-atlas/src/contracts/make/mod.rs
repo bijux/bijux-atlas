@@ -1083,6 +1083,9 @@ pub fn contract_explain(contract_id: &str) -> String {
         "MAKE-STRUCT-007" => {
             "Keep CURATED_TARGETS alphabetically sorted so `make help` and generated target registries stay stable.".to_string()
         }
+        "MAKE-SURFACE-004" => {
+            "The control plane must expose the same curated make surface that root make wrappers publish.".to_string()
+        }
         "MAKE-ENV-001" => {
             "Keep one macros source and one run-environment source to avoid env drift.".to_string()
         }
