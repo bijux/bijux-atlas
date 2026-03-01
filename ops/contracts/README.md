@@ -1,6 +1,6 @@
 # Contract registries
 
-This directory is the human-facing entrypoint for contract domains enforced by `bijux dev atlas`.
+This directory is the only human-facing entrypoint for contract domains enforced by `bijux dev atlas`.
 
 - [Docs](docs/README.md): documentation structure, metadata, links, and generated artifact contracts.
 - [Configs](configs/README.md): config tree, schema, owner, and consumer-mapping contracts.

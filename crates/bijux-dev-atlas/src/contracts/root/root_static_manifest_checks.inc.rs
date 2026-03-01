@@ -9,7 +9,7 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "ROOT-016".to_string(),
                 test_id: "root.surface.manifest_complete".to_string(),
-                file: Some("root-surface.json".to_string()),
+                file: Some("ops/inventory/root-surface.json".to_string()),
                 line: None,
                 message: "`entries` object is required".to_string(),
                 evidence: None,
@@ -29,7 +29,7 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
             "ROOT-016",
             "root.surface.manifest_complete",
             Some(name.clone()),
-            "sealed root entry is missing from root-surface.json",
+            "sealed root entry is missing from ops/inventory/root-surface.json",
         );
     }
     for name in manifest_entries.difference(&expected) {
@@ -38,7 +38,7 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
             "ROOT-016",
             "root.surface.manifest_complete",
             Some(name.clone()),
-            "root-surface.json references an undeclared root entry",
+            "ops/inventory/root-surface.json references an undeclared root entry",
         );
     }
     for name in manifest_entries {
@@ -49,7 +49,7 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
                 "ROOT-016",
                 "root.surface.manifest_complete",
                 Some(name),
-                "root-surface.json references a missing repo root entry",
+                "ops/inventory/root-surface.json references a missing repo root entry",
             );
             continue;
         }
@@ -73,7 +73,7 @@ fn test_root_016_surface_manifest_complete(ctx: &RunContext) -> TestResult {
                 "root.surface.manifest_complete",
                 Some(name),
                 format!(
-                    "root-surface.json kind drift: declared {:?}, actual {:?}",
+                    "ops/inventory/root-surface.json kind drift: declared {:?}, actual {:?}",
                     declared_kind, actual_kind
                 ),
             );
@@ -244,7 +244,7 @@ fn test_root_020_single_segment_entries(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "ROOT-020".to_string(),
                 test_id: "root.surface.single_segment_entries".to_string(),
-                file: Some("root-surface.json".to_string()),
+                file: Some("ops/inventory/root-surface.json".to_string()),
                 line: None,
                 message: "`entries` object is required".to_string(),
                 evidence: None,
@@ -285,7 +285,7 @@ fn test_root_027_manifest_ssot_roots(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "ROOT-027".to_string(),
                 test_id: "root.surface.ssot_roots".to_string(),
-                file: Some("root-surface.json".to_string()),
+                file: Some("ops/inventory/root-surface.json".to_string()),
                 line: None,
                 message: "`ssot_roots` array is required".to_string(),
                 evidence: None,
@@ -299,7 +299,7 @@ fn test_root_027_manifest_ssot_roots(ctx: &RunContext) -> TestResult {
                 &mut violations,
                 "ROOT-027",
                 "root.surface.ssot_roots",
-                Some("root-surface.json".to_string()),
+                Some("ops/inventory/root-surface.json".to_string()),
                 format!("missing ssot root declaration: {required}"),
             );
         }
@@ -325,7 +325,7 @@ fn test_root_028_manifest_docs_governed(ctx: &RunContext) -> TestResult {
             return TestResult::Fail(vec![Violation {
                 contract_id: "ROOT-028".to_string(),
                 test_id: "root.surface.docs_governed".to_string(),
-                file: Some("root-surface.json".to_string()),
+                file: Some("ops/inventory/root-surface.json".to_string()),
                 line: None,
                 message: "`ssot_roots` array is required".to_string(),
                 evidence: None,
@@ -347,7 +347,7 @@ fn test_root_028_manifest_docs_governed(ctx: &RunContext) -> TestResult {
             &mut violations,
             "ROOT-028",
             "root.surface.docs_governed",
-            Some("root-surface.json".to_string()),
+            Some("ops/inventory/root-surface.json".to_string()),
             "docs must be declared as a governed root in ssot_roots",
         );
     }

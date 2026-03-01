@@ -23,7 +23,6 @@
     "make": { "kind": "dir" },
     "mkdocs.yml": { "kind": "file" },
     "ops": { "kind": "dir" },
-    "root-surface.json": { "kind": "file" },
     "rust-toolchain.toml": { "kind": "file" }
   },
   "ssot_roots": [

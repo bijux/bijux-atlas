@@ -15,6 +15,8 @@ Canonical inventory documents for ops ownership, command surface, namespaces, to
   - `ops/inventory/surfaces.json`
   - `ops/inventory/owners.json`
   - `ops/inventory/drills.json`
+- Repo root surface authority is canonical in:
+  - `ops/inventory/root-surface.json`
 - Gate definitions are canonical in:
   - `ops/inventory/gates.json`
 - Release pin freeze state is canonical in:

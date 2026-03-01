@@ -43,7 +43,12 @@
 | `MAKE-SHELL-001` | make shell path stability | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-SHELL-002` | make shell pipeline bound | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-SSOT-001` | make contracts authority | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-STRUCT-001` | root Makefile stays minimal | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-STRUCT-002` | make wrapper files only | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-STRUCT-003` | make modules stay on the approved whitelist | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-STRUCT-004` | make modules declare headers | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-STRUCT-007` | make help surface remains sorted | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
+| `MAKE-STRUCT-010` | make complex recipes dispatch to atlas | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-SURFACE-001` | make curated source of truth | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-SURFACE-002` | make curated target budget | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
 | `MAKE-SURFACE-003` | make curated registry sync | `high` | `static` | `bijux dev atlas contracts make` | `artifacts/contracts/make/report.json` |
@@ -84,7 +89,12 @@
 | `MAKE-SHELL-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SHELL-002` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SSOT-001` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-STRUCT-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-STRUCT-002` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-STRUCT-003` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-STRUCT-004` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-STRUCT-007` | `bijux dev atlas contracts make --mode static` |
+| `MAKE-STRUCT-010` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-001` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-002` | `bijux dev atlas contracts make --mode static` |
 | `MAKE-SURFACE-003` | `bijux dev atlas contracts make --mode static` |

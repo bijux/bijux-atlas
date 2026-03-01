@@ -185,7 +185,7 @@ pub(super) fn write_required_contract_artifact(
     repo_root: &Path,
     domains: &[(DomainDescriptor, Vec<contracts::Contract>)],
 ) -> Result<(), String> {
-    let path = repo_root.join("artifacts/contracts/required.json");
+    let path = repo_root.join("ops/_generated.example/contracts-required.json");
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
             .map_err(|e| format!("create {} failed: {e}", parent.display()))?;

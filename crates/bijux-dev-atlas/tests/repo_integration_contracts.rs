@@ -181,7 +181,7 @@ fn dockerfile_copy_sources_exist_and_stay_within_root_authority() {
 #[test]
 fn root_symlinks_and_dockerignore_follow_surface_contract() {
     let root = repo_root();
-    let manifest = load_json(&root.join("root-surface.json"));
+    let manifest = load_json(&root.join("ops/inventory/root-surface.json"));
     let entries = manifest["entries"].as_object().expect("entries object");
 
     for entry in fs::read_dir(&root).expect("repo root").flatten() {
@@ -197,7 +197,7 @@ fn root_symlinks_and_dockerignore_follow_surface_contract() {
         assert_eq!(
             kind,
             Some("symlink"),
-            "root symlink must be declared as a symlink in root-surface.json: {name}"
+            "root symlink must be declared as a symlink in ops/inventory/root-surface.json: {name}"
         );
     }
 

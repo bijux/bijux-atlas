@@ -50,6 +50,9 @@
 | `CONFIGS-035` | configs schema versioning policy stays complete | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/contracts/configs/report.json` |
 | `CONFIGS-036` | configs exclusions carry approval and expiry metadata | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/contracts/configs/report.json` |
 | `CONFIGS-037` | configs surfaces forbid mutable latest-tag references | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/contracts/configs/report.json` |
+| `CONFIGS-038` | configs domains keep one landing doc | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/contracts/configs/report.json` |
+| `CONFIGS-039` | configs top-level domains stay declared | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/contracts/configs/report.json` |
+| `CONFIGS-040` | configs domain filenames stay unique | `high` | `static` | `bijux dev atlas contracts configs` | `artifacts/contracts/configs/report.json` |
 
 ## Enforcement mapping
 
@@ -92,6 +95,9 @@
 | `CONFIGS-035` | `bijux dev atlas contracts configs --mode static` |
 | `CONFIGS-036` | `bijux dev atlas contracts configs --mode static` |
 | `CONFIGS-037` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-038` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-039` | `bijux dev atlas contracts configs --mode static` |
+| `CONFIGS-040` | `bijux dev atlas contracts configs --mode static` |
 
 ## Output artifacts
 

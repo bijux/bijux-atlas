@@ -513,12 +513,12 @@ fn test_root_015_no_duplicate_toolchain_authority(ctx: &RunContext) -> TestResul
 }
 
 fn root_surface_manifest(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<serde_json::Value, TestResult> {
-    let contents = read_root_text(ctx, "root-surface.json", contract_id, test_id)?;
+    let contents = read_root_text(ctx, "ops/inventory/root-surface.json", contract_id, test_id)?;
     serde_json::from_str(&contents).map_err(|err| {
         TestResult::Fail(vec![Violation {
             contract_id: contract_id.to_string(),
             test_id: test_id.to_string(),
-            file: Some("root-surface.json".to_string()),
+            file: Some("ops/inventory/root-surface.json".to_string()),
             line: None,
             message: format!("invalid json: {err}"),
             evidence: None,

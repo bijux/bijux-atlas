@@ -1,4 +1,4 @@
-const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
+const ROOT_ALLOWED_VISIBLE: [&str; 18] = [
     ".cargo",
     ".dockerignore",
     ".editorconfig",
@@ -17,7 +17,6 @@ const ROOT_ALLOWED_VISIBLE: [&str; 19] = [
     "configs",
     "crates",
     "docker",
-    "root-surface.json",
 ];
 
 const ROOT_ALLOWED_VISIBLE_TAIL: [&str; 5] = ["docs", "make", "mkdocs.yml", "ops", "rust-toolchain.toml"];
