@@ -43,6 +43,7 @@ fn test_configs_002_no_undocumented_files(ctx: &RunContext) -> TestResult {
     let missing = config_files_without_exclusions(&index)
         .into_iter()
         .filter(|file| !covered.contains(file))
+        .filter(|file| !is_allowed_domain_markdown(file))
         .collect::<Vec<_>>();
     if missing.is_empty() {
         TestResult::Pass
@@ -397,7 +398,7 @@ fn test_configs_010_no_policy_theater(ctx: &RunContext) -> TestResult {
             ),
         );
     }
-    let expected = (1..=41)
+    let expected = (1..=42)
         .map(|n| format!("CFG-{n:03}"))
         .collect::<BTreeSet<_>>();
     let actual = surface

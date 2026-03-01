@@ -249,6 +249,39 @@ fn path_depth(path: &str) -> usize {
     path.split('/').count().saturating_sub(1)
 }
 
+fn is_allowed_domain_markdown(path: &str) -> bool {
+    let parts = path.split('/').collect::<Vec<_>>();
+    if parts.len() != 3 || parts[0] != "configs" {
+        return false;
+    }
+    if parts[1].starts_with('_') {
+        return false;
+    }
+    matches!(parts[2], "README.md" | "INDEX.md" | "index.md")
+}
+
+fn configs_top_level_domain_dirs(repo_root: &Path) -> Result<Vec<String>, String> {
+    let root = repo_root.join("configs");
+    let entries =
+        std::fs::read_dir(&root).map_err(|err| format!("read {} failed: {err}", root.display()))?;
+    let mut dirs = entries
+        .flatten()
+        .filter_map(|entry| {
+            let path = entry.path();
+            if !path.is_dir() {
+                return None;
+            }
+            let name = path.file_name()?.to_str()?.to_string();
+            if name.starts_with('.') || name == "_generated" {
+                return None;
+            }
+            Some(name)
+        })
+        .collect::<Vec<_>>();
+    dirs.sort();
+    Ok(dirs)
+}
+
 fn group_depth(path: &str, group: &str) -> Option<usize> {
     let prefix = format!("configs/{group}");
     if path == prefix {

@@ -54,6 +54,7 @@ fn test_configs_012_no_orphans(ctx: &RunContext) -> TestResult {
     let orphans = config_files_without_exclusions(&index)
         .into_iter()
         .filter(|file| !covered.contains(file))
+        .filter(|file| !is_allowed_domain_markdown(file))
         .collect::<Vec<_>>();
     if orphans.is_empty() {
         TestResult::Pass
@@ -594,4 +595,3 @@ fn test_configs_025_text_hygiene(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-

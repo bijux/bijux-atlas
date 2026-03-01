@@ -659,6 +659,23 @@
       "touched_paths": [
         "configs/**"
       ]
+    },
+    {
+      "contract_type": "filelayout",
+      "enforced_by": {
+        "command": "bijux dev atlas contracts configs",
+        "test_id": "configs.docs.domain_landing_files"
+      },
+      "evidence_artifact": null,
+      "id": "CFG-042",
+      "rationale": "each top-level configs domain needs one stable landing doc so owner, purpose, consumers, and update workflow are discoverable.",
+      "severity": "must",
+      "title": "configs domains keep one landing doc",
+      "touched_paths": [
+        "configs/*/README.md",
+        "configs/*/INDEX.md",
+        "configs/*/index.md"
+      ]
     }
   ],
   "domain": "configs",

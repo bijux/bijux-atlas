@@ -286,6 +286,13 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
             "config files may not embed mutable :latest references",
             test_configs_037_no_latest_refs,
         ),
+        contract(
+            "CONFIGS-038",
+            "configs domains keep one landing doc",
+            "configs.docs.domain_landing_files",
+            "each top-level configs domain keeps exactly one landing markdown file",
+            test_configs_038_domain_landing_docs,
+        ),
     ])
 }
 
@@ -347,6 +354,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "CONFIGS-035" => "Every governed public schema file must be listed in configs/schema/versioning-policy.json with the supported compatibility and versioning rules.".to_string(),
         "CONFIGS-036" => "Every registry exclusion must carry explicit approver and expiry metadata so allowlists stay reviewable.".to_string(),
         "CONFIGS-037" => "Config surfaces may not embed mutable latest-tag references.".to_string(),
+        "CONFIGS-038" => "Each top-level configs domain needs exactly one landing markdown file so ownership and update workflow stay discoverable.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts configs`.".to_string(),
     }
 }

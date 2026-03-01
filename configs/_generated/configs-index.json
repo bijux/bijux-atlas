@@ -105,22 +105,26 @@
     },
     {
       "counts": {
-        "covered": 10,
+        "covered": 14,
         "generated": 0,
         "internal": 0,
-        "public": 10,
+        "public": 14,
         "schemas": 1
       },
       "files": [
+        "configs/coverage/README.md",
         "configs/coverage/thresholds.toml",
         "configs/gates/lanes.json",
+        "configs/layout/README.md",
         "configs/layout/inventory-budgets.json",
+        "configs/product/README.md",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
         "configs/repo/surface-snapshot.json",
         "configs/repo/surfaces.json",
         "configs/repo/symlink-allowlist.json",
         "configs/repo/tree-budget-exceptions.json",
+        "configs/shellcheck/README.md",
         "configs/shellcheck/shellcheckrc"
       ],
       "name": "layout",

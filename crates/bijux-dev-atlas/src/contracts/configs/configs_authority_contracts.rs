@@ -14,6 +14,7 @@ fn test_configs_026_docs_markdown_removed(ctx: &RunContext) -> TestResult {
         .into_iter()
         .filter(|file| file.ends_with(".md"))
         .filter(|file| !ROOT_MARKDOWN_FILES.contains(&file.as_str()))
+        .filter(|file| !is_allowed_domain_markdown(file))
         .map(|file| {
             violation(
                 "CONFIGS-026",
@@ -47,6 +48,9 @@ fn test_configs_027_docs_tooling_surface(ctx: &RunContext) -> TestResult {
         if !file.starts_with("configs/docs/") {
             continue;
         }
+        if is_allowed_domain_markdown(&file) {
+            continue;
+        }
         if !DOCS_TOOLING_PATTERNS
             .iter()
             .any(|pattern| wildcard_match(pattern, &file))
@@ -56,6 +60,47 @@ fn test_configs_027_docs_tooling_surface(ctx: &RunContext) -> TestResult {
                 "configs.docs.tooling_surface",
                 &file,
                 "configs/docs contains a file outside the declared tooling surface",
+            ));
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        TestResult::Fail(violations)
+    }
+}
+
+fn test_configs_038_domain_landing_docs(ctx: &RunContext) -> TestResult {
+    let domains = match configs_top_level_domain_dirs(&ctx.repo_root) {
+        Ok(domains) => domains,
+        Err(err) => {
+            return fail(
+                "CONFIGS-038",
+                "configs.docs.domain_landing_files",
+                "configs",
+                err,
+            )
+        }
+    };
+    let mut violations = Vec::new();
+    for domain in domains {
+        let candidates = [
+            format!("configs/{domain}/README.md"),
+            format!("configs/{domain}/INDEX.md"),
+            format!("configs/{domain}/index.md"),
+        ];
+        let matches = candidates
+            .iter()
+            .filter(|path| ctx.repo_root.join(path).is_file())
+            .count();
+        if matches != 1 {
+            violations.push(violation(
+                "CONFIGS-038",
+                "configs.docs.domain_landing_files",
+                &format!("configs/{domain}"),
+                format!(
+                    "configs domain `{domain}` must contain exactly one landing markdown file, found {matches}"
+                ),
             ));
         }
     }
@@ -423,4 +468,3 @@ fn test_configs_031_schema_map_coverage(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
-
