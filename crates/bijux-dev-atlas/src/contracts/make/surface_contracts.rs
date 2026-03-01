@@ -319,12 +319,44 @@ fn test_make_surface_004_control_plane_parity(ctx: &RunContext) -> TestResult {
             "make CLI surface must expose `make surface`",
         );
     }
+    if !surfaces_text.contains("List(MakeCommonArgs)") {
+        return failure(
+            "MAKE-SURFACE-004",
+            "make.surface.control_plane_parity",
+            "crates/bijux-dev-atlas/src/cli/surfaces.rs",
+            "make CLI surface must expose `make list`",
+        );
+    }
+    if !surfaces_text.contains("Explain(MakeExplainArgs)") {
+        return failure(
+            "MAKE-SURFACE-004",
+            "make.surface.control_plane_parity",
+            "crates/bijux-dev-atlas/src/cli/surfaces.rs",
+            "make CLI surface must expose `make explain`",
+        );
+    }
     if !commands_text.contains("MakeCommand::Surface(common) => run_surface(common, started)") {
         return failure(
             "MAKE-SURFACE-004",
             "make.surface.control_plane_parity",
             "crates/bijux-dev-atlas/src/commands/make.rs",
             "make command dispatcher must route `make surface` through run_surface",
+        );
+    }
+    if !commands_text.contains("MakeCommand::List(common) => run_list(common, started)") {
+        return failure(
+            "MAKE-SURFACE-004",
+            "make.surface.control_plane_parity",
+            "crates/bijux-dev-atlas/src/commands/make.rs",
+            "make command dispatcher must route `make list` through run_list",
+        );
+    }
+    if !commands_text.contains("MakeCommand::Explain(args) => run_explain(args, started)") {
+        return failure(
+            "MAKE-SURFACE-004",
+            "make.surface.control_plane_parity",
+            "crates/bijux-dev-atlas/src/commands/make.rs",
+            "make command dispatcher must route `make explain` through run_explain",
         );
     }
     if !commands_text.contains("\"action\": \"surface\"") {
