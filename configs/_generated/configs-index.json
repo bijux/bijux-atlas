@@ -105,10 +105,10 @@
     },
     {
       "counts": {
-        "covered": 14,
+        "covered": 17,
         "generated": 0,
         "internal": 0,
-        "public": 14,
+        "public": 17,
         "schemas": 1
       },
       "files": [
@@ -120,6 +120,9 @@
         "configs/product/README.md",
         "configs/product/artifact-manifest.schema.json",
         "configs/product/external-tools-manifest.json",
+        "configs/repo/generated-path-allowlist.json",
+        "configs/repo/root-file-allowlist.json",
+        "configs/repo/script-extension-allowlist.json",
         "configs/repo/surface-snapshot.json",
         "configs/repo/surfaces.json",
         "configs/repo/symlink-allowlist.json",
@@ -407,9 +410,9 @@
     },
     {
       "counts": {
-        "covered": 42,
+        "covered": 47,
         "generated": 1,
-        "internal": 32,
+        "internal": 37,
         "public": 9,
         "schemas": 2
       },
@@ -418,6 +421,9 @@
         "configs/contracts/configs-contracts-check-output.schema.json",
         "configs/contracts/contracts-coverage-output.schema.json",
         "configs/contracts/contracts-output.schema.json",
+        "configs/contracts/crate-docs-index-allowlist.json",
+        "configs/contracts/crate-docs-publish-allowlist.json",
+        "configs/contracts/crate-docs-readme-allowlist.json",
         "configs/contracts/dev-atlas-output.schema.json",
         "configs/contracts/env.schema.json",
         "configs/contracts/inventory-budgets.schema.json",
@@ -443,6 +449,8 @@
         "configs/schema/configs-ownership.schema.json",
         "configs/schema/configs-schema-index.schema.json",
         "configs/schema/configs-schema-map.schema.json",
+        "configs/schema/docs-registry.schema.json",
+        "configs/schema/docs-sections.schema.json",
         "configs/schema/forbidden-adjectives-approvals.schema.json",
         "configs/schema/generated/schema-index.json",
         "configs/schema/hpa-safety-caps.schema.json",

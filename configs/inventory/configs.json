@@ -275,6 +275,8 @@
       "internal_files": [
         "configs/schema/config-compiler-report.schema.json",
         "configs/schema/configs-ownership.schema.json",
+        "configs/schema/docs-registry.schema.json",
+        "configs/schema/docs-sections.schema.json",
         "configs/schema/forbidden-adjectives-approvals.schema.json",
         "configs/schema/hpa-safety-caps.schema.json",
         "configs/schema/layer-live-diff-allowlist.schema.json",
