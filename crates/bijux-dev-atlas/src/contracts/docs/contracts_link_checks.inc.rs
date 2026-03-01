@@ -502,3 +502,59 @@ fn test_docs_030_index_report_generated(ctx: &RunContext) -> TestResult {
     }
     TestResult::Pass
 }
+
+fn test_docs_046_reader_utility_no_internal_links(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for relative in docs_reader_utility_pages() {
+        let path = ctx.repo_root.join(&relative);
+        let contents = match std::fs::read_to_string(&path) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-046",
+                    "docs.links.reader_utility_no_internal_links",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        for target in markdown_links(&contents) {
+            let clean = target.split('#').next().unwrap_or(&target);
+            if clean.is_empty()
+                || clean.starts_with("http://")
+                || clean.starts_with("https://")
+                || clean.starts_with("mailto:")
+                || clean.starts_with('#')
+            {
+                continue;
+            }
+            let resolved = if clean.starts_with('/') {
+                ctx.repo_root.join(clean.trim_start_matches('/'))
+            } else {
+                path.parent().unwrap_or(&path).join(clean)
+            };
+            let normalized = std::fs::canonicalize(&resolved).unwrap_or(resolved);
+            let Ok(repo_relative) = normalized.strip_prefix(&ctx.repo_root) else {
+                continue;
+            };
+            let repo_relative = repo_relative.display().to_string();
+            if repo_relative.starts_with("docs/_internal/") {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-046",
+                    "docs.links.reader_utility_no_internal_links",
+                    Some(relative.clone()),
+                    format!("reader utility page links internal page `{repo_relative}`"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}

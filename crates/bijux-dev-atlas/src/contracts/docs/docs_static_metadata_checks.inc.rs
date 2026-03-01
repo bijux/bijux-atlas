@@ -487,6 +487,52 @@ fn test_docs_044_frontmatter_schema_exists(ctx: &RunContext) -> TestResult {
     TestResult::Pass
 }
 
+fn test_docs_045_reader_utility_frontmatter(ctx: &RunContext) -> TestResult {
+    let mut violations = Vec::new();
+    for relative in docs_reader_utility_pages() {
+        let contents = match std::fs::read_to_string(ctx.repo_root.join(&relative)) {
+            Ok(contents) => contents,
+            Err(err) => {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-045",
+                    "docs.metadata.reader_utility_frontmatter",
+                    Some(relative),
+                    format!("read failed: {err}"),
+                );
+                continue;
+            }
+        };
+        let Some(frontmatter) = parse_docs_frontmatter(&contents) else {
+            push_docs_violation(
+                &mut violations,
+                "DOC-045",
+                "docs.metadata.reader_utility_frontmatter",
+                Some(relative),
+                "reader utility page must declare YAML frontmatter",
+            );
+            continue;
+        };
+        for key in ["title", "audience", "type", "stability", "owner", "last_reviewed"] {
+            if frontmatter.get(key).is_none() {
+                push_docs_violation(
+                    &mut violations,
+                    "DOC-045",
+                    "docs.metadata.reader_utility_frontmatter",
+                    Some(relative.clone()),
+                    format!("reader utility page frontmatter is missing `{key}`"),
+                );
+            }
+        }
+    }
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.file.cmp(&b.file).then(a.message.cmp(&b.message)));
+        TestResult::Fail(violations)
+    }
+}
+
 fn test_docs_017_root_entrypoint_flags(ctx: &RunContext) -> TestResult {
     let payload = match docs_sections_payload(ctx, "DOC-017", "docs.sections.root_entrypoint_flags") {
         Ok(payload) => payload,

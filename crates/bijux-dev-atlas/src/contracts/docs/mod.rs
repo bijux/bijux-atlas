@@ -55,6 +55,8 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-042" => "Stable spine pages must keep review dates normalized in frontmatter.".to_string(),
         "DOC-043" => "How-to spine pages must declare verification in frontmatter.".to_string(),
         "DOC-044" => "The shared docs frontmatter schema must exist and require the core metadata keys.".to_string(),
+        "DOC-045" => "Reader utility pages must keep the shared frontmatter metadata required for published guidance pages.".to_string(),
+        "DOC-046" => "Reader utility pages must stay on the published surface and may not link directly into docs/_internal.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

@@ -145,6 +145,13 @@ fn docs_spine_pages(ctx: &RunContext) -> Result<Vec<String>, TestResult> {
     Ok(pages)
 }
 
+fn docs_reader_utility_pages() -> Vec<String> {
+    vec![
+        "docs/site-map.md".to_string(),
+        "docs/what-to-read-next.md".to_string(),
+    ]
+}
+
 fn docs_root_index_targets(ctx: &RunContext, contract_id: &str, test_id: &str) -> Result<Vec<String>, TestResult> {
     let path = ctx.repo_root.join("docs/index.md");
     let contents = match std::fs::read_to_string(&path) {

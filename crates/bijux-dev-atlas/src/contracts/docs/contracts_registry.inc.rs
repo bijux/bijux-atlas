@@ -469,5 +469,25 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_044_frontmatter_schema_exists,
             }],
         },
+        Contract {
+            id: ContractId("DOC-045".to_string()),
+            title: "reader utility pages keep shared metadata",
+            tests: vec![TestCase {
+                id: TestId("docs.metadata.reader_utility_frontmatter".to_string()),
+                title: "site map and reading-track pages keep the required shared frontmatter",
+                kind: TestKind::Pure,
+                run: test_docs_045_reader_utility_frontmatter,
+            }],
+        },
+        Contract {
+            id: ContractId("DOC-046".to_string()),
+            title: "reader utility pages do not link into internal docs",
+            tests: vec![TestCase {
+                id: TestId("docs.links.reader_utility_no_internal_links".to_string()),
+                title: "site map and reading-track pages stay on the published reader surface",
+                kind: TestKind::Pure,
+                run: test_docs_046_reader_utility_no_internal_links,
+            }],
+        },
     ])
 }
