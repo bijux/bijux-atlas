@@ -62,4 +62,5 @@ docs     DOC-060            no                            must     docs redirect
 docs     DOC-061            no                            must     docs registry validates against its schema
 docs     DOC-062            no                            must     docs sections validate against their schema
 docs     DOC-063            no                            must     site map links the reader spine
+docs     DOC-064            no                            must     docs home links exactly three canonical golden paths
 

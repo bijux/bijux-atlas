@@ -39,6 +39,9 @@ Atlas has one onboarding funnel: Start here.
 
 ## Next steps
 
+- Run locally: [Run locally](operations/run-locally.md)
+- Deploy to kind: [Deploy to kind](operations/deploy-kind.md)
+- Deploy to Kubernetes: [Deploy to Kubernetes](operations/deploy-kubernetes-minimal.md)
 - [Site map](site-map.md)
 - [What to read next](what-to-read-next.md)
 - [Glossary](glossary.md)

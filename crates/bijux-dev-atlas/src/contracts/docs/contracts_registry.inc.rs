@@ -659,5 +659,15 @@ pub fn contracts(_repo_root: &Path) -> Result<Vec<Contract>, String> {
                 run: test_docs_063_site_map_covers_reader_spine,
             }],
         },
+        Contract {
+            id: ContractId("DOC-064".to_string()),
+            title: "docs home links exactly three canonical golden paths",
+            tests: vec![TestCase {
+                id: TestId("docs.onboarding.three_golden_paths".to_string()),
+                title: "docs/index.md links run-locally, deploy-kind, and deploy-kubernetes-minimal exactly once each",
+                kind: TestKind::Pure,
+                run: test_docs_064_index_links_three_golden_paths,
+            }],
+        },
     ])
 }

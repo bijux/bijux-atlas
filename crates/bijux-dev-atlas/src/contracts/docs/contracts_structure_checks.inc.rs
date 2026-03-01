@@ -454,3 +454,78 @@ fn test_docs_063_site_map_covers_reader_spine(ctx: &RunContext) -> TestResult {
         TestResult::Fail(violations)
     }
 }
+
+fn test_docs_064_index_links_three_golden_paths(ctx: &RunContext) -> TestResult {
+    let relative = "docs/index.md";
+    let contents = match std::fs::read_to_string(ctx.repo_root.join(relative)) {
+        Ok(contents) => contents,
+        Err(err) => {
+            return TestResult::Fail(vec![Violation {
+                contract_id: "DOC-064".to_string(),
+                test_id: "docs.onboarding.three_golden_paths".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!("read failed: {err}"),
+                evidence: None,
+            }]);
+        }
+    };
+
+    let required_targets = [
+        "operations/run-locally.md",
+        "operations/deploy-kind.md",
+        "operations/deploy-kubernetes-minimal.md",
+    ];
+    let links = markdown_links(strip_docs_frontmatter(&contents))
+        .into_iter()
+        .filter_map(|target| target.split('#').next().map(|value| value.to_string()))
+        .collect::<Vec<_>>();
+
+    let mut violations = Vec::new();
+    for target in required_targets {
+        let count = links.iter().filter(|link| link.as_str() == target).count();
+        if count != 1 {
+            violations.push(Violation {
+                contract_id: "DOC-064".to_string(),
+                test_id: "docs.onboarding.three_golden_paths".to_string(),
+                file: Some(relative.to_string()),
+                line: None,
+                message: format!(
+                    "docs/index.md must link `{target}` exactly once, found {count}"
+                ),
+                evidence: None,
+            });
+        }
+    }
+
+    let total_canonical = links
+        .iter()
+        .filter(|link| {
+            matches!(
+                link.as_str(),
+                "operations/run-locally.md"
+                    | "operations/deploy-kind.md"
+                    | "operations/deploy-kubernetes-minimal.md"
+            )
+        })
+        .count();
+    if total_canonical != 3 {
+        violations.push(Violation {
+            contract_id: "DOC-064".to_string(),
+            test_id: "docs.onboarding.three_golden_paths".to_string(),
+            file: Some(relative.to_string()),
+            line: None,
+            message: format!(
+                "docs/index.md must expose exactly three canonical golden-path links, found {total_canonical}"
+            ),
+            evidence: None,
+        });
+    }
+
+    if violations.is_empty() {
+        TestResult::Pass
+    } else {
+        violations.sort_by(|a, b| a.message.cmp(&b.message));
+        TestResult::Fail(violations)
+    }
+}

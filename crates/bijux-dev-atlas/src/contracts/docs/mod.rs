@@ -74,6 +74,7 @@ pub fn contract_explain(contract_id: &str) -> String {
         "DOC-061" => "docs/_internal/registry/registry.json must validate against the declared docs registry schema.".to_string(),
         "DOC-062" => "docs/_internal/registry/sections.json must validate against the declared docs sections schema.".to_string(),
         "DOC-063" => "docs/site-map.md must link the canonical reader spine and published utility pages.".to_string(),
+        "DOC-064" => "docs/index.md must expose exactly three canonical onboarding golden paths: run locally, deploy to kind, and deploy to Kubernetes.".to_string(),
         _ => "Fix the listed violations and rerun `bijux dev atlas contracts docs`.".to_string(),
     }
 }

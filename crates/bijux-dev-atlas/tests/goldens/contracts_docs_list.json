@@ -822,6 +822,19 @@
         }
       ],
       "title": "site map links the reader spine"
+    },
+    {
+      "domain": "docs",
+      "id": "DOC-064",
+      "lanes": [],
+      "required": false,
+      "severity": "must",
+      "tests": [
+        {
+          "test_id": "docs.onboarding.three_golden_paths"
+        }
+      ],
+      "title": "docs home links exactly three canonical golden paths"
     }
   ],
   "schema_version": 1
