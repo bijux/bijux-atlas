@@ -1002,6 +1002,13 @@ jobs:
               if rel.startswith("docs/_internal/") or rel.startswith("docs/_assets/") or rel.startswith("docs/_drafts/"):
                   continue
               all_docs.add(rel)
+          generated_ref_violations = []
+          for rel in sorted(all_docs):
+              text = (root / rel).read_text()
+              if "docs/_generated/" in text:
+                  generated_ref_violations.append(rel)
+          if generated_ref_violations:
+              raise SystemExit("reader docs must not reference docs/_generated paths: " + ", ".join(generated_ref_violations[:20]))
           broken = []
           for rel in sorted(all_docs):
               src = root / rel
@@ -1243,14 +1250,15 @@ jobs:
           cargo test -q -p bijux-atlas-api openapi_hash_matches_pinned_contract -- --exact > "${logs_root}/openapi-hash.stdout.log" 2> "${logs_root}/openapi-hash.stderr.log"
           cargo test -q -p bijux-atlas-server runtime_startup_config_contract_artifacts_match_generated > "${logs_root}/runtime-startup-config-contract.stdout.log" 2> "${logs_root}/runtime-startup-config-contract.stderr.log"
           mkdocs build --strict > "${report_root}/mkdocs-build.json" 2> "${logs_root}/mkdocs-build.stderr.log"
+          cp -R site "artifacts/${RUN_ID}/site-preview"
           cargo run -q -p bijux-dev-atlas -- docs external-links --allow-network --format json > "${report_root}/docs-linkcheck.json" 2> "${logs_root}/docs-linkcheck.stderr.log"
           ARTIFACT_ROOT="${report_root}" RUN_ID="${RUN_ID}" make docker-contracts > "${logs_root}/docker-contracts-static.stdout.log" 2> "${logs_root}/docker-contracts-static.stderr.log"
           make ops-contracts > "${logs_root}/ops-contracts-static.stdout.log" 2> "${logs_root}/ops-contracts-static.stderr.log"
           make ops-pr > "${report_root}/ci-pr.json" 2> "${logs_root}/ci-pr.stderr.log"
           cargo run -q -p bijux-dev-atlas -- check list --suite ci_pr --include-internal --include-slow --format json > "${report_root}/suite-membership-ci_pr.json"
           ! rg -n "(AKIA|BEGIN PRIVATE KEY|SECRET|TOKEN=)" "${report_root}/ci-pr.json"
-          printf "- lane: ci-pr\n- report: %s\n- docs build: %s\n- docs linkcheck: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
-            "${report_root}/ci-pr.json" "${report_root}/mkdocs-build.json" "${report_root}/docs-linkcheck.json" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
+          printf "- lane: ci-pr\n- report: %s\n- docs build: %s\n- docs linkcheck: %s\n- docs preview: %s\n- cache registry hit: %s\n- cache target hit: %s\n" \
+            "${report_root}/ci-pr.json" "${report_root}/mkdocs-build.json" "${report_root}/docs-linkcheck.json" "artifacts/${RUN_ID}/site-preview" "${{ steps.cache-registry.outputs.cache-hit || 'false' }}" "${{ steps.cache-target.outputs.cache-hit || 'false' }}" > "artifacts/${RUN_ID}/summary.md"
           cat "artifacts/${RUN_ID}/summary.md" >> "${GITHUB_STEP_SUMMARY}"
       - name: Save cargo registry cache
         if: success()
